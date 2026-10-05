@@ -1,4 +1,5 @@
 using Abandoned.Audio;
+using Abandoned.Core;
 using Abandoned.UI;
 using UnityEngine;
 
@@ -34,6 +35,8 @@ namespace Abandoned.Loot
 
         private void OnImpacted(LootItem loot, float speed, Vector3 point)
         {
+            // Cameras decide for themselves whether this is heavy and close enough to shake.
+            CameraShake.Emit(point, loot.GameplayWeight * speed);
             if (speed < damageConfig.MinSoundSpeed) return;
             float volume = Mathf.Clamp01(speed / damageConfig.FullVolumeSpeed);
             PlaceholderAudio.PlayImpact(loot.Definition.Material, point, volume);

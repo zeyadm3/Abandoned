@@ -10,6 +10,8 @@ namespace Abandoned.Player
     {
         [SerializeField] private PlayerMotor motor;
         [SerializeField] private PlayerStamina stamina;
+        [SerializeField] private PlayerCameraFeel cameraFeel;
+        [SerializeField] private PlayerFootsteps footsteps;
         [SerializeField] private int fontSize = 14;
 
         private GUIStyle style;
@@ -30,7 +32,9 @@ namespace Abandoned.Player
                 $"Height     {motor.CurrentHeight:F2} m\n" +
                 $"Stamina    {stamina.Current:F0}/{stamina.Max:F0}{(stamina.IsExhausted ? "  <color=#FF6060>EXHAUSTED</color>" : "")}\n" +
                 $"Speed x    {motor.SpeedMultiplier:F2}\n" +
-                $"Drain x    {motor.StaminaDrainMultiplier:F2}";
+                $"Drain x    {motor.StaminaDrainMultiplier:F2}\n" +
+                $"Bob        {cameraFeel.BobOffset.y:F3}  Dip {cameraFeel.Dip:F2}  Shake {cameraFeel.Trauma:F2}\n" +
+                $"Steps      {footsteps.StepCount} ({footsteps.LastSurface}, vol {footsteps.LastVolume:F2})";
 
             var content = new GUIContent(text);
             Vector2 size = style.CalcSize(content);

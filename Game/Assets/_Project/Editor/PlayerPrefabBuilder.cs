@@ -17,6 +17,7 @@ namespace Abandoned.EditorTools
         public const string ConfigPath = "Assets/_Project/Data/Player/PlayerMovementConfig.asset";
         public const string CarryConfigPath = "Assets/_Project/Data/Interaction/CarryConfig.asset";
         public const string RagdollConfigPath = "Assets/_Project/Data/Player/PlayerRagdollConfig.asset";
+        public const string FeelSettingsPath = "Assets/_Project/Data/Player/FeelSettings.asset";
 
         private const float FieldOfView = 75f;
         private const float NearClip = 0.05f;
@@ -27,6 +28,7 @@ namespace Abandoned.EditorTools
             var config = LoadOrCreateAsset<PlayerMovementConfig>(ConfigPath);
             var carryConfig = LoadOrCreateAsset<CarryConfig>(CarryConfigPath);
             var ragdollConfig = LoadOrCreateAsset<PlayerRagdollConfig>(RagdollConfigPath);
+            var feelSettings = LoadOrCreateAsset<FeelSettings>(FeelSettingsPath);
 
             var root = new GameObject("Player");
             var controller = root.AddComponent<CharacterController>();
@@ -40,11 +42,14 @@ namespace Abandoned.EditorTools
             Transform cameraRoot = new GameObject("CameraRoot").transform;
             cameraRoot.SetParent(root.transform, false);
             cameraRoot.localPosition = Vector3.up * config.StandingEyeHeight;
+            // Eye carries bob/dip/shake offsets so they never fight the motor's crouch height or the look pitch.
+            Transform eye = new GameObject("Eye").transform;
+            eye.SetParent(cameraRoot, false);
 
             GameObject body = BuildBody(root.transform, config);
             PlayerRagdollBuilder.Result ragdollParts = PlayerRagdollBuilder.Build(root.transform, ragdollConfig.TotalMass, PlayerMaterial());
             GameObject hitDetector = BuildHitDetector(root.transform, config);
-            BuildCamera(root.transform, cameraRoot);
+            BuildCamera(root.transform, eye);
 
             var reader = root.AddComponent<PlayerInputReader>();
             var stamina = root.AddComponent<PlayerStamina>();
@@ -56,6 +61,8 @@ namespace Abandoned.EditorTools
             var interactor = root.AddComponent<PlayerInteractor>();
             var hud = root.AddComponent<InteractionHud>();
             var ragdoll = root.AddComponent<PlayerRagdoll>();
+            var cameraFeel = root.AddComponent<PlayerCameraFeel>();
+            var footsteps = root.AddComponent<PlayerFootsteps>();
 
             Set(stamina, "config", config);
             Set(look, "config", config);
@@ -82,6 +89,13 @@ namespace Abandoned.EditorTools
             Set(ragdoll, "head", ragdollParts.Head);
             SetArray(ragdoll, "disableWhileRagdolled", new Object[] { motor, look, interactor });
             Set(hitDetector.GetComponent<PlayerHitDetector>(), "ragdoll", ragdoll);
+            Set(cameraFeel, "settings", feelSettings);
+            Set(cameraFeel, "motor", motor);
+            Set(cameraFeel, "eye", eye);
+            Set(footsteps, "settings", feelSettings);
+            Set(footsteps, "motor", motor);
+            Set(debug, "cameraFeel", cameraFeel);
+            Set(debug, "footsteps", footsteps);
             Set(interactor, "inputReader", reader);
             Set(interactor, "carrier", carrier);
             Set(hud, "interactor", interactor);
@@ -141,14 +155,14 @@ namespace Abandoned.EditorTools
                 PlayerMaterial(), withCollider: false);
         }
 
-        private static void BuildCamera(Transform root, Transform cameraRoot)
+        private static void BuildCamera(Transform root, Transform eye)
         {
             var go = new GameObject("PlayerCamera");
             go.transform.SetParent(root, false);
-            go.transform.localPosition = cameraRoot.localPosition;
+            go.transform.position = eye.position;
 
             var cam = go.AddComponent<CinemachineCamera>();
-            cam.Target.TrackingTarget = cameraRoot;
+            cam.Target.TrackingTarget = eye;
             LensSettings lens = cam.Lens;
             lens.FieldOfView = FieldOfView;
             lens.NearClipPlane = NearClip;

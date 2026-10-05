@@ -56,8 +56,30 @@ namespace Abandoned.EditorTools
             spawn.gameObject.AddComponent<PlayerSpawnPoint>();
 
             PlayerPrefabBuilder.PlaceInScene(spawn.position, spawn.rotation);
+            TagSurfaces(root);
             PlaceProps(GreyboxFactory.Group("Props", root));
             PlaceLoot(GreyboxFactory.Group("Loot", root));
+        }
+
+        /// <summary>Concrete ground floor, creaky wooden upper floor and balconies, metal stairs.</summary>
+        private static void TagSurfaces(Transform root)
+        {
+            Tag(root.Find("GroundFloor/Tiles"), SurfaceMaterial.Concrete);
+            Tag(root.Find("UpperFloor/Tiles"), SurfaceMaterial.Wood);
+            Tag(root.Find("Stairs"), SurfaceMaterial.Metal);
+            Tag(root.Find("Exterior/GroundSlabs"), SurfaceMaterial.Dirt);
+            Tag(root.Find("Exterior/Parking"), SurfaceMaterial.Asphalt);
+        }
+
+        private static void Tag(Transform group, SurfaceMaterial material)
+        {
+            if (group == null)
+            {
+                Debug.LogError($"TagSurfaces: missing group for {material}.");
+                return;
+            }
+            foreach (Transform child in group)
+                child.gameObject.AddComponent<SurfaceTag>().EditorSet(material);
         }
 
         private static void PlaceProps(Transform props)
