@@ -22,6 +22,25 @@ namespace Abandoned.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        public static void SetInt(Object target, string field, int value)
+        {
+            var so = new SerializedObject(target);
+            SerializedProperty property = so.FindProperty(field);
+            if (property == null)
+            {
+                Debug.LogError($"{target.GetType().Name} has no serialized field '{field}'.");
+                return;
+            }
+            property.intValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        public static void SetLayerRecursively(GameObject root, int layer)
+        {
+            if (layer < 0) return;
+            foreach (Transform t in root.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer;
+        }
+
         public static Object Get(Object target, string field) =>
             new SerializedObject(target).FindProperty(field)?.objectReferenceValue;
 

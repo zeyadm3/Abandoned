@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c5283b5ab6074c89b0e14e8b5a4b7c5, type: 3}
+  m_Name: LootDamageConfig
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Loot.LootDamageConfig
+  profiles:
+  - Fragility: 0
+    ImpactThreshold: 999
+    LossPerSpeed: 0
+    ShatterSpeed: 0
+  - Fragility: 1
+    ImpactThreshold: 6
+    LossPerSpeed: 0.02
+    ShatterSpeed: 0
+  - Fragility: 2
+    ImpactThreshold: 4
+    LossPerSpeed: 0.05
+    ShatterSpeed: 0
+  - Fragility: 3
+    ImpactThreshold: 2.5
+    LossPerSpeed: 0.12
+    ShatterSpeed: 10
+  - Fragility: 4
+    ImpactThreshold: 2
+    LossPerSpeed: 1
+    ShatterSpeed: 2
+  <ImpactCooldown>k__BackingField: 0.15
+  <MinSoundSpeed>k__BackingField: 0.6
+  <FullVolumeSpeed>k__BackingField: 8

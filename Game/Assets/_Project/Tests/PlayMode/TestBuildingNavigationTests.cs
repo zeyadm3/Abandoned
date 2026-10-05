@@ -86,7 +86,8 @@ namespace Abandoned.Tests
         public void BalconyHoldsThePlayerAndRailingStopsFallsIntoTheAtrium()
         {
             // Balcony_U_1_3 spans x 4..8, z 12..16; the atrium edge railing is at z = 12.
-            rig.Teleport(new Vector3(6f, 4.05f, 14f), 180f);
+            // x = 4.8 keeps clear of the glass sculpture placed at (6, 14).
+            rig.Teleport(new Vector3(4.8f, 4.05f, 14f), 180f);
             rig.Settle();
             Assert.IsTrue(rig.Motor.IsGrounded);
             Assert.AreEqual(4f, rig.Player.transform.position.y, 0.15f);

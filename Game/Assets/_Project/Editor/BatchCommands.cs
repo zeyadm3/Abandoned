@@ -18,6 +18,9 @@ namespace Abandoned.EditorTools
         /// <summary>Regenerates every Editor-built asset in dependency order.</summary>
         public static void RebuildContent() => RunAndExit(() =>
         {
+            ProjectLayersSetup.Apply();
+            LootCatalogBuilder.CreateMissing();
+            LootPrefabGenerator.GenerateAll();
             PlayerPrefabBuilder.Create();
             TestBuildingBuilder.Build();
             return true;

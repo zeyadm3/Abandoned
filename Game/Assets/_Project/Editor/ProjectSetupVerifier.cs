@@ -104,6 +104,15 @@ namespace Abandoned.EditorTools
             Check(AssetDatabase.LoadAssetAtPath<Abandoned.Player.PlayerMovementConfig>(PlayerPrefabBuilder.ConfigPath) != null,
                 $"Movement config {PlayerPrefabBuilder.ConfigPath}");
 
+            Check(ProjectLayersSetup.AllPresent(), "Physics layers Player/Loot/Debris/Structure (Tools/Abandoned/Setup Physics Layers)");
+
+            foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
+            {
+                var definition = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                Check(AssetDatabase.LoadAssetAtPath<GameObject>(LootPrefabGenerator.PrefabPathFor(definition)) != null,
+                    $"Loot prefab for {definition.Id} (Tools/Abandoned/Generate Loot Prefabs)");
+            }
+
             report.Insert(0, failures == 0 ? "[ALL PASS] " : $"[{failures} FAILED] ");
             reportText = report.ToString();
             return failures;

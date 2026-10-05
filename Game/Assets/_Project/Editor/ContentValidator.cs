@@ -29,7 +29,8 @@ namespace Abandoned.EditorTools
         {
             [TestBuildingBuilder.ScenePath] = new[]
             {
-                typeof(PlayerSpawnPoint), typeof(PlayerMotor), typeof(DebugViewToggle), typeof(CinemachineBrain)
+                typeof(PlayerSpawnPoint), typeof(PlayerMotor), typeof(DebugViewToggle), typeof(CinemachineBrain),
+                typeof(Abandoned.Loot.LootItem)
             }
         };
 

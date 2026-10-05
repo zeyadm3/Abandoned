@@ -72,6 +72,7 @@ namespace Abandoned.EditorTools
             Set(hud, "carrier", carrier);
             Set(hud, "inputReader", reader);
 
+            SetLayerRecursively(root, Abandoned.Core.GameLayers.PlayerLayer);
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
             AssetDatabase.SaveAssets();
