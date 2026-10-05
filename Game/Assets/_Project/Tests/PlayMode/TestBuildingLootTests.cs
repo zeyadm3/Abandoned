@@ -17,7 +17,7 @@ namespace Abandoned.Tests
         {
             yield return SceneManager.LoadSceneAsync("TestBuilding", LoadSceneMode.Single);
             LootItem[] items = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None);
-            Assert.AreEqual(10, items.Length);
+            Assert.AreEqual(13, items.Length, "10 M1 items + 3 M2 structure test pieces");
             Assert.GreaterOrEqual(items.Count(i => i.transform.position.y > 3.5f), 3, "some loot upstairs");
             Assert.IsTrue(items.Any(i => i.Definition.Fragility == Fragility.Extreme), "fragile items present");
             Assert.IsTrue(items.Any(i => i.Definition.CarryClass >= Abandoned.Interaction.CarryClass.Heavy), "heavy items present");
@@ -25,7 +25,7 @@ namespace Abandoned.Tests
             for (float t = 0f; t < 3f; t += Time.fixedDeltaTime) yield return new WaitForFixedUpdate();
 
             items = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None);
-            Assert.AreEqual(10, items.Length, "something shattered while settling");
+            Assert.AreEqual(13, items.Length, "something shattered while settling");
             foreach (LootItem item in items)
             {
                 Assert.Greater(item.transform.position.y, -0.5f, $"{item.name} fell through the floor");

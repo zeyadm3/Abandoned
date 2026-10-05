@@ -732,6 +732,36 @@ namespace Abandoned.Core
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""StabilityDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""3434a801-c982-4f11-9354-ccab05972e13"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""StabilityUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""08b50d3d-d87d-452d-9882-dbd64f21c746"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""RerollStructure"",
+                    ""type"": ""Button"",
+                    ""id"": ""9f39b589-3a38-4ac6-bc32-b60e98b21188"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -754,6 +784,39 @@ namespace Abandoned.Core
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""ToggleRagdoll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0bd8b588-d3a4-41e6-9b4c-b7e70964c26f"",
+                    ""path"": ""<Keyboard>/minus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""StabilityDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2e90450b-902f-48d9-87cc-d7510d3649a9"",
+                    ""path"": ""<Keyboard>/equals"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""StabilityUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62eb5b98-168c-4fe0-a2cc-a9651eb692d9"",
+                    ""path"": ""<Keyboard>/f2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""RerollStructure"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -811,6 +874,9 @@ namespace Abandoned.Core
             m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
             m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
             m_Debug_ToggleRagdoll = m_Debug.FindAction("ToggleRagdoll", throwIfNotFound: true);
+            m_Debug_StabilityDown = m_Debug.FindAction("StabilityDown", throwIfNotFound: true);
+            m_Debug_StabilityUp = m_Debug.FindAction("StabilityUp", throwIfNotFound: true);
+            m_Debug_RerollStructure = m_Debug.FindAction("RerollStructure", throwIfNotFound: true);
         }
 
         ~@AbandonedInput()
@@ -1329,6 +1395,9 @@ namespace Abandoned.Core
         private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
         private readonly InputAction m_Debug_ToggleDebug;
         private readonly InputAction m_Debug_ToggleRagdoll;
+        private readonly InputAction m_Debug_StabilityDown;
+        private readonly InputAction m_Debug_StabilityUp;
+        private readonly InputAction m_Debug_RerollStructure;
         /// <summary>
         /// Provides access to input actions defined in input action map "Debug".
         /// </summary>
@@ -1348,6 +1417,18 @@ namespace Abandoned.Core
             /// Provides access to the underlying input action "Debug/ToggleRagdoll".
             /// </summary>
             public InputAction @ToggleRagdoll => m_Wrapper.m_Debug_ToggleRagdoll;
+            /// <summary>
+            /// Provides access to the underlying input action "Debug/StabilityDown".
+            /// </summary>
+            public InputAction @StabilityDown => m_Wrapper.m_Debug_StabilityDown;
+            /// <summary>
+            /// Provides access to the underlying input action "Debug/StabilityUp".
+            /// </summary>
+            public InputAction @StabilityUp => m_Wrapper.m_Debug_StabilityUp;
+            /// <summary>
+            /// Provides access to the underlying input action "Debug/RerollStructure".
+            /// </summary>
+            public InputAction @RerollStructure => m_Wrapper.m_Debug_RerollStructure;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1380,6 +1461,15 @@ namespace Abandoned.Core
                 @ToggleRagdoll.started += instance.OnToggleRagdoll;
                 @ToggleRagdoll.performed += instance.OnToggleRagdoll;
                 @ToggleRagdoll.canceled += instance.OnToggleRagdoll;
+                @StabilityDown.started += instance.OnStabilityDown;
+                @StabilityDown.performed += instance.OnStabilityDown;
+                @StabilityDown.canceled += instance.OnStabilityDown;
+                @StabilityUp.started += instance.OnStabilityUp;
+                @StabilityUp.performed += instance.OnStabilityUp;
+                @StabilityUp.canceled += instance.OnStabilityUp;
+                @RerollStructure.started += instance.OnRerollStructure;
+                @RerollStructure.performed += instance.OnRerollStructure;
+                @RerollStructure.canceled += instance.OnRerollStructure;
             }
 
             /// <summary>
@@ -1397,6 +1487,15 @@ namespace Abandoned.Core
                 @ToggleRagdoll.started -= instance.OnToggleRagdoll;
                 @ToggleRagdoll.performed -= instance.OnToggleRagdoll;
                 @ToggleRagdoll.canceled -= instance.OnToggleRagdoll;
+                @StabilityDown.started -= instance.OnStabilityDown;
+                @StabilityDown.performed -= instance.OnStabilityDown;
+                @StabilityDown.canceled -= instance.OnStabilityDown;
+                @StabilityUp.started -= instance.OnStabilityUp;
+                @StabilityUp.performed -= instance.OnStabilityUp;
+                @StabilityUp.canceled -= instance.OnStabilityUp;
+                @RerollStructure.started -= instance.OnRerollStructure;
+                @RerollStructure.performed -= instance.OnRerollStructure;
+                @RerollStructure.canceled -= instance.OnRerollStructure;
             }
 
             /// <summary>
@@ -1648,6 +1747,27 @@ namespace Abandoned.Core
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnToggleRagdoll(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "StabilityDown" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnStabilityDown(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "StabilityUp" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnStabilityUp(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RerollStructure" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRerollStructure(InputAction.CallbackContext context);
         }
     }
 }

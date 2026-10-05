@@ -36,6 +36,19 @@ namespace Abandoned.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        public static void SetFloat(Object target, string field, float value)
+        {
+            var so = new SerializedObject(target);
+            SerializedProperty property = so.FindProperty(field);
+            if (property == null)
+            {
+                Debug.LogError($"{target.GetType().Name} has no serialized field '{field}'.");
+                return;
+            }
+            property.floatValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         public static void SetInt(Object target, string field, int value)
         {
             var so = new SerializedObject(target);

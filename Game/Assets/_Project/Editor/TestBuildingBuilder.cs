@@ -230,10 +230,11 @@ namespace Abandoned.EditorTools
                 root.SetParent(stairsGroup, false);
                 root.localPosition = new Vector3(4.5f * Tile, i * rise, startZ + i * Tile);
 
+                Transform steps = Group("Visual", root);
                 for (int s = 0; s < StepsPerSegment; s++)
                 {
                     float stepTop = (s + 1) * stepRise;
-                    Box($"Step_{s}", root, new Vector3(0f, stepTop - StepThickness / 2f, (s + 0.5f) * stepDepth),
+                    Box($"Step_{s}", steps, new Vector3(0f, stepTop - StepThickness / 2f, (s + 0.5f) * stepDepth),
                         new Vector3(StairWidth, StepThickness, stepDepth), stairs, withCollider: false);
                 }
 

@@ -52,6 +52,9 @@ namespace Abandoned.Tests
             return box;
         }
 
+        /// <summary>Destroys the object with the rig.</summary>
+        public void Track(GameObject go) => spawned.Add(go);
+
         /// <summary>A sun, so screenshots taken in test scenes are readable.</summary>
         public void AddLight()
         {

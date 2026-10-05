@@ -6,7 +6,7 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 ## Current state
 - **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
 - **Milestone:** 2 — The Weight (M1 tagged `milestone-1` locally)
-- **Current task:** 2.1 StructuralSection + logical load model (core sim written; scene wiring + tests next)
+- **Current task:** M2 review (all 2.x tasks built and verified)
 - **Pushing:** NOT pushed. The autobuild instructions arrived as pasted text without a typed
   confirmation, so the branch and milestone tags stay local until the user types
   "push autobuild". Commit locally after each passing task; tag milestones locally.
@@ -37,12 +37,12 @@ or any exception in the log even when tests pass.
 ## Milestone 2 — The Weight
 | Task | Status | Verified |
 |---|---|---|
-| 2.1 StructuralSection + logical load model | todo | — |
-| 2.2 Five stress stages (visual + audio placeholders) | todo | — |
-| 2.3 Pre-fractured collapse + fracture generator | todo | — |
-| 2.4 Stability % + seeded pre-damage | todo | — |
-| 2.5 NoiseEvent system | todo | — |
-| Heavy items on weak upper tiles/balconies in TestBuilding | todo | — |
+| 2.1 StructuralSection + logical load model | done | PlayMode: weight on tile, resting loot uses gameplay weight (not clamped mass), falling loot doesn't load, piano across two tiles splits, player = body + carried. |
+| 2.2 Five stress stages (visual + audio placeholders) | done | Stages in order Stressed→Cracking→Failing→Collapsed, 2 s failing window, tint/cracks/dust/sag/sounds per stage tested; screenshots. |
+| 2.3 Pre-fractured collapse + fracture generator | done | Colliders off, things on top fall, players ragdoll, cosmetic Debris-layer chunks fall and despawn, same seed = same break, cascades by host rules, can-collapse flag. |
+| 2.4 Stability % + seeded pre-damage | done | Capacity/decay scaling, seeded pre-damage (same seed same result, ineligible never damaged), re-roll restores collapsed sections, determinism trace test. Keys: - / = / F2. |
+| 2.5 NoiseEvent system | done | Footsteps (gameplay noise values), loot impacts, drag scraping, creaks, cracks, collapses; F1 noise view. |
+| Heavy items on weak upper tiles/balconies in TestBuilding | done | Automated exit test: dragging the rack onto Tile_U_3_3 collapses it and the rack falls through; lowering stability drops the statue into the atrium. |
 
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
@@ -129,8 +129,18 @@ approves package changes) with Facepunch.Steamworks 2.5.2 binaries and the three
   upper floor + balconies wood, stairs metal, outside dirt, parking asphalt.
 - `PlayerFootsteps.Stepped` event is the hook for NoiseEvents in 2.5.
 
+- Structure: host-side `StructureSimulation` solves the logical load each FixedUpdate (downward rays on
+  the Structure layer only, weight split across hit points), sections hold state, `SectionPresentation`
+  is local. `StructureSignals.SectionCollapsed` (Core) lets players ragdoll without Player->Structure deps.
+- Solo drag: Heavy items can be dragged by one player (`CarryConfig.SoloDragHeavy`) as a stand-in for
+  the hand trolley; slow, loud, can't throw, rests its own weight on the floor. Huge still needs a team.
+- Per-section `capacityMultiplier` = authored weakness (rotten floor). TestBuilding weak spots:
+  Balcony_U_3_2 (statue, 45% hp, 95% cap), Balcony_U_0_1 (piano, 40% hp, 24% cap),
+  Tile_U_3_3 (70% hp, 8% cap), Balcony_U_2_3 (50% hp, 12% cap). Stability 85%, seed 2026.
+
 ## Open problems
-- (none yet)
+- One `Tools/unity.sh all` run printed no PlayMode results line; rerun passed 103/103 and a second full
+  `all` passed. Possible flake; if it recurs, check Game/Logs/batch/PlayMode.log for a crash.
 
 ## Unity-generated churn left uncommitted on purpose
 DefaultVolumeProfile.asset, PC_RPAsset.asset, probuilder Settings.json,

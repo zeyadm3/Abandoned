@@ -104,6 +104,12 @@ namespace Abandoned.EditorTools
             Check(AssetDatabase.LoadAssetAtPath<Abandoned.Player.PlayerMovementConfig>(PlayerPrefabBuilder.ConfigPath) != null,
                 $"Movement config {PlayerPrefabBuilder.ConfigPath}");
 
+            Check(AssetDatabase.LoadAssetAtPath<Abandoned.Structure.StructureConfig>(StructureContentBuilder.ConfigPath) != null,
+                $"Structure config {StructureContentBuilder.ConfigPath} (Tools/Abandoned/Create Structure Content)");
+            Check(AssetDatabase.LoadAssetAtPath<Abandoned.Structure.StructureVisualConfig>(StructureContentBuilder.VisualConfigPath) != null,
+                $"Structure visual config {StructureContentBuilder.VisualConfigPath}");
+            Check(AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath) != null,
+                $"Fractured tile {FracturedTileGenerator.PrefabPath} (Tools/Abandoned/Generate Fractured Tile)");
             Check(ProjectLayersSetup.AllPresent(), "Physics layers Player/Loot/Debris/Structure (Tools/Abandoned/Setup Physics Layers)");
 
             foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))

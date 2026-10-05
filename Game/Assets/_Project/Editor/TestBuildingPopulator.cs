@@ -1,6 +1,10 @@
+using System.Collections.Generic;
 using Abandoned.Core;
+using Abandoned.Loot;
 using Abandoned.Player;
+using Abandoned.Structure;
 using Unity.Cinemachine;
+using UnityEditor;
 using UnityEngine;
 
 namespace Abandoned.EditorTools
@@ -32,6 +36,23 @@ namespace Abandoned.EditorTools
             ("glass_sculpture", new(6f, 0f, 14f), 0f, Upper),           // balcony over the atrium
             ("safe", new(2f, 0f, 14f), 0f, Upper),                      // upper corner room
             ("marble_statue", new(14f, 0f, 10f), 0f, Upper),            // jackpot on the east balcony
+            // M2 structure test pieces (see WeakSpots):
+            ("grand_piano", new(2f, 0f, 6f), 0f, Upper),                // on the rotten west balcony
+            ("vending_machine", new(14f, 0f, 2f), 0f, Upper),           // drag it onto the statue balcony
+            ("server_rack", new(17.6f, 0f, 15.2f), 90f, Upper),         // drag it west across the weak north tiles
+        };
+
+        private const float TestStability = 0.85f;
+        private const int TestSeed = 2026;
+
+        // Authored weak sections so collapses can be tried straight away:
+        // (initial health, capacity multiplier). Capacities: floor 3000, balcony 2400 kg before stability.
+        private static readonly Dictionary<string, (float health, float capacity)> WeakSpots = new()
+        {
+            ["Balcony_U_3_2"] = (0.45f, 0.95f), // statue (2000 kg) creaking at ~95%; drag the vending machine on
+            ["Balcony_U_0_1"] = (0.4f, 0.24f),  // piano (500 kg) at ~94%; step on and it starts to go
+            ["Tile_U_3_3"] = (0.7f, 0.08f),     // rotten boards (~220 kg): a dragged server rack breaks through
+            ["Balcony_U_2_3"] = (0.5f, 0.12f),  // and the next one west too (~270 kg)
         };
 
         private static readonly (string name, Vector3 center, Vector3 size)[] Props =
@@ -59,6 +80,49 @@ namespace Abandoned.EditorTools
             TagSurfaces(root);
             PlaceProps(GreyboxFactory.Group("Props", root));
             PlaceLoot(GreyboxFactory.Group("Loot", root));
+            AddStructure(root);
+
+            var debugViews = new GameObject("DebugViews");
+            debugViews.AddComponent<NoiseDebugView>();
+            debugViews.AddComponent<LootDebugView>();
+        }
+
+        private static void AddStructure(Transform root)
+        {
+            var config = AssetDatabase.LoadAssetAtPath<StructureConfig>(StructureContentBuilder.ConfigPath);
+            var visuals = AssetDatabase.LoadAssetAtPath<StructureVisualConfig>(StructureContentBuilder.VisualConfigPath);
+            var fracturedTile = AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath);
+            if (config == null || visuals == null)
+            {
+                Debug.LogError("Structure configs missing; run Tools/Abandoned/Create Structure Content.");
+                return;
+            }
+
+            // Ground tiles: nothing below them in this building, so they can crack but never fall.
+            foreach (Transform tile in root.Find("GroundFloor/Tiles"))
+                AddSection(tile, SectionType.Floor, false, config, visuals, fracturedTile);
+            foreach (Transform tile in root.Find("UpperFloor/Tiles"))
+                AddSection(tile, tile.name.StartsWith("Balcony") ? SectionType.Balcony : SectionType.Floor, true, config, visuals, fracturedTile);
+            foreach (Transform segment in root.Find("Stairs"))
+                AddSection(segment, SectionType.Stair, true, config, visuals, null);
+
+            var simulationObject = new GameObject("Structure");
+            var simulation = simulationObject.AddComponent<StructureSimulation>();
+            SerializedWiring.Set(simulation, "config", config);
+            SerializedWiring.SetFloat(simulation, "stability", TestStability);
+            SerializedWiring.SetInt(simulation, "seed", TestSeed);
+            SerializedWiring.Set(simulationObject.AddComponent<StructureDebugView>(), "simulation", simulation);
+            SerializedWiring.Set(simulationObject.AddComponent<StructureDebugControls>(), "simulation", simulation);
+        }
+
+        private static void AddSection(Transform piece, SectionType type, bool collapsible, StructureConfig config,
+            StructureVisualConfig visuals, GameObject fractured)
+        {
+            (float health, float capacity) = WeakSpots.TryGetValue(piece.name, out var weak) ? weak : (1f, 1f);
+            var section = piece.gameObject.AddComponent<StructuralSection>();
+            section.EditorSetup(config, type, collapsible, health, capacity, piece.Find("Visual"));
+            piece.gameObject.AddComponent<SectionPresentation>().EditorSetup(visuals, fractured);
+            SerializedWiring.SetLayerRecursively(piece.gameObject, GameLayers.StructureLayer);
         }
 
         /// <summary>Concrete ground floor, creaky wooden upper floor and balconies, metal stairs.</summary>

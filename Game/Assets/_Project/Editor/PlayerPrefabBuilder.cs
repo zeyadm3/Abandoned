@@ -62,6 +62,7 @@ namespace Abandoned.EditorTools
             var hud = root.AddComponent<InteractionHud>();
             var ragdoll = root.AddComponent<PlayerRagdoll>();
             var cameraFeel = root.AddComponent<PlayerCameraFeel>();
+            var load = root.AddComponent<CarrierLoad>();
             var footsteps = root.AddComponent<PlayerFootsteps>();
 
             Set(stamina, "config", config);
@@ -89,6 +90,9 @@ namespace Abandoned.EditorTools
             Set(ragdoll, "head", ragdollParts.Head);
             SetArray(ragdoll, "disableWhileRagdolled", new Object[] { motor, look, interactor });
             Set(hitDetector.GetComponent<PlayerHitDetector>(), "ragdoll", ragdoll);
+            Set(load, "motor", motor);
+            Set(load, "carrier", carrier);
+            Set(load, "ragdoll", ragdoll);
             Set(cameraFeel, "settings", feelSettings);
             Set(cameraFeel, "motor", motor);
             Set(cameraFeel, "eye", eye);

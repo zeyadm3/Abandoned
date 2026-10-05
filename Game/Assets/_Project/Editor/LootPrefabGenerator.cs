@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
     public static class LootPrefabGenerator
     {
         public const string Folder = "Assets/_Project/Prefabs/Loot";
-        public const string HeavyFrictionPath = LootCatalogBuilder.Folder + "/Loot_HeavyFriction.physicsMaterial";
+        public const string HeavyFrictionPath = LootCatalogBuilder.Folder + "/Loot_HeavyFriction.asset";
 
         public static string PrefabPathFor(LootDefinition definition) => $"{Folder}/Loot_{definition.Id}.prefab";
 

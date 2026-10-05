@@ -11,6 +11,7 @@ namespace Abandoned.Structure
     /// In M3 the state fields become NetworkVariables; everything that writes them is host-only.
     /// </summary>
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-20)] // state must exist before presentation and the simulation read it
     public class StructuralSection : MonoBehaviour
     {
         [SerializeField] private StructureConfig config;
@@ -19,6 +20,8 @@ namespace Abandoned.Structure
         [SerializeField] private bool canCollapse = true;
         [Tooltip("Authored starting health (1 = intact), applied before stability pre-damage.")]
         [SerializeField, Range(0.05f, 1f)] private float initialHealth = 1f;
+        [Tooltip("Authored weakness: rotten boards, a cracked slab. Multiplies the type's capacity.")]
+        [SerializeField, Range(0.05f, 1f)] private float capacityMultiplier = 1f;
         [Tooltip("Child holding the renderers: sags while Failing and is replaced by debris on collapse.")]
         [SerializeField] private Transform visual;
 
@@ -61,6 +64,7 @@ namespace Abandoned.Structure
         {
             get
             {
+                colliders ??= GetComponentsInChildren<Collider>(true);
                 if (colliders.Length == 0) return new Bounds(transform.position, Vector3.zero);
                 Bounds b = colliders[0].bounds;
                 for (int i = 1; i < colliders.Length; i++) b.Encapsulate(colliders[i].bounds);
@@ -73,7 +77,7 @@ namespace Abandoned.Structure
         public void Configure(float capacityScale, float decayScale, int seedBase)
         {
             SectionProfile profile = config.Profile(type);
-            Capacity = profile.Capacity * capacityScale;
+            Capacity = profile.Capacity * capacityScale * capacityMultiplier;
             MaxHealth = profile.MaxHealth;
             DecayScale = decayScale;
             collapseSeedBase = seedBase;
@@ -194,8 +198,9 @@ namespace Abandoned.Structure
 
 #if UNITY_EDITOR
         public void EditorSetup(StructureConfig structureConfig, SectionType sectionType, bool collapsible,
-            float startHealth, Transform visualRoot)
+            float startHealth, float capacityScale, Transform visualRoot)
         {
+            capacityMultiplier = capacityScale;
             config = structureConfig;
             type = sectionType;
             canCollapse = collapsible;

@@ -21,6 +21,7 @@ namespace Abandoned.EditorTools
             ProjectLayersSetup.Apply();
             LootCatalogBuilder.CreateMissing();
             LootPrefabGenerator.GenerateAll();
+            StructureContentBuilder.CreateMissing();
             PlayerPrefabBuilder.Create();
             TestBuildingBuilder.Build();
             return true;

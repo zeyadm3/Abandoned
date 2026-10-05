@@ -617,6 +617,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "StabilityDown",
+                    "type": "Button",
+                    "id": "3434a801-c982-4f11-9354-ccab05972e13",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "StabilityUp",
+                    "type": "Button",
+                    "id": "08b50d3d-d87d-452d-9882-dbd64f21c746",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RerollStructure",
+                    "type": "Button",
+                    "id": "9f39b589-3a38-4ac6-bc32-b60e98b21188",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -639,6 +666,39 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "ToggleRagdoll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0bd8b588-d3a4-41e6-9b4c-b7e70964c26f",
+                    "path": "<Keyboard>/minus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "StabilityDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2e90450b-902f-48d9-87cc-d7510d3649a9",
+                    "path": "<Keyboard>/equals",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "StabilityUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "62eb5b98-168c-4fe0-a2cc-a9651eb692d9",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "RerollStructure",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

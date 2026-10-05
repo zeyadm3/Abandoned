@@ -24,13 +24,22 @@ namespace Abandoned.EditorTools
         private const string SceneRoot = "Assets/_Project/Scenes";
         private const string DataRoot = "Assets/_Project/Data";
 
+        /// <summary>Components every Player prefab must carry (missing ones silently break other systems).</summary>
+        private static readonly Type[] PlayerRequirements =
+        {
+            typeof(PlayerMotor), typeof(PlayerLook), typeof(PlayerInputReader), typeof(PlayerStamina), typeof(PlayerRagdoll),
+            typeof(PlayerCameraFeel), typeof(PlayerFootsteps), typeof(Abandoned.Interaction.PlayerCarrier),
+            typeof(Abandoned.Interaction.PlayerInteractor), typeof(Abandoned.Interaction.CarrierLoad),
+        };
+
         /// <summary>Component types each scene must contain at least once.</summary>
         private static readonly Dictionary<string, Type[]> SceneRequirements = new()
         {
             [TestBuildingBuilder.ScenePath] = new[]
             {
                 typeof(PlayerSpawnPoint), typeof(PlayerMotor), typeof(DebugViewToggle), typeof(CinemachineBrain),
-                typeof(Abandoned.Loot.LootItem)
+                typeof(Abandoned.Loot.LootItem), typeof(Abandoned.Structure.StructureSimulation),
+                typeof(Abandoned.Structure.StructuralSection), typeof(NoiseDebugView)
             }
         };
 
@@ -62,7 +71,13 @@ namespace Abandoned.EditorTools
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject root = PrefabUtility.LoadPrefabContents(path);
-                try { ValidateHierarchy(root, path, errors); }
+                try
+                {
+                    ValidateHierarchy(root, path, errors);
+                    if (path == PlayerPrefabBuilder.PrefabPath)
+                        foreach (Type type in PlayerRequirements)
+                            if (root.GetComponent(type) == null) errors.Add($"{path}: missing {type.Name}.");
+                }
                 finally { PrefabUtility.UnloadPrefabContents(root); }
             }
         }
