@@ -32,6 +32,12 @@ namespace Abandoned.Player
         public PlayerMovementConfig Config => config;
         public Vector3 Velocity => horizontalVelocity + Vector3.up * verticalVelocity;
         public float HorizontalSpeed => horizontalVelocity.magnitude;
+
+        /// <summary>
+        /// Velocity of the body itself, without the artificial downward push used to hug the ground.
+        /// Use this for anything the player hands momentum to (drops, throws).
+        /// </summary>
+        public Vector3 MovementVelocity => horizontalVelocity + Vector3.up * (IsGrounded ? 0f : verticalVelocity);
         public bool IsGrounded { get; private set; }
         public bool IsSprinting { get; private set; }
         public bool IsCrouching { get; private set; }

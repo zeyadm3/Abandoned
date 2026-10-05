@@ -20,6 +20,18 @@ namespace Abandoned.Tests
         }
 
         [Test]
+        public void CarryConfigDefaultsAreValid()
+        {
+            var config = ScriptableObject.CreateInstance<Abandoned.Interaction.CarryConfig>();
+            var errors = new List<string>();
+            config.Validate(errors);
+            Assert.IsEmpty(errors);
+            Assert.AreEqual(1f, config.SpeedMultiplierFor(0f), 1e-4f);
+            Assert.AreEqual(config.MinSpeedMultiplier, config.SpeedMultiplierFor(1000f), 1e-4f);
+            Object.DestroyImmediate(config);
+        }
+
+        [Test]
         public void CrouchTallerThanStandingIsReported()
         {
             var config = ScriptableObject.CreateInstance<PlayerMovementConfig>();

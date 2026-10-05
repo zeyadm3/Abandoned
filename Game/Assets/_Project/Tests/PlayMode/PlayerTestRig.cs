@@ -83,7 +83,7 @@ namespace Abandoned.Tests
 
         public static PlayerInputFrame Frame(Vector2 move = default, bool sprint = false, bool crouchHeld = false,
             bool crouchPressed = false, bool jump = false) =>
-            new(move, Vector2.zero, sprint, crouchHeld, crouchPressed, jump, false, false);
+            new(move, Vector2.zero, sprint, crouchHeld, crouchPressed, jump, false, false, false, false, false, false);
 
         /// <summary>Simulates for a duration; the first frame may carry one-shot presses.</summary>
         public void Run(PlayerInputFrame frame, float seconds, PlayerInputFrame? firstFrame = null)

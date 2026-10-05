@@ -37,6 +37,10 @@ namespace Abandoned.Player
                 g.Crouch.WasPressedThisFrame(),
                 g.Jump.WasPressedThisFrame(),
                 g.Use.WasPressedThisFrame(),
+                g.Use.IsPressed(),
+                g.Interact.WasPressedThisFrame(),
+                g.Drop.WasPressedThisFrame(),
+                g.Inventory.IsPressed(),
                 g.Pause.WasPressedThisFrame());
         }
     }

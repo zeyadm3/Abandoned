@@ -239,6 +239,10 @@ GameObject:
   - component: {fileID: 8843897125751140124}
   - component: {fileID: 5611408122407100582}
   - component: {fileID: 6152581735342350210}
+  - component: {fileID: 4150906161370471886}
+  - component: {fileID: 17974582434931992}
+  - component: {fileID: 8622359887965437044}
+  - component: {fileID: 8781701337500031248}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -360,3 +364,60 @@ MonoBehaviour:
   motor: {fileID: 5611408122407100582}
   stamina: {fileID: 1435951644404906699}
   fontSize: 14
+--- !u!114 &4150906161370471886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8804166457830942968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92d11e55de1b24df8a4be136353564b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.PlayerInventory
+  config: {fileID: 11400000, guid: 83bb1573eb75d4e598859716015d7d9b, type: 2}
+--- !u!114 &17974582434931992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8804166457830942968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdeea56840164552bcd3315ecc64130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.PlayerCarrier
+  config: {fileID: 11400000, guid: 83bb1573eb75d4e598859716015d7d9b, type: 2}
+  motor: {fileID: 5611408122407100582}
+  cameraRoot: {fileID: 2119500327999547761}
+--- !u!114 &8622359887965437044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8804166457830942968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce68fb897ea6141b0991b77e49643645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.PlayerInteractor
+  inputReader: {fileID: 4344617071478095911}
+  carrier: {fileID: 17974582434931992}
+--- !u!114 &8781701337500031248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8804166457830942968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97555333164c94e3999fdd5ecad9cb74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.InteractionHud
+  interactor: {fileID: 8622359887965437044}
+  carrier: {fileID: 17974582434931992}
+  inputReader: {fileID: 4344617071478095911}

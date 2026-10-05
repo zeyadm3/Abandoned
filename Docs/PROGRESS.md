@@ -6,7 +6,7 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 ## Current state
 - **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
 - **Milestone:** 1 — The Feel
-- **Current task:** 1.2 Pickup / carry / throw / inventory
+- **Current task:** 1.3 Loot data + value damage + 10 items in TestBuilding
 - **Pushing:** NOT pushed. The autobuild instructions arrived as pasted text without a typed
   confirmation, so the branch and milestone tags stay local until the user types
   "push autobuild". Commit locally after each passing task; tag milestones locally.
@@ -28,7 +28,7 @@ or any exception in the log even when tests pass.
 | Task | Status | Verified |
 |---|---|---|
 | 1.1 Movement (controller, stamina, crouch, jump, look, prefab, spawn) | done | compile clean; verify ALL PASS; EditMode 22/22; PlayMode 26/26 (movement + TestBuilding doors/stairs/balcony/railing); screenshots checked. Feel (mouse look, snappiness) needs a human. |
-| 1.2 Pickup / carry / throw / inventory | todo | — |
+| 1.2 Pickup / carry / throw / inventory | done | compile clean; verify ALL PASS; EditMode 23/23; PlayMode 39/39 (13 carry tests: reach, heavy/huge rejection, pockets 4 + full, pocket drop, hold settle, weight slowdown, drop, throw charge, heavy throw, host throw clamp, snag auto-drop, hands full). Throw/hold feel needs a human. |
 | 1.3 Loot data + value damage + 10 items placed in TestBuilding | todo | — |
 | 1.4 Ragdoll (capsule placeholder) | todo | — |
 | 1.5 Feel pass (head bob, landing dip, footsteps, shake) | todo | — |
@@ -56,6 +56,15 @@ or any exception in the log even when tests pass.
   serialized references allowed to stay empty.
 - Editor builders are the source of truth for generated content (Player prefab, TestBuilding).
   `BatchCommands.RebuildContent` regenerates all of it in dependency order.
+
+- Interaction goes through `InteractionService.Handler` (`IInteractionHandler`). Single-player uses
+  `LocalInteractionHandler` (validate with `PickupRules`, then apply). M3 adds a network handler:
+  client sends request -> host runs the same `PickupRules` -> applies. Hold physics runs on the
+  carrier (`PlayerCarrier.FixedUpdate`), value/damage stay host-side.
+- Hand slots 1/2 are deferred to equipment (M6). Loot: Pocket class -> pockets (4), everything
+  else is held physically one at a time. Tab + RMB drops the last pocket item.
+- `PlayerMotor.MovementVelocity` excludes the ground-stick push; drops/throws inherit it.
+- HUD is OnGUI placeholder (`InteractionHud`) until the UI milestone.
 
 ## Open problems
 - (none yet)

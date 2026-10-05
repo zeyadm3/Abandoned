@@ -1,3 +1,4 @@
+using Abandoned.Interaction;
 using Abandoned.Player;
 using Unity.Cinemachine;
 using UnityEditor;
@@ -14,6 +15,7 @@ namespace Abandoned.EditorTools
     {
         public const string PrefabPath = "Assets/_Project/Prefabs/Player.prefab";
         public const string ConfigPath = "Assets/_Project/Data/Player/PlayerMovementConfig.asset";
+        public const string CarryConfigPath = "Assets/_Project/Data/Interaction/CarryConfig.asset";
 
         private const float FieldOfView = 75f;
         private const float NearClip = 0.05f;
@@ -22,6 +24,7 @@ namespace Abandoned.EditorTools
         public static void Create()
         {
             var config = LoadOrCreateAsset<PlayerMovementConfig>(ConfigPath);
+            var carryConfig = LoadOrCreateAsset<CarryConfig>(CarryConfigPath);
 
             var root = new GameObject("Player");
             var controller = root.AddComponent<CharacterController>();
@@ -44,6 +47,10 @@ namespace Abandoned.EditorTools
             var look = root.AddComponent<PlayerLook>();
             var motor = root.AddComponent<PlayerMotor>();
             var debug = root.AddComponent<PlayerMovementDebug>();
+            var inventory = root.AddComponent<PlayerInventory>();
+            var carrier = root.AddComponent<PlayerCarrier>();
+            var interactor = root.AddComponent<PlayerInteractor>();
+            var hud = root.AddComponent<InteractionHud>();
 
             Set(stamina, "config", config);
             Set(look, "config", config);
@@ -55,6 +62,15 @@ namespace Abandoned.EditorTools
             Set(motor, "cameraRoot", cameraRoot);
             Set(debug, "motor", motor);
             Set(debug, "stamina", stamina);
+            Set(inventory, "config", carryConfig);
+            Set(carrier, "config", carryConfig);
+            Set(carrier, "motor", motor);
+            Set(carrier, "cameraRoot", cameraRoot);
+            Set(interactor, "inputReader", reader);
+            Set(interactor, "carrier", carrier);
+            Set(hud, "interactor", interactor);
+            Set(hud, "carrier", carrier);
+            Set(hud, "inputReader", reader);
 
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
