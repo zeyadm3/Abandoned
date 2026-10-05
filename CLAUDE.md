@@ -8,7 +8,7 @@ crack under weight and impacts, and collapse. Full design: Docs/GDD.md.
 How we work: Docs/PLAYBOOK.md.
 
 ## Folder layout
-- This folder (repo root): CLAUDE.md, Docs/, .gitignore, .gitattributes
+- This folder (repo root): CLAUDE.md, Docs/, Tools/ (batch-mode scripts), .gitignore, .gitattributes
 - Game/ is the Unity project (Assets/, Packages/, ProjectSettings/ live inside Game/)
 - All paths below are relative to Game/ unless they start with Docs/
 
@@ -61,6 +61,7 @@ How we work: Docs/PLAYBOOK.md.
 - Folders: Assets/_Project/Scripts/<Area>/, Assets/_Project/Data/<Area>/,
   Assets/_Project/Prefabs/, Assets/_Project/Scenes/, Assets/_Project/Editor/,
   Assets/_Project/Art/ (materials, meshes, textures; greybox materials in Art/Greybox/)
+- Tests: Assets/_Project/Tests/EditMode/ and Assets/_Project/Tests/PlayMode/
 - [SerializeField] private fields, not public fields.
 - Tunables (speeds, capacities, damage, timers) live in ScriptableObject configs.
 - Small components over giant scripts. Nothing over ~300 lines without a reason.
@@ -81,6 +82,7 @@ How we work: Docs/PLAYBOOK.md.
 - Suggest a commit message when a step works. Don't push unless I ask.
 
 ## Testing
+- Batch-mode verification (Unity closed): Tools/unity.sh all. See Docs/PROGRESS.md.
 - Local co-op: Multiplayer Play Mode + Unity Transport, up to 4 players on one Mac.
 - Steam: Facepunch Transport, separate machines, Steam running, App ID 480.
 - No Windows PC here. A friend with his own Steam account is the Windows tester and

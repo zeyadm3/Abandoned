@@ -6,15 +6,13 @@ namespace Abandoned.Core
 {
     /// <summary>
     /// Shows the live value of every Gameplay and UI action so bindings can be checked
-    /// in Play mode without any gameplay code. Toggle with F1 (Debug/ToggleDebug).
+    /// in Play mode without any gameplay code. Shown while <see cref="DebugView"/> is on (F1).
     /// </summary>
     public class InputDebugOverlay : MonoBehaviour
     {
-        [SerializeField] private bool visibleOnStart = true;
         [SerializeField] private int fontSize = 14;
 
         private AbandonedInput input;
-        private bool visible;
         private GUIStyle style;
         private readonly StringBuilder text = new StringBuilder();
 
@@ -22,31 +20,24 @@ namespace Abandoned.Core
         {
             // Own instance on purpose: Project-wide Actions is None, so nothing else enables these.
             input = new AbandonedInput();
-            visible = visibleOnStart;
         }
 
         private void OnEnable()
         {
-            input.Debug.ToggleDebug.performed += OnToggleDebug;
-            input.Enable();
+            input.Gameplay.Enable();
+            input.UI.Enable();
         }
 
-        private void OnDisable()
-        {
-            input.Debug.ToggleDebug.performed -= OnToggleDebug;
-            input.Disable();
-        }
+        private void OnDisable() => input.Disable();
 
         private void OnDestroy()
         {
             input?.Dispose();
         }
 
-        private void OnToggleDebug(InputAction.CallbackContext _) => visible = !visible;
-
         private void OnGUI()
         {
-            if (!visible) return;
+            if (!DebugView.Visible) return;
 
             style ??= new GUIStyle(GUI.skin.box)
             {
@@ -56,7 +47,7 @@ namespace Abandoned.Core
             };
 
             text.Clear();
-            text.AppendLine("<b>INPUT DEBUG</b>  (F1 to hide)");
+            text.AppendLine("<b>INPUT DEBUG</b>  (F1)");
             AppendMap(input.Gameplay.Get());
             AppendMap(input.UI.Get());
 

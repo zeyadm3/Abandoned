@@ -35,6 +35,14 @@ namespace Abandoned.EditorTools
         [MenuItem("Tools/Abandoned/Verify Project Setup")]
         public static void Verify()
         {
+            int failures = Run(out string report);
+            if (failures == 0) Debug.Log(report);
+            else Debug.LogError(report);
+        }
+
+        /// <summary>Runs every check; returns the failure count and a PASS/FAIL report.</summary>
+        public static int Run(out string reportText)
+        {
             var report = new StringBuilder("ABANDONED project setup check\n");
             int failures = 0;
 
@@ -91,9 +99,14 @@ namespace Abandoned.EditorTools
             Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Create Test Building)");
             Check(Array.Exists(EditorBuildSettings.scenes, s => s.path == scene), $"Scene {scene} in Build Settings");
 
+            var player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
+            Check(player != null, $"Player prefab {PlayerPrefabBuilder.PrefabPath} (Tools/Abandoned/Create Player Prefab)");
+            Check(AssetDatabase.LoadAssetAtPath<Abandoned.Player.PlayerMovementConfig>(PlayerPrefabBuilder.ConfigPath) != null,
+                $"Movement config {PlayerPrefabBuilder.ConfigPath}");
+
             report.Insert(0, failures == 0 ? "[ALL PASS] " : $"[{failures} FAILED] ");
-            if (failures == 0) Debug.Log(report.ToString());
-            else Debug.LogError(report.ToString());
+            reportText = report.ToString();
+            return failures;
         }
 
         [MenuItem("Tools/Abandoned/Fix/Clear Project-wide Input Actions")]

@@ -55,7 +55,12 @@ namespace Abandoned.EditorTools
                     $"{ScenePath} already exists. Rebuild and overwrite it?", "Overwrite", "Cancel"))
                 return;
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            Build();
+        }
 
+        /// <summary>Builds and saves the scene without any dialogs (used by batch mode).</summary>
+        public static void Build()
+        {
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             LoadMaterials();
 
@@ -66,6 +71,7 @@ namespace Abandoned.EditorTools
             BuildColumns(Group("Columns", root));
             BuildExterior(Group("Exterior", root));
             PlaceCamera();
+            TestBuildingPopulator.Populate(root);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildSettings();

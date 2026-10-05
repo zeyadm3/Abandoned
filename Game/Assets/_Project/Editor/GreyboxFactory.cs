@@ -53,9 +53,13 @@ namespace Abandoned.EditorTools
         /// components (tiles, stairs), put this under an unscaled root instead.
         /// </summary>
         public static GameObject Box(string name, Transform parent, Vector3 localCenter, Vector3 size,
-            Material material, bool withCollider = true)
+            Material material, bool withCollider = true) =>
+            Primitive(PrimitiveType.Cube, name, parent, localCenter, size, material, withCollider);
+
+        public static GameObject Primitive(PrimitiveType type, string name, Transform parent, Vector3 localCenter,
+            Vector3 size, Material material, bool withCollider = true)
         {
-            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject go = GameObject.CreatePrimitive(type);
             go.name = name;
             go.transform.SetParent(parent, false);
             go.transform.localPosition = localCenter;
