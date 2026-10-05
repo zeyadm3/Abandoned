@@ -114,22 +114,33 @@ namespace Abandoned.Tests
             Assert.IsFalse(Physics.GetIgnoreLayerCollision(debris, GameLayers.StructureLayer), "but it does land on floors");
         }
 
-        [Test]
-        public void DebrisDoesNotDamageSections()
+        [UnityTest]
+        public IEnumerator DebrisDoesNotDamageSections()
         {
             StructuralSection target = rig.AddTile("Target", new Vector3(0f, 0.3f, 0f));
             rig.StartSimulation();
-            var chunk = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            chunk.layer = GameLayers.DebrisLayer;
-            var body = chunk.AddComponent<Rigidbody>();
-            body.mass = 1000f;
-            // Simulate the collision callback path directly: debris must be ignored by the host.
             float before = target.Health;
-            chunk.transform.position = new Vector3(0f, 0.6f, 0f);
-            Physics.SyncTransforms();
-            Physics.Simulate(Time.fixedDeltaTime);
-            Assert.AreEqual(before, target.Health);
+
+            // A heavy debris chunk and an identical non-debris block, both dropped from 4 m.
+            GameObject Drop(string name, Vector3 at, int layer)
+            {
+                GameObject block = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                block.name = name;
+                block.layer = layer;
+                block.transform.position = at;
+                block.AddComponent<Rigidbody>().mass = 80f;
+                return block;
+            }
+            GameObject chunk = Drop("Chunk", new Vector3(-1f, 4.5f, 0f), GameLayers.DebrisLayer);
+            for (float t = 0f; t < 1.5f; t += Time.fixedDeltaTime) yield return new WaitForFixedUpdate();
+            Assert.Less(chunk.transform.position.y, 1.5f, "the chunk landed on the section");
+            Assert.AreEqual(before, target.Health, "debris never damages structure");
+
+            GameObject solid = Drop("Solid", new Vector3(1f, 4.5f, 0f), 0);
+            for (float t = 0f; t < 1.5f; t += Time.fixedDeltaTime) yield return new WaitForFixedUpdate();
+            Assert.Less(target.Health, before, "control: the same hit from a non-debris object does damage");
             Object.DestroyImmediate(chunk);
+            Object.DestroyImmediate(solid);
         }
     }
 }
