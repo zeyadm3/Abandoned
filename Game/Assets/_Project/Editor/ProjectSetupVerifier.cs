@@ -1,7 +1,9 @@
+using System;
 using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // Namespace is EditorTools, not Editor: "Abandoned.Editor" would shadow UnityEditor.Editor
 // inside our own code and cause confusing ambiguity errors in custom inspectors.
@@ -23,7 +25,12 @@ namespace Abandoned.EditorTools
 
         private static readonly string[] RemovedPackages = { "com.unity.visualscripting" };
 
-        private static readonly string[] RemovedTemplateAssets = { "Assets/TutorialInfo", "Assets/Readme.asset" };
+        private static readonly string[] RemovedTemplateAssets =
+            { "Assets/TutorialInfo", "Assets/Readme.asset", "Assets/InputSystem_Actions.inputactions" };
+
+        private const string InputAssetPath = Root + "/Data/Core/AbandonedInput.inputactions";
+        private static readonly string[] InputMaps = { "Gameplay", "UI", "Debug" };
+        private const string ProjectWideActionsKey = "com.unity.input.settings.actions";
 
         [MenuItem("Tools/Abandoned/Verify Project Setup")]
         public static void Verify()
@@ -66,9 +73,50 @@ namespace Abandoned.EditorTools
                 Check(!AssetDatabase.IsValidFolder(path) && AssetDatabase.LoadMainAssetAtPath(path) == null,
                     $"Template leftover {path} removed");
 
+            var inputAsset = AssetDatabase.LoadAssetAtPath<InputActionAsset>(InputAssetPath);
+            Check(inputAsset != null, $"Input actions asset {InputAssetPath}");
+            foreach (string map in InputMaps)
+                Check(inputAsset != null && inputAsset.FindActionMap(map) != null, $"Input map {map}");
+
+            // Looked up by name so this file still compiles if the generated class is missing.
+            Check(Type.GetType("Abandoned.Core.AbandonedInput, Abandoned.Runtime") != null,
+                "Generated class Abandoned.Core.AbandonedInput");
+
+            // Our code owns its own AbandonedInput instance; a project-wide asset would be a second copy.
+            // Checks the key itself: the settings UI shows "None" for a reference to a deleted asset,
+            // but the dangling entry stays in EditorBuildSettings until it is removed explicitly.
+            Check(!HasProjectWideActionsEntry(), ProjectWideActionsLabel());
+
             report.Insert(0, failures == 0 ? "[ALL PASS] " : $"[{failures} FAILED] ");
             if (failures == 0) Debug.Log(report.ToString());
             else Debug.LogError(report.ToString());
+        }
+
+        [MenuItem("Tools/Abandoned/Fix/Clear Project-wide Input Actions")]
+        public static void ClearProjectWideActions()
+        {
+            if (!HasProjectWideActionsEntry())
+            {
+                Debug.Log("Project-wide Input Actions entry already absent; nothing to clear.");
+                return;
+            }
+
+            EditorBuildSettings.RemoveConfigObject(ProjectWideActionsKey);
+            AssetDatabase.SaveAssets();
+            Debug.Log("Removed the Project-wide Input Actions entry from EditorBuildSettings.");
+        }
+
+        private static bool HasProjectWideActionsEntry() =>
+            Array.IndexOf(EditorBuildSettings.GetConfigObjectNames(), ProjectWideActionsKey) >= 0;
+
+        private static string ProjectWideActionsLabel()
+        {
+            if (!HasProjectWideActionsEntry()) return "Project-wide Actions = None";
+
+            EditorBuildSettings.TryGetConfigObject(ProjectWideActionsKey, out UnityEngine.Object asset);
+            return asset != null
+                ? $"Project-wide Actions = None (currently {AssetDatabase.GetAssetPath(asset)}; set it to None)"
+                : "Project-wide Actions = None (dangling entry to a deleted asset; run Tools/Abandoned/Fix/Clear Project-wide Input Actions)";
         }
 
         private static bool AsmdefExists(string assemblyName, string expectedFolder)
