@@ -59,7 +59,8 @@ How we work: Docs/PLAYBOOK.md.
 - Namespaces: Abandoned.<Area> (Core, Player, Interaction, Loot, Structure, Networking,
   Threats, Extraction, Company, Contracts, Equipment, Voice, Audio, UI).
 - Folders: Assets/_Project/Scripts/<Area>/, Assets/_Project/Data/<Area>/,
-  Assets/_Project/Prefabs/, Assets/_Project/Scenes/, Assets/_Project/Editor/
+  Assets/_Project/Prefabs/, Assets/_Project/Scenes/, Assets/_Project/Editor/,
+  Assets/_Project/Art/ (materials, meshes, textures; greybox materials in Art/Greybox/)
 - [SerializeField] private fields, not public fields.
 - Tunables (speeds, capacities, damage, timers) live in ScriptableObject configs.
 - Small components over giant scripts. Nothing over ~300 lines without a reason.
@@ -119,3 +120,6 @@ Milestone 0 — Foundation
     runtime connectivity checks.
   - Cut for launch: dragging a body back to the truck to revive. Death ragdolls stay local.
   - Hospital and Hotel are post-Early-Access candidates; the mall carries Early Access.
+  - Every StructuralSection gets a per-section "can collapse" flag (M2). It's off for
+    TestBuilding ground-floor tiles (nothing below them). It's per-section, not a
+    "ground floor never collapses" rule, because real levels may have basements.

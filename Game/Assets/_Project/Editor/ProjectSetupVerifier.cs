@@ -87,6 +87,10 @@ namespace Abandoned.EditorTools
             // but the dangling entry stays in EditorBuildSettings until it is removed explicitly.
             Check(!HasProjectWideActionsEntry(), ProjectWideActionsLabel());
 
+            string scene = TestBuildingBuilder.ScenePath;
+            Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Create Test Building)");
+            Check(Array.Exists(EditorBuildSettings.scenes, s => s.path == scene), $"Scene {scene} in Build Settings");
+
             report.Insert(0, failures == 0 ? "[ALL PASS] " : $"[{failures} FAILED] ");
             if (failures == 0) Debug.Log(report.ToString());
             else Debug.LogError(report.ToString());
