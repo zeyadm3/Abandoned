@@ -28,6 +28,7 @@ namespace Abandoned.Tests
         {
             var rig = new PlayerTestRig();
             rig.AddBox("Ground", new Vector3(0f, -0.5f, 0f), new Vector3(200f, 1f, 200f));
+            rig.AddLight();
             rig.SpawnPlayer(position, Quaternion.identity);
             return rig;
         }
@@ -49,6 +50,15 @@ namespace Abandoned.Tests
             spawned.Add(box);
             Physics.SyncTransforms();
             return box;
+        }
+
+        /// <summary>A sun, so screenshots taken in test scenes are readable.</summary>
+        public void AddLight()
+        {
+            var go = new GameObject("TestSun");
+            go.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+            go.AddComponent<Light>().type = LightType.Directional;
+            spawned.Add(go);
         }
 
         public void SpawnPlayer(Vector3 position, Quaternion rotation)

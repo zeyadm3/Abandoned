@@ -6,7 +6,7 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 ## Current state
 - **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
 - **Milestone:** 1 — The Feel
-- **Current task:** 1.4 Ragdoll (capsule placeholder)
+- **Current task:** 1.5 Feel pass
 - **Pushing:** NOT pushed. The autobuild instructions arrived as pasted text without a typed
   confirmation, so the branch and milestone tags stay local until the user types
   "push autobuild". Commit locally after each passing task; tag milestones locally.
@@ -30,7 +30,7 @@ or any exception in the log even when tests pass.
 | 1.1 Movement (controller, stamina, crouch, jump, look, prefab, spawn) | done | compile clean; verify ALL PASS; EditMode 22/22; PlayMode 26/26 (movement + TestBuilding doors/stairs/balcony/railing); screenshots checked. Feel (mouse look, snappiness) needs a human. |
 | 1.2 Pickup / carry / throw / inventory | done | compile clean; verify ALL PASS; EditMode 23/23; PlayMode 39/39 (13 carry tests: reach, heavy/huge rejection, pockets 4 + full, pocket drop, hold settle, weight slowdown, drop, throw charge, heavy throw, host throw clamp, snag auto-drop, hands full). Throw/hold feel needs a human. |
 | 1.3 Loot data + value damage + 10 items placed in TestBuilding | done | verify ALL PASS (+layers, loot prefab per definition); EditMode 38/38; PlayMode 48/48 (vase shatters from hand height with sound/text/shards, laptop drop partial loss, gentle place no loss, cash immune, clients don't apply damage, cooldown, shatter while held, pocketed value, 10 placed items settle undamaged, 3 upstairs). Screenshots checked. |
-| 1.4 Ragdoll (capsule placeholder) | todo | — |
+| 1.4 Ragdoll (capsule placeholder) | done | EditMode 39/39; PlayMode 58/58 (enter/recover, camera follows head, auto get-up, fall >4 m ragdolls, short fall/jump don't, heavy hit ragdolls, light hit doesn't, held item dropped). Screenshot checked. |
 | 1.5 Feel pass (head bob, landing dip, footsteps, shake) | todo | — |
 | Spike: Facepunch Transport + NGO 2.13 (throwaway branch, not merged) | todo | — |
 
@@ -74,6 +74,12 @@ or any exception in the log even when tests pass.
 - Physics layers 8 Player, 9 Loot, 10 Debris, 11 Structure. Debris ignores Player and Loot
   (`GameLayers.ApplyCollisionRules` at startup).
 - Placeholder sounds are synthesised in code (`PlaceholderAudio`); floating text via OnGUI.
+
+- Ragdoll: 9-part primitive ragdoll (no humanoid model yet), local only. Triggers: K (Debug map),
+  `PlayerMotor.Landed` fall height > `PlayerRagdollConfig.FallHeight`, heavy hits via the
+  `PlayerHitDetector` trigger (CharacterControllers get no rigidbody collision callbacks).
+  `IWeighted` (Core) gives gameplay weight without Player depending on Interaction.
+- `PlayerMotor.IsGrounded` now reflects the state after the step's move.
 
 ## Open problems
 - (none yet)

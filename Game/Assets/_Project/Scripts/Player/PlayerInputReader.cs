@@ -1,5 +1,6 @@
 using Abandoned.Core;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Abandoned.Player
 {
@@ -11,16 +12,27 @@ namespace Abandoned.Player
     public class PlayerInputReader : MonoBehaviour
     {
         private AbandonedInput input;
+        private InputAction ragdollDebugAction;
 
         public PlayerInputFrame Current { get; private set; }
 
-        private void Awake() => input = new AbandonedInput();
+        private void Awake()
+        {
+            input = new AbandonedInput();
+            // Debug-only action; looked up by name so this doesn't depend on wrapper regeneration order.
+            ragdollDebugAction = input.asset.FindAction("Debug/ToggleRagdoll", true);
+        }
 
-        private void OnEnable() => input.Gameplay.Enable();
+        private void OnEnable()
+        {
+            input.Gameplay.Enable();
+            ragdollDebugAction.Enable();
+        }
 
         private void OnDisable()
         {
             input.Gameplay.Disable();
+            ragdollDebugAction.Disable();
             Current = default;
         }
 
@@ -41,7 +53,8 @@ namespace Abandoned.Player
                 g.Interact.WasPressedThisFrame(),
                 g.Drop.WasPressedThisFrame(),
                 g.Inventory.IsPressed(),
-                g.Pause.WasPressedThisFrame());
+                g.Pause.WasPressedThisFrame(),
+                ragdollDebugAction.WasPressedThisFrame());
         }
     }
 }

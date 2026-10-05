@@ -22,6 +22,20 @@ namespace Abandoned.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        public static void SetArray(Object target, string field, Object[] values)
+        {
+            var so = new SerializedObject(target);
+            SerializedProperty property = so.FindProperty(field);
+            if (property == null || !property.isArray)
+            {
+                Debug.LogError($"{target.GetType().Name} has no serialized array '{field}'.");
+                return;
+            }
+            property.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++) property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         public static void SetInt(Object target, string field, int value)
         {
             var so = new SerializedObject(target);

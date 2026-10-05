@@ -608,6 +608,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleRagdoll",
+                    "type": "Button",
+                    "id": "e4a2a844-4bbf-4768-b5d7-24bc3569596f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -619,6 +628,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "ToggleDebug",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "db97af3a-a600-42ed-98ba-3dbbdfb84a5c",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ToggleRagdoll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -14,6 +14,7 @@ namespace Abandoned.Interaction
         [SerializeField] private CarryConfig config;
         [SerializeField] private PlayerMotor motor;
         [SerializeField] private Transform cameraRoot;
+        [SerializeField] private PlayerRagdoll ragdoll;
 
         private const float HintDuration = 2f;
 
@@ -52,6 +53,15 @@ namespace Abandoned.Interaction
         {
             controller = GetComponent<CharacterController>();
             Inventory = GetComponent<PlayerInventory>();
+            // Never knock ourselves over with the thing we're holding.
+            ragdoll.HitFilter = body => Held == null || body != Held.Body;
+        }
+
+        private void OnEnable() => ragdoll.Started += OnRagdollStarted;
+
+        private void OnRagdollStarted()
+        {
+            if (Held != null) InteractionService.Handler.RequestDrop(this);
         }
 
         private void Update()
@@ -135,6 +145,7 @@ namespace Abandoned.Interaction
 
         private void OnDisable()
         {
+            ragdoll.Started -= OnRagdollStarted;
             if (Held != null) ApplyRelease(DropVelocity);
         }
     }

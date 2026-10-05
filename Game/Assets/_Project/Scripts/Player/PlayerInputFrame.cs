@@ -20,10 +20,11 @@ namespace Abandoned.Player
         public readonly bool DropPressed;
         public readonly bool InventoryHeld;
         public readonly bool PausePressed;
+        public readonly bool DebugRagdollPressed;
 
         public PlayerInputFrame(Vector2 move, Vector2 look, bool sprintHeld, bool crouchHeld, bool crouchPressed,
             bool jumpPressed, bool usePressed, bool useHeld, bool interactPressed, bool dropPressed,
-            bool inventoryHeld, bool pausePressed)
+            bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false)
         {
             Move = move;
             Look = look;
@@ -37,6 +38,7 @@ namespace Abandoned.Player
             DropPressed = dropPressed;
             InventoryHeld = inventoryHeld;
             PausePressed = pausePressed;
+            DebugRagdollPressed = debugRagdollPressed;
         }
     }
 }

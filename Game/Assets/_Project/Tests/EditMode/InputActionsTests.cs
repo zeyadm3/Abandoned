@@ -25,6 +25,7 @@ namespace Abandoned.Tests
         [TestCase("Gameplay", "Pause", "<Keyboard>/escape")]
         [TestCase("Gameplay", "Look", "<Mouse>/delta")]
         [TestCase("Debug", "ToggleDebug", "<Keyboard>/f1")]
+        [TestCase("Debug", "ToggleRagdoll", "<Keyboard>/k")]
         [TestCase("UI", "Cancel", "<Keyboard>/escape")]
         [TestCase("UI", "Point", "<Mouse>/position")]
         public void ActionHasDefaultBinding(string map, string action, string path)

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -28,6 +29,8 @@ namespace Abandoned.Player
         private float speedMultiplier = 1f;
         // Simulation clock advanced only by Simulate(dt), so results depend on inputs and steps, not wall time.
         private float clock;
+        private bool airborne;
+        private float airPeakY;
 
         public PlayerMovementConfig Config => config;
         public Vector3 Velocity => horizontalVelocity + Vector3.up * verticalVelocity;
@@ -49,6 +52,9 @@ namespace Abandoned.Player
             get => speedMultiplier;
             set => speedMultiplier = Mathf.Clamp01(value);
         }
+
+        /// <summary>Raised on touchdown: fall height (peak to landing, m) and downward impact speed (m/s).</summary>
+        public event Action<float, float> Landed;
 
         /// <summary>Scales stamina drain from sprinting; the carry system raises it for heavy loot.</summary>
         public float StaminaDrainMultiplier { get; set; } = 1f;
@@ -78,7 +84,9 @@ namespace Abandoned.Player
             stamina.Tick(dt);
 
             Vector3 before = transform.position;
+            float fallSpeed = -verticalVelocity;
             CollisionFlags flags = controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
+            TrackFall(before.y, fallSpeed);
 
             // Feed back what actually happened so speed doesn't build up against walls or ceilings.
             // Computed from our own dt rather than controller.velocity, which uses Time.deltaTime.
@@ -88,6 +96,26 @@ namespace Abandoned.Player
                 horizontalVelocity = new Vector3(actual.x, 0f, actual.z);
             }
             if ((flags & CollisionFlags.Above) != 0 && verticalVelocity > 0f) verticalVelocity = 0f;
+
+            // Report the state after this step's move, not before it.
+            IsGrounded = controller.isGrounded;
+        }
+
+        /// <summary>Forget any fall in progress (after teleports, respawns, getting up from a ragdoll).</summary>
+        public void ResetFallTracking() => airborne = false;
+
+        private void TrackFall(float yBefore, float fallSpeed)
+        {
+            float y = transform.position.y;
+            if (!controller.isGrounded)
+            {
+                airPeakY = airborne ? Mathf.Max(airPeakY, y) : Mathf.Max(yBefore, y);
+                airborne = true;
+                return;
+            }
+            if (!airborne) return;
+            airborne = false;
+            Landed?.Invoke(Mathf.Max(0f, airPeakY - y), Mathf.Max(0f, fallSpeed));
         }
 
         private void UpdateHorizontal(PlayerInputFrame input, float dt)

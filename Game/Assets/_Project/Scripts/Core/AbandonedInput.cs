@@ -722,6 +722,16 @@ namespace Abandoned.Core
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""ToggleRagdoll"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4a2a844-4bbf-4768-b5d7-24bc3569596f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -733,6 +743,17 @@ namespace Abandoned.Core
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""ToggleDebug"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""db97af3a-a600-42ed-98ba-3dbbdfb84a5c"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ToggleRagdoll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -789,6 +810,7 @@ namespace Abandoned.Core
             // Debug
             m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
             m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
+            m_Debug_ToggleRagdoll = m_Debug.FindAction("ToggleRagdoll", throwIfNotFound: true);
         }
 
         ~@AbandonedInput()
@@ -1306,6 +1328,7 @@ namespace Abandoned.Core
         private readonly InputActionMap m_Debug;
         private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
         private readonly InputAction m_Debug_ToggleDebug;
+        private readonly InputAction m_Debug_ToggleRagdoll;
         /// <summary>
         /// Provides access to input actions defined in input action map "Debug".
         /// </summary>
@@ -1321,6 +1344,10 @@ namespace Abandoned.Core
             /// Provides access to the underlying input action "Debug/ToggleDebug".
             /// </summary>
             public InputAction @ToggleDebug => m_Wrapper.m_Debug_ToggleDebug;
+            /// <summary>
+            /// Provides access to the underlying input action "Debug/ToggleRagdoll".
+            /// </summary>
+            public InputAction @ToggleRagdoll => m_Wrapper.m_Debug_ToggleRagdoll;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1350,6 +1377,9 @@ namespace Abandoned.Core
                 @ToggleDebug.started += instance.OnToggleDebug;
                 @ToggleDebug.performed += instance.OnToggleDebug;
                 @ToggleDebug.canceled += instance.OnToggleDebug;
+                @ToggleRagdoll.started += instance.OnToggleRagdoll;
+                @ToggleRagdoll.performed += instance.OnToggleRagdoll;
+                @ToggleRagdoll.canceled += instance.OnToggleRagdoll;
             }
 
             /// <summary>
@@ -1364,6 +1394,9 @@ namespace Abandoned.Core
                 @ToggleDebug.started -= instance.OnToggleDebug;
                 @ToggleDebug.performed -= instance.OnToggleDebug;
                 @ToggleDebug.canceled -= instance.OnToggleDebug;
+                @ToggleRagdoll.started -= instance.OnToggleRagdoll;
+                @ToggleRagdoll.performed -= instance.OnToggleRagdoll;
+                @ToggleRagdoll.canceled -= instance.OnToggleRagdoll;
             }
 
             /// <summary>
@@ -1608,6 +1641,13 @@ namespace Abandoned.Core
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnToggleDebug(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ToggleRagdoll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleRagdoll(InputAction.CallbackContext context);
         }
     }
 }
