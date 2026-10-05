@@ -1,6 +1,7 @@
 # ABANDONED
 ## Game Design Document (GDD)
-### Version 0.1 — Pre-Production (Solo Developer Edition)
+### Version 0.2 — Pre-Production (Solo Developer Edition)
+*0.2 (2026-10-06): decisions from the pre-production technical review — see CLAUDE.md Decisions log.*
 
 ---
 
@@ -142,16 +143,18 @@ Each contract has a **Structural Stability %** (e.g., 63%). Lower stability mean
 
 - Collapse must be **readable**: players should almost always get warnings before a section fails. Deaths should feel like "we got greedy," not "the game cheated."
 - Collapse must be **consistent**: same weight + same damage = same result. Players learn the system.
-- **Never** collapse the only route to extraction without an alternative (rope point, window, ramp).
+- **Never** collapse the only route to extraction without an alternative. Every level has **authored fallback routes** (rope points, windows, ramps) that can't collapse. There are no runtime connectivity checks: the structure stays consistent, and the level design guarantees a way out.
 
 ## 6.5 Technical approach (keep it achievable)
 
 No real-time destruction simulation. Instead:
 - Levels are built from **modular structural pieces** (floor tiles ~4×4m, stair segments, walkway segments)
-- Each piece has a `StructuralSection` component tracking capacity, health and load (sum of masses of rigidbodies/players resting on it)
+- Each piece has a `StructuralSection` component tracking capacity, health and load
+- Load is **logical**, not physics contacts: each load source (a player plus what they carry, a resting item, a share of a shared carry) checks downward for its supporting section(s) and splits its **gameplay weight** across them. Gameplay weight is separate from the clamped Rigidbody mass.
 - When health hits zero, the intact mesh swaps to a **pre-fractured version** whose chunks get rigidbodies and fall
 - Debris chunks sleep or despawn after a few seconds for performance
-- The **host decides** damage and collapse; clients receive "section X collapsed" and play the same pre-fractured break locally
+- The **host decides** damage and collapse, including cascades onto the sections below; clients receive "section X collapsed" and play the same pre-fractured break locally. The host flips the section's collider off through a networked state change, so everyone falls at the same moment.
+- Debris is **cosmetic only**: its own physics layer, never collides with players or loot, never deals gameplay damage
 
 ---
 
@@ -176,8 +179,10 @@ No real-time destruction simulation. Instead:
 | **Pocket** | Watch, jewelry, phone, cash | Anyone, goes in inventory |
 | **One-hand** | Laptop, small painting, bottles | One player, can still hold flashlight |
 | **Two-hand** | TV, computer tower, vase | One player, slow, no flashlight |
-| **Heavy** | Server rack, safe, vending machine | 2 players, or 1 with a trolley |
-| **Huge** | Piano, statue, military generator | 3–4 players, or tools (trolley + ramp, pulley) |
+| **Heavy** | Server rack, safe, vending machine | 2 players, or 1 with a hand trolley |
+| **Huge** | Piano, statue, military generator | 3–4 players, or tools (trolley + ramp, pulley) — a solo player can move them slowly with a trolley + ramp |
+
+**Solo:** the hand trolley is available from the start. Jackpots are possible solo, just hard.
 
 ## 7.3 Example loot table (launch target: ~60 items)
 
@@ -209,18 +214,20 @@ No real-time destruction simulation. Instead:
 
 ## Launch: 3 locations, each fully replayable
 
+> **Early Access scope:** the Mall carries Early Access. Hospital and Hotel are **post-Early-Access candidates** (see roadmap).
+
 ### 1. Abandoned Mall *(build this first)*
 - Multi-level atrium with walkways, escalators, a glass roof
 - Stores (electronics, jewelry, furniture, art gallery), food court, cinema, security office, parking garage
 - Collapse showcase: atrium walkways, escalators, the glass roof
 - Jackpot: art gallery statue on the top floor
 
-### 2. Hospital
+### 2. Hospital *(post-Early-Access candidate)*
 - Operating rooms, pharmacy, ICU, morgue, basement, elevator shafts
 - Collapse showcase: water-damaged upper floors, elevator shafts as drop routes
 - Darker, tighter, scarier
 
-### 3. Luxury Hotel
+### 3. Luxury Hotel *(post-Early-Access candidate)*
 - Lobby, restaurant, casino, ballroom, suites, service tunnels
 - Collapse showcase: tall atrium, penthouse balconies, ballroom chandelier
 - Most valuable loot, weakest structure
@@ -290,7 +297,8 @@ Each threat has one clear rule players can learn. Launch with **4**, add more po
 - Death = ragdoll + ghost spectator for the rest of the run
 - Ghosts can follow teammates and see threats but can't help
 - Dead players' pocket loot drops where they died (teammates can recover it)
-- **Revive** (upgrade/item): drag a body back to the truck to revive at the end of the run for a fee
+- Death ragdolls are local only (not networked)
+- ~~**Revive**: drag a body back to the truck to revive at the end of the run for a fee~~ — **cut for launch** (would need networked, draggable ragdolls)
 
 ---
 
@@ -302,6 +310,7 @@ Bought at HQ between runs. Limited inventory: **2 hand slots + 4 pocket slots**.
 - Flashlight
 - Walkie-talkie radio
 - Medkit
+- Hand trolley (so solo players can move Heavy items)
 
 ### Mid
 - Stress scanner
@@ -319,7 +328,6 @@ Bought at HQ between runs. Limited inventory: **2 hand slots + 4 pocket slots**.
 - Drone (scout ahead)
 
 ### Team equipment
-- Hand trolley (1 person moves Heavy items)
 - Flatbed trolley + ramp (Huge items, slowly)
 - Pulley system (lower loot between floors)
 - Portable floodlight (scares some threats, uses power)
@@ -332,7 +340,7 @@ Bought at HQ between runs. Limited inventory: **2 hand slots + 4 pocket slots**.
 
 | Level | Unlocks |
 |---|---|
-| 1 | Beat-up van, small cargo, mall contracts |
+| 1 | Beat-up van, small cargo, mall contracts, hand trolley |
 | 3 | Better trolley, stress scanner in shop |
 | 5 | Truck (more cargo), hospital contracts |
 | 8 | Pulley, support jacks, harder modifiers |
@@ -379,7 +387,7 @@ Power off, flooded basement, night (darker, more threats), heavy jackpot (one ma
 - Players ragdoll from big falls, heavy impacts and collapses
 - Players can push each other lightly
 
-**Networking rule:** loot and structural sections are host-controlled. Small debris is local only.
+**Networking rule:** the host owns loot value and damage, and structural state. While one player carries an item, that carrier owns its physics; shared carries are simulated by the host from the carriers' input forces. Small debris is local and cosmetic only.
 
 ---
 
@@ -449,7 +457,8 @@ Volume sliders (master, voice, SFX, music), push-to-talk toggle, mouse sensitivi
 | Transports | Unity Transport (local testing) / Facepunch Transport (Steam), switchable |
 | Steam | Facepunch.Steamworks (lobbies, invites, rich presence, achievements, cloud saves later) |
 | Voice | Dissonance + Dissonance for NGO |
-| AI navigation | Unity AI Navigation (NavMesh), updated around collapsed sections |
+| AI navigation | Unity AI Navigation (NavMesh), updated around collapsed sections — approach decided at M5 (recommended: per-section navmesh with carving/toggling + NavMeshLinks, no runtime rebakes) |
+| Camera | Cinemachine (head bob, shake, landing dip) |
 | Input | Unity Input System |
 | Levels | Modular pieces assembled in-editor; ProBuilder for greybox |
 | Save data | Host's machine stores the company save (JSON); Steam Cloud later |
@@ -457,6 +466,9 @@ Volume sliders (master, voice, SFX, music), push-to-talk toggle, mouse sensitivi
 ### Authority
 - Host decides: loot value/damage, structural damage and collapse, threat AI, money, quota, extraction
 - Clients: own movement and input; request pickups/drops; host validates
+- A single carrier owns the carried item's physics; shared carries are host-simulated
+- Players join only at HQ between runs (no mid-run joining)
+- Builds: made on Mac (Mono), shared as a single zipped folder; Windows tested on a friend's PC
 
 ### Performance budget
 - Target 60 FPS at 1080p on a mid-range PC
@@ -491,8 +503,12 @@ Time estimates assume steady part-time to near-full-time work with Claude Code. 
 | — | **Playtest gate** | 10+ sessions with friends. Fun? If not, fix before continuing. | 2–4 weeks |
 | 7 | Vertical Slice | Mall art pass, audio pass, menus, settings → **Steam page goes live** | 6–8 weeks |
 | 8 | Demo | Polished mall-only demo → Steam Next Fest | 4–6 weeks |
-| 9 | Content | Hospital + Hotel, 4th threat, full loot table, modifiers, progression | 3–5 months |
+| 9 | Content | Mall content depth, 4th threat, full loot table, modifiers, progression (Hospital + Hotel are post-EA candidates) | 3–5 months |
 | 10 | Early Access launch | Bug fixing, balance, trailer, launch | 1–2 months |
+
+**Spikes:** 1-hour Facepunch Transport + NGO 2.13 compatibility spike at the end of M1. Dissonance + NGO 2.x spike before buying Dissonance at M4.
+
+**Post-Early-Access candidates:** Hospital, Hotel.
 
 **Total: roughly 12–18 months to Early Access.** Plenty of friend-slop games launched in Early Access with one or two locations; you don't need everything on day one.
 
@@ -518,7 +534,9 @@ Time estimates assume steady part-time to near-full-time work with Claude Code. 
 # 25. Things NOT to Build (for launch)
 
 - Procedural level generation
-- More than 3 locations
+- More than 3 locations (Early Access ships with the Mall; Hospital and Hotel come after)
+- Body-drag revive
+- Mid-run joining
 - Real-time mesh destruction (use pre-fractured pieces)
 - The Mimic (voice copying)
 - Character creator
