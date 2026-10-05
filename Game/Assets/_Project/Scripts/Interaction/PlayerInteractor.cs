@@ -13,9 +13,11 @@ namespace Abandoned.Interaction
     {
         [SerializeField] private PlayerInputReader inputReader;
         [SerializeField] private PlayerCarrier carrier;
+        [SerializeField] private PlayerLook look;
 
         private readonly RaycastHit[] hits = new RaycastHit[8];
         private bool charging;
+        private bool suppressUseUntilRelease;
 
         public Grabbable Target { get; private set; }
 
@@ -24,8 +26,27 @@ namespace Abandoned.Interaction
 
         private void Update() => Tick(inputReader.Current, Time.deltaTime);
 
+        private void OnDisable() => ResetCharge();
+
+        private void ResetCharge()
+        {
+            Target = null;
+            charging = false;
+            Charge = 0f;
+        }
+
         public void Tick(PlayerInputFrame input, float dt)
         {
+            if (look != null && look.isActiveAndEnabled)
+            {
+                // Paused (cursor free): ignore gameplay clicks. The click that re-captures the cursor
+                // must not also start a throw, so ignore Use until it's released.
+                if (!look.CursorCaptured) { ResetCharge(); return; }
+                if (look.CaptureFrame == Time.frameCount) suppressUseUntilRelease = true;
+            }
+            if (!input.UseHeld) suppressUseUntilRelease = false;
+            bool useHeld = input.UseHeld && !suppressUseUntilRelease;
+
             Target = carrier.Held == null ? FindTarget() : null;
             IInteractionHandler handler = InteractionService.Handler;
 
@@ -48,7 +69,9 @@ namespace Abandoned.Interaction
                 return;
             }
 
-            if (input.UseHeld)
+            if (carrier.IsDragging) return; // dragged things are let go with RMB, never thrown
+
+            if (useHeld)
             {
                 charging = true;
                 Charge = Mathf.Clamp01(Charge + dt / carrier.Config.ThrowChargeTime);

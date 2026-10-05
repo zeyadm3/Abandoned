@@ -20,7 +20,7 @@ namespace Abandoned.Interaction
                 return false;
             }
 
-            if (target.CarryClass > config.HeaviestSoloClass)
+            if (target.CarryClass > config.HeaviestSoloClass && !config.CanSoloDrag(target.CarryClass))
             {
                 reason = target.CarryClass == CarryClass.Huge
                     ? "Too heavy — needs 3–4 people or a trolley and ramp"

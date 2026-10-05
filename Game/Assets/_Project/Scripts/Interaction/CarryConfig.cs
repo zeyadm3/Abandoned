@@ -28,6 +28,10 @@ namespace Abandoned.Interaction
         [field: SerializeField, Range(0.1f, 1f)] public float HeavySpringScale { get; private set; } = 0.45f;
         [field: Tooltip("If the object ends up this far from the hold point (stuck on a door frame), it's dropped.")]
         [field: SerializeField, Min(0.5f)] public float BreakDistance { get; private set; } = 1.75f;
+        [field: Tooltip("Seconds after pickup before the break check applies, so far-reach pickups can arrive.")]
+        [field: SerializeField, Min(0f)] public float BreakGraceTime { get; private set; } = 0.6f;
+        [field: Tooltip("Minimum horizontal distance of the hold point from the player's centre, so looking straight down doesn't pull items inside the body.")]
+        [field: SerializeField, Min(0f)] public float MinHoldRadius { get; private set; } = 0.75f;
 
         [field: Header("Weight effects")]
         [field: Tooltip("Heaviest weight one player can hold; used to scale slowdown and wobble.")]
@@ -35,6 +39,16 @@ namespace Abandoned.Interaction
         [field: SerializeField, Range(0.1f, 1f)] public float MinSpeedMultiplier { get; private set; } = 0.55f;
         [field: SerializeField, Min(0f)] public float ExtraStaminaDrainAtMaxWeight { get; private set; } = 1.5f;
         [field: SerializeField] public CarryClass HeaviestSoloClass { get; private set; } = CarryClass.TwoHand;
+
+        [field: Header("Solo drag (stand-in for the hand trolley until equipment exists)")]
+        [field: Tooltip("Let one player drag Heavy items along the floor. Huge items still need a team or tools.")]
+        [field: SerializeField] public bool SoloDragHeavy { get; private set; } = true;
+        [field: SerializeField, Range(0.1f, 1f)] public float DragSpeedMultiplier { get; private set; } = 0.35f;
+        [field: SerializeField, Min(0.3f)] public float DragHoldDistance { get; private set; } = 1.4f;
+        [field: Tooltip("Spring scale while dragging: heavy things lag well behind.")]
+        [field: SerializeField, Range(0.05f, 1f)] public float DragSpringScale { get; private set; } = 0.25f;
+        [field: Tooltip("Seconds between scraping noises while dragging and moving.")]
+        [field: SerializeField, Min(0.1f)] public float DragNoiseInterval { get; private set; } = 0.5f;
 
         [field: Header("Throw")]
         [field: SerializeField, Min(0f)] public float ThrowMinSpeed { get; private set; } = 3f;
@@ -55,6 +69,8 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>0 at no weight, 1 at MaxSoloWeight.</summary>
+        public bool CanSoloDrag(CarryClass carryClass) => SoloDragHeavy && carryClass == CarryClass.Heavy;
+
         public float WeightFraction(float weight) => Mathf.Clamp01(weight / MaxSoloWeight);
 
         public float SpeedMultiplierFor(float weight) => Mathf.Lerp(1f, MinSpeedMultiplier, WeightFraction(weight));

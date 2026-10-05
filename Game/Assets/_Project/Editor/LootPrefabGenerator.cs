@@ -14,6 +14,7 @@ namespace Abandoned.EditorTools
     public static class LootPrefabGenerator
     {
         public const string Folder = "Assets/_Project/Prefabs/Loot";
+        public const string HeavyFrictionPath = LootCatalogBuilder.Folder + "/Loot_HeavyFriction.physicsMaterial";
 
         public static string PrefabPathFor(LootDefinition definition) => $"{Folder}/Loot_{definition.Id}.prefab";
 
@@ -39,8 +40,12 @@ namespace Abandoned.EditorTools
 
             var root = new GameObject($"Loot_{definition.Id}");
             Material material = GreyboxFactory.GetMaterial($"Loot_{definition.Id}", definition.Color);
-            GreyboxFactory.Primitive(ToPrimitive(definition.Shape), "Visual", root.transform, Vector3.zero,
+            GameObject visual = GreyboxFactory.Primitive(ToPrimitive(definition.Shape), "Visual", root.transform, Vector3.zero,
                 VisualScale(definition.Shape, definition.Size), material, withCollider: true);
+            // Physics mass is clamped for stability, so Heavy/Huge items get grippy friction instead:
+            // a carried laptop can't shove a 2-ton statue across the floor.
+            if (definition.CarryClass >= CarryClass.Heavy)
+                visual.GetComponent<Collider>().sharedMaterial = HeavyFriction();
 
             var body = root.AddComponent<Rigidbody>();
             body.mass = definition.PhysicsMass;
@@ -61,6 +66,35 @@ namespace Abandoned.EditorTools
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPathFor(definition));
             Object.DestroyImmediate(root);
             return prefab;
+        }
+
+        public static PhysicsMaterial HeavyFriction()
+        {
+            var material = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(HeavyFrictionPath);
+            if (material != null) return material;
+            material = new PhysicsMaterial("Loot_HeavyFriction")
+            {
+                staticFriction = 1.5f,
+                dynamicFriction = 1.1f,
+                frictionCombine = PhysicsMaterialCombine.Maximum
+            };
+            AssetDatabase.CreateAsset(material, HeavyFrictionPath);
+            return material;
+        }
+
+        /// <summary>Errors if a generated prefab no longer matches its definition (regenerate it).</summary>
+        public static void ValidatePrefab(LootDefinition definition, GameObject prefab, System.Collections.Generic.List<string> errors)
+        {
+            string n = $"Loot prefab {definition.Id}";
+            var body = prefab.GetComponent<Rigidbody>();
+            if (body == null || !Mathf.Approximately(body.mass, definition.PhysicsMass))
+                errors.Add($"{n}: Rigidbody mass differs from PhysicsMass; run Generate Loot Prefabs.");
+            Transform visual = prefab.transform.Find("Visual");
+            if (visual == null || (visual.localScale - VisualScale(definition.Shape, definition.Size)).sqrMagnitude > 1e-6f)
+                errors.Add($"{n}: visual size differs from Size; run Generate Loot Prefabs.");
+            var item = prefab.GetComponent<LootItem>();
+            if (item == null || item.Definition != definition)
+                errors.Add($"{n}: LootItem doesn't point at its definition.");
         }
 
         /// <summary>Places a loot prefab instance resting on a surface at the given height.</summary>

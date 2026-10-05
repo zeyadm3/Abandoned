@@ -80,14 +80,17 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
-        public IEnumerator HeavyAndHugeItemsCannotBeLiftedAlone()
+        public IEnumerator HeavyItemsAreDraggedAndHugeItemsCannotBeMovedAlone()
         {
             Grabbable heavy = Spawn(OnTable + Vector3.left * 0.5f, CarryClass.Heavy, 200f);
             Grabbable huge = Spawn(OnTable + Vector3.right * 0.5f, CarryClass.Huge, 2000f);
             yield return Steps(2);
             InteractionService.Handler.RequestPickup(carrier, heavy);
-            Assert.IsNull(carrier.Held);
-            StringAssert.Contains("2 people", carrier.Hint);
+            Assert.AreEqual(heavy, carrier.Held, "solo drag stands in for the hand trolley");
+            Assert.IsTrue(carrier.IsDragging);
+            Assert.IsTrue(heavy.Body.useGravity, "dragged items stay on the floor");
+            Assert.AreEqual(0f, carrier.CarriedWeight, 1e-3f, "a dragged item rests its own weight");
+            InteractionService.Handler.RequestDrop(carrier);
             InteractionService.Handler.RequestPickup(carrier, huge);
             Assert.IsNull(carrier.Held);
             StringAssert.Contains("3–4 people", carrier.Hint);
@@ -227,7 +230,7 @@ namespace Abandoned.Tests
             // Hold the item in place behind a wall by pinning it, then move the player away.
             item.Body.isKinematic = true;
             rig.Teleport(new Vector3(0f, 0.05f, -6f));
-            yield return Steps(3);
+            yield return Steps(Mathf.CeilToInt((config.BreakGraceTime + 0.1f) / Time.fixedDeltaTime));
             Assert.IsNull(carrier.Held);
             item.Body.isKinematic = false;
         }

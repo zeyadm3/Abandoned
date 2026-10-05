@@ -24,6 +24,8 @@ namespace Abandoned.Tests
             go.name = $"Test_{carryClass}_{weight}kg";
             go.transform.position = position;
             go.transform.localScale = Vector3.one * size;
+            int lootLayer = Abandoned.Core.GameLayers.LootLayer;
+            if (lootLayer >= 0) go.layer = lootLayer; // like real loot prefabs
             var body = go.AddComponent<Rigidbody>();
             body.mass = Mathf.Clamp(weight, 0.2f, 60f);
             var carryable = go.AddComponent<TestCarryable>();

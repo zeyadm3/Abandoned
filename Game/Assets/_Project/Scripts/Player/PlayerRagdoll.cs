@@ -59,9 +59,27 @@ namespace Abandoned.Player
             ragdollRoot.gameObject.SetActive(false);
         }
 
-        private void OnEnable() => motor.Landed += OnLanded;
+        private void OnEnable()
+        {
+            motor.Landed += OnLanded;
+            StructureSignals.SectionCollapsed += OnSectionCollapsed;
+        }
 
-        private void OnDisable() => motor.Landed -= OnLanded;
+        private void OnDisable()
+        {
+            motor.Landed -= OnLanded;
+            StructureSignals.SectionCollapsed -= OnSectionCollapsed;
+        }
+
+        private void OnSectionCollapsed(Bounds surface)
+        {
+            // Standing on it when it goes: you go down with it (GDD 15: ragdoll from collapses).
+            Vector3 feet = transform.position;
+            bool above = feet.x >= surface.min.x - 0.3f && feet.x <= surface.max.x + 0.3f &&
+                         feet.z >= surface.min.z - 0.3f && feet.z <= surface.max.z + 0.3f &&
+                         feet.y >= surface.max.y - 0.5f && feet.y <= surface.max.y + 0.8f;
+            if (above) Enter(Vector3.down * 2f + motor.MovementVelocity);
+        }
 
         private void Update()
         {
@@ -95,9 +113,9 @@ namespace Abandoned.Player
         public void ReportHit(Rigidbody other, float weight, Vector3 otherVelocity)
         {
             if (IsRagdolled || (HitFilter != null && !HitFilter(other))) return;
+            // Only the object's own motion toward us counts: walking into a resting safe is not "being hit".
             Vector3 toPlayer = transform.position + Vector3.up - other.worldCenterOfMass;
-            Vector3 relative = otherVelocity - motor.MovementVelocity;
-            float closing = toPlayer.sqrMagnitude > 1e-4f ? Vector3.Dot(relative, toPlayer.normalized) : relative.magnitude;
+            float closing = toPlayer.sqrMagnitude > 1e-4f ? Vector3.Dot(otherVelocity, toPlayer.normalized) : otherVelocity.magnitude;
             if (closing < config.MinHitSpeed || weight * closing < config.HitMomentum) return;
             Enter(otherVelocity * config.HitVelocityTransfer);
         }
@@ -125,18 +143,40 @@ namespace Abandoned.Player
             Started?.Invoke();
         }
 
+        private static readonly Vector3[] RecoverOffsets =
+        {
+            Vector3.zero, new(0.6f, 0, 0), new(-0.6f, 0, 0), new(0, 0, 0.6f), new(0, 0, -0.6f),
+            new(1.2f, 0, 0), new(-1.2f, 0, 0), new(0, 0, 1.2f), new(0, 0, -1.2f),
+        };
+
+        /// <summary>Floor under the body (ignoring loot and debris) where the standing capsule fits.</summary>
+        private Vector3 FindStandingSpot(Vector3 body)
+        {
+            int ignore = (1 << Mathf.Max(0, GameLayers.PlayerLayer)) | (1 << Mathf.Max(0, GameLayers.DebrisLayer)) |
+                         (1 << Mathf.Max(0, GameLayers.LootLayer));
+            int floorMask = ~ignore;
+            float radius = controller.radius, height = motor.Config.StandingHeight;
+            foreach (Vector3 offset in RecoverOffsets)
+            {
+                Vector3 probe = body + offset;
+                if (!Physics.Raycast(probe + Vector3.up * GroundProbeHeight, Vector3.down, out RaycastHit hit,
+                        GroundProbeHeight + 3f, floorMask, QueryTriggerInteraction.Ignore))
+                    continue;
+                Vector3 feet = new(probe.x, hit.point.y + 0.05f, probe.z);
+                Vector3 bottom = feet + Vector3.up * (radius + 0.05f), top = feet + Vector3.up * (height - radius);
+                if (!Physics.CheckCapsule(bottom, top, radius * 0.95f, ~(1 << Mathf.Max(0, GameLayers.PlayerLayer)),
+                        QueryTriggerInteraction.Ignore))
+                    return feet;
+            }
+            return new Vector3(body.x, body.y - 0.9f, body.z);
+        }
+
         public void Recover()
         {
             if (!IsRagdolled) return;
-            Vector3 p = pelvis.position;
-            int mask = ~((1 << Mathf.Max(0, GameLayers.PlayerLayer)) | (1 << Mathf.Max(0, GameLayers.DebrisLayer)));
-            float y = Physics.Raycast(p + Vector3.up * GroundProbeHeight, Vector3.down, out RaycastHit hit,
-                GroundProbeHeight + 3f, mask, QueryTriggerInteraction.Ignore)
-                ? hit.point.y
-                : p.y - 0.9f;
-
+            Vector3 standAt = FindStandingSpot(pelvis.position);
             ragdollRoot.gameObject.SetActive(false);
-            transform.position = new Vector3(p.x, y + 0.05f, p.z);
+            transform.position = standAt;
             Physics.SyncTransforms();
             controller.enabled = true;
             body.SetActive(true);

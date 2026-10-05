@@ -94,10 +94,14 @@ namespace Abandoned.EditorTools
             Set(cameraFeel, "eye", eye);
             Set(footsteps, "settings", feelSettings);
             Set(footsteps, "motor", motor);
+            Set(footsteps, "ragdoll", ragdoll);
+            Set(cameraFeel, "ragdoll", ragdoll);
             Set(debug, "cameraFeel", cameraFeel);
             Set(debug, "footsteps", footsteps);
+            Set(debug, "ragdoll", ragdoll);
             Set(interactor, "inputReader", reader);
             Set(interactor, "carrier", carrier);
+            Set(interactor, "look", look);
             Set(hud, "interactor", interactor);
             Set(hud, "carrier", carrier);
             Set(hud, "inputReader", reader);

@@ -20,6 +20,7 @@ namespace Abandoned.Interaction
 
         private CharacterController controller;
         private Quaternion holdRotationOffset;
+        private float holdTime;
 
         public CarryConfig Config => config;
         public PlayerInventory Inventory { get; private set; }
@@ -31,7 +32,9 @@ namespace Abandoned.Interaction
         public float HintTime { get; private set; } = float.NegativeInfinity;
 
         /// <summary>Everything this player carries, in kg; also what they add to structural load.</summary>
-        public float CarriedWeight => (Held != null ? Held.Weight : 0f) + Inventory.TotalWeight;
+        public float CarriedWeight => (Held != null && !Held.IsDragged ? Held.Weight : 0f) + Inventory.TotalWeight;
+
+        public bool IsDragging => Held != null && Held.IsDragged;
 
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;
@@ -42,10 +45,27 @@ namespace Abandoned.Interaction
         {
             get
             {
+                if (IsDragging)
+                {
+                    // Floor level in front of the player, flat (dragging doesn't follow the look pitch).
+                    Vector3 flatForward = Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
+                    return transform.position + flatForward * config.DragHoldDistance
+                        + Vector3.up * (Held.GetBounds().extents.y + 0.05f);
+                }
+
                 bool twoHand = Held != null && Held.CarryClass == CarryClass.TwoHand;
                 float distance = twoHand ? config.TwoHandHoldDistance : config.OneHandHoldDistance;
                 float drop = twoHand ? config.TwoHandHoldDrop : config.OneHandHoldDrop;
-                return cameraRoot.position + cameraRoot.forward * distance - Vector3.up * drop;
+                Vector3 point = cameraRoot.position + cameraRoot.forward * distance - Vector3.up * drop;
+
+                // Looking down would put the point inside our own capsule; push it out in front.
+                Vector3 flat = new(point.x - transform.position.x, 0f, point.z - transform.position.z);
+                if (flat.magnitude < config.MinHoldRadius)
+                {
+                    Vector3 forward = Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
+                    point += forward * (config.MinHoldRadius - Vector3.Dot(flat, forward));
+                }
+                return point;
             }
         }
 
@@ -68,7 +88,8 @@ namespace Abandoned.Interaction
         {
             if (motor == null) return;
             float weight = CarriedWeight;
-            motor.SpeedMultiplier = config.SpeedMultiplierFor(weight);
+            motor.SpeedMultiplier = IsDragging ? config.DragSpeedMultiplier : config.SpeedMultiplierFor(weight);
+            if (IsDragging) EmitDragNoise();
             motor.StaminaDrainMultiplier = config.StaminaDrainMultiplierFor(weight);
         }
 
@@ -84,15 +105,20 @@ namespace Abandoned.Interaction
 
             Rigidbody body = Held.Body;
             Vector3 toTarget = HoldPoint - body.worldCenterOfMass;
-            if (toTarget.magnitude > config.BreakDistance)
+            holdTime += Time.fixedDeltaTime;
+            if (holdTime > config.BreakGraceTime && toTarget.magnitude > config.BreakDistance)
             {
                 // Snagged on a door frame or wall: let go rather than tunnelling or dragging the player.
                 InteractionService.Handler.RequestDrop(this);
                 return;
             }
 
-            float springScale = Mathf.Lerp(1f, config.HeavySpringScale, config.WeightFraction(Held.Weight));
+            float springScale = Held.IsDragged
+                ? config.DragSpringScale
+                : Mathf.Lerp(1f, config.HeavySpringScale, config.WeightFraction(Held.Weight));
             Vector3 accel = toTarget * (config.Spring * springScale) - body.linearVelocity * config.Damping;
+            // Dragging slides it along the floor: gravity stays on and we never lift it.
+            if (Held.IsDragged) accel.y = Mathf.Min(0f, accel.y);
             body.AddForce(Vector3.ClampMagnitude(accel, config.MaxHoldAcceleration), ForceMode.Acceleration);
 
             Quaternion target = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * holdRotationOffset;
@@ -100,6 +126,18 @@ namespace Abandoned.Interaction
             if (angle > 180f) angle -= 360f;
             if (float.IsFinite(axis.x))
                 body.angularVelocity = axis * (angle * Mathf.Deg2Rad * config.RotationSpring * springScale);
+        }
+
+        private float dragNoiseTimer;
+
+        private void EmitDragNoise()
+        {
+            dragNoiseTimer += Time.deltaTime;
+            if (dragNoiseTimer < config.DragNoiseInterval || Held.Body.linearVelocity.sqrMagnitude < 0.04f) return;
+            dragNoiseTimer = 0f;
+            // Scraping something heavy across the floor is loud; heavier is louder.
+            Abandoned.Core.NoiseSystem.Emit(Held.Body.worldCenterOfMass, Mathf.Clamp01(Held.Weight / 500f) * 0.8f,
+                Abandoned.Core.NoiseSource.LootDrag);
         }
 
         public void ShowHint(string message)
@@ -112,10 +150,12 @@ namespace Abandoned.Interaction
 
         internal void ApplyHold(Grabbable target)
         {
+            bool drag = target.CarryClass > config.HeaviestSoloClass && config.CanSoloDrag(target.CarryClass);
             Held = target;
+            holdTime = 0f;
             // Keep the object's current facing relative to the player, so it doesn't snap-rotate.
             holdRotationOffset = Quaternion.Inverse(Quaternion.Euler(0f, transform.eulerAngles.y, 0f)) * target.Body.rotation;
-            target.BeginHold(this);
+            target.BeginHold(this, drag);
         }
 
         internal void ApplyRelease(Vector3 velocity)

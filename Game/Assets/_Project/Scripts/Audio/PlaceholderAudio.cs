@@ -15,6 +15,48 @@ namespace Abandoned.Audio
 
         private static readonly Dictionary<SurfaceMaterial, AudioClip> ImpactClips = new();
         private static readonly Dictionary<SurfaceMaterial, AudioClip> FootstepClips = new();
+        private static readonly Dictionary<StructureSound, AudioClip> StructureClips = new();
+
+        public static StructureSound? LastStructureSound { get; private set; }
+        public static int StructureSoundCount { get; private set; }
+
+        public static void PlayStructure(StructureSound sound, Vector3 position, float volume01)
+        {
+            LastStructureSound = sound;
+            StructureSoundCount++;
+            AudioSource.PlayClipAtPoint(GetStructureClip(sound), position, Mathf.Clamp01(volume01));
+        }
+
+        public static AudioClip GetStructureClip(StructureSound sound)
+        {
+            if (StructureClips.TryGetValue(sound, out AudioClip clip) && clip != null) return clip;
+            clip = sound switch
+            {
+                StructureSound.Creak => Creak("Structure_Creak", 0.9f, 140f, 95f),
+                StructureSound.Groan => Creak("Structure_Groan", 1.6f, 70f, 45f),
+                StructureSound.Snap => Thud("Structure_Snap", 0.25f, 0f, 1f, 30f),
+                _ => Thud("Structure_Crash", 2.5f, 45f, 1f, 1.6f),
+            };
+            StructureClips[sound] = clip;
+            return clip;
+        }
+
+        /// <summary>A sliding, wobbling low tone with grit: timber under strain.</summary>
+        private static AudioClip Creak(string name, float seconds, float startHz, float endHz)
+        {
+            var random = new System.Random(name.GetHashCode());
+            float phase = 0f;
+            return Build(name, seconds, t =>
+            {
+                float k = t / seconds;
+                float hz = Mathf.Lerp(startHz, endHz, k) * (1f + 0.04f * Mathf.Sin(2f * Mathf.PI * 7f * t));
+                phase += hz / SampleRate;
+                float saw = (phase % 1f) * 2f - 1f;
+                float grit = ((float)random.NextDouble() * 2f - 1f) * 0.25f;
+                float env = Mathf.Sin(Mathf.PI * k);
+                return (saw * 0.5f + grit) * env * 0.6f;
+            });
+        }
 
         /// <summary>Last material played and total plays; used by tests and the debug overlay.</summary>
         public static SurfaceMaterial? LastImpactMaterial { get; private set; }
@@ -109,6 +151,9 @@ namespace Abandoned.Audio
         {
             ImpactClips.Clear();
             FootstepClips.Clear();
+            StructureClips.Clear();
+            LastStructureSound = null;
+            StructureSoundCount = 0;
             LastImpactMaterial = null;
             LastFootstepMaterial = null;
             ImpactCount = 0;

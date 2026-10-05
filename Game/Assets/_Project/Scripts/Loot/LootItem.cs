@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Abandoned.Core;
 using Abandoned.Interaction;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace Abandoned.Loot
     /// <see cref="LootFeedback"/>.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class LootItem : MonoBehaviour, ICarryable, IValuable
+    public class LootItem : MonoBehaviour, ICarryable, IValuable, ILoadSource
     {
         [SerializeField] private LootDefinition definition;
         [SerializeField] private LootDamageConfig damageConfig;
@@ -20,6 +21,8 @@ namespace Abandoned.Loot
 
         private float lastDamageTime = float.NegativeInfinity;
         private bool initialized;
+        private Grabbable grabbable;
+        private Rigidbody body;
 
         public LootDefinition Definition => definition;
         public int FullValue { get; private set; }
@@ -38,6 +41,45 @@ namespace Abandoned.Loot
         public event Action<LootItem, int, Vector3> Damaged;
         /// <summary>Host: item shattered to $0 and is about to be removed.</summary>
         public event Action<LootItem, Vector3> Shattered;
+
+        private void Awake()
+        {
+            grabbable = GetComponent<Grabbable>();
+            body = GetComponent<Rigidbody>();
+        }
+
+        private void OnEnable() => LoadSources.Register(this);
+
+        private void OnDisable() => LoadSources.Unregister(this);
+
+        /// <summary>
+        /// Resting weight on the structure: zero while pocketed, carried in hands (the carrier
+        /// counts it) or still flying; dragged items press down where they are.
+        /// </summary>
+        public float LoadWeight
+        {
+            get
+            {
+                if (IsShattered || grabbable == null || grabbable.IsPocketed) return 0f;
+                if (grabbable.Holder != null && !grabbable.IsDragged) return 0f;
+                if (!grabbable.IsDragged && body.linearVelocity.sqrMagnitude > damageConfig.LoadRestingSpeed * damageConfig.LoadRestingSpeed)
+                    return 0f;
+                return definition.GameplayWeight;
+            }
+        }
+
+        public void GetLoadPoints(List<LoadPoint> points)
+        {
+            // Footprint centre and corners, so a piano across two tiles loads both.
+            Bounds b = grabbable.GetBounds();
+            float y = b.min.y + 0.05f;
+            Vector3 c = b.center, e = b.extents * 0.8f;
+            points.Add(new LoadPoint(new Vector3(c.x, y, c.z)));
+            points.Add(new LoadPoint(new Vector3(c.x + e.x, y, c.z + e.z)));
+            points.Add(new LoadPoint(new Vector3(c.x - e.x, y, c.z + e.z)));
+            points.Add(new LoadPoint(new Vector3(c.x + e.x, y, c.z - e.z)));
+            points.Add(new LoadPoint(new Vector3(c.x - e.x, y, c.z - e.z)));
+        }
 
         private void Start()
         {
@@ -66,7 +108,11 @@ namespace Abandoned.Loot
             float speed = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, normal));
 
             Impacted?.Invoke(this, speed, point);
-            if (GameAuthority.IsHost) ApplyImpact(speed, point);
+            if (!GameAuthority.IsHost) return;
+            ApplyImpact(speed, point);
+            if (speed >= damageConfig.MinSoundSpeed)
+                NoiseSystem.Emit(point, damageConfig.ImpactNoise * definition.Noise * Mathf.Clamp01(speed / damageConfig.FullVolumeSpeed),
+                    NoiseSource.LootImpact);
         }
 
         /// <summary>Host: applies one impact's damage. Public so M3 can apply client-reported impacts.</summary>

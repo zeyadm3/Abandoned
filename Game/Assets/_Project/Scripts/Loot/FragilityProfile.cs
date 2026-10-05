@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Abandoned.Loot
 {
@@ -7,23 +8,25 @@ namespace Abandoned.Loot
     [Serializable]
     public struct FragilityProfile
     {
-        public Fragility Fragility;
-
+        [SerializeField, FormerlySerializedAs("Fragility")] private Fragility fragility;
         [Tooltip("Impact speed (m/s, along the contact normal) below which nothing is lost.")]
-        [Min(0f)] public float ImpactThreshold;
-
+        [SerializeField, Min(0f), FormerlySerializedAs("ImpactThreshold")] private float impactThreshold;
         [Tooltip("Fraction of the item's full value lost per m/s above the threshold.")]
-        [Min(0f)] public float LossPerSpeed;
-
+        [SerializeField, Min(0f), FormerlySerializedAs("LossPerSpeed")] private float lossPerSpeed;
         [Tooltip("Impact speed at which the item shatters to $0. 0 = never shatters.")]
-        [Min(0f)] public float ShatterSpeed;
+        [SerializeField, Min(0f), FormerlySerializedAs("ShatterSpeed")] private float shatterSpeed;
+
+        public Fragility Fragility => fragility;
+        public float ImpactThreshold => impactThreshold;
+        public float LossPerSpeed => lossPerSpeed;
+        public float ShatterSpeed => shatterSpeed;
 
         public FragilityProfile(Fragility fragility, float threshold, float lossPerSpeed, float shatterSpeed)
         {
-            Fragility = fragility;
-            ImpactThreshold = threshold;
-            LossPerSpeed = lossPerSpeed;
-            ShatterSpeed = shatterSpeed;
+            this.fragility = fragility;
+            impactThreshold = threshold;
+            this.lossPerSpeed = lossPerSpeed;
+            this.shatterSpeed = shatterSpeed;
         }
     }
 }

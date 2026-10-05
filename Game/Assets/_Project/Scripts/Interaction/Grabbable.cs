@@ -20,6 +20,8 @@ namespace Abandoned.Interaction
         public Rigidbody Body => body;
         public PlayerCarrier Holder { get; private set; }
         public bool IsPocketed { get; private set; }
+        /// <summary>Held, but dragged along the floor (Heavy items solo): still rests its weight on the structure.</summary>
+        public bool IsDragged { get; private set; }
         public bool IsAvailable => Holder == null && !IsPocketed;
         public string DisplayName => carryable?.DisplayName ?? name;
         public CarryClass CarryClass => carryable?.CarryClass ?? CarryClass.OneHand;
@@ -46,10 +48,11 @@ namespace Abandoned.Interaction
             return bounds;
         }
 
-        internal void BeginHold(PlayerCarrier holder)
+        internal void BeginHold(PlayerCarrier holder, bool drag)
         {
             Holder = holder;
-            body.useGravity = false;
+            IsDragged = drag;
+            body.useGravity = drag;
             body.interpolation = RigidbodyInterpolation.Interpolate;
             SetIgnoreCollisions(holder.Controller, true);
         }
@@ -58,6 +61,7 @@ namespace Abandoned.Interaction
         {
             if (Holder != null) SetIgnoreCollisions(Holder.Controller, false);
             Holder = null;
+            IsDragged = false;
             body.useGravity = true;
             body.interpolation = restingInterpolation;
             body.linearVelocity = velocity;

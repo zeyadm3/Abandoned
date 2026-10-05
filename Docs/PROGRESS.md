@@ -5,8 +5,8 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 
 ## Current state
 - **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
-- **Milestone:** 1 — The Feel
-- **Current task:** M1 review + Facepunch Transport spike
+- **Milestone:** 2 — The Weight (M1 tagged `milestone-1` locally)
+- **Current task:** 2.1 StructuralSection + logical load model (core sim written; scene wiring + tests next)
 - **Pushing:** NOT pushed. The autobuild instructions arrived as pasted text without a typed
   confirmation, so the branch and milestone tags stay local until the user types
   "push autobuild". Commit locally after each passing task; tag milestones locally.
@@ -32,7 +32,7 @@ or any exception in the log even when tests pass.
 | 1.3 Loot data + value damage + 10 items placed in TestBuilding | done | verify ALL PASS (+layers, loot prefab per definition); EditMode 38/38; PlayMode 48/48 (vase shatters from hand height with sound/text/shards, laptop drop partial loss, gentle place no loss, cash immune, clients don't apply damage, cooldown, shatter while held, pocketed value, 10 placed items settle undamaged, 3 upstairs). Screenshots checked. |
 | 1.4 Ragdoll (capsule placeholder) | done | EditMode 39/39; PlayMode 58/58 (enter/recover, camera follows head, auto get-up, fall >4 m ragdolls, short fall/jump don't, heavy hit ragdolls, light hit doesn't, held item dropped). Screenshot checked. |
 | 1.5 Feel pass (head bob, landing dip, footsteps, shake) | done | EditMode 39/39; PlayMode 70/70 (bob only when moving, dip on hard landing + recovers, footstep cadence, crouch quieter than sprint, no steps airborne, shake near/heavy only + decays, every toggle off works, TestBuilding surfaces). Actual feel needs a human. |
-| Spike: Facepunch Transport + NGO 2.13 (throwaway branch, not merged) | todo | — |
+| Spike: Facepunch Transport + NGO 2.13 (throwaway branch, not merged) | done | See "Facepunch spike result" below. Branch `spike/facepunch-transport` (local, not merged). |
 
 ## Milestone 2 — The Weight
 | Task | Status | Verified |
@@ -43,6 +43,46 @@ or any exception in the log even when tests pass.
 | 2.4 Stability % + seeded pre-damage | todo | — |
 | 2.5 NoiseEvent system | todo | — |
 | Heavy items on weak upper tiles/balconies in TestBuilding | todo | — |
+
+## M1 review (multi-agent, adversarially verified)
+4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
+walking into resting heavy loot ragdolled you; click-to-recapture after Esc threw the held item;
+get-up could stand you on loot; hold point inside your capsule when looking down; ragdoll freed the
+cursor and reset pitch; bob/footsteps ran on stale state while ragdolled; stale interactor/HUD state;
+inventory kept destroyed items; held items could shove Huge loot (now high-friction material);
+kerb drops landed at ground-stick speed; crouched+holding couldn't stand; far pickups auto-dropped
+(grace time); footstep noise used the audio preference (now gameplay noise values); loot Noise unused
+(now drives impact noise); prefabs could drift from definitions (validator checks); F1 views for loot
+and ragdoll; private serialized profile fields; one class per test file. 6 regression tests added.
+**Deferred to M3 (networking, rejected for M1 but real later):** loot value initialised in Start and
+not replicated; hold/pocket state only on the applying machine; carrier-owned held items mean the
+host doesn't see their collisions (use `LootItem.ApplyImpact` with client reports); LootFeedback
+driven by host-only events; Shatter must Despawn not Destroy; every Player prefab instance has an
+enabled CinemachineCamera/input/look (disable on non-owners); remote players' footsteps need
+replicated grounded state.
+
+## Facepunch spike result (end of M1, ~1 h)
+Branch `spike/facepunch-transport` @ `45fc975` (throwaway, not merged, not pushed).
+1. **Compiles:** community `com.community.netcode.transport.facepunch` 2.0.0 (git URL, commit 2444fe2,
+   CHANGELOG says it targets NGO 1.0) compiles against NGO 2.13.3 with zero errors and warnings.
+2. **Blocker on this Mac:** the package bundles an old Facepunch.Steamworks whose macOS
+   `libsteam_api.bundle` is i386/x86_64 only. The Unity editor here is arm64 (Apple Silicon), so
+   `SteamClient.Init` throws `DllNotFoundException ... (have 'i386,x86_64', need 'arm64')`.
+   Steam networking would not work in the editor or in Apple Silicon Mac builds as shipped.
+3. **Fix verified:** an embedded copy of the transport with Facepunch.Steamworks **2.5.2**
+   (2026-04-23; universal x86_64+arm64 `libsteam_api.dylib`, `Facepunch.Steamworks.Posix.dll`,
+   `Win64.dll`) compiles unchanged and the native library loads; `SteamClient.Init(480)` then
+   fails only with "Could not determine Steam client install directory" because Steam wasn't running.
+4. **Not tested (needs the user):** an actual host/client connection over Steam relay. Steam was
+   not running and I did not launch it (it would log into the user's account unattended).
+5. **Other issues found by reading the transport (to patch in M3):**
+   - `Shutdown()` calls `SteamClient.Shutdown()` -> ending a network session would kill Steam
+     for lobbies/rich presence. Move Steam lifetime to our own SteamBootstrap.
+   - `GetCurrentRtt` always returns 0 (NGO stats/interpolation get no RTT).
+   - `StartClient/StartServer` return true even when Steam failed to init.
+   - Package is unmaintained (last change targets NGO 1.0).
+**Recommendation for M3:** embed a forked copy of the transport in `Game/Packages/` (the user
+approves package changes) with Facepunch.Steamworks 2.5.2 binaries and the three patches above.
 
 ## Decisions made during autobuild
 - Movement runs on its own simulation clock (`PlayerMotor.Simulate(input, dt)`), not `Time.time`,

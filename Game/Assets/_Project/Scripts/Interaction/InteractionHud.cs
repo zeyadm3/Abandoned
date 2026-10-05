@@ -30,6 +30,7 @@ namespace Abandoned.Interaction
             string prompt = null;
             if (carrier.HintVisible) prompt = $"<color=#FF8060>{carrier.Hint}</color>";
             else if (interactor.Target != null) prompt = $"[E] Pick up {Describe(interactor.Target)}";
+            else if (carrier.IsDragging) prompt = $"Dragging {Describe(carrier.Held)}   [RMB] let go";
             else if (carrier.Held != null) prompt = $"Holding {Describe(carrier.Held)}   [LMB] throw   [RMB] drop";
             if (prompt != null) GUI.Label(new Rect(cx - 300, cy + 30, 600, 26), prompt, centered);
 

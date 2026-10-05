@@ -30,6 +30,7 @@ namespace Abandoned.Player
         // Simulation clock advanced only by Simulate(dt), so results depend on inputs and steps, not wall time.
         private float clock;
         private bool airborne;
+        private bool stuckToGround;
         private float airPeakY;
 
         public PlayerMovementConfig Config => config;
@@ -66,6 +67,15 @@ namespace Abandoned.Player
             controller.slopeLimit = config.SlopeLimit;
             controller.stepOffset = config.StepOffset;
             SetHeight(config.StandingHeight);
+        }
+
+        private void OnEnable()
+        {
+            // Coming back from a ragdoll: don't resume the old run or fall.
+            horizontalVelocity = Vector3.zero;
+            verticalVelocity = 0f;
+            stuckToGround = false;
+            airborne = false;
         }
 
         private void Update() => Simulate(inputReader.Current, Time.deltaTime);
@@ -147,13 +157,22 @@ namespace Abandoned.Player
                 lastGroundedTime = float.NegativeInfinity;
                 lastJumpPressedTime = float.NegativeInfinity;
                 IsGrounded = false;
+                stuckToGround = false;
                 return;
             }
 
             if (IsGrounded && verticalVelocity <= 0f)
             {
                 verticalVelocity = -config.GroundStickSpeed;
+                stuckToGround = true;
                 return;
+            }
+
+            if (stuckToGround)
+            {
+                // Walked off an edge: the ground-stick push isn't real speed, so start the fall from rest.
+                stuckToGround = false;
+                verticalVelocity = 0f;
             }
 
             float gravity = config.Gravity * (verticalVelocity < 0f ? config.FallGravityMultiplier : 1f);
@@ -182,7 +201,12 @@ namespace Abandoned.Player
 
             int hits = Physics.OverlapCapsuleNonAlloc(bottom, top, radius, standBlockers, ~0, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < hits; i++)
-                if (standBlockers[i] != controller) return false;
+            {
+                Collider c = standBlockers[i];
+                // Loose physics objects (including what we're holding) get pushed aside, not stood under.
+                if (c == controller || (c.attachedRigidbody != null && !c.attachedRigidbody.isKinematic)) continue;
+                return false;
+            }
             return true;
         }
 

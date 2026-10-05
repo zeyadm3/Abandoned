@@ -13,6 +13,7 @@ namespace Abandoned.Player
     {
         [SerializeField] private FeelSettings settings;
         [SerializeField] private PlayerMotor motor;
+        [SerializeField] private PlayerRagdoll ragdoll;
 
         private const float ProbeHeight = 0.3f;
         private const float ProbeDistance = 0.8f;
@@ -27,7 +28,20 @@ namespace Abandoned.Player
         /// <summary>Position and volume (0–1) of each footstep.</summary>
         public event Action<Vector3, float> Stepped;
 
-        private void OnEnable() => lastPosition = transform.position;
+        private void OnEnable()
+        {
+            lastPosition = transform.position;
+            ragdoll.Ended += OnGotUp;
+        }
+
+        private void OnDisable() => ragdoll.Ended -= OnGotUp;
+
+        // Getting up teleports the root to where the body landed; that isn't walking.
+        private void OnGotUp()
+        {
+            lastPosition = transform.position;
+            distance = 0f;
+        }
 
         private void LateUpdate() => Tick();
 
@@ -36,7 +50,7 @@ namespace Abandoned.Player
             Vector3 position = transform.position;
             Vector3 delta = position - lastPosition;
             lastPosition = position;
-            if (!motor.IsGrounded) return;
+            if (ragdoll.IsRagdolled || !motor.IsGrounded) return;
 
             distance += new Vector2(delta.x, delta.z).magnitude;
             if (distance < settings.StepLength) return;
@@ -59,6 +73,10 @@ namespace Abandoned.Player
                 : settings.WalkStepVolume;
             StepCount++;
             if (settings.FootstepsEnabled) PlaceholderAudio.PlayFootstep(LastSurface, position, LastVolume);
+            // Threats hear steps whether or not the player has footstep audio turned on.
+            PlayerMovementConfig c = motor.Config;
+            float noise = motor.IsSprinting ? c.SprintNoise : motor.IsCrouching ? c.CrouchNoise : c.WalkNoise;
+            NoiseSystem.Emit(position, noise, NoiseSource.Footstep);
             Stepped?.Invoke(position, LastVolume);
         }
     }

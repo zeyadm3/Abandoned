@@ -20,6 +20,10 @@ namespace Abandoned.Loot
 
         [field: Tooltip("Ignore further impacts on an item for this long, so one landing isn't counted per contact.")]
         [field: SerializeField, Min(0f)] public float ImpactCooldown { get; private set; } = 0.15f;
+        [field: Tooltip("Loot moving faster than this (m/s) isn't resting on the structure yet.")]
+        [field: SerializeField, Min(0f)] public float LoadRestingSpeed { get; private set; } = 0.5f;
+        [field: Tooltip("Noise loudness of an impact at FullVolumeSpeed, before the item's own Noise factor.")]
+        [field: SerializeField, Range(0f, 1f)] public float ImpactNoise { get; private set; } = 1f;
         [field: Tooltip("Impacts below this speed make no sound.")]
         [field: SerializeField, Min(0f)] public float MinSoundSpeed { get; private set; } = 0.6f;
         [field: Tooltip("Impact speed that plays at full volume.")]

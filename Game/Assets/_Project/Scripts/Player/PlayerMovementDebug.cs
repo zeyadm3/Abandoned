@@ -12,6 +12,7 @@ namespace Abandoned.Player
         [SerializeField] private PlayerStamina stamina;
         [SerializeField] private PlayerCameraFeel cameraFeel;
         [SerializeField] private PlayerFootsteps footsteps;
+        [SerializeField] private PlayerRagdoll ragdoll;
         [SerializeField] private int fontSize = 14;
 
         private GUIStyle style;
@@ -34,7 +35,8 @@ namespace Abandoned.Player
                 $"Speed x    {motor.SpeedMultiplier:F2}\n" +
                 $"Drain x    {motor.StaminaDrainMultiplier:F2}\n" +
                 $"Bob        {cameraFeel.BobOffset.y:F3}  Dip {cameraFeel.Dip:F2}  Shake {cameraFeel.Trauma:F2}\n" +
-                $"Steps      {footsteps.StepCount} ({footsteps.LastSurface}, vol {footsteps.LastVolume:F2})";
+                $"Steps      {footsteps.StepCount} ({footsteps.LastSurface}, vol {footsteps.LastVolume:F2})\n" +
+                $"Ragdoll    {(ragdoll.IsRagdolled ? "<color=#FF6060>YES</color>" : "no")}  (K to toggle)";
 
             var content = new GUIContent(text);
             Vector2 size = style.CalcSize(content);

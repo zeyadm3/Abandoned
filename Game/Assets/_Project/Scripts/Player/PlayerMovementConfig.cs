@@ -54,6 +54,15 @@ namespace Abandoned.Player
         [field: SerializeField, Min(0f)] public float MouseSensitivity { get; private set; } = 0.1f;
         [field: SerializeField, Range(0f, 89f)] public float MaxPitch { get; private set; } = 85f;
 
+        [field: Header("Noise (what threats hear; independent of audio settings)")]
+        [field: SerializeField, Range(0f, 1f)] public float WalkNoise { get; private set; } = 0.3f;
+        [field: SerializeField, Range(0f, 1f)] public float SprintNoise { get; private set; } = 0.55f;
+        [field: SerializeField, Range(0f, 1f)] public float CrouchNoise { get; private set; } = 0.08f;
+
+        [field: Header("Body")]
+        [field: Tooltip("Gameplay weight of the player themselves (kg), for structural load.")]
+        [field: SerializeField, Min(1f)] public float BodyWeight { get; private set; } = 80f;
+
         [field: Header("Character controller")]
         [field: SerializeField, Min(0.1f)] public float Radius { get; private set; } = 0.35f;
         [field: SerializeField, Range(0f, 89f)] public float SlopeLimit { get; private set; } = 50f;

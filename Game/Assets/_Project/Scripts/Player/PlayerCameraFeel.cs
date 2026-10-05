@@ -11,6 +11,7 @@ namespace Abandoned.Player
     {
         [SerializeField] private FeelSettings settings;
         [SerializeField] private PlayerMotor motor;
+        [SerializeField] private PlayerRagdoll ragdoll;
         [SerializeField] private Transform eye;
 
         private const float TwoPi = Mathf.PI * 2f;
@@ -52,7 +53,8 @@ namespace Abandoned.Player
 
         private void UpdateBob(float dt)
         {
-            float speed = motor.IsGrounded ? motor.HorizontalSpeed : 0f;
+            // While ragdolled the motor is off and its state is stale; no bob.
+            float speed = !ragdoll.IsRagdolled && motor.IsGrounded ? motor.HorizontalSpeed : 0f;
             float scale = motor.IsSprinting ? settings.SprintBobScale : motor.IsCrouching ? settings.CrouchBobScale : 1f;
             float target = settings.HeadBobEnabled && speed > 0.1f
                 ? Mathf.Clamp01(speed / motor.Config.WalkSpeed) * scale

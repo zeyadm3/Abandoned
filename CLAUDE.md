@@ -90,7 +90,7 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
-Milestone 1 — The Feel
+Milestone 2 — The Weight
 
 ## Decisions log
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).

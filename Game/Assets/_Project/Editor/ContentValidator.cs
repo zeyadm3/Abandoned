@@ -93,6 +93,13 @@ namespace Abandoned.EditorTools
 
         private static void ValidateAssets(List<string> errors)
         {
+            foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
+            {
+                var definition = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LootPrefabGenerator.PrefabPathFor(definition));
+                if (prefab != null) LootPrefabGenerator.ValidatePrefab(definition, prefab, errors);
+            }
+
             foreach (string guid in AssetDatabase.FindAssets("t:ScriptableObject", new[] { DataRoot }))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
