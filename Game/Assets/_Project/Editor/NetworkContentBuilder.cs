@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using Abandoned.Networking;
 using NetworkPrefab = Unity.Netcode.NetworkPrefab;
@@ -13,6 +14,7 @@ namespace Abandoned.EditorTools
     public static class NetworkContentBuilder
     {
         public const string ConfigPath = "Assets/_Project/Data/Networking/NetworkConfig.asset";
+        public const string LootNetConfigPath = "Assets/_Project/Data/Networking/LootNetConfig.asset";
 
         /// <summary>NGO's own generated list; NGO adds network prefabs to it on import, we make sure of ours.</summary>
         public const string PrefabListPath = "Assets/DefaultNetworkPrefabs.asset";
@@ -28,6 +30,7 @@ namespace Abandoned.EditorTools
         public static void CreateMissing()
         {
             var config = LoadOrCreateAsset<NetworkConfig>(ConfigPath);
+            LoadOrCreateAsset<LootNetConfig>(LootNetConfigPath);
             WriteSteamAppIdFile(config.SteamAppId);
             AssetDatabase.SaveAssets();
         }
@@ -41,10 +44,13 @@ namespace Abandoned.EditorTools
                 list = ScriptableObject.CreateInstance<NetworkPrefabsList>();
                 AssetDatabase.CreateAsset(list, PrefabListPath);
             }
-            var player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
-            if (player != null && !list.Contains(player))
+            var prefabs = new List<GameObject> { AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath) };
+            foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { LootPrefabGenerator.Folder }))
+                prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));
+            foreach (GameObject prefab in prefabs)
             {
-                list.Add(new NetworkPrefab { Prefab = player });
+                if (prefab == null || prefab.GetComponent<Unity.Netcode.NetworkObject>() == null || list.Contains(prefab)) continue;
+                list.Add(new NetworkPrefab { Prefab = prefab });
                 EditorUtility.SetDirty(list);
             }
             AssetDatabase.SaveAssets();

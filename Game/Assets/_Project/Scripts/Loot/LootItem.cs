@@ -7,9 +7,10 @@ using UnityEngine;
 namespace Abandoned.Loot
 {
     /// <summary>
-    /// A piece of loot in the world. The host rolls its value from a seed and applies impact
-    /// damage; every machine raises <see cref="Impacted"/> for local sound. Presentation lives in
-    /// <see cref="LootFeedback"/>.
+    /// A piece of loot in the world. The host (value authority) rolls its value from a seed and
+    /// applies impact damage. Impacts are judged on the machine that simulates the body; networking
+    /// relays them and replays sounds, damage text and shatters on every machine through the Replay*
+    /// methods. Presentation lives in <see cref="LootFeedback"/>.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     public class LootItem : MonoBehaviour, ICarryable, IValuable, ILoadSource
@@ -23,6 +24,7 @@ namespace Abandoned.Loot
         private bool initialized;
         private Grabbable grabbable;
         private Rigidbody body;
+        private bool? valueAuthority;
 
         public LootDefinition Definition => definition;
         public int FullValue { get; private set; }
@@ -30,17 +32,29 @@ namespace Abandoned.Loot
         public int CurrentValue { get; private set; }
         public bool IsShattered { get; private set; }
         public int Seed => seed;
+        public bool IsInitialized => initialized;
+        public LootDamageConfig DamageConfig => damageConfig;
+
+        /// <summary>This machine owns value and damage: the host, or offline. Networking sets it per item.</summary>
+        public bool HasValueAuthority => valueAuthority ?? GameAuthority.IsHost;
+
+        /// <summary>How a shattered item leaves the world; networking despawns instead of destroying.</summary>
+        public Action<LootItem> Remover { get; set; }
 
         public string DisplayName => definition.DisplayName;
         public CarryClass CarryClass => definition.CarryClass;
         public float GameplayWeight => definition.GameplayWeight;
 
-        /// <summary>Any collision worth a sound (all machines): item, speed along the normal, contact point.</summary>
+        /// <summary>An impact to present (sound, shake) on this machine: item, speed along the normal, contact point.</summary>
         public event Action<LootItem, float, Vector3> Impacted;
-        /// <summary>Host: value lost from an impact (item, loss, contact point).</summary>
+        /// <summary>This machine's physics hit something (physics authority only); networking reports/relays it.</summary>
+        public event Action<LootItem, float, Vector3> CollisionImpact;
+        /// <summary>Value lost from an impact (item, loss, contact point). Host applies; others replay it.</summary>
         public event Action<LootItem, int, Vector3> Damaged;
-        /// <summary>Host: item shattered to $0 and is about to be removed.</summary>
+        /// <summary>Item shattered to $0 and is about to be removed. Host applies; others replay it.</summary>
         public event Action<LootItem, Vector3> Shattered;
+        /// <summary>Value authority: value, condition or shattered changed.</summary>
+        public event Action<LootItem> ValueChanged;
 
         private void Awake()
         {
@@ -84,8 +98,15 @@ namespace Abandoned.Loot
 
         private void Start()
         {
-            if (!initialized && GameAuthority.IsHost)
-                Initialize(seed != 0 ? seed : GetInstanceID());
+            if (HasValueAuthority) EnsureInitialized();
+        }
+
+        /// <summary>null = follow <see cref="GameAuthority"/>; networking sets true on the host, false on clients.</summary>
+        public void SetValueAuthority(bool? authority) => valueAuthority = authority;
+
+        public void EnsureInitialized()
+        {
+            if (!initialized) Initialize(seed != 0 ? seed : GetInstanceID());
         }
 
         /// <summary>Host: rolls value and condition. Same definition + seed = same result.</summary>
@@ -98,28 +119,53 @@ namespace Abandoned.Loot
             Condition = roll.Condition;
             CurrentValue = FullValue;
             initialized = true;
+            ValueChanged?.Invoke(this);
         }
+
+        /// <summary>Client: the host's value state arrived.</summary>
+        public void ApplyNetworkValue(int fullValue, int currentValue, float condition, bool shattered)
+        {
+            FullValue = fullValue;
+            CurrentValue = currentValue;
+            Condition = condition;
+            IsShattered = shattered;
+            initialized = true;
+        }
+
+        // Presentation of things the host decided, raised on machines that didn't decide them.
+        public void ReplayImpact(float speed, Vector3 point) => Impacted?.Invoke(this, speed, point);
+        public void ReplayDamaged(int loss, Vector3 point) => Damaged?.Invoke(this, loss, point);
+        public void ReplayShattered(Vector3 point) => Shattered?.Invoke(this, point);
 
         private void OnCollisionEnter(Collision collision)
         {
             if (IsShattered) return;
+            // Only the machine simulating the body judges its hits; elsewhere it's a kinematic copy.
+            if (grabbable != null && !grabbable.HasPhysicsAuthority) return;
             Vector3 point = collision.contactCount > 0 ? collision.GetContact(0).point : transform.position;
             Vector3 normal = collision.contactCount > 0 ? collision.GetContact(0).normal : Vector3.up;
             // Only the component along the normal hurts: sliding along a floor is not an impact.
             float speed = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, normal));
 
             Impacted?.Invoke(this, speed, point);
-            if (!GameAuthority.IsHost) return;
+            CollisionImpact?.Invoke(this, speed, point);
+            if (!HasValueAuthority) return;
             ApplyImpact(speed, point);
-            if (speed >= damageConfig.MinSoundSpeed)
-                NoiseSystem.Emit(point, damageConfig.ImpactNoise * definition.Noise * Mathf.Clamp01(speed / damageConfig.FullVolumeSpeed),
-                    NoiseSource.LootImpact);
+            EmitImpactNoise(speed, point);
         }
 
-        /// <summary>Host: applies one impact's damage. Public so M3 can apply client-reported impacts.</summary>
+        /// <summary>Host: threats hear impacts (also client-reported ones).</summary>
+        public void EmitImpactNoise(float speed, Vector3 point)
+        {
+            if (!HasValueAuthority || speed < damageConfig.MinSoundSpeed) return;
+            NoiseSystem.Emit(point, damageConfig.ImpactNoise * definition.Noise * Mathf.Clamp01(speed / damageConfig.FullVolumeSpeed),
+                NoiseSource.LootImpact);
+        }
+
+        /// <summary>Host: applies one impact's damage, from its own physics or a carrier's report.</summary>
         public void ApplyImpact(float speed, Vector3 point)
         {
-            if (IsShattered || !initialized) return;
+            if (IsShattered || !initialized || !HasValueAuthority) return;
             if (Time.time - lastDamageTime < damageConfig.ImpactCooldown) return;
 
             int loss = LootMath.ImpactLoss(damageConfig.Profile(definition.Fragility), FullValue, speed, out bool shatters);
@@ -134,6 +180,7 @@ namespace Abandoned.Loot
             lastDamageTime = Time.time;
             loss = Mathf.Min(loss, CurrentValue);
             CurrentValue -= loss;
+            ValueChanged?.Invoke(this);
             Damaged?.Invoke(this, loss, point);
         }
 
@@ -141,10 +188,12 @@ namespace Abandoned.Loot
         {
             IsShattered = true;
             CurrentValue = 0;
-            if (TryGetComponent(out Grabbable grabbable) && grabbable.Holder != null)
+            ValueChanged?.Invoke(this);
+            if (grabbable != null && grabbable.Holder != null)
                 InteractionService.Handler.RequestDrop(grabbable.Holder);
             Shattered?.Invoke(this, point);
-            Destroy(gameObject);
+            if (Remover != null) Remover(this);
+            else Destroy(gameObject);
         }
     }
 }

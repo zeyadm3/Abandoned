@@ -25,6 +25,7 @@ namespace Abandoned.Tests
     public class NetTestHarness
     {
         public const string ConfigPath = "Assets/_Project/Data/Networking/NetworkConfig.asset";
+        public const string PrefabListPath = "Assets/DefaultNetworkPrefabs.asset";
         private const float ConnectTimeout = 10f;
         private const float SpawnSpacing = 2f;
         private const string TestRunnerScenePrefix = "InitTestScene";
@@ -32,6 +33,7 @@ namespace Abandoned.Tests
         private readonly List<GameObject> objects = new();
         private readonly NetworkConfig config;
         private readonly GameObject playerPrefab;
+        private readonly NetworkPrefabsList prefabs;
 
         public List<NetworkBootstrap> Machines { get; } = new();
         public NetworkBootstrap Host { get; private set; }
@@ -44,8 +46,9 @@ namespace Abandoned.Tests
 #if UNITY_EDITOR
             config = AssetDatabase.LoadAssetAtPath<NetworkConfig>(ConfigPath);
             playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerTestRig.PrefabPath);
+            prefabs = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(PrefabListPath);
 #endif
-            if (config == null || playerPrefab == null) throw new InvalidOperationException("Network content missing; run RebuildContent.");
+            if (config == null || playerPrefab == null || prefabs == null) throw new InvalidOperationException("Network content missing; run RebuildContent.");
         }
 
         /// <summary>A fresh empty scene: leftovers (TestBuilding's auto-hosted session) would share the process.</summary>
@@ -91,7 +94,7 @@ namespace Abandoned.Tests
 
         public NetworkBootstrap AddMachine(string name)
         {
-            NetworkBootstrap machine = NetworkBootstrapFactory.Create(config, playerPrefab, name);
+            NetworkBootstrap machine = NetworkBootstrapFactory.Create(config, playerPrefab, name, prefabs);
             Machines.Add(machine);
             return machine;
         }

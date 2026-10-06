@@ -120,6 +120,7 @@ namespace Abandoned.EditorTools
             Set(hud, "inputReader", reader);
             Set(networkPlayer, "motor", motor);
             Set(networkPlayer, "ragdoll", ragdoll);
+            Set(networkPlayer, "carrier", carrier);
             Set(networkPlayer, "networkTransform", networkTransform);
             SetArray(networkPlayer, "ownerOnlyBehaviours",
                 new Object[] { playerCamera, reader, look, motor, interactor, hud, cameraFeel, debug });

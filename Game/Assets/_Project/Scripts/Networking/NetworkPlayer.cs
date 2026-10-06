@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Abandoned.Interaction;
 using Abandoned.Player;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -18,6 +19,7 @@ namespace Abandoned.Networking
     {
         [SerializeField] private PlayerMotor motor;
         [SerializeField] private PlayerRagdoll ragdoll;
+        [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private NetworkTransform networkTransform;
         [Tooltip("Run only for the local player: camera, input, look, motor, interactor, HUD, camera feel, overlays.")]
         [SerializeField] private Behaviour[] ownerOnlyBehaviours;
@@ -39,6 +41,7 @@ namespace Abandoned.Networking
         public PlayerNetState State => state.Value;
         public PlayerMotor Motor => motor;
         public PlayerRagdoll Ragdoll => ragdoll;
+        public PlayerCarrier Carrier => carrier;
 
         public override void OnNetworkSpawn()
         {
@@ -59,6 +62,8 @@ namespace Abandoned.Networking
             foreach (Behaviour b in ownerOnlyBehaviours) if (b != null) b.enabled = false;
             foreach (GameObject go in ownerOnlyObjects) if (go != null) go.SetActive(false);
             ragdoll.MakeRemote();
+            // Holds are mirrored from each item's replicated state (NetworkLoot); this copy never drives them.
+            carrier.MakeRemote();
             state.OnValueChanged += OnStateChanged;
             ApplyRemote(state.Value);
         }

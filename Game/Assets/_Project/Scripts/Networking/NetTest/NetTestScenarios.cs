@@ -16,6 +16,7 @@ namespace Abandoned.Networking
             new(StringComparer.OrdinalIgnoreCase)
             {
                 { BasicNetTestScenario.ScenarioName, () => new BasicNetTestScenario() },
+                { LootNetTestScenario.ScenarioName, () => new LootNetTestScenario() },
             };
 
         public static IEnumerable<string> Names => Registry.Keys;

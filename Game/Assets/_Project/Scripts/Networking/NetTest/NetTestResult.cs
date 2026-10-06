@@ -20,6 +20,8 @@ namespace Abandoned.Networking
         public List<string> notes = new();
         public List<NetTestMove> moves = new();
         public List<NetTestView> views = new();
+        public List<NetTestLootAction> lootActions = new();
+        public List<NetTestLootView> lootViews = new();
 
         public void Fail(string error)
         {

@@ -1,5 +1,6 @@
 using System;
 using Abandoned.Core;
+using Abandoned.Interaction;
 using Abandoned.Player;
 using Netcode.Transports.Facepunch;
 using Unity.Netcode;
@@ -69,6 +70,8 @@ namespace Abandoned.Networking
                 Instance = this;
                 GameAuthority.SetHostCheck(() => IsHostOrOffline(networkManager));
             }
+            // Behaves like the single-player handler for anything that isn't a spawned network object.
+            InteractionService.Handler = new NetworkInteractionHandler();
             if (networkManager == null || config == null)
             {
                 LastError = "Network setup is incomplete (no NetworkManager or NetworkConfig).";

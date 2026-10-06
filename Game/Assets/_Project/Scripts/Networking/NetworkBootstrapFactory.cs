@@ -11,7 +11,8 @@ namespace Abandoned.Networking
     /// </summary>
     public static class NetworkBootstrapFactory
     {
-        public static NetworkBootstrap Create(NetworkConfig networkConfig, GameObject playerPrefab, string name = "Network")
+        public static NetworkBootstrap Create(NetworkConfig networkConfig, GameObject playerPrefab, string name = "Network",
+            NetworkPrefabsList prefabs = null)
         {
             // Built inactive so Awake runs only once everything is wired.
             var managerObject = new GameObject($"{name} NetworkManager");
@@ -19,8 +20,9 @@ namespace Abandoned.Networking
             var manager = managerObject.AddComponent<NetworkManager>();
             var utp = managerObject.AddComponent<UnityTransport>();
             var facepunch = managerObject.AddComponent<FacepunchTransport>();
-            // NGO registers the player prefab itself; nothing else is spawnable yet (loot joins in M3.3).
+            // NGO registers the player prefab itself; loot and the rest come from the shared prefab list.
             manager.NetworkConfig = new Unity.Netcode.NetworkConfig { NetworkTransport = utp, PlayerPrefab = playerPrefab };
+            if (prefabs != null) manager.NetworkConfig.Prefabs.NetworkPrefabsLists.Add(prefabs);
 
             var bootstrapObject = new GameObject(name);
             bootstrapObject.SetActive(false);

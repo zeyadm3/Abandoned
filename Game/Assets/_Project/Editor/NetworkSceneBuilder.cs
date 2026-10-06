@@ -11,7 +11,7 @@ namespace Abandoned.EditorTools
     /// <summary>
     /// Adds the session objects to a scene being built: a root NetworkManager (Unity + Facepunch
     /// transports, the Player prefab as NGO's player prefab) and a "Network" object with the
-    /// bootstrap, the placeholder session panel and the F1 network view.
+    /// bootstrap, the placeholder session panel and the F1 network + networked-loot views.
     /// </summary>
     public static class NetworkSceneBuilder
     {
@@ -46,6 +46,7 @@ namespace Abandoned.EditorTools
             bootstrap.Setup(config, manager, utp, facepunch, sceneSession: true);
             SerializedWiring.Set(network.AddComponent<NetworkPanel>(), "bootstrap", bootstrap);
             SerializedWiring.Set(network.AddComponent<NetworkDebugView>(), "bootstrap", bootstrap);
+            network.AddComponent<NetworkLootDebugView>();
             EditorUtility.SetDirty(bootstrap);
             return bootstrap;
         }

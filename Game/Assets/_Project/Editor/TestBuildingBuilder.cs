@@ -75,10 +75,11 @@ namespace Abandoned.EditorTools
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildSettings();
+            int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
 
             Debug.Log($"Test building saved to {ScenePath}: {groundTiles} ground tiles, " +
-                      $"{upperTiles} upper tiles ({balconyTiles} balcony), {stairSegments} stair segments.");
+                      $"{upperTiles} upper tiles ({balconyTiles} balcony), {stairSegments} stair segments, {networkObjects} network objects.");
         }
 
         private static void LoadMaterials()

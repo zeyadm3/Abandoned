@@ -80,6 +80,8 @@ namespace Abandoned.EditorTools
                             if (root.GetComponent(type) == null) errors.Add($"{path}: missing {type.Name}.");
                         NetworkValidation.ValidatePlayerPrefab(root, path, errors);
                     }
+                    if (path.StartsWith(LootPrefabGenerator.Folder + "/") && root.GetComponent<Abandoned.Loot.LootItem>() != null)
+                        NetworkValidation.ValidateLootPrefab(root, path, errors);
                 }
                 finally { PrefabUtility.UnloadPrefabContents(root); }
             }

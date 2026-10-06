@@ -1,6 +1,9 @@
 using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Loot;
+using Abandoned.Networking;
+using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
 using static Abandoned.EditorTools.SerializedWiring;
@@ -9,7 +12,8 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Builds a loot prefab from a LootDefinition: placeholder visual + collider, Rigidbody with
-    /// the clamped physics mass, Grabbable, LootItem and LootFeedback. No per-item code.
+    /// the clamped physics mass, Grabbable, LootItem and LootFeedback, and the network parts
+    /// (NetworkObject, owner-authoritative NetworkTransform, NetworkLoot). No per-item code.
     /// </summary>
     public static class LootPrefabGenerator
     {
@@ -37,8 +41,15 @@ namespace Abandoned.EditorTools
         {
             if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/_Project/Prefabs", "Loot");
             var damageConfig = LoadOrCreateAsset<LootDamageConfig>(LootCatalogBuilder.DamageConfigPath);
+            var netConfig = LoadOrCreateAsset<LootNetConfig>(NetworkContentBuilder.LootNetConfigPath);
 
             var root = new GameObject($"Loot_{definition.Id}");
+            // NetworkObject first: NGO expects it on the root before any NetworkBehaviour.
+            var networkObject = root.AddComponent<NetworkObject>();
+            // A carrier leaving the session must not take the loot with them; it returns to the host.
+            networkObject.DontDestroyWithOwner = true;
+            // Loot is never parented under network objects; in-scene items sit under plain group objects.
+            networkObject.AutoObjectParentSync = false;
             Material material = GreyboxFactory.GetMaterial($"Loot_{definition.Id}", definition.Color);
             GameObject visual = GreyboxFactory.Primitive(ToPrimitive(definition.Shape), "Visual", root.transform, Vector3.zero,
                 VisualScale(definition.Shape, definition.Size), material, withCollider: true);
@@ -61,11 +72,29 @@ namespace Abandoned.EditorTools
             Set(item, "damageConfig", damageConfig);
             var feedback = root.AddComponent<LootFeedback>();
             Set(feedback, "damageConfig", damageConfig);
+            NetworkTransform networkTransform = AddNetworkTransform(root);
+            var networkLoot = root.AddComponent<NetworkLoot>();
+            Set(networkLoot, "config", netConfig);
+            Set(networkLoot, "networkTransform", networkTransform);
 
             SetLayerRecursively(root, GameLayers.LootLayer);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPathFor(definition));
             Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
             return prefab;
+        }
+
+        private static NetworkTransform AddNetworkTransform(GameObject root)
+        {
+            var nt = root.AddComponent<NetworkTransform>();
+            // Owner-authoritative: the carrier simulates while carrying, the host owns it the rest of the time.
+            nt.AuthorityMode = NetworkTransform.AuthorityModes.Owner;
+            nt.SyncPositionX = nt.SyncPositionY = nt.SyncPositionZ = true;
+            nt.SyncRotAngleX = nt.SyncRotAngleY = nt.SyncRotAngleZ = true;
+            nt.SyncScaleX = nt.SyncScaleY = nt.SyncScaleZ = false;
+            nt.InLocalSpace = false;
+            nt.Interpolate = true;
+            return nt;
         }
 
         public static PhysicsMaterial HeavyFriction()

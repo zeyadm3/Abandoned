@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Abandoned.Networking;
 using Abandoned.Player;
 using Unity.Netcode;
@@ -24,6 +26,27 @@ namespace Abandoned.EditorTools
             if (nt == null) errors.Add($"{path}: missing NetworkTransform.");
             else if (nt.AuthorityMode != NetworkTransform.AuthorityModes.Owner)
                 errors.Add($"{path}: NetworkTransform must be owner-authoritative (clients own their movement).");
+
+            var list = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(NetworkContentBuilder.PrefabListPath);
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (list == null || asset == null || !list.Contains(asset))
+                errors.Add($"{path}: not in {NetworkContentBuilder.PrefabListPath} (Tools/Abandoned/Rebuild Content).");
+        }
+
+        /// <summary>A loot prefab is a host-controlled network object whose carrier can own its physics.</summary>
+        public static void ValidateLootPrefab(GameObject root, string path, List<string> errors)
+        {
+            var networkObject = root.GetComponent<NetworkObject>();
+            if (networkObject == null) { errors.Add($"{path}: missing NetworkObject on the root (run Generate Loot Prefabs)."); return; }
+            if (!networkObject.DontDestroyWithOwner)
+                errors.Add($"{path}: NetworkObject.DontDestroyWithOwner must be on (loot outlives a leaving carrier).");
+            if (root.GetComponent<NetworkLoot>() == null) errors.Add($"{path}: missing NetworkLoot.");
+            var nt = root.GetComponent<NetworkTransform>();
+            if (nt == null) errors.Add($"{path}: missing NetworkTransform.");
+            else if (nt.AuthorityMode != NetworkTransform.AuthorityModes.Owner)
+                errors.Add($"{path}: NetworkTransform must be owner-authoritative (the carrier owns carried physics).");
+            if (root.GetComponent<NetworkRigidbody>() != null)
+                errors.Add($"{path}: no NetworkRigidbody; Grabbable manages kinematic state from physics authority.");
 
             var list = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(NetworkContentBuilder.PrefabListPath);
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -58,6 +81,47 @@ namespace Abandoned.EditorTools
             if (spawns.Length < max) errors.Add($"{path}: {spawns.Length} PlayerSpawnPoints for {max} players.");
             if (spawns.Select(s => s.Index).Distinct().Count() != spawns.Length)
                 errors.Add($"{path}: PlayerSpawnPoint indices must be distinct.");
+            ValidateScenePlacedObjects(path, errors);
+        }
+
+        /// <summary>
+        /// Scene management is off, so clients spawn in-scene objects from their source prefab's hash:
+        /// each one needs a unique id of its own and a registered source prefab.
+        /// </summary>
+        private static void ValidateScenePlacedObjects(string path, List<string> errors)
+        {
+            var list = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(NetworkContentBuilder.PrefabListPath);
+            var seen = new HashSet<uint>();
+            int placed = 0;
+            foreach (NetworkObject no in Object.FindObjectsByType<NetworkObject>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (no.GetComponent<NetworkManager>() != null) continue;
+                var serialized = new SerializedObject(no);
+                uint hash = serialized.FindProperty("GlobalObjectIdHash").uintValue;
+                if (hash == 0 || !seen.Add(hash)) errors.Add($"{path}: '{no.name}' has a missing or duplicate GlobalObjectIdHash (resave the scene).");
+                GameObject source = PrefabUtility.GetCorrespondingObjectFromSource(no.gameObject);
+                if (source == null) errors.Add($"{path}: '{no.name}' is a scene NetworkObject without a source prefab; clients can't spawn it.");
+                else if (list == null || !list.Contains(source)) errors.Add($"{path}: '{no.name}''s prefab isn't a registered network prefab.");
+                else if (serialized.FindProperty("InScenePlacedSourceGlobalObjectIdHash").uintValue == 0)
+                    errors.Add($"{path}: '{no.name}' has no InScenePlacedSourceGlobalObjectIdHash (resave the scene).");
+                if (source != null) placed++;
+            }
+            ValidateSavedInScenePlacement(path, placed, errors);
+        }
+
+        /// <summary>
+        /// Opening the scene in the editor re-runs NGO's validation in memory, so the checks above can
+        /// pass while the saved file (what play mode and builds load) still lacks the ids. Count them there.
+        /// </summary>
+        private static void ValidateSavedInScenePlacement(string path, int placed, List<string> errors)
+        {
+            if (placed == 0 || !File.Exists(path)) return;
+            string text = File.ReadAllText(path);
+            int sourceHashes = Regex.Matches(text, @"propertyPath: InScenePlacedSourceGlobalObjectIdHash\s*\n\s*value: [1-9]").Count;
+            int marked = Regex.Matches(text, @"propertyPath: m_InScenePlaced\s*\n\s*value: 1").Count;
+            if (sourceHashes < placed || marked < placed)
+                errors.Add($"{path}: only {Mathf.Min(sourceHashes, marked)} of {placed} scene NetworkObjects are saved as in-scene placed " +
+                           "(clients would double them; rebuild the scene with Tools/Abandoned/Rebuild Content).");
         }
     }
 }

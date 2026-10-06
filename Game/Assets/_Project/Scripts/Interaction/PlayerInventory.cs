@@ -42,6 +42,13 @@ namespace Abandoned.Interaction
             Changed?.Invoke();
         }
 
+        internal bool Remove(Grabbable item)
+        {
+            if (!items.Remove(item)) return false;
+            Changed?.Invoke();
+            return true;
+        }
+
         internal Grabbable RemoveLast()
         {
             items.RemoveAll(i => i == null);

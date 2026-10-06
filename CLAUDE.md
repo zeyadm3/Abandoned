@@ -155,3 +155,12 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     Editor/Build/BuildScenes.All. Shareable builds are Mono, universal Mac + Win64, with steam_appid.txt
     beside (never inside) the executable; Release builds leave it out. Every networked feature gets a
     nettest scenario (Scripts/Networking/NetTest, registry in NetTestScenarios).
+  - M3.4: loot prefabs are NetworkObjects (owner-authoritative NetworkTransform, no NetworkRigidbody;
+    Grabbable makes non-simulating copies kinematic). NetworkLoot holds host-written NetworkVariables
+    for value (full/current/condition/shattered) and hold state (free/held/pocketed + holder's player
+    object id); every machine mirrors the hold onto its own copies. All interactions go through
+    NetworkInteractionHandler -> LootServerActions (same PickupRules, host's view); non-networked items
+    fall back to the single-player handler. Pocketed items stay host-owned (no physics). Carriers report
+    collisions by RPC, filtered by ImpactReportFilter (owner or just-released owner, rate, plausibility,
+    speed clamp; tunables in LootNetConfig). Scene-placed loot must be saved as in-scene placed
+    (Editor/NetworkObjectIds stamps it after the scene is in Build Settings), or clients double it.

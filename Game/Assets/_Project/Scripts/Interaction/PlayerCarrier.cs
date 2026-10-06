@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Player;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Abandoned.Interaction
     /// What a player is holding and how it follows them. The held object is pulled toward a hold
     /// point in front of the camera by an acceleration spring (not parented), so it collides,
     /// wobbles and lags with weight. Physics runs on the carrier's machine; value/damage stay on the host.
+    /// Remote copies (another machine's player) only mirror what they hold, for weight and load.
     /// </summary>
     [RequireComponent(typeof(PlayerInventory))]
     public class PlayerCarrier : MonoBehaviour
@@ -21,6 +23,8 @@ namespace Abandoned.Interaction
         private CharacterController controller;
         private Quaternion holdRotationOffset;
         private float holdTime;
+        private float dragNoiseTimer;
+        private Vector3 lastDragPosition;
 
         public CarryConfig Config => config;
         public PlayerInventory Inventory { get; private set; }
@@ -30,6 +34,9 @@ namespace Abandoned.Interaction
         public Vector3 EyeForward => cameraRoot.forward;
         public string Hint { get; private set; }
         public float HintTime { get; private set; } = float.NegativeInfinity;
+
+        /// <summary>False on another machine's copy of a player: it mirrors holds but never drives or drops them.</summary>
+        public bool IsLocal { get; private set; } = true;
 
         /// <summary>Everything this player carries, in kg; also what they add to structural load.</summary>
         public float CarriedWeight => (Held != null && !Held.IsDragged ? Held.Weight : 0f) + Inventory.TotalWeight;
@@ -79,17 +86,22 @@ namespace Abandoned.Interaction
 
         private void OnEnable() => ragdoll.Started += OnRagdollStarted;
 
+        /// <summary>Networking: this is another machine's player.</summary>
+        public void MakeRemote() => IsLocal = false;
+
         private void OnRagdollStarted()
         {
-            if (Held != null) InteractionService.Handler.RequestDrop(this);
+            // The owner's machine decides; a remote copy dropping too would race it.
+            if (Held != null && IsLocal) InteractionService.Handler.RequestDrop(this);
         }
 
         private void Update()
         {
+            // Threats live on the host, so the host makes the scraping noise for every dragging player.
+            if (IsDragging && GameAuthority.IsHost) EmitDragNoise();
             if (motor == null) return;
             float weight = CarriedWeight;
             motor.SpeedMultiplier = IsDragging ? config.DragSpeedMultiplier : config.SpeedMultiplierFor(weight);
-            if (IsDragging) EmitDragNoise();
             motor.StaminaDrainMultiplier = config.StaminaDrainMultiplierFor(weight);
         }
 
@@ -102,6 +114,8 @@ namespace Abandoned.Interaction
                 Held = null;
                 return;
             }
+            // Remote copies mirror; a client waiting for ownership has nothing to push yet.
+            if (!IsLocal || !Held.HasPhysicsAuthority) return;
 
             Rigidbody body = Held.Body;
             Vector3 toTarget = HoldPoint - body.worldCenterOfMass;
@@ -128,17 +142,18 @@ namespace Abandoned.Interaction
                 body.angularVelocity = axis * (angle * Mathf.Deg2Rad * config.RotationSpring * springScale);
         }
 
-        private float dragNoiseTimer;
-
         private void EmitDragNoise()
         {
+            // Speed from movement, not the body's velocity: the host's copy of a client-dragged item is kinematic.
+            Vector3 position = Held.Body.worldCenterOfMass;
+            float speed = Time.deltaTime > 0f ? Vector3.Distance(position, lastDragPosition) / Time.deltaTime : 0f;
+            lastDragPosition = position;
             dragNoiseTimer += Time.deltaTime;
-            float minSpeed = config.DragNoiseMinSpeed;
-            if (dragNoiseTimer < config.DragNoiseInterval || Held.Body.linearVelocity.sqrMagnitude < minSpeed * minSpeed) return;
+            if (dragNoiseTimer < config.DragNoiseInterval || speed < config.DragNoiseMinSpeed) return;
             dragNoiseTimer = 0f;
             // Scraping something heavy across the floor is loud; heavier is louder.
             float loudness = Mathf.Clamp01(Held.Weight / config.DragNoiseFullWeight) * config.DragNoiseMax;
-            Abandoned.Core.NoiseSystem.Emit(Held.Body.worldCenterOfMass, loudness, Abandoned.Core.NoiseSource.LootDrag);
+            NoiseSystem.Emit(position, loudness, NoiseSource.LootDrag);
         }
 
         public void ShowHint(string message)
@@ -154,6 +169,7 @@ namespace Abandoned.Interaction
             bool drag = target.CarryClass > config.HeaviestSoloClass && config.CanSoloDrag(target.CarryClass);
             Held = target;
             holdTime = 0f;
+            lastDragPosition = target.Body.worldCenterOfMass;
             // Keep the object's current facing relative to the player, so it doesn't snap-rotate.
             holdRotationOffset = Quaternion.Inverse(Quaternion.Euler(0f, transform.eulerAngles.y, 0f)) * target.Body.rotation;
             target.BeginHold(this, drag);
@@ -168,20 +184,39 @@ namespace Abandoned.Interaction
 
         internal void ApplyPocket(Grabbable target)
         {
-            target.Pocket();
+            target.Pocket(this);
             Inventory.Add(target);
         }
 
         internal void ApplyUnpocketLast()
         {
-            Grabbable item = Inventory.RemoveLast();
+            Grabbable item = Inventory.Items[^1];
+            Pose pose = UnpocketPose(EyeForward);
+            ApplyUnpocket(item, pose.position, pose.rotation, DropVelocity);
+        }
+
+        internal void ApplyUnpocket(Grabbable item, Vector3 position, Quaternion rotation, Vector3 velocity)
+        {
+            Inventory.Remove(item);
+            item.Unpocket(position, rotation, velocity);
+        }
+
+        /// <summary>Where a pocket item reappears when taken out, looking along <paramref name="aim"/>.</summary>
+        public Pose UnpocketPose(Vector3 aim)
+        {
+            Vector3 direction = aim.sqrMagnitude > 1e-6f ? aim.normalized : transform.forward;
             float distance = config.OneHandHoldDistance;
             // Don't spawn it inside a wall the player is facing.
-            if (Physics.Raycast(cameraRoot.position, cameraRoot.forward, out RaycastHit hit, distance,
+            if (Physics.Raycast(cameraRoot.position, direction, out RaycastHit hit, distance,
                     ~0, QueryTriggerInteraction.Ignore))
                 distance = Mathf.Max(0.2f, hit.distance - 0.25f);
-            Vector3 position = cameraRoot.position + cameraRoot.forward * distance;
-            item.Unpocket(position, Quaternion.Euler(0f, transform.eulerAngles.y, 0f), DropVelocity);
+            return new Pose(cameraRoot.position + direction * distance, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
+        }
+
+        /// <summary>The held item was destroyed (shattered, despawned).</summary>
+        internal void ForgetHeld(Grabbable item)
+        {
+            if (Held == item) Held = null;
         }
 
         private void OnDisable()

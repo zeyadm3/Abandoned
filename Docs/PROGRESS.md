@@ -15,13 +15,14 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   M3.3 done (BuildScript + `Tools/unity.sh build-mac|build-win|build|build-dev`, VersionInfo/BuildInfo,
   multi-process localhost nettest `Tools/nettest.sh` with scenario registry; 'basic' passes 4/4)
   + M3.3-fix (builds stamp `<commit>-dirty` from uncommitted changes; dirty/unknown builds only match
-  the same build run).
-  **Next:** networked loot (pickup/drop/throw via host RPCs, replicated value/damage, Despawn on shatter),
-  shared carrying, networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK 3.2-3.6). Add a
-  nettest scenario for each (see "M3.3 notes").
-- **Verification state after M3.3-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 97/97;
-  PlayMode 135/135; screenshots OK; `Tools/unity.sh build-dev` OK (BUILD.txt commit=a7e1f70-dirty);
-  `Tools/unity.sh nettest` 4/4 PASS. Shareable zips: build them only AFTER the task's commit.
+  the same build run). M3.4 done (networked loot: host-validated pickup/drop/throw/pocket RPCs, carrier
+  owns carried physics, replicated value/hold state, carrier-reported impacts, feedback on every
+  machine, shatter despawns; 'loot' nettest passes 4/4; see "M3.4 notes").
+  **Next:** shared carrying, networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK
+  3.3-3.6). Add a nettest scenario for each (see "M3.3 notes").
+- **Verification state after M3.4:** compile clean; rebuild OK; verify ALL PASS; EditMode 111/111;
+  PlayMode 147/147; screenshots OK; `Tools/unity.sh nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS
+  (dev build a04ad82-dirty). Shareable zips: build them only AFTER the task's commit.
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -47,6 +48,15 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
       Windows friend (SmartScreen: More info > Run anyway). Both should open TestBuilding with the Host/Join panel.
 - [ ] M3.3 decide: company name and bundle identifier (Player Settings still say DefaultCompany /
       com.Unity-Technologies...; they set the save-data folder, so pick before M6 saves exist).
+- [ ] M3.4 networked loot in Multiplayer Play Mode (host + 1-2 virtual players, Join 127.0.0.1:7777):
+      a client picks up the laptop (E), carries it, drops it (right mouse) and throws it (hold and
+      release left mouse); the host and other players see it carried in front of that player and land in
+      the same place. Two players grabbing the same item: only one gets it, the other sees "Someone else
+      has it". Pocket the gold watch (E): it vanishes for everyone and comes back out (hold Tab + right
+      mouse) in front of the player. Drop the vase: everyone hears it, sees "$X -> $0" and shards, and
+      it's gone everywhere. F1 shows owner / hold state / "sim here" over each item.
+- [ ] M3.4 feel: carried items seen on other screens follow the carrier smoothly (NetworkTransform
+      interpolation at 30 Hz), and a thrown item doesn't visibly hitch when the host takes it back.
 - [ ] M3.2 LAN: two Macs (or Mac + Windows friend on the same network), host on one, join with the
       host's LAN IP:7777 (macOS firewall may ask to allow incoming connections).
 
@@ -112,6 +122,7 @@ or any exception in the log even when tests pass.
 | 3.2 NetworkBootstrap, TransportMode, networked player | done | compile clean; rebuild OK; verify ALL PASS (+ Player prefab has NetworkObject/owner-auth NetworkTransform/NetworkPlayer and is in DefaultNetworkPrefabs; session scene has one bootstrap, a root NetworkManager with both transports + Player as player prefab, no scene-placed player, >= MaxPlayers spawn points with distinct indices); EditMode 79/79 (+15: launch args, auto-host policy incl. MPPM virtual players and -client/-connect, spawn slots, PlayerNetState); PlayMode 130/130 (+10 in-process NGO host+1-3 clients over loopback UTP: distinct spawn points, only owner camera/input/look/motor/interactor/HUD/hit trigger, owner movement replicates to host and other client, remote footsteps + floor load on host, remote ragdoll shown lying + getting up, client landings reach host as impacts, GameAuthority offline/host/client, solo hosting spawns local player, transport selection + Steam unavailable error, 5th player refused + leaver frees spawn). TestBuilding tests now use the auto-hosted NGO player. |
 | 3.3 Build script + multi-process localhost nettest | done | compile clean; rebuild OK; verify ALL PASS (+ Build Settings scenes = BuildScenes.All, BuildInfo unstamped, Mono + Run In Background); EditMode 94/94 (+15: nettest args/registry, BasicNetTestCheck catches missing player/stale remote copy/disagreeing still player/short or missing moves/missing views, VersionInfo compatibility rules, build folders/targets/options/steam_appid policy/player settings/scene list); PlayMode 135/135 (+3 in-process: channel both ways with sender ids, 'basic' scenario passes host+3 clients and host sees each mover where it stopped, timeout aborts with a recorded error); `Tools/unity.sh build` Mac universal 120 MB + Windows 103 MB, signature verified, zips 47 MB/38 MB; `Tools/unity.sh nettest` 4/4 PASS (each client walked 2.15 m, all 4 machines agree), repeat run reuses the build, unknown scenario fails 0/4 with a clear message. |
 | 3.3-fix Review fix: dirty builds stamped as HEAD | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 97/97 (+3: GitInfo.Label dirty/clean/unknown, real repo gives a hex label, dirty/unknown keys only match the same build time incl. Mac+Windows pair, clean vs dirty refused); PlayMode 135/135; build-dev stamps `a7e1f70-dirty` in BUILD.txt and the player, BuildInfo.asset reset after; nettest 4/4 PASS. |
+| 3.4 Networked loot | done | compile clean; rebuild OK; verify ALL PASS (+ loot prefabs have NetworkObject/owner-auth NetworkTransform/NetworkLoot, no NetworkRigidbody, DontDestroyWithOwner, registered; scene NetworkObjects have unique ids, a registered source prefab and are SAVED as in-scene placed); EditMode 111/111 (+14: impact report filter owner/bystander/rate/clamp/NaN/far point, just-released carrier until the host simulates a hit itself, request guard, hold state, config + value state, 'loot' check catches value/position/missing/extra/held/ownership/no-move/no-damage/missing views, scenario registered); PlayMode 147/147 (+12 in-process NGO host+2 clients: client pickup host-validated + physics handed over + carried weight on every machine + copies follow the carrier, out-of-reach refused by the host's view, simultaneous grabs -> exactly one holder, drop returns physics to the host and all agree where it lands, throw clamped (100 m/s -> cap) and NaN throw -> drop, carrier leaving frees the item, rolled value + damage + one -$X popup per machine, client can't damage, shatter while carried despawns everywhere with feedback on every machine, pocket hidden/no collisions/in inventory on all machines and back out, reported impact applied once with one host noise, solo TestBuilding loot is host-owned in-scene NetworkObjects; 'loot' scenario host+3 clients in-process); `Tools/unity.sh nettest loot` 4/4 PASS (each client picked up and threw its laptop, all 4 machines agree on 16 items incl. the 13 scene-placed, values incl. host damage, positions within 0.25 m); `nettest basic` 4/4 PASS. Screenshot M3_4_client_carrying_seen_from_host checked. |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -197,6 +208,61 @@ or any exception in the log even when tests pass.
   (motor disabled, `Simulate` driven), stops, reports start/end; after 1.5 s settle every machine reports
   what it sees; host checks 4 views x 4 players, movers >= 1.5 m, every copy within 0.25 m of its owner.
 
+### M3.4 notes
+- **Plan/decisions (built without approval per the brief):** loot prefabs (LootPrefabGenerator) get a
+  NetworkObject (DontDestroyWithOwner, no parent sync), an owner-authoritative NetworkTransform and
+  `NetworkLoot`; no NetworkRigidbody: `Grabbable.SetPhysicsAuthority` makes every non-simulating copy
+  kinematic (no interpolation) and the simulating one dynamic. All loot prefabs are registered in
+  DefaultNetworkPrefabs (`NetworkContentBuilder.RegisterNetworkPrefabs`); `NetworkBootstrapFactory.Create`
+  takes the prefab list (the test harness passes it).
+- **Scripts/Networking/Loot/** (namespace Abandoned.Networking): `NetworkLoot` (NetworkVariables
+  `LootValueState` + `LootHoldState`, request RPCs, impact report/relay, feedback RPCs, Despawn on
+  shatter, orphan handling), `LootServerActions` (host side of pickup/release/unpocket, mirror on clients),
+  `NetworkInteractionHandler` (set by every NetworkBootstrap; non-spawned items fall back to
+  `LocalInteractionHandler`, so offline rigs behave as before), `ImpactReportFilter`, `LootRequestGuard`
+  (one outstanding request per kind; a snagged item asks every physics step), `LootNetConfig`
+  (Data/Networking/LootNetConfig.asset: MaxInheritedSpeed 8, MaxReleaseDistance 3.5, MaxReportedImpactSpeed
+  25, MaxImpactPointDistance 2.5, ImpactReportInterval 0.05, ReportGraceTime 0.75, ...),
+  `NetworkLootDebugView` (F1: owner, hold state, "sim here"/"follows", last clamped release speed; gizmo
+  boxes green on owned items).
+- **Rules:** host validates with `PickupRules` against its own copy of the player; held items move NGO
+  ownership to the carrier, release removes it (host simulates thrown/resting loot); the carrier's
+  reported release pose is used when within MaxReleaseDistance of the host's view of its eyes (the
+  host's copy lags by interpolation). Release speed is clamped to a full-charge throw + MaxInheritedSpeed
+  for remote players (non-finite -> 0). Pocketed items stay host-owned. A holder who leaves: the host
+  frees the item where they last stood.
+- **Impacts:** `LootItem.OnCollisionEnter` only judges hits on the machine that simulates the body
+  (`CollisionImpact`); clients that own the item send `ReportImpactRpc`; the host filters (current owner,
+  or the just-released owner within ReportGraceTime unless the host's own physics hit something since),
+  clamps, plays the sound for everyone else, applies `ApplyImpact` + host noise. Damage/shatter feedback
+  goes to clients by `DamagedRpc`/`ShatteredRpc` -> `LootItem.Replay*` -> `LootFeedback`. `LootItem.Remover`
+  despawns on the host. Clients never apply damage (`HasValueAuthority` per item).
+- **In-scene loot:** scene management is off, so a joining client destroys its own scene copies and
+  respawns the host's from the source prefab hash. That only works if the saved scene marks them
+  in-scene placed with the source hash, which NGO's OnValidate only writes once the scene is saved AND in
+  Build Settings: `Editor/NetworkObjectIds.StampScene` does it at the end of `TestBuildingBuilder.Build`
+  (prefab assets: `StampPrefab`). The validator checks the saved file, since opening the scene in the
+  editor fixes it in memory and hides the problem. Without it every item is doubled on clients.
+- **Bug found + fixed:** a freshly spawned host copy sometimes snapped to the prefab origin (NGO
+  instantiates at the prefab position, then moves the transform; the interpolated body could write its
+  stale pose back). `Grabbable.SnapBodyToTransform()` in `NetworkLoot.OnNetworkSpawn` (and on unpocket).
+  Seen in about half of in-process 'loot' scenario runs before (items at (0,0,0), players flung), never in
+  repeated runs after. A standalone reproduction (slow fixed step, ignore-collision pairs) did not
+  trigger it, so there's no dedicated regression test; the in-process scenario test covers it.
+- **Tests:** `NetLootKit` (spawn on the host, per-machine copies, wait for hold state) and
+  `MachineSeparator` (in-process only: makes colliders of different machines ignore each other in
+  FixedUpdate whenever something spawns; the machines share one physics world). Loot tests are in
+  `NetworkLootPickupTests` / `NetworkLootValueTests` (base `NetworkLootTestBase`, host + 2 clients),
+  `LootNetTestScenarioTests`, `TestBuildingLootTests.SoloHostSpawnsPlacedLootAsHostOwnedNetworkObjects`.
+- **'loot' nettest** (`LootNetTestScenario` + `LootNetTestCheck`, `NetTestResult.lootActions/lootViews`):
+  host spawns a laptop 1 m in front of each client; each client picks it up through the real handler,
+  carries 0.75 s, throws (3 m/s fwd, 1.5 up); after settling the host applies a 9 m/s impact (25% loss);
+  every machine reports every spawned loot item; the host's view is the truth. Timeouts record what the
+  client saw (hold, owner, hints, positions).
+- **Not done here (later tasks):** shared carrying (3.3); remote players' look pitch (the host's view of
+  a client's eyes uses yaw only; unpocket uses the client's aim); trolley; appraisal UI (values are already
+  replicated).
+
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
 walking into resting heavy loot ragdolled you; click-to-recapture after Esc threw the held item;
@@ -208,11 +274,11 @@ kerb drops landed at ground-stick speed; crouched+holding couldn't stand; far pi
 (now drives impact noise); prefabs could drift from definitions (validator checks); F1 views for loot
 and ragdoll; private serialized profile fields; one class per test file. 6 regression tests added.
 **Deferred to M3 (networking, rejected for M1 but real later):** loot value initialised in Start and
-not replicated; hold/pocket state only on the applying machine; carrier-owned held items mean the
-host doesn't see their collisions (use `LootItem.ApplyImpact` with client reports); LootFeedback
-driven by host-only events; Shatter must Despawn not Destroy; every Player prefab instance has an
-enabled CinemachineCamera/input/look (disable on non-owners) [done M3.2]; remote players' footsteps need
-replicated grounded state [done M3.2].
+not replicated [done M3.4]; hold/pocket state only on the applying machine [done M3.4]; carrier-owned
+held items mean the host doesn't see their collisions (use `LootItem.ApplyImpact` with client reports)
+[done M3.4]; LootFeedback driven by host-only events [done M3.4]; Shatter must Despawn not Destroy
+[done M3.4]; every Player prefab instance has an enabled CinemachineCamera/input/look (disable on
+non-owners) [done M3.2]; remote players' footsteps need replicated grounded state [done M3.2].
 
 ## Facepunch spike result (end of M1, ~1 h)
 Branch `spike/facepunch-transport` @ `45fc975` (throwaway, not merged, not pushed).
