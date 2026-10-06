@@ -12,6 +12,7 @@ namespace Abandoned.EditorTools
         public static readonly string[] All =
         {
             TestBuildingBuilder.ScenePath,
+            MallBuilder.ScenePath,
         };
 
         public static void ApplyToEditorSettings()

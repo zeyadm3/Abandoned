@@ -17,12 +17,15 @@ namespace Abandoned.Tests
 
         public static GameObject Player => NetworkPlayer.Local != null ? NetworkPlayer.Local.gameObject : null;
 
-        public static IEnumerator Load()
+        public static IEnumerator Load() => Load(Name);
+
+        /// <summary>Any session scene (TestBuilding, Mall): load it and wait for the auto-hosted solo player.</summary>
+        public static IEnumerator Load(string sceneName)
         {
-            yield return SceneManager.LoadSceneAsync(Name, LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
             // NetworkBootstrap hosts in Start; the host's player is spawned during StartHost.
             for (int i = 0; i < MaxFramesToSpawn && Player == null; i++) yield return null;
-            Assert.IsNotNull(Player, "TestBuilding didn't auto-host a solo player");
+            Assert.IsNotNull(Player, $"{sceneName} didn't auto-host a solo player");
         }
     }
 }

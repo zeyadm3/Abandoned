@@ -100,39 +100,35 @@ namespace Abandoned.EditorTools
 
         private static void AddStructure(Transform root)
         {
-            var config = AssetDatabase.LoadAssetAtPath<StructureConfig>(StructureContentBuilder.ConfigPath);
-            var visuals = AssetDatabase.LoadAssetAtPath<StructureVisualConfig>(StructureContentBuilder.VisualConfigPath);
-            var fracturedTile = AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath);
-            if (config == null || visuals == null || fracturedTile == null)
-            {
-                Debug.LogError("Structure content missing; run Tools/Abandoned/Create Structure Content.");
-                return;
-            }
+            var setup = new StructureSceneSetup();
+            if (!setup.IsValid) return;
             var matched = new HashSet<string>();
 
             // Ground tiles: nothing below them in this building, so they can crack but never fall.
             foreach (Transform tile in Children(root, "GroundFloor/Tiles"))
-                AddSection(tile, SectionType.Floor, false, config, visuals, fracturedTile, matched);
+                AddSection(setup, tile, SectionType.Floor, false, matched);
             foreach (Transform tile in Children(root, "UpperFloor/Tiles"))
-                AddSection(tile, tile.name.StartsWith("Balcony") ? SectionType.Balcony : SectionType.Floor, true, config, visuals, fracturedTile, matched);
+                AddSection(setup, tile, tile.name.StartsWith("Balcony") ? SectionType.Balcony : SectionType.Floor, true, matched);
             // GDD 6.4: never collapse the only route out. The stairs are this building's only way down
             // until a rope point/fallback exists, so they creak and crack but can't fall here.
             foreach (Transform segment in Children(root, "Stairs"))
-                AddSection(segment, SectionType.Stair, false, config, visuals, null, matched);
+                AddSection(setup, segment, SectionType.Stair, false, matched, fractured: false);
 
             foreach (string weak in WeakSpots.Keys)
                 if (!matched.Contains(weak)) Debug.LogError($"TestBuilding weak spot '{weak}' matches no section (renamed?).");
+            setup.AddSimulation(TestStability, TestSeed);
+        }
 
-            var simulationObject = new GameObject("Structure");
-            var simulation = simulationObject.AddComponent<StructureSimulation>();
-            SerializedWiring.Set(simulation, "config", config);
-            SerializedWiring.SetFloat(simulation, "stability", TestStability);
-            SerializedWiring.SetInt(simulation, "seed", TestSeed);
-            SerializedWiring.Set(simulationObject.AddComponent<StructureDebugView>(), "simulation", simulation);
-            SerializedWiring.Set(simulationObject.AddComponent<StructureDebugControls>(), "simulation", simulation);
-            var syncPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.StructureNetPrefabPath);
-            if (syncPrefab == null) Debug.LogError("StructureNet prefab missing; run Tools/Abandoned/Create Structure Net Prefab.");
-            else simulationObject.AddComponent<StructureNetSpawner>().EditorSetup(syncPrefab.GetComponent<Unity.Netcode.NetworkObject>());
+        private static void AddSection(StructureSceneSetup setup, Transform piece, SectionType type, bool collapsible,
+            HashSet<string> matched, bool fractured = true)
+        {
+            (float health, float capacity) = (1f, 1f);
+            if (WeakSpots.TryGetValue(piece.name, out var weak))
+            {
+                (health, capacity) = weak;
+                matched.Add(piece.name);
+            }
+            setup.AddSection(piece, type, collapsible, health, capacity, fractured);
         }
 
         private static IEnumerable<Transform> Children(Transform root, string path)
@@ -144,27 +140,6 @@ namespace Abandoned.EditorTools
                 yield break;
             }
             foreach (Transform child in group) yield return child;
-        }
-
-        private static void AddSection(Transform piece, SectionType type, bool collapsible, StructureConfig config,
-            StructureVisualConfig visuals, GameObject fractured, HashSet<string> matched)
-        {
-            (float health, float capacity) = (1f, 1f);
-            if (WeakSpots.TryGetValue(piece.name, out var weak))
-            {
-                (health, capacity) = weak;
-                matched.Add(piece.name);
-            }
-            Transform visual = piece.Find("Visual");
-            if (visual == null) Debug.LogError($"Section '{piece.name}' has no Visual child.");
-            var section = piece.gameObject.AddComponent<StructuralSection>();
-            section.EditorSetup(config, type, collapsible, health, capacity, visual);
-            // Collisions are only reported to the collider's own object; relay child colliders to the section.
-            foreach (Collider c in piece.GetComponentsInChildren<Collider>(true))
-                if (c.gameObject != piece.gameObject)
-                    c.gameObject.AddComponent<SectionColliderRelay>().EditorSetup(section);
-            piece.gameObject.AddComponent<SectionPresentation>().EditorSetup(visuals, fractured);
-            SerializedWiring.SetLayerRecursively(piece.gameObject, GameLayers.StructureLayer);
         }
 
         /// <summary>Concrete ground floor, creaky wooden upper floor and balconies, metal stairs.</summary>

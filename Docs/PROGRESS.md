@@ -19,7 +19,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - M4: 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise done (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-M4 review, tag, builds -> M5.
+Fix M4 review findings -> tag `milestone-4`, builds -> M5.2 loot spawning.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->

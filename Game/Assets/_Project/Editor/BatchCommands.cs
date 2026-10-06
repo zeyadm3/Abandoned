@@ -31,6 +31,7 @@ namespace Abandoned.EditorTools
             NetworkContentBuilder.CreateStructureNetPrefab();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestBuildingBuilder.Build();
+            MallBuilder.Build();
             BuildScenes.ApplyToEditorSettings();
             return true;
         });
@@ -70,6 +71,13 @@ namespace Abandoned.EditorTools
                 Vector3 eye = spawn.transform.position + Vector3.up * EyeHeight;
                 shots.Add(ScreenshotCapture.CaptureFrom(eye, eye + spawn.transform.forward * 10f, "M1_player_eye", 75f));
             }
+
+            EditorSceneManager.OpenScene(MallBuilder.ScenePath, OpenSceneMode.Single);
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(24f, 34f, -34f), new Vector3(24f, 4f, 20f), "M5_mall_overview"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(24f, 1.6f, -6f), new Vector3(24f, 3f, 20f), "M5_mall_entrance"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(13f, 5.6f, 9f), new Vector3(26f, 5f, 22f), "M5_mall_walkway1"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(20f, 1.6f, 6f), new Vector3(22f, 6f, 24f), "M5_mall_atrium_up"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(-20f, 40f, 20f), new Vector3(24f, 0f, 20f), "M5_mall_side"));
 
             Debug.Log("Screenshots written:\n" + string.Join("\n", shots));
             return true;
