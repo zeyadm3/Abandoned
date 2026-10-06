@@ -36,7 +36,10 @@ namespace Abandoned.Tests
             Assert.IsFalse(SteamInitPolicy.Allows(true, NoArgs, out string reason));
             Assert.AreEqual(SteamInitPolicy.DisabledInBatchMessage, reason);
             Assert.IsTrue(SteamInitPolicy.Allows(true, new[] { "Unity", "-batchmode", "-STEAM" }, out _));
-            Assert.IsTrue(SteamInitPolicy.Allows(false, NoArgs, out _));
+            Assert.IsTrue(SteamInitPolicy.Allows(false, false, NoArgs, out _));
+            Assert.IsFalse(SteamInitPolicy.Allows(false, true, NoArgs, out reason), "A test run blocks Steam even outside batch mode.");
+            Assert.AreEqual(SteamInitPolicy.DisabledInBatchMessage, reason);
+            Assert.IsTrue(SteamInitPolicy.Allows(false, true, new[] { "-steam" }, out _));
             Assert.IsFalse(SteamInitPolicy.Allows(false, new[] { "-nosteam" }, out reason));
             Assert.AreEqual(SteamInitPolicy.DisabledByFlagMessage, reason);
             Assert.IsFalse(SteamInitPolicy.Allows(true, new[] { "-steam", "-nosteam" }, out _), "-nosteam wins.");
@@ -51,6 +54,17 @@ namespace Abandoned.Tests
             Assert.DoesNotThrow(() => ok = bootstrap.TryInitialize(true, NoArgs));
             Assert.IsFalse(ok);
             Assert.IsFalse(bootstrap.IsAvailable);
+            Assert.AreEqual(SteamInitPolicy.DisabledInBatchMessage, bootstrap.LastError);
+            Assert.IsFalse(new FacepunchSteamClient().IsValid);
+        }
+
+        [Test]
+        public void TestRunKeepsRealSteamOffOutsideBatchMode()
+        {
+            // Stop here if the guard isn't armed: the call below would otherwise reach the real Steam.
+            Assert.IsTrue(SteamInitPolicy.TestRunActive, "SteamTestRunGuard should mark every test run.");
+            bootstrap.UseClient(new FacepunchSteamClient());
+            Assert.IsFalse(bootstrap.TryInitialize(false, NoArgs));
             Assert.AreEqual(SteamInitPolicy.DisabledInBatchMessage, bootstrap.LastError);
             Assert.IsFalse(new FacepunchSteamClient().IsValid);
         }

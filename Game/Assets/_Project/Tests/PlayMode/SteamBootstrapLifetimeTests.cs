@@ -58,6 +58,13 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
+        public IEnumerator TestRunGuardIsArmedInPlayMode()
+        {
+            yield return null;
+            Assert.IsTrue(SteamInitPolicy.TestRunActive, "A PlayMode run (domain reload on entering Play) must still block real Steam.");
+        }
+
+        [UnityTest]
         public IEnumerator SecondBootstrapIsDiscarded()
         {
             var second = new GameObject("SecondSteamBootstrap").AddComponent<SteamBootstrap>();

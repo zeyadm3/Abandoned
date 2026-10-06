@@ -8,13 +8,16 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   on branch `autobuild-2` (worktree `~/Documents/Abandoned-autobuild2`) per the user's brief in CLAUDE.md
   (decisions log, 2026-10-06 autonomous build). Don't wait for plan approval; record decisions here and
   put human-only items under "Needs you".
-- **M3 progress:** M3.1 done (embedded Facepunch Transport fork + SteamBootstrap). **Next: M3.2** —
+- **M3 progress:** M3.1 done (embedded Facepunch Transport fork + SteamBootstrap) + M3.1-fix (review
+  fixes: Steam shuts down after NGO, test runs block Steam). **Next: M3.2** —
   NetworkBootstrap with the TransportMode enum (Unity Transport / Facepunch), then networked player
   spawning at `PlayerSpawnPoint`s, then the interaction/loot/structure networking listed under
   "Deferred to M3", the multi-process localhost nettest, Steam lobby/invite/relay.
-- **Verification state after M3.1:** compile clean; rebuild OK; verify ALL PASS; EditMode 63/63;
-  PlayMode 116/116; screenshots unchanged (no new visible content).
-- **Steam safety:** Steam is never initialised in batch mode or tests unless Unity gets `-steam`.
+- **Verification state after M3.1-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 64/64;
+  PlayMode 120/120; screenshots OK (no new visible content).
+- **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
+  Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
+  `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
   Never launch Steam from automation.
 - `spike/facepunch-transport` (45fc975) is local only; never merge it (its package files were taken
   into the fork in M3.1, its Editor/Spike files were not).
@@ -73,6 +76,7 @@ or any exception in the log even when tests pass.
 | Task | Status | Verified |
 |---|---|---|
 | 3.1 Embedded Facepunch Transport fork + SteamBootstrap | done | compile clean; verify ALL PASS (new: NetworkConfig, steam_appid.txt in sync, Steam plugin platform settings + no stray Steam binaries); EditMode 63/63 (+16: transport StartClient/StartServer false without Steam with clear log, Initialize doesn't start Steam, no Init/Shutdown/RunCallbacks in transport code, RTT from ping, fork version; init policy, player-readable errors for not running/missing library/update/missing config, fake-client init+shutdown once, plugin settings); PlayMode 116/116 (+4: batch Start leaves Steam off, RunCallbacks every frame + Shutdown on destroy, duplicate discarded, Steam dying mid-game stops pumping without throwing). Real Steam untested (Needs you). |
+| 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
 - Fork: `Game/Packages/com.community.netcode.transport.facepunch` 2.0.0-abandoned.1 (CHANGELOG/README list
@@ -202,6 +206,17 @@ section ids; debug keys only while F1 is on and in dev builds; builder errors on
 fractured tile size shared with the builder and regenerated each rebuild; stairs can't collapse in
 TestBuilding (GDD 6.4: only route out) until a rope/window fallback exists; weak tests strengthened
 and StructureTests split. 9 regression tests added.
+
+### M3.1-fix notes
+- `SteamBootstrap.ShutdownSteam()`: if `NetworkManager.Singleton` is listening, it requests NGO shutdown
+  and hands Steam's shutdown to `DeferredSteamShutdown`, which fires on NGO's `OnServerStopped`/
+  `OnClientStopped` (raised after the transport is closed) or, as a fallback, `NetworkManager.OnDestroying`.
+  On quit, whichever OnApplicationQuit runs first, NGO's own quit handler shuts down synchronously and
+  Steam follows. `IsAvailable` goes false immediately.
+- `SteamInitPolicy.TestRunActive` is set by `Tests/PlayMode/SteamTestRunGuard` (`[assembly: TestRunCallback]`,
+  RunStarted/TestStarted). It lives in the PlayMode test assembly, which is loaded for EditMode runs too.
+  The guard only applies to the real `FacepunchSteamClient`; injected fakes still init.
+- PlayMode tests asmdef now references Unity.Netcode.Runtime + Unity.Networking.Transport (in-process NGO).
 
 ## Open problems
 - One `Tools/unity.sh all` run printed no PlayMode results line; rerun passed 103/103 and a second full

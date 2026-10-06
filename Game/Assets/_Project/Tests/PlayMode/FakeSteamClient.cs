@@ -10,6 +10,8 @@ namespace Abandoned.Tests
         public Exception RunCallbacksException;
         public int InitCalls, RunCallbacksCalls, ShutdownCalls;
         public uint InitAppId;
+        /// <summary>Runs inside Shutdown, so tests can check what else was still alive at that moment.</summary>
+        public Action OnShutdown;
         private bool valid;
 
         public bool IsValid => valid;
@@ -33,6 +35,7 @@ namespace Abandoned.Tests
         public void Shutdown()
         {
             ShutdownCalls++;
+            OnShutdown?.Invoke();
             valid = false;
         }
     }

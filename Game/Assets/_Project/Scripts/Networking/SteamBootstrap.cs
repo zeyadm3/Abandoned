@@ -1,5 +1,6 @@
 using System;
 using Abandoned.Core;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Abandoned.Networking
@@ -60,7 +61,10 @@ namespace Abandoned.Networking
         {
             if (IsAvailable) return true;
 
-            if (!SteamInitPolicy.Allows(isBatchMode, args, out string reason)) return Fail(reason, null);
+            // The test-run guard protects the real Steam account; an injected fake can't touch it, so
+            // bootstrap tests can still exercise the Init path from the editor Test Runner.
+            bool testGuard = SteamInitPolicy.TestRunActive && (client == null || client is FacepunchSteamClient);
+            if (!SteamInitPolicy.Allows(isBatchMode, testGuard, args, out string reason)) return Fail(reason, null);
             if (config == null) return Fail(SteamErrorMessages.ConfigMissing, null);
 
             try
@@ -83,20 +87,42 @@ namespace Abandoned.Networking
             return true;
         }
 
-        /// <summary>Shuts Steam down. Called on quit; public so tests and a future "go offline" can use it.</summary>
+        /// <summary>
+        /// Shuts Steam down. Called on quit; public so tests and a future "go offline" can use it.
+        /// If a network session is still running (possibly over the Facepunch transport), NGO is shut
+        /// down first and Steam only after NGO reports it has stopped: closing Steam under live Steam
+        /// sockets makes NGO's disconnect/transport shutdown throw and clients get no clean disconnect.
+        /// </summary>
         public void ShutdownSteam()
         {
             if (!initialized) return;
             initialized = false;
+
+            NetworkManager network = NetworkManager.Singleton;
+            if (network != null && network.IsListening)
+            {
+                DeferredSteamShutdown.After(network, client);
+                // Deferred NGO shutdown; on quit, NGO's own OnApplicationQuit runs it synchronously
+                // (whichever of the two quit callbacks Unity calls first), firing the stop event.
+                if (!network.ShutdownInProgress) network.Shutdown();
+            }
+            else
+            {
+                ShutdownClient(client);
+            }
+            AvailabilityChanged?.Invoke(false);
+        }
+
+        internal static void ShutdownClient(ISteamClient steamClient)
+        {
             try
             {
-                client.Shutdown();
+                steamClient.Shutdown();
             }
             catch (Exception e)
             {
                 Debug.LogWarning($"[Steam] Shutdown failed: {e.Message}");
             }
-            AvailabilityChanged?.Invoke(false);
         }
 
         private bool Fail(string playerMessage, string detail)
