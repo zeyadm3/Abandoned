@@ -25,11 +25,19 @@ namespace Abandoned.Player
         /// <summary>Frame the cursor was last captured on; that click shouldn't also act in the game.</summary>
         public int CaptureFrame { get; private set; } = -1;
 
-        private void Start() => SetCaptured(true);
+        private void Start()
+        {
+            // NGO sets the spawn pose after Instantiate (so after OnEnable read yaw): pick it up here too.
+            SyncYawFromTransform();
+            SetCaptured(true);
+        }
+
+        /// <summary>Takes yaw from the body's current facing, e.g. after a network spawn placed it.</summary>
+        public void SyncYawFromTransform() => yaw = transform.eulerAngles.y;
 
         // Re-read yaw (the body may have been moved, e.g. by ragdoll recovery) but keep pitch, and
         // never touch the cursor here: being disabled while ragdolled is not pausing.
-        private void OnEnable() => yaw = transform.eulerAngles.y;
+        private void OnEnable() => SyncYawFromTransform();
 
         private void OnDestroy()
         {

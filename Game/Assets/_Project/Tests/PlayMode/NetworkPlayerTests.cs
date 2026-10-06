@@ -162,6 +162,47 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
+        public IEnumerator RemoteCopyDropsItsStandingColliderWhileTheOwnerIsRagdolled()
+        {
+            yield return net.StartSession(clients: 1);
+            NetworkBootstrap client = net.Clients.First();
+            NetworkPlayer own = OwnPlayer(client);
+            NetworkPlayer onHost = PlayerOf(net.Host, client.Manager.LocalClientId);
+            var hostController = onHost.GetComponent<CharacterController>();
+            // The harness switches remote colliders off (shared physics world); real machines keep them.
+            hostController.enabled = true;
+            try
+            {
+                own.Ragdoll.Enter(Vector3.zero);
+                yield return WaitFor(() => onHost.Ragdoll.IsRagdolled, "the host to see the ragdoll", 3f);
+                Assert.IsFalse(hostController.enabled, "no invisible upright capsule where the owner fell");
+                own.Ragdoll.Recover();
+                yield return WaitFor(() => !onHost.Ragdoll.IsRagdolled, "the host to see them get up", 3f);
+                Assert.IsTrue(hostController.enabled, "the standing collider comes back with the player");
+            }
+            finally { hostController.enabled = false; }
+        }
+
+        [UnityTest]
+        public IEnumerator PlayersFaceTheirSpawnPointsForwardAfterLooking()
+        {
+            float[] yaws = { 135f, 90f };
+            for (int i = 0; i < yaws.Length; i++)
+                GameObject.Find($"Spawn_{i}").transform.rotation = Quaternion.Euler(0f, yaws[i], 0f);
+            yield return net.StartSession(clients: 1);
+
+            foreach (NetworkBootstrap machine in net.Machines)
+            {
+                NetworkPlayer own = OwnPlayer(machine);
+                Assert.IsTrue(net.Host.Slots.TryGetSlot(machine.Manager.LocalClientId, out int slot));
+                // What a first captured-cursor frame does; it used to snap the body back to yaw 0.
+                own.GetComponent<PlayerLook>().ApplyLook(Vector2.zero);
+                Assert.AreEqual(0f, Mathf.DeltaAngle(own.transform.eulerAngles.y, yaws[slot]), 1f,
+                    $"{machine.name}'s player faces {own.transform.eulerAngles.y}, its point faces {yaws[slot]}");
+            }
+        }
+
+        [UnityTest]
         public IEnumerator ClientLandingsReachTheHostAsImpacts()
         {
             yield return net.StartSession(clients: 1);

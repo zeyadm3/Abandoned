@@ -11,11 +11,11 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 - **M3 progress:** M3.1 done (embedded Facepunch Transport fork + SteamBootstrap) + M3.1-fix (review
   fixes: Steam shuts down after NGO, test runs block Steam). M3.2 done (NetworkBootstrap + TransportMode,
   networked Player prefab, spawn slots, placeholder network panel, F1 net view; TestBuilding has no
-  scene player any more - it auto-hosts in the editor). **Next:** networked loot (pickup/drop/throw via
+  scene player any more - it auto-hosts in the editor) + M3.2-fix (remote ragdoll collider, spawn facing). **Next:** networked loot (pickup/drop/throw via
   host RPCs, replicated value/damage, Despawn on shatter), shared carrying, networked structure, the
   multi-process localhost nettest, Steam lobby/invite/relay, robustness (PLAYBOOK 3.2-3.6).
-- **Verification state after M3.2:** compile clean; rebuild OK; verify ALL PASS; EditMode 79/79;
-  PlayMode 130/130; screenshots checked (M3_2_four_players_spawned, M3_2_remote_ragdoll_lying, M1_player_eye).
+- **Verification state after M3.2-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 79/79;
+  PlayMode 132/132; screenshots checked (M3_2_four_players_spawned, M3_2_remote_ragdoll_lying, M1_player_eye).
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -258,6 +258,15 @@ and StructureTests split. 9 regression tests added.
   RunStarted/TestStarted). It lives in the PlayMode test assembly, which is loaded for EditMode runs too.
   The guard only applies to the real `FacepunchSteamClient`; injected fakes still init.
 - PlayMode tests asmdef now references Unity.Netcode.Runtime + Unity.Networking.Transport (in-process NGO).
+
+### M3.2-fix notes
+- Remote copies switch their CharacterController off while the owner is ragdolled (the owner's root stays
+  where they fell, so an upright collider there was an invisible pillar) and restore its previous state
+  on getting up (`PlayerRagdoll.ApplyRemoteState`, transition-based so the test harness's disabled remote
+  colliders stay off).
+- `PlayerLook.SyncYawFromTransform()`: called from `NetworkPlayer.OnNetworkSpawn` (owner) and `Start`,
+  because NGO applies the spawn pose after Instantiate/OnEnable; players now face their spawn point's forward.
+- Tests: `RemoteCopyDropsItsStandingColliderWhileTheOwnerIsRagdolled`, `PlayersFaceTheirSpawnPointsForwardAfterLooking`.
 
 ## Open problems
 - One `Tools/unity.sh all` run printed no PlayMode results line; rerun passed 103/103 and a second full

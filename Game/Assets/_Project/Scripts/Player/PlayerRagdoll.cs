@@ -37,6 +37,9 @@ namespace Abandoned.Player
         private float ragdollTime;
         private Vector3 remoteBodyPosition;
         private bool remoteResting;
+        // Whether the remote copy's controller was on when its owner went down, so getting up restores
+        // exactly that (something else, e.g. a test world, may have switched it off on purpose).
+        private bool remoteControllerWasEnabled;
 
         public bool IsRagdolled { get; private set; }
 
@@ -102,6 +105,15 @@ namespace Abandoned.Player
             if (!IsRemote) return;
             remoteBodyPosition = bodyPosition;
             remoteResting = resting;
+            // The owner's root stays where they fell while only the ragdoll moves; a standing collider
+            // left there would be an invisible pillar others bump into and loot rests on.
+            if (ragdolled && !IsRagdolled)
+            {
+                remoteControllerWasEnabled = controller.enabled;
+                controller.enabled = false;
+            }
+            else if (!ragdolled && IsRagdolled)
+                controller.enabled = remoteControllerWasEnabled;
             IsRagdolled = ragdolled;
             Transform t = body.transform;
             if (ragdolled)

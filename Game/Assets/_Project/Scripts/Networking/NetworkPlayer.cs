@@ -47,6 +47,9 @@ namespace Abandoned.Networking
             if (IsOwner)
             {
                 Local = this;
+                // The spawn pose was applied after PlayerLook.OnEnable cached yaw; without this the
+                // first mouse move would snap every player to face +Z.
+                if (TryGetComponent(out PlayerLook look)) look.SyncYawFromTransform();
                 motor.Landed += OnOwnerLanded;
                 ragdoll.Ended += OnOwnerGotUp;
                 LocalPlayerSpawned?.Invoke(this);
