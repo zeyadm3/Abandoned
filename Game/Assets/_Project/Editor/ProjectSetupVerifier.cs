@@ -112,6 +112,15 @@ namespace Abandoned.EditorTools
                 $"Fractured tile {FracturedTileGenerator.PrefabPath} (Tools/Abandoned/Generate Fractured Tile)");
             Check(ProjectLayersSetup.AllPresent(), "Physics layers Player/Loot/Debris/Structure (Tools/Abandoned/Setup Physics Layers)");
 
+            var network = AssetDatabase.LoadAssetAtPath<Abandoned.Networking.NetworkConfig>(NetworkContentBuilder.ConfigPath);
+            Check(network != null, $"Network config {NetworkContentBuilder.ConfigPath} (Tools/Abandoned/Create Network Content)");
+            Check(NetworkContentBuilder.SteamAppIdFileMatches(network),
+                $"Game/{NetworkContentBuilder.SteamAppIdFile} matches NetworkConfig.SteamAppId (Tools/Abandoned/Create Network Content)");
+            var steamProblems = SteamPluginSettings.Problems();
+            Check(steamProblems.Count == 0, steamProblems.Count == 0
+                ? "Steam plugin platform settings (Posix: mac editor/mac/Linux, Win64: win editor/Win64, native libs)"
+                : "Steam plugin platform settings (Tools/Abandoned/Fix/Apply Steam Plugin Settings): " + string.Join("; ", steamProblems));
+
             foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
             {
                 var definition = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));

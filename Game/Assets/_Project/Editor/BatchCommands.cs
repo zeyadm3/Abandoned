@@ -19,6 +19,8 @@ namespace Abandoned.EditorTools
         public static void RebuildContent() => RunAndExit(() =>
         {
             ProjectLayersSetup.Apply();
+            SteamPluginSettings.Apply();
+            NetworkContentBuilder.CreateMissing();
             LootCatalogBuilder.CreateMissing();
             LootPrefabGenerator.GenerateAll();
             StructureContentBuilder.CreateMissing();

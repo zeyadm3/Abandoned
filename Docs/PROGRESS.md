@@ -3,27 +3,30 @@
 Living log for autonomous work. A new session must be able to continue from this file alone.
 Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's prompt.
 
-## Current state (2026-10-06)
-- **Milestones 0, 1 and 2 are done.** M1 and M2 were hand-tested in Play mode by the user and approved
-  ("I tested M1 and M2 myself and they work"), on top of the batch verification below
-  (EditMode 47/47, PlayMode 112/112, verify ALL PASS, screenshots checked).
-- **Branches:** `autobuild` was merged into `main` (fast-forward) and both are pushed. Work on `main`
-  from now on unless the user asks for another autonomous branch. Tags `milestone-0/1/2` are pushed.
-  `spike/facepunch-transport` (45fc975) is local only, never merge it.
-- **Next: Milestone 3 — "Together"** (Docs/PLAYBOOK.md Part 4, M3 prompts). Start with the Facepunch
-  fork below, then NetworkBootstrap with the TransportMode enum (Unity Transport / Facepunch), then
-  networked player spawning at `PlayerSpawnPoint`s, then the interaction/loot/structure networking
-  listed under "Deferred to M3".
-- **Working rules:** one task at a time; plan first for new systems and wait for the user's OK;
-  verify each task with `Tools/unity.sh all` (Unity must be closed); commit after each passing task;
-  push only after the user confirms a step works (standing permission for main). New packages need
-  the user's approval first (the Facepunch fork counts — ask before adding it).
-- **Open question for the user:** a "voice plan change" (deferred voice / voice interface stub /
-  research note) was mentioned once in a pasted message, but no such request exists in the record and
-  the user didn't confirm details. Ask before doing anything voice-related; CLAUDE.md still says
-  Dissonance + Dissonance for NGO from Milestone 4.
+## Current state (2026-10-06, autonomous build M3–M10 on branch `autobuild-2`)
+- **Milestones 0, 1 and 2 are done** and hand-tested by the user. M3–M10 are being built autonomously
+  on branch `autobuild-2` (worktree `~/Documents/Abandoned-autobuild2`) per the user's brief in CLAUDE.md
+  (decisions log, 2026-10-06 autonomous build). Don't wait for plan approval; record decisions here and
+  put human-only items under "Needs you".
+- **M3 progress:** M3.1 done (embedded Facepunch Transport fork + SteamBootstrap). **Next: M3.2** —
+  NetworkBootstrap with the TransportMode enum (Unity Transport / Facepunch), then networked player
+  spawning at `PlayerSpawnPoint`s, then the interaction/loot/structure networking listed under
+  "Deferred to M3", the multi-process localhost nettest, Steam lobby/invite/relay.
+- **Verification state after M3.1:** compile clean; rebuild OK; verify ALL PASS; EditMode 63/63;
+  PlayMode 116/116; screenshots unchanged (no new visible content).
+- **Steam safety:** Steam is never initialised in batch mode or tests unless Unity gets `-steam`.
+  Never launch Steam from automation.
+- `spike/facepunch-transport` (45fc975) is local only; never merge it (its package files were taken
+  into the fork in M3.1, its Editor/Spike files were not).
 
-## M3 plan: Facepunch fork (from the spike, needs the user's OK to add)
+## Needs you
+- [ ] Real Steam connection test (M3.1+): Steam running on both machines, App ID 480. Start the game
+      from the editor/Mac build, check the F1 overlay shows "Steam: on <your name>"; then host + join
+      over the Facepunch transport with the Windows friend (lands with M3.2 NetworkBootstrap/lobby).
+- [ ] Quit Steam and start the game: the menu/F1 overlay should say "Steam isn't running - start
+      Steam and try again." and nothing should throw.
+
+## M3 plan: Facepunch fork (from the spike; pre-approved and DONE in M3.1)
 1. Embed a copy of `com.community.netcode.transport.facepunch` 2.0.0 in `Game/Packages/` (not a git
    URL), replacing its bundled Facepunch.Steamworks with **2.5.2** (`Facepunch.Steamworks.Posix.dll`
    for Editor/macOS/Linux, `Win64.dll`, universal `libsteam_api.dylib`, `steam_api64.dll`), each with
@@ -65,6 +68,33 @@ or any exception in the log even when tests pass.
 | 2.4 Stability % + seeded pre-damage | done | Capacity/decay scaling, seeded pre-damage (same seed same result, ineligible never damaged), re-roll restores collapsed sections, determinism trace test. Keys: - / = / F2. |
 | 2.5 NoiseEvent system | done | Footsteps (gameplay noise values), loot impacts, drag scraping, creaks, cracks, collapses; F1 noise view. |
 | Heavy items on weak upper tiles/balconies in TestBuilding | done | Automated exit test: dragging the rack onto Tile_U_3_3 collapses it and the rack falls through; lowering stability drops the statue into the atrium. |
+
+## Milestone 3 — Together
+| Task | Status | Verified |
+|---|---|---|
+| 3.1 Embedded Facepunch Transport fork + SteamBootstrap | done | compile clean; verify ALL PASS (new: NetworkConfig, steam_appid.txt in sync, Steam plugin platform settings + no stray Steam binaries); EditMode 63/63 (+16: transport StartClient/StartServer false without Steam with clear log, Initialize doesn't start Steam, no Init/Shutdown/RunCallbacks in transport code, RTT from ping, fork version; init policy, player-readable errors for not running/missing library/update/missing config, fake-client init+shutdown once, plugin settings); PlayMode 116/116 (+4: batch Start leaves Steam off, RunCallbacks every frame + Shutdown on destroy, duplicate discarded, Steam dying mid-game stops pumping without throwing). Real Steam untested (Needs you). |
+
+### M3.1 notes
+- Fork: `Game/Packages/com.community.netcode.transport.facepunch` 2.0.0-abandoned.1 (CHANGELOG/README list
+  the patches). Facepunch.Steamworks 2.5.2; removed linux32, 32-bit steam_api.dll and .lib import libs;
+  WindowsStandalone32 dropped from the transport asmdef. Patches: no `SteamClient.Shutdown()` in
+  `Shutdown()`, no `SteamClient.Init()`/`RunCallbacks()` in the transport at all (SteamBootstrap owns
+  them), StartClient/StartServer return false + `FacepunchTransport.SteamNotRunningMessage` when Steam
+  isn't valid, `GetCurrentRtt` = `Connection.QuickStatus().Ping`, null-safe LogLevel.
+- Plugin settings are applied by `SteamPluginSettings` (Editor; Tools/Abandoned/Fix/Apply Steam Plugin
+  Settings, also in `RebuildContent`) and checked by the verifier: Posix dll = mac editor + macOS +
+  Linux64 players; Win64 dll = Windows editor + Win64; universal dylib = mac editor + macOS;
+  steam_api64.dll = Windows editor + Win64; linux64 .so = Linux editor + Linux64.
+- Runtime (Abandoned.Networking): `NetworkConfig` (Data/Networking, SteamAppId 480, InitSteamOnStart),
+  `SteamBootstrap` (singleton, DontDestroyOnLoad, `Create(config)`, `TryInitialize()` (retry-safe),
+  `IsAvailable`, `LastError`, `LocalSteamId`, `AvailabilityChanged`, F1 line at the bottom of the
+  screen), `ISteamClient` + `FacepunchSteamClient` (seam for tests), `SteamInitPolicy` (-steam /
+  -nosteam, batch off), `SteamErrorMessages`. Abandoned.Runtime references the transport assembly.
+  Nothing creates SteamBootstrap in scenes yet; M3.2's NetworkBootstrap will (Facepunch mode).
+- `Game/steam_appid.txt` (480) is for the editor; dev builds need a copy beside the executable (build
+  script, later task). Release builds with the real App ID must not ship it.
+- `Tools/unity.sh rebuild` regenerates Player.prefab/TestBuilding.unity with new fileIDs (same content);
+  revert them with `git checkout` when nothing in their builders changed.
 
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
