@@ -35,6 +35,19 @@ namespace Abandoned.Tests
         }
 
         [Test]
+        public void SomethingAppearingInsideThePlayerDoesNotFlingThem()
+        {
+            // A crate spawned (or landing) overlapping the capsule: the controller pushes us out, and that
+            // push over a very short frame used to become a speed of hundreds of m/s.
+            rig.AddBox("Intruder", rig.Player.transform.position + new Vector3(0.55f, 1f, 0.3f), Vector3.one);
+            rig.Motor.Simulate(Frame(), 0.0005f);
+            Vector3 after = rig.Player.transform.position;
+            rig.Run(Frame(), 0.25f);
+            Assert.Less(rig.Motor.HorizontalSpeed, 0.5f, "standing still stays still");
+            Assert.Less(Vector3.ProjectOnPlane(rig.Player.transform.position - after, Vector3.up).magnitude, 0.2f, "and isn't carried off");
+        }
+
+        [Test]
         public void WalkReachesWalkSpeedWithinATenthOfASecond()
         {
             float t = rig.RunUntil(Frame(Forward), () => rig.Motor.HorizontalSpeed >= rig.Config.WalkSpeed * 0.95f, 1f);

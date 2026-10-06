@@ -136,7 +136,30 @@ namespace Abandoned.Tests
             Object.DestroyImmediate(heavy);
         }
 
-        private static void SetCrew(LootDefinition definition, int required, Vector3[] points)
+        [Test]
+        public void NudgeLimitStopsOnlyOutwardMotionAtTheBudgetEdge()
+        {
+            Vector3 east = new(1f, 0f, 0f);
+            Assert.AreEqual(east, SharedCarryForces.WithoutOutward(east, new Vector3(0.5f, 0f, 0f), 0.75f), "inside the budget it moves freely");
+            Assert.AreEqual(Vector3.zero, SharedCarryForces.WithoutOutward(east, new Vector3(0.8f, 0f, 0f), 0.75f), "at the edge it can't go further out");
+            Assert.AreEqual(-east, SharedCarryForces.WithoutOutward(-east, new Vector3(0.8f, 0f, 0f), 0.75f), "but it can come back");
+            Vector3 diagonal = new(1f, 0f, 1f);
+            Assert.AreEqual(new Vector3(0f, 0f, 1f), SharedCarryForces.WithoutOutward(diagonal, new Vector3(2f, 5f, 0f), 0.75f),
+                "only the outward part goes (height ignored); sliding around the edge stays");
+        }
+
+        [Test]
+        public void YawIgnoresTiltAndFollowsHeading()
+        {
+            Quaternion heading = Quaternion.Euler(0f, 90f, 0f);
+            Assert.Less(Quaternion.Angle(heading, SharedCarryable.YawOf(heading * Quaternion.Euler(15f, 0f, 10f))), 0.5f,
+                "a swaying load keeps its heading");
+            Assert.Less(Quaternion.Angle(heading, SharedCarryable.YawOf(heading)), 0.01f);
+            Quaternion onItsBack = heading * Quaternion.Euler(-90f, 0f, 0f);
+            Assert.IsTrue(float.IsFinite(SharedCarryable.YawOf(onItsBack).w), "lying on its back still has a heading");
+        }
+
+                private static void SetCrew(LootDefinition definition, int required, Vector3[] points)
         {
             var so = new SerializedObject(definition);
             so.FindProperty("<RequiredCarriers>k__BackingField").intValue = required;

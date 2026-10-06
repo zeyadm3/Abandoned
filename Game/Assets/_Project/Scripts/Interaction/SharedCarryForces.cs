@@ -50,6 +50,13 @@ namespace Abandoned.Interaction
             {
                 accel = meanPull * cfg.DragSpring - new Vector3(v.x, 0f, v.z) * cfg.DragDamping;
                 accel = Vector3.ClampMagnitude(new Vector3(accel.x, 0f, accel.z), cfg.DragMaxAcceleration);
+                if (item.IsNudgeOnly)
+                {
+                    // Out of nudge budget: nothing pulls it further away, it only slides back or around.
+                    Vector3 offset = body.position - item.NudgeOrigin;
+                    accel = WithoutOutward(accel, offset, cfg.NudgeRadius);
+                    body.linearVelocity = WithoutOutward(v, offset, cfg.NudgeRadius);
+                }
             }
             if (lifted) body.AddForce(accel, ForceMode.Acceleration);
             // Dragged: pull at floor level, where friction acts, so a tall rack slides instead of tipping over.
@@ -59,6 +66,17 @@ namespace Abandoned.Interaction
 
             body.angularVelocity = Vector3.Lerp(body.angularVelocity, TargetSpin(item, body, n, meanPull, centroid, lifted, time),
                 1f - Mathf.Exp(-(lifted ? cfg.AngularResponse : cfg.DragAngularResponse) * dt));
+        }
+
+        /// <summary>Removes the part of <paramref name="vector"/> that leads further out once the horizontal offset reaches the radius.</summary>
+        public static Vector3 WithoutOutward(Vector3 vector, Vector3 offset, float radius)
+        {
+            offset.y = 0f;
+            float distance = offset.magnitude;
+            if (distance < radius || distance < 1e-4f) return vector;
+            Vector3 outward = offset / distance;
+            float along = Vector3.Dot(vector, outward);
+            return along > 0f ? vector - outward * along : vector;
         }
 
         private static Vector3 FloorPoint(SharedCarryable item, Rigidbody body)

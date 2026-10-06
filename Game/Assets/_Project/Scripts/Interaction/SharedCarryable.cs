@@ -11,8 +11,9 @@ namespace Abandoned.Interaction
     /// slowest carrier's speed and sways when they disagree. Membership is applied here on every
     /// machine (validated by an <see cref="IInteractionHandler"/>, mirrored by networking); the forces
     /// run only where the body is simulated, which for a shared carry is always the host (CLAUDE.md).
-    /// Each carrier's "desired hold point" is their feet + the grip offset taken when they grabbed;
-    /// networking feeds remote carriers' own fresher targets in through <see cref="SetInputTarget"/>.
+    /// Each carrier's "desired hold point" is their feet + the grip offset taken when they grabbed,
+    /// kept in the item's yaw frame so it turns with the item (a carrier at one end stays at that end
+    /// through a corner); networking feeds remote carriers' own fresher targets in through <see cref="SetInputTarget"/>.
     /// </summary>
     [RequireComponent(typeof(Grabbable))]
     public class SharedCarryable : MonoBehaviour
@@ -22,12 +23,15 @@ namespace Abandoned.Interaction
         [SerializeField] private SharedCarryConfig config;
 
         private readonly PlayerCarrier[] carriers = new PlayerCarrier[MaxPoints];
+        // Feet -> handle, in the item's yaw frame (see GripWorld).
         private readonly Vector3[] grips = new Vector3[MaxPoints];
         private readonly Vector3[] inputTargets = new Vector3[MaxPoints];
         private readonly float[] inputTimes = { float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity };
         private Grabbable grabbable;
         private Vector3[] localPoints;
         private float[] pointHeights;
+        private Vector3 nudgeOrigin;
+        private bool hasNudgeOrigin;
 
         public SharedCarryConfig Config => config;
         public Grabbable Grabbable => grabbable;
@@ -37,6 +41,12 @@ namespace Abandoned.Interaction
         public bool IsLifted => CarrierCount > 0 && CarrierCount >= RequiredCarriers;
         /// <summary>Held, but by too few people: it stays on the floor and rests its own weight.</summary>
         public bool IsDragged => CarrierCount > 0 && !IsLifted;
+        /// <summary>Held by too few people and too big to drag alone: it only moves within a small nudge budget.</summary>
+        public bool IsNudgeOnly => IsDragged && !CanBeDraggedUnderCrewed;
+        /// <summary>Host: where the current nudge budget is centred (where the under-crewed hold began).</summary>
+        public Vector3 NudgeOrigin => nudgeOrigin;
+        /// <summary>Horizontal metres of the nudge budget used so far (F1).</summary>
+        public float NudgeUsed => hasNudgeOrigin ? Vector3.ProjectOnPlane(transform.position - nudgeOrigin, Vector3.up).magnitude : 0f;
         public bool HasFreePoint => CarrierCount < PointCount;
         public int MissingCarriers => Mathf.Max(0, RequiredCarriers - CarrierCount);
         /// <summary>Gameplay kg each carrier takes while lifted (their load and slowdown); 0 while dragged.</summary>
@@ -67,7 +77,21 @@ namespace Abandoned.Interaction
         }
 
         public PlayerCarrier CarrierAt(int index) => carriers[index];
+        /// <summary>The grip in the item's yaw frame (what's replicated).</summary>
         public Vector3 GripAt(int index) => grips[index];
+        /// <summary>The grip turned to the item's current heading.</summary>
+        public Vector3 GripWorld(int index) => Yaw * grips[index];
+
+        /// <summary>The item's heading on the floor plane (tilt ignored, so a swaying load doesn't swing its carriers).</summary>
+        public Quaternion Yaw => YawOf(transform.rotation);
+
+        public static Quaternion YawOf(Quaternion rotation)
+        {
+            Vector3 forward = Vector3.ProjectOnPlane(rotation * Vector3.forward, Vector3.up);
+            // Tipped onto its front or back: its up axis shows which way it lies.
+            if (forward.sqrMagnitude < 1e-4f) forward = Vector3.ProjectOnPlane(rotation * Vector3.down, Vector3.up);
+            return forward.sqrMagnitude < 1e-8f ? Quaternion.identity : Quaternion.LookRotation(forward, Vector3.up);
+        }
         public Vector3 PointWorld(int index) => transform.TransformPoint(localPoints[index]);
 
         public int IndexOf(PlayerCarrier carrier)
@@ -96,21 +120,25 @@ namespace Abandoned.Interaction
             return best;
         }
 
-        /// <summary>Horizontal offset from the carrier's feet to the point, clamped to a comfortable arm's length.</summary>
+        /// <summary>
+        /// Horizontal offset from the carrier's feet to the point, clamped to a comfortable arm's length,
+        /// in the item's yaw frame: a world-fixed offset would jam long items at corners.
+        /// </summary>
         public Vector3 GripFor(int index, PlayerCarrier carrier)
         {
             Vector3 flat = PointWorld(index) - carrier.transform.position;
             flat.y = 0f;
             float distance = flat.magnitude;
             Vector3 direction = distance > 1e-3f ? flat / distance : Vector3.ProjectOnPlane(carrier.transform.forward, Vector3.up).normalized;
-            return direction * Mathf.Clamp(distance, config.MinGripDistance, config.MaxGripDistance);
+            return Quaternion.Inverse(Yaw) * (direction * Mathf.Clamp(distance, config.MinGripDistance, config.MaxGripDistance));
         }
 
         /// <summary>Where the carrier wants their point, from where this machine sees them.</summary>
         public Vector3 ComputedTarget(int index)
         {
             Vector3 feet = carriers[index].transform.position;
-            return new Vector3(feet.x + grips[index].x, feet.y + pointHeights[index] + config.LiftClearance, feet.z + grips[index].z);
+            Vector3 grip = GripWorld(index);
+            return new Vector3(feet.x + grip.x, feet.y + pointHeights[index] + config.LiftClearance, feet.z + grip.z);
         }
 
         /// <summary>The carrier's own reported target while fresh (remote carriers), else the computed one.</summary>
@@ -124,7 +152,7 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>Where the carrier of a point should stand: the point minus their grip (horizontal only matters).</summary>
-        public Vector3 AnchorFor(int index) => PointWorld(index) - grips[index];
+        public Vector3 AnchorFor(int index) => PointWorld(index) - GripWorld(index);
 
         /// <summary>Slowest carrier's top speed (m/s) at their own gait and load: the whole crew's limit.</summary>
         public float GroupMaxSpeed
@@ -215,8 +243,24 @@ namespace Abandoned.Interaction
 
         private void Changed()
         {
+            UpdateNudgeOrigin();
             grabbable.SharedCarryChanged();
             CarriersChanged?.Invoke(this);
+        }
+
+        /// <summary>
+        /// The nudge budget is tied to the item, not to a grab: letting go and grabbing again doesn't
+        /// refill it, or a solo player could inch a statue to the truck. It starts afresh only after a
+        /// full crew lifted it or it ended up well away from the budget (fell through a floor).
+        /// </summary>
+        private void UpdateNudgeOrigin()
+        {
+            if (IsLifted) hasNudgeOrigin = false;
+            if (!IsNudgeOnly) return;
+            Vector3 here = transform.position;
+            if (hasNudgeOrigin && Vector3.Distance(here, nudgeOrigin) <= config.NudgeRadius + config.NudgeResetDistance) return;
+            nudgeOrigin = here;
+            hasNudgeOrigin = true;
         }
 
         private void FixedUpdate()
@@ -244,6 +288,11 @@ namespace Abandoned.Interaction
             }
             Gizmos.color = Color.cyan;
             Gizmos.DrawRay(grabbable.Body.worldCenterOfMass, LastAcceleration * 0.05f);
+            if (!IsNudgeOnly || !hasNudgeOrigin) return;
+            Gizmos.color = new Color(1f, 0.5f, 0f);
+            Gizmos.matrix = Matrix4x4.TRS(nudgeOrigin, Quaternion.identity, new Vector3(1f, 0.01f, 1f));
+            Gizmos.DrawWireSphere(Vector3.zero, config.NudgeRadius);
+            Gizmos.matrix = Matrix4x4.identity;
         }
     }
 }

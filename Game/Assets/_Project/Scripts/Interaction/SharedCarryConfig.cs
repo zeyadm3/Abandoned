@@ -50,6 +50,10 @@ namespace Abandoned.Interaction
         [field: SerializeField, Min(1f)] public float DragMaxAcceleration { get; private set; } = 60f;
         [field: Tooltip("Items nobody may drag alone (Huge) only creep this fast (m/s) until the crew is complete.")]
         [field: SerializeField, Min(0f)] public float CreepSpeed { get; private set; } = 0.35f;
+        [field: Tooltip("An under-crewed item nobody may drag alone moves at most this far (m) from where it was first held: a nudge, not a way to move it (GDD: Huge needs a team or trolley).")]
+        [field: SerializeField, Min(0f)] public float NudgeRadius { get; private set; } = 0.75f;
+        [field: Tooltip("Found this far (m) beyond the nudge budget when grabbed again (lifted away, fell), it gets a fresh budget there.")]
+        [field: SerializeField, Min(0.25f)] public float NudgeResetDistance { get; private set; } = 1f;
         [field: SerializeField, Min(0f)] public float DragUprightGain { get; private set; } = 12f;
         [field: Tooltip("Like AngularResponse, but stiff: a dragged item is kept upright, not swayed.")]
         [field: SerializeField, Min(0.1f)] public float DragAngularResponse { get; private set; } = 30f;

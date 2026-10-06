@@ -22,12 +22,14 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   item striking resting loot damages and pushes it on the host; see "M3.4-fix notes").
   M3.5 done (shared carrying: carry points on Heavy/Huge loot, host-simulated from the carriers'
   streamed hold targets, crew rule, slowest-carrier speed, tether, sway, load split, HUD + F1;
-  'sharedcarry' nettest passes 4/4; see "M3.5 notes").
+  'sharedcarry' nettest passes 4/4; see "M3.5 notes") + M3.5-fix (grips turn with the item so crews can
+  swing long items round corners; under-crewed Huge items only nudge 0.75 m; motor depenetration fling
+  fixed; see "M3.5-fix notes").
   **Next:** networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK 3.4-3.6). Add a
   nettest scenario for each (see "M3.3 notes").
-- **Verification state after M3.5:** compile clean; rebuild OK; verify ALL PASS; EditMode 131/131;
-  PlayMode 159/159; screenshots OK; `Tools/unity.sh nettest sharedcarry` 4/4 PASS, `nettest loot` 4/4
-  PASS and `nettest basic` 4/4 PASS (dev build e2d7d6b-dirty). Shareable zips: build them only AFTER
+- **Verification state after M3.5-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 133/133;
+  PlayMode 162/162; screenshots OK; `Tools/unity.sh nettest sharedcarry` 4/4 PASS, `nettest loot` 4/4
+  PASS and `nettest basic` 4/4 PASS (dev build dd5bf72-dirty). Shareable zips: build them only AFTER
   the task's commit.
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
@@ -81,6 +83,11 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
       (Spring/Damping/WobbleGain), tether slack (0.9 m) and whether carrying at the slowest carrier's
       walk speed feels right. Over real latency the carriers lead the item by about RTT/2 + 100 ms; judge
       whether the tether makes that feel sticky.
+- [ ] M3.5-fix in Multiplayer Play Mode: two players carry the server rack down a corridor and turn a
+      corner by walking around each other; the rack should swing round with them (no jamming or hard
+      rocking). Alone, grab the piano or statue and pull: it should shift a little (~0.75 m) and then
+      not budge, even after letting go (RMB) and grabbing again. Judge whether 0.75 m
+      (SharedCarryConfig.NudgeRadius) is a useful nudge.
 - [ ] M3.2 LAN: two Macs (or Mac + Windows friend on the same network), host on one, join with the
       host's LAN IP:7777 (macOS firewall may ask to allow incoming connections).
 
@@ -149,6 +156,7 @@ or any exception in the log even when tests pass.
 | 3.4 Networked loot | done | compile clean; rebuild OK; verify ALL PASS (+ loot prefabs have NetworkObject/owner-auth NetworkTransform/NetworkLoot, no NetworkRigidbody, DontDestroyWithOwner, registered; scene NetworkObjects have unique ids, a registered source prefab and are SAVED as in-scene placed); EditMode 111/111 (+14: impact report filter owner/bystander/rate/clamp/NaN/far point, just-released carrier until the host simulates a hit itself, request guard, hold state, config + value state, 'loot' check catches value/position/missing/extra/held/ownership/no-move/no-damage/missing views, scenario registered); PlayMode 147/147 (+12 in-process NGO host+2 clients: client pickup host-validated + physics handed over + carried weight on every machine + copies follow the carrier, out-of-reach refused by the host's view, simultaneous grabs -> exactly one holder, drop returns physics to the host and all agree where it lands, throw clamped (100 m/s -> cap) and NaN throw -> drop, carrier leaving frees the item, rolled value + damage + one -$X popup per machine, client can't damage, shatter while carried despawns everywhere with feedback on every machine, pocket hidden/no collisions/in inventory on all machines and back out, reported impact applied once with one host noise, solo TestBuilding loot is host-owned in-scene NetworkObjects; 'loot' scenario host+3 clients in-process); `Tools/unity.sh nettest loot` 4/4 PASS (each client picked up and threw its laptop, all 4 machines agree on 16 items incl. the 13 scene-placed, values incl. host damage, positions within 0.25 m); `nettest basic` 4/4 PASS. Screenshot M3_4_client_carrying_seen_from_host checked. |
 | 3.4-fix Review fixes (follower loot hits players; carried strikes on resting loot) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK (no new visible content); EditMode 115/115 (+4 TrackedVelocity: steady motion converges, first sample/reset report nothing, teleport is not a hit, zero step/NaN ignored); PlayMode 151/151 (+4 in-process NGO: host-thrown safe ragdolls client 1 on its own machine and the host sees it; a resting follower copy knocks nobody down; client-carried laptop swung into a resting TV -> host applies the strike at the carrier's speed, value drops on every machine, TV pushed and the carrier sees where it went; strike reports far from the struck item or naming an item someone else carries are ignored). Both new behaviour tests fail with the fix reverted. `nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS (dev build a62ec5c-dirty). |
 | 3.5 Shared carrying | done | compile clean; rebuild OK; verify ALL PASS (+ Heavy/Huge loot prefabs have SharedCarryable with a config + NetworkSharedCarry, lighter loot has neither); EditMode 131/131 (+16: generated handles (rack ends of long axis, piano ends + long-side middles, max 4), crew sizes Heavy 2 / Huge 3 / override / generator 4, tether (free inside slack, outward blocked, sideways + inward free, pull beyond), HUD wording, SharedCarryState slots/grips, only Heavy/Huge prefabs share, definition validation, 'sharedcarry' verdict catches not-lifted / not-moved / no targets / stuck carrier / disagreeing or missing copy / client-owned, scenario registered); PlayMode 159/159 (+8 in-process NGO host + 2 clients on a 5 m platform: one client can't lift the rack, two do (host keeps the physics, 150 kg each on every machine, item loads nothing, targets streamed), carried past the edge every machine agrees, one lets go -> it falls 5 m, host applies damage, every machine sees it, the other carrier isn't dragged off and loses their grip; piano: 2 can't lift, the host as third does, 166.7 kg each everywhere; crouching client 1 caps client 2 and the rack at crouch speed x load (1.21 vs 2.48 m/s walk); each carrier's share loads the tile under their own feet (body + 150 kg each); one client still drags the rack (rests its 300 kg, stays upright, copies agree); a ragdolled carrier lets go and it drops; pulling apart rocks it >3 deg while the tether keeps them by their handles; 'sharedcarry' scenario host + 3 clients in-process); `Tools/unity.sh nettest sharedcarry` 4/4 PASS (rack lifted 0.39 m, 82 hold targets, carried 1.0 m, all machines within 0.25 m); `nettest loot` + `nettest basic` 4/4 PASS. Screenshot M3_5_two_clients_lift_rack checked (rack held off the floor between two carriers); M2_rack_cracking_floor re-checked (solo drag through the new path keeps the rack upright). |
+| 3.5-fix Review fixes (grips turn with the item; Huge only nudges under-crewed) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK (no new visible content; M3_5_two_clients_lift_rack re-checked: rack held off the floor between two carriers); EditMode 133/133 (+2: nudge limit removes only outward motion at the edge, item yaw ignores tilt); PlayMode 162/162 (+3: two carriers at the rack's ends walk a quarter circle round each other and the rack turns >75 deg with every handle's pull <0.5 m and each carrier within tether slack (fails with the old world-fixed grips); one client pulling the piano 5 s moves it <0.9 m, regrab + 4 s more still <0.9 m, all machines agree; something appearing inside a player over a 0.5 ms frame doesn't fling them (fails on the old motor)); `Tools/unity.sh nettest sharedcarry` 4/4 PASS (rack lifted 0.39 m, 84 targets, carried 1.0 m), `nettest loot` + `nettest basic` 4/4 PASS (dev build dd5bf72-dirty) |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -507,6 +515,29 @@ and StructureTests split. 9 regression tests added.
 - `Tools/unity.sh` zip_build warns when zipping a -dirty/unknown build. Rule: make shareable zips after
   the task's commit (the orchestrator's end-of-milestone builds already run on committed trees).
 - If a new Unity churn file appears, add it to both the churn list below and `GitInfo.ShippedPaths`.
+
+### M3.5-fix notes
+- **Finding 1 (confirmed, fixed): grips were world-fixed.** `SharedCarryable` now stores each grip
+  (feet -> handle) in the item's yaw frame (`GripFor` converts at grab, `GripWorld` = `Yaw * grip`, `Yaw` =
+  heading with tilt ignored so sway doesn't swing carriers). `ComputedTarget` and the tether anchor
+  (`AnchorFor`) use it, so a carrier at one end stays at that end as the item turns; the replicated grip
+  in `SharedCarryState` is the yaw-frame one (every machine applies its own copy's yaw). Stable: a yaw
+  error moves the handles and the targets the opposite way, so the best-fit spin restores it.
+- **Finding 2 (confirmed, fixed): solo Huge creep was unlimited.** `SharedCarryable.IsNudgeOnly`
+  (under-crewed and nobody may drag it alone). The host keeps a nudge origin per item; in
+  `SharedCarryForces` an under-crewed nudge-only item loses any outward pull/velocity once it is
+  `NudgeRadius` (0.75 m) from it (`WithoutOutward`, it can still come back or slide round). The origin is
+  set when an under-crewed hold starts and kept across let-go/regrab (else a solo player inches a statue
+  to the truck); it resets after a full-crew lift or when the item is found more than NudgeRadius +
+  NudgeResetDistance (1 m) away (it fell through a floor). F1: "nudge x/0.75 m" over the item, orange
+  budget circle gizmo. Heavy solo drag is unchanged (trolley stand-in).
+- **Extra (pre-existing flake, fixed):** `SharedCarryLoadTests.EachCarriersShareLoadsTheSectionUnderThem`
+  failed whenever it ran first (and sometimes in class runs): the rack landed flush on a coincident edge
+  of the overlapping test tile + platform colliders and PhysX kicked it over onto client 2, whose motor
+  turned the controller's depenetration push over a 0.5 ms batch frame into ~200 m/s. Two fixes: the
+  test's tiles no longer share an edge with the rack; `PlayerMotor` feedback velocity now only ever slows
+  the player (`ClampMagnitude(actual, intended)`), so anything spawning or landing inside a player can't
+  fling them in the real game either.
 
 ### M3.2-fix notes
 - Remote copies switch their CharacterController off while the owner is ragdolled (the owner's root stays

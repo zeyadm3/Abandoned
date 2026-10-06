@@ -34,9 +34,11 @@ namespace Abandoned.Tests
         public IEnumerator EachCarriersShareLoadsTheSectionUnderThem()
         {
             // Two floor tiles in the platform's surface: client 1 stands on A, client 2 on B. The host steps off both.
+            // Tile edges stay clear of the rack's (x 2.5): a box landing flush on a coincident edge of
+            // overlapping colliders got a PhysX kick that tipped it onto client 2 (first-run flake).
             structure = StructureTestRig.Create(ground: false);
-            StructuralSection a = structure.AddTile("A", new Vector3(0.5f, Height, -1f), collapsible: false, presentation: false);
-            StructuralSection b = structure.AddTile("B", new Vector3(4.5f, Height, -1f), collapsible: false, presentation: false);
+            StructuralSection a = structure.AddTile("A", new Vector3(0.3f, Height, -1f), collapsible: false, presentation: false);
+            StructuralSection b = structure.AddTile("B", new Vector3(4.7f, Height, -1f), collapsible: false, presentation: false);
             structure.StartSimulation();
             PlayerTestRig.ForExisting(OwnPlayer(net.Host).gameObject).Teleport(new Vector3(-3f, Height + 0.05f, -6f));
             ulong id = 0;

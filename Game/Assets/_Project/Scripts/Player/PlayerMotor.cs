@@ -120,10 +120,12 @@ namespace Abandoned.Player
 
             // Feed back what actually happened so speed doesn't build up against walls or ceilings.
             // Computed from our own dt rather than controller.velocity, which uses Time.deltaTime.
+            // Only ever slows us: a depenetration push (something spawned or landed inside us) divided
+            // by a tiny frame time would otherwise fling the player at hundreds of m/s.
             if (dt > 0f)
             {
                 Vector3 actual = (transform.position - before) / dt;
-                horizontalVelocity = new Vector3(actual.x, 0f, actual.z);
+                horizontalVelocity = Vector3.ClampMagnitude(new Vector3(actual.x, 0f, actual.z), horizontalVelocity.magnitude);
             }
             if ((flags & CollisionFlags.Above) != 0 && verticalVelocity > 0f) verticalVelocity = 0f;
 

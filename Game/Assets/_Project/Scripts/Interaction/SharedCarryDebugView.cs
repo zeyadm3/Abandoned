@@ -6,7 +6,7 @@ namespace Abandoned.Interaction
 {
     /// <summary>
     /// F1: over every nearby shared item, its crew (carrying n/required, lifted or dragged), the crew's
-    /// speed cap and whether this machine simulates it; a marker per carry point (free / held, with the
+    /// speed cap, nudge budget used (under-crewed Huge) and whether this machine simulates it; a marker per carry point (free / held, with the
     /// pull toward its carrier's target). Gizmos (SharedCarryable) draw the same in the Scene view.
     /// </summary>
     public class SharedCarryDebugView : MonoBehaviour
@@ -43,8 +43,9 @@ namespace Abandoned.Interaction
                 string sim = item.Grabbable.HasPhysicsAuthority ? "sim here" : "follows";
                 string cap = item.IsLifted ? $"  cap {item.GroupMaxSpeed:0.0} m/s" : "";
                 string accel = item.CarrierCount > 0 && item.Grabbable.HasPhysicsAuthority ? $"  a {item.LastAcceleration.magnitude:0.0}" : "";
+                string nudge = item.IsNudgeOnly && item.Grabbable.HasPhysicsAuthority ? $"  nudge {item.NudgeUsed:0.00}/{item.Config.NudgeRadius:0.00} m" : "";
                 Label(camera, bounds.center + Vector3.up * (bounds.extents.y + 0.55f),
-                    $"<color=#FFD060>{SharedCarryText.Of(item)}</color>  {sim}{cap}{accel}", 360f);
+                    $"<color=#FFD060>{SharedCarryText.Of(item)}</color>  {sim}{cap}{accel}{nudge}", 420f);
                 for (int i = 0; i < item.PointCount; i++)
                 {
                     PlayerCarrier carrier = item.CarrierAt(i);
