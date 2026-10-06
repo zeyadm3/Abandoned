@@ -4,7 +4,6 @@ using Abandoned.Core;
 using Abandoned.Loot;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace Abandoned.Tests
@@ -15,7 +14,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator PlacedLootSettlesWithoutFallingOrBreaking()
         {
-            yield return SceneManager.LoadSceneAsync("TestBuilding", LoadSceneMode.Single);
+            yield return TestBuildingScene.Load();
             LootItem[] items = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None);
             Assert.AreEqual(13, items.Length, "10 M1 items + 3 M2 structure test pieces");
             Assert.GreaterOrEqual(items.Count(i => i.transform.position.y > 3.5f), 3, "some loot upstairs");

@@ -2,7 +2,6 @@ using System.Collections;
 using Abandoned.Player;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using static Abandoned.Tests.PlayerTestRig;
 
@@ -21,10 +20,8 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Single);
-            var motor = Object.FindFirstObjectByType<PlayerMotor>();
-            Assert.IsNotNull(motor, "TestBuilding has no player");
-            rig = ForExisting(motor.gameObject);
+            yield return TestBuildingScene.Load();
+            rig = ForExisting(TestBuildingScene.Player);
         }
 
         [Test]

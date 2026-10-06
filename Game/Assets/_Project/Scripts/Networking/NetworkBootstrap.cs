@@ -1,0 +1,318 @@
+using System;
+using Abandoned.Core;
+using Abandoned.Player;
+using Netcode.Transports.Facepunch;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using UnityEngine;
+
+namespace Abandoned.Networking
+{
+    /// <summary>
+    /// Starts and stops network sessions: picks the transport (<see cref="TransportMode"/>), hosts,
+    /// joins, disconnects, seats players on spawn points and tells <see cref="GameAuthority"/> who the
+    /// host is. Owns its NetworkManager's lifetime, so leaving the scene ends the session.
+    /// Never throws for expected failures: they become <see cref="LastError"/> for the menu.
+    /// </summary>
+    [DefaultExecutionOrder(-500)]
+    public sealed class NetworkBootstrap : MonoBehaviour
+    {
+        [SerializeField] private NetworkConfig config;
+        [SerializeField] private NetworkManager networkManager;
+        [SerializeField] private UnityTransport unityTransport;
+        [SerializeField] private FacepunchTransport facepunchTransport;
+        [Tooltip("Scene bootstraps: replace a NetworkManager left over from a previous scene and apply the auto-host/-connect launch rules.")]
+        [SerializeField] private bool sceneSession = true;
+
+        private const string LoopbackAddress = "127.0.0.1";
+
+        private SpawnSlots slots;
+        private static bool quitting;
+
+        /// <summary>The first bootstrap alive; it answers <see cref="GameAuthority.IsHost"/>.</summary>
+        public static NetworkBootstrap Instance { get; private set; }
+
+        public NetworkConfig Config => config;
+        public NetworkManager Manager => networkManager;
+        public TransportMode Transport { get; private set; }
+        public SpawnSlots Slots => slots;
+        public string LastError { get; private set; } = string.Empty;
+        public string JoinTarget { get; private set; } = string.Empty;
+
+        public bool IsRunning => networkManager != null && networkManager.IsListening;
+
+        /// <summary>Port the host actually listens on (differs from the config when started on port 0).</summary>
+        public ushort HostPort => networkManager != null && networkManager.IsServer && Transport == TransportMode.UnityTransport
+            ? unityTransport.GetLocalEndpoint().Port
+            : (ushort)0;
+
+        public event Action StateChanged;
+
+        /// <summary>Host rules apply offline (solo) and on the host; never on a connected client.</summary>
+        public static bool IsHostOrOffline(NetworkManager manager) =>
+            manager == null || !manager.IsListening || manager.IsServer;
+
+        /// <summary>Wires the references (scene builder and <see cref="NetworkBootstrapFactory"/>).</summary>
+        public void Setup(NetworkConfig networkConfig, NetworkManager manager, UnityTransport utp, FacepunchTransport facepunch, bool sceneSession)
+        {
+            config = networkConfig;
+            networkManager = manager;
+            unityTransport = utp;
+            facepunchTransport = facepunch;
+            this.sceneSession = sceneSession;
+        }
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                GameAuthority.SetHostCheck(() => IsHostOrOffline(networkManager));
+            }
+            if (networkManager == null || config == null)
+            {
+                LastError = "Network setup is incomplete (no NetworkManager or NetworkConfig).";
+                Debug.LogError($"[Net] {LastError}", this);
+                return;
+            }
+            if (sceneSession) ReplaceStaleManager();
+
+            slots = new SpawnSlots(config.MaxPlayers);
+            ApplyConfig();
+            SelectTransport(config.DefaultTransport);
+            networkManager.ConnectionApprovalCallback = OnApproval;
+            networkManager.OnClientDisconnectCallback += OnClientDisconnected;
+            networkManager.OnClientConnectedCallback += OnClientConnected;
+            networkManager.OnServerStopped += OnStopped;
+            networkManager.OnClientStopped += OnStopped;
+            networkManager.OnTransportFailure += OnTransportFailure;
+        }
+
+        private void Start()
+        {
+            if (!sceneSession || networkManager == null || config == null) return;
+            var args = NetworkLaunchArgs.Parse(Environment.GetCommandLineArgs());
+            if (args.Transport.HasValue) SelectTransport(args.Transport.Value);
+
+            if (!string.IsNullOrEmpty(args.ConnectAddress))
+                StartClient(args.ConnectAddress, args.ConnectPort);
+            else if (AutoHostPolicy.ShouldAutoHost(config.AutoHostInEditor, Application.isEditor, IsMainEditor(), args))
+                // Automated runs host on a free loopback port: the user's own editor may be hosting on the real one.
+                StartHost(Application.isBatchMode ? (ushort)0 : config.Port, Application.isBatchMode ? LoopbackAddress : config.ListenAddress);
+        }
+
+        private void ReplaceStaleManager()
+        {
+            NetworkManager current = NetworkManager.Singleton;
+            if (current == networkManager) return;
+            // NetworkManagers are DontDestroyOnLoad; one from a scene we left (still being torn down) must not linger.
+            if (current != null) DestroyImmediate(current.gameObject);
+            networkManager.SetSingleton();
+        }
+
+        private void ApplyConfig()
+        {
+            Unity.Netcode.NetworkConfig ngo = networkManager.NetworkConfig;
+            ngo.ConnectionApproval = true;
+            // Every instance loads its own scene for now (dev scenes, MPPM); the HQ/run flow decides scene sync in M5.
+            ngo.EnableSceneManagement = false;
+            ngo.TickRate = (uint)config.TickRate;
+            unityTransport.MaxConnectAttempts = config.MaxConnectAttempts;
+            unityTransport.ConnectTimeoutMS = config.ConnectTimeoutMs;
+        }
+
+        /// <summary>Chooses the transport for the next session. Refused while one is running.</summary>
+        public bool SelectTransport(TransportMode mode)
+        {
+            if (IsRunning) return Fail("Disconnect before switching transport.");
+            Transport = mode;
+            networkManager.NetworkConfig.NetworkTransport = mode == TransportMode.Steam
+                ? facepunchTransport
+                : unityTransport;
+            StateChanged?.Invoke();
+            return true;
+        }
+
+        /// <summary>Hosts with the configured port (solo play is hosting with nobody else).</summary>
+        public bool StartHost() => StartHost(config.Port, config.ListenAddress);
+
+        public bool StartHost(ushort port, string listenAddress)
+        {
+            if (!CanStart()) return false;
+            if (Transport == TransportMode.Steam)
+            {
+                if (!EnsureSteam()) return false;
+            }
+            else
+            {
+                unityTransport.SetConnectionData(true, LoopbackAddress, port, listenAddress);
+            }
+
+            slots.Clear();
+            LastError = string.Empty;
+            JoinTarget = string.Empty;
+            if (!networkManager.StartHost())
+                return Fail(Transport == TransportMode.UnityTransport
+                    ? $"Couldn't host on port {port}. Is another game already using it?"
+                    : "Couldn't host over Steam.");
+            Debug.Log($"[Net] Hosting over {Transport}{(Transport == TransportMode.UnityTransport ? $" on port {HostPort}" : "")}.");
+            StateChanged?.Invoke();
+            return true;
+        }
+
+        /// <summary>Joins a host: "address[:port]" for Unity Transport, a SteamID64 for Steam.</summary>
+        public bool StartClient(string address, ushort port = 0)
+        {
+            if (!CanStart()) return false;
+            if (string.IsNullOrWhiteSpace(address)) return Fail("Enter an address to join.");
+            NetworkLaunchArgs.SplitAddress(address, out string host, out ushort parsedPort);
+            if (port == 0) port = parsedPort != 0 ? parsedPort : config.Port;
+
+            if (Transport == TransportMode.Steam)
+            {
+                if (!ulong.TryParse(host, out ulong steamId) || steamId == 0)
+                    return Fail("For Steam, enter the host's SteamID64 (invites arrive with the lobby).");
+                facepunchTransport.targetSteamId = steamId;
+                JoinTarget = $"Steam {steamId}";
+                if (!EnsureSteam()) return false;
+            }
+            else
+            {
+                unityTransport.SetConnectionData(true, host, port);
+                JoinTarget = $"{host}:{port}";
+            }
+
+            LastError = string.Empty;
+            if (!networkManager.StartClient()) return Fail($"Couldn't start joining {JoinTarget}.");
+            Debug.Log($"[Net] Joining {JoinTarget} over {Transport}.");
+            StateChanged?.Invoke();
+            return true;
+        }
+
+        public void Disconnect()
+        {
+            if (networkManager == null || !networkManager.IsListening) return;
+            networkManager.Shutdown();
+            StateChanged?.Invoke();
+        }
+
+        /// <summary>One line for menus and the F1 view.</summary>
+        public string Status
+        {
+            get
+            {
+                if (networkManager == null) return "No NetworkManager";
+                if (networkManager.ShutdownInProgress) return "Disconnecting...";
+                if (!networkManager.IsListening) return "Offline";
+                if (networkManager.IsHost)
+                    return $"Hosting ({networkManager.ConnectedClientsIds.Count}/{config.MaxPlayers}) over {Transport}" +
+                           (Transport == TransportMode.UnityTransport ? $", port {HostPort}" : "");
+                return networkManager.IsConnectedClient ? $"Connected to {JoinTarget}" : $"Connecting to {JoinTarget}...";
+            }
+        }
+
+        private bool CanStart()
+        {
+            if (networkManager == null || config == null) return Fail("Network setup is incomplete.");
+            if (networkManager.IsListening || networkManager.ShutdownInProgress) return Fail("Already in a session; disconnect first.");
+            return true;
+        }
+
+        private bool EnsureSteam()
+        {
+            SteamBootstrap steam = SteamBootstrap.Instance != null ? SteamBootstrap.Instance : SteamBootstrap.Create(config);
+            if (steam.IsAvailable || steam.TryInitialize()) return true;
+            return Fail(string.IsNullOrEmpty(steam.LastError) ? SteamErrorMessages.NotRunning : steam.LastError);
+        }
+
+        private void OnApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
+        {
+            if (!slots.TryAssign(request.ClientNetworkId, out int slot))
+            {
+                response.Approved = false;
+                response.Reason = $"The game is full ({config.MaxPlayers} players).";
+                return;
+            }
+            Pose pose = PlayerSpawnPoint.PoseFor(slot);
+            response.Approved = true;
+            response.CreatePlayerObject = true;
+            response.Position = pose.position;
+            response.Rotation = pose.rotation;
+        }
+
+        private void OnClientConnected(ulong clientId) => StateChanged?.Invoke();
+
+        private void OnClientDisconnected(ulong clientId)
+        {
+            if (networkManager.IsServer)
+            {
+                slots.Release(clientId);
+            }
+            else if (clientId == networkManager.LocalClientId || clientId == NetworkManager.ServerClientId)
+            {
+                string reason = networkManager.DisconnectReason;
+                LastError = !string.IsNullOrEmpty(reason) ? reason
+                    : networkManager.IsConnectedClient ? "Lost connection to the host."
+                    : $"Couldn't connect to {JoinTarget}.";
+            }
+            StateChanged?.Invoke();
+        }
+
+        private void OnStopped(bool wasHost)
+        {
+            slots?.Clear();
+            StateChanged?.Invoke();
+        }
+
+        private void OnTransportFailure()
+        {
+            LastError = "The network transport failed; the session ended.";
+            StateChanged?.Invoke();
+        }
+
+        private bool Fail(string message)
+        {
+            LastError = message;
+            Debug.LogWarning($"[Net] {message}");
+            StateChanged?.Invoke();
+            return false;
+        }
+
+        private static bool IsMainEditor()
+        {
+#if UNITY_EDITOR
+            return Unity.Multiplayer.PlayMode.CurrentPlayer.IsMainEditor;
+#else
+            return true;
+#endif
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+                GameAuthority.SetHostCheck(null);
+            }
+            if (networkManager == null) return;
+            networkManager.OnClientDisconnectCallback -= OnClientDisconnected;
+            networkManager.OnClientConnectedCallback -= OnClientConnected;
+            networkManager.OnServerStopped -= OnStopped;
+            networkManager.OnClientStopped -= OnStopped;
+            networkManager.OnTransportFailure -= OnTransportFailure;
+            // The manager is DontDestroyOnLoad; the session belongs to this scene, so it goes with it.
+            if (!quitting) Destroy(networkManager.gameObject);
+        }
+
+        private static void OnQuitting() => quitting = true;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Instance = null;
+            quitting = false;
+            Application.quitting -= OnQuitting;
+            Application.quitting += OnQuitting;
+        }
+    }
+}

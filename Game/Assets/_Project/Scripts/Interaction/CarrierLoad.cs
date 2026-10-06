@@ -16,16 +16,12 @@ namespace Abandoned.Interaction
         [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private PlayerRagdoll ragdoll;
 
-        private const float RagdollRestingSpeed = 1.5f;
-
         public float LoadWeight
         {
             get
             {
                 // A tumbling ragdoll isn't resting on anything yet; a lying one is.
-                bool resting = ragdoll.IsRagdolled
-                    ? ragdoll.Pelvis.linearVelocity.sqrMagnitude < RagdollRestingSpeed * RagdollRestingSpeed
-                    : motor.IsGrounded;
+                bool resting = ragdoll.IsRagdolled ? ragdoll.IsBodyResting : motor.IsGrounded;
                 return resting ? motor.Config.BodyWeight + carrier.CarriedWeight : 0f;
             }
         }
@@ -34,7 +30,7 @@ namespace Abandoned.Interaction
         {
             if (ragdoll.IsRagdolled)
             {
-                points.Add(new LoadPoint(ragdoll.Pelvis.position));
+                points.Add(new LoadPoint(ragdoll.BodyPosition));
                 return;
             }
             // Centre plus four points around the feet, so standing on a seam loads both sections.

@@ -7,7 +7,6 @@ using Abandoned.Player;
 using Abandoned.Structure;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using static Abandoned.Tests.PlayerTestRig;
 
@@ -27,7 +26,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator BuildingIsStableAtRestButTheWeakSpotsWarn()
         {
-            yield return SceneManager.LoadSceneAsync("TestBuilding", LoadSceneMode.Single);
+            yield return TestBuildingScene.Load();
             var sim = Object.FindFirstObjectByType<StructureSimulation>();
             Assert.AreEqual(14 + 20 + 2, sim.Sections.Count, "every tile and stair segment is a section");
             Assert.IsTrue(sim.Sections.Where(s => s.name.StartsWith("Tile_G")).All(s => !s.CanCollapse), "ground floor can't collapse");
@@ -47,8 +46,8 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator DraggingTheServerRackBreaksThroughTheRottenFloor()
         {
-            yield return SceneManager.LoadSceneAsync("TestBuilding", LoadSceneMode.Single);
-            var rig = ForExisting(Object.FindFirstObjectByType<PlayerMotor>().gameObject);
+            yield return TestBuildingScene.Load();
+            var rig = ForExisting(TestBuildingScene.Player);
             var carrier = rig.Player.GetComponent<PlayerCarrier>();
             LootItem rack = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None)
                 .First(l => l.Definition.Id == "server_rack" && l.transform.position.y > 3f);
@@ -85,7 +84,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator LoweringStabilityBringsTheStatueDown()
         {
-            yield return SceneManager.LoadSceneAsync("TestBuilding", LoadSceneMode.Single);
+            yield return TestBuildingScene.Load();
             var sim = Object.FindFirstObjectByType<StructureSimulation>();
             StructuralSection balcony = Section("Balcony_U_3_2");
             yield return WaitFixed(1f);

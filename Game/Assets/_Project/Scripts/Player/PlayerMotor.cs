@@ -111,6 +111,21 @@ namespace Abandoned.Player
             IsGrounded = controller.isGrounded;
         }
 
+        /// <summary>
+        /// Remote copies of other players don't simulate; their owner's grounded/sprint/crouch state is
+        /// replicated and pushed in here so footsteps and structural load read the same properties.
+        /// </summary>
+        public void ApplyRemoteState(bool grounded, bool sprinting, bool crouching)
+        {
+            IsGrounded = grounded;
+            IsSprinting = sprinting;
+            IsCrouching = crouching;
+            if (controller != null) SetHeight(crouching ? config.CrouchHeight : config.StandingHeight);
+        }
+
+        /// <summary>A remote player's landing reported by its owner (host side): same listeners as a local landing.</summary>
+        public void RaiseRemoteLanding(float fallHeight, float impactSpeed) => Landed?.Invoke(fallHeight, impactSpeed);
+
         /// <summary>Forget any fall in progress (after teleports, respawns, getting up from a ragdoll).</summary>
         public void ResetFallTracking() => airborne = false;
 

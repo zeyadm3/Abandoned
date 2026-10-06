@@ -2,7 +2,6 @@ using System.Collections;
 using Abandoned.Core;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace Abandoned.Tests
@@ -12,7 +11,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TestBuildingSurfacesSoundRight()
         {
-            yield return SceneManager.LoadSceneAsync("TestBuilding", LoadSceneMode.Single);
+            yield return TestBuildingScene.Load();
             Assert.AreEqual(SurfaceMaterial.Concrete, Probe(new Vector3(2f, 1f, 2f)));
             Assert.AreEqual(SurfaceMaterial.Wood, Probe(new Vector3(3.5f, 5f, 13f))); // clear of the safe at (2, 14)
             Assert.AreEqual(SurfaceMaterial.Metal, Probe(new Vector3(18f, 3f, 6f)));

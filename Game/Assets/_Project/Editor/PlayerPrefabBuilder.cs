@@ -1,6 +1,9 @@
 using Abandoned.Interaction;
+using Abandoned.Networking;
 using Abandoned.Player;
 using Unity.Cinemachine;
+using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
 using static Abandoned.EditorTools.SerializedWiring;
@@ -10,6 +13,7 @@ namespace Abandoned.EditorTools
     /// <summary>
     /// Builds Prefabs/Player.prefab: CharacterController, input reader, motor, stamina, look,
     /// debug overlay, a capsule placeholder body and a Cinemachine camera locked to the eyes.
+    /// It is NGO's player prefab: NetworkObject + owner-authoritative NetworkTransform + NetworkPlayer.
     /// </summary>
     public static class PlayerPrefabBuilder
     {
@@ -31,6 +35,9 @@ namespace Abandoned.EditorTools
             var feelSettings = LoadOrCreateAsset<FeelSettings>(FeelSettingsPath);
 
             var root = new GameObject("Player");
+            // NetworkObject first: NGO expects it on the root before any NetworkBehaviour.
+            var networkObject = root.AddComponent<NetworkObject>();
+            networkObject.DontDestroyWithOwner = false;
             var controller = root.AddComponent<CharacterController>();
             controller.height = config.StandingHeight;
             controller.center = Vector3.up * (config.StandingHeight / 2f);
@@ -49,7 +56,7 @@ namespace Abandoned.EditorTools
             GameObject body = BuildBody(root.transform, config);
             PlayerRagdollBuilder.Result ragdollParts = PlayerRagdollBuilder.Build(root.transform, ragdollConfig.TotalMass, PlayerMaterial());
             GameObject hitDetector = BuildHitDetector(root.transform, config);
-            BuildCamera(root.transform, eye);
+            CinemachineCamera playerCamera = BuildCamera(root.transform, eye);
 
             var reader = root.AddComponent<PlayerInputReader>();
             var stamina = root.AddComponent<PlayerStamina>();
@@ -64,6 +71,8 @@ namespace Abandoned.EditorTools
             var cameraFeel = root.AddComponent<PlayerCameraFeel>();
             var load = root.AddComponent<CarrierLoad>();
             var footsteps = root.AddComponent<PlayerFootsteps>();
+            NetworkTransform networkTransform = AddNetworkTransform(root);
+            var networkPlayer = root.AddComponent<NetworkPlayer>();
 
             Set(stamina, "config", config);
             Set(look, "config", config);
@@ -109,6 +118,12 @@ namespace Abandoned.EditorTools
             Set(hud, "interactor", interactor);
             Set(hud, "carrier", carrier);
             Set(hud, "inputReader", reader);
+            Set(networkPlayer, "motor", motor);
+            Set(networkPlayer, "ragdoll", ragdoll);
+            Set(networkPlayer, "networkTransform", networkTransform);
+            SetArray(networkPlayer, "ownerOnlyBehaviours",
+                new Object[] { playerCamera, reader, look, motor, interactor, hud, cameraFeel, debug });
+            SetArray(networkPlayer, "ownerOnlyObjects", new Object[] { hitDetector });
 
             SetLayerRecursively(root, Abandoned.Core.GameLayers.PlayerLayer);
             // Saved inactive so the ragdoll's rigidbodies never simulate before PlayerRagdoll takes over.
@@ -117,21 +132,6 @@ namespace Abandoned.EditorTools
             Object.DestroyImmediate(root);
             AssetDatabase.SaveAssets();
             Debug.Log($"Player prefab saved to {PrefabPath}.");
-        }
-
-        /// <summary>Places a Player prefab instance at the pose; returns null if the prefab is missing.</summary>
-        public static GameObject PlaceInScene(Vector3 position, Quaternion rotation)
-        {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
-            if (prefab == null)
-            {
-                Debug.LogWarning($"{PrefabPath} not found; run Tools/Abandoned/Create Player Prefab first.");
-                return null;
-            }
-
-            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-            instance.transform.SetPositionAndRotation(position, rotation);
-            return instance;
         }
 
         private static Material PlayerMaterial() =>
@@ -163,7 +163,23 @@ namespace Abandoned.EditorTools
                 PlayerMaterial(), withCollider: false);
         }
 
-        private static void BuildCamera(Transform root, Transform eye)
+        private static NetworkTransform AddNetworkTransform(GameObject root)
+        {
+            var nt = root.AddComponent<NetworkTransform>();
+            // Clients own their movement (CLAUDE.md); everyone else interpolates the owner's pose.
+            nt.AuthorityMode = NetworkTransform.AuthorityModes.Owner;
+            nt.SyncPositionX = nt.SyncPositionY = nt.SyncPositionZ = true;
+            // Only yaw turns the body; pitch lives on the camera root and stays local for now.
+            nt.SyncRotAngleX = false;
+            nt.SyncRotAngleY = true;
+            nt.SyncRotAngleZ = false;
+            nt.SyncScaleX = nt.SyncScaleY = nt.SyncScaleZ = false;
+            nt.InLocalSpace = false;
+            nt.Interpolate = true;
+            return nt;
+        }
+
+        private static CinemachineCamera BuildCamera(Transform root, Transform eye)
         {
             var go = new GameObject("PlayerCamera");
             go.transform.SetParent(root, false);
@@ -179,6 +195,7 @@ namespace Abandoned.EditorTools
             // Zero damping: first-person look must not lag behind the mouse.
             go.AddComponent<CinemachineHardLockToTarget>().Damping = 0f;
             go.AddComponent<CinemachineRotateWithFollowTarget>().Damping = 0f;
+            return cam;
         }
     }
 }

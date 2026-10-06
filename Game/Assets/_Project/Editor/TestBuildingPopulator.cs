@@ -11,13 +11,18 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Adds the gameplay objects to the TestBuilding scene after its geometry is built:
-    /// the F1 debug toggle, camera brain, player spawn point, player, props and loot.
+    /// the F1 debug toggle, camera brain, player spawn points, the network session objects, props and
+    /// loot. There is no scene-placed player: NGO spawns one per connected player (the solo player hosts).
     /// Coordinates follow TestBuildingBuilder: ground floor y = 0, upper floor y = 4.
     /// </summary>
     public static class TestBuildingPopulator
     {
-        // Parking lot, in front of the narrow door, facing the building.
+        // Parking lot, in front of the narrow door, facing the building. Slot 0 (the host) stands here.
         public static readonly Vector3 SpawnPosition = new(6f, 0.05f, -6f);
+
+        // One point per player (GDD: up to 4), side by side so nobody spawns inside someone else.
+        // Kept clear of the truck spot at x 12.75..15.25.
+        public static readonly float[] SpawnOffsetsX = { 0f, 1.5f, -1.5f, 3f };
 
         private const float Ground = 0f;
         private const float Upper = 4f;
@@ -71,12 +76,15 @@ namespace Abandoned.EditorTools
                 camera.gameObject.AddComponent<CinemachineBrain>();
 
             Transform spawns = GreyboxFactory.Group("Spawns", root);
-            var spawn = new GameObject("PlayerSpawn_0").transform;
-            spawn.SetParent(spawns, false);
-            spawn.SetPositionAndRotation(SpawnPosition, Quaternion.identity);
-            spawn.gameObject.AddComponent<PlayerSpawnPoint>();
+            for (int i = 0; i < SpawnOffsetsX.Length; i++)
+            {
+                var spawn = new GameObject($"PlayerSpawn_{i}").transform;
+                spawn.SetParent(spawns, false);
+                spawn.SetPositionAndRotation(SpawnPosition + Vector3.right * SpawnOffsetsX[i], Quaternion.identity);
+                spawn.gameObject.AddComponent<PlayerSpawnPoint>().EditorSetup(i);
+            }
 
-            PlayerPrefabBuilder.PlaceInScene(spawn.position, spawn.rotation);
+            NetworkSceneBuilder.Add();
             TagSurfaces(root);
             PlaceProps(GreyboxFactory.Group("Props", root));
             PlaceLoot(GreyboxFactory.Group("Loot", root));

@@ -15,6 +15,8 @@ namespace Abandoned.Player
 
         private float yaw;
         private float pitch;
+        // Only the look that captured the cursor may free it: a remote player leaving mustn't unlock ours.
+        private bool ownsCursor;
 
         public float Pitch => pitch;
 
@@ -31,7 +33,7 @@ namespace Abandoned.Player
 
         private void OnDestroy()
         {
-            if (CursorCaptured) SetCursorCaptured(false);
+            if (ownsCursor && CursorCaptured) SetCursorCaptured(false);
         }
 
         private void Update()
@@ -56,6 +58,7 @@ namespace Abandoned.Player
         private void SetCaptured(bool captured)
         {
             if (captured) CaptureFrame = Time.frameCount;
+            ownsCursor = captured;
             SetCursorCaptured(captured);
         }
 

@@ -9,12 +9,13 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   (decisions log, 2026-10-06 autonomous build). Don't wait for plan approval; record decisions here and
   put human-only items under "Needs you".
 - **M3 progress:** M3.1 done (embedded Facepunch Transport fork + SteamBootstrap) + M3.1-fix (review
-  fixes: Steam shuts down after NGO, test runs block Steam). **Next: M3.2** —
-  NetworkBootstrap with the TransportMode enum (Unity Transport / Facepunch), then networked player
-  spawning at `PlayerSpawnPoint`s, then the interaction/loot/structure networking listed under
-  "Deferred to M3", the multi-process localhost nettest, Steam lobby/invite/relay.
-- **Verification state after M3.1-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 64/64;
-  PlayMode 120/120; screenshots OK (no new visible content).
+  fixes: Steam shuts down after NGO, test runs block Steam). M3.2 done (NetworkBootstrap + TransportMode,
+  networked Player prefab, spawn slots, placeholder network panel, F1 net view; TestBuilding has no
+  scene player any more - it auto-hosts in the editor). **Next:** networked loot (pickup/drop/throw via
+  host RPCs, replicated value/damage, Despawn on shatter), shared carrying, networked structure, the
+  multi-process localhost nettest, Steam lobby/invite/relay, robustness (PLAYBOOK 3.2-3.6).
+- **Verification state after M3.2:** compile clean; rebuild OK; verify ALL PASS; EditMode 79/79;
+  PlayMode 130/130; screenshots checked (M3_2_four_players_spawned, M3_2_remote_ragdoll_lying, M1_player_eye).
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -28,6 +29,15 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
       over the Facepunch transport with the Windows friend (lands with M3.2 NetworkBootstrap/lobby).
 - [ ] Quit Steam and start the game: the menu/F1 overlay should say "Steam isn't running - start
       Steam and try again." and nothing should throw.
+- [ ] M3.2 Multiplayer Play Mode: Window > Multiplayer > Multiplayer Play Mode, enable 1-3 virtual
+      players, press Play. The main editor auto-hosts; in each virtual player press Esc if needed,
+      leave "Direct IP", Join 127.0.0.1:7777. Check: each player stands on its own spawn point, you see
+      the others move smoothly (interpolated), hear their footsteps, see them fall over when they
+      ragdoll (K with F1 on), only your own camera moves with your mouse, F1 shows client ids + RTT.
+- [ ] M3.2 feel: remote players' movement smoothness (NGO interpolation) and whether the 30 Hz tick
+      feels OK (NetworkConfig.TickRate).
+- [ ] M3.2 LAN: two Macs (or Mac + Windows friend on the same network), host on one, join with the
+      host's LAN IP:7777 (macOS firewall may ask to allow incoming connections).
 
 ## M3 plan: Facepunch fork (from the spike; pre-approved and DONE in M3.1)
 1. Embed a copy of `com.community.netcode.transport.facepunch` 2.0.0 in `Game/Packages/` (not a git
@@ -76,6 +86,7 @@ or any exception in the log even when tests pass.
 | Task | Status | Verified |
 |---|---|---|
 | 3.1 Embedded Facepunch Transport fork + SteamBootstrap | done | compile clean; verify ALL PASS (new: NetworkConfig, steam_appid.txt in sync, Steam plugin platform settings + no stray Steam binaries); EditMode 63/63 (+16: transport StartClient/StartServer false without Steam with clear log, Initialize doesn't start Steam, no Init/Shutdown/RunCallbacks in transport code, RTT from ping, fork version; init policy, player-readable errors for not running/missing library/update/missing config, fake-client init+shutdown once, plugin settings); PlayMode 116/116 (+4: batch Start leaves Steam off, RunCallbacks every frame + Shutdown on destroy, duplicate discarded, Steam dying mid-game stops pumping without throwing). Real Steam untested (Needs you). |
+| 3.2 NetworkBootstrap, TransportMode, networked player | done | compile clean; rebuild OK; verify ALL PASS (+ Player prefab has NetworkObject/owner-auth NetworkTransform/NetworkPlayer and is in DefaultNetworkPrefabs; session scene has one bootstrap, a root NetworkManager with both transports + Player as player prefab, no scene-placed player, >= MaxPlayers spawn points with distinct indices); EditMode 79/79 (+15: launch args, auto-host policy incl. MPPM virtual players and -client/-connect, spawn slots, PlayerNetState); PlayMode 130/130 (+10 in-process NGO host+1-3 clients over loopback UTP: distinct spawn points, only owner camera/input/look/motor/interactor/HUD/hit trigger, owner movement replicates to host and other client, remote footsteps + floor load on host, remote ragdoll shown lying + getting up, client landings reach host as impacts, GameAuthority offline/host/client, solo hosting spawns local player, transport selection + Steam unavailable error, 5th player refused + leaver frees spawn). TestBuilding tests now use the auto-hosted NGO player. |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -100,6 +111,36 @@ or any exception in the log even when tests pass.
 - `Tools/unity.sh rebuild` regenerates Player.prefab/TestBuilding.unity with new fileIDs (same content);
   revert them with `git checkout` when nothing in their builders changed.
 
+### M3.2 notes
+- `NetworkBootstrap` (Abandoned.Networking, scene object "Network" next to a root "NetworkManager" with
+  UnityTransport + FacepunchTransport, built by `NetworkSceneBuilder` from `TestBuildingPopulator`):
+  `SelectTransport(TransportMode)`, `StartHost()`, `StartClient("ip[:port]" | SteamID64)`, `Disconnect()`,
+  `Status`, `LastError`, `Slots`. Connection approval assigns the lowest free `SpawnSlots` slot (host = 0)
+  and the pose from `PlayerSpawnPoint.PoseFor(slot)`; full lobby is refused with a reason. Steam mode
+  calls `SteamBootstrap.Create(config)` + `TryInitialize()` first and sets `FacepunchTransport.targetSteamId`.
+  `GameAuthority.SetHostCheck(IsHostOrOffline)`: true offline or on the server, false on a client.
+  The NetworkManager is destroyed with the scene's bootstrap (it's DontDestroyOnLoad by NGO).
+- Tunables in `NetworkConfig`: DefaultTransport, MaxPlayers 4, TickRate 30, Port 7777, DefaultJoinAddress,
+  ListenAddress 0.0.0.0, ConnectTimeoutMs, MaxConnectAttempts, AutoHostInEditor.
+- Auto-host (`AutoHostPolicy`): editor main instance + toggle on, or `-host`; never for MPPM virtual players
+  (`CurrentPlayer.IsMainEditor`), `-client` or `-connect`. Batch/test runs host on loopback port 0.
+  Builds wait for the panel ("Host (or play solo)") unless launched with `-host`/`-connect ip:port`.
+- `NetworkPlayer` on the Player prefab: owner-authoritative `NetworkTransform` (position + yaw, interpolated);
+  on non-owners disables camera/input/look/motor/interactor/HUD/camera feel/input overlay and the hit
+  trigger, makes `PlayerRagdoll` remote. Owner writes `PlayerNetState` (grounded/sprint/crouch/ragdolled/
+  resting/body position) -> remote `PlayerMotor.ApplyRemoteState` drives footsteps + `CarrierLoad`;
+  remote ragdoll = capsule laid at the replicated body position. Client landings -> `ReportLandingRpc`
+  (clamped) -> host copy raises `Landed` -> structural impact on the host. Pitch isn't replicated yet.
+  The AudioListener stays on the scene camera (Cinemachine brain follows the one enabled player camera).
+- Carried weight of remote players isn't replicated yet (carrying is local until networked loot), so a
+  remote player weighs body weight only on the host for now.
+- Tests: `NetTestHarness` (PlayMode) = several NetworkManagers in one process over loopback UTP; remote
+  copies' CharacterControllers are disabled there because all "machines" share one physics world.
+  `TestBuildingScene.Load()` waits for the auto-hosted local player. `TestProgressLog` writes
+  `[Test] start/<result>` lines to the batch log (driven by `SteamTestRunGuard`, the assembly's one
+  TestRunCallback), so a hung run shows which test it was in.
+- `NetworkBootstrapFactory.Create` builds a non-scene session (tests/tools).
+
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
 walking into resting heavy loot ragdolled you; click-to-recapture after Esc threw the held item;
@@ -114,8 +155,8 @@ and ragdoll; private serialized profile fields; one class per test file. 6 regre
 not replicated; hold/pocket state only on the applying machine; carrier-owned held items mean the
 host doesn't see their collisions (use `LootItem.ApplyImpact` with client reports); LootFeedback
 driven by host-only events; Shatter must Despawn not Destroy; every Player prefab instance has an
-enabled CinemachineCamera/input/look (disable on non-owners); remote players' footsteps need
-replicated grounded state.
+enabled CinemachineCamera/input/look (disable on non-owners) [done M3.2]; remote players' footsteps need
+replicated grounded state [done M3.2].
 
 ## Facepunch spike result (end of M1, ~1 h)
 Branch `spike/facepunch-transport` @ `45fc975` (throwaway, not merged, not pushed).

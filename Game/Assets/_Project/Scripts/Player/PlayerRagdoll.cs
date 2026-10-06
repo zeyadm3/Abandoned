@@ -6,7 +6,8 @@ namespace Abandoned.Player
 {
     /// <summary>
     /// Switches the player between controlled movement and a physics ragdoll: on big falls, heavy
-    /// hits, or the K debug key. Local only (not networked); others see the synced root.
+    /// hits, or the K debug key. The physics ragdoll is local only (not networked): on other machines
+    /// the player is "remote" and just lays its capsule down where the owner's body is (replicated).
     /// Gets back up where the body settles.
     /// </summary>
     public class PlayerRagdoll : MonoBehaviour
@@ -31,9 +32,24 @@ namespace Abandoned.Player
         private Vector3[] partPositions;
         private Quaternion[] partRotations;
         private Vector3 cameraRootDefault;
+        private Vector3 bodyLocalPosition;
+        private Quaternion bodyLocalRotation;
         private float ragdollTime;
+        private Vector3 remoteBodyPosition;
+        private bool remoteResting;
 
         public bool IsRagdolled { get; private set; }
+
+        /// <summary>Another machine's player: never ragdolls itself, mirrors the owner's state instead.</summary>
+        public bool IsRemote { get; private set; }
+
+        /// <summary>Where the fallen body is (only meaningful while ragdolled).</summary>
+        public Vector3 BodyPosition => IsRemote ? remoteBodyPosition : pelvis.position;
+
+        /// <summary>The fallen body has stopped tumbling and lies on something.</summary>
+        public bool IsBodyResting => IsRemote
+            ? remoteResting
+            : pelvis.linearVelocity.sqrMagnitude < config.RestingSpeed * config.RestingSpeed;
         public Transform Head => head;
         public Rigidbody Pelvis => pelvis;
         public PlayerRagdollConfig Config => config;
@@ -56,6 +72,8 @@ namespace Abandoned.Player
                 partRotations[i] = parts[i].transform.localRotation;
             }
             cameraRootDefault = cameraRoot.localPosition;
+            bodyLocalPosition = body.transform.localPosition;
+            bodyLocalRotation = body.transform.localRotation;
             ragdollRoot.gameObject.SetActive(false);
         }
 
@@ -71,8 +89,31 @@ namespace Abandoned.Player
             StructureSignals.SectionCollapsed -= OnSectionCollapsed;
         }
 
+        /// <summary>Turns this copy into another machine's player (network spawn, non-owner).</summary>
+        public void MakeRemote()
+        {
+            if (IsRagdolled) Recover();
+            IsRemote = true;
+        }
+
+        /// <summary>Mirrors the owner's ragdoll: the capsule lies where their body is.</summary>
+        public void ApplyRemoteState(bool ragdolled, Vector3 bodyPosition, bool resting)
+        {
+            if (!IsRemote) return;
+            remoteBodyPosition = bodyPosition;
+            remoteResting = resting;
+            IsRagdolled = ragdolled;
+            Transform t = body.transform;
+            if (ragdolled)
+                // Capsule on its side, centred on the pelvis, lying along the player's facing.
+                t.SetPositionAndRotation(bodyPosition, Quaternion.Euler(90f, transform.eulerAngles.y, 0f));
+            else
+                t.SetLocalPositionAndRotation(bodyLocalPosition, bodyLocalRotation);
+        }
+
         private void OnSectionCollapsed(Bounds surface)
         {
+            if (IsRemote) return;
             // Standing on it when it goes: you go down with it (GDD 15: ragdoll from collapses).
             Vector3 feet = transform.position;
             float m = config.CollapseMargin;
@@ -84,6 +125,7 @@ namespace Abandoned.Player
 
         private void Update()
         {
+            if (IsRemote) return;
             if (inputReader != null && inputReader.isActiveAndEnabled && inputReader.Current.DebugRagdollPressed)
             {
                 if (IsRagdolled) Recover();
@@ -94,7 +136,7 @@ namespace Abandoned.Player
 
         private void LateUpdate()
         {
-            if (IsRagdolled) cameraRoot.position = head.position;
+            if (IsRagdolled && !IsRemote) cameraRoot.position = head.position;
         }
 
         /// <summary>Advances recovery timing; public so tests can step it.</summary>
@@ -107,13 +149,14 @@ namespace Abandoned.Player
 
         private void OnLanded(float fallHeight, float impactSpeed)
         {
+            if (IsRemote) return;
             if (fallHeight > config.FallHeight) Enter(Vector3.down * impactSpeed);
         }
 
         /// <summary>Called by the hit detector when a moving rigidbody touches the player.</summary>
         public void ReportHit(Rigidbody other, float weight, Vector3 otherVelocity)
         {
-            if (IsRagdolled || (HitFilter != null && !HitFilter(other))) return;
+            if (IsRemote || IsRagdolled || (HitFilter != null && !HitFilter(other))) return;
             // Only the object's own motion toward us counts: walking into a resting safe is not "being hit".
             Vector3 toPlayer = transform.position + Vector3.up - other.worldCenterOfMass;
             float closing = toPlayer.sqrMagnitude > 1e-4f ? Vector3.Dot(otherVelocity, toPlayer.normalized) : otherVelocity.magnitude;
@@ -123,7 +166,7 @@ namespace Abandoned.Player
 
         public void Enter(Vector3 velocity)
         {
-            if (IsRagdolled) return;
+            if (IsRagdolled || IsRemote) return;
             IsRagdolled = true;
             ragdollTime = 0f;
             foreach (Behaviour b in disableWhileRagdolled) if (b != null) b.enabled = false;
@@ -174,7 +217,7 @@ namespace Abandoned.Player
 
         public void Recover()
         {
-            if (!IsRagdolled) return;
+            if (!IsRagdolled || IsRemote) return;
             Vector3 standAt = FindStandingSpot(pelvis.position);
             ragdollRoot.gameObject.SetActive(false);
             transform.position = standAt;

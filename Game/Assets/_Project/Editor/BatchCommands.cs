@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Abandoned.Core;
 using Abandoned.Player;
 using UnityEditor;
@@ -25,6 +26,7 @@ namespace Abandoned.EditorTools
             LootPrefabGenerator.GenerateAll();
             StructureContentBuilder.CreateMissing();
             PlayerPrefabBuilder.Create();
+            NetworkContentBuilder.RegisterNetworkPrefabs();
             TestBuildingBuilder.Build();
             return true;
         });
@@ -38,6 +40,8 @@ namespace Abandoned.EditorTools
             return setupFailures == 0 && contentErrors.Count == 0;
         });
 
+        private const float EyeHeight = 1.6f;
+
         public static void Screenshots() => RunAndExit(() =>
         {
             EditorSceneManager.OpenScene(TestBuildingBuilder.ScenePath, OpenSceneMode.Single);
@@ -49,11 +53,13 @@ namespace Abandoned.EditorTools
                 ScreenshotCapture.CaptureFrom(new Vector3(18f, 1.6f, 1f), new Vector3(18f, 3f, 10f), "M1_stairs"),
             };
 
-            var player = UnityEngine.Object.FindFirstObjectByType<PlayerMotor>();
-            if (player != null)
+            // Players are spawned by NGO at runtime; the host's spawn point shows what they first see.
+            PlayerSpawnPoint spawn = UnityEngine.Object.FindObjectsByType<PlayerSpawnPoint>(FindObjectsSortMode.None)
+                .OrderBy(s => s.Index).FirstOrDefault();
+            if (spawn != null)
             {
-                Transform eye = player.transform.Find("CameraRoot");
-                shots.Add(ScreenshotCapture.CaptureFrom(eye.position, eye.position + player.transform.forward * 10f, "M1_player_eye", 75f));
+                Vector3 eye = spawn.transform.position + Vector3.up * EyeHeight;
+                shots.Add(ScreenshotCapture.CaptureFrom(eye, eye + spawn.transform.forward * 10f, "M1_player_eye", 75f));
             }
 
             Debug.Log("Screenshots written:\n" + string.Join("\n", shots));

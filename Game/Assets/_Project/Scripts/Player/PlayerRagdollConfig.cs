@@ -31,6 +31,8 @@ namespace Abandoned.Player
         [field: SerializeField, Min(0f)] public float SettledSpeed { get; private set; } = 0.4f;
         [field: Tooltip("...or after this long regardless.")]
         [field: SerializeField, Min(0.5f)] public float MaxRagdollTime { get; private set; } = 6f;
+        [field: Tooltip("Below this pelvis speed (m/s) a ragdolled body counts as lying on the floor (structural load).")]
+        [field: SerializeField, Min(0f)] public float RestingSpeed { get; private set; } = 1.5f;
         [field: SerializeField, Min(10f)] public float TotalMass { get; private set; } = 80f;
 
         public void Validate(List<string> errors)

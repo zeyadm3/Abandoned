@@ -141,3 +141,10 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     NetworkConfig.asset (Game/steam_appid.txt kept in sync by the rebuild). Steam never starts in
     batch mode/tests unless Unity is run with -steam; -nosteam turns it off anywhere. Tests use a
     fake ISteamClient. Linux editor isn't supported by the plugin settings (mac + Windows editors).
+  - M3.2: scenes have no placed player; NGO spawns one per connection at PlayerSpawnPoint slots the host
+    assigns (host = slot 0). Solo = hosting alone: the editor auto-hosts on Play (NetworkConfig
+    AutoHostInEditor; never in MPPM virtual players or with -client/-connect); builds have a "Host (or
+    play solo)" button and accept -host / -connect ip:port / -transport unity|steam. Player movement is
+    an owner-authoritative NetworkTransform; grounded/sprint/crouch/ragdoll state is an owner-written
+    NetworkVariable; remote ragdolls show a lying capsule, never a physics ragdoll. NGO scene
+    management is off for now (each instance loads its own scene) until the HQ/run flow (M5).

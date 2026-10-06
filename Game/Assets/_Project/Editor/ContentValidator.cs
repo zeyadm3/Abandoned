@@ -37,7 +37,7 @@ namespace Abandoned.EditorTools
         {
             [TestBuildingBuilder.ScenePath] = new[]
             {
-                typeof(PlayerSpawnPoint), typeof(PlayerMotor), typeof(DebugViewToggle), typeof(CinemachineBrain),
+                typeof(PlayerSpawnPoint), typeof(Abandoned.Networking.NetworkBootstrap), typeof(DebugViewToggle), typeof(CinemachineBrain),
                 typeof(Abandoned.Loot.LootItem), typeof(Abandoned.Structure.StructureSimulation),
                 typeof(Abandoned.Structure.StructuralSection), typeof(NoiseDebugView)
             }
@@ -75,8 +75,11 @@ namespace Abandoned.EditorTools
                 {
                     ValidateHierarchy(root, path, errors);
                     if (path == PlayerPrefabBuilder.PrefabPath)
+                    {
                         foreach (Type type in PlayerRequirements)
                             if (root.GetComponent(type) == null) errors.Add($"{path}: missing {type.Name}.");
+                        NetworkValidation.ValidatePlayerPrefab(root, path, errors);
+                    }
                 }
                 finally { PrefabUtility.UnloadPrefabContents(root); }
             }
@@ -93,6 +96,8 @@ namespace Abandoned.EditorTools
                     Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
                     foreach (GameObject root in scene.GetRootGameObjects())
                         ValidateHierarchy(root, path, errors);
+                    if (Object.FindFirstObjectByType<Abandoned.Networking.NetworkBootstrap>(FindObjectsInactive.Include) != null)
+                        NetworkValidation.ValidateSessionScene(path, errors);
 
                     if (!SceneRequirements.TryGetValue(path, out Type[] required)) continue;
                     foreach (Type type in required)

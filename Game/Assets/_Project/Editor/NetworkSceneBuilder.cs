@@ -1,0 +1,53 @@
+using Abandoned.Networking;
+using Netcode.Transports.Facepunch;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using UnityEditor;
+using NetworkConfig = Abandoned.Networking.NetworkConfig;
+using UnityEngine;
+
+namespace Abandoned.EditorTools
+{
+    /// <summary>
+    /// Adds the session objects to a scene being built: a root NetworkManager (Unity + Facepunch
+    /// transports, the Player prefab as NGO's player prefab) and a "Network" object with the
+    /// bootstrap, the placeholder session panel and the F1 network view.
+    /// </summary>
+    public static class NetworkSceneBuilder
+    {
+        public static NetworkBootstrap Add()
+        {
+            var config = AssetDatabase.LoadAssetAtPath<NetworkConfig>(NetworkContentBuilder.ConfigPath);
+            var player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
+            var prefabList = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(NetworkContentBuilder.PrefabListPath);
+            if (config == null || player == null || prefabList == null)
+            {
+                Debug.LogError("Network content missing; run Create Network Content and Create Player Prefab first.");
+                return null;
+            }
+
+            // NGO requires the NetworkManager to be a root object.
+            var managerObject = new GameObject("NetworkManager");
+            var manager = managerObject.AddComponent<NetworkManager>();
+            var utp = managerObject.AddComponent<UnityTransport>();
+            var facepunch = managerObject.AddComponent<FacepunchTransport>();
+            manager.NetworkConfig ??= new Unity.Netcode.NetworkConfig();
+            manager.NetworkConfig.NetworkTransport = utp;
+            manager.NetworkConfig.PlayerPrefab = player;
+            manager.NetworkConfig.ConnectionApproval = true;
+            manager.NetworkConfig.EnableSceneManagement = false;
+            manager.NetworkConfig.TickRate = (uint)config.TickRate;
+            manager.NetworkConfig.Prefabs.NetworkPrefabsLists.Clear();
+            manager.NetworkConfig.Prefabs.NetworkPrefabsLists.Add(prefabList);
+            EditorUtility.SetDirty(manager);
+
+            var network = new GameObject("Network");
+            var bootstrap = network.AddComponent<NetworkBootstrap>();
+            bootstrap.Setup(config, manager, utp, facepunch, sceneSession: true);
+            SerializedWiring.Set(network.AddComponent<NetworkPanel>(), "bootstrap", bootstrap);
+            SerializedWiring.Set(network.AddComponent<NetworkDebugView>(), "bootstrap", bootstrap);
+            EditorUtility.SetDirty(bootstrap);
+            return bootstrap;
+        }
+    }
+}
