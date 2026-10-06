@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Loot;
+using Abandoned.Networking;
 using Abandoned.Player;
 using Abandoned.Structure;
 using Unity.Cinemachine;
@@ -129,6 +130,9 @@ namespace Abandoned.EditorTools
             SerializedWiring.SetInt(simulation, "seed", TestSeed);
             SerializedWiring.Set(simulationObject.AddComponent<StructureDebugView>(), "simulation", simulation);
             SerializedWiring.Set(simulationObject.AddComponent<StructureDebugControls>(), "simulation", simulation);
+            var syncPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.StructureNetPrefabPath);
+            if (syncPrefab == null) Debug.LogError("StructureNet prefab missing; run Tools/Abandoned/Create Structure Net Prefab.");
+            else simulationObject.AddComponent<StructureNetSpawner>().EditorSetup(syncPrefab.GetComponent<Unity.Netcode.NetworkObject>());
         }
 
         private static IEnumerable<Transform> Children(Transform root, string path)

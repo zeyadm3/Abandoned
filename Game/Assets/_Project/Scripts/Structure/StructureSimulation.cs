@@ -9,7 +9,8 @@ namespace Abandoned.Structure
     /// Host-side structural simulation for one level: solves the logical load on every section each
     /// physics step, ticks health and stages, applies stability scaling and seeded pre-damage, and
     /// handles collapse consequences (cascades onto lower sections, waking what was resting on top).
-    /// Clients only ever see the resulting section state.
+    /// On a client it is a mirror (<see cref="SetMirror"/>): sections take the host's state and only
+    /// the local consequences of a collapse (wake bodies, drop local players) run here.
     /// </summary>
     public class StructureSimulation : MonoBehaviour
     {
@@ -17,6 +18,8 @@ namespace Abandoned.Structure
         [Tooltip("Contract Structural Stability (GDD 6.2). Lower = weaker, faster decay, more pre-damage.")]
         [SerializeField, Range(0f, 1f)] private float stability = 1f;
         [SerializeField] private int seed = 12345;
+        [Tooltip("Only sections under this object (several independent structures in one scene, e.g. in-process network tests). Off = every section in the scene.")]
+        [SerializeField] private bool childrenOnly;
 
         private const float RayLift = 0.15f;
 
@@ -25,6 +28,7 @@ namespace Abandoned.Structure
         private readonly List<LoadPoint> points = new();
         private readonly List<StructuralSection> supports = new();
         private readonly Collider[] overlap = new Collider[64];
+        private readonly RaycastHit[] rayHits = new RaycastHit[16];
         // Impacts reported this physics step, per hitting body: one landing is split across every
         // section it touched instead of hitting each of them in full.
         private readonly Dictionary<Rigidbody, (float momentum, List<StructuralSection> sections)> pendingImpacts = new();
@@ -35,6 +39,12 @@ namespace Abandoned.Structure
         public float Stability => stability;
         public int Seed => seed;
         public int CollapseCount { get; private set; }
+        /// <summary>Bumped by every <see cref="ApplyStability"/> (start, stability change, re-roll), so clients know to restore.</summary>
+        public int Generation { get; private set; }
+        /// <summary>Client: the host runs this structure; this copy only mirrors it.</summary>
+        public bool IsMirror { get; private set; }
+        /// <summary>Runs damage, load, timers and cascades: the host (or solo), never a mirror.</summary>
+        public bool HasAuthority => !IsMirror && GameAuthority.IsHost;
 
         private int StructureMask => 1 << Mathf.Max(0, GameLayers.StructureLayer);
 
@@ -42,7 +52,10 @@ namespace Abandoned.Structure
         {
             // Stable ids (hierarchy order by name, then position) so "section X collapsed" means the same
             // piece on every machine and in every run.
-            sections.AddRange(FindObjectsByType<StructuralSection>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+            StructuralSection[] found = childrenOnly
+                ? GetComponentsInChildren<StructuralSection>(true)
+                : FindObjectsByType<StructuralSection>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            sections.AddRange(found
                 .OrderBy(s => s.name, System.StringComparer.Ordinal).ThenBy(s => s.transform.position.x).ThenBy(s => s.transform.position.z));
             for (int i = 0; i < sections.Count; i++)
             {
@@ -61,14 +74,56 @@ namespace Abandoned.Structure
 
         private void Start()
         {
-            if (GameAuthority.IsHost) ApplyStability(stability, seed);
+            if (HasAuthority) ApplyStability(stability, seed);
+        }
+
+        /// <summary>Client side of a session (on) or back to running it locally (off, e.g. after leaving).</summary>
+        public void SetMirror(bool mirror)
+        {
+            IsMirror = mirror;
+            foreach (StructuralSection s in sections) s.IsMirror = mirror;
+        }
+
+        /// <summary>
+        /// Order-independent fingerprint of the section list (names + ids), so a client can tell when
+        /// its building doesn't match the host's and section ids would mean different pieces.
+        /// </summary>
+        public int LayoutHash()
+        {
+            unchecked
+            {
+                int hash = 17 + sections.Count;
+                foreach (StructuralSection s in sections)
+                    foreach (char c in s.name) hash = hash * 31 + c;
+                return hash;
+            }
         }
 
         /// <summary>Host: rescales every section for a stability, resets them and re-rolls pre-damage.</summary>
         public void ApplyStability(float newStability, int newSeed)
         {
+            if (IsMirror) return;
+            Reconfigure(newStability, newSeed);
+            bool[] eligible = sections.Select(s => s.CanCollapse).ToArray();
+            float[] plan = StructureMath.PreDamagePlan(eligible, stability, seed, config);
+            for (int i = 0; i < sections.Count; i++)
+                if (plan[i] > 0f) sections[i].PreDamage(plan[i]);
+        }
+
+        /// <summary>
+        /// Client: the host re-rolled or changed stability. Scales and restores every section (debris
+        /// cleared, colliders back); their health and stage then come from the host, not a local roll.
+        /// </summary>
+        public void MirrorStability(float newStability, int newSeed)
+        {
+            if (IsMirror) Reconfigure(newStability, newSeed);
+        }
+
+        private void Reconfigure(float newStability, int newSeed)
+        {
             stability = Mathf.Clamp01(newStability);
             seed = newSeed;
+            Generation++;
             float capacityScale = config.CapacityScale(stability);
             float decayScale = config.DecayScale(stability);
             foreach (StructuralSection s in sections)
@@ -76,21 +131,17 @@ namespace Abandoned.Structure
                 s.Configure(capacityScale, decayScale, seed);
                 s.ResetState();
             }
-
-            bool[] eligible = sections.Select(s => s.CanCollapse).ToArray();
-            float[] plan = StructureMath.PreDamagePlan(eligible, stability, seed, config);
-            for (int i = 0; i < sections.Count; i++)
-                if (plan[i] > 0f) sections[i].PreDamage(plan[i]);
         }
 
         private void FixedUpdate()
         {
-            if (GameAuthority.IsHost) Step(Time.fixedDeltaTime);
+            if (HasAuthority) Step(Time.fixedDeltaTime);
         }
 
         /// <summary>Host: one simulation step. Public so tests can step deterministically.</summary>
         public void Step(float dt)
         {
+            if (IsMirror) return;
             ApplyPendingImpacts();
             SolveLoads();
             foreach (StructuralSection s in sections)
@@ -152,22 +203,44 @@ namespace Abandoned.Structure
         /// <summary>Host: a non-physics impact (a player landing) at a point; hits the section underneath.</summary>
         private void OnPointImpact(Vector3 position, float momentum)
         {
-            if (!GameAuthority.IsHost) return;
+            if (!HasAuthority) return;
             StructuralSection below = SectionBelow(position + Vector3.up * RayLift, RayLift + 0.5f);
             if (below != null) below.ApplyImpact(momentum);
         }
 
         public float LoadOn(StructuralSection section) => loads.TryGetValue(section, out float kg) ? kg : 0f;
 
-        private StructuralSection SectionBelow(Vector3 from, float distance) =>
-            Physics.Raycast(from, Vector3.down, out RaycastHit hit, distance, StructureMask, QueryTriggerInteraction.Ignore)
-                ? hit.collider.GetComponentInParent<StructuralSection>()
-                : null;
+        private StructuralSection SectionBelow(Vector3 from, float distance) => FirstOwnSectionBelow(from, distance, out _);
+
+        /// <summary>
+        /// Nearest section of THIS structure under a point. Another structure's colliders (only ever in
+        /// in-process network tests, where every machine's copy shares one physics world) are skipped.
+        /// </summary>
+        private StructuralSection FirstOwnSectionBelow(Vector3 from, float distance, out float hitDistance)
+        {
+            hitDistance = 0f;
+            int count = Physics.RaycastNonAlloc(from, Vector3.down, rayHits, distance, StructureMask, QueryTriggerInteraction.Ignore);
+            StructuralSection best = null;
+            float bestDistance = float.MaxValue;
+            for (int i = 0; i < count; i++)
+            {
+                if (rayHits[i].distance >= bestDistance) continue;
+                StructuralSection s = rayHits[i].collider.GetComponentInParent<StructuralSection>();
+                if (s != null && s.Simulation != null && s.Simulation != this) continue;
+                // Anything else on the Structure layer still blocks, as a plain raycast would.
+                best = s;
+                bestDistance = rayHits[i].distance;
+            }
+            if (best != null) hitDistance = bestDistance;
+            return best;
+        }
 
         private void OnSectionCollapsed(StructuralSection section)
         {
             CollapseCount++;
             Bounds surface = section.SurfaceBounds;
+            // Already down when this machine joined: nothing is falling, nobody is standing on it.
+            if (section.CollapsedQuietly) return;
 
             // Whatever was resting on it must fall now, even if the physics engine had put it to sleep.
             Vector3 halfExtents = surface.extents + new Vector3(0.1f, 1.5f, 0.1f);
@@ -176,8 +249,10 @@ namespace Abandoned.Structure
             for (int i = 0; i < count; i++)
                 if (overlap[i].attachedRigidbody != null) overlap[i].attachedRigidbody.WakeUp();
 
-            NoiseSystem.Emit(surface.center, config.CollapseLoudness, NoiseSource.Collapse);
+            // Every machine drops its own players (each owns its movement); noise and cascades are host gameplay.
             StructureSignals.RaiseCollapsed(surface);
+            if (!HasAuthority) return;
+            NoiseSystem.Emit(surface.center, config.CollapseLoudness, NoiseSource.Collapse);
             Cascade(section, surface);
         }
 
@@ -193,11 +268,9 @@ namespace Abandoned.Structure
             foreach (Vector3 probe in probes)
             {
                 Vector3 from = new(probe.x, surface.min.y - 0.05f, probe.z);
-                if (!Physics.Raycast(from, Vector3.down, out RaycastHit hit, config.CascadeSearchDistance, StructureMask, QueryTriggerInteraction.Ignore))
-                    continue;
-                StructuralSection below = hit.collider.GetComponentInParent<StructuralSection>();
+                StructuralSection below = FirstOwnSectionBelow(from, config.CascadeSearchDistance, out float distance);
                 if (below == null || below == fallen || below.IsCollapsed) continue;
-                hits[below] = hits.TryGetValue(below, out float d) ? Mathf.Min(d, hit.distance) : hit.distance;
+                hits[below] = hits.TryGetValue(below, out float d) ? Mathf.Min(d, distance) : distance;
             }
             if (hits.Count == 0) return;
 

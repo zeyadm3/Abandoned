@@ -5,7 +5,8 @@ namespace Abandoned.Structure
 {
     /// <summary>
     /// F1: stage-coloured gizmos for every section, and on screen the load/capacity, health and
-    /// stage of nearby sections plus the building's stability and seed.
+    /// stage of nearby sections plus the building's stability and seed. On a client the numbers are the
+    /// host's, replicated (health to 1/255, load to 5 kg), and the header says MIRROR.
     /// </summary>
     public class StructureDebugView : MonoBehaviour
     {
@@ -31,8 +32,10 @@ namespace Abandoned.Structure
             label ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 11, richText = true };
             box ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
 
-            string header = $"<b>STRUCTURE</b>  stability {simulation.Stability:P0}  seed {simulation.Seed}  collapses {simulation.CollapseCount}\n" +
-                            "[-]/[=] stability   [F2] re-roll damage   (keys work while F1 is on)";
+            string role = simulation.IsMirror ? "<color=#7fd4ff>MIRROR of host</color>" : "<color=#7fff7f>HOST sim</color>";
+            string header = $"<b>STRUCTURE</b>  {role}  stability {simulation.Stability:P0}  seed {simulation.Seed}  " +
+                            $"collapses {simulation.CollapseCount}  gen {simulation.Generation}\n" +
+                            (simulation.IsMirror ? "keys are host-only" : "[-]/[=] stability   [F2] re-roll damage   (keys work while F1 is on)");
             var content = new GUIContent(header);
             Vector2 size = box.CalcSize(content);
             GUI.Box(new Rect(10f, Screen.height - size.y - 10f, size.x, size.y), content, box);
@@ -45,7 +48,7 @@ namespace Abandoned.Structure
                 Vector3 screen = camera.WorldToScreenPoint(world);
                 if (screen.z <= 0f) continue;
                 string colour = ColorUtility.ToHtmlStringRGB(ColourFor(s.Stage));
-                string text = $"<color=#{colour}><b>{s.Stage}</b></color>\n{s.Load:0}/{s.Capacity:0} kg  HP {s.Health:0}" +
+                string text = $"<color=#{colour}><b>{s.Stage}</b></color>\n{s.Load:0}/{s.Capacity:0} kg  HP {s.HealthFraction:P0}" +
                               (s.Stage == StructuralStage.Failing ? $"\n{s.Config.FailingDuration - s.FailingTime:0.0}s" : "");
                 GUI.Label(new Rect(screen.x - 80f, Screen.height - screen.y - 24f, 160f, 48f), text, label);
             }

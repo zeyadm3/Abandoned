@@ -24,6 +24,9 @@ namespace Abandoned.Networking
         public List<NetTestLootView> lootViews = new();
         public List<NetTestSharedCarryAction> sharedActions = new();
         public NetTestSharedCarryHostView sharedHost;
+        public List<NetTestCollapseView> collapseViews = new();
+        /// <summary>'collapse': the section the clients stood on (host's id).</summary>
+        public int collapseTarget = -1;
 
         public void Fail(string error)
         {

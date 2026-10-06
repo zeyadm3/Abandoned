@@ -181,3 +181,17 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
   - M3.5-fix: an under-crewed item nobody may drag alone (Huge) only moves within
     SharedCarryConfig.NudgeRadius (0.75 m) of where the under-crewed hold began; the budget belongs to
     the item (regrabbing doesn't refill it) and resets only after a full-crew lift or a big move.
+  - M3.6: structure sync is ONE host-spawned NetworkObject per level (Prefabs/Network/StructureNet,
+    spawned by StructureNetSpawner next to the StructureSimulation), not one per section: a NetworkList
+    of SectionNetState (stage, health /255, load in 5 kg steps, collapse seed, Failing start in server
+    time, generation byte; index = section id) + StructureNetGlobals (stability, seed, generation,
+    section count, layout hash). NGO sends only changed entries, so a ~300-section mall is a ~6 KB
+    initial sync and ~20 B per change. Clients set StructureSimulation.SetMirror(true): no load, damage,
+    timers, pre-damage or cascades run there; ApplyReplicated flips colliders off the moment a collapse
+    entry arrives and plays the same seeded pre-fractured break (debris local, Debris layer). Re-roll =
+    generation bump: clients restore everything, then take entries of the new generation only.
+    Sections that were already down when a client joins are applied quietly (no break/ragdoll).
+    Structure gameplay noise (creaks/collapse for monsters) stays host-only; creak/groan/snap/crash
+    sounds play on every machine from the replicated stage.
+  - Company "Zeyad Games", bundle id com.zeyadgames.abandoned (BuildScript.ApplyPlayerSettings; they fix the
+    save-data folder, so they don't change once saves exist).

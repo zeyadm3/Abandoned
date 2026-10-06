@@ -153,7 +153,7 @@ No real-time destruction simulation. Instead:
 - Load is **logical**, not physics contacts: each load source (a player plus what they carry, a resting item, a share of a shared carry) checks downward for its supporting section(s) and splits its **gameplay weight** across them. Gameplay weight is separate from the clamped Rigidbody mass.
 - When health hits zero, the intact mesh swaps to a **pre-fractured version** whose chunks get rigidbodies and fall
 - Debris chunks sleep or despawn after a few seconds for performance
-- The **host decides** damage and collapse, including cascades onto the sections below; clients receive "section X collapsed" and play the same pre-fractured break locally. The host flips the section's collider off through a networked state change, so everyone falls at the same moment.
+- The **host decides** damage and collapse, including cascades onto the sections below; clients receive "section X collapsed" and play the same pre-fractured break locally. The host flips the section's collider off through a networked state change, so everyone falls at the same moment (each client flips its own copy the instant the change arrives, i.e. half a round trip after the host; warnings - stage, cracks, the 2 s Failing sag - are replicated too, so nobody is surprised by that delay).
 - Debris is **cosmetic only**: its own physics layer, never collides with players or loot, never deals gameplay damage
 
 ---

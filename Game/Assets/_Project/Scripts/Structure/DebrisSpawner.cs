@@ -25,6 +25,7 @@ namespace Abandoned.Structure
             int layer = GameLayers.DebrisLayer;
             int budget = Mathf.Max(0, visuals.MaxLiveChunks - LiveChunks);
             var random = new System.Random(seed);
+            var lifetime = root.AddComponent<DebrisLifetime>();
             int used = 0;
             foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true))
             {
@@ -45,11 +46,12 @@ namespace Abandoned.Structure
                 Vector3 outward = new Vector3(offset.x, 0f, offset.z).normalized;
                 body.linearVelocity = outward * (visuals.BurstSpeed * Next(random)) + Vector3.down * Next(random);
                 body.angularVelocity = new Vector3(Next(random) * 2f - 1f, Next(random) * 2f - 1f, Next(random) * 2f - 1f) * visuals.BurstSpin;
+                lifetime.RecordLaunch(body.linearVelocity);
                 used++;
             }
 
             LiveChunks += used;
-            root.AddComponent<DebrisLifetime>().Track(used);
+            lifetime.Track(used);
             Object.Destroy(root, section.Config.DebrisLifetime);
             return root;
         }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Runs Unity 6000.3.25f1 in batch mode against Game/ and checks the log afterwards.
-# Usage: Tools/unity.sh <compile|rebuild|verify|editmode|playmode|screenshots|all
+# Usage: Tools/unity.sh <compile|rebuild|verify|editmode [filter]|playmode [filter]|screenshots|all
 #                        |build-mac|build-win|build|build-dev|nettest [scenario]>
 # build-mac/build-win/build make shareable Mono players in Game/Builds/<Mac|Windows>/ and zip each into
 # $BUILD_ZIP_DIR (default ~/Documents/Abandoned-builds/dev). build-dev makes Game/Builds/MacDev (tests).
@@ -71,10 +71,14 @@ run_unity() {
 
 method() { run_unity "$1" -executeMethod "Abandoned.EditorTools.BatchCommands.$2"; }
 
+# tests <EditMode|PlayMode> [filter]: a filter (NUnit -testFilter regex/names) writes <platform>Filtered.xml.
 tests() {
-  local platform="$1" xml="$RESULTS/$1.xml"
+  local platform="$1" filter="${2:-}" name="$1"
+  local args=(-runTests -testPlatform "$platform")
+  if [ -n "$filter" ]; then name="${platform}Filtered"; args+=(-testFilter "$filter"); fi
+  local xml="$RESULTS/$name.xml"
   rm -f "$xml"
-  run_unity "$platform" -runTests -testPlatform "$platform" -testResults "$xml"
+  run_unity "$name" "${args[@]}" -testResults "$xml"
   local bad=$?
   summarise_tests "$xml" || bad=1
   return $bad
@@ -114,8 +118,8 @@ case "$cmd" in
   rebuild)     method rebuild RebuildContent || status=1 ;;
   verify)      method verify VerifyAll || status=1 ;;
   screenshots) method screenshots Screenshots || status=1 ;;
-  editmode)    tests EditMode || status=1 ;;
-  playmode)    tests PlayMode || status=1 ;;
+  editmode)    tests EditMode "${2:-}" || status=1 ;;
+  playmode)    tests PlayMode "${2:-}" || status=1 ;;
   build-mac)   { method build-mac BuildMac && zip_build Mac; } || status=1 ;;
   build-win)   { method build-win BuildWindows && zip_build Windows; } || status=1 ;;
   build)       { method build BuildBoth && zip_build Mac && zip_build Windows; } || status=1 ;;

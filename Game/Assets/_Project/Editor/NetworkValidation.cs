@@ -54,6 +54,19 @@ namespace Abandoned.EditorTools
                 errors.Add($"{path}: not in {NetworkContentBuilder.PrefabListPath} (Tools/Abandoned/Rebuild Content).");
         }
 
+        /// <summary>The structure sync: one host-spawned object per level, registered, never tied to an owner.</summary>
+        public static void ValidateStructureNetPrefab(GameObject root, string path, List<string> errors)
+        {
+            var networkObject = root.GetComponent<NetworkObject>();
+            if (networkObject == null) { errors.Add($"{path}: missing NetworkObject (Tools/Abandoned/Create Structure Net Prefab)."); return; }
+            if (!networkObject.DontDestroyWithOwner) errors.Add($"{path}: DontDestroyWithOwner must be on (the building outlives any player).");
+            if (root.GetComponent<StructureNetSync>() == null) errors.Add($"{path}: missing StructureNetSync.");
+            var list = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(NetworkContentBuilder.PrefabListPath);
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (list == null || asset == null || !list.Contains(asset))
+                errors.Add($"{path}: not in {NetworkContentBuilder.PrefabListPath} (Tools/Abandoned/Rebuild Content).");
+        }
+
         /// <summary>Checks the open scene (it has a NetworkBootstrap).</summary>
         public static void ValidateSessionScene(string path, List<string> errors)
         {
@@ -82,6 +95,23 @@ namespace Abandoned.EditorTools
             if (spawns.Select(s => s.Index).Distinct().Count() != spawns.Length)
                 errors.Add($"{path}: PlayerSpawnPoint indices must be distinct.");
             ValidateScenePlacedObjects(path, errors);
+            ValidateStructureSync(path, errors);
+        }
+
+        /// <summary>A session scene with a structure must spawn its sync, or clients would never see damage.</summary>
+        private static void ValidateStructureSync(string path, List<string> errors)
+        {
+            var simulations = Object.FindObjectsByType<Abandoned.Structure.StructureSimulation>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (simulations.Length == 0) return;
+            if (simulations.Length > 1) errors.Add($"{path}: {simulations.Length} StructureSimulations; a session scene runs one building.");
+            foreach (var simulation in simulations)
+            {
+                var spawner = simulation.GetComponent<StructureNetSpawner>();
+                if (spawner == null) { errors.Add($"{path}: '{simulation.name}' has no StructureNetSpawner (clients would never see structural state)."); continue; }
+                var prefab = new SerializedObject(spawner).FindProperty("syncPrefab").objectReferenceValue as NetworkObject;
+                if (prefab == null || AssetDatabase.GetAssetPath(prefab) != NetworkContentBuilder.StructureNetPrefabPath)
+                    errors.Add($"{path}: '{simulation.name}' StructureNetSpawner must spawn {NetworkContentBuilder.StructureNetPrefabPath}.");
+            }
         }
 
         /// <summary>

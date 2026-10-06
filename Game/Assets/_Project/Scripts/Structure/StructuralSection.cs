@@ -8,7 +8,8 @@ namespace Abandoned.Structure
     /// One breakable piece (floor tile, balcony, stair segment). Holds the host-authoritative
     /// state — capacity, health, load, stage — and switches its colliders off when it collapses.
     /// Visuals and sound react to its events in <see cref="SectionPresentation"/>.
-    /// In M3 the state fields become NetworkVariables; everything that writes them is host-only.
+    /// On a client the section is a mirror: the host's state arrives through
+    /// <see cref="ApplyReplicated"/> (StructureNetSync) and nothing here simulates damage.
     /// </summary>
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-20)] // state must exist before presentation and the simulation read it
@@ -42,6 +43,10 @@ namespace Abandoned.Structure
         public StructuralStage Stage { get; private set; }
         public float FailingTime { get; private set; }
         public int CollapseSeed { get; private set; }
+        /// <summary>Client copy: state comes from the host, never from local load, impacts or timers.</summary>
+        public bool IsMirror { get; internal set; }
+        /// <summary>The last collapse was applied on joining (already down): no break, sound or ragdolls.</summary>
+        public bool CollapsedQuietly { get; private set; }
 
         public float HealthFraction => MaxHealth > 0f ? Health / MaxHealth : 0f;
         public float LoadRatio => Capacity > 0f ? Load / Capacity : 0f;
@@ -72,6 +77,16 @@ namespace Abandoned.Structure
             }
         }
 
+        /// <summary>True while any of the section's colliders is on (off from the moment it collapses).</summary>
+        public bool CollidersEnabled
+        {
+            get
+            {
+                foreach (Collider c in colliders) if (c != null && c.enabled) return true;
+                return false;
+            }
+        }
+
         // ---- Host-only from here: called by StructureSimulation or host physics callbacks. ----
 
         public void Configure(float capacityScale, float decayScale, int seedBase)
@@ -93,8 +108,10 @@ namespace Abandoned.Structure
             SetColliders(true);
             // Restored resets visuals to Stable; UpdateStage then raises StageChanged if load/health say otherwise.
             Stage = StructuralStage.Stable;
+            CollapsedQuietly = false;
             Restored?.Invoke(this);
-            UpdateStage();
+            // A mirror waits for the host's stage instead of deriving its own.
+            if (!IsMirror) UpdateStage();
         }
 
         /// <summary>Host: seeded starting damage. Never pushes a section below MinStartHealth (or its authored health if lower).</summary>
@@ -111,7 +128,7 @@ namespace Abandoned.Structure
 
         public void Tick(float dt)
         {
-            if (IsCollapsed) return;
+            if (IsCollapsed || IsMirror) return;
 
             if (Stage == StructuralStage.Failing)
             {
@@ -130,6 +147,7 @@ namespace Abandoned.Structure
 
         public void ApplyImpact(float momentum)
         {
+            if (IsMirror) return;
             float damage = StructureMath.ImpactDamage(momentum, config.ImpactThreshold, config.ImpactDamagePerMomentum);
             if (damage <= 0f) return;
             // Readable: a section that hasn't shown cracks yet can't be knocked straight into Failing.
@@ -140,11 +158,47 @@ namespace Abandoned.Structure
 
         public void Collapse()
         {
-            if (IsCollapsed || !canCollapse) return;
+            if (IsCollapsed || !canCollapse || IsMirror) return;
+            BreakNow(collapseSeedBase ^ (Id * 7919 + 17), quiet: false);
+        }
+
+        /// <summary>
+        /// Client: the host's state for this section. A collapse flips the colliders off right here, so
+        /// this machine's own player drops at the moment the news arrives; <paramref name="quiet"/> skips
+        /// the break and ragdolls for sections that were already down when this machine joined.
+        /// </summary>
+        public void ApplyReplicated(StructuralStage stage, float healthFraction, float load, float failingTime, int seed, bool quiet)
+        {
+            if (!IsMirror) return;
+            Load = load;
+            if (stage == StructuralStage.Collapsed)
+            {
+                if (!IsCollapsed) BreakNow(seed, quiet);
+                return;
+            }
+            if (IsCollapsed)
+            {
+                // Only a host restore brings a section back; normally ResetState already did.
+                SetColliders(true);
+                Stage = StructuralStage.Stable;
+                CollapsedQuietly = false;
+                Restored?.Invoke(this);
+            }
+            Health = Mathf.Clamp01(healthFraction) * MaxHealth;
+            FailingTime = failingTime;
+            if (stage == Stage) return;
+            StructuralStage previous = Stage;
+            Stage = stage;
+            StageChanged?.Invoke(this, previous);
+        }
+
+        private void BreakNow(int seed, bool quiet)
+        {
             StructuralStage previous = Stage;
             Stage = StructuralStage.Collapsed;
             Health = 0f;
-            CollapseSeed = collapseSeedBase ^ (Id * 7919 + 17);
+            CollapseSeed = seed;
+            CollapsedQuietly = quiet;
             SetColliders(false);
             Physics.SyncTransforms();
             StageChanged?.Invoke(this, previous);
@@ -153,7 +207,7 @@ namespace Abandoned.Structure
 
         private void Damage(float amount)
         {
-            if (IsCollapsed || Stage == StructuralStage.Failing || amount <= 0f) return;
+            if (IsCollapsed || IsMirror || Stage == StructuralStage.Failing || amount <= 0f) return;
             // Non-collapsible sections can crack but always keep a sliver of health.
             float floor = canCollapse ? 0f : MaxHealth * 0.01f;
             Health = Mathf.Max(floor, Health - amount);
@@ -203,7 +257,8 @@ namespace Abandoned.Structure
         /// </summary>
         public void HandleCollision(Collision collision)
         {
-            if (!GameAuthority.IsHost || IsCollapsed) return;
+            bool authority = Simulation != null ? Simulation.HasAuthority : GameAuthority.IsHost;
+            if (!authority || IsMirror || IsCollapsed) return;
             Rigidbody body = collision.rigidbody;
             if (body == null || body.gameObject.layer == GameLayers.DebrisLayer) return;
 

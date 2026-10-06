@@ -15,6 +15,8 @@ namespace Abandoned.EditorTools
     {
         public const string ConfigPath = "Assets/_Project/Data/Networking/NetworkConfig.asset";
         public const string LootNetConfigPath = "Assets/_Project/Data/Networking/LootNetConfig.asset";
+        public const string NetworkPrefabFolder = "Assets/_Project/Prefabs/Network";
+        public const string StructureNetPrefabPath = NetworkPrefabFolder + "/StructureNet.prefab";
 
         /// <summary>NGO's own generated list; NGO adds network prefabs to it on import, we make sure of ours.</summary>
         public const string PrefabListPath = "Assets/DefaultNetworkPrefabs.asset";
@@ -35,6 +37,31 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets();
         }
 
+        /// <summary>
+        /// The level's one structure sync object (host-spawned by StructureNetSpawner). Only created when
+        /// missing or incomplete, so rebuilds don't churn its file (and its GUID/NGO hash never change).
+        /// </summary>
+        [MenuItem("Tools/Abandoned/Create Structure Net Prefab")]
+        public static GameObject CreateStructureNetPrefab()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(StructureNetPrefabPath);
+            if (existing != null && existing.GetComponent<Unity.Netcode.NetworkObject>() != null && existing.GetComponent<StructureNetSync>() != null)
+                return existing;
+            if (!AssetDatabase.IsValidFolder(NetworkPrefabFolder))
+                AssetDatabase.CreateFolder("Assets/_Project/Prefabs", "Network");
+            var root = new GameObject("StructureNet");
+            var networkObject = root.AddComponent<Unity.Netcode.NetworkObject>();
+            // Building state isn't anyone's; it stays with the host, whoever leaves.
+            networkObject.DontDestroyWithOwner = true;
+            networkObject.SynchronizeTransform = false;
+            root.AddComponent<StructureNetSync>();
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, StructureNetPrefabPath);
+            Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
+            AssetDatabase.SaveAssets();
+            return prefab;
+        }
+
         /// <summary>Makes sure every network prefab we build is in NGO's prefab list (after the prefabs exist).</summary>
         public static NetworkPrefabsList RegisterNetworkPrefabs()
         {
@@ -45,6 +72,7 @@ namespace Abandoned.EditorTools
                 AssetDatabase.CreateAsset(list, PrefabListPath);
             }
             var prefabs = new List<GameObject> { AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath) };
+            prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(StructureNetPrefabPath));
             foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { LootPrefabGenerator.Folder }))
                 prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));
             foreach (GameObject prefab in prefabs)

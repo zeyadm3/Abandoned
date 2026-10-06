@@ -114,6 +114,24 @@ namespace Abandoned.Networking
         private void ReportLandingRpc(float fallHeight, float impactSpeed) =>
             motor.RaiseRemoteLanding(Mathf.Clamp(fallHeight, 0f, MaxReportedFall), Mathf.Clamp(impactSpeed, 0f, MaxReportedImpactSpeed));
 
+        /// <summary>
+        /// Owner: moves this player somewhere else at once (nettest staging, later respawns); every
+        /// other machine jumps it there instead of sliding through walls.
+        /// </summary>
+        public void OwnerTeleport(Vector3 position)
+        {
+            if (!IsOwner) return;
+            var controller = GetComponent<CharacterController>();
+            bool wasEnabled = controller.enabled;
+            controller.enabled = false;
+            transform.position = position;
+            Physics.SyncTransforms();
+            controller.enabled = wasEnabled;
+            motor.ResetFallTracking();
+            if (networkTransform != null && networkTransform.CanCommitToTransform)
+                networkTransform.Teleport(transform.position, transform.rotation, transform.localScale);
+        }
+
         // Getting up moves the root to where the body lies; others should jump there, not slide.
         private void OnOwnerGotUp()
         {

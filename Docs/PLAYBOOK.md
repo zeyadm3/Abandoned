@@ -308,6 +308,8 @@ Structural damage and collapse run on the host only. Sync each section's stage s
 clients see the same warnings. On collapse, broadcast the section ID and a seed;
 clients play the identical pre-fractured break locally. Debris stays local.
 ```
+Built in the autonomous build as M3.6: one StructureNetSync per level (per-section state list), clients
+mirror; design in Docs/progress/M3.md "M3.6 notes"; `Tools/unity.sh nettest collapse`.
 
 **3.5 Steam**
 ```

@@ -19,6 +19,8 @@ namespace Abandoned.EditorTools
     public static class BuildScript
     {
         public const string ProductName = "Abandoned";
+        public const string CompanyName = "Zeyad Games";
+        public const string BundleId = "com.zeyadgames.abandoned";
         public const string BuildsFolder = "Builds";
         public const string InfoFileName = "BUILD.txt";
         private const string Menu = "Tools/Abandoned/Build/";
@@ -62,6 +64,10 @@ namespace Abandoned.EditorTools
         public static void ApplyPlayerSettings()
         {
             PlayerSettings.productName = ProductName;
+            // Company + bundle id decide the save-data folder (Application.persistentDataPath), so they
+            // must not change once players have saves (user decision 2026-10-06).
+            PlayerSettings.companyName = CompanyName;
+            PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, BundleId);
             // Several instances on one Mac (MPPM, nettest, LAN tests): an unfocused one must keep simulating.
             PlayerSettings.runInBackground = true;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);

@@ -7,7 +7,7 @@ namespace Abandoned.Structure
     /// <summary>
     /// Local look and sound of a section's stage: tint, cracks, dust, creak/groan/snap timing, the
     /// Failing sag, and on collapse the swap to pre-fractured debris. Reads section state only,
-    /// so it runs the same on every machine.
+    /// so it runs the same on every machine: on clients that state is the host's, replicated.
     /// </summary>
     [RequireComponent(typeof(StructuralSection))]
     public class SectionPresentation : MonoBehaviour
@@ -236,9 +236,11 @@ namespace Abandoned.Structure
             foreach (Renderer r in renderers) r.enabled = false;
             BuildCracks(0);
             section.Visual.localPosition = visualRestPosition;
-            dust.Emit(visuals.CollapseDustBurst);
+            if (!s.CollapsedQuietly) dust.Emit(visuals.CollapseDustBurst);
             ParticleSystem.EmissionModule emission = dust.emission;
             emission.rateOverTime = 0f;
+            // Already down when we joined: just gone, no break replayed out of nowhere.
+            if (s.CollapsedQuietly) return;
 
             Vector3 centre = s.SurfaceBounds.center;
             PlaceholderAudio.PlayStructure(StructureSound.Crash, centre, 1f);

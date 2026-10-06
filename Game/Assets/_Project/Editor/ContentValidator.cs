@@ -39,7 +39,7 @@ namespace Abandoned.EditorTools
             {
                 typeof(PlayerSpawnPoint), typeof(Abandoned.Networking.NetworkBootstrap), typeof(DebugViewToggle), typeof(CinemachineBrain),
                 typeof(Abandoned.Loot.LootItem), typeof(Abandoned.Structure.StructureSimulation),
-                typeof(Abandoned.Structure.StructuralSection), typeof(NoiseDebugView)
+                typeof(Abandoned.Structure.StructuralSection), typeof(NoiseDebugView), typeof(Abandoned.Networking.StructureNetSpawner)
             }
         };
 
@@ -82,6 +82,8 @@ namespace Abandoned.EditorTools
                     }
                     if (path.StartsWith(LootPrefabGenerator.Folder + "/") && root.GetComponent<Abandoned.Loot.LootItem>() != null)
                         NetworkValidation.ValidateLootPrefab(root, path, errors);
+                    if (path == NetworkContentBuilder.StructureNetPrefabPath)
+                        NetworkValidation.ValidateStructureNetPrefab(root, path, errors);
                 }
                 finally { PrefabUtility.UnloadPrefabContents(root); }
             }
