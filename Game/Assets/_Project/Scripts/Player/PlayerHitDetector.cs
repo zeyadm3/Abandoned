@@ -6,6 +6,9 @@ namespace Abandoned.Player
     /// <summary>
     /// Trigger capsule slightly larger than the CharacterController. CharacterControllers get no
     /// collision callbacks from rigidbodies hitting them, so this reports those hits to the ragdoll.
+    /// Only the player's owner has it active, so it must also accept the kinematic copies of loot
+    /// another machine simulates (host-thrown, falling in a collapse, swung by another carrier),
+    /// using the motion the network gives them (<see cref="IVelocitySource"/>).
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     public class PlayerHitDetector : MonoBehaviour
@@ -15,9 +18,13 @@ namespace Abandoned.Player
         private void OnTriggerEnter(Collider other)
         {
             Rigidbody body = other.attachedRigidbody;
-            if (body == null || body.isKinematic || body.transform.IsChildOf(ragdoll.transform)) return;
+            if (body == null || body.transform.IsChildOf(ragdoll.transform)) return;
+            Vector3 velocity;
+            if (body.TryGetComponent(out IVelocitySource source)) velocity = source.Velocity;
+            else if (!body.isKinematic) velocity = body.linearVelocity;
+            else return; // doors, platforms: nothing that should knock a player over
             float weight = body.TryGetComponent(out IWeighted weighted) ? weighted.GameplayWeight : body.mass;
-            ragdoll.ReportHit(body, weight, body.linearVelocity);
+            ragdoll.ReportHit(body, weight, velocity);
         }
     }
 }

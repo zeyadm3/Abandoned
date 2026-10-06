@@ -48,7 +48,7 @@ namespace Abandoned.Loot
         /// <summary>An impact to present (sound, shake) on this machine: item, speed along the normal, contact point.</summary>
         public event Action<LootItem, float, Vector3> Impacted;
         /// <summary>This machine's physics hit something (physics authority only); networking reports/relays it.</summary>
-        public event Action<LootItem, float, Vector3> CollisionImpact;
+        public event Action<LootItem, LootImpact> CollisionImpact;
         /// <summary>Value lost from an impact (item, loss, contact point). Host applies; others replay it.</summary>
         public event Action<LootItem, int, Vector3> Damaged;
         /// <summary>Item shattered to $0 and is about to be removed. Host applies; others replay it.</summary>
@@ -148,7 +148,7 @@ namespace Abandoned.Loot
             float speed = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, normal));
 
             Impacted?.Invoke(this, speed, point);
-            CollisionImpact?.Invoke(this, speed, point);
+            CollisionImpact?.Invoke(this, new LootImpact(speed, point, normal, collision.rigidbody));
             if (!HasValueAuthority) return;
             ApplyImpact(speed, point);
             EmitImpactNoise(speed, point);

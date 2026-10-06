@@ -164,3 +164,8 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     collisions by RPC, filtered by ImpactReportFilter (owner or just-released owner, rate, plausibility,
     speed clamp; tunables in LootNetConfig). Scene-placed loot must be saved as in-scene placed
     (Editor/NetworkObjectIds stamps it after the scene is in Build Settings), or clients double it.
+  - M3.4-fix: hits against a copy this machine only follows are judged where they happen. A follower
+    copy's velocity is estimated from its network motion (Grabbable.Velocity / IVelocitySource), so a
+    player's owner is knocked down by host-simulated loot too. A client-carried item that strikes
+    host-simulated loot names it in its impact report; the host applies the same impact and a
+    mass-scaled push (LootStrikes, LootNetConfig.StruckPushTransfer).

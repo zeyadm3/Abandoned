@@ -34,6 +34,9 @@ namespace Abandoned.Networking
         [field: Tooltip("Reports from the previous carrier still count this long after a drop (s): they were in flight.")]
         [field: SerializeField, Min(0f)] public float ReportGraceTime { get; private set; } = 0.75f;
 
+        [field: Tooltip("How much of a carried item's hit speed pushes the loot it strikes (before the mass ratio).")]
+        [field: SerializeField, Range(0f, 2f)] public float StruckPushTransfer { get; private set; } = 1f;
+
         [field: Header("Presentation")]
         [field: Tooltip("At most one relayed impact sound per item per this interval (s).")]
         [field: SerializeField, Min(0f)] public float ImpactSoundInterval { get; private set; } = 0.05f;

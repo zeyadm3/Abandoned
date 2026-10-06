@@ -39,6 +39,8 @@ namespace Abandoned.Networking
         public LootValueState Value => value.Value;
         /// <summary>Host: speed the last release was given after clamping (F1, tests).</summary>
         public float LastReleaseSpeed { get; internal set; } = -1f;
+        /// <summary>Host: impact speed it last took from a client-carried item striking it (F1, tests).</summary>
+        public float LastStruckSpeed { get; internal set; } = -1f;
         /// <summary>Client: the host's last refusal ("Too far away", "Someone else has it").</summary>
         public string LastHint { get; private set; }
         /// <summary>Host: where the holder last was, to put an orphaned item back in the world.</summary>
@@ -243,34 +245,38 @@ namespace Abandoned.Networking
 
         // ---- Impacts and feedback ---------------------------------------------------------------
 
-        /// <summary>Carrier: tell the host about a hit only this machine's physics saw.</summary>
-        public void ReportImpact(float speed, Vector3 point) => ReportImpactRpc(speed, point);
+        /// <summary>Carrier: tell the host about a hit only this machine's physics saw (and which loot it struck).</summary>
+        public void ReportImpact(float speed, Vector3 point, ulong struckId = LootStrikes.None, Vector3 normal = default) =>
+            ReportImpactRpc(speed, point, normal, struckId);
 
-        private void OnCollisionImpact(LootItem _, float speed, Vector3 point)
+        private void OnCollisionImpact(LootItem _, LootImpact hit)
         {
-            if (speed < item.DamageConfig.MinSoundSpeed) return;
+            if (hit.Speed < item.DamageConfig.MinSoundSpeed) return;
             if (IsServer)
             {
                 reportFilter.HostImpact(Time.time);
                 // The host already applied damage and noise; everyone else needs the sound.
-                if (Throttle(ref lastSoundSent, config.ImpactSoundInterval)) ImpactRpc(speed, point, RpcTarget.NotMe);
+                if (Throttle(ref lastSoundSent, config.ImpactSoundInterval)) ImpactRpc(hit.Speed, hit.Point, RpcTarget.NotMe);
             }
             else if (IsOwner && Throttle(ref lastReportSent, config.ImpactReportInterval))
             {
-                ReportImpactRpc(speed, point);
+                ReportImpactRpc(hit.Speed, hit.Point, hit.Normal, LootStrikes.StruckId(hit.Other));
             }
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-        private void ReportImpactRpc(float speed, Vector3 point, RpcParams rpcParams = default)
+        private void ReportImpactRpc(float speed, Vector3 point, Vector3 normal, ulong struckId, RpcParams rpcParams = default)
         {
             ulong sender = rpcParams.Receive.SenderClientId;
             if (!reportFilter.TryAccept(sender, OwnerClientId, Time.time, speed, point, grabbable.GetBounds(), out float accepted)) return;
+            LootStrikes.ApplyStruck(this, struckId, accepted, point, normal);
             // Sound first: a shatter despawns the item.
             ImpactRpc(accepted, point, RpcTarget.Not(sender, RpcTargetUse.Temp));
             item.ApplyImpact(accepted, point);
             item.EmitImpactNoise(accepted, point);
         }
+
+        internal void ServerReplayImpactEverywhere(float speed, Vector3 point) => ImpactRpc(speed, point, RpcTarget.Everyone);
 
         [Rpc(SendTo.SpecifiedInParams)]
         private void ImpactRpc(float speed, Vector3 point, RpcParams rpcParams) => item.ReplayImpact(speed, point);

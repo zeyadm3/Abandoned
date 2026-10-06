@@ -1,4 +1,5 @@
 using System;
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Interaction
@@ -11,7 +12,7 @@ namespace Abandoned.Interaction
     /// and follows the network (CLAUDE.md: the carrier owns a carried item's physics, the host the rest).
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class Grabbable : MonoBehaviour
+    public class Grabbable : MonoBehaviour, IVelocitySource
     {
         private Rigidbody body;
         private ICarryable carryable;
@@ -19,6 +20,7 @@ namespace Abandoned.Interaction
         private Renderer[] renderers;
         private RigidbodyInterpolation restingInterpolation;
         private CollisionDetectionMode dynamicDetection;
+        private readonly TrackedVelocity followedVelocity = new();
 
         public Rigidbody Body => body;
         public PlayerCarrier Holder { get; private set; }
@@ -33,6 +35,13 @@ namespace Abandoned.Interaction
         public string DisplayName => carryable?.DisplayName ?? name;
         public CarryClass CarryClass => carryable?.CarryClass ?? CarryClass.OneHand;
         public float Weight => carryable?.GameplayWeight ?? body.mass;
+
+        /// <summary>
+        /// Real motion on this machine: the body's own velocity where it's simulated, else estimated
+        /// from how the network moves the kinematic copy (whose Rigidbody velocity stays zero), so a
+        /// host-thrown safe still knocks a client's player down on the client.
+        /// </summary>
+        public Vector3 Velocity => body.isKinematic ? followedVelocity.Value : body.linearVelocity;
 
         /// <summary>Raised when the object leaves a holder or pocket (dropped, thrown, auto-dropped).</summary>
         public event Action<Grabbable> Released;
@@ -72,6 +81,13 @@ namespace Abandoned.Interaction
         {
             HasPhysicsAuthority = authority;
             ApplyBodyMode();
+        }
+
+        private void LateUpdate()
+        {
+            // After NetworkTransform has placed the copy this frame. Dynamic bodies report their own velocity.
+            if (body.isKinematic && !IsPocketed) followedVelocity.Sample(transform.position, Time.deltaTime);
+            else followedVelocity.Reset();
         }
 
         internal void BeginHold(PlayerCarrier holder, bool drag)

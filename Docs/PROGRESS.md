@@ -17,12 +17,14 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   + M3.3-fix (builds stamp `<commit>-dirty` from uncommitted changes; dirty/unknown builds only match
   the same build run). M3.4 done (networked loot: host-validated pickup/drop/throw/pocket RPCs, carrier
   owns carried physics, replicated value/hold state, carrier-reported impacts, feedback on every
-  machine, shatter despawns; 'loot' nettest passes 4/4; see "M3.4 notes").
+  machine, shatter despawns; 'loot' nettest passes 4/4; see "M3.4 notes")
+  + M3.4-fix (follower copies of loot knock players down using their network motion; a client-carried
+  item striking resting loot damages and pushes it on the host; see "M3.4-fix notes").
   **Next:** shared carrying, networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK
   3.3-3.6). Add a nettest scenario for each (see "M3.3 notes").
-- **Verification state after M3.4:** compile clean; rebuild OK; verify ALL PASS; EditMode 111/111;
-  PlayMode 147/147; screenshots OK; `Tools/unity.sh nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS
-  (dev build a04ad82-dirty). Shareable zips: build them only AFTER the task's commit.
+- **Verification state after M3.4-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 115/115;
+  PlayMode 151/151; screenshots OK; `Tools/unity.sh nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS
+  (dev build a62ec5c-dirty). Shareable zips: build them only AFTER the task's commit.
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -55,6 +57,11 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
       has it". Pocket the gold watch (E): it vanishes for everyone and comes back out (hold Tab + right
       mouse) in front of the player. Drop the vase: everyone hears it, sees "$X -> $0" and shards, and
       it's gone everywhere. F1 shows owner / hold state / "sim here" over each item.
+- [ ] M3.4-fix in Multiplayer Play Mode: the host throws the safe (or the server rack) at a client's
+      player -> that client goes down (ragdoll) on its own screen and everyone sees it. A client carries
+      the laptop and swings/walks it into a resting vase or TV -> the struck item makes its sound, shows
+      "-$X" (or shatters) on every screen and gets pushed, instead of acting like a wall. Judge whether
+      the push (one round trip late on the carrier's screen) feels acceptable.
 - [ ] M3.4 feel: carried items seen on other screens follow the carrier smoothly (NetworkTransform
       interpolation at 30 Hz), and a thrown item doesn't visibly hitch when the host takes it back.
 - [ ] M3.2 LAN: two Macs (or Mac + Windows friend on the same network), host on one, join with the
@@ -123,6 +130,7 @@ or any exception in the log even when tests pass.
 | 3.3 Build script + multi-process localhost nettest | done | compile clean; rebuild OK; verify ALL PASS (+ Build Settings scenes = BuildScenes.All, BuildInfo unstamped, Mono + Run In Background); EditMode 94/94 (+15: nettest args/registry, BasicNetTestCheck catches missing player/stale remote copy/disagreeing still player/short or missing moves/missing views, VersionInfo compatibility rules, build folders/targets/options/steam_appid policy/player settings/scene list); PlayMode 135/135 (+3 in-process: channel both ways with sender ids, 'basic' scenario passes host+3 clients and host sees each mover where it stopped, timeout aborts with a recorded error); `Tools/unity.sh build` Mac universal 120 MB + Windows 103 MB, signature verified, zips 47 MB/38 MB; `Tools/unity.sh nettest` 4/4 PASS (each client walked 2.15 m, all 4 machines agree), repeat run reuses the build, unknown scenario fails 0/4 with a clear message. |
 | 3.3-fix Review fix: dirty builds stamped as HEAD | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 97/97 (+3: GitInfo.Label dirty/clean/unknown, real repo gives a hex label, dirty/unknown keys only match the same build time incl. Mac+Windows pair, clean vs dirty refused); PlayMode 135/135; build-dev stamps `a7e1f70-dirty` in BUILD.txt and the player, BuildInfo.asset reset after; nettest 4/4 PASS. |
 | 3.4 Networked loot | done | compile clean; rebuild OK; verify ALL PASS (+ loot prefabs have NetworkObject/owner-auth NetworkTransform/NetworkLoot, no NetworkRigidbody, DontDestroyWithOwner, registered; scene NetworkObjects have unique ids, a registered source prefab and are SAVED as in-scene placed); EditMode 111/111 (+14: impact report filter owner/bystander/rate/clamp/NaN/far point, just-released carrier until the host simulates a hit itself, request guard, hold state, config + value state, 'loot' check catches value/position/missing/extra/held/ownership/no-move/no-damage/missing views, scenario registered); PlayMode 147/147 (+12 in-process NGO host+2 clients: client pickup host-validated + physics handed over + carried weight on every machine + copies follow the carrier, out-of-reach refused by the host's view, simultaneous grabs -> exactly one holder, drop returns physics to the host and all agree where it lands, throw clamped (100 m/s -> cap) and NaN throw -> drop, carrier leaving frees the item, rolled value + damage + one -$X popup per machine, client can't damage, shatter while carried despawns everywhere with feedback on every machine, pocket hidden/no collisions/in inventory on all machines and back out, reported impact applied once with one host noise, solo TestBuilding loot is host-owned in-scene NetworkObjects; 'loot' scenario host+3 clients in-process); `Tools/unity.sh nettest loot` 4/4 PASS (each client picked up and threw its laptop, all 4 machines agree on 16 items incl. the 13 scene-placed, values incl. host damage, positions within 0.25 m); `nettest basic` 4/4 PASS. Screenshot M3_4_client_carrying_seen_from_host checked. |
+| 3.4-fix Review fixes (follower loot hits players; carried strikes on resting loot) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK (no new visible content); EditMode 115/115 (+4 TrackedVelocity: steady motion converges, first sample/reset report nothing, teleport is not a hit, zero step/NaN ignored); PlayMode 151/151 (+4 in-process NGO: host-thrown safe ragdolls client 1 on its own machine and the host sees it; a resting follower copy knocks nobody down; client-carried laptop swung into a resting TV -> host applies the strike at the carrier's speed, value drops on every machine, TV pushed and the carrier sees where it went; strike reports far from the struck item or naming an item someone else carries are ignored). Both new behaviour tests fail with the fix reverted. `nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS (dev build a62ec5c-dirty). |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -262,6 +270,31 @@ or any exception in the log even when tests pass.
 - **Not done here (later tasks):** shared carrying (3.3); remote players' look pitch (the host's view of
   a client's eyes uses yaw only; unpocket uses the client's aim); trolley; appraisal UI (values are already
   replicated).
+
+### M3.4-fix notes
+- **Finding 1 (confirmed, fixed): loot couldn't knock down client players.** Only a player's owner has
+  the hit trigger, and on a client every host-simulated item is a kinematic follower whose Rigidbody
+  velocity is zero, so `PlayerHitDetector` ignored it. `Grabbable` now implements `Core/IVelocitySource`:
+  dynamic -> `body.linearVelocity`; kinematic follower -> `Core/TrackedVelocity` sampled in LateUpdate
+  (after NetworkTransform moves it), lightly smoothed, reset while pocketed, and a jump faster than
+  40 m/s is a teleport (unpocket, snap to the host's pose), not a hit. The detector uses
+  `IVelocitySource` when the body has one and still ignores other kinematic bodies. Same path covers a
+  client-carried item swung into the host's player. F1 shows "v X m/s" over moving follower copies
+  plus a cyan motion gizmo.
+- **Finding 2 (confirmed, fixed): a client-carried item hitting resting loot.** `LootItem.CollisionImpact`
+  now carries a `LootImpact` (speed, point, normal, other rigidbody). When the carrier's item hits a
+  loot copy it only follows, its impact report names that item (`LootStrikes.StruckId`). The host,
+  after the usual `ImpactReportFilter` checks on the reporter, applies the strike only to loot it
+  simulates itself (free, host-owned, not shattered) and only if the contact point is within
+  MaxImpactPointDistance of it: impact sound on every machine (the carrier never heard it), the same
+  `ApplyImpact` + host noise, and a velocity-change push along the contact normal of
+  speed x StruckPushTransfer x min(1, carried mass / struck mass) (a held item pushes a vase along,
+  barely moves a safe). Carried targets are skipped: their own carrier reports their hits. F1 shows
+  "struck X m/s" on the host. The carrier still meets the struck copy as a wall until the host's push
+  arrives (one round trip); hand-test item under Needs you.
+- Not changed: the host's kinematic copy of a client-carried item is still moved by transform
+  (NetworkTransform); MovePosition would need a NetworkTransform subclass and the strike report already
+  covers the gameplay effect.
 
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
