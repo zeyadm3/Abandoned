@@ -1,4 +1,5 @@
 using Abandoned.Interaction;
+using Unity.Netcode;
 
 namespace Abandoned.Networking
 {
@@ -16,7 +17,7 @@ namespace Abandoned.Networking
         {
             if (target != null && target.Shared != null) { RequestGrab(carrier, target); return; }
             NetworkLoot loot = NetworkLoot.Of(target);
-            if (loot == null) { local.RequestPickup(carrier, target); return; }
+            if (loot == null) { PickUpOffline(carrier, target); return; }
 
             string reason;
             if (loot.IsServer)
@@ -33,7 +34,7 @@ namespace Abandoned.Networking
         private void RequestGrab(PlayerCarrier carrier, Grabbable target)
         {
             NetworkSharedCarry net = NetworkSharedCarry.Of(target);
-            if (net == null) { local.RequestPickup(carrier, target); return; }
+            if (net == null) { PickUpOffline(carrier, target); return; }
 
             string reason;
             if (net.IsServer)
@@ -43,6 +44,19 @@ namespace Abandoned.Networking
             }
             if (!PickupRules.CanGrabPoint(carrier, target.Shared, out _, out reason)) { carrier.ShowHint(reason); return; }
             net.ClientRequestGrab();
+        }
+
+        // Not a spawned network item: single-player rules. But a network item that hasn't spawned here
+        // yet (a client just joined) must wait for the host, or this machine would simulate it alone.
+        private void PickUpOffline(PlayerCarrier carrier, Grabbable target)
+        {
+            if (target != null && target.TryGetComponent(out NetworkObject no) && !no.IsSpawned &&
+                NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+            {
+                carrier.ShowHint("Not ready yet");
+                return;
+            }
+            local.RequestPickup(carrier, target);
         }
 
         public void RequestDrop(PlayerCarrier carrier) => Release(carrier, carrier.DropVelocity, isThrow: false);

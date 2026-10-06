@@ -205,5 +205,28 @@ namespace Abandoned.Tests
             lobbies.AcceptInvite(lobbies.IdOf(FriendsLobby()));
             Assert.AreEqual(0UL, session.JoinedHost, "a detached flow ignores invites");
         }
+
+        [Test]
+        public void HostingWhileAJoinIsInFlightKeepsTheHostsLobby()
+        {
+            FakeSteamLobbies.FakeLobby friends = FriendsLobby();
+            var steamAnswers = new TaskCompletionSource<bool>();
+            lobbies.JoinGate = steamAnswers;
+            Task<bool> joining = flow.JoinAsync(lobbies.IdOf(friends));
+            lobbies.JoinGate = null;
+
+            session.Host();
+            flow.OnHostStarted();
+            ulong own = flow.LobbyId;
+            Assert.AreNotEqual(0UL, own);
+
+            steamAnswers.SetResult(true);
+            Assert.IsTrue(joining.IsCompleted);
+            Assert.IsFalse(joining.Result);
+            Assert.AreEqual(own, flow.LobbyId, "our own lobby is still the one we're in");
+            Assert.AreEqual(LobbyMessages.AlreadyInGame, flow.LastError);
+            Assert.AreEqual(0UL, session.JoinedHost);
+            CollectionAssert.Contains(lobbies.Left, lobbies.IdOf(friends), "the late join is left again");
+        }
     }
 }

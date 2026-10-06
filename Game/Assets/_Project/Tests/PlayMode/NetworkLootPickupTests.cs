@@ -181,5 +181,20 @@ namespace Abandoned.Tests
             NetworkLoot other = NetLootKit.CopyOn(client2, id);
             yield return WaitFor(() => other.Hold.Mode == LootHoldMode.Free && !other.Grabbable.IsPocketed, "client 2 to see it back out", 5f);
         }
+
+        [UnityTest]
+        public IEnumerator AKnockedDownPlayerCantPickUp()
+        {
+            ulong id = 0;
+            yield return SpawnInFront(client1, "laptop", 1f, i => id = i);
+            Own(client1).GetComponent<Abandoned.Player.PlayerRagdoll>().Enter(Vector3.zero);
+            yield return WaitFor(() => CarrierOf(net.Host, client1).IsRagdolled, "the host to see client 1 down", 5f);
+            // A pickup sent just before going down reaches the host afterwards: it must be refused.
+            NetworkLoot copy = NetLootKit.CopyOn(client1, id);
+            Assert.IsTrue(copy.ClientRequestPickup());
+            yield return WaitFor(() => copy.LastHint != null, "the host's refusal", 5f);
+            Assert.AreEqual("You're down", copy.LastHint);
+            Assert.AreEqual(LootHoldMode.Free, NetLootKit.CopyOn(net.Host, id).Hold.Mode);
+        }
     }
 }

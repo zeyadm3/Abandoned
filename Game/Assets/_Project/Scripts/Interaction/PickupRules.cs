@@ -12,6 +12,8 @@ namespace Abandoned.Interaction
             if (carrier == null || target == null) { reason = "Nothing to pick up"; return false; }
             // Team items are only ever held by their carry points (CanGrabPoint), never picked up whole.
             if (target.Shared != null) { reason = "Grab one of its handles"; return false; }
+            // A pickup that reaches the host after the player was knocked down would leave them holding it while down.
+            if (carrier.IsRagdolled) { reason = "You're down"; return false; }
             if (!target.IsAvailable) { reason = "Someone else has it"; return false; }
 
             CarryConfig config = carrier.Config;

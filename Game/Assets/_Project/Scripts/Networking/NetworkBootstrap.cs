@@ -296,10 +296,10 @@ namespace Abandoned.Networking
             }
             else if (clientId == networkManager.LocalClientId || clientId == NetworkManager.ServerClientId)
             {
-                string reason = networkManager.DisconnectReason;
-                LastError = !string.IsNullOrEmpty(reason) ? reason
+                string reason = SessionMessages.FromHost(networkManager.DisconnectReason);
+                LastError = reason.Length > 0 ? reason
                     : wasInSession || networkManager.IsConnectedClient ? SessionMessages.LostHost
-                    : $"Couldn't connect to {JoinTarget}.";
+                    : SessionMessages.CouldNotJoin(JoinTarget, VersionInfo.Display);
             }
             StateChanged?.Invoke();
         }

@@ -122,6 +122,7 @@ namespace Abandoned.EditorTools
                 var definition = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LootPrefabGenerator.PrefabPathFor(definition));
                 if (prefab != null) LootPrefabGenerator.ValidatePrefab(definition, prefab, errors);
+                ValidateCrew(definition, errors);
             }
 
             foreach (string guid in AssetDatabase.FindAssets("t:ScriptableObject", new[] { DataRoot }))
@@ -131,6 +132,19 @@ namespace Abandoned.EditorTools
                 if (asset == null) errors.Add($"{path}: asset failed to load (missing script?).");
                 else if (asset is IValidatable validatable) validatable.Validate(errors);
             }
+        }
+
+        // A definition that leaves RequiredCarriers to its class but authors fewer handles than that crew
+        // would silently let a smaller crew lift it (RequiredFor is capped by the points).
+        private static void ValidateCrew(Abandoned.Loot.LootDefinition definition, List<string> errors)
+        {
+            int authored = definition.CarryPoints?.Length ?? 0;
+            if (authored == 0 || definition.CarryClass < Abandoned.Interaction.CarryClass.Heavy) return;
+            var config = AssetDatabase.LoadAssetAtPath<Abandoned.Interaction.SharedCarryConfig>(LootPrefabGenerator.SharedCarryConfigPath);
+            if (config == null) return;
+            int crew = config.RequiredFor(definition.CarryClass, definition.RequiredCarriers);
+            if (crew > authored)
+                errors.Add($"{definition.name}: needs a crew of {crew} but has only {authored} carry points.");
         }
 
         private static void ValidateHierarchy(GameObject root, string context, List<string> errors)

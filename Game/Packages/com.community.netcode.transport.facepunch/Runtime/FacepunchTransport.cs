@@ -78,7 +78,9 @@ namespace Netcode.Transports.Facepunch
             {
                 // Flush any pending messages before closing the connection
                 user.connection.Flush();
-                user.connection.Close();
+                // Abandoned: linger so a reason sent just before (host left, game full, other build)
+                // is still delivered instead of being dropped with the connection.
+                user.connection.Close(true);
                 connectedClients.Remove(clientId);
 
                 if (LogLevel <= LogLevel.Developer)
@@ -240,6 +242,9 @@ namespace Netcode.Transports.Facepunch
 
         void IConnectionManager.OnDisconnected(ConnectionInfo info)
         {
+            // Abandoned: messages are otherwise only read in PollEvent; the host's disconnect reason
+            // usually arrives together with the close, so hand it to NGO before the disconnect.
+            connectionManager?.Receive();
             InvokeOnTransportEvent(NetworkEvent.Disconnect, ServerClientId, default, Time.realtimeSinceStartup);
 
             if (LogLevel <= LogLevel.Developer)

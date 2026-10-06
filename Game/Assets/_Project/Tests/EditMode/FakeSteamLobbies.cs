@@ -28,6 +28,8 @@ namespace Abandoned.Tests
         /// <summary>Set: the next create waits for this to complete (Steam being slow).</summary>
         public TaskCompletionSource<bool> CreateGate;
         public string JoinError;
+        /// <summary>Set: the next join waits for this (Steam being slow to answer).</summary>
+        public TaskCompletionSource<bool> JoinGate;
         private ulong nextId = 109775240000000001UL;
 
         public event Action<ulong> InviteAccepted;
@@ -51,13 +53,19 @@ namespace Abandoned.Tests
             return IdOf(lobby);
         }
 
-        public Task<string> JoinAsync(ulong lobbyId)
+        public async Task<string> JoinAsync(ulong lobbyId)
         {
-            if (JoinError != null) return Task.FromResult(JoinError);
-            if (!Lobbies.TryGetValue(lobbyId, out FakeLobby lobby)) return Task.FromResult(LobbyMessages.Gone);
-            if (lobby.Members.Count >= lobby.MaxMembers) return Task.FromResult(LobbyMessages.Full);
+            if (JoinGate != null) await JoinGate.Task;
+            return JoinNow(lobbyId);
+        }
+
+        private string JoinNow(ulong lobbyId)
+        {
+            if (JoinError != null) return JoinError;
+            if (!Lobbies.TryGetValue(lobbyId, out FakeLobby lobby)) return LobbyMessages.Gone;
+            if (lobby.Members.Count >= lobby.MaxMembers) return LobbyMessages.Full;
             lobby.Members.Add(new LobbyMember(LocalId, LocalName));
-            return Task.FromResult<string>(null);
+            return null;
         }
 
         public void Leave(ulong lobbyId)

@@ -26,13 +26,15 @@ namespace Abandoned.Networking
             if (struckId == None || struckId == reporter.NetworkObjectId) return false;
             if (!reporter.NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(struckId, out NetworkObject no)
                 || no == null || !no.TryGetComponent(out NetworkLoot struck) || !struck.IsSpawned) return false;
-            // Only loot the host simulates: a carried item's own carrier reports its hits itself.
-            if (!struck.IsOwner || struck.Hold.Mode != LootHoldMode.Free || struck.Item.IsShattered) return false;
+            // Only loot the host simulates (resting, shared-carried, or held by the host's own player):
+            // a client-carried item's own carrier reports its hits itself.
+            if (!struck.IsOwner || struck.Item.IsShattered) return false;
             float maxDistance = reporter.Config.MaxImpactPointDistance;
             if (struck.Grabbable.GetBounds().SqrDistance(point) > maxDistance * maxDistance) return false;
 
             Rigidbody body = struck.Grabbable.Body;
-            if (!body.isKinematic)
+            // Something in hands is only damaged, not shoved out of them.
+            if (!body.isKinematic && struck.Hold.Mode == LootHoldMode.Free)
                 body.AddForce(PushDirection(body, point, normal) * speed * PushTransfer(reporter, body), ForceMode.VelocityChange);
             struck.LastStruckSpeed = speed;
             // Sound first: a shatter despawns the item. Nobody heard this one yet, not even the carrier.

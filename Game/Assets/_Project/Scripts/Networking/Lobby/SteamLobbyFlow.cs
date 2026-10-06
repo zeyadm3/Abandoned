@@ -114,6 +114,12 @@ namespace Abandoned.Networking
             {
                 string error = await lobbies.JoinAsync(lobbyId);
                 if (error != null) return Fail(error);
+                // The player may have started hosting (and opened their own lobby) while Steam was answering.
+                if (session.IsRunning || InLobby)
+                {
+                    lobbies.Leave(lobbyId);
+                    return Fail(LobbyMessages.AlreadyInGame);
+                }
 
                 string hostKey = lobbies.GetData(lobbyId, VersionKey);
                 if (!VersionInfo.AreCompatible(hostKey, session.CompatibilityKey))

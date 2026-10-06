@@ -74,7 +74,7 @@ namespace Abandoned.Tests
         public void PackageIsTheVersionedFork()
         {
             StringAssert.Contains("\"version\": \"2.0.0-abandoned.", File.ReadAllText($"{PackageRoot}/package.json"));
-            StringAssert.Contains("2.0.0-abandoned.1", File.ReadAllText($"{PackageRoot}/CHANGELOG.md"));
+            StringAssert.Contains("2.0.0-abandoned.2", File.ReadAllText($"{PackageRoot}/CHANGELOG.md"));
         }
     }
 }

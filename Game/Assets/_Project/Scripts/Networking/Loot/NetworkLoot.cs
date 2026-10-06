@@ -16,6 +16,8 @@ namespace Abandoned.Networking
     [RequireComponent(typeof(LootItem), typeof(Grabbable))]
     public class NetworkLoot : NetworkBehaviour
     {
+        private const int MaxHintLength = 120;
+
         [SerializeField] private LootNetConfig config;
         [SerializeField] private NetworkTransform networkTransform;
 
@@ -233,6 +235,8 @@ namespace Abandoned.Networking
         [Rpc(SendTo.SpecifiedInParams)]
         private void HintRpc(string reason, RpcParams rpcParams)
         {
+            // Anyone may invoke an RPC by default; only the host's refusals are real (and short).
+            if (rpcParams.Receive.SenderClientId != NetworkManager.ServerClientId || reason == null || reason.Length > MaxHintLength) return;
             LastHint = reason;
             NetworkObject player = NetworkManager.LocalClient?.PlayerObject;
             if (player != null && player.TryGetComponent(out PlayerCarrier carrier)) carrier.ShowHint(reason);

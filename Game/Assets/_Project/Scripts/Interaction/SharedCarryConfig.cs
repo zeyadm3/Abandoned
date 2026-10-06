@@ -73,6 +73,9 @@ namespace Abandoned.Interaction
         [field: Tooltip("Sent targets farther than this (m) from where the host sees the carrier's grip are clamped.")]
         [field: SerializeField, Min(0.1f)] public float MaxTargetDeviation { get; private set; } = 1.5f;
 
+        [field: Tooltip("Clients lead the tether anchor by the item's motion over half the RTT plus this (s, ~NGO's interpolation delay).")]
+        [field: SerializeField, Range(0f, 0.3f)] public float AnchorInterpolationLead { get; private set; } = 0.1f;
+
         public int RequiredFor(CarryClass carryClass, int definitionOverride)
         {
             if (definitionOverride > 0) return Mathf.Min(definitionOverride, SharedCarryable.MaxPoints);

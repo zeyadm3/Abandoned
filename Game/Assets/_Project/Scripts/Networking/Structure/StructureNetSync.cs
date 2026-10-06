@@ -94,8 +94,8 @@ namespace Abandoned.Networking
             for (int i = 0; i < sections.Count; i++) states.Add(EntryFor(i));
         }
 
-        // Runs after the physics steps of this frame and before NGO sends its tick, so a collapse
-        // goes out in the same frame the host's colliders went off.
+        // Runs after this frame's physics steps; NGO sends the change on its next network tick (at most
+        // one tick, ~33 ms at 30 Hz, after the host's colliders went off).
         private void Publish()
         {
             if (globals.Value.Generation != simulation.Generation) globals.Value = CurrentGlobals();
@@ -141,7 +141,7 @@ namespace Abandoned.Networking
             if (!LayoutMatches(g)) return;
             if (g.Generation != appliedGeneration)
             {
-                simulation.MirrorStability(g.Stability, g.Seed);
+                simulation.MirrorStability(g.Stability, g.Seed, g.Generation);
                 appliedGeneration = g.Generation;
             }
             byte generation = (byte)g.Generation;

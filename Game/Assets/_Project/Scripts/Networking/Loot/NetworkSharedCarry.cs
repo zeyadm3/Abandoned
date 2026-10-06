@@ -16,6 +16,10 @@ namespace Abandoned.Networking
     [RequireComponent(typeof(SharedCarryable), typeof(NetworkLoot))]
     public class NetworkSharedCarry : NetworkBehaviour
     {
+        private const int MaxHintLength = 120;
+        // Past this the guess is worse than the lag it corrects.
+        private const float MaxAnchorLead = 0.5f;
+
         private readonly NetworkVariable<SharedCarryState> state = new(default,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -64,7 +68,11 @@ namespace Abandoned.Networking
 
         private void Update()
         {
-            if (IsSpawned && !IsServer && mirrorPending) Mirror();
+            if (!IsSpawned || IsServer) return;
+            if (mirrorPending) Mirror();
+            // Our copy of the item is half a round trip plus the interpolation delay behind the host's.
+            ulong rttMs = NetworkManager.NetworkConfig.NetworkTransport.GetCurrentRtt(NetworkManager.ServerClientId);
+            shared.AnchorLead = Mathf.Min(MaxAnchorLead, rttMs * 0.0005f + shared.Config.AnchorInterpolationLead);
         }
 
         private void FixedUpdate()
@@ -176,6 +184,8 @@ namespace Abandoned.Networking
         [Rpc(SendTo.SpecifiedInParams)]
         private void HintRpc(string reason, RpcParams rpcParams)
         {
+            // Anyone may invoke an RPC by default; only the host's refusals are real (and short).
+            if (rpcParams.Receive.SenderClientId != NetworkManager.ServerClientId || reason == null || reason.Length > MaxHintLength) return;
             LastHint = reason;
             NetworkObject player = NetworkManager.LocalClient?.PlayerObject;
             if (player != null && player.TryGetComponent(out PlayerCarrier carrier)) carrier.ShowHint(reason);

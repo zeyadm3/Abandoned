@@ -152,7 +152,17 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>Where the carrier of a point should stand: the point minus their grip (horizontal only matters).</summary>
-        public Vector3 AnchorFor(int index) => PointWorld(index) - GripWorld(index);
+        public Vector3 AnchorFor(int index)
+        {
+            // A client sees the host-simulated item late; leading it by its motion keeps a high-ping
+            // carrier from being held back by where the item was (AnchorLead, set by the network side).
+            Vector3 lead = grabbable.Velocity * AnchorLead;
+            lead.y = 0f;
+            return PointWorld(index) - GripWorld(index) + lead;
+        }
+
+        /// <summary>Seconds the anchor leads the item's copy by (0 where the item is simulated).</summary>
+        public float AnchorLead { get; set; }
 
         /// <summary>Slowest carrier's top speed (m/s) at their own gait and load: the whole crew's limit.</summary>
         public float GroupMaxSpeed
@@ -179,7 +189,20 @@ namespace Abandoned.Interaction
 
         /// <summary>Speed cap for each carrier: the crew's when lifted; a creep for an under-crewed item nobody may drag alone.</summary>
         public float CarrierMaxSpeed => IsLifted ? GroupMaxSpeed
-            : CanBeDraggedUnderCrewed ? float.PositiveInfinity : config.CreepSpeed;
+            : CanBeDraggedUnderCrewed ? DragMaxSpeed : config.CreepSpeed;
+
+        // A solo drag at the dragger's own (slowed) pace; also caps the host-simulated item, so a forged
+        // target can't whip a 300 kg rack around.
+        private float DragMaxSpeed
+        {
+            get
+            {
+                float slowest = float.PositiveInfinity;
+                for (int i = 0; i < localPoints.Length; i++)
+                    if (carriers[i] != null) slowest = Mathf.Min(slowest, carriers[i].DragSpeedCapability());
+                return slowest;
+            }
+        }
 
         // ---- Membership (only after an IInteractionHandler validated it, or mirroring the host) ----
 

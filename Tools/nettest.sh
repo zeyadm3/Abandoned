@@ -65,7 +65,8 @@ launch host host
 # Clients only retry for ~10 s (NetworkConfig.MaxConnectAttempts), so wait until the host listens.
 while [ ! -f "$OUT/host.json.ready" ] && kill -0 "${pids[0]}" 2>/dev/null && [ $SECONDS -lt $deadline ]; do sleep 0.2; done
 if [ -f "$OUT/host.json.ready" ]; then
-  for i in $(seq 1 "$clients"); do launch client "client$i"; done
+  # Not seq: BSD seq 1 0 counts down and would launch two clients.
+  for ((i = 1; i <= clients; i++)); do launch client "client$i"; done
 else
   echo "host never started listening (see $OUT/host.log)"
 fi
@@ -90,6 +91,8 @@ out, clients = sys.argv[1], int(sys.argv[2])
 names = ["host"] + [f"client{i}" for i in range(1, clients + 1)]
 # Clients that never launched have no log/result; they still count as failures below.
 exc = re.compile(r"^[A-Za-z0-9_.]*Exception( |:)")
+# Errors that mean the run isn't testing what it claims, even when every scenario step passed.
+fatal = re.compile(r"doesn't match the host's|^\[Netcode\].*\b(Error|Exception)\b")
 bad = 0
 for n in names:
     path = os.path.join(out, n + ".json")
@@ -103,7 +106,7 @@ for n in names:
     if r is not None and not r.get("passed"):
         problems += r.get("errors") or ["failed without an error message"]
     if os.path.exists(log):
-        hits = [l.rstrip() for l in open(log, errors="replace") if exc.match(l)]
+        hits = [l.rstrip() for l in open(log, errors="replace") if exc.match(l) or fatal.search(l)]
         problems += [f"exception in log: {h}" for h in hits[:5]]
     else:
         problems.append("no log")

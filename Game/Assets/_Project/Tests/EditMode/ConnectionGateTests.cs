@@ -61,5 +61,14 @@ namespace Abandoned.Tests
             Assert.IsFalse(Admit(4, HostKey, slots, out _, out string reason));
             Assert.AreEqual(SessionMessages.Full(4), reason);
         }
+
+        [Test]
+        public void OnlyTheHostsReasonsReachPlayers()
+        {
+            Assert.AreEqual(SessionMessages.HostLeft, SessionMessages.FromHost(SessionMessages.HostLeft));
+            Assert.AreEqual(string.Empty, SessionMessages.FromHost("[Disconnect Event][Client-1][TransportClientId-0] ProtocolTimeout"));
+            Assert.AreEqual(string.Empty, SessionMessages.FromHost(null));
+            StringAssert.Contains("0.3.0 (abc1234)", SessionMessages.CouldNotJoin("127.0.0.1:7777", "0.3.0 (abc1234)"));
+        }
     }
 }

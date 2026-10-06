@@ -50,13 +50,14 @@ namespace Abandoned.Structure
 
         private void Awake()
         {
-            // Stable ids (hierarchy order by name, then position) so "section X collapsed" means the same
-            // piece on every machine and in every run.
+            // Stable ids (name, then position: x, z, and height for stacked floors) so "section X
+            // collapsed" means the same piece on every machine and in every run.
             StructuralSection[] found = childrenOnly
                 ? GetComponentsInChildren<StructuralSection>(true)
                 : FindObjectsByType<StructuralSection>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             sections.AddRange(found
-                .OrderBy(s => s.name, System.StringComparer.Ordinal).ThenBy(s => s.transform.position.x).ThenBy(s => s.transform.position.z));
+                .OrderBy(s => s.name, System.StringComparer.Ordinal).ThenBy(s => s.transform.position.x).ThenBy(s => s.transform.position.z)
+                .ThenBy(s => s.transform.position.y));
             for (int i = 0; i < sections.Count; i++)
             {
                 sections[i].Id = i;
@@ -85,8 +86,8 @@ namespace Abandoned.Structure
         }
 
         /// <summary>
-        /// Order-independent fingerprint of the section list (names + ids), so a client can tell when
-        /// its building doesn't match the host's and section ids would mean different pieces.
+        /// Fingerprint of the section list in id order (names + positions to the cm), so a client can tell
+        /// when its building doesn't match the host's and section ids would mean different pieces.
         /// </summary>
         public int LayoutHash()
         {
@@ -94,7 +95,13 @@ namespace Abandoned.Structure
             {
                 int hash = 17 + sections.Count;
                 foreach (StructuralSection s in sections)
+                {
                     foreach (char c in s.name) hash = hash * 31 + c;
+                    Vector3 p = s.transform.position;
+                    hash = hash * 31 + Mathf.RoundToInt(p.x * 100f);
+                    hash = hash * 31 + Mathf.RoundToInt(p.y * 100f);
+                    hash = hash * 31 + Mathf.RoundToInt(p.z * 100f);
+                }
                 return hash;
             }
         }
@@ -114,16 +121,17 @@ namespace Abandoned.Structure
         /// Client: the host re-rolled or changed stability. Scales and restores every section (debris
         /// cleared, colliders back); their health and stage then come from the host, not a local roll.
         /// </summary>
-        public void MirrorStability(float newStability, int newSeed)
+        public void MirrorStability(float newStability, int newSeed, int hostGeneration)
         {
-            if (IsMirror) Reconfigure(newStability, newSeed);
+            // The host's generation, not a local count, so F1 shows the same number on every machine.
+            if (IsMirror) Reconfigure(newStability, newSeed, hostGeneration);
         }
 
-        private void Reconfigure(float newStability, int newSeed)
+        private void Reconfigure(float newStability, int newSeed, int? generation = null)
         {
             stability = Mathf.Clamp01(newStability);
             seed = newSeed;
-            Generation++;
+            Generation = generation ?? Generation + 1;
             float capacityScale = config.CapacityScale(stability);
             float decayScale = config.DecayScale(stability);
             foreach (StructuralSection s in sections)

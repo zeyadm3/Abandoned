@@ -137,7 +137,7 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
   - Art/audio: free CC0 assets only (Kenney, Quaternius, Poly Haven and similar), one low-poly style,
     every asset recorded in Docs/ASSET_CREDITS.md. No other new packages without asking.
   - Each milestone is tagged milestone-N and ships zipped Mac + Windows (Mono) builds.
-  - M3.1: the fork lives in Game/Packages/com.community.netcode.transport.facepunch (2.0.0-abandoned.1).
+  - M3.1: the fork lives in Game/Packages/com.community.netcode.transport.facepunch (2.0.0-abandoned.2; .2 = disconnect reasons survive the close).
     Abandoned.Networking.SteamBootstrap is the ONLY owner of Steam's lifetime (Init/RunCallbacks/
     Shutdown); the transport never inits or shuts Steam down. App ID lives in Data/Networking/
     NetworkConfig.asset (Game/steam_appid.txt kept in sync by the rebuild). Steam never starts in

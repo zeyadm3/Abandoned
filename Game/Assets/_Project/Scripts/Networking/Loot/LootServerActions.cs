@@ -107,12 +107,12 @@ namespace Abandoned.Networking
         /// <summary>Client: make this machine's copies match the host's hold state.</summary>
         public static void Mirror(Grabbable item, LootHoldMode mode, PlayerCarrier target)
         {
-            if (mode != LootHoldMode.Held && item.Holder != null) item.Holder.ApplyRelease(CurrentVelocity(item));
+            if (mode != LootHoldMode.Held && item.Holder != null) item.Holder.ReleaseItem(item, CurrentVelocity(item));
             if (mode != LootHoldMode.Pocketed && item.IsPocketed) UnpocketInPlace(item);
 
             if (mode == LootHoldMode.Held && item.Holder != target)
             {
-                if (item.Holder != null) item.Holder.ApplyRelease(Vector3.zero);
+                if (item.Holder != null) item.Holder.ReleaseItem(item, Vector3.zero);
                 target.ApplyHold(item);
             }
             else if (mode == LootHoldMode.Pocketed && (!item.IsPocketed || item.PocketHolder != target))
@@ -126,7 +126,7 @@ namespace Abandoned.Networking
         public static void ReleaseLocally(Grabbable item)
         {
             if (item == null) return;
-            if (item.Holder != null) item.Holder.ApplyRelease(Vector3.zero);
+            if (item.Holder != null) item.Holder.ReleaseItem(item, Vector3.zero);
             if (item.IsPocketed) UnpocketInPlace(item);
         }
 

@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this package will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## 2.0.0-abandoned.2 (ABANDONED fork, 2026-10-06)
+### Fixed
+- Patch 4: a client drains pending messages before reporting a disconnect, and the host closes remote
+  connections with linger, so a disconnect reason sent just before ("The host left the game.", full,
+  other build) reaches NGO instead of being dropped (M3 review).
+
 ## 2.0.0-abandoned.1 (ABANDONED fork, 2026-10-06)
 Embedded copy of upstream 2.0.0 (git commit 2444fe2) in Game/Packages/, patched for ABANDONED.
 

@@ -9,6 +9,20 @@ namespace Abandoned.Networking
         public const string HostLeft = "The host left the game.";
         public const string LostHost = "Lost connection to the host.";
 
+        /// <summary>
+        /// Refused before our approval check ever ran (NGO's own prefab/config hash check fails for most
+        /// other builds without giving a reason), or the host simply isn't there.
+        /// </summary>
+        public static string CouldNotJoin(string target, string ourVersion) =>
+            $"Couldn't join {target}. Is the host running, and on the same build as you ({ourVersion})?";
+
+        /// <summary>
+        /// NGO hands clients either the reason the host sent or, over Unity Transport, its own debug text
+        /// ("[Disconnect Event][Client-1]... ProtocolTimeout"). Only the host's reasons are for players.
+        /// </summary>
+        public static string FromHost(string disconnectReason) =>
+            string.IsNullOrEmpty(disconnectReason) || disconnectReason.StartsWith("[") ? string.Empty : disconnectReason;
+
         public static string Full(int maxPlayers) => $"The game is full ({maxPlayers} players).";
 
         public static string VersionMismatch(string hostKey, string ourKey) =>

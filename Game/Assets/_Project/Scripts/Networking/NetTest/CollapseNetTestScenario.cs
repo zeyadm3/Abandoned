@@ -22,6 +22,8 @@ namespace Abandoned.Networking
         public const string HeavyItemId = "server_rack";
         /// <summary>From the upper floor (4 m) to the ground floor a player drops ~3.5 m; well short of that means they never fell.</summary>
         public const float MinFall = 2f;
+        /// <summary>Players standing on the tile must weigh at least this share of their body weight on it (host's view).</summary>
+        public const float MinPlayerLoadShare = 0.8f;
         private const float ConnectTimeout = 40f, StepTimeout = 20f, CollapseTimeout = 30f;
         private const float CornerOffset = 1.2f, StandHeight = 0.05f, DropHeight = 1.5f;
         // Teleports reach the host one interpolation delay later; after the collapse players need time to land.
@@ -63,6 +65,12 @@ namespace Abandoned.Networking
             yield return NetTestContext.Seconds(ArriveTime);
 
             ctx.Note($"load on {TargetName} from the clients' replicated players: {target.Load:0} kg");
+            // The rack alone can break this tile, so without this the test would pass even if the host
+            // ignored the clients' players.
+            float bodyWeight = ctx.OwnPlayer != null ? ctx.OwnPlayer.Motor.Config.BodyWeight : 80f;
+            float expected = ctx.ExpectedClients * bodyWeight * MinPlayerLoadShare;
+            if (target.Load < expected)
+                ctx.Fail($"the host counts only {target.Load:0} kg on {TargetName} from {ctx.ExpectedClients} standing players (expected >= {expected:0} kg)");
             Vector3 drop = new(surface.center.x, surface.max.y + DropHeight, surface.center.z);
             ctx.Manager.SpawnManager.InstantiateAndSpawn(rack, position: drop, rotation: Quaternion.identity);
             float started = Time.realtimeSinceStartup;

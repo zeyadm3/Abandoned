@@ -148,13 +148,22 @@ namespace Abandoned.Loot
             Vector3 point = collision.contactCount > 0 ? collision.GetContact(0).point : transform.position;
             Vector3 normal = collision.contactCount > 0 ? collision.GetContact(0).normal : Vector3.up;
             // Only the component along the normal hurts: sliding along a floor is not an impact.
-            float speed = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, normal));
+            float speed = Mathf.Abs(Vector3.Dot(RelativeVelocity(collision), normal));
 
             Impacted?.Invoke(this, speed, point);
             CollisionImpact?.Invoke(this, new LootImpact(speed, point, normal, collision.rigidbody));
             if (!HasValueAuthority) return;
             ApplyImpact(speed, point);
             EmitImpactNoise(speed, point);
+        }
+
+        // A network copy this machine only follows is kinematic and reports zero velocity; use the motion
+        // the network gives it, or a carried vase hit by a thrown safe would feel only its own speed.
+        private static Vector3 RelativeVelocity(Collision collision)
+        {
+            Rigidbody other = collision.rigidbody;
+            if (other == null || !other.isKinematic || !other.TryGetComponent(out IVelocitySource source)) return collision.relativeVelocity;
+            return collision.relativeVelocity - source.Velocity;
         }
 
         /// <summary>Host: threats hear impacts (also client-reported ones).</summary>

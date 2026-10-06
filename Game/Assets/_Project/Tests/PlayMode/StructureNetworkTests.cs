@@ -131,6 +131,7 @@ namespace Abandoned.Tests
             {
                 StructureSimulation mirror = kit.On(c);
                 Assert.AreEqual(0.3f, mirror.Stability, 1e-4f, $"{c.name} stability");
+                Assert.AreEqual(host.Generation, mirror.Generation, $"{c.name} shows the host's generation, not a local count");
                 foreach (StructuralSection s in host.Sections)
                 {
                     StructuralSection copy = mirror.Sections[s.Id];

@@ -8,18 +8,18 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - M0–M2 done and hand-tested. M3–M10 built autonomously on `autobuild-2`
   (worktree `~/Documents/Abandoned-autobuild2`). Don't wait for plan approval; record decisions,
   put human-only items under "Needs you". Push `autobuild-2` and tags freely (user OK'd).
-- M3: 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
+- **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (after M3.8): compile clean; verify ALL PASS; EditMode 168/168; PlayMode 180/180;
-  nettest basic/loot/sharedcarry/collapse/robust 4/4.
+- Last verified (M3 review fixes): compile clean; verify ALL PASS; EditMode 178/178; PlayMode 184/184;
+  nettest basic/loot/sharedcarry/collapse/robust/voice 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 - M4: 4.1 proximity voice done (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-Fix M3 review findings -> tag `milestone-3`, zipped builds -> M4.2 occlusion + radio -> M4.3 voice as noise.
+M4.2 occlusion + radio -> M4.3 voice as noise -> M4 review, tag, builds -> M5.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->

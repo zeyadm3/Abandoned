@@ -10,6 +10,8 @@ namespace Abandoned.Player
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMotor : MonoBehaviour
     {
+        // A speed cap must leave at least this much (m/s) above walking pace for sprinting to cost stamina.
+        private const float SprintPaceMargin = 0.05f;
         [SerializeField] private PlayerMovementConfig config;
         [SerializeField] private PlayerInputReader inputReader;
         [SerializeField] private PlayerStamina stamina;
@@ -182,7 +184,9 @@ namespace Abandoned.Player
                 horizontalVelocity = TetherMath.Constrain(transform.position - tetherAnchor, horizontalVelocity,
                     tetherSlack, tetherPullStart, tetherPullSpeed);
 
-            if (IsSprinting && IsGrounded)
+            // Holding sprint while a carry crew caps us at walking pace costs nothing.
+            bool sprintAllowed = MaxSpeed > config.WalkSpeed * speedMultiplier + SprintPaceMargin;
+            if (IsSprinting && IsGrounded && sprintAllowed)
                 stamina.Drain(config.SprintDrainPerSecond * StaminaDrainMultiplier * dt);
         }
 
