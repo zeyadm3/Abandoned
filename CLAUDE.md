@@ -90,7 +90,7 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
-Milestone 2 — The Weight (built and verified in batch; awaiting hands-on feel check before M3)
+Milestone 3 — Together (not started; M0–M2 done and hand-tested). See Docs/PROGRESS.md.
 
 ## Decisions log
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).

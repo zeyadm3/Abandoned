@@ -3,11 +3,35 @@
 Living log for autonomous work. A new session must be able to continue from this file alone.
 Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's prompt.
 
-## Current state
-- **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
-- **Milestone:** 2 — The Weight, done and tagged `milestone-2` locally (M1 tagged `milestone-1`). Next: Milestone 3 after the user's hands-on feel check.
-- **Current task:** none — waiting for the user's Play-mode checks and "push autobuild". Next is M3 (start with the Facepunch fork, see spike result).
-- **Pushing:** `autobuild`, `milestone-1` and `milestone-2` pushed to origin (user said "push autobuild"). `spike/facepunch-transport` stays local. Push further autobuild commits only after the user confirms a step works.
+## Current state (2026-10-06)
+- **Milestones 0, 1 and 2 are done.** M1 and M2 were hand-tested in Play mode by the user and approved
+  ("I tested M1 and M2 myself and they work"), on top of the batch verification below
+  (EditMode 47/47, PlayMode 112/112, verify ALL PASS, screenshots checked).
+- **Branches:** `autobuild` was merged into `main` (fast-forward) and both are pushed. Work on `main`
+  from now on unless the user asks for another autonomous branch. Tags `milestone-0/1/2` are pushed.
+  `spike/facepunch-transport` (45fc975) is local only, never merge it.
+- **Next: Milestone 3 — "Together"** (Docs/PLAYBOOK.md Part 4, M3 prompts). Start with the Facepunch
+  fork below, then NetworkBootstrap with the TransportMode enum (Unity Transport / Facepunch), then
+  networked player spawning at `PlayerSpawnPoint`s, then the interaction/loot/structure networking
+  listed under "Deferred to M3".
+- **Working rules:** one task at a time; plan first for new systems and wait for the user's OK;
+  verify each task with `Tools/unity.sh all` (Unity must be closed); commit after each passing task;
+  push only after the user confirms a step works (standing permission for main). New packages need
+  the user's approval first (the Facepunch fork counts — ask before adding it).
+- **Open question for the user:** a "voice plan change" (deferred voice / voice interface stub /
+  research note) was mentioned once in a pasted message, but no such request exists in the record and
+  the user didn't confirm details. Ask before doing anything voice-related; CLAUDE.md still says
+  Dissonance + Dissonance for NGO from Milestone 4.
+
+## M3 plan: Facepunch fork (from the spike, needs the user's OK to add)
+1. Embed a copy of `com.community.netcode.transport.facepunch` 2.0.0 in `Game/Packages/` (not a git
+   URL), replacing its bundled Facepunch.Steamworks with **2.5.2** (`Facepunch.Steamworks.Posix.dll`
+   for Editor/macOS/Linux, `Win64.dll`, universal `libsteam_api.dylib`, `steam_api64.dll`), each with
+   correct plugin platform settings (the spike branch has working .meta files to copy).
+2. Patch the transport: don't call `SteamClient.Shutdown()` in `Shutdown()` (own Steam lifetime in a
+   SteamBootstrap); return false from StartClient/StartServer when Steam isn't valid; implement RTT.
+3. Test: Unity Transport host + clients in Multiplayer Play Mode first; Steam needs Steam running and
+   the user's friend on Windows as the second account (App ID 480). Builds: Mac Mono, zipped folder.
 
 ## How to verify (batch mode, Unity must be closed)
 ```
