@@ -12,6 +12,7 @@ namespace Abandoned.Networking
     public class NetworkDebugView : MonoBehaviour
     {
         [SerializeField] private NetworkBootstrap bootstrap;
+        [OptionalReference, SerializeField] private SteamLobby lobby;
         [SerializeField] private int fontSize = 13;
 
         private readonly StringBuilder text = new();
@@ -35,6 +36,9 @@ namespace Abandoned.Networking
             text.Clear().AppendLine($"<b>NETWORK</b>   v{VersionInfo.Display}");
             text.AppendLine($"State      {bootstrap.Status}");
             text.AppendLine($"Transport  {bootstrap.Transport}   Authority {(GameAuthority.IsHost ? "HOST" : "client")}");
+            SteamLobbyFlow flow = lobby != null ? lobby.Flow : null;
+            if (flow != null)
+                text.AppendLine(flow.InLobby ? $"Lobby      {flow.LobbyId}  {flow.Members.Count} member(s)" : $"Lobby      none{(flow.Joining ? " (joining...)" : "")}");
             if (nm != null && nm.IsListening)
             {
                 text.AppendLine($"Local id   {nm.LocalClientId}  host={nm.IsHost} server={nm.IsServer} client={nm.IsClient}");

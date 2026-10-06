@@ -96,6 +96,19 @@ namespace Abandoned.EditorTools
                 errors.Add($"{path}: PlayerSpawnPoint indices must be distinct.");
             ValidateScenePlacedObjects(path, errors);
             ValidateStructureSync(path, errors);
+            ValidateSteamLobby(path, bootstraps[0], errors);
+        }
+
+        /// <summary>Without a wired SteamLobby, hosting over Steam opens no lobby and invites go nowhere.</summary>
+        private static void ValidateSteamLobby(string path, NetworkBootstrap bootstrap, List<string> errors)
+        {
+            var lobby = bootstrap.GetComponent<SteamLobby>();
+            if (lobby == null) { errors.Add($"{path}: the NetworkBootstrap object needs a SteamLobby (rebuild)."); return; }
+            if (new SerializedObject(lobby).FindProperty("bootstrap").objectReferenceValue != bootstrap)
+                errors.Add($"{path}: SteamLobby isn't wired to the NetworkBootstrap.");
+            var panel = bootstrap.GetComponent<NetworkPanel>();
+            if (panel != null && new SerializedObject(panel).FindProperty("lobby").objectReferenceValue != lobby)
+                errors.Add($"{path}: NetworkPanel isn't wired to the SteamLobby (no invite button / member list).");
         }
 
         /// <summary>A session scene with a structure must spawn its sync, or clients would never see damage.</summary>

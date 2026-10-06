@@ -43,6 +43,16 @@ namespace Abandoned.Tests
             Assert.IsNull(NetworkLaunchArgs.Parse(new[] { "-connect" }).ConnectAddress, "-connect without a value is ignored");
         }
 
+        [Test]
+        public void SteamInviteLaunchJoinsTheLobbyAndNeverAutoHosts()
+        {
+            var args = NetworkLaunchArgs.Parse(new[] { "Abandoned", "+connect_lobby", "109775241234567890" });
+            Assert.AreEqual(109775241234567890UL, args.ConnectLobby);
+            Assert.IsTrue(args.IsClientLaunch);
+            Assert.AreEqual(0UL, NetworkLaunchArgs.Parse(new[] { "+connect_lobby", "nope" }).ConnectLobby);
+            Assert.AreEqual(0UL, NetworkLaunchArgs.Parse(new[] { "+connect_lobby" }).ConnectLobby);
+        }
+
         [TestCase("127.0.0.1", "127.0.0.1", 0)]
         [TestCase(" 10.0.0.2:9000 ", "10.0.0.2", 9000)]
         [TestCase("host.local:notaport", "host.local", 0)]

@@ -44,8 +44,14 @@ namespace Abandoned.EditorTools
             var network = new GameObject("Network");
             var bootstrap = network.AddComponent<NetworkBootstrap>();
             bootstrap.Setup(config, manager, utp, facepunch, sceneSession: true);
-            SerializedWiring.Set(network.AddComponent<NetworkPanel>(), "bootstrap", bootstrap);
-            SerializedWiring.Set(network.AddComponent<NetworkDebugView>(), "bootstrap", bootstrap);
+            var lobby = network.AddComponent<SteamLobby>();
+            SerializedWiring.Set(lobby, "bootstrap", bootstrap);
+            var panel = network.AddComponent<NetworkPanel>();
+            SerializedWiring.Set(panel, "bootstrap", bootstrap);
+            SerializedWiring.Set(panel, "lobby", lobby);
+            var debugView = network.AddComponent<NetworkDebugView>();
+            SerializedWiring.Set(debugView, "bootstrap", bootstrap);
+            SerializedWiring.Set(debugView, "lobby", lobby);
             network.AddComponent<NetworkLootDebugView>();
             EditorUtility.SetDirty(bootstrap);
             return bootstrap;

@@ -9,20 +9,24 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   (worktree `~/Documents/Abandoned-autobuild2`). Don't wait for plan approval; record decisions,
   put human-only items under "Needs you". Push `autobuild-2` and tags freely (user OK'd).
 - M3: 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
-  builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`).
+  builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (after M3.6): compile clean; verify ALL PASS; EditMode 146/146; PlayMode 173/173;
+- Last verified (after M3.7): compile clean; verify ALL PASS; EditMode 162/162; PlayMode 176/176;
   nettest basic/loot/sharedcarry/collapse 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 ## Next
-M3.7 Steam lobby/invite/relay -> M3.8
-robustness -> M3 review, tag `milestone-3`, zipped builds -> M4.
+M3.8 robustness (version check at connect, host leaving -> clients back to menu with a message,
+`nettest robust`) -> M3 review, tag `milestone-3`, zipped builds -> M4.
 
 ## Needs you (details per item in Docs/progress/M3.md)
-- [ ] Real Steam test (App ID 480, both machines): F1 shows "Steam: on <name>"; host + join over
-      Facepunch with the Windows friend. With Steam quit, the menu says "Steam isn't running".
+- [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
+      Steam -> "Host (friends-only Steam lobby)" -> "Invite friends" opens the overlay; invite the Windows
+      friend. They accept (game running: joins at once; game closed: Steam launches it with
+      +connect_lobby and it joins). Both panels list both names; F1 shows the lobby id. Also try their
+      "Join game" from your Steam friends list, a different build (clear version message), and a 5th
+      person (full). With Steam quit, the menu says "Steam isn't running".
 - [ ] Multiplayer Play Mode (host + 1–3 virtual players, Join 127.0.0.1:7777): spawn points, smooth
       remote movement, footsteps, ragdolls, F1 client ids/RTT; 30 Hz tick feel.
 - [ ] Builds: open the Mac zip from `~/Documents/Abandoned-builds/dev/` (right-click > Open first time);

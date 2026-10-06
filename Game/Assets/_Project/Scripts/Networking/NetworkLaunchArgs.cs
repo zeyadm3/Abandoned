@@ -6,6 +6,7 @@ namespace Abandoned.Networking
     /// Session command-line flags: <c>-host</c>, <c>-connect address[:port]</c> (or a SteamID64 with
     /// <c>-transport steam</c>), <c>-client</c> (a client that waits for the menu) and
     /// <c>-transport unity|steam</c>. Used by builds, the multi-process nettest and MPPM players.
+    /// Steam adds <c>+connect_lobby &lt;id&gt;</c> when it launches the game from an accepted invite.
     /// </summary>
     public readonly struct NetworkLaunchArgs
     {
@@ -14,12 +15,15 @@ namespace Abandoned.Networking
         public string ConnectAddress { get; }
         public ushort ConnectPort { get; }
         public TransportMode? Transport { get; }
+        /// <summary>Steam lobby to join (from an invite accepted while the game wasn't running); 0 = none.</summary>
+        public ulong ConnectLobby { get; }
 
         /// <summary>Launched to be a client: never auto-host.</summary>
-        public bool IsClientLaunch => Client || !string.IsNullOrEmpty(ConnectAddress);
+        public bool IsClientLaunch => Client || !string.IsNullOrEmpty(ConnectAddress) || ConnectLobby != 0UL;
 
-        private NetworkLaunchArgs(bool host, bool client, string address, ushort port, TransportMode? transport)
+        private NetworkLaunchArgs(bool host, bool client, string address, ushort port, TransportMode? transport, ulong lobby)
         {
+            ConnectLobby = lobby;
             Host = host;
             Client = client;
             ConnectAddress = address;
@@ -33,6 +37,7 @@ namespace Abandoned.Networking
             string address = null;
             ushort port = 0;
             TransportMode? transport = null;
+            ulong lobby = 0UL;
             if (args == null) return default;
 
             for (int i = 0; i < args.Length; i++)
@@ -40,6 +45,7 @@ namespace Abandoned.Networking
                 string a = args[i];
                 if (Is(a, "-host")) host = true;
                 else if (Is(a, "-client")) client = true;
+                else if (Is(a, "+connect_lobby") && i + 1 < args.Length) ulong.TryParse(args[++i], out lobby);
                 else if (Is(a, "-connect") && i + 1 < args.Length) SplitAddress(args[++i], out address, out port);
                 else if (Is(a, "-transport") && i + 1 < args.Length)
                 {
@@ -48,7 +54,7 @@ namespace Abandoned.Networking
                     else if (Is(value, "unity")) transport = TransportMode.UnityTransport;
                 }
             }
-            return new NetworkLaunchArgs(host, client, address, port, transport);
+            return new NetworkLaunchArgs(host, client, address, port, transport, lobby);
         }
 
         /// <summary>"1.2.3.4:7777" -> address + port; no port (or a SteamID64) leaves port 0.</summary>
