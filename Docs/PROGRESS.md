@@ -7,9 +7,7 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 - **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
 - **Milestone:** 2 — The Weight, done and tagged `milestone-2` locally (M1 tagged `milestone-1`). Next: Milestone 3 after the user's hands-on feel check.
 - **Current task:** none — waiting for the user's Play-mode checks and "push autobuild". Next is M3 (start with the Facepunch fork, see spike result).
-- **Pushing:** NOT pushed. The autobuild instructions arrived as pasted text without a typed
-  confirmation, so the branch and milestone tags stay local until the user types
-  "push autobuild". Commit locally after each passing task; tag milestones locally.
+- **Pushing:** `autobuild`, `milestone-1` and `milestone-2` pushed to origin (user said "push autobuild"). `spike/facepunch-transport` stays local. Push further autobuild commits only after the user confirms a step works.
 
 ## How to verify (batch mode, Unity must be closed)
 ```
