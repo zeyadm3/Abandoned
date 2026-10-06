@@ -70,9 +70,10 @@ namespace Abandoned.Loot
 
         public void GetLoadPoints(List<LoadPoint> points)
         {
-            // Footprint centre and corners, so a piano across two tiles loads both.
+            // Footprint centre and corners, so a piano across two tiles loads both. Rays start at the
+            // top of the item: on a ramp the uphill corners' surface is above the item's lowest point.
             Bounds b = grabbable.GetBounds();
-            float y = b.min.y + 0.05f;
+            float y = b.max.y;
             Vector3 c = b.center, e = b.extents * 0.8f;
             points.Add(new LoadPoint(new Vector3(c.x, y, c.z)));
             points.Add(new LoadPoint(new Vector3(c.x + e.x, y, c.z + e.z)));

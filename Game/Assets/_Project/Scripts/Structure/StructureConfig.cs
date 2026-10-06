@@ -40,14 +40,14 @@ namespace Abandoned.Structure
         [field: SerializeField, Min(0f)] public float ImpactThreshold { get; private set; } = 300f;
         [field: Tooltip("Health lost per kg·m/s above the threshold.")]
         [field: SerializeField, Min(0f)] public float ImpactDamagePerMomentum { get; private set; } = 0.02f;
+        [field: Tooltip("A single hit can't take a section that's still Stable/Stressed below this health fraction, so there's always a Cracking warning before Failing (GDD 6.4).")]
+        [field: SerializeField, Range(0f, 0.5f)] public float WarningFloor { get; private set; } = 0.05f;
         [field: Tooltip("Debris and anything slower than this along the normal is ignored.")]
         [field: SerializeField, Min(0f)] public float MinImpactSpeed { get; private set; } = 1f;
 
         [field: Header("Load sampling")]
-        [field: Tooltip("Loot moving faster than this (m/s) isn't resting on anything yet.")]
-        [field: SerializeField, Min(0f)] public float RestingSpeed { get; private set; } = 0.5f;
-        [field: Tooltip("How far below a load point to look for the section carrying it.")]
-        [field: SerializeField, Min(0.1f)] public float MaxSupportDistance { get; private set; } = 4f;
+        [field: Tooltip("How far below a load point to look for the section carrying it (load points can be at the top of tall items).")]
+        [field: SerializeField, Min(0.1f)] public float MaxSupportDistance { get; private set; } = 5f;
 
         [field: Header("Stability (contract %) scaling")]
         [field: Tooltip("Capacity multiplier at 0% stability (100% stability = 1).")]
@@ -57,8 +57,9 @@ namespace Abandoned.Structure
         [field: Tooltip("Fraction of sections pre-damaged at 0% stability (scales down to 0 at 100%).")]
         [field: SerializeField, Range(0f, 1f)] public float PreDamagedFractionAtZero { get; private set; } = 0.6f;
         [field: SerializeField, Range(0f, 1f)] public float PreDamageMin { get; private set; } = 0.2f;
-        [field: Tooltip("Pre-damage never removes more than this fraction of health, so nothing starts Failing.")]
         [field: SerializeField, Range(0f, 0.95f)] public float PreDamageMax { get; private set; } = 0.7f;
+        [field: Tooltip("Pre-damage never leaves a section below this health fraction (authored weaker sections stay as authored), so nothing starts Failing.")]
+        [field: SerializeField, Range(0.01f, 0.5f)] public float MinStartHealth { get; private set; } = 0.15f;
 
         [field: Header("Cascades")]
         [field: Tooltip("How far below a collapsing section to look for sections it lands on.")]

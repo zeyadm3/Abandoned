@@ -75,10 +75,11 @@ namespace Abandoned.Player
         {
             // Standing on it when it goes: you go down with it (GDD 15: ragdoll from collapses).
             Vector3 feet = transform.position;
-            bool above = feet.x >= surface.min.x - 0.3f && feet.x <= surface.max.x + 0.3f &&
-                         feet.z >= surface.min.z - 0.3f && feet.z <= surface.max.z + 0.3f &&
-                         feet.y >= surface.max.y - 0.5f && feet.y <= surface.max.y + 0.8f;
-            if (above) Enter(Vector3.down * 2f + motor.MovementVelocity);
+            float m = config.CollapseMargin;
+            bool above = feet.x >= surface.min.x - m && feet.x <= surface.max.x + m &&
+                         feet.z >= surface.min.z - m && feet.z <= surface.max.z + m &&
+                         feet.y >= surface.max.y - 0.3f && feet.y <= surface.max.y + config.CollapseStandingBand;
+            if (above) Enter(Vector3.down * config.CollapseDropSpeed + motor.MovementVelocity);
         }
 
         private void Update()

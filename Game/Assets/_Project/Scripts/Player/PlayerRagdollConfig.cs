@@ -18,6 +18,13 @@ namespace Abandoned.Player
         [field: Tooltip("How much of the hitting object's velocity the ragdoll takes on.")]
         [field: SerializeField, Range(0f, 1f)] public float HitVelocityTransfer { get; private set; } = 0.6f;
 
+        [field: Header("Collapses")]
+        [field: Tooltip("Extra margin around a collapsing section's surface for who goes down with it. 0 = feet must be over it.")]
+        [field: SerializeField, Min(0f)] public float CollapseMargin { get; private set; } = 0f;
+        [field: Tooltip("Height band above the surface (m) that still counts as standing on it.")]
+        [field: SerializeField, Min(0f)] public float CollapseStandingBand { get; private set; } = 0.6f;
+        [field: SerializeField, Min(0f)] public float CollapseDropSpeed { get; private set; } = 2f;
+
         [field: Header("Recovery")]
         [field: SerializeField, Min(0.2f)] public float MinRagdollTime { get; private set; } = 1.5f;
         [field: Tooltip("Get up once the body has been this still (pelvis speed m/s)...")]

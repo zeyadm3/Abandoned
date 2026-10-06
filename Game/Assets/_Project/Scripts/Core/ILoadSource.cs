@@ -12,7 +12,11 @@ namespace Abandoned.Core
         /// <summary>Gameplay kg currently pressing down; 0 when airborne, held by someone, pocketed...</summary>
         float LoadWeight { get; }
 
-        /// <summary>Adds the points to sample beneath (feet, footprint corners). Called only when LoadWeight > 0.</summary>
+        /// <summary>
+        /// Adds the points to sample beneath (feet, footprint corners), placed at or above the body's
+        /// own bottom so the downward ray never starts inside the section it rests on (sloped ramps).
+        /// Called only when LoadWeight > 0.
+        /// </summary>
         void GetLoadPoints(List<LoadPoint> points);
     }
 }

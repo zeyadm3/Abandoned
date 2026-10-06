@@ -97,7 +97,15 @@ namespace Abandoned.Structure
             UpdateStage();
         }
 
-        public void PreDamage(float fraction) => Damage(MaxHealth * fraction);
+        /// <summary>Host: seeded starting damage. Never pushes a section below MinStartHealth (or its authored health if lower).</summary>
+        public void PreDamage(float fraction)
+        {
+            float floor = Mathf.Min(Health, MaxHealth * config.MinStartHealth);
+            Damage(Mathf.Min(MaxHealth * fraction, Health - floor));
+        }
+
+        /// <summary>The level's simulation; impacts go through it so one landing is shared between sections.</summary>
+        public StructureSimulation Simulation { get; internal set; }
 
         public void SetLoad(float kg) => Load = kg;
 
@@ -123,7 +131,11 @@ namespace Abandoned.Structure
         public void ApplyImpact(float momentum)
         {
             float damage = StructureMath.ImpactDamage(momentum, config.ImpactThreshold, config.ImpactDamagePerMomentum);
-            if (damage > 0f) Damage(damage);
+            if (damage <= 0f) return;
+            // Readable: a section that hasn't shown cracks yet can't be knocked straight into Failing.
+            if (Stage < StructuralStage.Cracking)
+                damage = Mathf.Min(damage, Health - MaxHealth * config.WarningFloor);
+            Damage(damage);
         }
 
         public void Collapse()
@@ -183,7 +195,13 @@ namespace Abandoned.Structure
             foreach (Collider c in colliders) if (c != null) c.enabled = enabled;
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnCollisionEnter(Collision collision) => HandleCollision(collision);
+
+        /// <summary>
+        /// Host: an object hit one of this section's colliders. Called directly for a collider on the
+        /// root and via <see cref="SectionColliderRelay"/> for child colliders (stair ramps).
+        /// </summary>
+        public void HandleCollision(Collision collision)
         {
             if (!GameAuthority.IsHost || IsCollapsed) return;
             Rigidbody body = collision.rigidbody;
@@ -193,7 +211,8 @@ namespace Abandoned.Structure
             float speed = Mathf.Abs(Vector3.Dot(collision.relativeVelocity, normal));
             if (speed < config.MinImpactSpeed) return;
             float weight = body.TryGetComponent(out IWeighted weighted) ? weighted.GameplayWeight : body.mass;
-            ApplyImpact(weight * speed);
+            if (Simulation != null) Simulation.ReportImpact(this, body, weight * speed);
+            else ApplyImpact(weight * speed);
         }
 
 #if UNITY_EDITOR

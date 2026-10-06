@@ -31,7 +31,9 @@ namespace Abandoned.Tests
             var sim = Object.FindFirstObjectByType<StructureSimulation>();
             Assert.AreEqual(14 + 20 + 2, sim.Sections.Count, "every tile and stair segment is a section");
             Assert.IsTrue(sim.Sections.Where(s => s.name.StartsWith("Tile_G")).All(s => !s.CanCollapse), "ground floor can't collapse");
-            Assert.IsTrue(sim.Sections.Where(s => !s.name.StartsWith("Tile_G")).All(s => s.CanCollapse));
+            Assert.IsTrue(sim.Sections.Where(s => s.name.StartsWith("StairSegment")).All(s => !s.CanCollapse),
+                "the stairs are the only way down, so they can't fall (GDD 6.4)");
+            Assert.IsTrue(sim.Sections.Where(s => s.name.StartsWith("Tile_U") || s.name.StartsWith("Balcony")).All(s => s.CanCollapse));
 
             yield return WaitFixed(5f);
             Assert.AreEqual(0, sim.CollapseCount, "nothing falls on its own");

@@ -74,6 +74,8 @@ namespace Abandoned.Structure
                 float t = Mathf.Clamp01(section.FailingTime / section.Config.FailingDuration);
                 Vector3 jitter = new(Jitter(), Jitter(), Jitter());
                 section.Visual.localPosition = visualRestPosition + Vector3.down * (visuals.SagDepth * t) + jitter;
+                // Cracks sag with the surface rather than floating where it used to be.
+                if (cracks != null) cracks.localPosition = section.Visual.localPosition - visualRestPosition;
             }
 
             nextSoundIn -= Time.deltaTime;
@@ -160,8 +162,15 @@ namespace Abandoned.Structure
                 cracks = new GameObject("Cracks").transform;
                 cracks.SetParent(transform, false);
             }
+            cracks.localPosition = Vector3.zero;
             if (count == cracks.childCount) return;
-            for (int i = cracks.childCount - 1; i >= 0; i--) Destroy(cracks.GetChild(i).gameObject);
+            // Detach first: Destroy is deferred, and childCount must be right straight away.
+            for (int i = cracks.childCount - 1; i >= 0; i--)
+            {
+                Transform old = cracks.GetChild(i);
+                old.SetParent(null);
+                Destroy(old.gameObject);
+            }
             if (count == 0 || section.Type == SectionType.Stair) return;
 
             Bounds surface = section.SurfaceBounds;

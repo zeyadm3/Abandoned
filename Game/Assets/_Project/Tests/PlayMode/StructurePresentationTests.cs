@@ -58,6 +58,18 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
+        public IEnumerator CracksAreRebuiltAfterAReRoll()
+        {
+            StructuralSection tile = rig.AddTile("Tile", Upper, health: 0.3f);
+            var view = tile.GetComponent<SectionPresentation>();
+            StructureSimulation sim = rig.StartSimulation();
+            yield return null;
+            Assert.AreEqual(rig.Visuals.CracksWhenCracking, view.CrackCount);
+            sim.ApplyStability(1f, 2);
+            Assert.AreEqual(rig.Visuals.CracksWhenCracking, view.CrackCount, "re-roll back to Cracking keeps its cracks");
+        }
+
+        [UnityTest]
         public IEnumerator CollapseSwapsToCosmeticDebrisThatCleansItselfUp()
         {
             StructuralSection tile = rig.AddTile("Tile", Upper);
@@ -133,11 +145,13 @@ namespace Abandoned.Tests
             }
             GameObject chunk = Drop("Chunk", new Vector3(-1f, 4.5f, 0f), GameLayers.DebrisLayer);
             for (float t = 0f; t < 1.5f; t += Time.fixedDeltaTime) yield return new WaitForFixedUpdate();
-            Assert.Less(chunk.transform.position.y, 1.5f, "the chunk landed on the section");
+            Assert.AreEqual(0.3f + 0.5f, chunk.transform.position.y, 0.15f, "the chunk is resting on the section, so it really hit it");
+            rig.Step(); // apply anything reported during physics
             Assert.AreEqual(before, target.Health, "debris never damages structure");
 
             GameObject solid = Drop("Solid", new Vector3(1f, 4.5f, 0f), 0);
             for (float t = 0f; t < 1.5f; t += Time.fixedDeltaTime) yield return new WaitForFixedUpdate();
+            rig.Step();
             Assert.Less(target.Health, before, "control: the same hit from a non-debris object does damage");
             Object.DestroyImmediate(chunk);
             Object.DestroyImmediate(solid);

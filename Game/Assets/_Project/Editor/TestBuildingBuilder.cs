@@ -20,11 +20,11 @@ namespace Abandoned.EditorTools
     {
         public const string ScenePath = "Assets/_Project/Scenes/TestBuilding.unity";
 
-        private const float Tile = 4f;
+        public const float Tile = 4f;
         private const int TilesX = 5;
         private const int TilesZ = 4;
         private const float StoryHeight = 4f;
-        private const float SlabThickness = 0.3f;
+        public const float SlabThickness = 0.3f;
         private const float UpperWallHeight = 3f;
         private const float WallThickness = 0.2f;
         private const float RailingHeight = 1f;

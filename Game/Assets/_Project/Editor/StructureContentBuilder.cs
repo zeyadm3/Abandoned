@@ -20,8 +20,8 @@ namespace Abandoned.EditorTools
             LoadOrCreateAsset<StructureConfig>(ConfigPath);
             var visuals = LoadOrCreateAsset<StructureVisualConfig>(VisualConfigPath);
             if (visuals.DustMaterial == null) Set(visuals, "<DustMaterial>k__BackingField", DustMaterial());
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath) == null)
-                FracturedTileGenerator.Generate();
+            // Deterministic (fixed seed), so regenerating keeps it in sync with the tile size for free.
+            FracturedTileGenerator.Generate();
             AssetDatabase.SaveAssets();
         }
 

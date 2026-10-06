@@ -49,6 +49,11 @@ namespace Abandoned.Interaction
         [field: SerializeField, Range(0.05f, 1f)] public float DragSpringScale { get; private set; } = 0.25f;
         [field: Tooltip("Seconds between scraping noises while dragging and moving.")]
         [field: SerializeField, Min(0.1f)] public float DragNoiseInterval { get; private set; } = 0.5f;
+        [field: Tooltip("Loudest drag scrape (0–1), reached at DragNoiseFullWeight.")]
+        [field: SerializeField, Range(0f, 1f)] public float DragNoiseMax { get; private set; } = 0.8f;
+        [field: SerializeField, Min(1f)] public float DragNoiseFullWeight { get; private set; } = 500f;
+        [field: Tooltip("Dragged items slower than this (m/s) make no scrape.")]
+        [field: SerializeField, Min(0f)] public float DragNoiseMinSpeed { get; private set; } = 0.2f;
 
         [field: Header("Throw")]
         [field: SerializeField, Min(0f)] public float ThrowMinSpeed { get; private set; } = 3f;

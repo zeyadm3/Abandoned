@@ -133,11 +133,12 @@ namespace Abandoned.Interaction
         private void EmitDragNoise()
         {
             dragNoiseTimer += Time.deltaTime;
-            if (dragNoiseTimer < config.DragNoiseInterval || Held.Body.linearVelocity.sqrMagnitude < 0.04f) return;
+            float minSpeed = config.DragNoiseMinSpeed;
+            if (dragNoiseTimer < config.DragNoiseInterval || Held.Body.linearVelocity.sqrMagnitude < minSpeed * minSpeed) return;
             dragNoiseTimer = 0f;
             // Scraping something heavy across the floor is loud; heavier is louder.
-            Abandoned.Core.NoiseSystem.Emit(Held.Body.worldCenterOfMass, Mathf.Clamp01(Held.Weight / 500f) * 0.8f,
-                Abandoned.Core.NoiseSource.LootDrag);
+            float loudness = Mathf.Clamp01(Held.Weight / config.DragNoiseFullWeight) * config.DragNoiseMax;
+            Abandoned.Core.NoiseSystem.Emit(Held.Body.worldCenterOfMass, loudness, Abandoned.Core.NoiseSource.LootDrag);
         }
 
         public void ShowHint(string message)

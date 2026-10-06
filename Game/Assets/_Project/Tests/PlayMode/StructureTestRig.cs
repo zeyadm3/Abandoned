@@ -48,12 +48,20 @@ namespace Abandoned.Tests
 
         /// <summary>A 4 x 0.3 x 4 m section with its walking surface at topCentre, built like TestBuilding's tiles.</summary>
         public StructuralSection AddTile(string name, Vector3 topCentre, SectionType type = SectionType.Floor,
-            bool collapsible = true, float health = 1f, float capacity = 1f, bool presentation = true)
+            bool collapsible = true, float health = 1f, float capacity = 1f, bool presentation = true,
+            bool colliderOnChild = false, float tiltDegrees = 0f)
         {
             var go = new GameObject(name);
             go.SetActive(false);
-            go.transform.position = topCentre;
-            var box = go.AddComponent<BoxCollider>();
+            go.transform.SetPositionAndRotation(topCentre, Quaternion.Euler(tiltDegrees, 0f, 0f));
+            GameObject colliderHost = go;
+            if (colliderOnChild)
+            {
+                colliderHost = new GameObject("Ramp");
+                colliderHost.transform.SetParent(go.transform, false);
+                colliderHost.layer = GameLayers.StructureLayer;
+            }
+            var box = colliderHost.AddComponent<BoxCollider>();
             box.center = new Vector3(0f, -0.15f, 0f);
             box.size = new Vector3(4f, 0.3f, 4f);
 
@@ -72,6 +80,7 @@ namespace Abandoned.Tests
 #if UNITY_EDITOR
             section.EditorSetup(Config, type, collapsible, health, capacity, visual.transform);
             if (presentation) go.AddComponent<SectionPresentation>().EditorSetup(Visuals, FracturedTile);
+            if (colliderOnChild) colliderHost.AddComponent<SectionColliderRelay>().EditorSetup(section);
 #endif
             go.SetActive(true);
             spawned.Add(go);

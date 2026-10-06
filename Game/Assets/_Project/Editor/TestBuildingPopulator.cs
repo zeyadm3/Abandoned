@@ -92,19 +92,25 @@ namespace Abandoned.EditorTools
             var config = AssetDatabase.LoadAssetAtPath<StructureConfig>(StructureContentBuilder.ConfigPath);
             var visuals = AssetDatabase.LoadAssetAtPath<StructureVisualConfig>(StructureContentBuilder.VisualConfigPath);
             var fracturedTile = AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath);
-            if (config == null || visuals == null)
+            if (config == null || visuals == null || fracturedTile == null)
             {
-                Debug.LogError("Structure configs missing; run Tools/Abandoned/Create Structure Content.");
+                Debug.LogError("Structure content missing; run Tools/Abandoned/Create Structure Content.");
                 return;
             }
+            var matched = new HashSet<string>();
 
             // Ground tiles: nothing below them in this building, so they can crack but never fall.
-            foreach (Transform tile in root.Find("GroundFloor/Tiles"))
-                AddSection(tile, SectionType.Floor, false, config, visuals, fracturedTile);
-            foreach (Transform tile in root.Find("UpperFloor/Tiles"))
-                AddSection(tile, tile.name.StartsWith("Balcony") ? SectionType.Balcony : SectionType.Floor, true, config, visuals, fracturedTile);
-            foreach (Transform segment in root.Find("Stairs"))
-                AddSection(segment, SectionType.Stair, true, config, visuals, null);
+            foreach (Transform tile in Children(root, "GroundFloor/Tiles"))
+                AddSection(tile, SectionType.Floor, false, config, visuals, fracturedTile, matched);
+            foreach (Transform tile in Children(root, "UpperFloor/Tiles"))
+                AddSection(tile, tile.name.StartsWith("Balcony") ? SectionType.Balcony : SectionType.Floor, true, config, visuals, fracturedTile, matched);
+            // GDD 6.4: never collapse the only route out. The stairs are this building's only way down
+            // until a rope point/fallback exists, so they creak and crack but can't fall here.
+            foreach (Transform segment in Children(root, "Stairs"))
+                AddSection(segment, SectionType.Stair, false, config, visuals, null, matched);
+
+            foreach (string weak in WeakSpots.Keys)
+                if (!matched.Contains(weak)) Debug.LogError($"TestBuilding weak spot '{weak}' matches no section (renamed?).");
 
             var simulationObject = new GameObject("Structure");
             var simulation = simulationObject.AddComponent<StructureSimulation>();
@@ -115,12 +121,34 @@ namespace Abandoned.EditorTools
             SerializedWiring.Set(simulationObject.AddComponent<StructureDebugControls>(), "simulation", simulation);
         }
 
-        private static void AddSection(Transform piece, SectionType type, bool collapsible, StructureConfig config,
-            StructureVisualConfig visuals, GameObject fractured)
+        private static IEnumerable<Transform> Children(Transform root, string path)
         {
-            (float health, float capacity) = WeakSpots.TryGetValue(piece.name, out var weak) ? weak : (1f, 1f);
+            Transform group = root.Find(path);
+            if (group == null)
+            {
+                Debug.LogError($"TestBuilding: '{path}' not found; the builder and populator disagree.");
+                yield break;
+            }
+            foreach (Transform child in group) yield return child;
+        }
+
+        private static void AddSection(Transform piece, SectionType type, bool collapsible, StructureConfig config,
+            StructureVisualConfig visuals, GameObject fractured, HashSet<string> matched)
+        {
+            (float health, float capacity) = (1f, 1f);
+            if (WeakSpots.TryGetValue(piece.name, out var weak))
+            {
+                (health, capacity) = weak;
+                matched.Add(piece.name);
+            }
+            Transform visual = piece.Find("Visual");
+            if (visual == null) Debug.LogError($"Section '{piece.name}' has no Visual child.");
             var section = piece.gameObject.AddComponent<StructuralSection>();
-            section.EditorSetup(config, type, collapsible, health, capacity, piece.Find("Visual"));
+            section.EditorSetup(config, type, collapsible, health, capacity, visual);
+            // Collisions are only reported to the collider's own object; relay child colliders to the section.
+            foreach (Collider c in piece.GetComponentsInChildren<Collider>(true))
+                if (c.gameObject != piece.gameObject)
+                    c.gameObject.AddComponent<SectionColliderRelay>().EditorSetup(section);
             piece.gameObject.AddComponent<SectionPresentation>().EditorSetup(visuals, fractured);
             SerializedWiring.SetLayerRecursively(piece.gameObject, GameLayers.StructureLayer);
         }

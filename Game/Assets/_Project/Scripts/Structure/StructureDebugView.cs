@@ -27,12 +27,12 @@ namespace Abandoned.Structure
         private void OnGUI()
         {
             Camera camera = Camera.main;
-            if (!DebugView.Visible || camera == null) return;
+            if (!DebugView.Visible || camera == null || simulation == null) return;
             label ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 11, richText = true };
             box ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
 
             string header = $"<b>STRUCTURE</b>  stability {simulation.Stability:P0}  seed {simulation.Seed}  collapses {simulation.CollapseCount}\n" +
-                            "[-]/[=] stability   [F2] re-roll damage";
+                            "[-]/[=] stability   [F2] re-roll damage   (keys work while F1 is on)";
             var content = new GUIContent(header);
             Vector2 size = box.CalcSize(content);
             GUI.Box(new Rect(10f, Screen.height - size.y - 10f, size.x, size.y), content, box);

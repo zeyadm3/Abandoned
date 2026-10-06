@@ -25,6 +25,10 @@ namespace Abandoned.Structure
         private readonly List<LoadPoint> points = new();
         private readonly List<StructuralSection> supports = new();
         private readonly Collider[] overlap = new Collider[64];
+        // Impacts reported this physics step, per hitting body: one landing is split across every
+        // section it touched instead of hitting each of them in full.
+        private readonly Dictionary<Rigidbody, (float momentum, List<StructuralSection> sections)> pendingImpacts = new();
+        private readonly List<Rigidbody> pendingOrder = new();
 
         public IReadOnlyList<StructuralSection> Sections => sections;
         public StructureConfig Config => config;
@@ -39,16 +43,19 @@ namespace Abandoned.Structure
             // Stable ids (hierarchy order by name, then position) so "section X collapsed" means the same
             // piece on every machine and in every run.
             sections.AddRange(FindObjectsByType<StructuralSection>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-                .OrderBy(s => s.name).ThenBy(s => s.transform.position.x).ThenBy(s => s.transform.position.z));
+                .OrderBy(s => s.name, System.StringComparer.Ordinal).ThenBy(s => s.transform.position.x).ThenBy(s => s.transform.position.z));
             for (int i = 0; i < sections.Count; i++)
             {
                 sections[i].Id = i;
+                sections[i].Simulation = this;
                 sections[i].Collapsed += OnSectionCollapsed;
             }
+            StructureSignals.Impact += OnPointImpact;
         }
 
         private void OnDestroy()
         {
+            StructureSignals.Impact -= OnPointImpact;
             foreach (StructuralSection s in sections) if (s != null) s.Collapsed -= OnSectionCollapsed;
         }
 
@@ -84,6 +91,7 @@ namespace Abandoned.Structure
         /// <summary>Host: one simulation step. Public so tests can step deterministically.</summary>
         public void Step(float dt)
         {
+            ApplyPendingImpacts();
             SolveLoads();
             foreach (StructuralSection s in sections)
             {
@@ -116,6 +124,37 @@ namespace Abandoned.Structure
                 foreach (StructuralSection s in supports)
                     loads[s] = (loads.TryGetValue(s, out float kg) ? kg : 0f) + share;
             }
+        }
+
+        /// <summary>Host: a rigidbody hit a section this step; applied (shared) at the start of the next step.</summary>
+        public void ReportImpact(StructuralSection section, Rigidbody body, float momentum)
+        {
+            if (!pendingImpacts.TryGetValue(body, out var entry))
+            {
+                entry = (0f, new List<StructuralSection>());
+                pendingOrder.Add(body);
+            }
+            if (!entry.sections.Contains(section)) entry.sections.Add(section);
+            pendingImpacts[body] = (Mathf.Max(entry.momentum, momentum), entry.sections);
+        }
+
+        private void ApplyPendingImpacts()
+        {
+            foreach (Rigidbody body in pendingOrder)
+            {
+                (float momentum, List<StructuralSection> hit) = pendingImpacts[body];
+                foreach (StructuralSection s in hit) s.ApplyImpact(momentum / hit.Count);
+            }
+            pendingImpacts.Clear();
+            pendingOrder.Clear();
+        }
+
+        /// <summary>Host: a non-physics impact (a player landing) at a point; hits the section underneath.</summary>
+        private void OnPointImpact(Vector3 position, float momentum)
+        {
+            if (!GameAuthority.IsHost) return;
+            StructuralSection below = SectionBelow(position + Vector3.up * RayLift, RayLift + 0.5f);
+            if (below != null) below.ApplyImpact(momentum);
         }
 
         public float LoadOn(StructuralSection section) => loads.TryGetValue(section, out float kg) ? kg : 0f;

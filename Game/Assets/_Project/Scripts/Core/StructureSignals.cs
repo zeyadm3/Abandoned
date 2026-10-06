@@ -14,7 +14,16 @@ namespace Abandoned.Core
 
         public static void RaiseCollapsed(Bounds surface) => SectionCollapsed?.Invoke(surface);
 
+        /// <summary>A non-physics impact at a point (gameplay kg × m/s), e.g. a player landing from a jump or fall.</summary>
+        public static event Action<Vector3, float> Impact;
+
+        public static void RaiseImpact(Vector3 position, float momentum) => Impact?.Invoke(position, momentum);
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => SectionCollapsed = null;
+        private static void ResetStatics()
+        {
+            SectionCollapsed = null;
+            Impact = null;
+        }
     }
 }

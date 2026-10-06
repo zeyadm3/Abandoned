@@ -5,8 +5,8 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 
 ## Current state
 - **Branch:** `autobuild` (do NOT commit to `main`; main is at `43ca2f9`, tagged `milestone-0` at `eb27120`).
-- **Milestone:** 2 — The Weight (M1 tagged `milestone-1` locally)
-- **Current task:** fix the confirmed M2 review findings below, rerun Tools/unity.sh all, then tag milestone-2 and write the final report
+- **Milestone:** 2 — The Weight, done and tagged `milestone-2` locally (M1 tagged `milestone-1`). Next: Milestone 3 after the user's hands-on feel check.
+- **Current task:** none — waiting for the user's Play-mode checks and "push autobuild". Next is M3 (start with the Facepunch fork, see spike result).
 - **Pushing:** NOT pushed. The autobuild instructions arrived as pasted text without a typed
   confirmation, so the branch and milestone tags stay local until the user types
   "push autobuild". Commit locally after each passing task; tag milestones locally.
@@ -138,24 +138,18 @@ approves package changes) with Facepunch.Steamworks 2.5.2 binaries and the three
   Balcony_U_3_2 (statue, 45% hp, 95% cap), Balcony_U_0_1 (piano, 40% hp, 24% cap),
   Tile_U_3_3 (70% hp, 8% cap), Balcony_U_2_3 (50% hp, 12% cap). Stability 85%, seed 2026.
 
-## M2 review findings to fix before tagging milestone-2 (confirmed by verifier)
-- [medium] TestBuildingPopulator.cs:107 TestBuilding stairs can collapse and the level has no fallback route that can't collapse (breaks GDD 6.4) -- FIX: Either set canCollapse = false on the stair segments in TestBuilding until a fallback exists, or author a fallback now: a non-collapsible ramp or ladder, or the window rope point. Also add a ContentValidator rule that a scene must contain at least one non-collapsible route marker.
-- [medium] StructureConfig.cs:48 StructureConfig.RestingSpeed is a dead tunable; the real one is LootDamageConfig.LoadRestingSpeed -- FIX: Delete RestingSpeed from StructureConfig. Or move the value there, give LootItem access to it, and remove LootDamageConfig.LoadRestingSpeed. Keep one source of truth.
-- [medium] StructureTests.cs:112 APlayerLoadsTheirBodyPlusWhatTheyCarry cannot catch double-counting of held loot -- FIX: Pick up a real LootItem (LootDamageTests.SpawnLoot) and assert LoadOn(tile) == body + item weight. Add a drag case: a Heavy item is dragged, the carrier contributes only body weight, and the item contributes its own weight.
-- [medium] StructurePresentationTests.cs:136 DebrisDoesNotDamageSections passes even when debris never touches the section -- FIX: Assert the chunk rests on the tile top, for example Assert.AreEqual(0.3f + 0.5f, chunk.y, 0.1f), or raycast down from the chunk and expect the target's collider. Or spawn with no ground under the tile so falling through gives y far below zero.
-- [medium] PlayerRagdoll.cs:78 The rule for who falls in a collapse is hard-coded, and its 0.3 m margin ragdolls players on the intact tile next door -- FIX: Move the margins and launch speed into PlayerRagdollConfig. Better: decide by support, with a downward ray or OverlapBox against that section's colliders before they are disabled, or have StructureSignals pass the collapsed section's colliders. That way only players actually standing on it go down.
-- [medium] PlayerCarrier.cs:139 Drag noise loudness and the moving threshold are hard-coded (threat tunables in code) -- FIX: Add DragNoiseMax, DragNoiseFullWeight and DragNoiseMinSpeed to CarryConfig next to DragNoiseInterval, and use them here.
-- [low] TestBuildingPopulator.cs:102 Structure builder fails silently or with a bare NRE when names or assets drift -- FIX: After AddStructure, log an error for any WeakSpots key that matched no section. Null-check each Find, the same way Tag does. Treat fracturedTile == null as an error, or call StructureContentBuilder.CreateMissing() first.
-- [low] FracturedTileGenerator.cs:15 Fractured tile size is duplicated from TestBuildingBuilder, and the prefab is never regenerated -- FIX: Expose the tile dimensions as shared public constants, or derive them from the section's Visual bounds. Regenerate the fractured prefab in RebuildContent (it is deterministic, seed 7), or check its bounds in ContentValidator against the tile Visual size.
-- [low] StructureDebugView.cs:34 StructureDebugView.OnGUI dereferences an unwired simulation; StructureTests.cs is over the ~300-line limit -- FIX: Add `simulation == null` to the OnGUI early return, or find the simulation in Awake. Split StructureTests into StructureLoadTests, StructureStageTests and StructureNoiseTests, sharing StructureTestRig.
-- [medium] StructuralSection.cs:148 A single impact or cascade can jump a section from Stable straight to Failing, skipping the Stressed and Cracking warnings -- FIX: Bound per-hit damage so one impact can lower a section by at most one stage (e.g. a section above CrackingBelow can't go below CrackingBelow*MaxHealth - epsilon in one hit), or require a minimum dwell time in Cracking before Failing. Keep the tunable (MaxStagesPerImpact or similar) in StructureConfi
-- [medium] SectionPresentation.cs:164 Cracking sections lose their crack decals after a reset or stability change because Destroy is deferred and childCount still counts the old cracks -- FIX: Detach before destroying (child.SetParent(null) then Destroy), track the count in a field instead of using childCount, or use DestroyImmediate on these runtime-created objects. Add a PlayMode assertion that CrackCount == CracksWhenCracking after ApplyStability on a section that starts Cracking.
-- [medium] StructuralSection.cs:186 Stair segments never take impact damage because their collider is on a child, so OnCollisionEnter on the section root never fires -- FIX: Add a small forwarding component on each child collider that calls the parent section's impact handler (e.g. SectionColliderRelay.OnCollisionEnter -> section.HandleCollision), added by the builder for every collider in the section, or move the impact handling into the loot's own OnCollisionEnter (lo
-- [low] StructuralSection.cs:186 Falling or landing players never damage structure, although GDD 6.1 lists 'falling players' as an impact source -- FIX: In the Player area, raise a Core signal from PlayerMotor.Landed (position, gameplay weight x landing speed), e.g. StructureSignals.RaiseImpact. StructureSimulation subscribes on the host, raycasts down to the supporting section and calls ApplyImpact. This keeps Player independent of Structure, the s
-- [low] StructureConfig.cs:48 StructureConfig.RestingSpeed is a dead tunable; the actual resting threshold is LootDamageConfig.LoadRestingSpeed -- FIX: Delete StructureConfig.RestingSpeed (or make LootItem read it via a Core-level setting), so there is exactly one source of truth.
-- [low] StructureSimulation.cs:42 Section IDs depend on a culture-sensitive name sort, and the debug keys that reset the whole structure are live without F1 or a dev build -- FIX: Sort with StringComparer.Ordinal (or assign ids in the editor builder and serialize them), and validate unique names in ContentValidator. Gate StructureDebugControls on DebugView.Visible and Debug.isDebugBuild (or UNITY_EDITOR || DEVELOPMENT_BUILD).
-- [medium] LootItem.cs:75 Loot load points on the stair ramp start inside or under the ramp collider, so stair weight is dropped or leaks to the ground tile below -- FIX: Start each item's support ray above the item: origin = (x, b.max.y + small, z), down by (b.size.y + MaxSupportDistance). Because only the Structure mask is used, the item itself is never hit. Or give LoadPoint a per-point lift. Add a test with a long item resting on a ramp section.
-- [medium] CarrierLoad.cs:19 Falling and jumping players never deal impact damage, and jumping removes their load (GDD 6.1: 'falling players' are an impact source) -- FIX: On the host, subscribe to motor.Landed (it already reports impactSpeed). Raycast the feet points and call ApplyImpact((BodyWeight + CarriedWeight) * impactSpeed / sections) on the sections below. Implement IWeighted on ragdoll parts (or the ragdoll root) so bone hits use a share of gameplay weight.
+## M2 review (multi-agent, adversarially verified) — all fixed
+Pre-damage could start weak sections Failing (now floored at MinStartHealth); stairs ignored impacts
+(SectionColliderRelay on child colliders); one landing on a seam hit every section in full (impacts
+now pooled per body per step and split); landing players didn't damage floors (StructureSignals.Impact);
+ragdolled players stopped weighing anything; long items on ramps leaked load to the floor below (rays
+from the item's top); one hit could skip straight to Failing (WarningFloor); cracks vanished after a
+re-roll and floated while sagging; collapse ragdoll margin hit players on the neighbouring tile;
+dead StructureConfig.RestingSpeed removed; drag-noise numbers moved to CarryConfig; ordinal-sorted
+section ids; debug keys only while F1 is on and in dev builds; builder errors on drifted names;
+fractured tile size shared with the builder and regenerated each rebuild; stairs can't collapse in
+TestBuilding (GDD 6.4: only route out) until a rope/window fallback exists; weak tests strengthened
+and StructureTests split. 9 regression tests added.
 
 ## Open problems
 - One `Tools/unity.sh all` run printed no PlayMode results line; rerun passed 103/103 and a second full
