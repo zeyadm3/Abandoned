@@ -54,6 +54,7 @@ namespace Abandoned.EditorTools
             SerializedWiring.Set(debugView, "bootstrap", bootstrap);
             SerializedWiring.Set(debugView, "lobby", lobby);
             network.AddComponent<NetworkLootDebugView>();
+            network.AddComponent<Abandoned.Voice.VoiceSettingsPanel>();
             EditorUtility.SetDirty(bootstrap);
             return bootstrap;
         }

@@ -16,8 +16,10 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
+- M4: 4.1 proximity voice done (`nettest voice`; see Docs/progress/M4.md).
+
 ## Next
-M3 review, tag `milestone-3`, zipped builds -> M4.
+Fix M3 review findings -> tag `milestone-3`, zipped builds -> M4.2 occlusion + radio -> M4.3 voice as noise.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -40,6 +42,11 @@ M3 review, tag `milestone-3`, zipped builds -> M4.
 - [ ] Leaving in MPPM: a virtual player picks up the laptop and closes/stops; the host sees it drop where
       they stood. Then the host presses Disconnect (Esc): every virtual player's scene reloads and the
       panel says "The host left the game." with an OK button, and nobody auto-hosts.
+- [ ] Voice (M4.1) in MPPM or LAN (Direct IP uses the raw microphone): allow the mic when macOS asks.
+      Hold V and talk: the other player hears you from your position, quieter with distance and silent
+      past ~25 m; ((•)) shows over your head on their screen, "● TALKING" on yours. Esc panel: Open mic,
+      volume slider, mute. Judge delay (~120 ms buffer) and quality (16 kHz mu-law). Over Steam (two
+      machines) the same with Steam voice.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## How to verify (batch mode, Unity must be closed)

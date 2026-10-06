@@ -73,6 +73,7 @@ namespace Abandoned.EditorTools
             var footsteps = root.AddComponent<PlayerFootsteps>();
             NetworkTransform networkTransform = AddNetworkTransform(root);
             var networkPlayer = root.AddComponent<NetworkPlayer>();
+            PlayerVoiceBuilder.Result voice = PlayerVoiceBuilder.Add(root, cameraRoot, reader);
 
             Set(stamina, "config", config);
             Set(look, "config", config);
@@ -123,7 +124,7 @@ namespace Abandoned.EditorTools
             Set(networkPlayer, "carrier", carrier);
             Set(networkPlayer, "networkTransform", networkTransform);
             SetArray(networkPlayer, "ownerOnlyBehaviours",
-                new Object[] { playerCamera, reader, look, motor, interactor, hud, cameraFeel, debug });
+                new Object[] { playerCamera, reader, look, motor, interactor, hud, cameraFeel, debug, voice.Transmitter, voice.Hud });
             SetArray(networkPlayer, "ownerOnlyObjects", new Object[] { hitDetector });
 
             SetLayerRecursively(root, Abandoned.Core.GameLayers.PlayerLayer);

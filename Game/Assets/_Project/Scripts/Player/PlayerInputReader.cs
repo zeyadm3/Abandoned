@@ -54,7 +54,9 @@ namespace Abandoned.Player
                 g.Drop.WasPressedThisFrame(),
                 g.Inventory.IsPressed(),
                 g.Pause.WasPressedThisFrame(),
-                ragdollDebugAction.WasPressedThisFrame());
+                ragdollDebugAction.WasPressedThisFrame(),
+                g.PushToTalk.IsPressed(),
+                g.Radio.IsPressed());
         }
     }
 }

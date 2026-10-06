@@ -195,3 +195,7 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     sounds play on every machine from the replicated stage.
   - Company "Zeyad Games", bundle id com.zeyadgames.abandoned (BuildScript.ApplyPlayerSettings; they fix the
     save-data folder, so they don't change once saves exist).
+  - M4.1: voice = IVoiceCapture + IVoiceCodec (Steam voice in Steam sessions, Unity Microphone + mu-law over
+    Unity Transport, tone in tests) relayed by NetworkVoice on the Player (owner -> host -> others,
+    unreliable, sender-checked). Playback is our own distance gain (full <1.5 m, 0 at 25 m) on a jitter
+    buffer; settings (PTT/open mic/volume/mute) in PlayerPrefs until the settings menu.

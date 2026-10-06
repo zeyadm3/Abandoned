@@ -20,6 +20,7 @@ namespace Abandoned.Networking
                 { SharedCarryNetTestScenario.ScenarioName, () => new SharedCarryNetTestScenario() },
                 { CollapseNetTestScenario.ScenarioName, () => new CollapseNetTestScenario() },
                 { RobustNetTestScenario.ScenarioName, () => new RobustNetTestScenario() },
+                { VoiceNetTestScenario.ScenarioName, () => new VoiceNetTestScenario() },
             };
 
         public static IEnumerable<string> Names => Registry.Keys;

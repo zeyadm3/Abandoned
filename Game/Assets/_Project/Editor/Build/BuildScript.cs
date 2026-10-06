@@ -21,6 +21,7 @@ namespace Abandoned.EditorTools
         public const string ProductName = "Abandoned";
         public const string CompanyName = "Zeyad Games";
         public const string BundleId = "com.zeyadgames.abandoned";
+        public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";
         public const string BuildsFolder = "Builds";
         public const string InfoFileName = "BUILD.txt";
         private const string Menu = "Tools/Abandoned/Build/";
@@ -68,6 +69,9 @@ namespace Abandoned.EditorTools
             // must not change once players have saves (user decision 2026-10-06).
             PlayerSettings.companyName = CompanyName;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, BundleId);
+            // macOS asks the player before the game may use the microphone (proximity voice); without a
+            // usage description the request is refused silently.
+            PlayerSettings.iOS.microphoneUsageDescription = MicrophoneUsage;
             // Several instances on one Mac (MPPM, nettest, LAN tests): an unfocused one must keep simulating.
             PlayerSettings.runInBackground = true;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);

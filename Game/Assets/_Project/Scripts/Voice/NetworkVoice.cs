@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace Abandoned.Voice
+{
+    /// <summary>
+    /// A player's voice over NGO: the owner sends each packet to the host (unreliable: a late voice
+    /// packet is useless), the host checks it really came from this player and relays it to everyone
+    /// else; each machine plays it from this player's position. Old or duplicate packets are dropped
+    /// by sequence number. The host also learns how loud each packet was (for monsters, M4.3).
+    /// </summary>
+    public class NetworkVoice : NetworkBehaviour
+    {
+        /// <summary>Hard cap on a packet a client may send us (one datagram).</summary>
+        public const int MaxPacketBytes = 1200;
+
+        [SerializeField] private VoiceConfig config;
+        [SerializeField] private VoicePlayback playback;
+
+        private static readonly List<NetworkVoice> Spawned = new();
+
+        private ushort sendSequence, lastSequence;
+        private bool hasSequence;
+
+        public static IReadOnlyList<NetworkVoice> All => Spawned;
+
+        /// <summary>Host: a player's voice packet arrived (speaker, level 0..1, over the radio).</summary>
+        public static event Action<NetworkVoice, float, bool> HeardOnHost;
+
+        public VoiceConfig Config => config;
+        public VoicePlayback Playback => playback;
+        public float LastLevel { get; private set; }
+        public bool LastWasRadio { get; private set; }
+        public int PacketsReceived { get; private set; }
+        public int PacketsSent { get; private set; }
+        public int PacketsRejected { get; private set; }
+        private float lastPacketTime = float.NegativeInfinity;
+
+        /// <summary>Talking right now as this machine sees it (the indicator).</summary>
+        public bool IsSpeaking => Time.time - lastPacketTime <= config.IndicatorHold;
+
+        public bool IsOnRadio => IsSpeaking && LastWasRadio;
+
+        public override void OnNetworkSpawn()
+        {
+            Spawned.Add(this);
+            // Nobody hears themselves.
+            if (IsOwner && playback != null) playback.enabled = false;
+        }
+
+        public override void OnNetworkDespawn() => Spawned.Remove(this);
+
+        /// <summary>Owner: one encoded packet from the microphone.</summary>
+        public void Send(byte[] packet, int length, VoiceCodecId codec, float level, bool radio)
+        {
+            if (!IsSpawned || !IsOwner || length <= 0 || length > MaxPacketBytes) return;
+            var data = new byte[length];
+            Buffer.BlockCopy(packet, 0, data, 0, length);
+            MarkSpoke(level, radio);
+            PacketsSent++;
+            ToHostRpc(data, codec, VoiceMath.ToByte(level), radio, sendSequence++);
+        }
+
+        [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
+        private void ToHostRpc(byte[] data, VoiceCodecId codec, byte level, bool radio, ushort sequence, RpcParams rpcParams = default)
+        {
+            // Only this player's own client may speak with this player's voice.
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || data == null || data.Length == 0 ||
+                data.Length > MaxPacketBytes || VoiceBackends.Codec(codec) == null)
+            {
+                PacketsRejected++;
+                return;
+            }
+            if (!IsOwner) MarkSpoke(VoiceMath.FromByte(level), radio);
+            HeardOnHost?.Invoke(this, VoiceMath.FromByte(level), radio);
+            ToListenersRpc(data, codec, level, radio, sequence);
+        }
+
+        [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Unreliable)]
+        private void ToListenersRpc(byte[] data, VoiceCodecId codec, byte level, bool radio, ushort sequence)
+        {
+            // Unreliable packets can arrive late or twice; playing them would garble the stream.
+            if (hasSequence && (short)(sequence - lastSequence) <= 0) return;
+            hasSequence = true;
+            lastSequence = sequence;
+            PacketsReceived++;
+            MarkSpoke(VoiceMath.FromByte(level), radio);
+            if (playback != null && playback.enabled) playback.Push(data, codec, radio);
+        }
+
+        private void MarkSpoke(float level, bool radio)
+        {
+            lastPacketTime = Time.time;
+            LastLevel = level;
+            LastWasRadio = radio;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Spawned.Clear();
+            HeardOnHost = null;
+        }
+    }
+}

@@ -69,6 +69,8 @@ namespace Abandoned.Networking
                 yield break;
             }
 
+            if (scenario is INetTestSetup setup) setup.Prepare();
+
             float deadline = Time.realtimeSinceStartup + BootstrapTimeout;
             while (NetworkBootstrap.Instance == null && Time.realtimeSinceStartup < deadline) yield return null;
             NetworkBootstrap bootstrap = NetworkBootstrap.Instance;

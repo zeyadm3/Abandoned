@@ -21,10 +21,12 @@ namespace Abandoned.Player
         public readonly bool InventoryHeld;
         public readonly bool PausePressed;
         public readonly bool DebugRagdollPressed;
+        public readonly bool TalkHeld;
+        public readonly bool RadioHeld;
 
         public PlayerInputFrame(Vector2 move, Vector2 look, bool sprintHeld, bool crouchHeld, bool crouchPressed,
             bool jumpPressed, bool usePressed, bool useHeld, bool interactPressed, bool dropPressed,
-            bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false)
+            bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false, bool talkHeld = false, bool radioHeld = false)
         {
             Move = move;
             Look = look;
@@ -39,6 +41,8 @@ namespace Abandoned.Player
             InventoryHeld = inventoryHeld;
             PausePressed = pausePressed;
             DebugRagdollPressed = debugRagdollPressed;
+            TalkHeld = talkHeld;
+            RadioHeld = radioHeld;
         }
     }
 }
