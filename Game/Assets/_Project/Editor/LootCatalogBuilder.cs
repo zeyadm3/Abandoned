@@ -14,6 +14,8 @@ namespace Abandoned.EditorTools
     {
         public const string Folder = "Assets/_Project/Data/Loot";
         public const string DamageConfigPath = Folder + "/LootDamageConfig.asset";
+        public const string CatalogPath = Folder + "/LootCatalog.asset";
+        public const string SpawnConfigPath = Folder + "/LootSpawnConfig.asset";
 
         [MenuItem("Tools/Abandoned/Create Example Loot Definitions")]
         public static void CreateMissing()
@@ -35,10 +37,59 @@ namespace Abandoned.EditorTools
             Add("marble_statue", "Marble Statue", 100000, 100000, 2000f, CarryClass.Huge, new(0.9f, 2.2f, 0.9f), Fragility.Medium, SurfaceMaterial.Stone, 0.9f, 0.05f, PlaceholderShape.Capsule, new(0.92f, 0.92f, 0.88f));
             Add("military_generator", "Military Generator", 60000, 60000, 1200f, CarryClass.Huge, new(1.2f, 1.2f, 2f), Fragility.Low, SurfaceMaterial.Metal, 1f, 0.1f, PlaceholderShape.Cube, new(0.3f, 0.38f, 0.22f), requiredCarriers: 4); // GDD: needs 4 people
 
+            // M5: ten more for the mall (20+ total, GDD 26).
+            Add("diamond_ring", "Diamond Ring", 4000, 9000, 0.02f, CarryClass.Pocket, new(0.03f, 0.03f, 0.03f), Fragility.Low, SurfaceMaterial.Metal, 0.03f, 0.5f, PlaceholderShape.Sphere, new(0.85f, 0.95f, 1f));
+            Add("pearl_necklace", "Pearl Necklace", 2000, 6000, 0.1f, CarryClass.Pocket, new(0.12f, 0.03f, 0.12f), Fragility.Medium, SurfaceMaterial.Stone, 0.05f, 0.8f, PlaceholderShape.Cylinder, new(0.95f, 0.93f, 0.88f));
+            Add("smartphone", "Smartphone", 300, 900, 0.2f, CarryClass.Pocket, new(0.08f, 0.01f, 0.16f), Fragility.Medium, SurfaceMaterial.Glass, 0.05f, 2f, PlaceholderShape.Cube, new(0.1f, 0.1f, 0.12f));
+            Add("game_console", "Game Console", 300, 600, 3f, CarryClass.OneHand, new(0.3f, 0.08f, 0.28f), Fragility.Medium, SurfaceMaterial.Plastic, 0.2f, 1.5f, PlaceholderShape.Cube, new(0.92f, 0.92f, 0.94f));
+            Add("collector_figure", "Collector's Figure", 500, 3000, 1f, CarryClass.OneHand, new(0.15f, 0.3f, 0.15f), Fragility.High, SurfaceMaterial.Plastic, 0.1f, 0.8f, PlaceholderShape.Capsule, new(0.9f, 0.4f, 0.2f));
+            Add("desktop_pc", "Desktop PC", 800, 1500, 12f, CarryClass.TwoHand, new(0.22f, 0.45f, 0.45f), Fragility.Medium, SurfaceMaterial.Metal, 0.35f, 1.2f, PlaceholderShape.Cube, new(0.15f, 0.15f, 0.17f));
+            Add("large_painting", "Large Painting", 8000, 40000, 12f, CarryClass.TwoHand, new(1.4f, 1f, 0.08f), Fragility.High, SurfaceMaterial.Wood, 0.3f, 0.4f, PlaceholderShape.Cube, new(0.75f, 0.55f, 0.3f));
+            Add("espresso_machine", "Espresso Machine", 1500, 3000, 20f, CarryClass.TwoHand, new(0.4f, 0.45f, 0.45f), Fragility.Medium, SurfaceMaterial.Metal, 0.5f, 0.9f, PlaceholderShape.Cube, new(0.7f, 0.7f, 0.72f));
+            Add("grandfather_clock", "Grandfather Clock", 4000, 8000, 70f, CarryClass.Heavy, new(0.6f, 2f, 0.4f), Fragility.High, SurfaceMaterial.Wood, 0.8f, 0.4f, PlaceholderShape.Cube, new(0.4f, 0.24f, 0.12f));
+            Add("film_projector", "Film Projector", 5000, 12000, 90f, CarryClass.Heavy, new(0.7f, 0.8f, 1.1f), Fragility.Medium, SurfaceMaterial.Metal, 0.7f, 0.4f, PlaceholderShape.Cube, new(0.25f, 0.25f, 0.3f));
+
+            // Where each can turn up (store kinds = MallLayout zone tags). Only filled in when empty.
+            Spawn("gold_watch", "jewelry", "office");
+            Spawn("cash_bundle", "concourse", "office", "jewelry", "food", "stock", "cinema", "clothing", "toys", "walkway");
+            Spawn("laptop", "electronics", "office", "furniture");
+            Spawn("small_painting", "gallery", "furniture", "office");
+            Spawn("flatscreen_tv", "electronics", "cinema", "furniture");
+            Spawn("antique_vase", "gallery", "furniture");
+            Spawn("glass_sculpture", "gallery", "jewelry");
+            Spawn("server_rack", "office", "electronics", "stock");
+            Spawn("safe", "office", "jewelry", "stock");
+            Spawn("vending_machine", "food", "concourse", "cinema", "walkway");
+            Spawn("diamond_ring", "jewelry", "clothing");
+            Spawn("pearl_necklace", "jewelry", "clothing");
+            Spawn("smartphone", "electronics", "office", "concourse", "food", "cinema", "toys");
+            Spawn("game_console", "electronics", "toys");
+            Spawn("collector_figure", "toys", "cinema");
+            Spawn("desktop_pc", "electronics", "office");
+            Spawn("large_painting", "gallery", "furniture", "cinema");
+            Spawn("espresso_machine", "food", "furniture");
+            Spawn("grandfather_clock", "furniture", "gallery");
+            Spawn("film_projector", "cinema", "stock");
+            // Jackpots: only on jackpot points (gallery, furniture floor, loading bay).
+            Spawn("marble_statue", true, "gallery");
+            Spawn("grand_piano", true, "furniture", "gallery");
+            Spawn("military_generator", true, "stock");
+
+            SerializedWiring.LoadOrCreateAsset<LootSpawnConfig>(SpawnConfigPath);
             AssetDatabase.SaveAssets();
         }
 
         public static string PathFor(string id) => $"{Folder}/Loot_{id}.asset";
+
+        private static void Spawn(string id, params string[] tags) => Spawn(id, false, tags);
+
+        private static void Spawn(string id, bool jackpot, params string[] tags)
+        {
+            LootDefinition definition = Load(id);
+            if (definition == null || (definition.SpawnTags != null && definition.SpawnTags.Length > 0)) return;
+            definition.EditorSetSpawning(tags, jackpot);
+            EditorUtility.SetDirty(definition);
+        }
 
         public static LootDefinition Load(string id) => AssetDatabase.LoadAssetAtPath<LootDefinition>(PathFor(id));
 

@@ -48,9 +48,14 @@ namespace Abandoned.EditorTools
                 spawn.gameObject.AddComponent<PlayerSpawnPoint>().EditorSetup(i);
             }
 
-            NetworkSceneBuilder.Add();
+            Abandoned.Networking.NetworkBootstrap bootstrap = NetworkSceneBuilder.Add();
             TagSurfaces(root);
             AddStructure(root);
+            MallLootPoints.Place(GreyboxFactory.Group("LootPoints", root));
+            var spawner = new GameObject("LootSpawner").AddComponent<Abandoned.Networking.NetworkLootSpawner>();
+            spawner.Setup(bootstrap,
+                UnityEditor.AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath),
+                UnityEditor.AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath));
 
             var debugViews = new GameObject("DebugViews");
             debugViews.AddComponent<NoiseDebugView>();

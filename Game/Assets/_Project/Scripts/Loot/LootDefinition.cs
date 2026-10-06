@@ -48,6 +48,10 @@ namespace Abandoned.Loot
         [field: SerializeField, Range(0f, 1f)] public float Noise { get; private set; } = 0.3f;
         [field: Tooltip("Relative spawn weight; higher = more common.")]
         [field: SerializeField, Min(0f)] public float Rarity { get; private set; } = 1f;
+        [field: Tooltip("Where it can spawn: the store kinds of LootSpawnPoints (jewelry, electronics, gallery...).")]
+        [field: SerializeField] public string[] SpawnTags { get; private set; } = System.Array.Empty<string>();
+        [field: Tooltip("A run's 1-2 big prizes (GDD 7.4): only spawns on jackpot points, never on ordinary ones.")]
+        [field: SerializeField] public bool Jackpot { get; private set; }
 
         [field: Header("Placeholder visual")]
         [field: SerializeField] public PlaceholderShape Shape { get; private set; } = PlaceholderShape.Cube;
@@ -69,6 +73,14 @@ namespace Abandoned.Loot
             if (authored > SharedCarryable.MaxPoints) errors.Add($"{n}: at most {SharedCarryable.MaxPoints} carry points.");
             if (authored > 0 && RequiredCarriers > authored) errors.Add($"{n}: RequiredCarriers is more than its carry points.");
             if (PhysicsMass < MinPhysicsMass || PhysicsMass > MaxPhysicsMass) errors.Add($"{n}: PhysicsMass outside the stable range.");
+            if (SpawnTags == null || SpawnTags.Length == 0) errors.Add($"{n}: no SpawnTags, so it never spawns in a run.");
+        }
+
+        public bool HasSpawnTag(string tag)
+        {
+            if (SpawnTags == null) return false;
+            foreach (string t in SpawnTags) if (t == tag) return true;
+            return false;
         }
 
 #if UNITY_EDITOR
@@ -94,6 +106,13 @@ namespace Abandoned.Loot
             ConditionMin = conditionMin;
             ConditionMax = conditionMax;
             RequiredCarriers = requiredCarriers;
+        }
+
+        /// <summary>Editor-only: spawn data, set separately so it can be filled in on existing definitions.</summary>
+        public void EditorSetSpawning(string[] tags, bool jackpot)
+        {
+            SpawnTags = tags;
+            Jackpot = jackpot;
         }
 #endif
     }

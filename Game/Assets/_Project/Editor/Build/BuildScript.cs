@@ -19,6 +19,8 @@ namespace Abandoned.EditorTools
     public static class BuildScript
     {
         public const string ProductName = "Abandoned";
+        /// <summary>0.&lt;milestone being built&gt;.&lt;patch&gt;; bump the middle number when a milestone starts.</summary>
+        public const string Version = "0.5.0";
         public const string CompanyName = "Zeyad Games";
         public const string BundleId = "com.zeyadgames.abandoned";
         public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";
@@ -65,6 +67,7 @@ namespace Abandoned.EditorTools
         public static void ApplyPlayerSettings()
         {
             PlayerSettings.productName = ProductName;
+            PlayerSettings.bundleVersion = Version;
             // Company + bundle id decide the save-data folder (Application.persistentDataPath), so they
             // must not change once players have saves (user decision 2026-10-06).
             PlayerSettings.companyName = CompanyName;

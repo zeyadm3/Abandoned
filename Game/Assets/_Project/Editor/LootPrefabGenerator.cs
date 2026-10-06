@@ -1,3 +1,4 @@
+using System.Linq;
 using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Loot;
@@ -28,7 +29,22 @@ namespace Abandoned.EditorTools
         {
             foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
                 Generate(AssetDatabase.LoadAssetAtPath<LootDefinition>(AssetDatabase.GUIDToAssetPath(guid)));
+            WriteCatalog();
             AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>Every definition with its prefab, in id order, for spawning at runtime.</summary>
+        public static LootCatalog WriteCatalog()
+        {
+            var catalog = SerializedWiring.LoadOrCreateAsset<LootCatalog>(LootCatalogBuilder.CatalogPath);
+            var entries = AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder })
+                .Select(g => AssetDatabase.LoadAssetAtPath<LootDefinition>(AssetDatabase.GUIDToAssetPath(g)))
+                .Where(d => d != null).OrderBy(d => d.Id, System.StringComparer.Ordinal)
+                .Select(d => new LootCatalog.Entry { definition = d, prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPathFor(d)) })
+                .ToList();
+            catalog.EditorSet(entries);
+            EditorUtility.SetDirty(catalog);
+            return catalog;
         }
 
         [MenuItem("CONTEXT/LootDefinition/Generate Prefab")]

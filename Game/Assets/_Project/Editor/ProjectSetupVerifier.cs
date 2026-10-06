@@ -107,6 +107,7 @@ namespace Abandoned.EditorTools
                 $"BuildInfo {BuildInfoAsset.Path} exists and is unstamped (a failed build may have left it stamped)");
             Check(PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone) == ScriptingImplementation.Mono2x &&
                   PlayerSettings.runInBackground, "Standalone: Mono backend, Run In Background (BuildScript.ApplyPlayerSettings)");
+            Check(PlayerSettings.bundleVersion == BuildScript.Version, $"Version {BuildScript.Version} (BuildScript.Version)");
             Check(PlayerSettings.companyName == BuildScript.CompanyName &&
                   PlayerSettings.GetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Standalone) == BuildScript.BundleId,
                   $"Company '{BuildScript.CompanyName}', bundle id {BuildScript.BundleId} (BuildScript.ApplyPlayerSettings)");

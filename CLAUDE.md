@@ -150,7 +150,8 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     an owner-authoritative NetworkTransform; grounded/sprint/crouch/ragdoll state is an owner-written
     NetworkVariable; remote ragdolls show a lying capsule, never a physics ragdoll. NGO scene
     management is off for now (each instance loads its own scene) until the HQ/run flow (M5).
-  - M3.3: version = Player Settings > Version, 0.<milestone>.<patch>; builds stamp the commit into
+  - M3.3: version = Player Settings > Version, 0.<milestone>.<patch> (set from BuildScript.Version; bump it when
+    a milestone starts - M4's builds still said 0.3.0); builds stamp the commit into
     Data/Core/Resources/BuildInfo (reset after the build). Build scenes come only from
     Editor/Build/BuildScenes.All. Shareable builds are Mono, universal Mac + Win64, with steam_appid.txt
     beside (never inside) the executable; Release builds leave it out. Every networked feature gets a
