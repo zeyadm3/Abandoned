@@ -90,7 +90,7 @@ namespace Abandoned.Tests
         }
 
         // Sends half a second of tone from a machine's own player, marked as radio or not.
-        private static IEnumerator Talk(NetworkBootstrap speaker, bool radio, float seconds = 0.5f)
+        private static IEnumerator Talk(NetworkBootstrap speaker, bool radio, float seconds = 0.5f, float level = 0.2f)
         {
             NetworkVoice voice = VoiceOf(speaker, speaker.Manager.LocalClientId);
             var tone = new ToneVoiceCapture { Recording = true };
@@ -99,7 +99,7 @@ namespace Abandoned.Tests
             while (Time.realtimeSinceStartup < end)
             {
                 int n = tone.ReadPacket(packet);
-                if (n > 0) voice.Send(packet, n, tone.Codec, 0.2f, radio);
+                if (n > 0) voice.Send(packet, n, tone.Codec, level, radio);
                 yield return null;
             }
         }
@@ -160,6 +160,35 @@ namespace Abandoned.Tests
             wall.transform.localScale = new Vector3(0.2f, 4f, 4f);
             yield return new WaitForFixedUpdate();
             Assert.AreEqual(1, playback.CountWalls(ear), "one wall");
+        }
+
+        [UnityTest]
+        public IEnumerator TheHostTurnsVoicesIntoNoiseAtTheSpeaker()
+        {
+            VoiceSettings.Mode = VoiceMode.PushToTalk;
+            yield return net.StartSession(clients: 1);
+            NetworkBootstrap speaker = net.Clients.First();
+            NetworkVoice hostCopy = VoiceOf(net.Host, speaker.Manager.LocalClientId);
+            VoiceConfig c = hostCopy.Config;
+
+            // The noise history is shared by every test in the run; only look at what this test made.
+            float since = Time.time;
+            System.Collections.Generic.List<Abandoned.Core.NoiseEvent> Voices() => Abandoned.Core.NoiseSystem.RecentEvents
+                .Where(e => e.Source == Abandoned.Core.NoiseSource.Voice && e.Time >= since).ToList();
+
+            yield return Talk(speaker, radio: false, seconds: 0.6f, level: c.WhisperLevel * 0.5f);
+            yield return WaitSeconds(0.1f);
+            Assert.IsEmpty(Voices(), "a whisper makes no noise");
+
+            since = Time.time;
+            yield return Talk(speaker, radio: false, seconds: 0.6f, level: c.ShoutLevel);
+            yield return WaitSeconds(0.1f);
+            var shouts = Voices();
+            Assert.IsNotEmpty(shouts, "a shout is heard");
+            Abandoned.Core.NoiseEvent shout = shouts[shouts.Count - 1];
+            Assert.AreEqual(c.ShoutLoudness, shout.Loudness, 0.01f);
+            Assert.Less(Vector3.Distance(shout.Position, hostCopy.Playback.transform.position), 0.5f, "from the speaker's mouth");
+            Assert.LessOrEqual(shouts.Count, Mathf.CeilToInt(0.7f / c.NoiseInterval) + 1, "rate-limited, not one per packet");
         }
     }
 }

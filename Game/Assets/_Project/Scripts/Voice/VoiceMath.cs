@@ -32,6 +32,17 @@ namespace Abandoned.Voice
             return oneWallCutoff * Mathf.Pow(0.6f, Mathf.Min(walls, maxWalls) - 1);
         }
 
+        /// <summary>
+        /// How loud a voice is to monsters: nothing at a whisper, rising linearly to
+        /// <paramref name="shoutLoudness"/> at a shout; the radio adds its own squawk on top.
+        /// </summary>
+        public static float NoiseLoudness(float level, bool radio, VoiceConfig c)
+        {
+            float voice = level <= c.WhisperLevel ? 0f
+                : Mathf.Clamp01((level - c.WhisperLevel) / (c.ShoutLevel - c.WhisperLevel)) * c.ShoutLoudness;
+            return Mathf.Clamp01(voice + (radio ? c.RadioLoudness : 0f));
+        }
+
         /// <summary>RMS level of a block of samples (0..1).</summary>
         public static float Rms(float[] samples, int count)
         {

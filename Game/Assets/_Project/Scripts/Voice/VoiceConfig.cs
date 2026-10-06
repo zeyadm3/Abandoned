@@ -50,10 +50,23 @@ namespace Abandoned.Voice
         [field: SerializeField, Range(100f, 1000f)] public float RadioLowCut { get; private set; } = 400f;
         [field: SerializeField, Range(1500f, 6000f)] public float RadioHighCut { get; private set; } = 3200f;
 
+        [Header("Monsters hear voices (host)")]
+        [Tooltip("Mic level (RMS) below which talking makes no noise: a whisper.")]
+        [field: SerializeField, Range(0f, 0.2f)] public float WhisperLevel { get; private set; } = 0.015f;
+        [Tooltip("Mic level (RMS) that counts as shouting: full voice loudness.")]
+        [field: SerializeField, Range(0.05f, 1f)] public float ShoutLevel { get; private set; } = 0.25f;
+        [Tooltip("Noise loudness of a shout (1 = heard 40 m away).")]
+        [field: SerializeField, Range(0f, 1f)] public float ShoutLoudness { get; private set; } = 0.6f;
+        [Tooltip("Extra loudness while transmitting on the radio (key click, static) at the speaker.")]
+        [field: SerializeField, Range(0f, 0.5f)] public float RadioLoudness { get; private set; } = 0.12f;
+        [Tooltip("One voice noise per speaker at most this often (s); the loudest moment in between counts.")]
+        [field: SerializeField, Range(0.05f, 1f)] public float NoiseInterval { get; private set; } = 0.25f;
+
         public void Validate(List<string> errors)
         {
             if (MaxDistance <= MinDistance) errors.Add($"{name}: MaxDistance must be greater than MinDistance.");
             if (MaxBufferMs <= JitterMs) errors.Add($"{name}: MaxBufferMs must be greater than JitterMs.");
+            if (ShoutLevel <= WhisperLevel) errors.Add($"{name}: ShoutLevel must be above WhisperLevel.");
             if (RadioHighCut <= RadioLowCut) errors.Add($"{name}: RadioHighCut must be above RadioLowCut.");
         }
     }

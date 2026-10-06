@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Abandoned.Core;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Abandoned.Voice
     /// A player's voice over NGO: the owner sends each packet to the host (unreliable: a late voice
     /// packet is useless), the host checks it really came from this player and relays it to everyone
     /// else; each machine plays it from this player's position. Old or duplicate packets are dropped
-    /// by sequence number. The host also learns how loud each packet was (for monsters, M4.3).
+    /// by sequence number. The host also turns each speaker's loudness into NoiseEvents (monsters hear voices).
     /// </summary>
     public class NetworkVoice : NetworkBehaviour
     {
@@ -23,6 +24,7 @@ namespace Abandoned.Voice
         private static readonly List<NetworkVoice> Spawned = new();
 
         private readonly float[] decoded = new float[8192];
+        private VoiceNoiseMeter noiseMeter;
         private ushort sendSequence, lastSequence;
         private bool hasSequence;
 
@@ -89,6 +91,7 @@ namespace Abandoned.Voice
             radio = radio && HasRadio(OwnerClientId);
             if (!IsOwner) MarkSpoke(VoiceMath.FromByte(level), radio);
             HeardOnHost?.Invoke(this, VoiceMath.FromByte(level), radio);
+            EmitNoise(VoiceMath.FromByte(level), radio);
             ToListenersRpc(data, codec, level, radio, sequence);
         }
 
@@ -108,6 +111,16 @@ namespace Abandoned.Voice
             if (playback != null && playback.enabled) playback.Push(decoded, n, decoder.SampleRate);
             if (radio && this.radio != null && this.radio.enabled && HasRadio(NetworkManager.LocalClientId))
                 this.radio.Push(decoded, n, decoder.SampleRate);
+        }
+
+        // Host: monsters hear voice chat (GDD 17). Noise comes from the speaker's mouth; a radio
+        // transmission adds its squawk there too.
+        private void EmitNoise(float level, bool radio)
+        {
+            noiseMeter ??= new VoiceNoiseMeter(config.NoiseInterval);
+            if (!noiseMeter.Add(VoiceMath.NoiseLoudness(level, radio, config), Time.time, out float loudness)) return;
+            Vector3 mouth = playback != null ? playback.transform.position : transform.position;
+            NoiseSystem.Emit(mouth, loudness, NoiseSource.Voice);
         }
 
         private void MarkSpoke(float level, bool radio)

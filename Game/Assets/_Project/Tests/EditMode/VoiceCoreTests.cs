@@ -128,5 +128,37 @@ namespace Abandoned.Tests
             Assert.Less(VoiceMath.OcclusionCutoff(2, 900f, 3), 900f);
             Assert.AreEqual(VoiceMath.OcclusionCutoff(3, 900f, 3), VoiceMath.OcclusionCutoff(5, 900f, 3));
         }
+
+        [Test]
+        public void WhispersAreSilentToMonstersShoutsAreLoudAndTheRadioSquawks()
+        {
+            var c = ScriptableObject.CreateInstance<VoiceConfig>();
+            try
+            {
+                Assert.AreEqual(0f, VoiceMath.NoiseLoudness(c.WhisperLevel, false, c));
+                Assert.AreEqual(c.ShoutLoudness, VoiceMath.NoiseLoudness(c.ShoutLevel, false, c), 1e-5f);
+                Assert.AreEqual(c.ShoutLoudness, VoiceMath.NoiseLoudness(1f, false, c), 1e-5f, "louder than a shout doesn't grow further");
+                float normal = VoiceMath.NoiseLoudness((c.WhisperLevel + c.ShoutLevel) / 2f, false, c);
+                Assert.AreEqual(c.ShoutLoudness / 2f, normal, 1e-4f, "talking normally is half a shout");
+                Assert.AreEqual(c.RadioLoudness, VoiceMath.NoiseLoudness(0f, true, c), 1e-5f, "even a whispered radio call clicks");
+            }
+            finally
+            {
+                Object.DestroyImmediate(c);
+            }
+        }
+
+        [Test]
+        public void VoiceNoiseIsImmediateThenRateLimitedToTheLoudestMoment()
+        {
+            var meter = new VoiceNoiseMeter(0.25f);
+            Assert.IsTrue(meter.Add(0.2f, 10f, out float first), "the first word is heard at once");
+            Assert.AreEqual(0.2f, first);
+            Assert.IsFalse(meter.Add(0.5f, 10.1f, out _));
+            Assert.IsFalse(meter.Add(0.1f, 10.2f, out _));
+            Assert.IsTrue(meter.Add(0.1f, 10.3f, out float next));
+            Assert.AreEqual(0.5f, next, "the shout in between isn't lost");
+            Assert.IsFalse(meter.Add(0f, 11f, out _), "silence emits nothing");
+        }
     }
 }

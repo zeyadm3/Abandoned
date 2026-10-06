@@ -16,10 +16,10 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
-- M4: 4.1 proximity voice, 4.2 wall muffling + radio done (`nettest voice`; see Docs/progress/M4.md).
+- M4: 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise done (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-M4.3 voice as noise -> M4 review, tag, builds -> M5.
+M4 review, tag, builds -> M5.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
