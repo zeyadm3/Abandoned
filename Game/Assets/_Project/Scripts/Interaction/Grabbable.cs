@@ -21,15 +21,22 @@ namespace Abandoned.Interaction
         private RigidbodyInterpolation restingInterpolation;
         private CollisionDetectionMode dynamicDetection;
         private readonly TrackedVelocity followedVelocity = new();
+        private bool draggedByHolder;
 
         public Rigidbody Body => body;
         public PlayerCarrier Holder { get; private set; }
         public bool IsPocketed { get; private set; }
         /// <summary>Whose pockets it's in (null when not pocketed).</summary>
         public PlayerCarrier PocketHolder { get; private set; }
-        /// <summary>Held, but dragged along the floor (Heavy items solo): still rests its weight on the structure.</summary>
-        public bool IsDragged { get; private set; }
-        public bool IsAvailable => Holder == null && !IsPocketed;
+        /// <summary>Carried together through carry points (Heavy/Huge loot), or null for single-holder items.</summary>
+        public SharedCarryable Shared { get; private set; }
+        /// <summary>Held, but dragged along the floor (Heavy items solo, or a shared carry short of its crew): still rests its weight on the structure.</summary>
+        public bool IsDragged => Shared != null ? Shared.IsDragged : draggedByHolder;
+        /// <summary>Held up by a full crew of carriers: its weight is on them, not on the floor.</summary>
+        public bool IsLifted => Shared != null && Shared.IsLifted;
+        public bool IsAvailable => Holder == null && !IsPocketed && (Shared == null || Shared.HasFreePoint);
+        /// <summary>Gameplay kg one holder carries: their share of a lifted shared item, nothing for a dragged one.</summary>
+        public float WeightOnHolder => Shared != null ? Shared.SharePerCarrier : IsDragged ? 0f : Weight;
         /// <summary>This machine simulates the body. True offline; networking hands it to the owner.</summary>
         public bool HasPhysicsAuthority { get; private set; } = true;
         public string DisplayName => carryable?.DisplayName ?? name;
@@ -50,11 +57,15 @@ namespace Abandoned.Interaction
         {
             body = GetComponent<Rigidbody>();
             carryable = GetComponent<ICarryable>();
+            Shared = GetComponent<SharedCarryable>();
             colliders = GetComponentsInChildren<Collider>();
             renderers = GetComponentsInChildren<Renderer>();
             restingInterpolation = body.interpolation;
             dynamicDetection = body.collisionDetectionMode;
         }
+
+        public bool IsHeldBy(PlayerCarrier carrier) =>
+            carrier != null && (Holder == carrier || (Shared != null && Shared.IsCarriedBy(carrier)));
 
         /// <summary>World-space bounds of the object's colliders, used for reach checks.</summary>
         public Bounds GetBounds()
@@ -93,7 +104,7 @@ namespace Abandoned.Interaction
         internal void BeginHold(PlayerCarrier holder, bool drag)
         {
             Holder = holder;
-            IsDragged = drag;
+            draggedByHolder = drag;
             body.useGravity = drag;
             ApplyBodyMode();
             SetIgnoreCollisions(holder.Controller, true);
@@ -103,7 +114,7 @@ namespace Abandoned.Interaction
         {
             if (Holder != null) SetIgnoreCollisions(Holder.Controller, false);
             Holder = null;
-            IsDragged = false;
+            draggedByHolder = false;
             body.useGravity = true;
             ApplyBodyMode();
             SetVelocity(velocity);
@@ -130,6 +141,15 @@ namespace Abandoned.Interaction
             Released?.Invoke(this);
         }
 
+        /// <summary>A shared carry gained or lost a carrier: gravity comes back when nobody holds it up.</summary>
+        internal void SharedCarryChanged()
+        {
+            if (body == null) return;
+            if (!Shared.IsLifted) body.useGravity = true;
+            ApplyBodyMode();
+            if (Shared.CarrierCount == 0) Released?.Invoke(this);
+        }
+
         private void ApplyBodyMode()
         {
             bool kinematic = IsPocketed || !HasPhysicsAuthority;
@@ -140,7 +160,7 @@ namespace Abandoned.Interaction
             body.detectCollisions = !IsPocketed;
             // A non-authority copy is placed by the network every frame; Rigidbody interpolation would fight it.
             body.interpolation = !HasPhysicsAuthority ? RigidbodyInterpolation.None
-                : Holder != null ? RigidbodyInterpolation.Interpolate
+                : Holder != null || (Shared != null && Shared.CarrierCount > 0) ? RigidbodyInterpolation.Interpolate
                 : restingInterpolation;
         }
 
@@ -154,7 +174,7 @@ namespace Abandoned.Interaction
             foreach (Renderer r in renderers) r.enabled = visible;
         }
 
-        private void SetIgnoreCollisions(Collider other, bool ignore)
+        internal void SetIgnoreCollisions(Collider other, bool ignore)
         {
             if (other == null) return;
             foreach (Collider c in colliders) Physics.IgnoreCollision(c, other, ignore);

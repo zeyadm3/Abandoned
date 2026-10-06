@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Abandoned.Core;
+using Abandoned.Interaction;
 using Abandoned.Loot;
 using Abandoned.Player;
 using Abandoned.Structure;
@@ -93,6 +94,7 @@ namespace Abandoned.EditorTools
             var debugViews = new GameObject("DebugViews");
             debugViews.AddComponent<NoiseDebugView>();
             debugViews.AddComponent<LootDebugView>();
+            debugViews.AddComponent<SharedCarryDebugView>();
         }
 
         private static void AddStructure(Transform root)

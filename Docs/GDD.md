@@ -382,6 +382,11 @@ Power off, flooded basement, night (darker, more threats), heavy jackpot (one ma
 
 - Pick up, carry, drop, throw; hold to charge throws
 - **Shared carrying:** 2–4 players grab different points of a Heavy/Huge item; it moves at the speed of the slowest carrier and wobbles if carriers pull in different directions
+  - Heavy items have 2 handles and need 2 people to lift; Huge items have 4 handles and need 3 (the military generator needs 4). Each LootDefinition can override the crew size or place its own handles; otherwise handles are generated at the ends of the item's long axis, then the middles of its long sides.
+  - E on the item takes the nearest free handle; RMB lets go. Short of a full crew the item stays on the floor: one person can still drag a Heavy item (trolley stand-in), a Huge item only creeps.
+  - Lifted, it rises about 30 cm and goes at the slowest carrier's pace (crouching or loaded-down carriers slow everyone; no sprinting). Each carrier is tied to their handle: you can't walk away from it, and you get pulled along if the others move it.
+  - Letting go, getting knocked down or getting dragged too far from your handle drops your share; when the crew falls below the requirement the item falls and takes normal impact damage.
+  - Each carrier's share of the weight loads the floor under their own feet; the lifted item itself loads nothing.
 - Loot loses value from impacts above a threshold (fragility scales the loss); a small floating "-$1,200" pops up on damage
 - Objects can roll, slide, tip, block doors, trigger alarms and make noise
 - Players ragdoll from big falls, heavy impacts and collapses

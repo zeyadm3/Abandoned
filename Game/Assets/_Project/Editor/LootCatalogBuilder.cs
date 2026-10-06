@@ -33,7 +33,7 @@ namespace Abandoned.EditorTools
             Add("vending_machine", "Vending Machine", 6000, 6000, 350f, CarryClass.Heavy, new(1f, 1.9f, 0.8f), Fragility.Low, SurfaceMaterial.Metal, 0.9f, 0.5f, PlaceholderShape.Cube, new(0.8f, 0.15f, 0.15f));
             Add("grand_piano", "Grand Piano", 35000, 35000, 500f, CarryClass.Huge, new(1.5f, 1f, 2.4f), Fragility.Medium, SurfaceMaterial.Wood, 0.9f, 0.15f, PlaceholderShape.Cube, new(0.05f, 0.05f, 0.05f));
             Add("marble_statue", "Marble Statue", 100000, 100000, 2000f, CarryClass.Huge, new(0.9f, 2.2f, 0.9f), Fragility.Medium, SurfaceMaterial.Stone, 0.9f, 0.05f, PlaceholderShape.Capsule, new(0.92f, 0.92f, 0.88f));
-            Add("military_generator", "Military Generator", 60000, 60000, 1200f, CarryClass.Huge, new(1.2f, 1.2f, 2f), Fragility.Low, SurfaceMaterial.Metal, 1f, 0.1f, PlaceholderShape.Cube, new(0.3f, 0.38f, 0.22f));
+            Add("military_generator", "Military Generator", 60000, 60000, 1200f, CarryClass.Huge, new(1.2f, 1.2f, 2f), Fragility.Low, SurfaceMaterial.Metal, 1f, 0.1f, PlaceholderShape.Cube, new(0.3f, 0.38f, 0.22f), requiredCarriers: 4); // GDD: needs 4 people
 
             AssetDatabase.SaveAssets();
         }
@@ -44,12 +44,13 @@ namespace Abandoned.EditorTools
 
         private static void Add(string id, string displayName, int min, int max, float weight, CarryClass carryClass,
             Vector3 size, Fragility fragility, SurfaceMaterial material, float noise, float rarity,
-            PlaceholderShape shape, Color color)
+            PlaceholderShape shape, Color color, int requiredCarriers = 0)
         {
             string path = PathFor(id);
             if (AssetDatabase.LoadAssetAtPath<LootDefinition>(path) != null) return;
             var definition = ScriptableObject.CreateInstance<LootDefinition>();
-            definition.EditorSetup(id, displayName, min, max, weight, carryClass, size, fragility, material, noise, rarity, shape, color);
+            definition.EditorSetup(id, displayName, min, max, weight, carryClass, size, fragility, material, noise, rarity, shape, color,
+                requiredCarriers: requiredCarriers);
             AssetDatabase.CreateAsset(definition, path);
         }
     }

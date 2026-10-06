@@ -22,6 +22,8 @@ namespace Abandoned.Networking
         public List<NetTestView> views = new();
         public List<NetTestLootAction> lootActions = new();
         public List<NetTestLootView> lootViews = new();
+        public List<NetTestSharedCarryAction> sharedActions = new();
+        public NetTestSharedCarryHostView sharedHost;
 
         public void Fail(string error)
         {

@@ -13,7 +13,7 @@ namespace Abandoned.Loot
     /// methods. Presentation lives in <see cref="LootFeedback"/>.
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class LootItem : MonoBehaviour, ICarryable, IValuable, ILoadSource
+    public class LootItem : MonoBehaviour, ICarryable, IValuable, ILoadSource, ISharedCarrySpec
     {
         [SerializeField] private LootDefinition definition;
         [SerializeField] private LootDamageConfig damageConfig;
@@ -44,6 +44,9 @@ namespace Abandoned.Loot
         public string DisplayName => definition.DisplayName;
         public CarryClass CarryClass => definition.CarryClass;
         public float GameplayWeight => definition.GameplayWeight;
+        public int RequiredCarriersOverride => definition.RequiredCarriers;
+        public IReadOnlyList<Vector3> AuthoredCarryPoints => definition.CarryPoints ?? Array.Empty<Vector3>();
+        public Vector3 CarrySize => definition.Size;
 
         /// <summary>An impact to present (sound, shake) on this machine: item, speed along the normal, contact point.</summary>
         public event Action<LootItem, float, Vector3> Impacted;
@@ -67,15 +70,15 @@ namespace Abandoned.Loot
         private void OnDisable() => LoadSources.Unregister(this);
 
         /// <summary>
-        /// Resting weight on the structure: zero while pocketed, carried in hands (the carrier
-        /// counts it) or still flying; dragged items press down where they are.
+        /// Resting weight on the structure: zero while pocketed, carried in hands or lifted by a crew
+        /// (the carriers count it, each their share) or still flying; dragged items press down where they are.
         /// </summary>
         public float LoadWeight
         {
             get
             {
                 if (IsShattered || grabbable == null || grabbable.IsPocketed) return 0f;
-                if (grabbable.Holder != null && !grabbable.IsDragged) return 0f;
+                if (grabbable.IsLifted || (grabbable.Holder != null && !grabbable.IsDragged)) return 0f;
                 if (!grabbable.IsDragged && body.linearVelocity.sqrMagnitude > damageConfig.LoadRestingSpeed * damageConfig.LoadRestingSpeed)
                     return 0f;
                 return definition.GameplayWeight;

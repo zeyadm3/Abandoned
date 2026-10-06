@@ -124,10 +124,12 @@ GameObject:
   - component: {fileID: 1582068295187049664}
   - component: {fileID: 2514823929344480631}
   - component: {fileID: 8143423591393384599}
+  - component: {fileID: 936306633201405644}
   - component: {fileID: 5036870668348849033}
   - component: {fileID: 6766880978615925807}
   - component: {fileID: 8980288252351674336}
   - component: {fileID: 5645671015776204999}
+  - component: {fileID: 3899022172222081277}
   m_Layer: 9
   m_Name: Loot_safe
   m_TagString: Untagged
@@ -217,6 +219,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57417e032e55342209c4466037f949cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.Grabbable
+--- !u!114 &936306633201405644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677944235084331352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06adf7ac2f473427885174d5c1f56a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.SharedCarryable
+  config: {fileID: 11400000, guid: abab181d3f7be4d71ae70ebfda00d31c, type: 2}
 --- !u!114 &5036870668348849033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,3 +321,16 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
   networkTransform: {fileID: 8980288252351674336}
+--- !u!114 &3899022172222081277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677944235084331352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f217f417ed54218a04e6681ed1b939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkSharedCarry
+  ShowTopMostFoldoutHeaderGroup: 1

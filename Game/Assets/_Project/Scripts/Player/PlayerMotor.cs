@@ -32,6 +32,9 @@ namespace Abandoned.Player
         private bool airborne;
         private bool stuckToGround;
         private float airPeakY;
+        private bool tethered;
+        private Vector3 tetherAnchor;
+        private float tetherSlack, tetherPullStart, tetherPullSpeed;
 
         public PlayerMovementConfig Config => config;
         public Vector3 Velocity => horizontalVelocity + Vector3.up * verticalVelocity;
@@ -53,6 +56,23 @@ namespace Abandoned.Player
             get => speedMultiplier;
             set => speedMultiplier = Mathf.Clamp01(value);
         }
+
+        /// <summary>Hard cap on move speed (m/s); a shared carry holds everyone to the slowest carrier.</summary>
+        public float MaxSpeed { get; set; } = float.PositiveInfinity;
+
+        public bool IsTethered => tethered;
+
+        /// <summary>Keep the player within <paramref name="slack"/> m of <paramref name="anchor"/> on the ground plane (see <see cref="TetherMath"/>).</summary>
+        public void SetTether(Vector3 anchor, float slack, float pullStart, float pullSpeed)
+        {
+            tethered = true;
+            tetherAnchor = anchor;
+            tetherSlack = slack;
+            tetherPullStart = pullStart;
+            tetherPullSpeed = pullSpeed;
+        }
+
+        public void ClearTether() => tethered = false;
 
         /// <summary>Raised on touchdown: fall height (peak to landing, m) and downward impact speed (m/s).</summary>
         public event Action<float, float> Landed;
@@ -151,11 +171,14 @@ namespace Abandoned.Player
 
             IsSprinting = input.SprintHeld && hasInput && !IsCrouching && stamina.CanSprint;
             float speed = IsCrouching ? config.CrouchSpeed : IsSprinting ? config.SprintSpeed : config.WalkSpeed;
-            Vector3 target = wish * (speed * speedMultiplier);
+            Vector3 target = wish * Mathf.Min(speed * speedMultiplier, MaxSpeed);
 
             float rate = hasInput ? config.GroundAcceleration : config.GroundDeceleration;
             if (!IsGrounded) rate *= config.AirControl;
             horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, target, rate * dt);
+            if (tethered)
+                horizontalVelocity = TetherMath.Constrain(transform.position - tetherAnchor, horizontalVelocity,
+                    tetherSlack, tetherPullStart, tetherPullSpeed);
 
             if (IsSprinting && IsGrounded)
                 stamina.Drain(config.SprintDrainPerSecond * StaminaDrainMultiplier * dt);

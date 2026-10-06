@@ -39,9 +39,14 @@ namespace Abandoned.Interaction
         public bool IsLocal { get; private set; } = true;
 
         /// <summary>Everything this player carries, in kg; also what they add to structural load.</summary>
-        public float CarriedWeight => (Held != null && !Held.IsDragged ? Held.Weight : 0f) + Inventory.TotalWeight;
+        public float CarriedWeight => (Held != null ? Held.WeightOnHolder : 0f) + Inventory.TotalWeight;
 
         public bool IsDragging => Held != null && Held.IsDragged;
+
+        /// <summary>Holding a carry point of a shared Heavy/Huge item (lifted or still waiting for the crew).</summary>
+        public bool IsSharing => Held != null && Held.Shared != null;
+
+        public bool IsRagdolled => ragdoll != null && ragdoll.IsRagdolled;
 
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;
@@ -52,6 +57,11 @@ namespace Abandoned.Interaction
         {
             get
             {
+                if (IsSharing)
+                {
+                    int handle = Held.Shared.IndexOf(this);
+                    if (handle >= 0) return Held.Shared.TargetFor(handle);
+                }
                 if (IsDragging)
                 {
                     // Floor level in front of the player, flat (dragging doesn't follow the look pitch).
@@ -103,17 +113,48 @@ namespace Abandoned.Interaction
             float weight = CarriedWeight;
             motor.SpeedMultiplier = IsDragging ? config.DragSpeedMultiplier : config.SpeedMultiplierFor(weight);
             motor.StaminaDrainMultiplier = config.StaminaDrainMultiplierFor(weight);
+            ApplySharedLimits();
+        }
+
+        /// <summary>
+        /// A shared carry ties the player to the item: nobody outruns the slowest carrier, and walking
+        /// away from your handle is blocked (or you get pulled along). Only the owner's motor moves them.
+        /// </summary>
+        private void ApplySharedLimits()
+        {
+            int point = IsSharing && IsLocal ? Held.Shared.IndexOf(this) : -1;
+            if (point < 0)
+            {
+                motor.MaxSpeed = float.PositiveInfinity;
+                motor.ClearTether();
+                return;
+            }
+            SharedCarryable shared = Held.Shared;
+            SharedCarryConfig c = shared.Config;
+            motor.MaxSpeed = shared.CarrierMaxSpeed;
+            motor.SetTether(shared.AnchorFor(point), c.TetherSlack, c.TetherPullStart, c.TetherPullSpeed);
+        }
+
+        /// <summary>Top speed (m/s) this player could carry at right now: gait (crouch/walk/sprint) times their load slowdown.</summary>
+        public float CarrySpeedCapability(bool allowSprint)
+        {
+            if (motor == null) return float.PositiveInfinity;
+            PlayerMovementConfig m = motor.Config;
+            float gait = motor.IsCrouching ? m.CrouchSpeed : allowSprint && motor.IsSprinting ? m.SprintSpeed : m.WalkSpeed;
+            return gait * config.SpeedMultiplierFor(CarriedWeight);
         }
 
         private void FixedUpdate()
         {
             if (Held == null) return;
 
-            if (Held.IsPocketed || Held.Holder != this)
+            if (Held.IsPocketed || !Held.IsHeldBy(this))
             {
                 Held = null;
                 return;
             }
+            // Shared carries are simulated by the item itself (on the host) from every carrier's target.
+            if (Held.Shared != null) return;
             // Remote copies mirror; a client waiting for ownership has nothing to push yet.
             if (!IsLocal || !Held.HasPhysicsAuthority) return;
 
@@ -177,6 +218,13 @@ namespace Abandoned.Interaction
 
         internal void ApplyRelease(Vector3 velocity)
         {
+            if (IsSharing)
+            {
+                // Letting go of a handle: the item keeps whatever the remaining crew does with it.
+                Held.Shared.RemoveCarrier(this);
+                Held = null;
+                return;
+            }
             Grabbable item = Held;
             Held = null;
             item.EndHold(velocity);
@@ -211,6 +259,19 @@ namespace Abandoned.Interaction
                     ~0, QueryTriggerInteraction.Ignore))
                 distance = Mathf.Max(0.2f, hit.distance - 0.25f);
             return new Pose(cameraRoot.position + direction * distance, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
+        }
+
+        /// <summary>Called by <see cref="SharedCarryable"/> when this player takes or leaves one of its points.</summary>
+        internal void AttachShared(Grabbable item)
+        {
+            Held = item;
+            holdTime = 0f;
+            lastDragPosition = item.Body.worldCenterOfMass;
+        }
+
+        internal void DetachShared(Grabbable item)
+        {
+            if (Held == item) Held = null;
         }
 
         /// <summary>The held item was destroyed (shattered, despawned).</summary>

@@ -300,6 +300,7 @@ slowest carrier's speed, and wobbles/tilts when carriers pull in different
 directions. Letting go drops it (with impact damage). Explain how this works
 over the network before building it.
 ```
+Built in the autonomous build as M3.5 (network design in Docs/PROGRESS.md, "M3.5 notes"); `Tools/unity.sh nettest sharedcarry`.
 
 **3.4 Networked structure**
 ```

@@ -9,6 +9,12 @@ namespace Abandoned.Interaction
     {
         public void RequestPickup(PlayerCarrier carrier, Grabbable target)
         {
+            if (target != null && target.Shared != null)
+            {
+                if (PickupRules.CanGrabPoint(carrier, target.Shared, out int point, out string why)) target.Shared.Grab(point, carrier);
+                else carrier.ShowHint(why);
+                return;
+            }
             if (!PickupRules.CanPickUp(carrier, target, out string reason))
             {
                 carrier.ShowHint(reason);
@@ -27,6 +33,8 @@ namespace Abandoned.Interaction
         public void RequestThrow(PlayerCarrier carrier, Vector3 velocity)
         {
             if (carrier.Held == null) return;
+            // Nobody throws a piano: letting go of a handle is all a throw does.
+            if (carrier.IsSharing) { carrier.ApplyRelease(Vector3.zero); return; }
             // Clamp to what the rules allow at full charge, so a modified client can't fling loot.
             float max = carrier.Config.ThrowSpeedFor(1f, carrier.Held.Weight) + carrier.DropVelocity.magnitude;
             carrier.ApplyRelease(Vector3.ClampMagnitude(velocity, max));

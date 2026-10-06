@@ -35,6 +35,12 @@ namespace Abandoned.Loot
         [field: Tooltip("Bounding size in metres (also the placeholder visual's size).")]
         [field: SerializeField] public Vector3 Size { get; private set; } = new(0.3f, 0.3f, 0.3f);
 
+        [field: Header("Carrying together (Heavy/Huge only)")]
+        [field: Tooltip("People needed to lift it. 0 = the carry class default in SharedCarryConfig (Heavy 2, Huge 3).")]
+        [field: SerializeField, Range(0, SharedCarryable.MaxPoints)] public int RequiredCarriers { get; private set; }
+        [field: Tooltip("Hand-placed carry points in the item's local space (pivot = centre). Empty = generated from Size.")]
+        [field: SerializeField] public Vector3[] CarryPoints { get; private set; } = System.Array.Empty<Vector3>();
+
         [field: Header("Damage, sound, spawning")]
         [field: SerializeField] public Fragility Fragility { get; private set; } = Fragility.Medium;
         [field: SerializeField] public SurfaceMaterial Material { get; private set; } = SurfaceMaterial.Plastic;
@@ -57,6 +63,11 @@ namespace Abandoned.Loot
             if (Size.x <= 0f || Size.y <= 0f || Size.z <= 0f) errors.Add($"{n}: Size must be positive.");
             if (CarryClass == CarryClass.Pocket && GameplayWeight > 1f) errors.Add($"{n}: Pocket items should weigh under 1 kg.");
             if (CarryClass >= CarryClass.Heavy && GameplayWeight < 50f) errors.Add($"{n}: Heavy/Huge items should weigh 50 kg or more.");
+            if (CarryClass < CarryClass.Heavy && (RequiredCarriers > 0 || (CarryPoints?.Length ?? 0) > 0))
+                errors.Add($"{n}: only Heavy/Huge items are carried together; clear RequiredCarriers/CarryPoints.");
+            int authored = CarryPoints?.Length ?? 0;
+            if (authored > SharedCarryable.MaxPoints) errors.Add($"{n}: at most {SharedCarryable.MaxPoints} carry points.");
+            if (authored > 0 && RequiredCarriers > authored) errors.Add($"{n}: RequiredCarriers is more than its carry points.");
             if (PhysicsMass < MinPhysicsMass || PhysicsMass > MaxPhysicsMass) errors.Add($"{n}: PhysicsMass outside the stable range.");
         }
 
@@ -64,7 +75,7 @@ namespace Abandoned.Loot
         /// <summary>Editor-only setup used by the catalog builder to author definitions in code.</summary>
         public void EditorSetup(string id, string displayName, int valueMin, int valueMax, float weight,
             CarryClass carryClass, Vector3 size, Fragility fragility, SurfaceMaterial material, float noise,
-            float rarity, PlaceholderShape shape, Color color, float conditionMin = 0.8f, float conditionMax = 1f)
+            float rarity, PlaceholderShape shape, Color color, float conditionMin = 0.8f, float conditionMax = 1f, int requiredCarriers = 0)
         {
             Id = id;
             DisplayName = displayName;
@@ -82,6 +93,7 @@ namespace Abandoned.Loot
             Color = color;
             ConditionMin = conditionMin;
             ConditionMax = conditionMax;
+            RequiredCarriers = requiredCarriers;
         }
 #endif
     }

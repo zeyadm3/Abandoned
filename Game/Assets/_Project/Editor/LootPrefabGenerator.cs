@@ -19,6 +19,7 @@ namespace Abandoned.EditorTools
     {
         public const string Folder = "Assets/_Project/Prefabs/Loot";
         public const string HeavyFrictionPath = LootCatalogBuilder.Folder + "/Loot_HeavyFriction.asset";
+        public const string SharedCarryConfigPath = "Assets/_Project/Data/Interaction/SharedCarryConfig.asset";
 
         public static string PrefabPathFor(LootDefinition definition) => $"{Folder}/Loot_{definition.Id}.prefab";
 
@@ -67,6 +68,9 @@ namespace Abandoned.EditorTools
                 : CollisionDetectionMode.Discrete;
 
             root.AddComponent<Grabbable>();
+            // Heavy/Huge items are carried together through carry points generated from the definition.
+            bool shared = definition.CarryClass >= CarryClass.Heavy;
+            if (shared) Set(root.AddComponent<SharedCarryable>(), "config", LoadOrCreateAsset<SharedCarryConfig>(SharedCarryConfigPath));
             var item = root.AddComponent<LootItem>();
             Set(item, "definition", definition);
             Set(item, "damageConfig", damageConfig);
@@ -76,6 +80,7 @@ namespace Abandoned.EditorTools
             var networkLoot = root.AddComponent<NetworkLoot>();
             Set(networkLoot, "config", netConfig);
             Set(networkLoot, "networkTransform", networkTransform);
+            if (shared) root.AddComponent<NetworkSharedCarry>();
 
             SetLayerRecursively(root, GameLayers.LootLayer);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPathFor(definition));
@@ -124,6 +129,12 @@ namespace Abandoned.EditorTools
             var item = prefab.GetComponent<LootItem>();
             if (item == null || item.Definition != definition)
                 errors.Add($"{n}: LootItem doesn't point at its definition.");
+            bool shouldShare = definition.CarryClass >= CarryClass.Heavy;
+            var shared = prefab.GetComponent<SharedCarryable>();
+            if (shouldShare != (shared != null) || shouldShare != (prefab.GetComponent<NetworkSharedCarry>() != null))
+                errors.Add($"{n}: Heavy/Huge loot needs SharedCarryable + NetworkSharedCarry (and nothing lighter has them); run Generate Loot Prefabs.");
+            else if (shared != null && Get(shared, "config") == null)
+                errors.Add($"{n}: SharedCarryable has no SharedCarryConfig.");
         }
 
         /// <summary>Places a loot prefab instance resting on a surface at the given height.</summary>

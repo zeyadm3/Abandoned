@@ -10,6 +10,8 @@ namespace Abandoned.Interaction
         {
             reason = null;
             if (carrier == null || target == null) { reason = "Nothing to pick up"; return false; }
+            // Team items are only ever held by their carry points (CanGrabPoint), never picked up whole.
+            if (target.Shared != null) { reason = "Grab one of its handles"; return false; }
             if (!target.IsAvailable) { reason = "Someone else has it"; return false; }
 
             CarryConfig config = carrier.Config;
@@ -36,6 +38,31 @@ namespace Abandoned.Interaction
             }
 
             if (carrier.Held != null) { reason = "Hands full"; return false; }
+            return true;
+        }
+
+        /// <summary>A free carry point of a shared item within reach; <paramref name="point"/> is the one nearest the player.</summary>
+        public static bool CanGrabPoint(PlayerCarrier carrier, SharedCarryable target, out int point, out string reason)
+        {
+            point = -1;
+            reason = null;
+            if (carrier == null || target == null) { reason = "Nothing to pick up"; return false; }
+            Grabbable item = target.Grabbable;
+            if (item.IsPocketed || item.Holder != null) { reason = "Someone else has it"; return false; }
+            if (target.IsCarriedBy(carrier)) { reason = "You're already holding it"; return false; }
+            if (carrier.Held != null) { reason = "Hands full"; return false; }
+            if (carrier.IsRagdolled) { reason = "You're down"; return false; }
+
+            point = target.NearestFreePoint(carrier.transform.position);
+            if (point < 0) { reason = "No free handhold"; return false; }
+            CarryConfig config = carrier.Config;
+            float maxReach = config.Reach + config.ReachTolerance;
+            if ((target.PointWorld(point) - carrier.EyePosition).sqrMagnitude > maxReach * maxReach)
+            {
+                point = -1;
+                reason = "Too far away";
+                return false;
+            }
             return true;
         }
 

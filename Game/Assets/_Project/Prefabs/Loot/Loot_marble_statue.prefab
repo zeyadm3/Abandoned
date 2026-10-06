@@ -126,10 +126,12 @@ GameObject:
   - component: {fileID: 2978300515151176171}
   - component: {fileID: 7602036646295621636}
   - component: {fileID: 5119876581708184821}
+  - component: {fileID: 4301824064693526302}
   - component: {fileID: 7279656605682243145}
   - component: {fileID: 4035561487973960491}
   - component: {fileID: 1191736457049131472}
   - component: {fileID: 6736179514583218281}
+  - component: {fileID: 6175801301782214580}
   m_Layer: 9
   m_Name: Loot_marble_statue
   m_TagString: Untagged
@@ -219,6 +221,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57417e032e55342209c4466037f949cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.Grabbable
+--- !u!114 &4301824064693526302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8210246662985347901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06adf7ac2f473427885174d5c1f56a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.SharedCarryable
+  config: {fileID: 11400000, guid: abab181d3f7be4d71ae70ebfda00d31c, type: 2}
 --- !u!114 &7279656605682243145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,3 +323,16 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
   networkTransform: {fileID: 1191736457049131472}
+--- !u!114 &6175801301782214580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8210246662985347901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f217f417ed54218a04e6681ed1b939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkSharedCarry
+  ShowTopMostFoldoutHeaderGroup: 1

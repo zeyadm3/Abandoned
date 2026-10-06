@@ -20,11 +20,15 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   machine, shatter despawns; 'loot' nettest passes 4/4; see "M3.4 notes")
   + M3.4-fix (follower copies of loot knock players down using their network motion; a client-carried
   item striking resting loot damages and pushes it on the host; see "M3.4-fix notes").
-  **Next:** shared carrying, networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK
-  3.3-3.6). Add a nettest scenario for each (see "M3.3 notes").
-- **Verification state after M3.4-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 115/115;
-  PlayMode 151/151; screenshots OK; `Tools/unity.sh nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS
-  (dev build a62ec5c-dirty). Shareable zips: build them only AFTER the task's commit.
+  M3.5 done (shared carrying: carry points on Heavy/Huge loot, host-simulated from the carriers'
+  streamed hold targets, crew rule, slowest-carrier speed, tether, sway, load split, HUD + F1;
+  'sharedcarry' nettest passes 4/4; see "M3.5 notes").
+  **Next:** networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK 3.4-3.6). Add a
+  nettest scenario for each (see "M3.3 notes").
+- **Verification state after M3.5:** compile clean; rebuild OK; verify ALL PASS; EditMode 131/131;
+  PlayMode 159/159; screenshots OK; `Tools/unity.sh nettest sharedcarry` 4/4 PASS, `nettest loot` 4/4
+  PASS and `nettest basic` 4/4 PASS (dev build e2d7d6b-dirty). Shareable zips: build them only AFTER
+  the task's commit.
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -64,6 +68,19 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
       the push (one round trip late on the carrier's screen) feels acceptable.
 - [ ] M3.4 feel: carried items seen on other screens follow the carrier smoothly (NetworkTransform
       interpolation at 30 Hz), and a thrown item doesn't visibly hitch when the host takes it back.
+- [ ] M3.5 shared carrying in Multiplayer Play Mode (host + 2 virtual players, Join 127.0.0.1:7777),
+      in TestBuilding: the server rack by the ground-floor front wall (another upstairs, the safe, vending
+      machine, piano and statue are upstairs). One player aims at the rack and presses E: HUD says "Carrying 1/2 - needs
+      1 more person (dragging)" and they can drag it slowly. A second player presses E on it: both HUDs say
+      "Carrying 2/2 - lifted", it rises ~30 cm, and walking together carries it. Check: one player can't
+      walk away from their handle (blocked, then pulled along); a crouching carrier slows the other; walking
+      in different directions makes it rock; RMB (or K to ragdoll, F1 on) drops it for everyone. Try the
+      piano/statue: two players can only nudge it, the third lifts it. F1 shows "Carrying n/m", crew speed
+      cap and handle markers over the item, and point / share / tether in the CARRY box.
+- [ ] M3.5 feel: lift height (SharedCarryConfig.LiftClearance 0.3 m), how springy/swaying the load is
+      (Spring/Damping/WobbleGain), tether slack (0.9 m) and whether carrying at the slowest carrier's
+      walk speed feels right. Over real latency the carriers lead the item by about RTT/2 + 100 ms; judge
+      whether the tether makes that feel sticky.
 - [ ] M3.2 LAN: two Macs (or Mac + Windows friend on the same network), host on one, join with the
       host's LAN IP:7777 (macOS firewall may ask to allow incoming connections).
 
@@ -131,6 +148,7 @@ or any exception in the log even when tests pass.
 | 3.3-fix Review fix: dirty builds stamped as HEAD | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 97/97 (+3: GitInfo.Label dirty/clean/unknown, real repo gives a hex label, dirty/unknown keys only match the same build time incl. Mac+Windows pair, clean vs dirty refused); PlayMode 135/135; build-dev stamps `a7e1f70-dirty` in BUILD.txt and the player, BuildInfo.asset reset after; nettest 4/4 PASS. |
 | 3.4 Networked loot | done | compile clean; rebuild OK; verify ALL PASS (+ loot prefabs have NetworkObject/owner-auth NetworkTransform/NetworkLoot, no NetworkRigidbody, DontDestroyWithOwner, registered; scene NetworkObjects have unique ids, a registered source prefab and are SAVED as in-scene placed); EditMode 111/111 (+14: impact report filter owner/bystander/rate/clamp/NaN/far point, just-released carrier until the host simulates a hit itself, request guard, hold state, config + value state, 'loot' check catches value/position/missing/extra/held/ownership/no-move/no-damage/missing views, scenario registered); PlayMode 147/147 (+12 in-process NGO host+2 clients: client pickup host-validated + physics handed over + carried weight on every machine + copies follow the carrier, out-of-reach refused by the host's view, simultaneous grabs -> exactly one holder, drop returns physics to the host and all agree where it lands, throw clamped (100 m/s -> cap) and NaN throw -> drop, carrier leaving frees the item, rolled value + damage + one -$X popup per machine, client can't damage, shatter while carried despawns everywhere with feedback on every machine, pocket hidden/no collisions/in inventory on all machines and back out, reported impact applied once with one host noise, solo TestBuilding loot is host-owned in-scene NetworkObjects; 'loot' scenario host+3 clients in-process); `Tools/unity.sh nettest loot` 4/4 PASS (each client picked up and threw its laptop, all 4 machines agree on 16 items incl. the 13 scene-placed, values incl. host damage, positions within 0.25 m); `nettest basic` 4/4 PASS. Screenshot M3_4_client_carrying_seen_from_host checked. |
 | 3.4-fix Review fixes (follower loot hits players; carried strikes on resting loot) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK (no new visible content); EditMode 115/115 (+4 TrackedVelocity: steady motion converges, first sample/reset report nothing, teleport is not a hit, zero step/NaN ignored); PlayMode 151/151 (+4 in-process NGO: host-thrown safe ragdolls client 1 on its own machine and the host sees it; a resting follower copy knocks nobody down; client-carried laptop swung into a resting TV -> host applies the strike at the carrier's speed, value drops on every machine, TV pushed and the carrier sees where it went; strike reports far from the struck item or naming an item someone else carries are ignored). Both new behaviour tests fail with the fix reverted. `nettest loot` 4/4 PASS and `nettest basic` 4/4 PASS (dev build a62ec5c-dirty). |
+| 3.5 Shared carrying | done | compile clean; rebuild OK; verify ALL PASS (+ Heavy/Huge loot prefabs have SharedCarryable with a config + NetworkSharedCarry, lighter loot has neither); EditMode 131/131 (+16: generated handles (rack ends of long axis, piano ends + long-side middles, max 4), crew sizes Heavy 2 / Huge 3 / override / generator 4, tether (free inside slack, outward blocked, sideways + inward free, pull beyond), HUD wording, SharedCarryState slots/grips, only Heavy/Huge prefabs share, definition validation, 'sharedcarry' verdict catches not-lifted / not-moved / no targets / stuck carrier / disagreeing or missing copy / client-owned, scenario registered); PlayMode 159/159 (+8 in-process NGO host + 2 clients on a 5 m platform: one client can't lift the rack, two do (host keeps the physics, 150 kg each on every machine, item loads nothing, targets streamed), carried past the edge every machine agrees, one lets go -> it falls 5 m, host applies damage, every machine sees it, the other carrier isn't dragged off and loses their grip; piano: 2 can't lift, the host as third does, 166.7 kg each everywhere; crouching client 1 caps client 2 and the rack at crouch speed x load (1.21 vs 2.48 m/s walk); each carrier's share loads the tile under their own feet (body + 150 kg each); one client still drags the rack (rests its 300 kg, stays upright, copies agree); a ragdolled carrier lets go and it drops; pulling apart rocks it >3 deg while the tether keeps them by their handles; 'sharedcarry' scenario host + 3 clients in-process); `Tools/unity.sh nettest sharedcarry` 4/4 PASS (rack lifted 0.39 m, 82 hold targets, carried 1.0 m, all machines within 0.25 m); `nettest loot` + `nettest basic` 4/4 PASS. Screenshot M3_5_two_clients_lift_rack checked (rack held off the floor between two carriers); M2_rack_cracking_floor re-checked (solo drag through the new path keeps the rack upright). |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -296,6 +314,69 @@ or any exception in the log even when tests pass.
   (NetworkTransform); MovePosition would need a NetworkTransform subclass and the strike report already
   covers the gameplay effect.
 
+### M3.5 notes
+- **Plan/decisions (built without approval per the brief):**
+  - Data: `Data/Interaction/SharedCarryConfig.asset` (RequiredHeavy 2, RequiredHuge 3, PointsHeavy 2,
+    PointsHuge 4, grip 0.45-1 m, LiftClearance 0.3, springs, wobble, tether, BreakDistance 2.5, target
+    timeout/deviation). `LootDefinition.RequiredCarriers` (0 = class default; military generator = 4 per
+    GDD) and `CarryPoints` (local, empty = generated by `CarryPointLayout` from Size: ends of the long
+    horizontal axis, then long-side middles, at centre height). The loot prefab generator adds
+    `SharedCarryable` + `NetworkSharedCarry` to every Heavy/Huge prefab; no per-item code.
+  - Interaction (works offline too): `SharedCarryable` holds carriers per point, grip offsets, targets,
+    crew rule (`IsLifted` = carriers >= required), group speed; `SharedCarryForces` is the host-side
+    physics step; `PlayerCarrier.Held` points at the shared item while you hold a handle (`IsSharing`),
+    so hands-full, RMB, ragdoll-drops and HUD reuse the solo paths. `PickupRules.CanGrabPoint` (nearest
+    free handle to your feet, within Reach + tolerance of your eyes); `CanPickUp` refuses shared items.
+  - **Hold target model:** at grab the host stores each carrier's grip = horizontal offset feet -> handle
+    (clamped 0.45-1 m). Desired handle position = feet + grip, at (handle height above the item's bottom
+    + LiftClearance) above the feet. Lifted: the mean pull moves the item (accel spring, gravity off), the
+    per-handle differences turn it (best-fit small rotation: yaw when carriers walk around each other,
+    tilt when one is higher), an upright term stops roll-overs, and carriers' horizontal disagreement adds
+    a rocking spin about the line between them (WobbleGain). Horizontal speed capped at the slowest
+    carrier's speed x SpeedSlack. Under-crewed: gravity on, horizontal pull only, applied at floor level
+    (a tall rack slides instead of tipping), stiff upright; Heavy drags at full pull (solo drag kept), Huge
+    only creeps (CreepSpeed 0.35 m/s).
+  - **Slowest carrier:** each carrier's capability = gait speed (crouch / walk; sprint only if
+    AllowSprint) x their own load slowdown (share + pockets). Every machine computes the min from its
+    mirrored copies (crouch state is replicated) and caps its own motor (`PlayerMotor.MaxSpeed`); the host
+    caps the item too.
+  - **Tether:** `PlayerMotor.SetTether(anchor, slack, pullStart, pullSpeed)` (`TetherMath`): anchor = handle
+    - grip on this machine's copy. Inside 0.9 m: free; beyond: moving further away is cancelled; beyond
+    1.4 m: pulled back at up to 3 m/s. The host releases a carrier whose handle is > 2.5 m from their
+    desired hold point (fell off a ledge with it, stuck) with a "Lost your grip" hint, and anyone ragdolled.
+  - **Load:** `Grabbable.WeightOnHolder` = share (weight / carriers) when lifted, 0 when dragged; so
+    `CarrierLoad` sends each carrier's share through their own feet; `LootItem.LoadWeight` is 0 while lifted.
+- **Network design (CLAUDE.md: host simulates shared carries from the carriers' input):**
+  - Ownership never leaves the host for a Heavy/Huge item (a grab takes it back if needed); the existing
+    host-owned NetworkTransform replicates the simulated pose; clients' copies are kinematic followers.
+  - `NetworkSharedCarry.state` (`SharedCarryState`, server-write NetworkVariable): holder player
+    NetworkObjectId + grip per handle (max 4). Every machine mirrors it onto its own copies
+    (`SharedCarryable.SetCarrier`), retrying while a holder's player hasn't spawned yet, so carried weight
+    (structure on the host), HUD and tether agree everywhere. NetworkLoot's own hold state stays Free.
+  - Requests: E -> `NetworkInteractionHandler` -> client pre-checks `CanGrabPoint`, sends
+    `RequestGrabRpc`; the host re-validates with its own view (`SharedCarryServer.TryGrab`) and picks the
+    nearest free handle, or answers with a hint RPC. RMB / ragdoll / throw -> `RequestLetGoRpc`.
+  - Input: each client carrier sends `SubmitTargetRpc(desired hold point)` once per network tick,
+    **unreliable** (a lost one is superseded by the next). The host clamps it to within
+    MaxTargetDeviation (1.5 m) of what it computes from its own (interpolated) view of that player and
+    uses it while fresher than TargetTimeout (0.5 s), else its own view. The host's own player is computed
+    directly. Why send it at all: the host's copy of a remote player lags by the interpolation buffer, the
+    client's own position doesn't.
+  - Impacts: the host simulates the body, so a dropped shared item's landing is judged and damaged by the
+    host's own physics (normal LootItem path) and replayed everywhere by M3.4's RPCs.
+- **'sharedcarry' nettest** (`SharedCarryNetTestScenario` + `SharedCarryNetTestCheck`,
+  `NetTestResult.sharedActions/sharedHost`): the host spawns the server rack 1.2 m in front of the two
+  easternmost clients, its long axis between them; both grab through the real handler, then walk 1.2 m
+  forward together, hold 1 s, let go; the host records crew size, lift height and received targets;
+  after 2.5 s every machine reports the rack; positions must agree within 0.25 m, it must have moved
+  >= 0.8 m, lifted >= 0.15 m, and stay host-owned. Other clients only watch.
+- **Tests:** `SharedCarryTestBase` (5 m platform arena via the new `NetworkLootTestBase.ArrangeArena`
+  hook; `NetLootKit.Spawn` takes a yaw), `SharedCarryNetworkTests`, `SharedCarryLoadTests`,
+  `SharedCarryNetTestScenarioTests`; EditMode `SharedCarryRulesTests`, `SharedCarryNetTestCheckTests`.
+- **Not done here:** carriers can't climb stairs together any differently from walking (stairs/ramps
+  just raise each carrier's hold point - untested in the building); the trolley (M6 equipment) will
+  replace solo drag; remote players' look pitch still isn't replicated (not needed: targets come from feet).
+
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
 walking into resting heavy loot ragdolled you; click-to-recapture after Esc threw the held item;
@@ -437,6 +518,9 @@ and StructureTests split. 9 regression tests added.
 - Tests: `RemoteCopyDropsItsStandingColliderWhileTheOwnerIsRagdolled`, `PlayersFaceTheirSpawnPointsForwardAfterLooking`.
 
 ## Open problems
+- M3.5: one full PlayMode run failed `NetworkLootHitTests.HostThrownSafeKnocksDownTheClientPlayerOnTheClient`
+  (client never ragdolled within 4 s); it passed alone 3x and in two further full runs. The safe now has
+  SharedCarryable (idle when nobody holds it). If it recurs, look at that test's timing first.
 - One `Tools/unity.sh all` run printed no PlayMode results line; rerun passed 103/103 and a second full
   `all` passed. Possible flake; if it recurs, check Game/Logs/batch/PlayMode.log for a crash.
 

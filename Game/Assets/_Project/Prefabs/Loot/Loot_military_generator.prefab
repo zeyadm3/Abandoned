@@ -12,10 +12,12 @@ GameObject:
   - component: {fileID: 4673626606089989081}
   - component: {fileID: 9014666842916100356}
   - component: {fileID: 3351743590525437684}
+  - component: {fileID: 4750160932124533358}
   - component: {fileID: 2483857785517869964}
   - component: {fileID: 4799393857439539273}
   - component: {fileID: 6430222440394320811}
   - component: {fileID: 214844954621045756}
+  - component: {fileID: 160063560907452579}
   m_Layer: 9
   m_Name: Loot_military_generator
   m_TagString: Untagged
@@ -105,6 +107,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57417e032e55342209c4466037f949cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.Grabbable
+--- !u!114 &4750160932124533358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179697715329041191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06adf7ac2f473427885174d5c1f56a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Interaction.SharedCarryable
+  config: {fileID: 11400000, guid: abab181d3f7be4d71ae70ebfda00d31c, type: 2}
 --- !u!114 &2483857785517869964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +209,19 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
   networkTransform: {fileID: 6430222440394320811}
+--- !u!114 &160063560907452579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179697715329041191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f217f417ed54218a04e6681ed1b939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkSharedCarry
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1766153861648705251
 GameObject:
   m_ObjectHideFlags: 0

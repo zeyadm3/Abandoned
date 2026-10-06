@@ -26,6 +26,7 @@ namespace Abandoned.Tests
             yield return CleanWorld();
             net = new NetTestHarness();
             net.BuildArena();
+            ArrangeArena();
             yield return net.StartSession(clients: 2);
             client1 = net.Clients.ElementAt(0);
             client2 = net.Clients.ElementAt(1);
@@ -39,6 +40,9 @@ namespace Abandoned.Tests
             net.Destroy();
             yield return null;
         }
+
+        /// <summary>Extra level geometry or moved spawn points, before anyone joins.</summary>
+        protected virtual void ArrangeArena() { }
 
         protected static ulong Id(NetworkBootstrap machine) => machine.Manager.LocalClientId;
 

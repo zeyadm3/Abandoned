@@ -34,9 +34,11 @@ namespace Abandoned.Tests
         }
 
         /// <summary>Host spawns an item; returns once every machine has its copy (isolated from the others).</summary>
-        public static IEnumerator Spawn(NetTestHarness net, string lootId, Vector3 position, System.Action<ulong> spawned)
+        public static IEnumerator Spawn(NetTestHarness net, string lootId, Vector3 position, System.Action<ulong> spawned,
+            float yaw = 0f)
         {
-            NetworkObject item = net.Host.Manager.SpawnManager.InstantiateAndSpawn(Prefab(lootId), position: position, rotation: Quaternion.identity);
+            NetworkObject item = net.Host.Manager.SpawnManager.InstantiateAndSpawn(Prefab(lootId), position: position,
+                rotation: Quaternion.Euler(0f, yaw, 0f));
             ulong id = item.NetworkObjectId;
             yield return NetTestHarness.WaitFor(() => net.Machines.All(m => CopyOn(m, id) != null), $"item #{id} on every machine");
             KeepMachinesApart(net);

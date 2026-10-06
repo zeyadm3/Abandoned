@@ -14,6 +14,7 @@ namespace Abandoned.Networking
 
         public void RequestPickup(PlayerCarrier carrier, Grabbable target)
         {
+            if (target != null && target.Shared != null) { RequestGrab(carrier, target); return; }
             NetworkLoot loot = NetworkLoot.Of(target);
             if (loot == null) { local.RequestPickup(carrier, target); return; }
 
@@ -28,6 +29,22 @@ namespace Abandoned.Networking
             loot.ClientRequestPickup();
         }
 
+        /// <summary>Shared items: the host picks the free carry point nearest the player.</summary>
+        private void RequestGrab(PlayerCarrier carrier, Grabbable target)
+        {
+            NetworkSharedCarry net = NetworkSharedCarry.Of(target);
+            if (net == null) { local.RequestPickup(carrier, target); return; }
+
+            string reason;
+            if (net.IsServer)
+            {
+                if (!SharedCarryServer.TryGrab(net, carrier, out reason)) carrier.ShowHint(reason);
+                return;
+            }
+            if (!PickupRules.CanGrabPoint(carrier, target.Shared, out _, out reason)) { carrier.ShowHint(reason); return; }
+            net.ClientRequestGrab();
+        }
+
         public void RequestDrop(PlayerCarrier carrier) => Release(carrier, carrier.DropVelocity, isThrow: false);
 
         public void RequestThrow(PlayerCarrier carrier, UnityEngine.Vector3 velocity) => Release(carrier, velocity, isThrow: true);
@@ -35,6 +52,15 @@ namespace Abandoned.Networking
         private void Release(PlayerCarrier carrier, UnityEngine.Vector3 velocity, bool isThrow)
         {
             if (carrier.Held == null) return;
+            if (carrier.IsSharing)
+            {
+                // Throwing a handle is just letting go of it.
+                NetworkSharedCarry net = NetworkSharedCarry.Of(carrier.Held);
+                if (net == null) local.RequestDrop(carrier);
+                else if (net.IsServer) SharedCarryServer.TryLetGo(net, carrier);
+                else net.ClientRequestLetGo();
+                return;
+            }
             NetworkLoot loot = NetworkLoot.Of(carrier.Held);
             if (loot == null)
             {

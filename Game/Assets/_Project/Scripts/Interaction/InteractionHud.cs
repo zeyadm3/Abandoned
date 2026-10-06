@@ -29,7 +29,10 @@ namespace Abandoned.Interaction
 
             string prompt = null;
             if (carrier.HintVisible) prompt = $"<color=#FF8060>{carrier.Hint}</color>";
+            else if (interactor.Target != null && interactor.Target.Shared != null)
+                prompt = $"[E] Grab {Describe(interactor.Target)} - {SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers)}";
             else if (interactor.Target != null) prompt = $"[E] Pick up {Describe(interactor.Target)}";
+            else if (carrier.IsSharing) prompt = $"{carrier.Held.DisplayName}: {SharedCarryText.Of(carrier.Held.Shared)}   [RMB] let go";
             else if (carrier.IsDragging) prompt = $"Dragging {Describe(carrier.Held)}   [RMB] let go";
             else if (carrier.Held != null) prompt = $"Holding {Describe(carrier.Held)}   [LMB] throw   [RMB] drop";
             if (prompt != null) GUI.Label(new Rect(cx - 300, cy + 30, 600, 26), prompt, centered);
@@ -69,10 +72,20 @@ namespace Abandoned.Interaction
                 $"Held       {held}\n" +
                 $"Carried    {carrier.CarriedWeight:F1} kg\n" +
                 $"Speed x    {carrier.Config.SpeedMultiplierFor(carrier.CarriedWeight):F2}\n" +
-                $"Charge     {interactor.Charge:F2}";
+                $"Charge     {interactor.Charge:F2}" + SharedDebug();
             var gc = new GUIContent(content);
             Vector2 size = box.CalcSize(gc);
             GUI.Box(new Rect(Screen.width - size.x - 10, 230, size.x, size.y), gc, box);
+        }
+
+        private string SharedDebug()
+        {
+            if (!carrier.IsSharing) return "";
+            SharedCarryable shared = carrier.Held.Shared;
+            int point = shared.IndexOf(carrier);
+            float tether = point >= 0 ? Vector3.ProjectOnPlane(carrier.transform.position - shared.AnchorFor(point), Vector3.up).magnitude : 0f;
+            return $"\nShared     point {point}, {shared.CarrierCount}/{shared.RequiredCarriers}, share {shared.SharePerCarrier:0} kg" +
+                   $"\nCrew cap   {shared.CarrierMaxSpeed:0.0} m/s, tether {tether:0.00}/{shared.Config.TetherSlack:0.0} m";
         }
 
         private static string Describe(Grabbable g)

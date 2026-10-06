@@ -69,7 +69,8 @@ namespace Abandoned.Interaction
                 return;
             }
 
-            if (carrier.IsDragging) return; // dragged things are let go with RMB, never thrown
+            // Dragged and shared items are let go with RMB, never thrown.
+            if (carrier.IsDragging || carrier.IsSharing) return;
 
             if (useHeld)
             {

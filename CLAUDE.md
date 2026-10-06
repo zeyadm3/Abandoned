@@ -169,3 +169,12 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     player's owner is knocked down by host-simulated loot too. A client-carried item that strikes
     host-simulated loot names it in its impact report; the host applies the same impact and a
     mass-scaled push (LootStrikes, LootNetConfig.StruckPushTransfer).
+  - M3.5: Heavy/Huge loot carries SharedCarryable + NetworkSharedCarry (added by the loot prefab
+    generator). Crew sizes in Data/Interaction/SharedCarryConfig (Heavy 2, Huge 3) with a per-definition
+    RequiredCarriers/CarryPoints override; handles are generated from the definition's Size. The host
+    owns WHO holds which handle (SharedCarryState NetworkVariable: holder player ids + grip offsets,
+    mirrored on every machine) and always simulates a shared item; it never hands its physics to a client.
+    Each carrier streams its desired hold point (feet + grip offset) by unreliable RPC every tick; the
+    host clamps it (MaxTargetDeviation) and falls back to its own view when stale. Solo Heavy drag now
+    runs through the same path (one carrier = under-crewed = dragged). The carrier's own motor is
+    tethered to its handle and capped at the slowest carrier's speed (PlayerMotor.SetTether/MaxSpeed).
