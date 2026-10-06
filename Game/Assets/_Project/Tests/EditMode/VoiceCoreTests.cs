@@ -116,5 +116,17 @@ namespace Abandoned.Tests
                 Assert.AreEqual(0, capture.ReadPacket(new byte[64]));
             }
         }
+
+        [Test]
+        public void WallsMuffleRatherThanSilence()
+        {
+            Assert.AreEqual(1f, VoiceMath.OcclusionGain(0, 0.55f, 3));
+            Assert.AreEqual(0.55f, VoiceMath.OcclusionGain(1, 0.55f, 3), 1e-5f);
+            Assert.AreEqual(0.55f * 0.55f * 0.55f, VoiceMath.OcclusionGain(9, 0.55f, 3), 1e-5f, "capped at the max walls");
+            Assert.AreEqual(VoiceMath.OpenCutoff, VoiceMath.OcclusionCutoff(0, 900f, 3));
+            Assert.AreEqual(900f, VoiceMath.OcclusionCutoff(1, 900f, 3));
+            Assert.Less(VoiceMath.OcclusionCutoff(2, 900f, 3), 900f);
+            Assert.AreEqual(VoiceMath.OcclusionCutoff(3, 900f, 3), VoiceMath.OcclusionCutoff(5, 900f, 3));
+        }
     }
 }

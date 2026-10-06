@@ -30,10 +30,31 @@ namespace Abandoned.Voice
         [Tooltip("The speaking indicator stays on this long after the last packet (s).")]
         [field: SerializeField, Range(0f, 1f)] public float IndicatorHold { get; private set; } = 0.25f;
 
+        [Header("Walls")]
+        [Tooltip("Volume kept per wall between speaker and listener (0..1).")]
+        [field: SerializeField, Range(0f, 1f)] public float OcclusionVolumePerWall { get; private set; } = 0.55f;
+        [Tooltip("Low-pass cutoff (Hz) through one wall; each further wall lowers it more. Muffled, not silent.")]
+        [field: SerializeField, Range(200f, 5000f)] public float OcclusionCutoff { get; private set; } = 900f;
+        [Tooltip("Walls beyond this many don't muffle further (the falloff still applies).")]
+        [field: SerializeField, Range(1, 6)] public int MaxOccludingWalls { get; private set; } = 3;
+        [Tooltip("How fast muffling follows the speaker in and out of rooms (1/s).")]
+        [field: SerializeField, Range(1f, 30f)] public float OcclusionSmoothing { get; private set; } = 8f;
+
+        [Header("Radio")]
+        [Tooltip("Until equipment exists (M6) every player carries a walkie-talkie.")]
+        [field: SerializeField] public bool EveryoneHasRadio { get; private set; } = true;
+        [field: SerializeField, Range(0f, 1f)] public float RadioVolume { get; private set; } = 0.85f;
+        [Tooltip("Static mixed in while a transmission plays (amplitude).")]
+        [field: SerializeField, Range(0f, 0.3f)] public float RadioStatic { get; private set; } = 0.035f;
+        [Tooltip("Walkie-talkie band (Hz): everything outside is cut.")]
+        [field: SerializeField, Range(100f, 1000f)] public float RadioLowCut { get; private set; } = 400f;
+        [field: SerializeField, Range(1500f, 6000f)] public float RadioHighCut { get; private set; } = 3200f;
+
         public void Validate(List<string> errors)
         {
             if (MaxDistance <= MinDistance) errors.Add($"{name}: MaxDistance must be greater than MinDistance.");
             if (MaxBufferMs <= JitterMs) errors.Add($"{name}: MaxBufferMs must be greater than JitterMs.");
+            if (RadioHighCut <= RadioLowCut) errors.Add($"{name}: RadioHighCut must be above RadioLowCut.");
         }
     }
 }

@@ -18,6 +18,20 @@ namespace Abandoned.Voice
             return inverse * Mathf.Sqrt(fade);
         }
 
+        /// <summary>No filtering: the low-pass is wide open.</summary>
+        public const float OpenCutoff = 22000f;
+
+        /// <summary>Volume left after <paramref name="walls"/> walls (capped at <paramref name="maxWalls"/>).</summary>
+        public static float OcclusionGain(int walls, float perWall, int maxWalls) =>
+            Mathf.Pow(Mathf.Clamp01(perWall), Mathf.Clamp(walls, 0, maxWalls));
+
+        /// <summary>Low-pass cutoff through <paramref name="walls"/> walls: open, then the one-wall cutoff, then lower.</summary>
+        public static float OcclusionCutoff(int walls, float oneWallCutoff, int maxWalls)
+        {
+            if (walls <= 0) return OpenCutoff;
+            return oneWallCutoff * Mathf.Pow(0.6f, Mathf.Min(walls, maxWalls) - 1);
+        }
+
         /// <summary>RMS level of a block of samples (0..1).</summary>
         public static float Rms(float[] samples, int count)
         {

@@ -63,7 +63,8 @@ namespace Abandoned.Voice
                 VoiceJitterBuffer b = p != null ? p.Buffer : null;
                 text.AppendLine($"  p{v.OwnerClientId}{(v.IsOwner ? " (me)" : "")}  {(v.IsSpeaking ? (v.IsOnRadio ? "RADIO" : "talk") : "-")}  " +
                                 $"sent {v.PacketsSent} recv {v.PacketsReceived} rej {v.PacketsRejected}" +
-                                (b != null ? $"  buf {b.Count} under {b.Underruns} drop {b.Dropped}  gain {p.Gain:0.00}" : ""));
+                                (b != null ? $"  buf {b.Count} under {b.Underruns} drop {b.Dropped}  gain {p.Gain:0.00} walls {p.Walls} lp {p.Cutoff:0}Hz" : "") +
+                                (v.Radio != null && v.Radio.SamplesReceived > 0 ? $"  radio {v.Radio.SamplesReceived}" : ""));
             }
             GUI.Label(new Rect(Screen.width - 620f, Screen.height - 160f, 610f, 150f), text.ToString(), style);
         }

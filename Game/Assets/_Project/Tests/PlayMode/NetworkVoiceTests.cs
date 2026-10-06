@@ -32,6 +32,7 @@ namespace Abandoned.Tests
             VoiceBackends.CaptureOverride = null;
             VoiceSettings.Mode = VoiceMode.PushToTalk;
             VoiceSettings.MicMuted = false;
+            NetworkVoice.RadioHolder = null;
             yield return null;
         }
 
@@ -86,6 +87,79 @@ namespace Abandoned.Tests
             yield return WaitSeconds(0.5f);
             Assert.AreEqual(before, VoiceOf(net.Host, speaker).PacketsReceived, "muted: nothing more arrives");
             Assert.IsFalse(VoiceOf(net.Host, speaker).IsSpeaking);
+        }
+
+        // Sends half a second of tone from a machine's own player, marked as radio or not.
+        private static IEnumerator Talk(NetworkBootstrap speaker, bool radio, float seconds = 0.5f)
+        {
+            NetworkVoice voice = VoiceOf(speaker, speaker.Manager.LocalClientId);
+            var tone = new ToneVoiceCapture { Recording = true };
+            var packet = new byte[640];
+            float end = Time.realtimeSinceStartup + seconds;
+            while (Time.realtimeSinceStartup < end)
+            {
+                int n = tone.ReadPacket(packet);
+                if (n > 0) voice.Send(packet, n, tone.Codec, 0.2f, radio);
+                yield return null;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator TheRadioReachesEveryRadioHolderAndStillSpeaksInPerson()
+        {
+            VoiceSettings.Mode = VoiceMode.PushToTalk;
+            yield return net.StartSession(clients: 2);
+            NetworkBootstrap speaker = net.Clients.First();
+            ulong id = speaker.Manager.LocalClientId;
+            yield return Talk(speaker, radio: true);
+            yield return WaitSeconds(0.2f);
+            foreach (NetworkBootstrap listener in net.Machines.Where(m => m != speaker))
+            {
+                NetworkVoice copy = VoiceOf(listener, id);
+                Assert.Greater(copy.Radio.SamplesReceived, 4000, $"{listener.name} hears it on the radio");
+                Assert.Greater(copy.Playback.SamplesReceived, 4000, $"{listener.name} also hears it in person (falloff applies)");
+                Assert.IsTrue(copy.LastWasRadio);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator NoRadioNoTransmissionAndNoReception()
+        {
+            VoiceSettings.Mode = VoiceMode.PushToTalk;
+            yield return net.StartSession(clients: 2);
+            NetworkBootstrap speaker = net.Clients.First(), deaf = net.Clients.Last();
+            ulong speakerId = speaker.Manager.LocalClientId, deafId = deaf.Manager.LocalClientId;
+
+            NetworkVoice.RadioHolder = client => client != deafId;
+            yield return Talk(speaker, radio: true);
+            yield return WaitSeconds(0.2f);
+            Assert.Greater(VoiceOf(net.Host, speakerId).Radio.SamplesReceived, 0, "the host has a radio");
+            Assert.AreEqual(0, VoiceOf(deaf, speakerId).Radio.SamplesReceived, "no radio in hand, nothing from it");
+
+            NetworkVoice.RadioHolder = client => client != speakerId;
+            int before = VoiceOf(net.Host, speakerId).Radio.SamplesReceived;
+            yield return Talk(speaker, radio: true);
+            yield return WaitSeconds(0.2f);
+            Assert.AreEqual(before, VoiceOf(net.Host, speakerId).Radio.SamplesReceived, "the host strips the radio flag from someone without one");
+            Assert.IsFalse(VoiceOf(net.Host, speakerId).LastWasRadio);
+        }
+
+        [UnityTest]
+        public IEnumerator AWallBetweenUsCountsAsOcclusion()
+        {
+            yield return net.StartSession(clients: 1);
+            NetworkBootstrap speaker = net.Clients.First();
+            VoicePlayback playback = VoiceOf(net.Host, speaker.Manager.LocalClientId).Playback;
+            Vector3 mouth = playback.transform.position;
+            Vector3 ear = mouth + new Vector3(6f, 0f, 0f);
+            Assert.AreEqual(0, playback.CountWalls(ear), "open line of sight");
+
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            net.Track(wall);
+            wall.transform.position = mouth + new Vector3(3f, 0f, 0f);
+            wall.transform.localScale = new Vector3(0.2f, 4f, 4f);
+            yield return new WaitForFixedUpdate();
+            Assert.AreEqual(1, playback.CountWalls(ear), "one wall");
         }
     }
 }

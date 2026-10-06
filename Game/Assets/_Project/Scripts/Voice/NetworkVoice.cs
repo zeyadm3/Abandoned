@@ -18,9 +18,11 @@ namespace Abandoned.Voice
 
         [SerializeField] private VoiceConfig config;
         [SerializeField] private VoicePlayback playback;
+        [SerializeField] private RadioPlayback radio;
 
         private static readonly List<NetworkVoice> Spawned = new();
 
+        private readonly float[] decoded = new float[8192];
         private ushort sendSequence, lastSequence;
         private bool hasSequence;
 
@@ -29,8 +31,17 @@ namespace Abandoned.Voice
         /// <summary>Host: a player's voice packet arrived (speaker, level 0..1, over the radio).</summary>
         public static event Action<NetworkVoice, float, bool> HeardOnHost;
 
+        /// <summary>
+        /// Who carries a walkie-talkie (client id -> yes). Unset: <see cref="VoiceConfig.EveryoneHasRadio"/>.
+        /// Equipment (M6) plugs in here.
+        /// </summary>
+        public static Func<ulong, bool> RadioHolder { get; set; }
+
         public VoiceConfig Config => config;
         public VoicePlayback Playback => playback;
+        public RadioPlayback Radio => radio;
+
+        public bool HasRadio(ulong clientId) => RadioHolder?.Invoke(clientId) ?? config.EveryoneHasRadio;
         public float LastLevel { get; private set; }
         public bool LastWasRadio { get; private set; }
         public int PacketsReceived { get; private set; }
@@ -48,6 +59,7 @@ namespace Abandoned.Voice
             Spawned.Add(this);
             // Nobody hears themselves.
             if (IsOwner && playback != null) playback.enabled = false;
+            if (IsOwner && radio != null) radio.enabled = false;
         }
 
         public override void OnNetworkDespawn() => Spawned.Remove(this);
@@ -73,6 +85,8 @@ namespace Abandoned.Voice
                 PacketsRejected++;
                 return;
             }
+            // Only someone carrying a radio can transmit on it (the host's view of who does).
+            radio = radio && HasRadio(OwnerClientId);
             if (!IsOwner) MarkSpoke(VoiceMath.FromByte(level), radio);
             HeardOnHost?.Invoke(this, VoiceMath.FromByte(level), radio);
             ToListenersRpc(data, codec, level, radio, sequence);
@@ -87,7 +101,13 @@ namespace Abandoned.Voice
             lastSequence = sequence;
             PacketsReceived++;
             MarkSpoke(VoiceMath.FromByte(level), radio);
-            if (playback != null && playback.enabled) playback.Push(data, codec, radio);
+            IVoiceCodec decoder = VoiceBackends.Codec(codec);
+            if (decoder == null || decoder.SampleRate <= 0) return;
+            int n = decoder.Decode(data, data.Length, decoded);
+            // Heard in person (falloff + walls) and, over the radio, in the hand of anyone who carries one.
+            if (playback != null && playback.enabled) playback.Push(decoded, n, decoder.SampleRate);
+            if (radio && this.radio != null && this.radio.enabled && HasRadio(NetworkManager.LocalClientId))
+                this.radio.Push(decoded, n, decoder.SampleRate);
         }
 
         private void MarkSpoke(float level, bool radio)
@@ -102,6 +122,7 @@ namespace Abandoned.Voice
         {
             Spawned.Clear();
             HeardOnHost = null;
+            RadioHolder = null;
         }
     }
 }

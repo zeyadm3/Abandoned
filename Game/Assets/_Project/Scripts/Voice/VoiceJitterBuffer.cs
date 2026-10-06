@@ -54,8 +54,8 @@ namespace Abandoned.Voice
             }
         }
 
-        /// <summary>Fills <paramref name="output"/> (silence where there's nothing to play).</summary>
-        public void Read(float[] output, int length)
+        /// <summary>Fills <paramref name="output"/> (silence where there's nothing to play); returns how many samples were real audio.</summary>
+        public int Read(float[] output, int length)
         {
             lock (gate)
             {
@@ -74,7 +74,9 @@ namespace Abandoned.Voice
                         Underruns++;
                     }
                 }
+                int played = i;
                 for (; i < length; i++) output[i] = 0f;
+                return played;
             }
         }
 

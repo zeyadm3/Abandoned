@@ -53,7 +53,7 @@ namespace Abandoned.Voice
             bool keyed = input.TalkHeld || input.RadioHeld;
             bool open = VoiceSettings.Mode == VoiceMode.OpenMic;
             capture.Recording = !VoiceSettings.MicMuted && (keyed || open);
-            OnRadio = input.RadioHeld;
+            OnRadio = input.RadioHeld && voice.HasRadio(voice.OwnerClientId);
 
             for (int i = 0; i < MaxPacketsPerFrame; i++)
             {
