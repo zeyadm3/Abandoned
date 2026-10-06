@@ -35,7 +35,12 @@ namespace Abandoned.EditorTools
         [MenuItem(Menu + "Dev Mac (for tests)")]
         public static void BuildDevMacMenu() => Report(Build(BuildPlatform.Mac, BuildFlavor.Dev));
 
-        public static bool BuildBoth() => Build(BuildPlatform.Mac, BuildFlavor.Shareable) && Build(BuildPlatform.Windows, BuildFlavor.Shareable);
+        public static bool BuildBoth()
+        {
+            string builtAtUtc = BuildInfoAsset.Now();
+            return Build(BuildPlatform.Mac, BuildFlavor.Shareable, builtAtUtc) &&
+                   Build(BuildPlatform.Windows, BuildFlavor.Shareable, builtAtUtc);
+        }
 
         /// <summary>Game/Builds/Mac, Game/Builds/MacDev, Game/Builds/WindowsRelease...</summary>
         public static string OutputFolder(BuildPlatform platform, BuildFlavor flavor) =>
@@ -62,7 +67,7 @@ namespace Abandoned.EditorTools
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
         }
 
-        public static bool Build(BuildPlatform platform, BuildFlavor flavor)
+        public static bool Build(BuildPlatform platform, BuildFlavor flavor, string builtAtUtc = null)
         {
             ApplyPlayerSettings();
             BuildScenes.ApplyToEditorSettings();
@@ -88,7 +93,9 @@ namespace Abandoned.EditorTools
             };
 
             BuildReport report;
-            BuildInfoAsset.Stamp(flavor);
+            BuildInfo stamp = BuildInfoAsset.Stamp(flavor, builtAtUtc);
+            string commit = stamp.Commit;
+            string builtAt = stamp.BuiltAtUtc;
             try
             {
                 report = BuildPipeline.BuildPlayer(options);
@@ -111,7 +118,7 @@ namespace Abandoned.EditorTools
                 Debug.LogError($"[Build] {options.locationPathName} signature is broken: {signature}");
                 return false;
             }
-            WriteInfoFile(platform, flavor, summary);
+            WriteInfoFile(platform, flavor, summary, commit, builtAt);
             Debug.Log($"[Build] {platform} {flavor} OK: {Path.GetFullPath(options.locationPathName)} " +
                       $"({summary.totalSize / (1024 * 1024)} MB, {summary.totalTime.TotalSeconds:0} s).");
             return true;
@@ -144,14 +151,17 @@ namespace Abandoned.EditorTools
             File.Copy(source, Path.Combine(folder, source), true);
         }
 
-        private static void WriteInfoFile(BuildPlatform platform, BuildFlavor flavor, BuildSummary summary)
+        // Repeats the stamp baked into the player rather than asking git again: the zip name and the
+        // in-game version check must describe the same build.
+        private static void WriteInfoFile(BuildPlatform platform, BuildFlavor flavor, BuildSummary summary,
+                                          string commit, string builtAt)
         {
             string text =
                 $"version={Application.version}\n" +
-                $"commit={BuildInfoAsset.GitCommit()}\n" +
+                $"commit={commit}\n" +
                 $"platform={platform}\n" +
                 $"flavor={flavor}\n" +
-                $"built={DateTime.UtcNow:yyyy-MM-ddTHH:mm:ssZ}\n" +
+                $"built={builtAt}\n" +
                 $"unity={Application.unityVersion}\n" +
                 $"sizeMB={summary.totalSize / (1024 * 1024)}\n";
             File.WriteAllText(Path.Combine(OutputFolder(platform, flavor), InfoFileName), text);

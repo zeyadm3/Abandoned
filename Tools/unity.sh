@@ -90,6 +90,11 @@ zip_build() {
   local version commit zip
   version="$(sed -n 's/^version=//p' "$info")"
   commit="$(sed -n 's/^commit=//p' "$info")"
+  # Shareable zips should come from a committed tree so the name and the in-game version check
+  # point at real code; a -dirty build still zips (local testing) but says so.
+  case "$commit" in
+    *-dirty|unknown) echo "WARNING: $folder build is from uncommitted changes ($commit); commit first, then rebuild to share it." >&2 ;;
+  esac
   mkdir -p "$BUILD_ZIP_DIR"
   zip="$BUILD_ZIP_DIR/Abandoned-$version-$commit-$folder.zip"
   rm -f "$zip"

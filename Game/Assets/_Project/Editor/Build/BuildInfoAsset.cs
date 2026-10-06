@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Abandoned.Core;
 using UnityEditor;
 using static Abandoned.EditorTools.SerializedWiring;
@@ -20,11 +19,20 @@ namespace Abandoned.EditorTools
             return info;
         }
 
-        public static void Stamp(BuildFlavor flavor)
+        /// <summary>UTC build time in the format BuildInfo and BUILD.txt use.</summary>
+        public static string Now() => DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        /// <summary>
+        /// Stamps the asset and returns it so BUILD.txt can repeat the exact same commit and time.
+        /// Pass one builtAtUtc to every platform of a shared pair: a dirty build is only compatible
+        /// with builds carrying the same stamp, and the Mac and Windows zips must play together.
+        /// </summary>
+        public static BuildInfo Stamp(BuildFlavor flavor, string builtAtUtc = null)
         {
             BuildInfo info = CreateMissing();
-            info.Stamp(GitCommit(), DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), flavor.ToString());
+            info.Stamp(GitInfo.CommitLabel(), builtAtUtc ?? Now(), flavor.ToString());
             Save(info);
+            return info;
         }
 
         /// <summary>Back to editor defaults so a build never leaves the committed asset modified.</summary>
@@ -39,29 +47,6 @@ namespace Abandoned.EditorTools
         {
             EditorUtility.SetDirty(info);
             AssetDatabase.SaveAssets();
-        }
-
-        /// <summary>Short HEAD commit, or "unknown" when git isn't available.</summary>
-        public static string GitCommit()
-        {
-            try
-            {
-                var start = new ProcessStartInfo("git", "rev-parse --short HEAD")
-                {
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                };
-                using Process git = Process.Start(start);
-                string output = git.StandardOutput.ReadToEnd().Trim();
-                git.WaitForExit(5000);
-                return git.ExitCode == 0 && output.Length > 0 ? output : "unknown";
-            }
-            catch (Exception)
-            {
-                return "unknown";
-            }
         }
     }
 }

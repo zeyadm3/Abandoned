@@ -13,13 +13,15 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
   networked Player prefab, spawn slots, placeholder network panel, F1 net view; TestBuilding has no
   scene player any more - it auto-hosts in the editor) + M3.2-fix (remote ragdoll collider, spawn facing).
   M3.3 done (BuildScript + `Tools/unity.sh build-mac|build-win|build|build-dev`, VersionInfo/BuildInfo,
-  multi-process localhost nettest `Tools/nettest.sh` with scenario registry; 'basic' passes 4/4).
+  multi-process localhost nettest `Tools/nettest.sh` with scenario registry; 'basic' passes 4/4)
+  + M3.3-fix (builds stamp `<commit>-dirty` from uncommitted changes; dirty/unknown builds only match
+  the same build run).
   **Next:** networked loot (pickup/drop/throw via host RPCs, replicated value/damage, Despawn on shatter),
   shared carrying, networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK 3.2-3.6). Add a
   nettest scenario for each (see "M3.3 notes").
-- **Verification state after M3.3:** compile clean; rebuild OK; verify ALL PASS; EditMode 94/94;
-  PlayMode 135/135; screenshots OK (M1_player_eye checked); `Tools/unity.sh build` OK (Mac universal +
-  Windows Mono, zipped); `Tools/unity.sh nettest` 4/4 PASS.
+- **Verification state after M3.3-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 97/97;
+  PlayMode 135/135; screenshots OK; `Tools/unity.sh build-dev` OK (BUILD.txt commit=a7e1f70-dirty);
+  `Tools/unity.sh nettest` 4/4 PASS. Shareable zips: build them only AFTER the task's commit.
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -109,6 +111,7 @@ or any exception in the log even when tests pass.
 | 3.1 Embedded Facepunch Transport fork + SteamBootstrap | done | compile clean; verify ALL PASS (new: NetworkConfig, steam_appid.txt in sync, Steam plugin platform settings + no stray Steam binaries); EditMode 63/63 (+16: transport StartClient/StartServer false without Steam with clear log, Initialize doesn't start Steam, no Init/Shutdown/RunCallbacks in transport code, RTT from ping, fork version; init policy, player-readable errors for not running/missing library/update/missing config, fake-client init+shutdown once, plugin settings); PlayMode 116/116 (+4: batch Start leaves Steam off, RunCallbacks every frame + Shutdown on destroy, duplicate discarded, Steam dying mid-game stops pumping without throwing). Real Steam untested (Needs you). |
 | 3.2 NetworkBootstrap, TransportMode, networked player | done | compile clean; rebuild OK; verify ALL PASS (+ Player prefab has NetworkObject/owner-auth NetworkTransform/NetworkPlayer and is in DefaultNetworkPrefabs; session scene has one bootstrap, a root NetworkManager with both transports + Player as player prefab, no scene-placed player, >= MaxPlayers spawn points with distinct indices); EditMode 79/79 (+15: launch args, auto-host policy incl. MPPM virtual players and -client/-connect, spawn slots, PlayerNetState); PlayMode 130/130 (+10 in-process NGO host+1-3 clients over loopback UTP: distinct spawn points, only owner camera/input/look/motor/interactor/HUD/hit trigger, owner movement replicates to host and other client, remote footsteps + floor load on host, remote ragdoll shown lying + getting up, client landings reach host as impacts, GameAuthority offline/host/client, solo hosting spawns local player, transport selection + Steam unavailable error, 5th player refused + leaver frees spawn). TestBuilding tests now use the auto-hosted NGO player. |
 | 3.3 Build script + multi-process localhost nettest | done | compile clean; rebuild OK; verify ALL PASS (+ Build Settings scenes = BuildScenes.All, BuildInfo unstamped, Mono + Run In Background); EditMode 94/94 (+15: nettest args/registry, BasicNetTestCheck catches missing player/stale remote copy/disagreeing still player/short or missing moves/missing views, VersionInfo compatibility rules, build folders/targets/options/steam_appid policy/player settings/scene list); PlayMode 135/135 (+3 in-process: channel both ways with sender ids, 'basic' scenario passes host+3 clients and host sees each mover where it stopped, timeout aborts with a recorded error); `Tools/unity.sh build` Mac universal 120 MB + Windows 103 MB, signature verified, zips 47 MB/38 MB; `Tools/unity.sh nettest` 4/4 PASS (each client walked 2.15 m, all 4 machines agree), repeat run reuses the build, unknown scenario fails 0/4 with a clear message. |
+| 3.3-fix Review fix: dirty builds stamped as HEAD | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 97/97 (+3: GitInfo.Label dirty/clean/unknown, real repo gives a hex label, dirty/unknown keys only match the same build time incl. Mac+Windows pair, clean vs dirty refused); PlayMode 135/135; build-dev stamps `a7e1f70-dirty` in BUILD.txt and the player, BuildInfo.asset reset after; nettest 4/4 PASS. |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -311,6 +314,19 @@ and StructureTests split. 9 regression tests added.
   RunStarted/TestStarted). It lives in the PlayMode test assembly, which is loaded for EditMode runs too.
   The guard only applies to the real `FacepunchSteamClient`; injected fakes still init.
 - PlayMode tests asmdef now references Unity.Netcode.Runtime + Unity.Networking.Transport (in-process NGO).
+
+### M3.3-fix notes
+- `GitInfo.CommitLabel()` (Editor/Build): short HEAD + `-dirty` when `git status --porcelain` shows changes
+  under Game/Assets, Game/Packages or Game/ProjectSettings, excluding the known Unity churn files below and
+  the BuildInfo asset the build itself stamps (otherwise every build would be dirty). Failed status = dirty.
+- `BuildScript` stamps once per build and writes the same commit/time into BUILD.txt (no second git call);
+  `BuildBoth` shares one build time so the Mac + Windows zips of one run stay compatible.
+- `VersionInfo.FormatKey(version, commit, builtAt)`: exact commits -> `0.3.0+abc1234`; dirty/unknown ->
+  `0.3.0+abc1234-dirty@<builtAtUtc>`. `AreCompatible`: same version required; editor matches any commit;
+  otherwise same commit AND (exact, or identical non-empty build time).
+- `Tools/unity.sh` zip_build warns when zipping a -dirty/unknown build. Rule: make shareable zips after
+  the task's commit (the orchestrator's end-of-milestone builds already run on committed trees).
+- If a new Unity churn file appears, add it to both the churn list below and `GitInfo.ShippedPaths`.
 
 ### M3.2-fix notes
 - Remote copies switch their CharacterController off while the owner is ragdolled (the owner's root stays
