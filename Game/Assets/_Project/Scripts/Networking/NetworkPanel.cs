@@ -33,7 +33,13 @@ namespace Abandoned.Networking
             GUILayout.BeginArea(new Rect(10f, 10f, Width, 360f), box);
             GUILayout.Label("<b>NETWORK</b> (placeholder menu)", new GUIStyle(GUI.skin.label) { richText = true, fontSize = fontSize });
             GUILayout.Label(bootstrap.Status);
-            if (!string.IsNullOrEmpty(bootstrap.LastError)) GUILayout.Label(bootstrap.LastError, error);
+            if (!bootstrap.IsRunning && SessionEndNotice.Message.Length > 0)
+            {
+                // Why we're back at the menu (host left, connection lost); stays until dismissed or the next game.
+                GUILayout.Label(SessionEndNotice.Message, error);
+                if (GUILayout.Button("OK")) SessionEndNotice.Clear();
+            }
+            else if (!string.IsNullOrEmpty(bootstrap.LastError)) GUILayout.Label(bootstrap.LastError, error);
             SteamLobbyFlow flow = lobby != null ? lobby.Flow : null;
             if (flow != null && !string.IsNullOrEmpty(flow.LastError)) GUILayout.Label(flow.LastError, error);
 

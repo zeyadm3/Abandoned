@@ -10,8 +10,7 @@ namespace Abandoned.Networking
         public const string Full = "That game is full.";
         public const string Gone = "That game doesn't exist any more (the host left).";
 
-        public static string VersionMismatch(string hostKey, string ourKey) =>
-            $"The host is on version {Describe(hostKey)}; you have {Describe(ourKey)}. Both players need the same build.";
+        public static string VersionMismatch(string hostKey, string ourKey) => SessionMessages.VersionMismatch(hostKey, ourKey);
 
         /// <summary>Steam's RoomEnter result names -> what the player should know.</summary>
         public static string ForRoomEnter(string result) => result switch
@@ -25,17 +24,5 @@ namespace Abandoned.Networking
             "RatelimitExceeded" => "Steam says slow down; try again in a moment.",
             _ => $"Couldn't join the Steam lobby ({result}).",
         };
-
-        // "0.3.0+abc1234@time" -> "0.3.0 (abc1234)": the build time only matters to the comparison.
-        private static string Describe(string key)
-        {
-            if (string.IsNullOrEmpty(key)) return "unknown";
-            int plus = key.LastIndexOf('+');
-            if (plus < 0) return key;
-            string commit = key.Substring(plus + 1);
-            int at = commit.IndexOf('@');
-            if (at >= 0) commit = commit.Substring(0, at);
-            return $"{key.Substring(0, plus)} ({commit})";
-        }
     }
 }

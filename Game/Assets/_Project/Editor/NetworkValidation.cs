@@ -97,6 +97,9 @@ namespace Abandoned.EditorTools
             ValidateScenePlacedObjects(path, errors);
             ValidateStructureSync(path, errors);
             ValidateSteamLobby(path, bootstraps[0], errors);
+            var menu = bootstraps[0].GetComponent<ReturnToMenu>();
+            if (menu == null || new SerializedObject(menu).FindProperty("bootstrap").objectReferenceValue != bootstraps[0])
+                errors.Add($"{path}: the NetworkBootstrap object needs a ReturnToMenu wired to it (clients would stay in a dead game).");
         }
 
         /// <summary>Without a wired SteamLobby, hosting over Steam opens no lobby and invites go nowhere.</summary>

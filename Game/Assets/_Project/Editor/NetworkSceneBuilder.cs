@@ -44,6 +44,7 @@ namespace Abandoned.EditorTools
             var network = new GameObject("Network");
             var bootstrap = network.AddComponent<NetworkBootstrap>();
             bootstrap.Setup(config, manager, utp, facepunch, sceneSession: true);
+            SerializedWiring.Set(network.AddComponent<ReturnToMenu>(), "bootstrap", bootstrap);
             var lobby = network.AddComponent<SteamLobby>();
             SerializedWiring.Set(lobby, "bootstrap", bootstrap);
             var panel = network.AddComponent<NetworkPanel>();

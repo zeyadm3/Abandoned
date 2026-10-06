@@ -162,5 +162,24 @@ namespace Abandoned.Tests
             NetworkLoot other = NetLootKit.CopyOn(client2, id);
             yield return WaitFor(() => other.Hold.Mode == LootHoldMode.Free, "client 2 to see it free", 5f);
         }
+
+        [UnityTest]
+        public IEnumerator APocketedItemDropsWhereItsCarrierLeft()
+        {
+            ulong id = 0;
+            yield return SpawnInFront(client1, "gold_watch", 1f, i => id = i);
+            Handler.RequestPickup(Own(client1), NetLootKit.CopyOn(client1, id).Grabbable);
+            yield return NetLootKit.WaitForHold(net, id, HeldBy(client1, LootHoldMode.Pocketed), "every machine to see the watch pocketed");
+            NetworkLoot hostCopy = NetLootKit.CopyOn(net.Host, id);
+            Vector3 carrierAt = PlayerOf(net.Host, Id(client1)).transform.position;
+
+            client1.Manager.Shutdown();
+            yield return WaitFor(() => hostCopy.Hold.Mode == LootHoldMode.Free, "the host to free the leaver's pocketed item", 5f);
+            Assert.IsFalse(hostCopy.Grabbable.IsPocketed, "back out in the world");
+            Assert.IsTrue(hostCopy.IsSpawned && hostCopy.gameObject.activeInHierarchy);
+            Assert.Less(Vector3.Distance(hostCopy.transform.position, carrierAt), 2.5f, "dropped where its carrier was");
+            NetworkLoot other = NetLootKit.CopyOn(client2, id);
+            yield return WaitFor(() => other.Hold.Mode == LootHoldMode.Free && !other.Grabbable.IsPocketed, "client 2 to see it back out", 5f);
+        }
     }
 }

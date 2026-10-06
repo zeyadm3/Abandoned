@@ -9,16 +9,15 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   (worktree `~/Documents/Abandoned-autobuild2`). Don't wait for plan approval; record decisions,
   put human-only items under "Needs you". Push `autobuild-2` and tags freely (user OK'd).
 - M3: 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
-  builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you).
+  builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (after M3.7): compile clean; verify ALL PASS; EditMode 162/162; PlayMode 176/176;
-  nettest basic/loot/sharedcarry/collapse 4/4.
+- Last verified (after M3.8): compile clean; verify ALL PASS; EditMode 168/168; PlayMode 180/180;
+  nettest basic/loot/sharedcarry/collapse/robust 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 ## Next
-M3.8 robustness (version check at connect, host leaving -> clients back to menu with a message,
-`nettest robust`) -> M3 review, tag `milestone-3`, zipped builds -> M4.
+M3 review, tag `milestone-3`, zipped builds -> M4.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -38,6 +37,9 @@ M3.8 robustness (version check at connect, host leaving -> clients back to menu 
 - [ ] Structure in MPPM (host + 1–2 virtual players): stand on the weak tile upstairs (Tile_U_3_3) with
       the server rack; every screen shows the same cracks/sag, then it collapses for everyone at once and
       the players on it fall; F1 shows the same stage/health on host and clients. Re-roll (F2) restores it everywhere.
+- [ ] Leaving in MPPM: a virtual player picks up the laptop and closes/stops; the host sees it drop where
+      they stood. Then the host presses Disconnect (Esc): every virtual player's scene reloads and the
+      panel says "The host left the game." with an OK button, and nobody auto-hosts.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## How to verify (batch mode, Unity must be closed)
@@ -58,6 +60,9 @@ Nettest results + logs: `Game/Logs/nettest/<host|clientN>.{json,log}`; batch log
 The script fails on compile errors, warnings in our code, or any exception in a log.
 
 ## Open problems
+- M3.8: one `nettest loot --no-build` run (right after basic) failed on all 4 instances: no client ever
+  connected within 40 s. The next 4 loot runs passed. If it recurs, check host.log for the listen port
+  and whether a previous run's process was still alive.
 - M3.5: one full PlayMode run failed `NetworkLootHitTests.HostThrownSafeKnocksDownTheClientPlayerOnTheClient`
   (client never ragdolled within 4 s); it passed alone 3x and in two further full runs. The safe now has
   SharedCarryable (idle when nobody holds it). If it recurs, look at that test's timing first.

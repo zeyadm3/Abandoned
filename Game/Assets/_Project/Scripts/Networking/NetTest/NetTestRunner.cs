@@ -86,7 +86,9 @@ namespace Abandoned.Networking
             var context = new NetTestContext(bootstrap, channel, result, args.Clients);
             yield return RunWithTimeout(args.Role == NetTestRole.Host ? scenario.RunHost(context) : scenario.RunClient(context),
                 result, args.Timeout - (Time.realtimeSinceStartup - started));
-            result.clientId = bootstrap.Manager.LocalClientId;
+            // A scenario that ends the session (robust) records its own id; the manager may be gone by now.
+            if (bootstrap != null && bootstrap.Manager != null && bootstrap.Manager.IsListening)
+                result.clientId = bootstrap.Manager.LocalClientId;
             channel.Close();
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Player;
@@ -14,6 +15,9 @@ namespace Abandoned.Networking
     /// joins, disconnects, seats players on spawn points and tells <see cref="GameAuthority"/> who the
     /// host is. Owns its NetworkManager's lifetime, so leaving the scene ends the session.
     /// Never throws for expected failures: they become <see cref="LastError"/> for the menu.
+    /// Robustness: clients send their build's compatibility key and the host refuses other builds and
+    /// a full game with a reason; a host leaving tells every client why; <see cref="SessionEnded"/>
+    /// lets the menu flow (<see cref="ReturnToMenu"/>) take the player back.
     /// </summary>
     [DefaultExecutionOrder(-500)]
     public sealed class NetworkBootstrap : MonoBehaviour
@@ -28,6 +32,8 @@ namespace Abandoned.Networking
         private const string LoopbackAddress = "127.0.0.1";
 
         private SpawnSlots slots;
+        private string compatibilityKey;
+        private bool wasInSession, leavingOnPurpose;
         private static bool quitting;
 
         /// <summary>The first bootstrap alive; it answers <see cref="GameAuthority.IsHost"/>.</summary>
@@ -40,6 +46,13 @@ namespace Abandoned.Networking
         public string LastError { get; private set; } = string.Empty;
         public string JoinTarget { get; private set; } = string.Empty;
 
+        /// <summary>What this machine tells the host it is (tests and nettest can pretend to be another build).</summary>
+        public string CompatibilityKey
+        {
+            get => compatibilityKey ?? VersionInfo.CompatibilityKey;
+            set => compatibilityKey = value;
+        }
+
         public bool IsRunning => networkManager != null && networkManager.IsListening;
 
         /// <summary>Port the host actually listens on (differs from the config when started on port 0).</summary>
@@ -48,6 +61,9 @@ namespace Abandoned.Networking
             : (ushort)0;
 
         public event Action StateChanged;
+
+        /// <summary>A session this machine had been in has ended: (left on purpose, why if not).</summary>
+        public event Action<bool, string> SessionEnded;
 
         /// <summary>Host rules apply offline (solo) and on the host; never on a connected client.</summary>
         public static bool IsHostOrOffline(NetworkManager manager) =>
@@ -97,6 +113,8 @@ namespace Abandoned.Networking
             var args = NetworkLaunchArgs.Parse(Environment.GetCommandLineArgs());
             if (args.Transport.HasValue) SelectTransport(args.Transport.Value);
 
+            // Back at the menu after a game: wait for the player instead of rejoining or hosting on our own.
+            if (SessionEndNotice.ReturnedFromSession) return;
             if (!string.IsNullOrEmpty(args.ConnectAddress))
                 StartClient(args.ConnectAddress, args.ConnectPort);
             else if (AutoHostPolicy.ShouldAutoHost(config.AutoHostInEditor, Application.isEditor, IsMainEditor(), args))
@@ -154,6 +172,7 @@ namespace Abandoned.Networking
             slots.Clear();
             LastError = string.Empty;
             JoinTarget = string.Empty;
+            BeginSession();
             if (!networkManager.StartHost())
                 return Fail(Transport == TransportMode.UnityTransport
                     ? $"Couldn't host on port {port}. Is another game already using it?"
@@ -186,6 +205,7 @@ namespace Abandoned.Networking
             }
 
             LastError = string.Empty;
+            BeginSession();
             if (!networkManager.StartClient()) return Fail($"Couldn't start joining {JoinTarget}.");
             Debug.Log($"[Net] Joining {JoinTarget} over {Transport}.");
             StateChanged?.Invoke();
@@ -195,8 +215,25 @@ namespace Abandoned.Networking
         public void Disconnect()
         {
             if (networkManager == null || !networkManager.IsListening) return;
+            leavingOnPurpose = true;
+            TellClientsTheHostLeft();
             networkManager.Shutdown();
             StateChanged?.Invoke();
+        }
+
+        private void BeginSession()
+        {
+            networkManager.NetworkConfig.ConnectionData = ConnectionGate.Payload(CompatibilityKey);
+            wasInSession = leavingOnPurpose = false;
+            SessionEndNotice.Clear();
+        }
+
+        // Without a reason clients can only guess between "host quit" and "network died".
+        private void TellClientsTheHostLeft()
+        {
+            if (networkManager == null || !networkManager.IsListening || !networkManager.IsServer) return;
+            foreach (ulong id in networkManager.ConnectedClientsIds.ToArray())
+                if (id != NetworkManager.ServerClientId) networkManager.DisconnectClient(id, SessionMessages.HostLeft);
         }
 
         /// <summary>One line for menus and the F1 view.</summary>
@@ -230,10 +267,12 @@ namespace Abandoned.Networking
 
         private void OnApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
-            if (!slots.TryAssign(request.ClientNetworkId, out int slot))
+            if (!ConnectionGate.Admit(request.ClientNetworkId, request.Payload, CompatibilityKey, slots, config.MaxPlayers,
+                    out int slot, out string reason))
             {
                 response.Approved = false;
-                response.Reason = $"The game is full ({config.MaxPlayers} players).";
+                response.Reason = reason;
+                Debug.Log($"[Net] Refused client {request.ClientNetworkId}: {reason}");
                 return;
             }
             Pose pose = PlayerSpawnPoint.PoseFor(slot);
@@ -243,7 +282,11 @@ namespace Abandoned.Networking
             response.Rotation = pose.rotation;
         }
 
-        private void OnClientConnected(ulong clientId) => StateChanged?.Invoke();
+        private void OnClientConnected(ulong clientId)
+        {
+            if (clientId == networkManager.LocalClientId) wasInSession = true;
+            StateChanged?.Invoke();
+        }
 
         private void OnClientDisconnected(ulong clientId)
         {
@@ -255,7 +298,7 @@ namespace Abandoned.Networking
             {
                 string reason = networkManager.DisconnectReason;
                 LastError = !string.IsNullOrEmpty(reason) ? reason
-                    : networkManager.IsConnectedClient ? "Lost connection to the host."
+                    : wasInSession || networkManager.IsConnectedClient ? SessionMessages.LostHost
                     : $"Couldn't connect to {JoinTarget}.";
             }
             StateChanged?.Invoke();
@@ -264,8 +307,13 @@ namespace Abandoned.Networking
         private void OnStopped(bool wasHost)
         {
             slots?.Clear();
+            bool ended = wasInSession && !quitting;
+            wasInSession = false;
             StateChanged?.Invoke();
+            if (ended) SessionEnded?.Invoke(leavingOnPurpose, leavingOnPurpose ? string.Empty : LastError);
         }
+
+        private void OnApplicationQuit() => TellClientsTheHostLeft();
 
         private void OnTransportFailure()
         {

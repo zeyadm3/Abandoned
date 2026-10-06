@@ -30,7 +30,7 @@ namespace Abandoned.Networking
         public bool UsesSteamTransport => bootstrap != null && bootstrap.Transport == TransportMode.Steam;
         public int MaxPlayers => bootstrap != null && bootstrap.Config != null ? bootstrap.Config.MaxPlayers : 1;
         public ulong LocalSteamId => SteamBootstrap.Instance != null ? SteamBootstrap.Instance.LocalSteamId : 0UL;
-        public string CompatibilityKey => VersionInfo.CompatibilityKey;
+        public string CompatibilityKey => bootstrap != null ? bootstrap.CompatibilityKey : VersionInfo.CompatibilityKey;
 
         public bool JoinSteamHost(ulong hostSteamId, out string error)
         {
@@ -53,7 +53,9 @@ namespace Abandoned.Networking
         private void Start()
         {
             if (bootstrap == null || bootstrap.Manager == null) return;
-            pendingLobby = NetworkLaunchArgs.Parse(Environment.GetCommandLineArgs()).ConnectLobby;
+            // Back at the menu after a session: the launch invite was already used.
+            if (!SessionEndNotice.ReturnedFromSession)
+                pendingLobby = NetworkLaunchArgs.Parse(Environment.GetCommandLineArgs()).ConnectLobby;
             bootstrap.Manager.OnServerStarted += OnServerStarted;
             bootstrap.Manager.OnServerStopped += OnStopped;
             bootstrap.Manager.OnClientStopped += OnStopped;
