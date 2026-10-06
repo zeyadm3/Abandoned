@@ -11,15 +11,15 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M3 review fixes): compile clean; verify ALL PASS; EditMode 178/178; PlayMode 184/184;
+- Last verified (M4 review fixes): compile clean; verify ALL PASS; EditMode 185/185; PlayMode 196/196;
   nettest basic/loot/sharedcarry/collapse/robust/voice 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
-- M4: 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise done (`nettest voice`; see Docs/progress/M4.md).
+- **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-Fix M4 review findings -> tag `milestone-4`, builds -> M5.2 loot spawning.
+M5.2 loot spawning -> 5.3 truck/extraction -> 5.4 appraisal + next run -> 5.5 Blind One -> 5.6 danger.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->

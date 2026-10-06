@@ -160,5 +160,61 @@ namespace Abandoned.Tests
             Assert.AreEqual(0.5f, next, "the shout in between isn't lost");
             Assert.IsFalse(meter.Add(0f, 11f, out _), "silence emits nothing");
         }
+
+        [Test]
+        public void ResamplerKeepsEverySampleAcrossChunksAtTheSameRate()
+        {
+            var r = new MicResampler(1.0);
+            var output = new float[64];
+            int total = 0;
+            for (int chunk = 0; chunk < 5; chunk++)
+            {
+                var input = new float[10];
+                for (int i = 0; i < 10; i++) input[i] = chunk * 10 + i;
+                int n = r.Process(input, 10, output);
+                for (int i = 0; i < n; i++) Assert.AreEqual(total + i, output[i], 1e-4f, "no sample dropped at a seam");
+                total += n;
+            }
+            Assert.AreEqual(50, total);
+        }
+
+        [Test]
+        public void ResamplerDecimatesSmoothlyAt48kHz()
+        {
+            var r = new MicResampler(3.0);
+            var output = new float[4000];
+            int total = 0;
+            var input = new float[480];
+            for (int chunk = 0; chunk < 10; chunk++)
+            {
+                for (int i = 0; i < input.Length; i++) input[i] = (i % 2 == 0) ? 1f : -1f; // pure 24 kHz hiss
+                total += r.Process(input, input.Length, output);
+            }
+            Assert.AreEqual(1600, total, 1, "48 kHz -> 16 kHz");
+            Assert.Less(Mathf.Abs(output[total - 1]), 0.4f, "hiss above the new Nyquist is filtered, not folded down at full strength");
+        }
+
+        [Test]
+        public void JitterBufferCushionCoversTheAudioReadSize()
+        {
+            var buffer = new VoiceJitterBuffer(4, 64);
+            buffer.EnsureTarget(10);
+            Assert.AreEqual(10, buffer.TargetSamples);
+            buffer.Write(new float[6], 6);
+            Assert.IsFalse(buffer.Playing, "not a whole read queued yet");
+            buffer.StartNow();
+            Assert.IsTrue(buffer.Playing, "a short utterance plays once the speaker stops");
+        }
+
+        [Test]
+        public void AStaleShoutIsntHeardAtTheNextWhisper()
+        {
+            var meter = new VoiceNoiseMeter(0.25f);
+            Assert.IsTrue(meter.Add(0.3f, 10f, out _));
+            Assert.IsFalse(meter.Add(0.6f, 10.1f, out _), "shout held back by the rate limit");
+            // Key released; a minute later, a whisper elsewhere.
+            Assert.IsFalse(meter.Add(0f, 70f, out float whisper), "the old shout doesn't leak into it");
+            Assert.AreEqual(0f, whisper);
+        }
     }
 }

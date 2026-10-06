@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Abandoned.Core;
+using Abandoned.Player;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ namespace Abandoned.Voice
     {
         /// <summary>Hard cap on a packet a client may send us (one datagram).</summary>
         public const int MaxPacketBytes = 1200;
+        /// <summary>Packets per second a speaker may send; ~50 is normal, the rest is a flood.</summary>
+        public const int MaxPacketsPerSecond = 100;
 
         [SerializeField] private VoiceConfig config;
         [SerializeField] private VoicePlayback playback;
@@ -23,8 +26,13 @@ namespace Abandoned.Voice
 
         private static readonly List<NetworkVoice> Spawned = new();
 
-        private readonly float[] decoded = new float[8192];
+        // Half a second at Steam's 48 kHz: one packet after a long frame hitch still fits.
+        private readonly float[] decoded = new float[24000];
         private VoiceNoiseMeter noiseMeter;
+        private PlayerRagdoll ragdoll;
+        private Vector3 mouthLocal;
+        private float rateWindowStart;
+        private int rateCount;
         private ushort sendSequence, lastSequence;
         private bool hasSequence;
 
@@ -56,6 +64,12 @@ namespace Abandoned.Voice
 
         public bool IsOnRadio => IsSpeaking && LastWasRadio;
 
+        private void Awake()
+        {
+            ragdoll = GetComponent<PlayerRagdoll>();
+            if (playback != null) mouthLocal = playback.transform.localPosition;
+        }
+
         public override void OnNetworkSpawn()
         {
             Spawned.Add(this);
@@ -82,7 +96,7 @@ namespace Abandoned.Voice
         {
             // Only this player's own client may speak with this player's voice.
             if (rpcParams.Receive.SenderClientId != OwnerClientId || data == null || data.Length == 0 ||
-                data.Length > MaxPacketBytes || VoiceBackends.Codec(codec) == null)
+                data.Length > MaxPacketBytes || VoiceBackends.Codec(codec) == null || OverRate())
             {
                 PacketsRejected++;
                 return;
@@ -96,8 +110,11 @@ namespace Abandoned.Voice
         }
 
         [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Unreliable)]
-        private void ToListenersRpc(byte[] data, VoiceCodecId codec, byte level, bool radio, ushort sequence)
+        private void ToListenersRpc(byte[] data, VoiceCodecId codec, byte level, bool radio, ushort sequence, RpcParams rpcParams = default)
         {
+            // Anyone may invoke an RPC (NGO proxies it through the host); only the host's relay is real,
+            // or a client could speak with someone else's voice or jam their sequence numbers.
+            if (rpcParams.Receive.SenderClientId != NetworkManager.ServerClientId || data == null) return;
             // Unreliable packets can arrive late or twice; playing them would garble the stream.
             if (hasSequence && (short)(sequence - lastSequence) <= 0) return;
             hasSequence = true;
@@ -111,6 +128,25 @@ namespace Abandoned.Voice
             if (playback != null && playback.enabled) playback.Push(decoded, n, decoder.SampleRate);
             if (radio && this.radio != null && this.radio.enabled && HasRadio(NetworkManager.LocalClientId))
                 this.radio.Push(decoded, n, decoder.SampleRate);
+        }
+
+        private bool OverRate()
+        {
+            if (Time.unscaledTime - rateWindowStart >= 1f)
+            {
+                rateWindowStart = Time.unscaledTime;
+                rateCount = 0;
+            }
+            return ++rateCount > MaxPacketsPerSecond;
+        }
+
+        // On other machines a downed player's root stays where they fell from while the body lies
+        // somewhere else (maybe a floor below): speak, and make noise, from the body.
+        private void LateUpdate()
+        {
+            if (playback == null || ragdoll == null || !ragdoll.IsRemote) return;
+            if (ragdoll.IsRagdolled) playback.transform.position = ragdoll.BodyPosition + Vector3.up * 0.3f;
+            else playback.transform.localPosition = mouthLocal;
         }
 
         // Host: monsters hear voice chat (GDD 17). Noise comes from the speaker's mouth; a radio

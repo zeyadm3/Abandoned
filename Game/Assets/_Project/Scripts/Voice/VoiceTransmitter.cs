@@ -20,7 +20,7 @@ namespace Abandoned.Voice
 
         private IVoiceCapture capture;
         private byte[] packet;
-        private float[] pcm = new float[8192];
+        private float[] pcm = new float[24000];
         private float lastLoud = float.NegativeInfinity, lastSent = float.NegativeInfinity;
 
         public IVoiceCapture Capture => capture;
@@ -34,9 +34,10 @@ namespace Abandoned.Voice
         private void EnsureCapture()
         {
             if (capture != null || voice == null || !voice.IsSpawned || !voice.IsOwner) return;
-            packet = new byte[config.PacketBytes];
             bool steam = NetworkBootstrap.Instance != null && NetworkBootstrap.Instance.Transport == TransportMode.Steam;
             capture = VoiceBackends.CreateCapture(steam);
+            // Steam hands over everything it buffered in one read and its packets can't be split.
+            packet = new byte[capture.Codec == VoiceCodecId.Steam ? NetworkVoice.MaxPacketBytes : config.PacketBytes];
         }
 
         private void OnDisable()
@@ -52,13 +53,17 @@ namespace Abandoned.Voice
             PlayerInputFrame input = inputReader != null ? inputReader.Current : default;
             bool keyed = input.TalkHeld || input.RadioHeld;
             bool open = VoiceSettings.Mode == VoiceMode.OpenMic;
-            capture.Recording = !VoiceSettings.MicMuted && (keyed || open);
+            bool muted = VoiceSettings.MicMuted;
+            capture.Recording = !muted && (keyed || open);
+            // Keyed speech always goes out, and so does the tail Steam still has after the key is let go.
+            if (keyed) lastLoud = Time.time;
             OnRadio = input.RadioHeld && voice.HasRadio(voice.OwnerClientId);
 
             for (int i = 0; i < MaxPacketsPerFrame; i++)
             {
                 int length = capture.ReadPacket(packet);
                 if (length <= 0) break;
+                if (muted) continue; // drain what was captured before muting, but never send it
                 Level = MeasureLevel(length);
                 // Open mic: only real speech goes out, plus a short tail so word endings aren't cut.
                 if (!keyed)

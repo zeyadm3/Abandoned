@@ -8,7 +8,7 @@ namespace Abandoned.Voice
     public sealed class VoiceNoiseMeter
     {
         private readonly float interval;
-        private float lastEmit = float.NegativeInfinity;
+        private float lastEmit = float.NegativeInfinity, lastAdd = float.NegativeInfinity;
         private float peak;
         private bool pending;
 
@@ -18,6 +18,9 @@ namespace Abandoned.Voice
         public bool Add(float loudness, float time, out float emit)
         {
             emit = 0f;
+            // A held-back peak belongs to the speech it came from; after a pause it's stale.
+            if (time - lastAdd > interval) pending = false;
+            lastAdd = time;
             if (!pending || loudness > peak) peak = loudness;
             pending = true;
             if (time - lastEmit < interval) return false;

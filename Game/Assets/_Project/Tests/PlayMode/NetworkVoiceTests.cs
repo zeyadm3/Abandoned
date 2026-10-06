@@ -190,5 +190,32 @@ namespace Abandoned.Tests
             Assert.Less(Vector3.Distance(shout.Position, hostCopy.Playback.transform.position), 0.5f, "from the speaker's mouth");
             Assert.LessOrEqual(shouts.Count, Mathf.CeilToInt(0.7f / c.NoiseInterval) + 1, "rate-limited, not one per packet");
         }
+
+        [UnityTest]
+        public IEnumerator HoldingVTalksAndHoldingRUsesTheRadio()
+        {
+            VoiceSettings.Mode = VoiceMode.PushToTalk;
+            yield return net.StartSession(clients: 1);
+            NetworkBootstrap speaker = net.Clients.First();
+            ulong id = speaker.Manager.LocalClientId;
+            var reader = NetworkVoice.All.Single(v => v.NetworkManager == speaker.Manager && v.IsOwner)
+                .GetComponent<Abandoned.Player.PlayerInputReader>();
+            NetworkVoice heard = VoiceOf(net.Host, id);
+
+            reader.Override = new Abandoned.Player.PlayerInputFrame(default, default, false, false, false, false, false, false,
+                false, false, false, false, talkHeld: true);
+            yield return WaitFor(() => heard.PacketsReceived > 5, "V held: the host hears the client", 5f);
+            Assert.IsFalse(heard.LastWasRadio);
+
+            reader.Override = new Abandoned.Player.PlayerInputFrame(default, default, false, false, false, false, false, false,
+                false, false, false, false, radioHeld: true);
+            yield return WaitFor(() => heard.LastWasRadio && heard.Radio.SamplesReceived > 0, "R held: it goes out on the radio", 5f);
+
+            reader.Override = default(Abandoned.Player.PlayerInputFrame);
+            yield return WaitSeconds(0.7f);
+            int after = heard.PacketsReceived;
+            yield return WaitSeconds(0.5f);
+            Assert.AreEqual(after, heard.PacketsReceived, "keys released: nothing more is sent");
+        }
     }
 }

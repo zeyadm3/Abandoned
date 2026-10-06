@@ -13,7 +13,7 @@ namespace Abandoned.Voice
         private int readIndex, count;
         private bool playing;
 
-        public int TargetSamples { get; }
+        public int TargetSamples { get; private set; }
         public int Capacity => ring.Length;
         public int Underruns { get; private set; }
         public int Dropped { get; private set; }
@@ -77,6 +77,27 @@ namespace Abandoned.Voice
                 int played = i;
                 for (; i < length; i++) output[i] = 0f;
                 return played;
+            }
+        }
+
+        /// <summary>
+        /// Audio thread: the clip pulls this many samples per read, so the cushion must be a whole read
+        /// plus the jitter target or every read past the queue would underrun.
+        /// </summary>
+        public void EnsureTarget(int samples)
+        {
+            lock (gate)
+            {
+                if (samples > TargetSamples) TargetSamples = System.Math.Min(samples, ring.Length);
+            }
+        }
+
+        /// <summary>A short utterance that never reached the target: play what there is.</summary>
+        public void StartNow()
+        {
+            lock (gate)
+            {
+                if (count > 0) playing = true;
             }
         }
 

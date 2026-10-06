@@ -58,6 +58,7 @@ namespace Abandoned.Voice
 
             Gain = VoiceMath.DistanceGain(distance, config.MinDistance, config.MaxDistance) * occlusion;
             source.volume = Gain * VoiceSettings.Volume;
+            stream.Tick();
         }
 
         public int CountWalls(Vector3 ear)
@@ -70,6 +71,8 @@ namespace Abandoned.Voice
         }
 
         private void OnDisable() => stream?.Stop();
+
+        private void OnDestroy() => stream?.Dispose();
 
         private void OnDrawGizmosSelected()
         {

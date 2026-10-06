@@ -46,6 +46,12 @@ namespace Abandoned.Voice
             muted = PlayerPrefs.GetInt(MuteKey, 0) != 0;
         }
 
+        /// <summary>Writes the choices to disk (PlayerPrefs only flushes on a clean quit otherwise).</summary>
+        public static void Flush()
+        {
+            if (!Application.isBatchMode) PlayerPrefs.Save();
+        }
+
         private static void Save()
         {
             if (Application.isBatchMode) return;

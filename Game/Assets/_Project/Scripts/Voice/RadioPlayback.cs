@@ -34,7 +34,11 @@ namespace Abandoned.Voice
 
         public void Push(float[] pcm, int count, int rate) => stream.Push(pcm, count, rate);
 
-        private void Update() => source.volume = config.RadioVolume * VoiceSettings.Volume;
+        private void Update()
+        {
+            source.volume = config.RadioVolume * VoiceSettings.Volume;
+            stream.Tick();
+        }
 
         // Audio thread: hiss while the transmission plays, and a slight overdrive like a small speaker.
         private void AddStatic(float[] data, int played)
@@ -48,5 +52,7 @@ namespace Abandoned.Voice
         }
 
         private void OnDisable() => stream?.Stop();
+
+        private void OnDestroy() => stream?.Dispose();
     }
 }

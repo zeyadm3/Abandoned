@@ -16,6 +16,9 @@ namespace Abandoned.Player
 
         public PlayerInputFrame Current { get; private set; }
 
+        /// <summary>When set, used instead of the devices (tests, replays, bots).</summary>
+        public PlayerInputFrame? Override { get; set; }
+
         private void Awake()
         {
             input = new AbandonedInput();
@@ -40,6 +43,11 @@ namespace Abandoned.Player
 
         private void Update()
         {
+            if (Override.HasValue)
+            {
+                Current = Override.Value;
+                return;
+            }
             AbandonedInput.GameplayActions g = input.Gameplay;
             Current = new PlayerInputFrame(
                 g.Move.ReadValue<Vector2>(),
