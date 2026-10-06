@@ -18,7 +18,8 @@ How we work: Docs/PLAYBOOK.md.
 - Transports: Unity Transport (local testing) and Facepunch Transport (Steam),
   switchable via a TransportMode enum on NetworkBootstrap.
 - Steam: Facepunch.Steamworks (NOT Steamworks.NET). App ID 480 during development.
-- Voice: Dissonance + Dissonance for NGO (Milestone 4+).
+- Voice: our own proximity voice on Steam's voice API (Facepunch.Steamworks) sent over NGO, behind an
+  IVoiceService interface so Dissonance can replace it later (Dissonance can't be bought now).
 - AI: Unity AI Navigation (NavMesh).
 - Input: Unity Input System. Do NOT use the legacy Input Manager.
   (Player Settings > Active Input Handling = "Input System Package (New)" only.)
@@ -90,7 +91,8 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
-Milestone 3 — Together (not started; M0–M2 done and hand-tested). See Docs/PROGRESS.md.
+Autonomous build of Milestones 3–10 on branch autobuild-2 (git worktree ../Abandoned-autobuild2,
+so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).
@@ -125,3 +127,11 @@ Milestone 3 — Together (not started; M0–M2 done and hand-tested). See Docs/P
   - Every StructuralSection gets a per-section "can collapse" flag (M2). It's off for
     TestBuilding ground-floor tiles (nothing below them). It's per-section, not a
     "ground floor never collapses" rule, because real levels may have basements.
+- 2026-10-06 (autonomous build M3–M10, user brief):
+  - Voice: free, built on Steam's voice API + NGO behind IVoiceService (Dissonance later if bought).
+    For local Unity Transport testing a raw-microphone backend stands in for Steam voice.
+  - Embedded Facepunch Transport fork with Facepunch.Steamworks 2.5.2 + the three spike patches
+    (pre-approved). Steam features are written fully but marked "needs real Steam test".
+  - Art/audio: free CC0 assets only (Kenney, Quaternius, Poly Haven and similar), one low-poly style,
+    every asset recorded in Docs/ASSET_CREDITS.md. No other new packages without asking.
+  - Each milestone is tagged milestone-N and ships zipped Mac + Windows (Mono) builds.
