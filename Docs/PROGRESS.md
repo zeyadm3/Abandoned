@@ -11,11 +11,15 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
 - **M3 progress:** M3.1 done (embedded Facepunch Transport fork + SteamBootstrap) + M3.1-fix (review
   fixes: Steam shuts down after NGO, test runs block Steam). M3.2 done (NetworkBootstrap + TransportMode,
   networked Player prefab, spawn slots, placeholder network panel, F1 net view; TestBuilding has no
-  scene player any more - it auto-hosts in the editor) + M3.2-fix (remote ragdoll collider, spawn facing). **Next:** networked loot (pickup/drop/throw via
-  host RPCs, replicated value/damage, Despawn on shatter), shared carrying, networked structure, the
-  multi-process localhost nettest, Steam lobby/invite/relay, robustness (PLAYBOOK 3.2-3.6).
-- **Verification state after M3.2-fix:** compile clean; rebuild OK; verify ALL PASS; EditMode 79/79;
-  PlayMode 132/132; screenshots checked (M3_2_four_players_spawned, M3_2_remote_ragdoll_lying, M1_player_eye).
+  scene player any more - it auto-hosts in the editor) + M3.2-fix (remote ragdoll collider, spawn facing).
+  M3.3 done (BuildScript + `Tools/unity.sh build-mac|build-win|build|build-dev`, VersionInfo/BuildInfo,
+  multi-process localhost nettest `Tools/nettest.sh` with scenario registry; 'basic' passes 4/4).
+  **Next:** networked loot (pickup/drop/throw via host RPCs, replicated value/damage, Despawn on shatter),
+  shared carrying, networked structure, Steam lobby/invite/relay, robustness (PLAYBOOK 3.2-3.6). Add a
+  nettest scenario for each (see "M3.3 notes").
+- **Verification state after M3.3:** compile clean; rebuild OK; verify ALL PASS; EditMode 94/94;
+  PlayMode 135/135; screenshots OK (M1_player_eye checked); `Tools/unity.sh build` OK (Mac universal +
+  Windows Mono, zipped); `Tools/unity.sh nettest` 4/4 PASS.
 - **Steam safety:** Steam is never initialised in batch mode or any test run (including the editor's
   Test Runner window, via `SteamTestRunGuard` -> `SteamInitPolicy.TestRunActive`) unless Unity gets
   `-steam`. Bootstrap tests inject `FakeSteamClient`, which the test-run guard lets through.
@@ -36,6 +40,11 @@ Read CLAUDE.md first, then this file, then Docs/PLAYBOOK.md for the next task's 
       ragdoll (K with F1 on), only your own camera moves with your mouse, F1 shows client ids + RTT.
 - [ ] M3.2 feel: remote players' movement smoothness (NGO interpolation) and whether the 30 Hz tick
       feels OK (NetworkConfig.TickRate).
+- [ ] M3.3 builds: unzip `~/Documents/Abandoned-builds/dev/Abandoned-<version>-<commit>-Mac.zip`, open the app
+      (first time: right-click > Open, it's ad-hoc signed, not notarised); send the `-Windows.zip` to the
+      Windows friend (SmartScreen: More info > Run anyway). Both should open TestBuilding with the Host/Join panel.
+- [ ] M3.3 decide: company name and bundle identifier (Player Settings still say DefaultCompany /
+      com.Unity-Technologies...; they set the save-data folder, so pick before M6 saves exist).
 - [ ] M3.2 LAN: two Macs (or Mac + Windows friend on the same network), host on one, join with the
       host's LAN IP:7777 (macOS firewall may ask to allow incoming connections).
 
@@ -58,7 +67,19 @@ Tools/unity.sh editmode     # EditMode tests -> Game/TestResults/EditMode.xml
 Tools/unity.sh playmode     # PlayMode tests -> Game/TestResults/PlayMode.xml
 Tools/unity.sh screenshots  # PNGs -> Game/Screenshots/ (gitignored); look at them
 Tools/unity.sh all          # everything above in order
+Tools/unity.sh build-dev    # dev Mac player (arm64, Development) -> Game/Builds/MacDev (used by nettest)
+Tools/unity.sh build-mac    # shareable Mac player (universal) -> Game/Builds/Mac + zip
+Tools/unity.sh build-win    # shareable Windows Mono player -> Game/Builds/Windows + zip
+Tools/unity.sh build        # both shareable builds, one zip each in ~/Documents/Abandoned-builds/dev/
+Tools/unity.sh nettest [scenario] [--clients N] [--timeout S] [--rebuild|--no-build]
+                            # = Tools/nettest.sh: 1 host + 3 headless clients of the dev build on 127.0.0.1
 ```
+Zips are named `Abandoned-<version>-<commit>-<Mac|Windows>.zip` (`BUILD_ZIP_DIR` overrides the folder).
+**Nettest:** rebuilds MacDev only when something in Assets/Packages/ProjectSettings is newer than
+`Game/Builds/MacDev/BUILD.txt`, launches the host, waits for its `host.json.ready`, launches the clients
+(`-batchmode -nographics`), kills stragglers after the timeout, then prints PASS/FAIL per instance, what
+every machine saw, and exits non-zero on any failed/missing result or exception in a log.
+Results + player logs: `Game/Logs/nettest/<host|clientN>.{json,log}`.
 Logs: `Game/Logs/batch/<step>.log`. The script fails on compile errors, warnings in our code,
 or any exception in the log even when tests pass.
 
@@ -87,6 +108,7 @@ or any exception in the log even when tests pass.
 |---|---|---|
 | 3.1 Embedded Facepunch Transport fork + SteamBootstrap | done | compile clean; verify ALL PASS (new: NetworkConfig, steam_appid.txt in sync, Steam plugin platform settings + no stray Steam binaries); EditMode 63/63 (+16: transport StartClient/StartServer false without Steam with clear log, Initialize doesn't start Steam, no Init/Shutdown/RunCallbacks in transport code, RTT from ping, fork version; init policy, player-readable errors for not running/missing library/update/missing config, fake-client init+shutdown once, plugin settings); PlayMode 116/116 (+4: batch Start leaves Steam off, RunCallbacks every frame + Shutdown on destroy, duplicate discarded, Steam dying mid-game stops pumping without throwing). Real Steam untested (Needs you). |
 | 3.2 NetworkBootstrap, TransportMode, networked player | done | compile clean; rebuild OK; verify ALL PASS (+ Player prefab has NetworkObject/owner-auth NetworkTransform/NetworkPlayer and is in DefaultNetworkPrefabs; session scene has one bootstrap, a root NetworkManager with both transports + Player as player prefab, no scene-placed player, >= MaxPlayers spawn points with distinct indices); EditMode 79/79 (+15: launch args, auto-host policy incl. MPPM virtual players and -client/-connect, spawn slots, PlayerNetState); PlayMode 130/130 (+10 in-process NGO host+1-3 clients over loopback UTP: distinct spawn points, only owner camera/input/look/motor/interactor/HUD/hit trigger, owner movement replicates to host and other client, remote footsteps + floor load on host, remote ragdoll shown lying + getting up, client landings reach host as impacts, GameAuthority offline/host/client, solo hosting spawns local player, transport selection + Steam unavailable error, 5th player refused + leaver frees spawn). TestBuilding tests now use the auto-hosted NGO player. |
+| 3.3 Build script + multi-process localhost nettest | done | compile clean; rebuild OK; verify ALL PASS (+ Build Settings scenes = BuildScenes.All, BuildInfo unstamped, Mono + Run In Background); EditMode 94/94 (+15: nettest args/registry, BasicNetTestCheck catches missing player/stale remote copy/disagreeing still player/short or missing moves/missing views, VersionInfo compatibility rules, build folders/targets/options/steam_appid policy/player settings/scene list); PlayMode 135/135 (+3 in-process: channel both ways with sender ids, 'basic' scenario passes host+3 clients and host sees each mover where it stopped, timeout aborts with a recorded error); `Tools/unity.sh build` Mac universal 120 MB + Windows 103 MB, signature verified, zips 47 MB/38 MB; `Tools/unity.sh nettest` 4/4 PASS (each client walked 2.15 m, all 4 machines agree), repeat run reuses the build, unknown scenario fails 0/4 with a clear message. |
 | 3.1-fix Review fixes (Steam/NGO shutdown order, test-run Steam guard) | done | compile clean; rebuild OK; verify ALL PASS; screenshots OK; EditMode 64/64 (+1: real client blocked outside batch during a test run, guard armed; policy test covers test-run flag); PlayMode 120/120 (+4: ShutdownSteam while hosting shuts NGO first and Steam only after it stops listening; both OnApplicationQuit orders keep Steam alive until NGO stopped; guard armed in PlayMode). |
 
 ### M3.1 notes
@@ -140,6 +162,37 @@ or any exception in the log even when tests pass.
   `[Test] start/<result>` lines to the batch log (driven by `SteamTestRunGuard`, the assembly's one
   TestRunCallback), so a hung run shows which test it was in.
 - `NetworkBootstrapFactory.Create` builds a non-scene session (tests/tools).
+
+### M3.3 notes
+- **Builds** (`Editor/Build/`): `BuildScript.Build(BuildPlatform, BuildFlavor)`; menus Tools/Abandoned/Build/
+  Mac, Windows, Both, Dev Mac (for tests); `BatchCommands.BuildMac/BuildWindows/BuildBoth/BuildMacDev`.
+  Flavours: Dev (Development, arm64 only, Builds/MacDev), Shareable (universal Mac / Win64, Builds/Mac,
+  Builds/Windows), Release (Builds/<P>Release, no steam_appid.txt; for M10). Mono, StrictMode, Burst
+  `*DoNotShip*` folders removed. steam_appid.txt goes beside the .app/.exe only: writing into the .app breaks
+  its ad-hoc signature ("damaged" on download), and Facepunch's Init sets SteamAppId in the env anyway.
+  Mac builds fail if `codesign --verify --deep --strict` fails. `BUILD.txt` in each folder (version,
+  commit, flavour, time).
+- **Scenes:** `BuildScenes.All` is the one list (TestBuilding for now); RebuildContent copies it into
+  Build Settings (SampleScene left the build list; the file stays). Add menu/HQ/mall scenes there.
+- **Version:** Player Settings > Version = `0.<milestone>.<patch>` (now 0.3.0; bump per milestone).
+  `VersionInfo` (Core): `Version`, `Commit`, `Display` ("0.3.0 (abc1234)"), `CompatibilityKey`, `AreCompatible`
+  (builds must match version+commit; an editor matches on version only) for M3.6's mismatch refusal.
+  `BuildInfo` asset (Data/Core/Resources) is stamped with commit/time/flavour during a build and reset
+  after, so it stays "editor" in git. F1 network view shows the version. `RebuildContent` applies
+  `BuildScript.ApplyPlayerSettings` (productName Abandoned, Run In Background, Mono).
+- **Nettest** (`Scripts/Networking/NetTest/`, namespace Abandoned.Networking): `NetTestRunner` is created
+  only with `-nettest host|client` (`NetTestArgs`: -nettestPort, -nettestScenario, -nettestOut,
+  -nettestClients, -nettestTimeout); it hosts/joins over UTP on 127.0.0.1, runs the scenario, writes
+  `NetTestResult` JSON, quits 0/1. Host writes `<out>.ready` once listening.
+  **Adding a scenario:** implement `INetTestScenario` (RunHost/RunClient coroutines using
+  `NetTestContext`: `WaitFor`, `Collect`, `Receive`, `Snapshot`, `OwnPlayer`, `Fail/Abort/Note`, and
+  `NetTestChannel` named messages host<->clients), register it in `NetTestScenarios.CreateRegistry`, put
+  the verdict in a pure static check class (EditMode-testable like `BasicNetTestCheck`), add an in-process
+  PlayMode test like `NetTestScenarioTests`, then `Tools/unity.sh nettest <name>`. Context works per
+  NetworkManager (not `NetworkPlayer.Local`), so scenarios also run with 4 machines in one process.
+- 'basic': host waits for 4 players, sends "move"; each client walks 2 m forward with the real motor
+  (motor disabled, `Simulate` driven), stops, reports start/end; after 1.5 s settle every machine reports
+  what it sees; host checks 4 views x 4 players, movers >= 1.5 m, every copy within 0.25 m of its owner.
 
 ## M1 review (multi-agent, adversarially verified)
 4 reviewers (netcode, correctness, physics, rules) + 1 refuting verifier. Fixed before tagging:
@@ -273,5 +326,6 @@ and StructureTests split. 9 regression tests added.
   `all` passed. Possible flake; if it recurs, check Game/Logs/batch/PlayMode.log for a crash.
 
 ## Unity-generated churn left uncommitted on purpose
-DefaultVolumeProfile.asset, PC_RPAsset.asset, probuilder Settings.json,
+DefaultVolumeProfile.asset, PC_RPAsset.asset, UniversalRenderPipelineGlobalSettings.asset (player builds
+fill its runtime-settings list), probuilder Settings.json,
 ProjectSettings/Packages/com.unity.multiplayer.tools/, ProjectSettings/SceneTemplateSettings.json.

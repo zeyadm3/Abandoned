@@ -32,7 +32,7 @@ namespace Abandoned.Networking
         private string Describe()
         {
             NetworkManager nm = bootstrap.Manager;
-            text.Clear().AppendLine("<b>NETWORK</b>");
+            text.Clear().AppendLine($"<b>NETWORK</b>   v{VersionInfo.Display}");
             text.AppendLine($"State      {bootstrap.Status}");
             text.AppendLine($"Transport  {bootstrap.Transport}   Authority {(GameAuthority.IsHost ? "HOST" : "client")}");
             if (nm != null && nm.IsListening)

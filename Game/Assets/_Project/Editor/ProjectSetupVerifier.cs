@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -98,6 +99,14 @@ namespace Abandoned.EditorTools
             string scene = TestBuildingBuilder.ScenePath;
             Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Create Test Building)");
             Check(Array.Exists(EditorBuildSettings.scenes, s => s.path == scene), $"Scene {scene} in Build Settings");
+            Check(EditorBuildSettings.scenes.Select(s => s.path).SequenceEqual(BuildScenes.All) &&
+                  BuildScenes.All.All(File.Exists), "Build Settings scenes = BuildScenes.All, all exist (Tools/unity.sh rebuild)");
+
+            var buildInfo = AssetDatabase.LoadAssetAtPath<Abandoned.Core.BuildInfo>(BuildInfoAsset.Path);
+            Check(buildInfo != null && buildInfo.Commit == Abandoned.Core.BuildInfo.EditorCommit,
+                $"BuildInfo {BuildInfoAsset.Path} exists and is unstamped (a failed build may have left it stamped)");
+            Check(PlayerSettings.GetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone) == ScriptingImplementation.Mono2x &&
+                  PlayerSettings.runInBackground, "Standalone: Mono backend, Run In Background (BuildScript.ApplyPlayerSettings)");
 
             var player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
             Check(player != null, $"Player prefab {PlayerPrefabBuilder.PrefabPath} (Tools/Abandoned/Create Player Prefab)");

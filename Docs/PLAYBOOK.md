@@ -314,7 +314,13 @@ Implement the Steam TransportMode with Facepunch.Steamworks + Facepunch Transpor
 App ID 480. Friends-only lobby, invite via Steam overlay, join from invite, member
 list. Clear error if Steam isn't running.
 ```
-Test: make a build (File → Build Profiles), send it to a friend, invite through Steam.
+Test: make a build (`Tools/unity.sh build`, or Tools/Abandoned/Build/Both), send the zip to a friend,
+invite through Steam.
+
+**Build + multi-process test (added in the autonomous build as task 3.3)**
+`Tools/unity.sh build` makes zipped Mac + Windows Mono builds; `Tools/unity.sh nettest [scenario]`
+runs 1 host + 3 headless clients of a dev build on 127.0.0.1 and fails on any disagreement.
+Every networked feature (loot, shared carry, structure, disconnects) adds a nettest scenario.
 
 **3.6 Robustness**
 ```

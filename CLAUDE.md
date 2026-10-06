@@ -84,6 +84,8 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Testing
 - Batch-mode verification (Unity closed): Tools/unity.sh all. See Docs/PROGRESS.md.
+- Multi-process network test: Tools/unity.sh nettest [scenario] (1 host + 3 headless clients of a
+  dev Mac build over 127.0.0.1). Builds: Tools/unity.sh build (Mac + Windows zips).
 - Local co-op: Multiplayer Play Mode + Unity Transport, up to 4 players on one Mac.
 - Steam: Facepunch Transport, separate machines, Steam running, App ID 480.
 - No Windows PC here. A friend with his own Steam account is the Windows tester and
@@ -148,3 +150,8 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     an owner-authoritative NetworkTransform; grounded/sprint/crouch/ragdoll state is an owner-written
     NetworkVariable; remote ragdolls show a lying capsule, never a physics ragdoll. NGO scene
     management is off for now (each instance loads its own scene) until the HQ/run flow (M5).
+  - M3.3: version = Player Settings > Version, 0.<milestone>.<patch>; builds stamp the commit into
+    Data/Core/Resources/BuildInfo (reset after the build). Build scenes come only from
+    Editor/Build/BuildScenes.All. Shareable builds are Mono, universal Mac + Win64, with steam_appid.txt
+    beside (never inside) the executable; Release builds leave it out. Every networked feature gets a
+    nettest scenario (Scripts/Networking/NetTest, registry in NetTestScenarios).
