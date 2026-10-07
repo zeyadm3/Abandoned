@@ -49,7 +49,12 @@ TestMap remains untouched. Six implementation commits follow the requested order
    UI Toolkit screens. Health, stamina and flashlight battery display when relevant; carrying prompts
    and inventory stay accessible. A subtle danger indicator and readable dispatch messages carry pressure.
 
-Compilation/content generation/final build outcome is recorded below when complete.
+Final build entry (2026-10-08): compilation and `Tools/unity.sh rebuild-horror` succeeded;
+Mac universal and Windows x64 shareable Mono builds succeeded. Matching clean build stamp: `9e78ca2`.
+Archives: `~/Documents/Abandoned-builds/dev/Abandoned-0.12.0-9e78ca2-Mac.zip` (53 MB) and
+`Abandoned-0.12.0-9e78ca2-Windows.zip` (45 MB). Unity's generated cloud-settings change was restored;
+Windows was rebuilt to remove its transient dirty stamp. No gameplay/tests/screenshots/QA were run.
+The six stage commits are fd9a0c7, e49185c, 0d10746, 33921c9, 4be655b and 9e78ca2. Nothing pushed.
 
 ## Feel and presentation pass (2026-10-07)
 
