@@ -3,6 +3,8 @@ namespace Abandoned.Player
     public enum CosmeticKind
     {
         Coverall,
-        Hat
+        Hat,
+        // M10.6 (append only)
+        Accessory,
     }
 }

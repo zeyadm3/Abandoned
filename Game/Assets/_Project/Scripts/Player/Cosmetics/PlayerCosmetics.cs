@@ -25,7 +25,8 @@ namespace Abandoned.Player
         private Renderer[] coverall;
         private MaterialPropertyBlock block;
         private Transform hatAnchor;
-        private GameObject hat;
+        private GameObject hat, accessory;
+        private bool accessoryOnBody;
         private CosmeticChoice shown;
         private bool applied;
 
@@ -54,7 +55,7 @@ namespace Abandoned.Player
         {
             if (!IsOwner || catalog == null) return;
             choice.Value = outfit;
-            PlayerProfile.Wear(catalog.Coverall(outfit.Coverall)?.Id, catalog.Hat(outfit.Hat)?.Id);
+            PlayerProfile.Wear(catalog.Coverall(outfit.Coverall)?.Id, catalog.Hat(outfit.Hat)?.Id, catalog.Accessory(outfit.Accessory)?.Id);
             Apply();
         }
 
@@ -65,11 +66,14 @@ namespace Abandoned.Player
 
         private void LateUpdate()
         {
-            if (hat == null) return;
-            if (ragdollHead != null && ragdollHead.gameObject.activeInHierarchy)
+            if (hat == null && accessory == null) return;
+            bool down = ragdollHead != null && ragdollHead.gameObject.activeInHierarchy;
+            if (down)
                 hatAnchor.SetPositionAndRotation(ragdollHead.position + ragdollHead.up * 0.11f, ragdollHead.rotation);
             else if (body != null)
                 hatAnchor.SetPositionAndRotation(body.TransformPoint(Vector3.up) - body.up * 0.04f, body.rotation);
+            // A rucksack hung off a ragdoll's head would float: it stays out of sight until they're up.
+            if (accessory != null && accessoryOnBody && accessory.activeSelf == down) accessory.SetActive(!down);
         }
 
         private void Apply()
@@ -89,15 +93,23 @@ namespace Abandoned.Player
             }
 
             if (hat != null) Destroy(hat);
-            hat = null;
-            CosmeticDefinition hatDef = catalog.Hat(c.Hat);
-            if (hatDef == null || hatDef.HatPrefab == null) return;
-            hat = Instantiate(hatDef.HatPrefab, hatAnchor, false);
-            foreach (Collider col in hat.GetComponentsInChildren<Collider>()) Destroy(col);
-            // Inside your own head the hat would fill the screen when you look up; you still see its shadow.
-            if (IsOwner)
-                foreach (Renderer r in hat.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+            if (accessory != null) Destroy(accessory);
+            hat = Wearable(catalog.Hat(c.Hat));
+            CosmeticDefinition extra = catalog.Accessory(c.Accessory);
+            accessory = Wearable(extra);
+            accessoryOnBody = extra != null && extra.BodyMounted;
             LateUpdate();
+        }
+
+        private GameObject Wearable(CosmeticDefinition d)
+        {
+            if (d == null || d.HatPrefab == null) return null;
+            GameObject worn = Instantiate(d.HatPrefab, hatAnchor, false);
+            foreach (Collider col in worn.GetComponentsInChildren<Collider>()) Destroy(col);
+            // Inside your own head it would fill the screen when you look around; you still see its shadow.
+            if (IsOwner)
+                foreach (Renderer r in worn.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+            return worn;
         }
 
 #if UNITY_EDITOR

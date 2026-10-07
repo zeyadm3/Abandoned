@@ -10,16 +10,21 @@ namespace Abandoned.Player
     {
         [SerializeField] private List<CosmeticDefinition> coveralls = new();
         [SerializeField] private List<CosmeticDefinition> hats = new();
+        [Tooltip("Index 0 should be \"none\" (what a new player wears).")]
+        [SerializeField] private List<CosmeticDefinition> accessories = new();
         [Tooltip("Index of the hat a new player wears.")]
         [SerializeField] private int defaultHat = 1;
 
         public IReadOnlyList<CosmeticDefinition> Coveralls => coveralls;
         public IReadOnlyList<CosmeticDefinition> Hats => hats;
+        public IReadOnlyList<CosmeticDefinition> Accessories => accessories;
         public int DefaultHat => defaultHat;
 
         public CosmeticDefinition Coverall(int index) => index >= 0 && index < coveralls.Count ? coveralls[index] : coveralls.Count > 0 ? coveralls[0] : null;
 
         public CosmeticDefinition Hat(int index) => index >= 0 && index < hats.Count ? hats[index] : null;
+
+        public CosmeticDefinition Accessory(int index) => index >= 0 && index < accessories.Count ? accessories[index] : null;
 
         public static int IndexOf(IReadOnlyList<CosmeticDefinition> list, string id)
         {
@@ -30,10 +35,11 @@ namespace Abandoned.Player
         /// <summary>What this player wears: their saved picks, if still unlocked, else the defaults.</summary>
         public CosmeticChoice FromProfile()
         {
-            int c = IndexOf(coveralls, PlayerProfile.Coverall), h = IndexOf(hats, PlayerProfile.Hat);
+            int c = IndexOf(coveralls, PlayerProfile.Coverall), h = IndexOf(hats, PlayerProfile.Hat), a = IndexOf(accessories, PlayerProfile.Accessory);
             if (c < 0 || !PlayerProfile.Unlocked(coveralls[c])) c = 0;
             if (h < 0 || !PlayerProfile.Unlocked(hats[h])) h = Mathf.Clamp(defaultHat, 0, Mathf.Max(0, hats.Count - 1));
-            return new CosmeticChoice((byte)c, (byte)h);
+            if (a < 0 || !PlayerProfile.Unlocked(accessories[a])) a = 0;
+            return new CosmeticChoice((byte)c, (byte)h, (byte)a);
         }
 
         public void Validate(List<string> errors)
@@ -48,13 +54,20 @@ namespace Abandoned.Player
                 else if (d.HatPrefab == null && d.Id != "none") errors.Add($"{name}: hat '{d.Id}' has no model.");
             }
             if (defaultHat < 0 || defaultHat >= hats.Count) errors.Add($"{name}: the default hat isn't in the list.");
+            if (accessories.Count > 255) errors.Add($"{name}: at most 255 accessories (byte indices).");
+            foreach (CosmeticDefinition d in accessories)
+            {
+                if (d == null || d.Kind != CosmeticKind.Accessory || !ids.Add("a:" + d.Id)) errors.Add($"{name}: an accessory slot is empty, not an accessory, or a duplicate id.");
+                else if (d.HatPrefab == null && d.Id != "none") errors.Add($"{name}: accessory '{d.Id}' has no model.");
+            }
         }
 
 #if UNITY_EDITOR
-        public void EditorSet(List<CosmeticDefinition> coverallList, List<CosmeticDefinition> hatList, int defaultHatIndex)
+        public void EditorSet(List<CosmeticDefinition> coverallList, List<CosmeticDefinition> hatList, List<CosmeticDefinition> accessoryList, int defaultHatIndex)
         {
             coveralls = coverallList;
             hats = hatList;
+            accessories = accessoryList;
             defaultHat = defaultHatIndex;
         }
 #endif

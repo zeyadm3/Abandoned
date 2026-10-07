@@ -14,8 +14,10 @@ namespace Abandoned.Player
         [field: SerializeField] public CosmeticKind Kind { get; private set; }
         [field: Tooltip("Coverall colour.")]
         [field: SerializeField] public Color Color { get; private set; } = Color.white;
-        [field: Tooltip("Hat model, origin at the bottom centre (sits on the crown of the head). Empty = no hat.")]
+        [field: Tooltip("Hat or accessory model, origin at the crown of the head (a hat sits on it; face and back pieces are offset from it). Empty = none.")]
         [field: SerializeField] public GameObject HatPrefab { get; private set; }
+        [field: Tooltip("Accessory worn on the body (a rucksack), not the head: hidden while its wearer is down.")]
+        [field: SerializeField] public bool BodyMounted { get; private set; }
 
         [field: Header("Unlock (all must be met)")]
         [field: SerializeField, Min(0)] public int RequiredRuns { get; private set; }
@@ -36,8 +38,10 @@ namespace Abandoned.Player
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(string id, string displayName, CosmeticKind kind, Color color, GameObject hat, int runs, int escapes, long haul)
+        public void EditorSetup(string id, string displayName, CosmeticKind kind, Color color, GameObject hat, int runs, int escapes, long haul,
+            bool bodyMounted = false)
         {
+            BodyMounted = bodyMounted;
             Id = id;
             DisplayName = displayName;
             Kind = kind;

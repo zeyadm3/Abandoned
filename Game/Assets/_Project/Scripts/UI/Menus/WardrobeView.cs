@@ -8,13 +8,13 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The wardrobe (GDD 18): pick a coverall colour and a hat; locked ones say what unlocks them.
+    /// The wardrobe (GDD 18): pick a coverall colour, a hat and an accessory; locked ones say what unlocks them.
     /// The crew sees the change at once. Built from the local player's catalog when opened.
     /// </summary>
     public class WardrobeView
     {
         private readonly MenuUi menu;
-        private readonly VisualElement suits, hats;
+        private readonly VisualElement suits, hats, extras;
         private readonly Label progress;
 
         public VisualElement Root { get; }
@@ -39,6 +39,10 @@ namespace Abandoned.UI
             hats = new VisualElement();
             hats.AddToClassList("wrap");
             scroll.Add(hats);
+            MenuKit.Text(scroll, "ACCESSORIES", "section");
+            extras = new VisualElement();
+            extras.AddToClassList("wrap");
+            scroll.Add(extras);
             MenuKit.Button(panel, "Done", menu.Back, SoundId.UiBack);
         }
 
@@ -48,11 +52,13 @@ namespace Abandoned.UI
             PlayerCosmetics me = NetworkPlayer.Local != null ? NetworkPlayer.Local.GetComponent<PlayerCosmetics>() : null;
             suits.Clear();
             hats.Clear();
+            extras.Clear();
             progress.text = $"Runs {PlayerProfile.Runs}   made it out {PlayerProfile.Escapes}   lifetime haul ${PlayerProfile.Haul:N0}";
             if (me == null || me.Catalog == null) return;
             CosmeticChoice now = me.Choice;
-            Fill(suits, me.Catalog.Coveralls, now.Coverall, i => me.Wear(new CosmeticChoice((byte)i, me.Choice.Hat)), swatch: true);
-            Fill(hats, me.Catalog.Hats, now.Hat, i => me.Wear(new CosmeticChoice(me.Choice.Coverall, (byte)i)), swatch: false);
+            Fill(suits, me.Catalog.Coveralls, now.Coverall, i => me.Wear(me.Choice.WithCoverall(i)), swatch: true);
+            Fill(hats, me.Catalog.Hats, now.Hat, i => me.Wear(me.Choice.WithHat(i)), swatch: false);
+            Fill(extras, me.Catalog.Accessories, now.Accessory, i => me.Wear(me.Choice.WithAccessory(i)), swatch: false);
         }
 
         private void Fill(VisualElement parent, IReadOnlyList<CosmeticDefinition> items, int worn, System.Action<int> wear, bool swatch)
