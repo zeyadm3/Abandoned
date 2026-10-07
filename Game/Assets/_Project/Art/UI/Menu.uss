@@ -1424,3 +1424,44 @@
 }
 
 .wardrobe__choices { flex-grow: 1; max-height: 560px; }
+
+/* ---- The drive between levels (UI step 9) ---- */
+
+.travel {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgb(6, 7, 8);
+    justify-content: space-between;
+}
+
+.travel__tape { height: 14px; }
+.travel__middle { flex-grow: 1; align-items: center; justify-content: center; }
+.travel__van .icon { -unity-background-image-tint-color: var(--c-accent); width: 72px; height: 72px; }
+
+.travel__where {
+    -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 64px;
+    color: var(--c-text);
+    margin-top: 18px;
+}
+
+.travel__terms {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--c-accent);
+    margin-top: 6px;
+}
+
+.travel__road {
+    width: 420px; height: 4px;
+    margin-top: 26px;
+    background-color: var(--c-panel-3);
+}
+
+.travel__tip {
+    font-size: 19px;
+    color: var(--c-dim);
+    -unity-text-align: middle-center;
+    margin-bottom: 30px;
+}
