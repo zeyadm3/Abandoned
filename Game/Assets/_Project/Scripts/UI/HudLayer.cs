@@ -14,7 +14,12 @@ namespace Abandoned.UI
 
         public static VisualElement Root => root != null && root.panel != null ? root : null;
 
-        internal static void Attach(VisualElement layer) => root = layer;
+        internal static void Attach(VisualElement layer)
+        {
+            root = layer;
+            world = null;
+            root.AddToClassList("horror-hud");
+        }
 
         /// <summary>A new element on the HUD (or null when there's no HUD).</summary>
         public static T Add<T>(T element, params string[] classes) where T : VisualElement

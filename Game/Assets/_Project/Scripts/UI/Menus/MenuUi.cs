@@ -32,6 +32,8 @@ namespace Abandoned.UI
         private PauseMenuView pause;
         private SubtitleView subtitles;
         private VisualElement hud;
+        private VisualElement wear;
+        private float nextCrtTwitch, crtTwitchUntil;
         private WardrobeView wardrobe;
         private HowToPlayView howToPlay;
         private DemoEndView demoEnd;
@@ -45,6 +47,7 @@ namespace Abandoned.UI
         public SteamLobby Lobby => lobby;
         public Font TitleFont => titleFont;
         public SubtitleView Subtitles => subtitles;
+        public VisualElement Surface => document != null ? document.rootVisualElement : null;
 
         private PanelSettings scaledPanel;
 
@@ -97,10 +100,15 @@ namespace Abandoned.UI
             achievements = new AchievementsView(this);
             views[MenuScreen.Achievements] = achievements.Root;
             foreach (VisualElement v in views.Values) root.Add(v);
+            wear = new VisualElement { pickingMode = PickingMode.Ignore };
+            wear.AddToClassList("horror-grime");
+            root.Add(wear);
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
             SubtitleFeed.Heard += subtitles.Add;
             Showing = (MenuScreen)(-1);
+            nextCrtTwitch = Time.unscaledTime + 11f;
+            if (GetComponent<HorrorRunHud>() == null) gameObject.AddComponent<HorrorRunHud>();
         }
 
         private void OnDisable()
@@ -129,6 +137,14 @@ namespace Abandoned.UI
             if (baseScreen == MenuScreen.None) pushed.Clear();
             MenuScreen top = pushed.Count > 0 ? pushed.Peek() : baseScreen;
             if (top != Showing) Show(top);
+            bool menuVisible = top != MenuScreen.None || CursorOwner.UiActive;
+            MenuKit.Show(wear, menuVisible);
+            if (menuVisible && Time.unscaledTime >= nextCrtTwitch)
+            {
+                crtTwitchUntil = Time.unscaledTime + 0.07f;
+                nextCrtTwitch = Time.unscaledTime + Random.Range(9f, 17f);
+            }
+            document.rootVisualElement.EnableInClassList("crt-twitch", menuVisible && Time.unscaledTime < crtTwitchUntil);
             // During a game the menu needs the mouse; offline there's no player holding it anyway.
             CursorOwner.Set(this, running && top != MenuScreen.None);
             if (!running && Cursor.lockState != CursorLockMode.None)

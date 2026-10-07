@@ -1,27 +1,27 @@
-/* ABANDONED UI theme (UI overhaul step 1): a cheap salvage company. Hazard yellow on near-black, condensed
-   display type for headings and buttons, a readable sans for everything small, the stencil only for big titles.
+/* ABANDONED: worn depot paperwork, tarnished metal and failing CRTs. Muted amber on charcoal, condensed
+   display type for headings and buttons, a readable sans for everything small, stencil only for big titles.
    Fonts (OFL): Barlow (body, set on the root from code), Barlow Condensed (display), Saira Stencil One (titles),
    IBM Plex Mono (receipts), VT323 (the HQ terminal). Sizes are at the 1920x1080 reference (scaled by height). */
 
 :root {
-    --c-ink: rgb(10, 11, 12);
-    --c-panel: rgba(14, 15, 17, 0.94);
-    --c-panel-2: rgb(28, 30, 33);
-    --c-panel-3: rgb(40, 43, 47);
-    --c-line: rgba(255, 255, 255, 0.09);
-    --c-accent: rgb(255, 194, 26);
-    --c-accent-hot: rgb(255, 220, 110);
-    --c-accent-ink: rgb(20, 17, 8);
-    --c-text: rgb(240, 236, 224);
-    --c-dim: rgb(165, 161, 150);
-    --c-faint: rgba(240, 236, 224, 0.45);
-    --c-good: rgb(126, 224, 126);
-    --c-bad: rgb(255, 92, 74);
-    --c-money: rgb(150, 232, 110);
-    --c-paper: rgb(238, 231, 212);
-    --c-paper-ink: rgb(42, 38, 32);
-    --c-crt: rgb(255, 176, 0);
-    --c-crt-bg: rgb(20, 12, 2);
+    --c-ink: rgb(11, 13, 13);
+    --c-panel: rgba(22, 25, 24, 0.97);
+    --c-panel-2: rgb(30, 34, 32);
+    --c-panel-3: rgb(45, 49, 44);
+    --c-line: rgba(191, 183, 156, 0.2);
+    --c-accent: rgb(188, 161, 103);
+    --c-accent-hot: rgb(218, 198, 147);
+    --c-accent-ink: rgb(27, 26, 21);
+    --c-text: rgb(221, 219, 201);
+    --c-dim: rgb(160, 164, 151);
+    --c-faint: rgba(201, 204, 185, 0.65);
+    --c-good: rgb(143, 165, 134);
+    --c-bad: rgb(202, 101, 84);
+    --c-money: rgb(171, 181, 154);
+    --c-paper: rgb(189, 180, 154);
+    --c-paper-ink: rgb(34, 36, 30);
+    --c-crt: rgb(194, 170, 112);
+    --c-crt-bg: rgb(14, 20, 16);
 }
 
 /* ---- Type ---- */
@@ -109,7 +109,7 @@
 
 .panel {
     background-color: var(--c-panel);
-    border-top-width: 6px;
+    border-top-width: 2px;
     border-top-color: var(--c-accent);
     padding: 30px 40px 30px 40px;
     width: 660px;
@@ -161,7 +161,7 @@
 
 .menu-button:hover, .menu-button:focus {
     color: var(--c-accent);
-    translate: 18px 0;
+    translate: 6px 0;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -1492,3 +1492,130 @@
 }
 
 .chat__field { margin-top: 6px; }
+
+/* 0.12: a worn depot ledger and failing equipment. Small text stays clean and still. */
+.panel, .hud-card, .crt, .board__cork {
+    background-image: url("HorrorGrime.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: var(--c-line);
+    border-right-color: var(--c-line);
+    border-bottom-color: var(--c-line);
+}
+
+.panel { border-top-color: rgb(124, 113, 85); }
+.backdrop { background-color: rgba(5, 8, 8, 0.7); }
+.backdrop--dim { background-color: rgba(5, 8, 8, 0.88); }
+.main__shade { width: 52%; background-color: rgba(5, 8, 8, 0.84); }
+.main__logo { color: rgb(202, 204, 187); letter-spacing: 7px; }
+.subtitle { color: var(--c-dim); letter-spacing: 4px; }
+.title { text-shadow: 0 3px 0 rgba(0, 0, 0, 0.7); }
+.heading { letter-spacing: 3px; }
+.menu-button { letter-spacing: 2px; }
+.menu-button--small { border-radius: 0; border-width: 1px; border-color: var(--c-line); }
+.menu-button:focus, .menu-button--small:focus { border-bottom-width: 2px; border-bottom-color: var(--c-accent-hot); }
+.menu-button:disabled { opacity: 0.55; }
+.hazard { background-color: rgb(143, 130, 88); height: 6px; }
+.hazard__bar { background-color: rgb(24, 28, 26); }
+.main__tape { height: 5px; width: 390px; }
+.tag, .stamp, .slot, .speaker-mark { border-radius: 0; }
+.stamp { rotate: -5deg; border-width: 3px; }
+.keycap { border-radius: 1px; background-color: rgb(186, 189, 171); border-bottom-color: rgb(107, 113, 101); }
+.keycap--mouse { background-color: rgba(0, 0, 0, 0); }
+.slot { border-width: 1px; border-color: rgba(177, 184, 168, 0.25); }
+.slot--active { border-color: var(--c-accent); translate: 0 -3px; }
+.loot-tag { border-radius: 0; border-bottom-width: 2px; }
+.loot-tag--t3 { border-bottom-color: rgb(180, 129, 86); }
+.loot-tag--t3 .loot-tag__value { color: rgb(191, 147, 105); }
+.scan-ring { border-color: rgba(190, 177, 129, 0.7); border-width: 2px; }
+.hud-prompt--hint, .hud-prompt-row--hint .hud-prompt__text { color: rgb(205, 145, 116); }
+.ghost-bar .hud-prompt__text, .hud-ghost { color: rgb(174, 190, 184); }
+.death-card { background-color: rgba(21, 10, 9, 0.5); }
+.death-card__title { font-size: 110px; letter-spacing: 12px; }
+.death-card__cause { font-size: 30px; }
+.truck-banner { background-color: rgba(8, 13, 12, 0.88); }
+.truck-banner__title { font-size: 32px; }
+.truck-banner__count { font-size: 84px; }
+.toast { border-left-width: 2px; background-color: rgba(18, 25, 22, 0.94); }
+.toast__title { font-size: 20px; }
+.toast__body { color: rgb(182, 187, 171); }
+.receipt, .sheet { background-image: url("HorrorPaper.png"); -unity-background-scale-mode: stretch-to-fill; }
+.receipt { border-bottom-color: rgb(118, 118, 96); rotate: -0.5deg; }
+.sheet { border-bottom-color: rgb(112, 112, 94); }
+.receipt__small, .receipt__rule, .receipt__was, .sheet__place, .sheet__quip, .sheet__fact-label { color: rgb(76, 82, 65); }
+.receipt__line-value--damaged, .sheet__fact-value--warn { color: rgb(122, 39, 28); }
+.receipt__stamp { background-color: rgba(186, 180, 156, 0.25); border-width: 3px; }
+.board__cork { background-color: rgb(59, 63, 47); border-color: rgb(35, 42, 34); border-radius: 0; }
+.sheet__pin { background-color: rgb(121, 78, 56); border-bottom-color: rgb(65, 49, 36); }
+.crt { background-color: rgb(30, 35, 30); border-radius: 6px; }
+.crt__screen { border-color: rgb(66, 76, 57); border-radius: 3px; }
+.crt__scanlines { background-image: url("HorrorScanlines.png"); background-size: 4px 8px; }
+.crt__title, .crt__line, .crt__rule, .crt__name, .crt__note, .crt__price, .crt__about, .crt__cursor, .crt__button {
+    text-shadow: 0 0 3px rgba(169, 180, 123, 0.35);
+}
+.crt__rule { color: rgba(188, 171, 118, 0.65); }
+.crt__row--locked .crt__name, .crt__row--locked .crt__price { color: rgb(112, 116, 91); }
+.crt__row--cant .crt__price, .crt__note { color: rgb(145, 147, 108); }
+.crt-twitch .title { text-shadow: 1px 3px 0 rgba(110, 133, 109, 0.5); }
+.crt-twitch .crt__screen { border-top-color: rgb(104, 109, 77); }
+.horror-grime {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background-image: url("HorrorGrime.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+.player-stamina { width: 184px; bottom: 28px; }
+.player-stamina__label { font-size: 13px; letter-spacing: 2px; color: rgb(183, 190, 173); }
+.player-stamina .bar { height: 3px; border-width: 0; background-color: rgba(19, 26, 22, 0.84); }
+.player-vital { margin-bottom: 8px; }
+.player-vital__bar { margin-top: 0; }
+.player-load { font-size: 13px; max-width: 240px; white-space: normal; }
+.player-slots { opacity: 0.92; }
+.hud-voice { bottom: 146px; font-size: 15px; color: var(--c-dim); }
+.scan-ready { bottom: 22px; left: 50%; translate: -50% 0; }
+.scan-ready__text { font-size: 13px; }
+.run-clock { top: 74px; border-radius: 0; }
+.run-clock__time { font-size: 18px; }
+.run-clock--late .run-clock__time { color: var(--c-bad); font-size: 18px; }
+.horror-danger {
+    position: absolute;
+    right: 30px; top: 24px;
+    width: 150px;
+    padding: 7px 10px 7px 10px;
+    background-color: rgba(8, 16, 13, 0.65);
+}
+.horror-danger__label {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: rgb(159, 172, 152);
+}
+.horror-danger__marks { flex-direction: row; margin-top: 6px; margin-bottom: 5px; }
+.horror-danger__mark { width: 18px; height: 3px; margin-right: 3px; background-color: rgb(49, 62, 50); }
+.horror-danger__mark--on { background-color: rgb(169, 156, 108); }
+.horror-danger__progress { height: 2px; border-width: 0; background-color: rgb(32, 43, 35); }
+.horror-danger--final .horror-danger__label { color: rgb(212, 137, 120); }
+.horror-danger--final .horror-danger__mark--on { background-color: var(--c-bad); }
+.horror-radio {
+    position: absolute;
+    left: 50%; bottom: 56px;
+    translate: -50% 0;
+    width: 66%; max-width: 850px;
+    padding: 10px 18px 12px 18px;
+    background-color: rgba(9, 16, 13, 0.94);
+    border-left-width: 2px;
+    border-left-color: var(--c-accent);
+    align-items: center;
+}
+.horror-radio__caption {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--c-accent);
+    margin-bottom: 4px;
+}
+.horror-radio__line { font-size: 18px; white-space: normal; color: rgb(218, 222, 200); -unity-text-align: middle-center; }
+.horror-radio--urgent { border-left-color: var(--c-bad); background-color: rgba(35, 14, 10, 0.96); }
+.horror-radio--urgent .horror-radio__caption { color: rgb(227, 145, 123); }

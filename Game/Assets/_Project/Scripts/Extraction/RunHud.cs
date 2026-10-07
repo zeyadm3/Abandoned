@@ -28,7 +28,7 @@ namespace Abandoned.Extraction
                 Build();
             }
             MenuKit.Show(top, showing && LootTags.ValuesVisible);
-            MenuKit.Show(clock, showing);
+            MenuKit.Show(clock, showing && LootTags.ValuesVisible);
             if (!showing)
             {
                 MenuKit.Show(leaving, false);

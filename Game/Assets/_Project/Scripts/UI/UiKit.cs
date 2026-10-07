@@ -161,7 +161,7 @@ namespace Abandoned.UI
         /// <summary>A quick wobble (a button being hovered, a value changing): rotation only, so layout and transitions stay put.</summary>
         public static void Jolt(VisualElement e)
         {
-            float[] steps = { -1.6f, 1.2f, -0.6f, 0f };
+            float[] steps = { -0.45f, 0.3f, -0.1f, 0f };
             for (int i = 0; i < steps.Length; i++)
             {
                 float angle = steps[i];

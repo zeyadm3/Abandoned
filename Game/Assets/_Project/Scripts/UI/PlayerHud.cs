@@ -25,47 +25,86 @@ namespace Abandoned.UI
         [SerializeField] private PlayerEquipment equipment;
         [SerializeField] private PlayerInputReader inputReader;
 
-        private VisualElement staminaBlock, staminaBar, slots, pocketsRow;
-        private Label staminaLabel, load, pocketsDetail;
+        private VisualElement staminaBlock, staminaBar, healthRow, healthBar, batteryRow, batteryBar, slots, pocketsRow;
+        private Label staminaLabel, healthLabel, batteryLabel, load, pocketsDetail;
         private readonly VisualElement[] hands = new VisualElement[2];
         private readonly List<VisualElement> pockets = new();
         private readonly StringBuilder key = new();
         private string shownKey;
+        private float showSlotsUntil;
+        private int shownActiveSlot = -1;
 
         private bool Mine => player != null && player.IsSpawned && player.IsOwner;
 
         private void Update()
         {
             bool show = Mine && !player.IsDead;
-            if (staminaBlock == null)
+            if (staminaBlock == null || staminaBlock.panel == null)
             {
                 if (!show || HudLayer.Root == null) return;
                 Build();
             }
             MenuKit.Show(staminaBlock, show);
-            MenuKit.Show(slots, show);
             if (!show)
             {
+                MenuKit.Show(slots, false);
                 MenuKit.Show(pocketsDetail, false);
                 return;
             }
 
             bool depleted = stamina.Max > 0f && stamina.Current < stamina.Max - 0.01f;
+            bool hurt = player.Health < player.MaxHealth - 0.01f;
+            MenuKit.Show(healthRow, hurt);
+            if (hurt)
+            {
+                Set(healthLabel, $"VITALS  {Mathf.CeilToInt(player.Health):0}");
+                UiKit.SetBar(healthBar, player.Health01, player.Health01 <= player.HealthConfig.LowHealthThreshold ? "bad" : null);
+            }
             MenuKit.Show(staminaLabel, depleted);
             MenuKit.Show(staminaBar, depleted);
+            Set(staminaLabel, stamina.IsExhausted ? "BREATH  /  EXHAUSTED" : "BREATH");
             UiKit.SetBar(staminaBar, stamina.Max > 0f ? stamina.Current / stamina.Max : 1f, stamina.IsExhausted ? "bad" : null);
+            bool batteryRelevant = equipment.Has(EquipmentKind.Flashlight) && (equipment.LightOn || equipment.Battery01 < 0.25f);
+            MenuKit.Show(batteryRow, batteryRelevant);
+            if (batteryRelevant)
+            {
+                Set(batteryLabel, equipment.Battery01 <= 0f ? "LIGHT  /  NO POWER" : $"LIGHT  {Mathf.CeilToInt(equipment.Battery01 * 100f)}%");
+                UiKit.SetBar(batteryBar, equipment.Battery01, equipment.Battery01 < 0.25f ? "bad" : null);
+            }
             Load();
             Slots();
-            bool detail = inputReader.Current.InventoryHeld;
+            PlayerInputFrame input = inputReader.Current;
+            if (shownActiveSlot != equipment.State.Active || input.Slot1Pressed || input.Slot2Pressed || input.UsePressed)
+            {
+                shownActiveSlot = equipment.State.Active;
+                showSlotsUntil = Time.time + 3f;
+            }
+            bool detail = input.InventoryHeld;
+            MenuKit.Show(slots, detail || input.UseHeld || Time.time < showSlotsUntil);
             MenuKit.Show(pocketsDetail, detail);
             if (detail) Set(pocketsDetail, PocketsText());
         }
 
         private void Build()
         {
+            HudLayer.Remove(staminaBlock);
+            HudLayer.Remove(slots);
+            HudLayer.Remove(pocketsDetail);
+            pockets.Clear();
+            shownKey = null;
             staminaBlock = HudLayer.Add(new VisualElement(), "player-stamina");
+            healthRow = new VisualElement { pickingMode = PickingMode.Ignore };
+            healthRow.AddToClassList("player-vital");
+            staminaBlock.Add(healthRow);
+            healthLabel = Text(healthRow, "VITALS", "player-stamina__label");
+            healthBar = UiKit.Bar(healthRow, "player-vital__bar");
             staminaLabel = Text(staminaBlock, "STAMINA", "player-stamina__label");
             staminaBar = UiKit.Bar(staminaBlock);
+            batteryRow = new VisualElement { pickingMode = PickingMode.Ignore };
+            batteryRow.AddToClassList("player-vital");
+            staminaBlock.Add(batteryRow);
+            batteryLabel = Text(batteryRow, "LIGHT", "player-stamina__label");
+            batteryBar = UiKit.Bar(batteryRow, "player-vital__bar");
             load = Text(staminaBlock, "", "player-load");
             slots = HudLayer.Add(new VisualElement(), "player-slots");
             for (int i = 0; i < 2; i++) hands[i] = Slot(slots, $"{i + 1}", hand: true);
@@ -156,9 +195,9 @@ namespace Abandoned.UI
             {
                 int value = item.TryGetComponent(out IValuable v) ? v.CurrentValue : 0;
                 total += value;
-                text.AppendLine(LootTags.ValuesVisible ? $"{item.DisplayName}   <color=#96e86e>${value:N0}</color>" : item.DisplayName);
+                text.AppendLine(LootTags.ValuesVisible ? $"{item.DisplayName}   <color=#abb59a>${value:N0}</color>" : item.DisplayName);
             }
-            if (LootTags.ValuesVisible) text.AppendLine($"<b>TOTAL</b>  <color=#96e86e>${total:N0}</color>");
+            if (LootTags.ValuesVisible) text.AppendLine($"<b>TOTAL</b>  <color=#abb59a>${total:N0}</color>");
             text.Append($"<color=#a5a196>{InputBindings.Display("Drop")} while holding {InputBindings.Display("Inventory")}: drop the last one</color>");
             return text.ToString();
         }
