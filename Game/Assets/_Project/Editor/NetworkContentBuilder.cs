@@ -17,6 +17,8 @@ namespace Abandoned.EditorTools
         public const string LootNetConfigPath = "Assets/_Project/Data/Networking/LootNetConfig.asset";
         public const string NetworkPrefabFolder = "Assets/_Project/Prefabs/Network";
         public const string StructureNetPrefabPath = NetworkPrefabFolder + "/StructureNet.prefab";
+        public const string RunStatePrefabPath = NetworkPrefabFolder + "/RunState.prefab";
+        public const string ExtractionConfigPath = "Assets/_Project/Data/Extraction/ExtractionConfig.asset";
 
         /// <summary>NGO's own generated list; NGO adds network prefabs to it on import, we make sure of ours.</summary>
         public const string PrefabListPath = "Assets/DefaultNetworkPrefabs.asset";
@@ -62,6 +64,24 @@ namespace Abandoned.EditorTools
             return prefab;
         }
 
+        /// <summary>The run's state object (host-spawned by RunDirector). Created when missing, like StructureNet.</summary>
+        public static GameObject CreateRunStatePrefab()
+        {
+            var config = LoadOrCreateAsset<Abandoned.Extraction.ExtractionConfig>(ExtractionConfigPath);
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath);
+            if (existing != null && existing.GetComponent<Abandoned.Extraction.RunState>() != null) return existing;
+            var root = new GameObject("RunState");
+            var networkObject = root.AddComponent<Unity.Netcode.NetworkObject>();
+            networkObject.DontDestroyWithOwner = true;
+            networkObject.SynchronizeTransform = false;
+            SerializedWiring.Set(root.AddComponent<Abandoned.Extraction.RunState>(), "config", config);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, RunStatePrefabPath);
+            Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
+            AssetDatabase.SaveAssets();
+            return prefab;
+        }
+
         /// <summary>Makes sure every network prefab we build is in NGO's prefab list (after the prefabs exist).</summary>
         public static NetworkPrefabsList RegisterNetworkPrefabs()
         {
@@ -73,6 +93,7 @@ namespace Abandoned.EditorTools
             }
             var prefabs = new List<GameObject> { AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath) };
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(StructureNetPrefabPath));
+            prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath));
             foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { LootPrefabGenerator.Folder }))
                 prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));
             foreach (GameObject prefab in prefabs)

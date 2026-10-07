@@ -21,6 +21,9 @@ namespace Abandoned.Interaction
 
         public Grabbable Target { get; private set; }
 
+        /// <summary>A non-loot thing in reach to press E on (truck ignition...), when no loot is targeted.</summary>
+        public IUsable UseTarget { get; private set; }
+
         /// <summary>0–1 throw charge while left mouse is held with something in hand.</summary>
         public float Charge { get; private set; }
 
@@ -31,6 +34,7 @@ namespace Abandoned.Interaction
         private void ResetCharge()
         {
             Target = null;
+            UseTarget = null;
             charging = false;
             Charge = 0f;
         }
@@ -47,11 +51,14 @@ namespace Abandoned.Interaction
             if (!input.UseHeld) suppressUseUntilRelease = false;
             bool useHeld = input.UseHeld && !suppressUseUntilRelease;
 
+            UseTarget = null;
             Target = carrier.Held == null ? FindTarget() : null;
             IInteractionHandler handler = InteractionService.Handler;
 
             if (input.InteractPressed && carrier.Held == null && Target != null)
                 handler.RequestPickup(carrier, Target);
+            else if (input.InteractPressed && UseTarget != null && UseTarget.UsePrompt(gameObject) != null)
+                UseTarget.Use(gameObject);
 
             if (carrier.Held == null)
             {
@@ -93,11 +100,13 @@ namespace Abandoned.Interaction
                 carrier.Config.Reach, ~0, QueryTriggerInteraction.Ignore);
             float best = float.MaxValue;
             Grabbable found = null;
+            UseTarget = null;
             for (int i = 0; i < count; i++)
             {
                 if (hits[i].collider == carrier.Controller || hits[i].distance >= best) continue;
                 best = hits[i].distance;
                 found = hits[i].rigidbody != null ? hits[i].rigidbody.GetComponent<Grabbable>() : null;
+                UseTarget = found == null ? hits[i].collider.GetComponentInParent<IUsable>() : null;
             }
             return found != null && found.IsAvailable ? found : null;
         }

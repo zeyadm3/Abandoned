@@ -32,6 +32,7 @@ namespace Abandoned.Interaction
             else if (interactor.Target != null && interactor.Target.Shared != null)
                 prompt = $"[E] Grab {Describe(interactor.Target)} - {SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers)}";
             else if (interactor.Target != null) prompt = $"[E] Pick up {Describe(interactor.Target)}";
+            else if (carrier.Held == null && interactor.UseTarget?.UsePrompt(interactor.gameObject) is string use) prompt = $"[E] {use}";
             else if (carrier.IsSharing) prompt = $"{carrier.Held.DisplayName}: {SharedCarryText.Of(carrier.Held.Shared)}   [RMB] let go";
             else if (carrier.IsDragging) prompt = $"Dragging {Describe(carrier.Held)}   [RMB] let go";
             else if (carrier.Held != null) prompt = $"Holding {Describe(carrier.Held)}   [LMB] throw   [RMB] drop";

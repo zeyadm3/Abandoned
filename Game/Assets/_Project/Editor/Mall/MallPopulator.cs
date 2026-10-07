@@ -57,6 +57,14 @@ namespace Abandoned.EditorTools
                 UnityEditor.AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath),
                 UnityEditor.AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath));
 
+            // The truck waits outside the loading bay door, ramp facing it (GDD 10).
+            TruckBuilder.Build(GreyboxFactory.Group("Truck", root), new Vector3(TilesX * Tile + 2f, 0f, 8.5f * Tile), Vector3.right);
+            var run = new GameObject("Run");
+            run.AddComponent<Abandoned.Extraction.RunDirector>().Setup(bootstrap,
+                UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.RunStatePrefabPath).GetComponent<Unity.Netcode.NetworkObject>(),
+                spawner);
+            run.AddComponent<Abandoned.Extraction.RunHud>();
+
             var debugViews = new GameObject("DebugViews");
             debugViews.AddComponent<NoiseDebugView>();
             debugViews.AddComponent<LootDebugView>();

@@ -29,6 +29,7 @@ namespace Abandoned.EditorTools
             StructureContentBuilder.CreateMissing();
             PlayerPrefabBuilder.Create();
             NetworkContentBuilder.CreateStructureNetPrefab();
+            NetworkContentBuilder.CreateRunStatePrefab();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestBuildingBuilder.Build();
             MallBuilder.Build();

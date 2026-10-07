@@ -41,6 +41,21 @@ namespace Abandoned.Audio
             return clip;
         }
 
+        private static AudioClip horn;
+
+        /// <summary>A truck's two-note horn (one blast; the truck repeats it while it waits).</summary>
+        public static AudioClip Horn()
+        {
+            if (horn != null) return horn;
+            horn = Build("Truck_Horn", 0.7f, t =>
+            {
+                float env = Mathf.Clamp01(t / 0.03f) * Mathf.Clamp01((0.7f - t) / 0.08f);
+                float a = Mathf.Sign(Mathf.Sin(2f * Mathf.PI * 330f * t)), b = Mathf.Sign(Mathf.Sin(2f * Mathf.PI * 415f * t));
+                return (a + b) * 0.18f * env;
+            });
+            return horn;
+        }
+
         /// <summary>A sliding, wobbling low tone with grit: timber under strain.</summary>
         private static AudioClip Creak(string name, float seconds, float startHz, float endHz)
         {
