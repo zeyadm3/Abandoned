@@ -138,7 +138,7 @@ namespace Abandoned.Networking
             if (ctx.Aborted) yield break;
 
             // The session is about to end, so ctx.WaitFor (which aborts on a lost session) can't be used.
-            NetworkBootstrap before = ctx.Bootstrap;
+            int before = UnityEngine.SceneManagement.SceneManager.GetActiveScene().handle;
             float end = Time.realtimeSinceStartup + MenuTimeout;
             while (Time.realtimeSinceStartup < end && !BackAtMenu(before)) yield return null;
             if (!BackAtMenu(before))
@@ -151,11 +151,12 @@ namespace Abandoned.Networking
             ctx.Note($"back at the menu: '{SessionEndNotice.Message}'");
         }
 
-        // A fresh scene (new bootstrap), offline, and it didn't auto-host.
-        private static bool BackAtMenu(NetworkBootstrap before)
+        // A fresh copy of the scene (the session itself persists), offline, and it didn't auto-host.
+        private static bool BackAtMenu(int sceneBefore)
         {
             NetworkBootstrap now = NetworkBootstrap.Instance;
-            return now != null && now != before && !now.IsRunning && SessionEndNotice.ReturnedFromSession;
+            return now != null && UnityEngine.SceneManagement.SceneManager.GetActiveScene().handle != sceneBefore
+                   && !now.IsRunning && SessionEndNotice.ReturnedFromSession;
         }
 
         private static Vector3 Flat(Vector3 v) => new(v.x, 0f, v.z);

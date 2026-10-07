@@ -23,7 +23,7 @@ namespace Abandoned.Networking
             NetworkManager manager = TryGetComponent(out StructureNetBinding binding) && binding.Manager != null
                 ? binding.Manager
                 : NetworkManager.Singleton;
-            if (manager == null || !manager.IsServer || !manager.IsListening || manager.ShutdownInProgress) return;
+            if (manager == null || !manager.IsServer || !manager.IsListening || manager.ShutdownInProgress || !SessionTravel.LevelReady) return;
             if (spawned != null && spawned.IsSpawned) return;
             spawned = manager.SpawnManager.InstantiateAndSpawn(syncPrefab);
         }

@@ -39,7 +39,7 @@ namespace Abandoned.Threats
             RunDirector.RunStarted -= OnRunStarted;
         }
 
-        private NetworkManager Manager => bootstrap != null ? bootstrap.Manager : null;
+        private NetworkManager Manager => NetworkBootstrap.Resolve(bootstrap) is NetworkBootstrap b ? b.Manager : null;
         private bool IsHost => Manager != null && Manager.IsServer && Manager.IsListening;
 
         private void Update()

@@ -26,8 +26,10 @@ namespace Abandoned.Networking
         [SerializeField] private NetworkManager networkManager;
         [SerializeField] private UnityTransport unityTransport;
         [SerializeField] private FacepunchTransport facepunchTransport;
-        [Tooltip("Scene bootstraps: replace a NetworkManager left over from a previous scene and apply the auto-host/-connect launch rules.")]
+        [Tooltip("Scene bootstraps: the first one becomes the game's persistent session (it survives level loads); later levels' copies remove themselves. Also applies the auto-host/-connect launch rules.")]
         [SerializeField] private bool sceneSession = true;
+        [Tooltip("Spawned when hosting starts: keeps every machine on the same level (6.0 session travel).")]
+        [OptionalReference, SerializeField] private NetworkObject sessionTravelPrefab;
 
         private const string LoopbackAddress = "127.0.0.1";
 
@@ -38,6 +40,30 @@ namespace Abandoned.Networking
 
         /// <summary>The first bootstrap alive; it answers <see cref="GameAuthority.IsHost"/>.</summary>
         public static NetworkBootstrap Instance { get; private set; }
+
+        /// <summary>The game's session, kept across level loads (null in tests that build their own machines).</summary>
+        public static NetworkBootstrap Persistent { get; private set; }
+
+        /// <summary>A level's components use this: their own scene's bootstrap, or the session that loaded them.</summary>
+        public static NetworkBootstrap Resolve(NetworkBootstrap own) => own != null ? own : Persistent != null ? Persistent : Instance;
+
+        /// <summary>Tests: end and remove the persistent session so the next scene starts its own.</summary>
+        public static void DestroyPersistent()
+        {
+            if (Persistent == null) return;
+            NetworkBootstrap p = Persistent;
+            Persistent = null;
+            // Unhook first: this isn't a game ending (no "back to the menu", no notice for the next scene).
+            NetworkManager manager = p.networkManager;
+            p.networkManager = null;
+            p.Unhook(manager);
+            if (manager != null) DestroyImmediate(manager.gameObject);
+            DestroyImmediate(p.gameObject);
+            SessionEndNotice.Clear();
+            // Players (and the travel object) outlive scenes on purpose; not past the session.
+            foreach (NetworkObject no in FindObjectsByType<NetworkObject>(FindObjectsSortMode.None))
+                if (no != null && no.gameObject.scene.name == "DontDestroyOnLoad") DestroyImmediate(no.gameObject);
+        }
 
         public NetworkConfig Config => config;
         public NetworkManager Manager => networkManager;
@@ -81,6 +107,21 @@ namespace Abandoned.Networking
 
         private void Awake()
         {
+            // A level loaded into a running game: the game's session stays; this scene's copy goes.
+            if (sceneSession && Persistent != null && Persistent != this)
+            {
+                gameObject.SetActive(false);
+                // Immediately, so it can't claim NetworkManager.Singleton for even a frame.
+                if (networkManager != null) DestroyImmediate(networkManager.gameObject);
+                Destroy(gameObject);
+                if (Persistent.networkManager != null) Persistent.networkManager.SetSingleton();
+                return;
+            }
+            if (sceneSession && transform.parent == null)
+            {
+                Persistent = this;
+                DontDestroyOnLoad(gameObject);
+            }
             if (Instance == null)
             {
                 Instance = this;
@@ -105,6 +146,13 @@ namespace Abandoned.Networking
             networkManager.OnServerStopped += OnStopped;
             networkManager.OnClientStopped += OnStopped;
             networkManager.OnTransportFailure += OnTransportFailure;
+            networkManager.OnServerStarted += OnServerStarted;
+        }
+
+        // Every session gets the object that keeps everyone on the same level.
+        private void OnServerStarted()
+        {
+            if (sessionTravelPrefab != null) networkManager.SpawnManager.InstantiateAndSpawn(sessionTravelPrefab);
         }
 
         private void Start()
@@ -338,6 +386,17 @@ namespace Abandoned.Networking
 #endif
         }
 
+        private void Unhook(NetworkManager manager)
+        {
+            if (manager == null) return;
+            manager.OnClientDisconnectCallback -= OnClientDisconnected;
+            manager.OnClientConnectedCallback -= OnClientConnected;
+            manager.OnServerStopped -= OnStopped;
+            manager.OnClientStopped -= OnStopped;
+            manager.OnTransportFailure -= OnTransportFailure;
+            manager.OnServerStarted -= OnServerStarted;
+        }
+
         private void OnDestroy()
         {
             if (Instance == this)
@@ -345,13 +404,15 @@ namespace Abandoned.Networking
                 Instance = null;
                 GameAuthority.SetHostCheck(null);
             }
+            if (Persistent == this) Persistent = null;
             if (networkManager == null) return;
+            networkManager.OnServerStarted -= OnServerStarted;
             networkManager.OnClientDisconnectCallback -= OnClientDisconnected;
             networkManager.OnClientConnectedCallback -= OnClientConnected;
             networkManager.OnServerStopped -= OnStopped;
             networkManager.OnClientStopped -= OnStopped;
             networkManager.OnTransportFailure -= OnTransportFailure;
-            // The manager is DontDestroyOnLoad; the session belongs to this scene, so it goes with it.
+            // The manager is DontDestroyOnLoad; it goes with the bootstrap that owns it.
             if (!quitting) Destroy(networkManager.gameObject);
         }
 
@@ -361,6 +422,7 @@ namespace Abandoned.Networking
         private static void ResetStatics()
         {
             Instance = null;
+            Persistent = null;
             quitting = false;
             Application.quitting -= OnQuitting;
             Application.quitting += OnQuitting;

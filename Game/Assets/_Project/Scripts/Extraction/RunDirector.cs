@@ -27,6 +27,11 @@ namespace Abandoned.Extraction
         private bool started;
         private readonly RunStats stats = new();
 
+        /// <summary>
+        /// A fixed seed for the session's first run (0 = random): tests, and `-seed N` to replay a run.
+        /// </summary>
+        public static int ForcedSeed { get; set; }
+
         /// <summary>Host: a new run began (seed). Monsters and danger reset on this.</summary>
         public static event Action<int> RunStarted;
 
@@ -56,7 +61,7 @@ namespace Abandoned.Extraction
         /// <summary>Host: start the next run right here.</summary>
         public void StartNextRun()
         {
-            NetworkManager manager = bootstrap != null ? bootstrap.Manager : null;
+            NetworkManager manager = Session != null ? Session.Manager : null;
             if (manager == null || !manager.IsServer) return;
             BeginRun(NewSeed(), respawnPlayers: true);
         }
@@ -66,27 +71,31 @@ namespace Abandoned.Extraction
         // Building first (collapsed floors come back, pre-damage re-rolled), then the loot that stands on it.
         private void BeginRun(int seed, bool respawnPlayers)
         {
-            NetworkManager manager = bootstrap.Manager;
+            NetworkManager manager = Session.Manager;
             if (spawned != null && spawned.IsSpawned) spawned.Despawn(true);
             spawned = null;
             if (structure != null) structure.ApplyStability(structure.Stability, seed);
             if (lootSpawner != null) lootSpawner.Respawn(seed);
             if (respawnPlayers)
                 foreach (NetworkPlayer p in NetworkPlayer.All)
-                    if (p != null && p.NetworkManager == manager && bootstrap.Slots.TryGetSlot(p.OwnerClientId, out int slot))
+                    if (p != null && p.NetworkManager == manager && Session.Slots.TryGetSlot(p.OwnerClientId, out int slot))
                         p.ServerRespawn(PlayerSpawnPoint.PoseFor(slot));
             started = true;
             Debug.Log($"[Run] Run seed {seed}.");
             RunStarted?.Invoke(seed);
         }
 
+        private NetworkBootstrap Session => NetworkBootstrap.Resolve(bootstrap);
+
         private void Update()
         {
-            NetworkManager manager = bootstrap != null ? bootstrap.Manager : null;
+            // Not until every machine has this level loaded (session travel).
+            if (!SessionTravel.LevelReady) return;
+            NetworkManager manager = Session != null ? Session.Manager : null;
             if (manager == null || !manager.IsServer || !manager.IsListening || manager.ShutdownInProgress) return;
             if (spawned != null && spawned.IsSpawned) return;
             // A session's first run: its own seed, not the one the scene was saved with.
-            if (!started) BeginRun(firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
+            if (!started) BeginRun(ForcedSeed != 0 ? ForcedSeed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
             RunState.SeedSource = () => lootSpawner != null ? lootSpawner.Seed : 0;
             RunState.RunStatsSource = stats.Lines;
             spawned = manager.SpawnManager.InstantiateAndSpawn(runStatePrefab);
@@ -94,11 +103,22 @@ namespace Abandoned.Extraction
 
         private void LateUpdate()
         {
-            NetworkManager manager = bootstrap != null ? bootstrap.Manager : null;
+            NetworkManager manager = Session != null ? Session.Manager : null;
             if (manager != null && manager.IsServer && manager.IsListening) stats.Tick(manager);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => RunStarted = null;
+        private static void ResetStatics()
+        {
+            RunStarted = null;
+            ForcedSeed = SeedArgument(Environment.GetCommandLineArgs());
+        }
+
+        public static int SeedArgument(string[] args)
+        {
+            for (int i = 0; args != null && i < args.Length - 1; i++)
+                if (args[i] == "-seed" && int.TryParse(args[i + 1], out int seed)) return seed;
+            return 0;
+        }
     }
 }

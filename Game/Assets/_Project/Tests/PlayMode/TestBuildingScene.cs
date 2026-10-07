@@ -20,8 +20,12 @@ namespace Abandoned.Tests
         public static IEnumerator Load() => Load(Name);
 
         /// <summary>Any session scene (TestBuilding, Mall): load it and wait for the auto-hosted solo player.</summary>
-        public static IEnumerator Load(string sceneName)
+        public static IEnumerator Load(string sceneName, bool randomRun = false)
         {
+            // Each test gets its scene's own session (the persistent one from the last test goes).
+            NetworkBootstrap.DestroyPersistent();
+            // Tests replay the same run (seed 1) unless they ask for a random one.
+            Abandoned.Extraction.RunDirector.ForcedSeed = randomRun ? 0 : 1;
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
             // NetworkBootstrap hosts in Start; the host's player is spawned during StartHost.
             for (int i = 0; i < MaxFramesToSpawn && Player == null; i++) yield return null;

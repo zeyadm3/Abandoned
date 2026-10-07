@@ -82,10 +82,12 @@ namespace Abandoned.Networking
                 SceneManager.LoadScene(sceneName);
             }
             float deadline = Time.realtimeSinceStartup + BootstrapTimeout;
-            while ((NetworkBootstrap.Instance == null || NetworkBootstrap.Instance.gameObject.scene.name != sceneName)
+            // The session persists across loads (it may come from the build's first scene).
+            while ((NetworkBootstrap.Instance == null || SceneManager.GetActiveScene().name != sceneName)
                    && Time.realtimeSinceStartup < deadline) yield return null;
+            yield return null;
             NetworkBootstrap bootstrap = NetworkBootstrap.Instance;
-            if (bootstrap == null || bootstrap.gameObject.scene.name != sceneName) { result.Fail($"no NetworkBootstrap in {sceneName}"); yield break; }
+            if (bootstrap == null || SceneManager.GetActiveScene().name != sceneName) { result.Fail($"no session in {sceneName}"); yield break; }
 
             bootstrap.SelectTransport(TransportMode.UnityTransport);
             bool ok = args.Role == NetTestRole.Host

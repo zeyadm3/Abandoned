@@ -11,15 +11,15 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M5 review fixes): compile clean; verify ALL PASS; EditMode 205/205; PlayMode 210/210;
-  nettest basic/loot/sharedcarry/collapse/robust/voice/run 4/4.
+- Last verified (M6.0): compile clean; verify ALL PASS; EditMode 205/205; PlayMode 211/211;
+  nettest basic/loot/sharedcarry/collapse/robust/voice/run/travel 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-M6 (Docs/progress/M6.md plan): 6.0 session travel HQ<->run -> 6.1 HQ -> 6.2 save -> 6.3 contracts -> 6.5 progression -> 6.4 shop/equipment -> 6.7 ghosts -> 6.6 Stalker + Collector.
+M6 (Docs/progress/M6.md): 6.0 session travel done -> 6.1 HQ -> 6.2 save -> 6.3 contracts -> 6.5 progression -> 6.4 shop/equipment -> 6.7 ghosts -> 6.6 Stalker + Collector.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -81,8 +81,8 @@ Nettest results + logs: `Game/Logs/nettest/<host|clientN>.{json,log}`; batch log
 The script fails on compile errors, warnings in our code, or any exception in a log.
 
 ## Open problems
-- M3.8: one `nettest loot --no-build` run (right after basic) failed on all 4 instances: no client ever
-  connected within 40 s. The next 4 loot runs passed. If it recurs, check host.log for the listen port
+- `nettest loot` right after `basic` failed twice (M3.8, M6.0): sessions ended while waiting; never
+  reproduced on demand. nettest.sh now keeps failed runs' logs (Logs/nettest/failed-*); look there next time. If it recurs, check host.log for the listen port
   and whether a previous run's process was still alive.
 - M3.5: one full PlayMode run failed `NetworkLootHitTests.HostThrownSafeKnocksDownTheClientPlayerOnTheClient`
   (client never ragdolled within 4 s); it passed alone 3x and in two further full runs. The safe now has

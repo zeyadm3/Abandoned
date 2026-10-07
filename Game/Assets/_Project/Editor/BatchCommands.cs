@@ -30,6 +30,7 @@ namespace Abandoned.EditorTools
             PlayerPrefabBuilder.Create();
             NetworkContentBuilder.CreateStructureNetPrefab();
             NetworkContentBuilder.CreateRunStatePrefab();
+            NetworkContentBuilder.CreateSessionTravelPrefab();
             ThreatContentBuilder.CreateBlindOne();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestBuildingBuilder.Build();

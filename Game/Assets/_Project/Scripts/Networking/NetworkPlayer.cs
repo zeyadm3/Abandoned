@@ -54,6 +54,8 @@ namespace Abandoned.Networking
         {
             Spawned.Add(this);
             name = $"Player {OwnerClientId}{(IsOwner ? " (local)" : "")}";
+            // Players travel with the session from level to level (6.0).
+            if (transform.parent == null) DontDestroyOnLoad(gameObject);
             if (IsOwner)
             {
                 Local = this;

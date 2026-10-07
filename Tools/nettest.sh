@@ -128,5 +128,11 @@ print(f"nettest: {len(names) - bad}/{len(names)} instances passed (results + log
 sys.exit(1 if bad else 0)
 PY
 status=$?
+if [ $status -ne 0 ]; then
+  # The next run overwrites the logs; keep a failed run's for diagnosis (rare flakes especially).
+  keep="$OUT/failed-$scenario-$(date +%Y%m%d-%H%M%S)"
+  mkdir -p "$keep" && cp "$OUT"/*.json "$OUT"/*.log "$keep"/ 2>/dev/null
+  echo "failed run's logs kept in $keep"
+fi
 [ $status -eq 0 ] && echo "=== OK: nettest $scenario" || echo "=== FAILED: nettest $scenario"
 exit $status

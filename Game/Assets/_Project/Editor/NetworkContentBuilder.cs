@@ -18,6 +18,7 @@ namespace Abandoned.EditorTools
         public const string NetworkPrefabFolder = "Assets/_Project/Prefabs/Network";
         public const string StructureNetPrefabPath = NetworkPrefabFolder + "/StructureNet.prefab";
         public const string RunStatePrefabPath = NetworkPrefabFolder + "/RunState.prefab";
+        public const string SessionTravelPrefabPath = NetworkPrefabFolder + "/SessionTravel.prefab";
         public const string ExtractionConfigPath = "Assets/_Project/Data/Extraction/ExtractionConfig.asset";
         public const string DangerConfigPath = "Assets/_Project/Data/Extraction/DangerConfig.asset";
 
@@ -65,6 +66,23 @@ namespace Abandoned.EditorTools
             return prefab;
         }
 
+        /// <summary>The session's level-travel object (spawned by the bootstrap when hosting starts).</summary>
+        public static GameObject CreateSessionTravelPrefab()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(SessionTravelPrefabPath);
+            if (existing != null && existing.GetComponent<SessionTravel>() != null) return existing;
+            var root = new GameObject("SessionTravel");
+            var networkObject = root.AddComponent<Unity.Netcode.NetworkObject>();
+            networkObject.DontDestroyWithOwner = true;
+            networkObject.SynchronizeTransform = false;
+            root.AddComponent<SessionTravel>();
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, SessionTravelPrefabPath);
+            Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
+            AssetDatabase.SaveAssets();
+            return prefab;
+        }
+
         /// <summary>The run's state object (host-spawned by RunDirector). Created when missing, like StructureNet.</summary>
         public static GameObject CreateRunStatePrefab()
         {
@@ -96,6 +114,7 @@ namespace Abandoned.EditorTools
             var prefabs = new List<GameObject> { AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath) };
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(StructureNetPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath));
+            prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(SessionTravelPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.BlindOnePrefabPath));
             foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { LootPrefabGenerator.Folder }))
                 prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));

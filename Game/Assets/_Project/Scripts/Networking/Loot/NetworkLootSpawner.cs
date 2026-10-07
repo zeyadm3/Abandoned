@@ -40,17 +40,19 @@ namespace Abandoned.Networking
         /// <summary>Before the session starts (the run flow): which run this is.</summary>
         public void SetSeed(int runSeed) => seed = runSeed;
 
+        private NetworkBootstrap Session => NetworkBootstrap.Resolve(bootstrap);
+
         private void Start()
         {
-            if (bootstrap == null || bootstrap.Manager == null) return;
-            bootstrap.Manager.OnServerStarted += OnServerStarted;
+            if (Session == null || Session.Manager == null) return;
+            Session.Manager.OnServerStarted += OnServerStarted;
             hooked = true;
-            if (bootstrap.Manager.IsServer) OnServerStarted();
+            if (Session.Manager.IsServer) OnServerStarted();
         }
 
         private void OnDestroy()
         {
-            if (hooked && bootstrap != null && bootstrap.Manager != null) bootstrap.Manager.OnServerStarted -= OnServerStarted;
+            if (hooked && Session != null && Session.Manager != null) Session.Manager.OnServerStarted -= OnServerStarted;
         }
 
         private void OnServerStarted()
@@ -68,7 +70,7 @@ namespace Abandoned.Networking
         /// <summary>Host, next run: every loot item in the session goes (held, pocketed, broken or not) and a new run's loot comes in.</summary>
         public void Respawn(int runSeed)
         {
-            NetworkManager manager = bootstrap.Manager;
+            NetworkManager manager = Session != null ? Session.Manager : null;
             if (manager == null || !manager.IsServer) return;
             foreach (NetworkObject no in manager.SpawnManager.SpawnedObjectsList.ToList())
                 if (no != null && no.GetComponent<NetworkLoot>() != null) no.Despawn(true);

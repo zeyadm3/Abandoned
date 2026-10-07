@@ -40,6 +40,7 @@ namespace Abandoned.Tests
         {
             StructureSimulation sim = Object.FindAnyObjectByType<StructureSimulation>();
             float healthBefore = sim.Sections.Where(s => s.CanCollapse).Sum(s => s.HealthFraction);
+            var startedAbove = sim.Sections.Where(s => s.CanCollapse && s.HealthFraction >= fast.AgingFloor).ToList();
             BlindOne monster = ThreatDirector.Current.Spawn();
             var light = Object.FindObjectsByType<Light>(FindObjectsSortMode.None).First(l => l.type == LightType.Point);
             float lit = light.intensity;
@@ -57,8 +58,8 @@ namespace Abandoned.Tests
             Assert.Greater(monster.HearingScale, 1f);
             Assert.Greater(monster.SpeedScale, 1f);
             Assert.Less(sim.Sections.Where(s => s.CanCollapse).Sum(s => s.HealthFraction), healthBefore, "the building ages");
-            Assert.IsTrue(sim.Sections.Where(s => s.CanCollapse && !s.IsCollapsed).All(s => s.HealthFraction >= fast.AgingFloor - 0.01f || s.Load > 0f),
-                "ageing alone never pushes a floor below its floor");
+            Assert.IsTrue(startedAbove.Where(s => !s.IsCollapsed).All(s => s.HealthFraction >= fast.AgingFloor - 0.01f || s.Load > 0f),
+                "ageing alone never pushes a floor below its floor (pre-damage may start some lower)");
             Assert.IsTrue(flickered, "the lights flickered when the level rose");
             if (level >= fast.ExtraThreatLevel) Assert.GreaterOrEqual(BlindOne.All.Count, 2, "a second Blind One");
         }

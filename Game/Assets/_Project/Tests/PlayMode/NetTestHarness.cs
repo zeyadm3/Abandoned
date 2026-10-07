@@ -54,6 +54,8 @@ namespace Abandoned.Tests
         /// <summary>A fresh empty scene: leftovers (TestBuilding's auto-hosted session) would share the process.</summary>
         public static IEnumerator CleanWorld()
         {
+            // A scene session from an earlier test outlives its scene on purpose; tests start clean.
+            NetworkBootstrap.DestroyPersistent();
             Scene fresh = SceneManager.CreateScene("NetTest_" + Time.frameCount);
             SceneManager.SetActiveScene(fresh);
             for (int i = SceneManager.sceneCount - 1; i >= 0; i--)

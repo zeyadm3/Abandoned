@@ -22,6 +22,7 @@ namespace Abandoned.Networking
                 { RobustNetTestScenario.ScenarioName, () => new RobustNetTestScenario() },
                 { VoiceNetTestScenario.ScenarioName, () => new VoiceNetTestScenario() },
                 { RunNetTestScenario.ScenarioName, () => new RunNetTestScenario() },
+                { TravelNetTestScenario.ScenarioName, () => new TravelNetTestScenario() },
             };
 
         public static IEnumerable<string> Names => Registry.Keys;
