@@ -58,7 +58,9 @@ namespace Abandoned.Tests
             SteamBootstrap bootstrap = SteamBootstrap.Create(config, fake);
             try
             {
+                Achievements.Increment(Achievements.StatRuns); // earned while Steam was off
                 Assert.IsTrue(bootstrap.TryInitialize(false, new string[0]));
+                CollectionAssert.Contains(fake.AchievementsSet, "ACH_FIRST_JOB", "offline unlocks catch up when Steam starts");
                 Achievements.Increment(Achievements.StatDeaths);
                 CollectionAssert.Contains(fake.AchievementsSet, "ACH_OCCUPATIONAL_HAZARD");
             }

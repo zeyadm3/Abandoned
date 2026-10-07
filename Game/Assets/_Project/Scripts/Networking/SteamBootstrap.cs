@@ -96,6 +96,8 @@ namespace Abandoned.Networking
             {
                 if (IsAvailable && !string.IsNullOrEmpty(a.SteamName)) client.SetAchievement(a.SteamName);
             };
+            // ...and the ones earned while Steam was off catch up now (setting one twice is harmless).
+            Core.Achievements.ResendUnlocked();
             AvailabilityChanged?.Invoke(true);
             return true;
         }

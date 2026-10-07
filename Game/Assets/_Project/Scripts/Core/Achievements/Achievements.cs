@@ -61,6 +61,14 @@ namespace Abandoned.Core
             }
         }
 
+        /// <summary>Hands every unlocked achievement to the backend again (Steam just started).</summary>
+        public static void ResendUnlocked()
+        {
+            if (Backend == null || Catalog == null) return;
+            foreach (AchievementDefinition a in Catalog.Items)
+                if (IsUnlocked(a)) Backend(a);
+        }
+
         /// <summary>Tests: forget every stat and unlock.</summary>
         public static void ResetAll()
         {
