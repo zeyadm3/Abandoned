@@ -25,11 +25,25 @@ namespace Abandoned.Extraction
             bool showing = Showing;
             Core.CursorOwner.Set(this, showing);
             // The money comes in with the screen: a cash register sound once per appraisal.
-            if (showing && !shown) Audio.GameAudio.PlayUi(Audio.SoundId.Coins);
+            if (showing && !shown)
+            {
+                Audio.GameAudio.PlayUi(Audio.SoundId.Coins);
+                RecordProfile(RunState.Current.Results);
+            }
             shown = showing;
         }
 
         private void OnDisable() => Core.CursorOwner.Set(this, false);
+
+        // This player's own progress (cosmetic unlocks): never from tests or headless nettests.
+        private static void RecordProfile(RunResults r)
+        {
+            if (Application.isBatchMode || r == null || Unity.Netcode.NetworkManager.Singleton == null) return;
+            ulong me = Unity.Netcode.NetworkManager.Singleton.LocalClientId;
+            bool escaped = false;
+            foreach (RunResults.Player p in r.Players) if (p.ClientId == me) escaped = p.Extracted;
+            Abandoned.Player.PlayerProfile.RecordRun(escaped, r.Haul);
+        }
 
         private void OnGUI()
         {

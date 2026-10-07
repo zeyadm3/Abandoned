@@ -7,6 +7,7 @@ namespace Abandoned.UI
         Pause,
         Settings,
         Controls,
+        Wardrobe,
         Credits
     }
 }

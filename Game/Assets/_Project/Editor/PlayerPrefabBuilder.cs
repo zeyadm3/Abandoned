@@ -58,6 +58,8 @@ namespace Abandoned.EditorTools
             GameObject hitDetector = BuildHitDetector(root.transform, config);
             CinemachineCamera playerCamera = BuildCamera(root.transform, eye);
             SerializedWiring.Set(root.AddComponent<PlayerFieldOfView>(), "playerCamera", playerCamera);
+            root.AddComponent<PlayerCosmetics>().EditorSetup(AssetDatabase.LoadAssetAtPath<CosmeticCatalog>(CosmeticsBuilder.CatalogPath),
+                body.transform, ragdollParts.Head, PlayerMaterial());
 
             var reader = root.AddComponent<PlayerInputReader>();
             var stamina = root.AddComponent<PlayerStamina>();

@@ -69,6 +69,9 @@ namespace Abandoned.EditorTools
                 .AddComponent<Abandoned.Equipment.ShopTerminal>();
             Box("GearRack", root, new Vector3(0.5f, 1.2f, 12f), new Vector3(0.6f, 2.4f, 3f), GetMaterial("Greybox_Rack", new Color(0.3f, 0.32f, 0.35f)))
                 .AddComponent<Abandoned.Equipment.GearRack>();
+            // M7.5: the crew's lockers (wardrobe) on the garage's west wall.
+            GameObject lockers = Box("Lockers", root, new Vector3(0.35f, 1f, 6.5f), new Vector3(0.5f, 2f, 2.4f), GetMaterial("Greybox_Lockers", new Color(0.32f, 0.42f, 0.5f)));
+            lockers.AddComponent<Abandoned.UI.WardrobeLocker>();
 
             Transform spawns = Group("Spawns", root);
             for (int i = 0; i < 4; i++)

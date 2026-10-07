@@ -23,6 +23,8 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            // A level left loaded by an earlier test would be in the way.
+            yield return NetTestHarness.CleanWorld();
             rig = PlayerTestRig.OnFlatGround(new Vector3(0f, 0.05f, 0f));
             rig.AddBox("Table", new Vector3(0f, 0.7f, 2.2f), new Vector3(2f, 1.4f, 1f));
             carrier = rig.Player.GetComponent<PlayerCarrier>();

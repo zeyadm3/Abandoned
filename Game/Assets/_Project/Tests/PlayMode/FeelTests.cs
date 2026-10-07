@@ -21,6 +21,8 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
+            // A level left loaded by an earlier test (the HQ's walls and lockers) would be in the way.
+            yield return NetTestHarness.CleanWorld();
             rig = OnFlatGround(new Vector3(0f, 0.05f, 0f));
             feel = rig.Player.GetComponent<PlayerCameraFeel>();
             footsteps = rig.Player.GetComponent<PlayerFootsteps>();

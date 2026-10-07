@@ -30,7 +30,8 @@ namespace Abandoned.UI
         private MainMenuView main;
         private PauseMenuView pause;
         private SubtitleView subtitles;
-        private bool paused;
+        private WardrobeView wardrobe;
+        private bool paused, pausedForScreen;
 
         public static MenuUi Current { get; private set; }
         public MenuScreen Showing { get; private set; } = (MenuScreen)(-1);
@@ -54,6 +55,8 @@ namespace Abandoned.UI
             views[MenuScreen.Settings] = new SettingsView(this).Root;
             views[MenuScreen.Controls] = new ControlsView(this).Root;
             views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
+            wardrobe = new WardrobeView(this);
+            views[MenuScreen.Wardrobe] = wardrobe.Root;
             foreach (VisualElement v in views.Values) root.Add(v);
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
@@ -73,7 +76,7 @@ namespace Abandoned.UI
             subtitles?.Tick();
             if (bootstrap == null) return;
             bool running = bootstrap.IsRunning;
-            if (!running) paused = false;
+            if (!running) paused = pausedForScreen = false;
             if (EscapePressed() && !ControlsView.Busy)
             {
                 if (pushed.Count > 0) Back();
@@ -100,13 +103,14 @@ namespace Abandoned.UI
         public void OpenPause()
         {
             paused = true;
+            pausedForScreen = false;
             GameAudio.PlayUi(SoundId.UiOpen);
         }
 
         public void Resume()
         {
             if (!paused) return;
-            paused = false;
+            paused = pausedForScreen = false;
             pushed.Clear();
             GameAudio.PlayUi(SoundId.UiClose);
             CursorOwner.RequestCapture();
@@ -114,11 +118,23 @@ namespace Abandoned.UI
 
         public void Push(MenuScreen screen) => pushed.Push(screen);
 
+        /// <summary>A screen opened from the world (the HQ lockers): Back returns straight to the game.</summary>
+        public void OpenWardrobe()
+        {
+            if (bootstrap == null || !bootstrap.IsRunning) return;
+            paused = pausedForScreen = true;
+            pushed.Clear();
+            pushed.Push(MenuScreen.Wardrobe);
+            wardrobe.Refresh();
+            GameAudio.PlayUi(SoundId.UiOpen);
+        }
+
         public void Back()
         {
             if (pushed.Count == 0) return;
             pushed.Pop();
             GameAudio.PlayUi(SoundId.UiBack);
+            if (pushed.Count == 0 && pausedForScreen) Resume();
         }
 
         public void Quit()

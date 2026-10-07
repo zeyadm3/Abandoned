@@ -29,6 +29,7 @@ namespace Abandoned.EditorTools
             LootPrefabGenerator.GenerateAll();
             StructureContentBuilder.CreateMissing();
             EquipmentContentBuilder.CreateMissing();
+            CosmeticsBuilder.CreateMissing();
             PlayerPrefabBuilder.Create();
             NetworkContentBuilder.CreateStructureNetPrefab();
             NetworkContentBuilder.CreateRunStatePrefab();
@@ -100,6 +101,8 @@ namespace Abandoned.EditorTools
             float width = ArtPreview.BuildLootLineup();
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(width * 0.25f, 1.6f, -3.2f), new Vector3(width * 0.25f, 0.4f, 0f), "M7_loot_lineup_a", 60f));
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(width * 0.72f, 2.2f, -4.5f), new Vector3(width * 0.72f, 0.6f, 0f), "M7_loot_lineup_b", 60f));
+            float hats = ArtPreview.BuildHatLineup();
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(hats / 2f, 2.1f, -5.2f), new Vector3(hats / 2f, 1.5f, 0f), "M7_hat_lineup", 60f));
             Debug.Log("Screenshots written:\n" + string.Join("\n", shots));
             return true;
         });

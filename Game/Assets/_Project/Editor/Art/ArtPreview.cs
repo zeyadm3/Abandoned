@@ -16,6 +16,25 @@ namespace Abandoned.EditorTools
         [MenuItem("Tools/Abandoned/Art/Loot Lineup (unsaved scene)")]
         public static void OpenLootLineup() => BuildLootLineup();
 
+        /// <summary>Every hat on a player-sized capsule in a row (unsaved scene); returns the row's width.</summary>
+        public static float BuildHatLineup()
+        {
+            EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
+            var catalog = AssetDatabase.LoadAssetAtPath<Abandoned.Player.CosmeticCatalog>(CosmeticsBuilder.CatalogPath);
+            GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            float x = 0f;
+            for (int i = 0; i < catalog.Hats.Count; i++, x += 1.1f)
+            {
+                var suit = catalog.Coverall(i % catalog.Coveralls.Count);
+                GameObject body = GreyboxFactory.Primitive(PrimitiveType.Capsule, $"Body_{i}", null, new Vector3(x, 0.9f, 0f), new Vector3(0.6f, 0.9f, 0.6f),
+                    GreyboxFactory.GetMaterial($"Preview_Coverall_{suit.Id}", suit.Color), withCollider: false);
+                if (catalog.Hats[i].HatPrefab != null)
+                    Object.Instantiate(catalog.Hats[i].HatPrefab, body.transform.TransformPoint(Vector3.up) - Vector3.up * 0.04f, Quaternion.identity);
+            }
+            floor.transform.position = new Vector3(x / 2f, 0f, 0f);
+            return x;
+        }
+
         /// <summary>Builds the lineup; returns its width (m), for framing a camera.</summary>
         public static float BuildLootLineup()
         {

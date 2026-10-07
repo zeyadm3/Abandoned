@@ -65,7 +65,7 @@ namespace Abandoned.Tests
         }
 
         /// <summary>The scene camera plus the menu on top, into Game/Screenshots (for eyeballing the layout).</summary>
-        private static IEnumerator Capture(MenuUi menu, string name)
+        internal static IEnumerator Capture(MenuUi menu, string name)
         {
             PanelSettings panel = menu.GetComponent<UIDocument>().panelSettings;
             Camera camera = Camera.main;

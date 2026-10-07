@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7.4c): compile clean; verify ALL PASS; EditMode 212/212; PlayMode 233/233;
-  nettest robust/basic 4/4 (M7.3 loot/run; M7.2 run/company; M6 review: all nine 4/4).
+- Last verified (M7.5): compile clean; verify ALL PASS; EditMode 213/213; PlayMode 235/235;
+  nettest basic/company 4/4 (M7.4a robust; M7.3 loot/run; M7.2 run; M6 review: all nine 4/4).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -25,11 +25,12 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   fall with their ceiling and go dark with the power, fog, post-processing, dust, skylight shaft,
   flashlight shadows). 7.3 audio done (Kenney CC0 sound bank, pooled playback, synthesised ambience). 7.4a menus done (UI Toolkit:
   main menu, pause menu with crew/invites, sound+voice settings, credits). 7.4b settings done (sensitivity,
-  FOV, bob/shake, subtitles, colourblind scanner). 7.4c key rebinding done.
+  FOV, bob/shake, subtitles, colourblind scanner). 7.4c key rebinding done. 7.5 cosmetics done
+  (coveralls + hats, HQ lockers, unlocked by playing).
 
 ## Next
--> M7.5 cosmetics (GDD 18): coverall colours + hats (CC0 models), chosen at the HQ, synced to everyone,
-unlocked by playing; then 7.6 performance.
+-> M7.6 performance pass: profile with 4 players (nettest), cap active rigidbodies, occlusion culling;
+then the M7 review, tag milestone-7 and the Mac + Windows builds.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
@@ -79,6 +80,8 @@ unlocked by playing; then 7.6 performance.
       settings, leave). Settings: sensitivity, FOV, head bob, shake, subtitles, colourblind scanner, sound
       sliders, voice; Keys...: rebind Interact to G and check the "[G] Pick up" prompt. Judge readability
       of the all-caps Kenney font and the layout at your screen size.
+- [ ] Cosmetics (M7.5): at the HQ press E on the blue lockers (garage, west wall): pick a coverall and hat;
+      a friend sees them. Unlocks come from playing (a few runs unlock the cap/green; cone at 5 runs).
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## Committing

@@ -160,3 +160,35 @@
     left: 0; right: 0; bottom: 110px;
     align-items: center;
 }
+
+.wrap {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tile {
+    width: 250px;
+    height: 64px;
+    margin: 4px 8px 4px 0;
+    white-space: normal;
+    font-size: 16px;
+    -unity-text-align: middle-left;
+    padding-left: 12px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.swatch {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.6);
+}
+
+.tile__text {
+    flex-shrink: 1;
+    white-space: normal;
+    font-size: 15px;
+    -unity-text-align: middle-left;
+}
