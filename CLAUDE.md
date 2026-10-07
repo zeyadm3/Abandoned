@@ -262,3 +262,8 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   (UITK panel into a RenderTexture on a quad); VideoSettings/VideoApplier (runtime URP asset copy, never the project's);
   UI Scale = a runtime copy of the menu PanelSettings; WardrobePreview = an offstage mannequin + camera into a texture.
   Steps 4-10 untested (user brief: no tests until they test everything).
+- 2026-10-08 (0.12.2): Tools/Blender/environment.py maps Unity (x,y,z) -> Blender (x,z,y); the old (x,-z,y)
+  imported every kit model mirrored along Z (flights drew behind their ramps). rebuild-horror now logs
+  `[MallValidation]` (flights walkable + NavMesh, invisible colliders in Mall/HQ) and `[MaterialAudit]`;
+  keep both at 0. World text uses Abandoned/WorldText via WorldTextMaterial, never a font's GUI material.
+  Menu effect tunables: Data/UI/Resources/MenuEffectsConfig; "Reduce menu effects" in Settings.
