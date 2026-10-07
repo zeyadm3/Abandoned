@@ -82,7 +82,7 @@ namespace Abandoned.EditorTools
                 spawn.gameObject.AddComponent<PlayerSpawnPoint>().EditorSetup(i);
             }
 
-            new GameObject("DebugView").AddComponent<DebugViewToggle>();
+            new GameObject("DebugView", typeof(DebugViewToggle), typeof(PerfOverlay));
             Camera camera = Object.FindFirstObjectByType<Camera>();
             if (camera != null)
             {

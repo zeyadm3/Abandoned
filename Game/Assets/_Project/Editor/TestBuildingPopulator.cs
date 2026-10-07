@@ -71,7 +71,7 @@ namespace Abandoned.EditorTools
 
         public static void Populate(Transform root)
         {
-            new GameObject("DebugView").AddComponent<DebugViewToggle>();
+            new GameObject("DebugView", typeof(DebugViewToggle), typeof(PerfOverlay));
 
             Camera camera = Object.FindFirstObjectByType<Camera>();
             if (camera != null && camera.GetComponent<CinemachineBrain>() == null)

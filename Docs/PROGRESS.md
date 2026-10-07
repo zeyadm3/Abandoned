@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7.5): compile clean; verify ALL PASS; EditMode 213/213; PlayMode 235/235;
-  nettest basic/company 4/4 (M7.4a robust; M7.3 loot/run; M7.2 run; M6 review: all nine 4/4).
+- Last verified (M7.6): compile clean; verify ALL PASS; EditMode 214/214; PlayMode 236/236;
+  nettest perf 4/4 (M7.5 basic/company; M7.4a robust; M7.3 loot/run; M6 review: all nine 4/4).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -26,11 +26,12 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   flashlight shadows). 7.3 audio done (Kenney CC0 sound bank, pooled playback, synthesised ambience). 7.4a menus done (UI Toolkit:
   main menu, pause menu with crew/invites, sound+voice settings, credits). 7.4b settings done (sensitivity,
   FOV, bob/shake, subtitles, colourblind scanner). 7.4c key rebinding done. 7.5 cosmetics done
-  (coveralls + hats, HQ lockers, unlocked by playing).
+  (coveralls + hats, HQ lockers, unlocked by playing). 7.6 performance done (F1 perf line, nettest perf,
+  occlusion bake, shadow budget).
 
 ## Next
--> M7.6 performance pass: profile with 4 players (nettest), cap active rigidbodies, occlusion culling;
-then the M7 review, tag milestone-7 and the Mac + Windows builds.
+-> M7 review (read the whole M7 diff for bugs, fix), then tag milestone-7 and the Mac + Windows builds.
+Then M8 demo.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
@@ -82,6 +83,9 @@ then the M7 review, tag milestone-7 and the Mac + Windows builds.
       of the all-caps Kenney font and the layout at your screen size.
 - [ ] Cosmetics (M7.5): at the HQ press E on the blue lockers (garage, west wall): pick a coverall and hat;
       a friend sees them. Unlocks come from playing (a few runs unlock the cap/green; cone at 5 runs).
+- [ ] Performance (M7.6): in a 4-player session (or MPPM) press F1: the bottom line shows fps, batches,
+      awake bodies. Note fps in the busiest spot (concourse/atrium, flashlights on) on your Mac and on the
+      Windows friend's PC, and during a big collapse. Anything under ~50 fps, tell me where.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## Committing
@@ -118,6 +122,7 @@ The script fails on compile errors, warnings in our code, or any exception in a 
   `all` passed. Possible flake; if it recurs, check Game/Logs/batch/PlayMode.log for a crash.
 
 ## Unity-generated churn left uncommitted on purpose
-DefaultVolumeProfile.asset, PC_RPAsset.asset, UniversalRenderPipelineGlobalSettings.asset (player builds
+(PC_RPAsset.asset is committed since M7.6: the rebuild sets its shadow budget on purpose.)
+DefaultVolumeProfile.asset, UniversalRenderPipelineGlobalSettings.asset (player builds
 fill its runtime-settings list), probuilder Settings.json,
 ProjectSettings/Packages/com.unity.multiplayer.tools/, ProjectSettings/SceneTemplateSettings.json.

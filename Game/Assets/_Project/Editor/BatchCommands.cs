@@ -22,6 +22,7 @@ namespace Abandoned.EditorTools
             ProjectLayersSetup.Apply();
             BuildScript.ApplyPlayerSettings();
             SteamPluginSettings.Apply();
+            RenderPipelineSetup.Apply();
             NetworkContentBuilder.CreateMissing();
             BuildInfoAsset.CreateMissing();
             LootCatalogBuilder.CreateMissing();
