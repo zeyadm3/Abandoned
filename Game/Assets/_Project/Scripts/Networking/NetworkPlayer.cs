@@ -132,6 +132,21 @@ namespace Abandoned.Networking
                 networkTransform.Teleport(transform.position, transform.rotation, transform.localScale);
         }
 
+        /// <summary>Host: put this player back on a spawn point for a new run (the owner moves itself).</summary>
+        public void ServerRespawn(Pose pose)
+        {
+            if (IsServer) RespawnRpc(pose.position, pose.rotation);
+        }
+
+        [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
+        private void RespawnRpc(Vector3 position, Quaternion rotation)
+        {
+            if (ragdoll.IsRagdolled) ragdoll.Recover();
+            transform.rotation = rotation;
+            OwnerTeleport(position);
+            if (TryGetComponent(out PlayerLook look)) look.SyncYawFromTransform();
+        }
+
         // Getting up moves the root to where the body lies; others should jump there, not slide.
         private void OnOwnerGotUp()
         {

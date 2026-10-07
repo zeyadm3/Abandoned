@@ -125,5 +125,69 @@ namespace Abandoned.Tests
             Assert.AreEqual(pocket.Item.CurrentValue, me.PocketValueLost);
             Assert.IsFalse(results.Items.Any(i => i.Pocketed), "left-behind pockets don't count");
         }
+
+        private IEnumerator Depart(System.Action<RunResults> got)
+        {
+            rig.Teleport(truck.transform.position + Vector3.up * 0.45f);
+            rig.Settle();
+            RunResults results = null;
+            run.Departed += r => results = r;
+            run.RequestDepart();
+            float end = Time.time + run.Config.HonkSeconds + 3f;
+            while (results == null && Time.time < end) yield return null;
+            Assert.IsNotNull(results, "the truck never left");
+            got(results);
+        }
+
+        [UnityTest]
+        public IEnumerator TheAppraisalNamesWhoBrokeWhat()
+        {
+            NetworkLoot fragile = Spawned(l => l.Item.Definition.Fragility == Abandoned.Loot.Fragility.Extreme && l.Item.Definition.CarryClass <= CarryClass.TwoHand);
+            PlayerCarrier carrier = rig.Player.GetComponent<PlayerCarrier>();
+            rig.Teleport(fragile.transform.position + Vector3.back * 1.2f);
+            rig.Settle();
+            Move(fragile, carrier.EyePosition + carrier.EyeForward * 0.9f);
+            yield return null;
+            Assert.IsTrue(LootServerActions.TryPickup(fragile, carrier, out string reason), reason);
+            yield return null;
+            fragile.Item.ApplyImpact(25f, fragile.transform.position);
+            Assert.IsTrue(fragile.Item.IsShattered);
+            yield return new WaitForSeconds(0.2f);
+
+            RunResults results = null;
+            yield return Depart(r => results = r);
+            Assert.IsTrue(results.Stats.Any(l => l.StartsWith("Most expensive mistake") && l.Contains("Player 1")), string.Join(" | ", results.Stats));
+            Assert.IsTrue(results.Stats.Any(l => l.StartsWith("Butterfingers: Player 1")), string.Join(" | ", results.Stats));
+            Assert.IsNotNull(Object.FindAnyObjectByType<AppraisalScreen>().Showing ? (object)true : null, "the appraisal is up");
+        }
+
+        [UnityTest]
+        public IEnumerator TheNextRunStartsWellUnderThirtySeconds()
+        {
+            RunResults results = null;
+            yield return Depart(r => results = r);
+            int oldSeed = run.State.Seed;
+            int oldGeneration = Object.FindAnyObjectByType<Abandoned.Structure.StructureSimulation>().Generation;
+            RunState oldRun = run;
+
+            float started = Time.realtimeSinceStartup;
+            Object.FindAnyObjectByType<RunDirector>().StartNextRun();
+            while ((RunState.Current == null || RunState.Current == oldRun || !RunState.Current.IsSpawned) && Time.realtimeSinceStartup - started < 30f)
+                yield return null;
+            float took = Time.realtimeSinceStartup - started;
+            yield return new WaitForSeconds(0.3f);
+            Assert.Less(took, 30f, "next run");
+            Assert.Less(took, 3f, "in place, nobody reconnects: it should be near-instant");
+
+            RunState next = RunState.Current;
+            Assert.AreEqual(RunPhase.Running, next.State.Phase);
+            Assert.AreNotEqual(oldSeed, next.State.Seed, "a new run, a new seed");
+            Assert.AreEqual(0, next.State.Haul);
+            Assert.AreEqual(next.State.Seed, spawner.Seed);
+            Assert.Greater(spawner.Spawned.Count(l => l != null && l.IsSpawned), 40, "fresh loot");
+            Assert.Greater(Object.FindAnyObjectByType<Abandoned.Structure.StructureSimulation>().Generation, oldGeneration, "building restored and re-rolled");
+            Assert.Less(Vector3.Distance(rig.Player.transform.position, Abandoned.Player.PlayerSpawnPoint.PoseFor(0).position), 1f, "back at the spawn");
+            Assert.IsFalse(Object.FindAnyObjectByType<AppraisalScreen>().Showing);
+        }
     }
 }

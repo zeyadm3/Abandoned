@@ -45,7 +45,8 @@ namespace Abandoned.Tests
         {
             Assert.IsNotEmpty(BuildScenes.All);
             foreach (string scene in BuildScenes.All) FileAssert.Exists(scene);
-            Assert.AreEqual(TestBuildingBuilder.ScenePath, BuildScenes.All[0], "first scene is what a build opens");
+            Assert.AreEqual(MallBuilder.ScenePath, BuildScenes.All[0], "first scene is what a build opens: the run");
+            CollectionAssert.Contains(BuildScenes.All, TestBuildingBuilder.ScenePath, "nettests run in TestBuilding");
         }
     }
 }

@@ -62,6 +62,21 @@ namespace Abandoned.Networking
                 .Where(p => p.gameObject.scene == gameObject.scene)
                 .OrderBy(p => p.name, System.StringComparer.Ordinal).ToList();
 
+        /// <summary>Host, next run: every loot item in the session goes (held, pocketed, broken or not) and a new run's loot comes in.</summary>
+        public void Respawn(int runSeed)
+        {
+            NetworkManager manager = bootstrap.Manager;
+            if (manager == null || !manager.IsServer) return;
+            foreach (NetworkObject no in manager.SpawnManager.SpawnedObjectsList.ToList())
+                if (no != null && no.GetComponent<NetworkLoot>() != null) no.Despawn(true);
+            spawned.Clear();
+            seed = runSeed;
+            SpawnAll();
+        }
+
+        /// <summary>Raised on the host after each run's loot is in (stats tracking hooks every item).</summary>
+        public event System.Action<IReadOnlyList<NetworkLoot>> SpawnedRun;
+
         private void SpawnAll()
         {
             IReadOnlyList<LootSpawnPoint> points = Points();
@@ -80,6 +95,7 @@ namespace Abandoned.Networking
                 spawned.Add(instance.GetComponent<NetworkLoot>());
             }
             Debug.Log($"[Loot] Run seed {seed}: {spawned.Count} items on {points.Count} points, ${TotalValue:N0} in the building.");
+            SpawnedRun?.Invoke(spawned);
         }
 
         private void OnGUI()

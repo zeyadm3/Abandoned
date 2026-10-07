@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using Abandoned.Core;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Abandoned.Networking
 {
@@ -15,6 +16,8 @@ namespace Abandoned.Networking
     public sealed class NetTestRunner : MonoBehaviour
     {
         private const string Loopback = "127.0.0.1";
+        /// <summary>Where scenarios run unless they say otherwise (INetTestScene).</summary>
+        public const string DefaultScene = "TestBuilding";
         private const float BootstrapTimeout = 15f;
         // Four headless instances share one Mac; uncapped frame rates would starve each other.
         private const int FrameRate = 60;
@@ -71,10 +74,18 @@ namespace Abandoned.Networking
 
             if (scenario is INetTestSetup setup) setup.Prepare();
 
+            // Each scenario names its level; the build may start in another one.
+            string sceneName = scenario is INetTestScene withScene ? withScene.Scene : DefaultScene;
+            if (SceneManager.GetActiveScene().name != sceneName)
+            {
+                if (!Application.CanStreamedLevelBeLoaded(sceneName)) { result.Fail($"scene '{sceneName}' isn't in the build"); yield break; }
+                SceneManager.LoadScene(sceneName);
+            }
             float deadline = Time.realtimeSinceStartup + BootstrapTimeout;
-            while (NetworkBootstrap.Instance == null && Time.realtimeSinceStartup < deadline) yield return null;
+            while ((NetworkBootstrap.Instance == null || NetworkBootstrap.Instance.gameObject.scene.name != sceneName)
+                   && Time.realtimeSinceStartup < deadline) yield return null;
             NetworkBootstrap bootstrap = NetworkBootstrap.Instance;
-            if (bootstrap == null) { result.Fail("no NetworkBootstrap in the first scene"); yield break; }
+            if (bootstrap == null || bootstrap.gameObject.scene.name != sceneName) { result.Fail($"no NetworkBootstrap in {sceneName}"); yield break; }
 
             bootstrap.SelectTransport(TransportMode.UnityTransport);
             bool ok = args.Role == NetTestRole.Host

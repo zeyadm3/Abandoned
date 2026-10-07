@@ -60,10 +60,12 @@ namespace Abandoned.EditorTools
             // The truck waits outside the loading bay door, ramp facing it (GDD 10).
             TruckBuilder.Build(GreyboxFactory.Group("Truck", root), new Vector3(TilesX * Tile + 2f, 0f, 8.5f * Tile), Vector3.right);
             var run = new GameObject("Run");
-            run.AddComponent<Abandoned.Extraction.RunDirector>().Setup(bootstrap,
+            var director = run.AddComponent<Abandoned.Extraction.RunDirector>();
+            director.Setup(bootstrap,
                 UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.RunStatePrefabPath).GetComponent<Unity.Netcode.NetworkObject>(),
-                spawner);
+                spawner, Object.FindAnyObjectByType<StructureSimulation>());
             run.AddComponent<Abandoned.Extraction.RunHud>();
+            SerializedWiring.Set(run.AddComponent<Abandoned.Extraction.AppraisalScreen>(), "director", director);
 
             var debugViews = new GameObject("DebugViews");
             debugViews.AddComponent<NoiseDebugView>();

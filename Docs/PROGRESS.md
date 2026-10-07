@@ -12,14 +12,14 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
 - Last verified (M4 review fixes): compile clean; verify ALL PASS; EditMode 185/185; PlayMode 196/196;
-  nettest basic/loot/sharedcarry/collapse/robust/voice 4/4.
+  nettest basic/loot/sharedcarry/collapse/robust/voice/run 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-5.4 appraisal + next run -> 5.5 Blind One -> 5.6 danger.
+5.5 Blind One -> 5.6 danger.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -51,7 +51,9 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - [ ] Mall run (M5.1-5.3): Mall scene (Build profile: open Scenes/Mall, Play). Walk the mall: entrance,
       both escalators, service stairs, the atrium bridge; loot everywhere (F1 shows seed/count/value). Carry
       loot to the truck at the loading bay (east), watch "Haul $X / Quota $40,000" rise, press E on the
-      yellow lever in the bay: 10 s of honking, then it leaves. Judge distances and the 15 min window.
+      yellow lever in the bay: 10 s of honking, then it leaves and the appraisal shows (items, damage, who
+      made it out, funny stats); host presses "Next run": everyone is back in the parking lot with new loot
+      in a restored building. Judge distances and the 15 min window.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## How to verify (batch mode, Unity must be closed)

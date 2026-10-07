@@ -11,8 +11,9 @@ namespace Abandoned.EditorTools
     {
         public static readonly string[] All =
         {
-            TestBuildingBuilder.ScenePath,
+            // The run (M5): builds open in the mall. TestBuilding stays for tests and nettests.
             MallBuilder.ScenePath,
+            TestBuildingBuilder.ScenePath,
         };
 
         public static void ApplyToEditorSettings()
