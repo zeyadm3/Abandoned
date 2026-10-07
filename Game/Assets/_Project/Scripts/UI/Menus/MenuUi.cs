@@ -134,12 +134,15 @@ namespace Abandoned.UI
             if (pushed.Count == 0) return;
             pushed.Pop();
             GameAudio.PlayUi(SoundId.UiBack);
+            Prefs.Save(); // leaving a settings screen by Esc counts as done too
+            Voice.VoiceSettings.Flush();
             if (pushed.Count == 0 && pausedForScreen) Resume();
         }
 
         public void Quit()
         {
-            PlayerPrefs.Save();
+            Prefs.Save();
+            Voice.VoiceSettings.Flush();
             Application.Quit();
         }
 

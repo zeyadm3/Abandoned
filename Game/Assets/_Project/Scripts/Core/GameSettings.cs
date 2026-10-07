@@ -24,47 +24,47 @@ namespace Abandoned.Core
         /// <summary>Multiplies the configured mouse sensitivity.</summary>
         public static float Sensitivity
         {
-            get => sensitivity ??= PlayerPrefs.GetFloat(SensitivityKey, 1f);
+            get => sensitivity ??= Prefs.GetFloat(SensitivityKey, 1f);
             set => Set(ref sensitivity, SensitivityKey, Mathf.Clamp(value, MinSensitivity, MaxSensitivity));
         }
 
         public static float FieldOfView
         {
-            get => fov ??= PlayerPrefs.GetFloat(FovKey, DefaultFov);
+            get => fov ??= Prefs.GetFloat(FovKey, DefaultFov);
             set => Set(ref fov, FovKey, Mathf.Clamp(value, MinFov, MaxFov));
         }
 
         public static bool HeadBob
         {
-            get => headBob ??= PlayerPrefs.GetInt(BobKey, 1) == 1;
+            get => headBob ??= Prefs.GetInt(BobKey, 1) == 1;
             set => Set(ref headBob, BobKey, value);
         }
 
         public static bool CameraShake
         {
-            get => shake ??= PlayerPrefs.GetInt(ShakeKey, 1) == 1;
+            get => shake ??= Prefs.GetInt(ShakeKey, 1) == 1;
             set => Set(ref shake, ShakeKey, value);
         }
 
         /// <summary>Captions for structural warnings and threat sounds.</summary>
         public static bool Subtitles
         {
-            get => subtitles ??= PlayerPrefs.GetInt(SubtitlesKey, 0) == 1;
+            get => subtitles ??= Prefs.GetInt(SubtitlesKey, 0) == 1;
             set => Set(ref subtitles, SubtitlesKey, value);
         }
 
         /// <summary>The stress scanner uses a colourblind-safe palette (blue / orange / vermilion).</summary>
         public static bool ColorblindScanner
         {
-            get => colorblind ??= PlayerPrefs.GetInt(ColorblindKey, 0) == 1;
+            get => colorblind ??= Prefs.GetInt(ColorblindKey, 0) == 1;
             set => Set(ref colorblind, ColorblindKey, value);
         }
 
         /// <summary>Back to defaults (tests; a "reset" button later).</summary>
         public static void ResetAll()
         {
-            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey }) PlayerPrefs.DeleteKey(key);
-            PlayerPrefs.Save(); // a delete that isn't flushed can come back next launch
+            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey }) Prefs.Delete(key);
+            Prefs.Save(); // a delete that isn't flushed can come back next launch
             sensitivity = fov = null;
             headBob = shake = subtitles = colorblind = null;
             Changed?.Invoke();
@@ -73,14 +73,14 @@ namespace Abandoned.Core
         private static void Set(ref float? cache, string key, float value)
         {
             cache = value;
-            PlayerPrefs.SetFloat(key, value);
+            Prefs.SetFloat(key, value);
             Changed?.Invoke();
         }
 
         private static void Set(ref bool? cache, string key, bool value)
         {
             cache = value;
-            PlayerPrefs.SetInt(key, value ? 1 : 0);
+            Prefs.SetInt(key, value ? 1 : 0);
             Changed?.Invoke();
         }
 

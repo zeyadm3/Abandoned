@@ -86,6 +86,7 @@ namespace Abandoned.EditorTools
             ghostObject.transform.SetParent(root.transform, false);
             var ghostCam = ghostObject.AddComponent<Unity.Cinemachine.CinemachineCamera>();
             ghostCam.Lens.FieldOfView = 70f;
+            Set(ghostObject.AddComponent<Abandoned.Player.PlayerFieldOfView>(), "playerCamera", ghostCam); // the player's FOV setting too
             ghostObject.SetActive(false);
             var ghost = root.AddComponent<Abandoned.Networking.GhostSpectator>();
             Set(ghost, "player", root.GetComponent<Abandoned.Networking.NetworkPlayer>());

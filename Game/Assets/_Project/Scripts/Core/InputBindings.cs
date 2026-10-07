@@ -35,7 +35,7 @@ namespace Abandoned.Core
             return a != null ? a.GetBindingDisplayString() : action;
         }
 
-        public static string Json => PlayerPrefs.GetString(Key, string.Empty);
+        public static string Json => Prefs.GetString(Key, string.Empty);
 
         /// <summary>Loads the saved overrides into an asset (call after creating an AbandonedInput).</summary>
         public static void Apply(InputActionAsset asset)
@@ -49,16 +49,16 @@ namespace Abandoned.Core
         /// <summary>Saves an edited asset's overrides and re-applies them everywhere.</summary>
         public static void Save(InputActionAsset edited)
         {
-            PlayerPrefs.SetString(Key, edited.SaveBindingOverridesAsJson());
-            PlayerPrefs.Save();
+            Prefs.SetString(Key, edited.SaveBindingOverridesAsJson());
+            Prefs.Save();
             if (display != null) Apply(display.asset);
             Changed?.Invoke();
         }
 
         public static void ResetAll()
         {
-            PlayerPrefs.DeleteKey(Key);
-            PlayerPrefs.Save();
+            Prefs.Delete(Key);
+            Prefs.Save();
             if (display != null) Apply(display.asset);
             Changed?.Invoke();
         }

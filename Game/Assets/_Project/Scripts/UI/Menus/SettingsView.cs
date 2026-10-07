@@ -52,7 +52,7 @@ namespace Abandoned.UI
             MenuKit.Button(panel, "Back", () =>
             {
                 VoiceSettings.Flush();
-                PlayerPrefs.Save();
+                Core.Prefs.Save();
                 menu.Back();
             }, SoundId.UiBack);
         }
