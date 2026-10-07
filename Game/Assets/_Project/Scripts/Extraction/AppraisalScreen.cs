@@ -5,9 +5,10 @@ using UnityEngine.UIElements;
 namespace Abandoned.Extraction
 {
     /// <summary>
-    /// After the truck leaves (PLAYBOOK 5.4; UI Toolkit since M8.1b): every item with its starting value,
-    /// what damage cost and what it's worth now; haul vs quota; who made it out; the run's funny stats.
-    /// The host starts the next run from here; everyone else waits for them.
+    /// After the truck leaves (PLAYBOOK 5.4; a till receipt since UI step 7): every item prints with what it
+    /// was worth and what damage left of it, the haul counts up, QUOTA MET / MISSED is stamped on; beside it
+    /// who made it out, the run's funny stats as employee awards, and the payday tally. The host starts the
+    /// next run (or drives back to HQ) from here; everyone else waits for them.
     /// </summary>
     public class AppraisalScreen : MonoBehaviour
     {
@@ -55,77 +56,177 @@ namespace Abandoned.Extraction
             Core.Achievements.RecordRun(escaped, r.Haul, r.QuotaMet, jackpots, s.PowerOff || s.Night);
         }
 
+        private VisualElement paydayBox, buttonsBox;
+        private string paydayKey;
+
         private void LateUpdate()
         {
             bool showing = Showing;
             if (screen == null)
             {
                 if (!showing || (screen = ScreenPanel.Create(wide: true)) == null) return;
+                screen.Panel.AddToClassList("appraisal");
             }
             screen.Show(showing);
             if (!showing) return;
             RunState run = RunState.Current;
             Company.CompanyService company = Company.CompanyService.Current;
+            // The receipt prints once per run's results; the payday and buttons update in place under it
+            // (the outcome arrives a moment after the results, and reprinting would restart the show).
+            screen.Build(run.Results.GetHashCode().ToString(), panel =>
+            {
+                paydayKey = null;
+                Fill(panel, run);
+            });
             Company.OutcomeNet o = company != null ? company.LastOutcome : default;
-            // Rebuilt when the results, the payday or who may press the button change.
-            screen.Build($"{run.Results.GetHashCode()}|{run.IsServer}|{o.Run}|{o.Payout}|{(company != null ? company.State.Money : 0)}",
-                panel => Fill(panel, run, company));
+            string key = $"{run.IsServer}|{o.Run}|{o.Payout}|{(company != null ? company.State.Money : 0)}|{(company != null && company.Active.IsValid)}";
+            if (key == paydayKey || paydayBox == null) return;
+            paydayKey = key;
+            bool contract = company != null && company.Active.IsValid;
+            paydayBox.Clear();
+            if (contract) Payday(paydayBox, company);
+            buttonsBox.Clear();
+            if (run.IsServer && contract) MenuKit.Button(buttonsBox, "Back to HQ", company.ReturnToHq, Audio.SoundId.UiConfirm);
+            else if (director != null && run.IsServer) MenuKit.Button(buttonsBox, "Next run", director.StartNextRun, Audio.SoundId.UiConfirm);
+            else MenuKit.Text(buttonsBox, contract ? "Waiting for the host to drive back to HQ..." : "Waiting for the host to start the next run...");
         }
 
-        private void Fill(VisualElement panel, RunState run, Company.CompanyService company)
+        // UI step 7: a till receipt that prints line by line, the haul counting up, a stamp; the crew,
+        // the run's awards and the payday beside it.
+        private void Fill(VisualElement panel, RunState run)
         {
             RunResults r = run.Results;
-            MenuKit.Text(panel, "APPRAISAL", "heading");
-            string verdict = r.QuotaMet ? "<color=#7dff7d>QUOTA MET</color>" : "<color=#ff7766>QUOTA MISSED</color>";
-            MenuKit.Text(panel, $"HAUL ${r.Haul:N0} / QUOTA ${r.Quota:N0}   {verdict}   ({(int)r.Seconds / 60}:{(int)r.Seconds % 60:00})", "subtitle");
+            var columns = new VisualElement();
+            columns.AddToClassList("appraisal__columns");
+            panel.Add(columns);
 
+            var receipt = new VisualElement();
+            receipt.AddToClassList("receipt");
+            columns.Add(receipt);
+            Line(receipt, "ZEYAD SALVAGE CO.", "receipt__head");
+            Line(receipt, $"APPRAISAL - RUN {r.Seed % 10000:0000} - {(int)r.Seconds / 60}:{(int)r.Seconds % 60:00} ON SITE", "receipt__small");
+            Line(receipt, new string('-', 44), "receipt__rule");
+            var lines = new System.Collections.Generic.List<VisualElement>();
             var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            scroll.style.maxHeight = 300;
-            panel.Add(scroll);
-            Row(scroll, "<b>ITEM</b>", "<b>FOUND AT</b>", "<b>DAMAGE</b>", "<b>WORTH NOW</b>");
+            scroll.AddToClassList("receipt__items");
+            receipt.Add(scroll);
             foreach (RunResults.Item item in r.Items)
-                Row(scroll, item.Name + (item.Pocketed ? " (pocket)" : ""), $"${item.StartValue:N0}",
-                    item.DamageLost > 0 ? $"<color=#ff7766>-${item.DamageLost:N0}</color>" : "-", $"${item.FinalValue:N0}");
-            if (r.Items.Length == 0) MenuKit.Text(scroll, "The truck left empty.");
+            {
+                VisualElement row = Item(scroll, item);
+                row.style.display = DisplayStyle.None;
+                lines.Add(row);
+            }
+            if (r.Items.Length == 0) Line(scroll, "NOTHING. THE TRUCK LEFT EMPTY.", "receipt__line");
+            Line(receipt, new string('-', 44), "receipt__rule");
+            VisualElement total = MenuKit.Row(receipt);
+            total.AddToClassList("receipt__total");
+            Line(total, "HAUL", "receipt__total-label");
+            Label haul = Line(total, "$0", "receipt__total-value");
+            VisualElement quotaRow = MenuKit.Row(receipt);
+            Line(quotaRow, "QUOTA", "receipt__line");
+            Line(quotaRow, $"${r.Quota:N0}", "receipt__line-value");
+            Label stamp = UiKit.Stamp(receipt, r.QuotaMet ? "QUOTA MET" : "QUOTA MISSED", r.QuotaMet);
+            stamp.AddToClassList("receipt__stamp");
 
-            MenuKit.Text(panel, "CREW", "section");
+            // Print: a line every so often (with a tick), then the total counts up and the stamp comes down.
+            const long step = 110;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                VisualElement row = lines[i];
+                receipt.schedule.Execute(() =>
+                {
+                    row.style.display = DisplayStyle.Flex;
+                    Audio.GameAudio.PlayUi(Audio.SoundId.UiClick, 0.3f);
+                }).StartingIn(300 + step * i);
+            }
+            long printed = 300 + step * lines.Count;
+            float countStart = -1f;
+            receipt.schedule.Execute(() =>
+            {
+                if (countStart < 0f) countStart = Time.unscaledTime;
+                float k = Mathf.Clamp01((Time.unscaledTime - countStart) / 0.9f);
+                haul.text = $"${Mathf.RoundToInt(r.Haul * k):N0}";
+            }).StartingIn(printed).Every(30).Until(() => countStart >= 0f && Time.unscaledTime - countStart > 0.95f);
+            receipt.schedule.Execute(() =>
+            {
+                haul.text = $"${r.Haul:N0}";
+                UiKit.Slam(stamp);
+                Audio.GameAudio.PlayUi(r.QuotaMet ? Audio.SoundId.Coins : Audio.SoundId.UiError);
+            }).StartingIn(printed + 1000);
+
+            var side = new VisualElement();
+            side.AddToClassList("appraisal__side");
+            columns.Add(side);
+            MenuKit.Text(side, "APPRAISAL", "heading");
+            MenuKit.Text(side, "CREW", "section");
             foreach (RunResults.Player p in r.Players)
-                MenuKit.Text(panel, p.Extracted ? $"{p.Name}: made it out" : p.Died ? $"<color=#ff7766>{p.Name}: died in there</color>" :
-                    $"<color=#ff7766>{p.Name}: left behind{(p.PocketValueLost > 0 ? $" (lost ${p.PocketValueLost:N0} in their pockets)" : "")}</color>");
-            foreach (string line in r.Stats) MenuKit.Text(panel, "• " + line).AddToClassList("text--small");
-
-            bool contract = company != null && company.Active.IsValid;
-            if (contract) Payday(panel, company);
-
-            if (run.IsServer && contract) MenuKit.Button(panel, "Back to HQ", company.ReturnToHq, Audio.SoundId.UiConfirm);
-            else if (director != null && run.IsServer) MenuKit.Button(panel, "Next run", director.StartNextRun, Audio.SoundId.UiConfirm);
-            else MenuKit.Text(panel, contract ? "Waiting for the host to drive back to HQ..." : "Waiting for the host to start the next run...");
+                MenuKit.Text(side, p.Extracted ? $"<color=#7ee07e>\u25CF</color> {p.Name}: made it out" : p.Died ? $"<color=#ff5c4a>\u2716</color> {p.Name}: died in there" :
+                    $"<color=#ff5c4a>\u25CB</color> {p.Name}: left behind{(p.PocketValueLost > 0 ? $" (lost ${p.PocketValueLost:N0} in their pockets)" : "")}");
+            if (r.Stats.Length > 0)
+            {
+                MenuKit.Text(side, "EMPLOYEE AWARDS", "section");
+                foreach (string line in r.Stats)
+                {
+                    VisualElement award = MenuKit.Row(side);
+                    award.AddToClassList("award");
+                    UiKit.Icon(award, "board/award", "small").AddToClassList("award__icon");
+                    MenuKit.Text(award, line, "text").AddToClassList("award__text");
+                }
+            }
+            paydayBox = new VisualElement();
+            side.Add(paydayBox);
+            buttonsBox = new VisualElement();
+            buttonsBox.AddToClassList("appraisal__buttons");
+            side.Add(buttonsBox);
         }
 
-        // GDD 13: what the run did to the company.
+        private static VisualElement Item(VisualElement parent, RunResults.Item item)
+        {
+            VisualElement row = MenuKit.Row(parent);
+            row.AddToClassList("receipt__row");
+            string name = item.Name.ToUpperInvariant() + (item.Pocketed ? " (POCKET)" : "") + (item.Jackpot ? " *" : "");
+            Line(row, name, "receipt__line");
+            if (item.DamageLost > 0)
+            {
+                Line(row, $"<s>${item.StartValue:N0}</s>", "receipt__was");
+                Line(row, $"${item.FinalValue:N0}", "receipt__line-value").AddToClassList("receipt__line-value--damaged");
+            }
+            else Line(row, $"${item.FinalValue:N0}", "receipt__line-value");
+            return row;
+        }
+
+        private static Label Line(VisualElement parent, string text, string cls)
+        {
+            var l = new Label(text) { pickingMode = PickingMode.Ignore };
+            l.AddToClassList(cls);
+            parent.Add(l);
+            return l;
+        }
+
+        // GDD 13: what the run did to the company, as a tally.
         private static void Payday(VisualElement panel, Company.CompanyService company)
         {
             Company.OutcomeNet o = company.LastOutcome;
             if (o.Run == 0) return;
             MenuKit.Text(panel, "PAYDAY", "section");
-            MenuKit.Text(panel, $"Payout <b>${o.Payout:N0}</b>" + (o.Penalty > 0 ? $"   <color=#ff7766>quota penalty -${o.Penalty:N0}</color>" : "") +
-                                (o.Costs > 0 ? $"   running costs -${o.Costs:N0}" : "") +
-                                $"   +{o.Xp} xp" + (o.LevelledUp ? $"   <color=#7dff7d>LEVEL {o.NewLevel}!</color>" : ""));
+            Tally(panel, "Payout", $"${o.Payout:N0}", "text--money");
+            if (o.Penalty > 0) Tally(panel, "Quota penalty", $"-${o.Penalty:N0}", "text--error");
+            if (o.Costs > 0) Tally(panel, "Running costs", $"-${o.Costs:N0}", "text--error");
+            Tally(panel, "Experience", $"+{o.Xp} XP" + (o.LevelledUp ? $"  -  LEVEL {o.NewLevel}!" : ""), o.LevelledUp ? "text--good" : null);
             int balance = company.State.Money;
-            MenuKit.Text(panel, $"Company money: {(balance < 0 ? $"<color=#ff7766>DEBT ${-balance:N0}</color>" : $"${balance:N0}")}");
-            if (o.Bankrupt) MenuKit.Text(panel, "<color=#ff5544><b>BANKRUPT.</b> Three missed quotas in a row. The company folds; a new one starts with the basic kit.</color>");
-            else if (o.MissedInARow > 0) MenuKit.Text(panel, $"<color=#ff7766>Missed quotas in a row: {o.MissedInARow}/{company.Config.MissesToBankruptcy}</color>");
+            Tally(panel, "Company money", balance < 0 ? $"DEBT ${-balance:N0}" : $"${balance:N0}", balance < 0 ? "text--error" : "text--money").AddToClassList("tally--total");
+            if (o.Bankrupt) MenuKit.Text(panel, "<color=#ff5c4a><b>BANKRUPT.</b> Three missed quotas in a row. The company folds; a new one starts with the basic kit.</color>");
+            else if (o.MissedInARow > 0) MenuKit.Text(panel, $"<color=#ff5c4a>Missed quotas in a row: {o.MissedInARow}/{company.Config.MissesToBankruptcy}</color>");
         }
 
-        private static void Row(VisualElement parent, string name, string found, string damage, string now)
+        private static VisualElement Tally(VisualElement parent, string label, string value, string cls)
         {
             VisualElement row = MenuKit.Row(parent);
-            row.AddToClassList("hud-row");
-            MenuKit.Text(row, name, "hud-cell").AddToClassList("hud-cell--name");
-            MenuKit.Text(row, found, "hud-cell");
-            MenuKit.Text(row, damage, "hud-cell");
-            MenuKit.Text(row, now, "hud-cell");
+            row.AddToClassList("tally");
+            MenuKit.Text(row, label, "tally__label");
+            Label v = MenuKit.Text(row, value, "tally__value");
+            if (cls != null) v.AddToClassList(cls);
+            return row;
         }
 
         private void OnDestroy() => screen?.Remove();

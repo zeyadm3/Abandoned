@@ -1189,3 +1189,78 @@
 .play__title { margin: 0; padding: 0; border-bottom-width: 0; font-size: 26px; }
 .play__blurb { margin-top: 8px; margin-bottom: 10px; min-height: 64px; }
 .play__card .menu-button { font-size: 32px; }
+
+/* ---- Appraisal receipt (UI step 7) ---- */
+
+.appraisal { width: 1240px; max-width: 96%; }
+.appraisal__columns { flex-direction: row; align-items: flex-start; }
+
+.receipt {
+    width: 540px;
+    flex-shrink: 0;
+    background-color: var(--c-paper);
+    padding: 22px 26px 26px 26px;
+    margin-right: 34px;
+    rotate: -1deg;
+    border-bottom-width: 6px;
+    border-bottom-color: rgb(210, 202, 180);
+}
+
+.receipt__head, .receipt__line, .receipt__line-value, .receipt__small, .receipt__rule, .receipt__was,
+.receipt__total-label, .receipt__total-value {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    color: var(--c-paper-ink);
+}
+
+.receipt__head {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 26px;
+    -unity-text-align: middle-center;
+}
+
+.receipt__small { font-size: 14px; -unity-text-align: middle-center; color: rgb(110, 102, 88); }
+.receipt__rule { font-size: 15px; -unity-text-align: middle-center; color: rgb(140, 132, 116); overflow: hidden; }
+.receipt__items { max-height: 330px; }
+.receipt__row { min-height: 26px; }
+.receipt__line { font-size: 16px; flex-grow: 1; flex-shrink: 1; white-space: normal; }
+.receipt__line-value { font-size: 16px; -unity-text-align: middle-right; min-width: 100px; }
+.receipt__line-value--damaged { color: rgb(190, 40, 30); }
+.receipt__was { font-size: 14px; color: rgb(140, 132, 116); margin-right: 6px; }
+.receipt__total { margin-top: 4px; }
+
+.receipt__total-label {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 24px;
+    flex-grow: 1;
+}
+
+.receipt__total-value {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 34px;
+}
+
+.receipt__stamp {
+    position: absolute;
+    right: 24px; bottom: 74px;
+    font-size: 54px;
+    border-width: 6px;
+    background-color: rgba(238, 231, 212, 0.35);
+}
+
+.appraisal__side { flex-grow: 1; flex-shrink: 1; }
+.appraisal__buttons { margin-top: 14px; }
+
+.award { min-height: 30px; }
+.award__icon { margin-right: 10px; -unity-background-image-tint-color: var(--c-accent); }
+.award__text { margin-bottom: 0; color: var(--c-text); }
+
+.tally { min-height: 30px; border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.tally__label { font-size: 18px; color: var(--c-dim); flex-grow: 1; }
+.tally__value {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 24px;
+    color: var(--c-text);
+}
+
+.tally--total .tally__label { color: var(--c-text); }
+.tally--total .tally__value { font-size: 30px; }
