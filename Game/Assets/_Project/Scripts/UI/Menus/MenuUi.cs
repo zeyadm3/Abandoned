@@ -52,6 +52,7 @@ namespace Abandoned.UI
             views[MenuScreen.Main] = main.Root;
             views[MenuScreen.Pause] = pause.Root;
             views[MenuScreen.Settings] = new SettingsView(this).Root;
+            views[MenuScreen.Controls] = new ControlsView(this).Root;
             views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
             foreach (VisualElement v in views.Values) root.Add(v);
             subtitles = new SubtitleView();
@@ -73,7 +74,7 @@ namespace Abandoned.UI
             if (bootstrap == null) return;
             bool running = bootstrap.IsRunning;
             if (!running) paused = false;
-            if (EscapePressed())
+            if (EscapePressed() && !ControlsView.Busy)
             {
                 if (pushed.Count > 0) Back();
                 else if (running && paused) Resume();

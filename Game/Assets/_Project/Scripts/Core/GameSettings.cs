@@ -64,6 +64,7 @@ namespace Abandoned.Core
         public static void ResetAll()
         {
             foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey }) PlayerPrefs.DeleteKey(key);
+            PlayerPrefs.Save(); // a delete that isn't flushed can come back next launch
             sensitivity = fov = null;
             headBob = shake = subtitles = colorblind = null;
             Changed?.Invoke();

@@ -35,6 +35,11 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(MenuScreen.Settings, menu.Showing);
             yield return Capture(menu, "M7_menu_settings");
+            menu.Push(MenuScreen.Controls);
+            yield return null;
+            Assert.AreEqual(MenuScreen.Controls, menu.Showing);
+            yield return Capture(menu, "M7_menu_controls");
+            menu.Back();
             menu.Back();
             yield return null;
             Assert.AreEqual(MenuScreen.Pause, menu.Showing, "Back returns to the pause menu");

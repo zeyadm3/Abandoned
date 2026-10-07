@@ -16,6 +16,9 @@ namespace Abandoned.Player
 
         public PlayerInputFrame Current { get; private set; }
 
+        /// <summary>This reader's actions, with the player's rebinding applied.</summary>
+        public InputActionAsset Actions => input?.asset;
+
         /// <summary>When set, used instead of the devices (tests, replays, bots).</summary>
         public PlayerInputFrame? Override { get; set; }
 
@@ -24,7 +27,11 @@ namespace Abandoned.Player
             input = new AbandonedInput();
             // Debug-only action; looked up by name so this doesn't depend on wrapper regeneration order.
             ragdollDebugAction = input.asset.FindAction("Debug/ToggleRagdoll", true);
+            InputBindings.Apply(input.asset);
+            InputBindings.Changed += Rebind;
         }
+
+        private void Rebind() => InputBindings.Apply(input.asset);
 
         private void OnEnable()
         {
@@ -39,7 +46,11 @@ namespace Abandoned.Player
             Current = default;
         }
 
-        private void OnDestroy() => input?.Dispose();
+        private void OnDestroy()
+        {
+            InputBindings.Changed -= Rebind;
+            input?.Dispose();
+        }
 
         private void Update()
         {

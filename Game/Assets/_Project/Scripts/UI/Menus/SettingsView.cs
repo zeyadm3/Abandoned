@@ -32,6 +32,7 @@ namespace Abandoned.UI
                 v => GameSettings.FieldOfView = Mathf.Round(v));
             MenuKit.Toggle(scroll, "Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v);
             MenuKit.Toggle(scroll, "Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v);
+            MenuKit.Button(scroll, "Keys...", () => menu.Push(MenuScreen.Controls), small: true);
 
             MenuKit.Text(scroll, "SOUND", "section");
             MenuKit.Percent(scroll, "Master volume", AudioLevels.Master, v => AudioLevels.Master = v);
@@ -40,7 +41,7 @@ namespace Abandoned.UI
             MenuKit.Percent(scroll, "Voices", VoiceSettings.Volume, v => VoiceSettings.Volume = v);
 
             MenuKit.Text(scroll, "VOICE", "section");
-            MenuKit.Switch(scroll, "Microphone", VoiceSettings.Mode == VoiceMode.PushToTalk, "Push to talk (V)", "Open mic",
+            MenuKit.Switch(scroll, "Microphone", VoiceSettings.Mode == VoiceMode.PushToTalk, $"Push to talk ({InputBindings.Display("PushToTalk")})", "Open mic",
                 ptt => VoiceSettings.Mode = ptt ? VoiceMode.PushToTalk : VoiceMode.OpenMic);
             MenuKit.Toggle(scroll, "Mute my microphone", VoiceSettings.MicMuted, m => VoiceSettings.MicMuted = m);
 

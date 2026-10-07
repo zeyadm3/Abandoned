@@ -6,6 +6,7 @@ namespace Abandoned.UI
         Main,
         Pause,
         Settings,
+        Controls,
         Credits
     }
 }
