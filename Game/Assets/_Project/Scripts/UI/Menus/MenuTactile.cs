@@ -6,13 +6,16 @@ namespace Abandoned.UI
 {
     /// <summary>
     /// Makes a menu button feel physical. Hover and keyboard/gamepad focus get the same reaction: the
-    /// words jitter, a warm glow bleeds up under them, a scratched marker line is drawn in and the label
-    /// stutters with a little static. Pressing pushes it in with a quick flash and a glitch of the text.
+    /// words jitter, a warm glow bleeds up under them, a marker line is drawn in and the label stutters
+    /// with a little static. Pressing pushes it in with a quick flash and a glitch of the text.
     /// "Reduce menu effects" keeps the glow, marker and press but drops jitter, flicker, static and flash.
+    /// Nothing is ever added inside the button: a Button is a text element, and one with children stops
+    /// measuring its own text (0.12.2's small buttons collapsed to one letter per line).
     /// </summary>
     public static class MenuTactile
     {
         private const string Lit = "menu-button--lit", Pressed = "menu-button--pressed", Glitch = "menu-button--glitch";
+        private static readonly Color GlowTint = new(1f, 0.62f, 0.3f, 0f);
 
         public static void Attach(Button button, bool small)
         {
@@ -20,16 +23,8 @@ namespace Abandoned.UI
             if (config.Glow != null)
             {
                 button.style.backgroundImage = config.Glow;
-                button.style.unityBackgroundImageTintColor = new Color(1f, 0.62f, 0.3f, 0f);
+                button.style.unityBackgroundImageTintColor = GlowTint;
             }
-            var marker = new VisualElement { pickingMode = PickingMode.Ignore };
-            marker.AddToClassList("menu-button__marker");
-            if (config.Scratches != null) marker.style.backgroundImage = config.Scratches;
-            button.Add(marker);
-            var hiss = new VisualElement { pickingMode = PickingMode.Ignore };
-            hiss.AddToClassList("menu-button__static");
-            if (config.Grain != null) hiss.style.backgroundImage = config.Grain;
-            button.Add(hiss);
 
             bool hovered = false, focused = false;
             void Refresh(bool arriving)
@@ -37,9 +32,8 @@ namespace Abandoned.UI
                 bool lit = (hovered || focused) && button.enabledSelf;
                 if (lit == button.ClassListContains(Lit)) return;
                 button.EnableInClassList(Lit, lit);
-                if (config.Glow != null)
-                    button.style.unityBackgroundImageTintColor = new Color(1f, 0.62f, 0.3f, lit ? config.HoverGlowOpacity : 0f);
-                if (lit && arriving) React(button, hiss, small, config);
+                if (config.Glow != null) button.style.unityBackgroundImageTintColor = Tint(lit, config);
+                if (lit && arriving) React(button, small, config);
             }
             button.RegisterCallback<PointerEnterEvent>(_ => { hovered = true; Refresh(true); });
             button.RegisterCallback<PointerLeaveEvent>(_ => { hovered = false; Release(button); Refresh(false); });
@@ -61,7 +55,9 @@ namespace Abandoned.UI
             }, TrickleDown.TrickleDown);
         }
 
-        private static void React(Button button, VisualElement hiss, bool small, MenuEffectsConfig config)
+        private static Color Tint(bool lit, MenuEffectsConfig config) => new(GlowTint.r, GlowTint.g, GlowTint.b, lit ? config.HoverGlowOpacity : 0f);
+
+        private static void React(Button button, bool small, MenuEffectsConfig config)
         {
             if (MenuEffectsConfig.Calm) return;
             // Jitter: a few random nudges around the hover offset, then the stylesheet takes over again.
@@ -86,8 +82,15 @@ namespace Abandoned.UI
                 float o = opacity[i];
                 button.schedule.Execute(() => button.style.opacity = o < 0f ? StyleKeyword.Null : new StyleFloat(o)).StartingIn(at[i]);
             }
-            hiss.style.opacity = 0.32f;
-            hiss.schedule.Execute(() => hiss.style.opacity = 0f).StartingIn(110);
+            // The static is the button's own background showing snow for a moment, then its glow again.
+            if (config.Grain == null || config.Glow == null) return;
+            button.style.backgroundImage = config.Grain;
+            button.style.unityBackgroundImageTintColor = new Color(0.8f, 0.78f, 0.7f, 0.3f);
+            button.schedule.Execute(() =>
+            {
+                button.style.backgroundImage = config.Glow;
+                button.style.unityBackgroundImageTintColor = Tint(button.ClassListContains(Lit), config);
+            }).StartingIn(110);
         }
 
         private static void Press(Button button, MenuEffectsConfig config)

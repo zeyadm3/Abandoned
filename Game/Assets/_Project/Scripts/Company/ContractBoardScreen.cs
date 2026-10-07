@@ -32,6 +32,9 @@ namespace Abandoned.Company
                 screen = ScreenPanel.Create(wide: true);
                 if (screen == null) return;
                 screen.Panel.AddToClassList("panel--xwide");
+                // MenuKit.Panel sizes inline, which beats the stylesheet: the board's width is set here.
+                screen.Panel.style.width = 1320f;
+                screen.Panel.style.maxWidth = Length.Percent(96f);
             }
             screen.Show(open);
             if (!open) return;
@@ -67,7 +70,7 @@ namespace Abandoned.Company
                 if (company.Messages != null && company.Messages.Quip(c.Seed) is string quip && quip.Length > 0) Sheet(sheet, $"\"{quip}\"", "sheet__quip");
                 if (company.ModifierOf(c) is ContractModifier m && !string.IsNullOrEmpty(m.Description)) Sheet(sheet, m.Description, "sheet__text");
                 int crew = CompanyService.CrewSize;
-                Fact(sheet, "QUOTA", $"${company.QuotaFor(c):N0}" + (crew < 4 ? $" (crew of {crew})" : ""), true);
+                Fact(sheet, "QUOTA", $"${company.QuotaFor(c):N0}", true, crew < 4 ? $"scaled for a crew of {crew}" : null);
                 Fact(sheet, "BONUS", $"+{c.PayoutBonus:P0}", false);
                 Fact(sheet, "LOOT", $"${c.LootMin / 1000}k - ${c.LootMax / 1000}k", false);
                 Fact(sheet, "THREAT", Contract.ThreatName(c.ThreatLevel), c.ThreatLevel >= 2);
@@ -99,12 +102,18 @@ namespace Abandoned.Company
             return l;
         }
 
-        private static void Fact(VisualElement sheet, string label, string value, bool warn)
+        // Label column, value column: every value starts at the same x, warnings only change colour.
+        private static void Fact(VisualElement sheet, string label, string value, bool warn, string note = null)
         {
             VisualElement row = MenuKit.Row(sheet);
             row.AddToClassList("sheet__fact");
             Sheet(row, label, "sheet__fact-label");
-            Sheet(row, value, warn ? "sheet__fact-value--warn" : "sheet__fact-value");
+            var cell = new VisualElement { pickingMode = PickingMode.Ignore };
+            cell.AddToClassList("sheet__fact-cell");
+            row.Add(cell);
+            Label shown = Sheet(cell, value, "sheet__fact-value");
+            shown.EnableInClassList("sheet__fact-value--warn", warn);
+            if (note != null) Sheet(cell, note, "sheet__fact-note");
         }
 
         private void OnDisable()

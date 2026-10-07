@@ -1749,26 +1749,54 @@
 
 /* Tactile buttons: glow (button background), a scratched marker under lit words, a breath of static. */
 .menu-button { -unity-background-scale-mode: stretch-to-fill; }
-.menu-button__marker {
-    position: absolute;
-    left: 0; bottom: 3px;
-    width: 0; height: 4px;
-    opacity: 0;
-    -unity-background-scale-mode: stretch-to-fill;
-    -unity-background-image-tint-color: var(--c-accent);
-    transition-property: width, opacity;
-    transition-duration: 0.12s, 0.08s;
-    transition-timing-function: ease-out;
-}
-.menu-button--lit > .menu-button__marker { width: 62%; opacity: 0.85; }
-.menu-button--small > .menu-button__marker { display: none; }
-.menu-button__static {
-    position: absolute;
-    left: 0; top: 0; right: 0; bottom: 0;
-    opacity: 0;
-    background-size: 128px 128px;
-}
+/* The marker: lit big buttons get a drawn-in underline (a border, never a child element). */
+/* The underline is always 2px (transparent until lit), so lighting it never moves the layout. */
+.menu-button { border-bottom-width: 2px; border-bottom-color: rgba(188, 161, 103, 0); transition-property: translate, color, border-bottom-color; }
+.menu-button--small { border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.menu-button--lit { border-bottom-color: var(--c-accent); }
 .menu-button--lit { color: var(--c-accent-hot); text-shadow: 0 0 8px rgba(214, 140, 72, 0.55); }
 .menu-button--small.menu-button--lit { text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
 .menu-button--pressed { color: rgb(240, 226, 190); transition-duration: 0s; }
-.menu-button--glitch { letter-spacing: 6px; text-shadow: 3px 0 0 rgba(190, 40, 30, 0.7); }
+.menu-button--glitch { text-shadow: 3px 0 0 rgba(190, 40, 30, 0.7); }
+
+/* ---- 0.12.5 contract board: wider sheets, one label column and one value column ---- */
+.board__cork { flex-wrap: nowrap; padding: 22px 12px; }
+.board__cork .sheet { min-width: 0; flex-basis: 0; flex-grow: 1; flex-shrink: 1; margin: 0 9px; padding: 24px 22px 16px 22px; }
+.sheet__job { font-size: 32px; }
+.sheet .sheet__fact { flex-direction: row; align-items: center; min-height: 34px; height: auto; padding: 3px 0; flex-wrap: nowrap; }
+.sheet .sheet__fact-label { width: 104px; min-width: 104px; flex-grow: 0; flex-shrink: 0; white-space: nowrap; font-size: 13px; letter-spacing: 1px; -unity-text-align: middle-left; }
+.sheet__fact-cell { flex-grow: 1; flex-shrink: 1; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; }
+.sheet .sheet__fact-value { width: auto; min-width: 0; flex-shrink: 1; white-space: normal; -unity-text-align: middle-left; font-size: 17px; }
+.sheet .sheet__fact-value--warn { color: rgb(150, 38, 26); }
+.sheet__fact-note { font-size: 12px; color: rgb(98, 92, 76); white-space: normal; margin-top: -2px; }
+.sheet .sheet__take { margin-top: 14px; }
+
+/* ---- 0.12.5 settings-driven HUD bits ---- */
+.hud-crosshair--hidden { opacity: 0; }
+.subtitles--small .subtitle-line { font-size: 15px; }
+.subtitles--large .subtitle-line { font-size: 26px; }
+
+/* ---- 0.12.5 settings: pages down the left, the open page on the right ---- */
+.settings { height: 88%; }
+.settings__columns { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; margin-top: 4px; }
+.settings__nav {
+    width: 250px; min-width: 200px; flex-shrink: 0;
+    padding-right: 18px; margin-right: 24px;
+    border-right-width: 1px; border-right-color: var(--c-line);
+}
+.settings__nav-button { font-size: 28px; min-height: 44px; color: var(--c-dim); }
+.settings__nav-button--open { color: var(--c-accent-hot); border-bottom-color: var(--c-accent); }
+.settings__page { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.settings__page-title {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 32px; letter-spacing: 3px; color: var(--c-text);
+}
+.settings__page-blurb { font-size: 17px; color: var(--c-dim); margin-bottom: 10px; }
+.settings__body .section { margin-top: 14px; }
+.settings__body .setting { min-height: 44px; }
+.settings__note { font-size: 14px; color: var(--c-faint); margin: -4px 0 6px 0; white-space: normal; }
+.settings__footer { justify-content: space-between; margin-top: 12px; flex-shrink: 0; }
+.settings__back { flex-grow: 0; }
+.settings__reset { align-self: center; }
+.menu-compact .settings__nav { width: 190px; min-width: 160px; margin-right: 14px; }
+.menu-compact .settings__nav-button { font-size: 22px; }
