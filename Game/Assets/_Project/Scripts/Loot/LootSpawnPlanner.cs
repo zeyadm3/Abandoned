@@ -24,8 +24,10 @@ namespace Abandoned.Loot
             }
         }
 
+        /// <param name="fillMultiplier">Contract: share of ordinary points filled ("picked over" &lt; 1).</param>
+        /// <param name="fragileRarity">Contract: weight for High/Extreme fragility items ("fragile collection").</param>
         public static List<Placement> Plan(IReadOnlyList<LootSpawnPoint> points, IReadOnlyList<LootDefinition> definitions,
-            LootSpawnConfig config, int seed)
+            LootSpawnConfig config, int seed, float fillMultiplier = 1f, float fragileRarity = 1f)
         {
             var random = new Random(seed);
             var plan = new List<Placement>();
@@ -42,18 +44,21 @@ namespace Abandoned.Loot
                 double fill = random.NextDouble();
                 double pick = random.NextDouble();
                 int valueSeed = random.Next(1, int.MaxValue);
-                bool use = p.IsJackpot ? jackpotPoints.IndexOf(i) < jackpots : fill < config.FillChance;
+                bool use = p.IsJackpot ? jackpotPoints.IndexOf(i) < jackpots : fill < config.FillChance * fillMultiplier;
                 if (!use) continue;
-                LootDefinition d = Pick(p, definitions, pick);
+                LootDefinition d = Pick(p, definitions, pick, fragileRarity);
                 if (d != null) plan.Add(new Placement(i, d, valueSeed));
             }
             return plan;
         }
 
-        private static LootDefinition Pick(LootSpawnPoint point, IReadOnlyList<LootDefinition> definitions, double roll)
+        private static float Weight(LootDefinition d, float fragileRarity) =>
+            d.Rarity * (d.Fragility >= Fragility.High ? fragileRarity : 1f);
+
+        private static LootDefinition Pick(LootSpawnPoint point, IReadOnlyList<LootDefinition> definitions, double roll, float fragileRarity)
         {
             float total = 0f;
-            foreach (LootDefinition d in definitions) if (point.Fits(d)) total += d.Rarity;
+            foreach (LootDefinition d in definitions) if (point.Fits(d)) total += Weight(d, fragileRarity);
             if (total <= 0f) return null;
             double target = roll * total;
             LootDefinition last = null;
@@ -61,7 +66,7 @@ namespace Abandoned.Loot
             {
                 if (!point.Fits(d)) continue;
                 last = d;
-                target -= d.Rarity;
+                target -= Weight(d, fragileRarity);
                 if (target <= 0) return d;
             }
             return last; // rounding left a sliver at the end

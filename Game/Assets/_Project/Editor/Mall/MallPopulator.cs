@@ -67,6 +67,7 @@ namespace Abandoned.EditorTools
                 UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.RunStatePrefabPath).GetComponent<Unity.Netcode.NetworkObject>(),
                 spawner, Object.FindAnyObjectByType<StructureSimulation>());
             run.AddComponent<Abandoned.Extraction.RunHud>();
+            run.AddComponent<Abandoned.Extraction.PowerController>();
             SerializedWiring.Set(run.AddComponent<Abandoned.Extraction.AppraisalScreen>(), "director", director);
 
             // Threats appear out of sight of the entrance: cinema (floor 2), loading bay, food court.

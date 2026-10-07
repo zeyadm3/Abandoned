@@ -19,6 +19,14 @@ namespace Abandoned.Contracts
 
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
         {
+            // "No contract" is the default struct: its strings are null, which NGO can't write.
+            if (s.IsWriter)
+            {
+                Location ??= "";
+                Scene ??= "";
+                ModifierId ??= "";
+                ModifierName ??= "";
+            }
             s.SerializeValue(ref Location);
             s.SerializeValue(ref Scene);
             s.SerializeValue(ref ModifierId);

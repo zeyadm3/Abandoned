@@ -11,15 +11,17 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M6.0): compile clean; verify ALL PASS; EditMode 205/205; PlayMode 211/211;
-  nettest basic/loot/sharedcarry/collapse/robust/voice/run/travel 4/4.
+- Last verified (M6.1-6.3): compile clean; verify ALL PASS; EditMode 205/205; PlayMode 212/212;
+  nettest basic/loot/sharedcarry/collapse/robust/voice/run/travel/company 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-M6 (Docs/progress/M6.md): 6.0 session travel done -> 6.1 HQ -> 6.2 save -> 6.3 contracts -> 6.5 progression -> 6.4 shop/equipment -> 6.7 ghosts -> 6.6 Stalker + Collector.
+M6 (Docs/progress/M6.md): 6.0 travel, 6.1 HQ, 6.2 save, 6.3 contracts, 6.5 payday/debt/bankruptcy done
+-> 6.4a shop + gear rack + flashlight/radio/trolley -> 6.4b scanner/medkit/planks/noise maker -> 6.7 ghosts
+-> 6.6 Stalker + Collector -> M6 review, tag, builds.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -56,6 +58,10 @@ M6 (Docs/progress/M6.md): 6.0 session travel done -> 6.1 HQ -> 6.2 save -> 6.3 c
       in a restored building. Judge distances and the 15 min window. M5.5: 45 s in, the Blind One
       appears (listen for clicking): sprint and drop things near it and it hunts you; touch = death
       ("YOU DIED", body stays down); crouch-walking past it should be possible. F1 shows what it heard.
+- [ ] Company loop (M6): the build opens in the HQ. Read the contract board (E), host takes a job, press E
+      on the van: everyone drives to the mall on that contract's terms (Power Off = dark). Extract, see the
+      payday (debt if the quota is missed), "Back to HQ". Quit and restart: money/level are kept
+      (~/Library/Application Support/Zeyad Games/Abandoned/company.json). A friend can only join at the HQ.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## Committing

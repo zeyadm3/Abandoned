@@ -31,10 +31,12 @@ namespace Abandoned.EditorTools
             NetworkContentBuilder.CreateStructureNetPrefab();
             NetworkContentBuilder.CreateRunStatePrefab();
             NetworkContentBuilder.CreateSessionTravelPrefab();
+            CompanyContentBuilder.CreateMissing();
             ThreatContentBuilder.CreateBlindOne();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestBuildingBuilder.Build();
             MallBuilder.Build();
+            HqBuilder.Build();
             BuildScenes.ApplyToEditorSettings();
             return true;
         });
@@ -75,6 +77,10 @@ namespace Abandoned.EditorTools
                 shots.Add(ScreenshotCapture.CaptureFrom(eye, eye + spawn.transform.forward * 10f, "M1_player_eye", 75f));
             }
 
+            EditorSceneManager.OpenScene(HqBuilder.ScenePath, OpenSceneMode.Single);
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(12f, 18f, -14f), new Vector3(12f, 0f, 8f), "M6_hq_overview"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(6f, 1.6f, 3.5f), new Vector3(6f, 1.4f, 9f), "M6_hq_garage"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(18f, 1.6f, 6f), new Vector3(18f, 1.6f, 0f), "M6_hq_board"));
             EditorSceneManager.OpenScene(MallBuilder.ScenePath, OpenSceneMode.Single);
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(24f, 34f, -34f), new Vector3(24f, 4f, 20f), "M5_mall_overview"));
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(24f, 1.6f, -6f), new Vector3(24f, 3f, 20f), "M5_mall_entrance"));

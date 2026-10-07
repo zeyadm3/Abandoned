@@ -45,8 +45,9 @@ namespace Abandoned.EditorTools
             var bootstrap = network.AddComponent<NetworkBootstrap>();
             bootstrap.Setup(config, manager, utp, facepunch, sceneSession: true);
             var travel = AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.SessionTravelPrefabPath);
-            if (travel == null) Debug.LogError("SessionTravel prefab missing; run Rebuild Content.");
-            else SerializedWiring.Set(bootstrap, "sessionTravelPrefab", travel.GetComponent<Unity.Netcode.NetworkObject>());
+            var company = AssetDatabase.LoadAssetAtPath<GameObject>(CompanyContentBuilder.CompanyServicePrefabPath);
+            if (travel == null || company == null) Debug.LogError("Session prefabs missing; run Rebuild Content.");
+            else SerializedWiring.SetArray(bootstrap, "sessionPrefabs", new Object[] { travel.GetComponent<Unity.Netcode.NetworkObject>(), company.GetComponent<Unity.Netcode.NetworkObject>() });
             SerializedWiring.Set(network.AddComponent<ReturnToMenu>(), "bootstrap", bootstrap);
             var lobby = network.AddComponent<SteamLobby>();
             SerializedWiring.Set(lobby, "bootstrap", bootstrap);

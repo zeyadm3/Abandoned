@@ -18,9 +18,9 @@ namespace Abandoned.Extraction
         public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null;
 
         // The appraisal owns the mouse while it's up, so a click is a click on the button.
-        private void Update() => Core.CursorOwner.UiActive = Showing;
+        private void Update() => Core.CursorOwner.Set(this, Showing);
 
-        private void OnDisable() => Core.CursorOwner.UiActive = false;
+        private void OnDisable() => Core.CursorOwner.Set(this, false);
 
         private void OnGUI()
         {
@@ -51,13 +51,35 @@ namespace Abandoned.Extraction
                     $"<color=#ff7766>{p.Name}: left behind{(p.PocketValueLost > 0 ? $" (lost ${p.PocketValueLost:N0} in their pockets)" : "")}</color>", label);
             foreach (string line in r.Stats) GUILayout.Label("• " + line, label);
 
+            Company.CompanyService company = Company.CompanyService.Current;
+            bool contract = company != null && company.Active.IsValid;
+            if (contract) DrawPayday(company);
+
             GUILayout.FlexibleSpace();
-            if (director != null && run.IsServer)
+            if (run.IsServer && contract)
+            {
+                if (GUILayout.Button("Back to HQ", GUILayout.Height(40f))) company.ReturnToHq();
+            }
+            else if (director != null && run.IsServer)
             {
                 if (GUILayout.Button("Next run", GUILayout.Height(40f))) director.StartNextRun();
             }
-            else GUILayout.Label("Waiting for the host to start the next run...", label);
+            else GUILayout.Label(contract ? "Waiting for the host to drive back to HQ..." : "Waiting for the host to start the next run...", label);
             GUILayout.EndArea();
+        }
+
+        // GDD 13: what the run did to the company.
+        private void DrawPayday(Company.CompanyService company)
+        {
+            Company.OutcomeNet o = company.LastOutcome;
+            if (o.Run == 0) return;
+            string money = $"Payout <b>${o.Payout:N0}</b>" + (o.Penalty > 0 ? $"   <color=#ff7766>quota penalty -${o.Penalty:N0}</color>" : "") +
+                           $"   +{o.Xp} xp" + (o.LevelledUp ? $"   <color=#7dff7d>LEVEL {o.NewLevel}!</color>" : "");
+            GUILayout.Label(money, label);
+            int balance = company.State.Money;
+            GUILayout.Label($"Company money: {(balance < 0 ? $"<color=#ff7766>DEBT ${-balance:N0}</color>" : $"${balance:N0}")}", label);
+            if (o.Bankrupt) GUILayout.Label("<color=#ff5544><b>BANKRUPT.</b> Three missed quotas in a row. The company folds; a new one starts with the basic kit.</color>", label);
+            else if (o.MissedInARow > 0) GUILayout.Label($"<color=#ff7766>Missed quotas in a row: {o.MissedInARow}/{company.Config.MissesToBankruptcy}</color>", label);
         }
 
         private void Row(string name, string found, string damage, string now)

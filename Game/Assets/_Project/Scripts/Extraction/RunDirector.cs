@@ -25,6 +25,7 @@ namespace Abandoned.Extraction
 
         private NetworkObject spawned;
         private bool started;
+        private float stabilityOverride = -1f, lootFill = 1f, fragileRarity = 1f;
         private readonly RunStats stats = new();
 
         /// <summary>
@@ -74,8 +75,8 @@ namespace Abandoned.Extraction
             NetworkManager manager = Session.Manager;
             if (spawned != null && spawned.IsSpawned) spawned.Despawn(true);
             spawned = null;
-            if (structure != null) structure.ApplyStability(structure.Stability, seed);
-            if (lootSpawner != null) lootSpawner.Respawn(seed);
+            if (structure != null) structure.ApplyStability(stabilityOverride >= 0f ? stabilityOverride : structure.Stability, seed);
+            if (lootSpawner != null) lootSpawner.Respawn(seed, lootFill, fragileRarity);
             if (respawnPlayers)
                 foreach (NetworkPlayer p in NetworkPlayer.All)
                     if (p != null && p.NetworkManager == manager && Session.Slots.TryGetSlot(p.OwnerClientId, out int slot))
@@ -95,7 +96,22 @@ namespace Abandoned.Extraction
             if (manager == null || !manager.IsServer || !manager.IsListening || manager.ShutdownInProgress) return;
             if (spawned != null && spawned.IsSpawned) return;
             // A session's first run: its own seed, not the one the scene was saved with.
-            if (!started) BeginRun(ForcedSeed != 0 ? ForcedSeed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
+            if (!started)
+            {
+                // On a contract (from the HQ): its seed and terms; otherwise a dev run with the defaults.
+                Company.CompanyService company = Company.CompanyService.Current;
+                Contracts.Contract contract = company != null ? company.Active : default;
+                if (contract.IsValid)
+                {
+                    Contracts.ContractModifier m = company.ModifierOf(contract);
+                    stabilityOverride = contract.Stability;
+                    lootFill = m != null ? m.LootMultiplier : 1f;
+                    fragileRarity = m != null ? m.FragileRarity : 1f;
+                    RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff);
+                }
+                else RunState.TermsSource = null;
+                BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
+            }
             RunState.SeedSource = () => lootSpawner != null ? lootSpawner.Seed : 0;
             RunState.RunStatsSource = stats.Lines;
             spawned = manager.SpawnManager.InstantiateAndSpawn(runStatePrefab);

@@ -1,14 +1,24 @@
+using System.Collections.Generic;
+
 namespace Abandoned.Core
 {
     /// <summary>
-    /// A screen that needs the mouse (the appraisal, later menus) claims it here; the player's look then
-    /// leaves the cursor alone, so a click lands on the button instead of re-locking the mouse.
+    /// Screens that need the mouse (the appraisal, the contract board, later menus) claim it here; while
+    /// any claim is held the player's look leaves the cursor alone, so clicks land on buttons.
     /// </summary>
     public static class CursorOwner
     {
-        public static bool UiActive { get; set; }
+        private static readonly HashSet<object> Claims = new();
+
+        public static bool UiActive => Claims.Count > 0;
+
+        public static void Set(object owner, bool claimed)
+        {
+            if (claimed) Claims.Add(owner);
+            else Claims.Remove(owner);
+        }
 
         [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => UiActive = false;
+        private static void ResetStatics() => Claims.Clear();
     }
 }

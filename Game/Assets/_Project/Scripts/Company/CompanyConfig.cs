@@ -20,6 +20,9 @@ namespace Abandoned.Company
         [Tooltip("A missed quota costs this share of the shortfall (debt).")]
         [field: SerializeField, Range(0f, 2f)] public float ShortfallPenalty { get; private set; } = 0.5f;
 
+        [Tooltip("What a full mall run tends to hold ($), for the board's loot estimates.")]
+        [field: SerializeField, Min(0)] public int LootEstimate { get; private set; } = 300000;
+
         public void Validate(List<string> errors)
         {
             for (int i = 1; i < LevelXp.Length; i++)

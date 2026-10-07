@@ -13,6 +13,7 @@ namespace Abandoned.Networking
     {
         [SerializeField] private NetworkBootstrap bootstrap;
 
+        private const string HomeLevel = "HQ";
         private bool pending;
 
         private void OnEnable()
@@ -36,6 +37,12 @@ namespace Abandoned.Networking
         {
             if (!pending) return;
             pending = false;
+            // Back to the HQ (the menu of a game in progress) when the build has one; else this level again.
+            if (Application.CanStreamedLevelBeLoaded(HomeLevel))
+            {
+                SceneManager.LoadScene(HomeLevel);
+                return;
+            }
             Scene scene = SceneManager.GetActiveScene();
             if (scene.buildIndex < 0)
             {

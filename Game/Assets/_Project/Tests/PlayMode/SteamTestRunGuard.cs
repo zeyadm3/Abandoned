@@ -10,19 +10,26 @@ namespace Abandoned.Tests
     /// Keeps the real Steam off for every test run, including runs from the editor's Test Runner window
     /// where Application.isBatchMode is false. Lives in the PlayMode test assembly because that one is
     /// loaded for both EditMode and PlayMode runs (the framework scans every loaded test assembly).
-    /// Also the assembly's one run callback, so it drives <see cref="TestProgressLog"/> too.
+    /// Also the assembly's one run callback, so it drives <see cref="TestProgressLog"/> too, and it ends
+    /// any persistent scene session (M6.0) before each test: a session outlives scene loads on purpose,
+    /// but a stale one from the previous test would change how later tests' objects behave.
     /// </summary>
     public sealed class SteamTestRunGuard : ITestRunCallback
     {
         public void RunStarted(ITest testsToRun) => SteamInitPolicy.TestRunActive = true;
 
-        public void RunFinished(ITestResult testResults) => SteamInitPolicy.TestRunActive = false;
+        public void RunFinished(ITestResult testResults)
+        {
+            SteamInitPolicy.TestRunActive = false;
+            NetworkBootstrap.DestroyPersistent();
+        }
 
         // A PlayMode run reloads the domain on entering Play mode; re-arm before every test in case
         // RunStarted landed in the old domain.
         public void TestStarted(ITest test)
         {
             SteamInitPolicy.TestRunActive = true;
+            if (!test.IsSuite) NetworkBootstrap.DestroyPersistent();
             TestProgressLog.Started(test);
         }
 

@@ -11,7 +11,8 @@ namespace Abandoned.EditorTools
     {
         public static readonly string[] All =
         {
-            // The run (M5): builds open in the mall. TestBuilding stays for tests and nettests.
+            // The company HQ (M6): builds open here; players join here; contracts drive everyone to the mall.
+            HqBuilder.ScenePath,
             MallBuilder.ScenePath,
             TestBuildingBuilder.ScenePath,
         };

@@ -27,6 +27,9 @@ namespace Abandoned.Networking
         public static SessionTravel Current { get; private set; }
 
         public string Level => level.Value.ToString();
+
+        /// <summary>Host: the level this session began on (the HQ in the real game; a dev level in tests).</summary>
+        public string StartLevel { get; private set; }
         public int TravelId => travel.Value;
 
         /// <summary>
@@ -57,6 +60,7 @@ namespace Abandoned.Networking
             if (IsServer)
             {
                 level.Value = SceneManager.GetActiveScene().name;
+                StartLevel = Level;
                 loadedTravel = travel.Value;
                 placed = true; // players were placed by their spawn when they connected
                 NetworkManager.OnClientDisconnectCallback += OnClientLeft;
@@ -79,9 +83,10 @@ namespace Abandoned.Networking
         public void Travel(string sceneName)
         {
             if (!IsServer || !Application.CanStreamedLevelBeLoaded(sceneName)) return;
-            // The level's objects belong to the level; players and the session stay.
+            // The level's objects belong to the level; the session's (players, travel, company) live in
+            // DontDestroyOnLoad and stay.
             foreach (NetworkObject no in NetworkManager.SpawnManager.SpawnedObjectsList.ToList())
-                if (no != null && no != NetworkObject && !no.IsPlayerObject) no.Despawn(true);
+                if (no != null && !no.IsPlayerObject && no.gameObject.scene.name != "DontDestroyOnLoad") no.Despawn(true);
             placed = false;
             travel.Value++;
             level.Value = sceneName;

@@ -28,8 +28,8 @@ namespace Abandoned.Networking
         [SerializeField] private FacepunchTransport facepunchTransport;
         [Tooltip("Scene bootstraps: the first one becomes the game's persistent session (it survives level loads); later levels' copies remove themselves. Also applies the auto-host/-connect launch rules.")]
         [SerializeField] private bool sceneSession = true;
-        [Tooltip("Spawned when hosting starts: keeps every machine on the same level (6.0 session travel).")]
-        [OptionalReference, SerializeField] private NetworkObject sessionTravelPrefab;
+        [Tooltip("Spawned when hosting starts and kept for the whole session: level travel (6.0), the company (6.1).")]
+        [OptionalReference, SerializeField] private NetworkObject[] sessionPrefabs = System.Array.Empty<NetworkObject>();
 
         private const string LoopbackAddress = "127.0.0.1";
 
@@ -87,6 +87,9 @@ namespace Abandoned.Networking
             : (ushort)0;
 
         public event Action StateChanged;
+
+        /// <summary>Host: a reason to turn joiners away right now (the crew is out on a job), or null.</summary>
+        public static Func<string> JoinBlocker { get; set; }
 
         /// <summary>A session this machine had been in has ended: (left on purpose, why if not).</summary>
         public event Action<bool, string> SessionEnded;
@@ -149,10 +152,11 @@ namespace Abandoned.Networking
             networkManager.OnServerStarted += OnServerStarted;
         }
 
-        // Every session gets the object that keeps everyone on the same level.
+        // Every session gets its session-long objects (level travel, the company).
         private void OnServerStarted()
         {
-            if (sessionTravelPrefab != null) networkManager.SpawnManager.InstantiateAndSpawn(sessionTravelPrefab);
+            foreach (NetworkObject prefab in sessionPrefabs)
+                if (prefab != null) networkManager.SpawnManager.InstantiateAndSpawn(prefab);
         }
 
         private void Start()
@@ -315,8 +319,11 @@ namespace Abandoned.Networking
 
         private void OnApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
-            if (!ConnectionGate.Admit(request.ClientNetworkId, request.Payload, CompatibilityKey, slots, config.MaxPlayers,
-                    out int slot, out string reason))
+            string blocked = request.ClientNetworkId != NetworkManager.ServerClientId ? JoinBlocker?.Invoke() : null;
+            int slot = -1;
+            string reason = blocked;
+            if (blocked != null || !ConnectionGate.Admit(request.ClientNetworkId, request.Payload, CompatibilityKey, slots, config.MaxPlayers,
+                    out slot, out reason))
             {
                 response.Approved = false;
                 response.Reason = reason;
@@ -423,6 +430,7 @@ namespace Abandoned.Networking
         {
             Instance = null;
             Persistent = null;
+            JoinBlocker = null;
             quitting = false;
             Application.quitting -= OnQuitting;
             Application.quitting += OnQuitting;

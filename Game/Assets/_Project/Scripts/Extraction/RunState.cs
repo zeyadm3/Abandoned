@@ -40,18 +40,40 @@ namespace Abandoned.Extraction
         /// <summary>Host, before anything else in the run: which run this is (the loot spawner's seed).</summary>
         public static Func<int> SeedSource { get; set; }
 
+        /// <summary>Host: the contract's terms for the run (quota, window, bonus, power); null = the config's defaults.</summary>
+        public static Func<RunTerms?> TermsSource { get; set; }
+
+        public readonly struct RunTerms
+        {
+            public readonly int Quota;
+            public readonly float Window, Bonus;
+            public readonly bool PowerOff;
+
+            public RunTerms(int quota, float window, float bonus, bool powerOff)
+            {
+                Quota = quota;
+                Window = window;
+                Bonus = bonus;
+                PowerOff = powerOff;
+            }
+        }
+
         public override void OnNetworkSpawn()
         {
             Current = this;
             if (!IsServer) return;
             startedAt = Time.time;
+            RunTerms terms = TermsSource?.Invoke() ?? new RunTerms(config.Quota, config.WindowSeconds, 0f, false);
             state.Value = new RunNetState
             {
                 Phase = RunPhase.Running,
-                Quota = config.Quota,
+                Quota = terms.Quota,
                 Seed = SeedSource?.Invoke() ?? 0,
                 CargoCapacity = config.CargoCapacity,
-                WindowEnd = Now + config.WindowSeconds,
+                Window = terms.Window,
+                Bonus = terms.Bonus,
+                PowerOff = terms.PowerOff,
+                WindowEnd = Now + terms.Window,
             };
         }
 
@@ -201,6 +223,7 @@ namespace Abandoned.Extraction
             Current = null;
             SeedSource = null;
             RunStatsSource = null;
+            TermsSource = null;
         }
     }
 }

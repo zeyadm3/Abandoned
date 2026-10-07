@@ -65,7 +65,7 @@ namespace Abandoned.Threats
 
         private void Escalate(RunState run)
         {
-            int level = config.LevelAt(run.Elapsed, run.Config.WindowSeconds);
+            int level = config.LevelAt(run.Elapsed, run.State.Window > 0f ? run.State.Window : run.Config.WindowSeconds);
             run.SetDanger(level);
             if (structure != null) structure.DangerDecay = 1f + level * config.DecayPerLevel;
             foreach (BlindOne b in BlindOne.All)

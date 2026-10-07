@@ -97,8 +97,11 @@ namespace Abandoned.EditorTools
             ValidateScenePlacedObjects(path, errors);
             ValidateStructureSync(path, errors);
             ValidateSteamLobby(path, bootstraps[0], errors);
-            if (new SerializedObject(bootstraps[0]).FindProperty("sessionTravelPrefab").objectReferenceValue == null)
-                errors.Add($"{path}: NetworkBootstrap has no SessionTravel prefab (players couldn't travel between levels).");
+            SerializedProperty sessionPrefabs = new SerializedObject(bootstraps[0]).FindProperty("sessionPrefabs");
+            bool hasTravel = false;
+            for (int i = 0; sessionPrefabs != null && i < sessionPrefabs.arraySize; i++)
+                hasTravel |= sessionPrefabs.GetArrayElementAtIndex(i).objectReferenceValue is NetworkObject no && no.GetComponent<SessionTravel>() != null;
+            if (!hasTravel) errors.Add($"{path}: NetworkBootstrap's session prefabs lack SessionTravel (players couldn't travel between levels).");
             var menu = bootstraps[0].GetComponent<ReturnToMenu>();
             if (menu == null || new SerializedObject(menu).FindProperty("bootstrap").objectReferenceValue != bootstraps[0])
                 errors.Add($"{path}: the NetworkBootstrap object needs a ReturnToMenu wired to it (clients would stay in a dead game).");

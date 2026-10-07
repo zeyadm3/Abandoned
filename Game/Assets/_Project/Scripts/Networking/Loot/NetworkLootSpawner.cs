@@ -23,6 +23,7 @@ namespace Abandoned.Networking
         [SerializeField] private bool spawnOnHostStart = true;
 
         private readonly List<NetworkLoot> spawned = new();
+        private float fillMultiplier = 1f, fragileRarity = 1f;
         private bool hooked, done;
 
         public IReadOnlyList<NetworkLoot> Spawned => spawned;
@@ -68,8 +69,10 @@ namespace Abandoned.Networking
                 .OrderBy(p => p.name, System.StringComparer.Ordinal).ToList();
 
         /// <summary>Host, next run: every loot item in the session goes (held, pocketed, broken or not) and a new run's loot comes in.</summary>
-        public void Respawn(int runSeed)
+        public void Respawn(int runSeed, float fillMultiplier = 1f, float fragileRarity = 1f)
         {
+            this.fillMultiplier = fillMultiplier;
+            this.fragileRarity = fragileRarity;
             NetworkManager manager = Session != null ? Session.Manager : null;
             if (manager == null || !manager.IsServer) return;
             foreach (NetworkObject no in manager.SpawnManager.SpawnedObjectsList.ToList())
@@ -88,7 +91,7 @@ namespace Abandoned.Networking
             List<LootDefinition> definitions = catalog.Entries.Select(e => e.definition).Where(d => d != null).ToList();
             var random = new System.Random(seed ^ 0x5f3759df);
             done = true;
-            foreach (LootSpawnPlanner.Placement p in LootSpawnPlanner.Plan(points, definitions, config, seed))
+            foreach (LootSpawnPlanner.Placement p in LootSpawnPlanner.Plan(points, definitions, config, seed, fillMultiplier, fragileRarity))
             {
                 GameObject prefab = catalog.PrefabFor(p.Definition);
                 if (prefab == null)
