@@ -250,3 +250,9 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
   terminal (clickable amber CRT) / board / wardrobe, (9) travel screen, (10) text chat (T). Commit + push each step;
   render UI screenshots (UiShotsTests, 16:9 / 16:10 / ultrawide) and fix layout before moving on. Fonts/icons CC0 or
   OFL only, in Docs/ASSET_CREDITS.md; never the stencil font for small text. Panel scales by height (match 1).
+  Built: HUD = RunHud / PlayerHud / LootTags (scan = the Scan action, Q) / InteractionHud key caps; world tags on
+  HudLayer.World (placed from the viewport); ToastFeed, TravelScreen, ChatView (+ NetworkChat on the player) on the
+  session object; death card + death cam in GhostSpectator (Threat.DeathLine -> NetworkPlayer.DeathCause); TruckDisplay
+  (UITK panel into a RenderTexture on a quad); VideoSettings/VideoApplier (runtime URP asset copy, never the project's);
+  UI Scale = a runtime copy of the menu PanelSettings; WardrobePreview = an offstage mannequin + camera into a texture.
+  Steps 4-10 untested (user brief: no tests until they test everything).

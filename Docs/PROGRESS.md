@@ -53,6 +53,16 @@ links, build-release, Docs/STORE_PAGE.md, TRAILER.md, LAUNCH.md). All done (comp
 do NOT test (no EditMode/PlayMode/nettest/screenshots); the user tests everything once the game is complete.**
 Compile + rebuild + builds only; everything from M9-review onward is untested.
 
+-> **UI overhaul** (2026-10-07, user-approved plan, R.E.P.O./Lethal Company style; all 10 steps built and pushed):
+1 theme + kit (OFL fonts Barlow / Barlow Condensed / Saira Stencil One / IBM Plex Mono / VT323, Kenney CC0 icons, UiIcons,
+key caps, bars, stamps, hazard tape), 2 in-run HUD (haul bar + clock, stamina, hand + pocket slots with rendered loot
+pictures, value tags on what you look at / hold, the loot scan on Q, key-cap prompts), 3 death camera + YOU DIED with
+the cause, ghost bar, truck-leaving banner, toasts, speaker marks over players, the haul board in the truck, 4 pause
+menu + crew list with per-player voice volume/mute, 5 settings tabs (Video, mic picker + level, UI Scale), 6 main menu +
+Play screen (solo / host / join), 7 appraisal receipt, 8 HQ CRT terminal + job sheets + wardrobe 3D preview, 9 travel
+screen, 10 text chat (T). Steps 1-3 were screenshot-checked at 16:9 / 16:10 / ultrawide and their tests passed;
+**steps 4-10 are compile-clean only (user: no tests, they test everything)**.
+
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
       Steam -> "Host a Steam lobby"; in the HQ press Esc -> "Invite friends" opens the overlay; invite the
@@ -122,6 +132,11 @@ Compile + rebuild + builds only; everything from M9-review onward is untested.
       slowly), locked stores (E with bolt cutters / crowbar; Sealed job), motion detector + night vision, wardrobe
       accessories, the HQ answering machine, music + Music slider, payday running costs, crew-size quota on the board,
       F9 free camera, menu links (Open logs).
+- [ ] **UI overhaul test pass**: `Tools/unity.sh all` (UiShotsTests renders every screen into Game/Screenshots/UI_*; steps
+      4-10 have no shots yet: add them or look in the editor) + nettests. Then play: Q scan in the mall, value tags,
+      pockets, the truck board, dying (camera, card, ghost bar), Esc (crew rows, per-player volume), Settings tabs (Video:
+      window/resolution in a build; UI Scale; mic picker), main menu -> Play, the appraisal receipt, the HQ terminal
+      (GEAR/TRUCK pages), the job sheets, the wardrobe preview, the drive screen, T chat (incl. a ghost's line).
 - [ ] Clean-up I wasn't allowed to do: delete `Game/Assets/InitTestScene84712879-...unity(.meta)` (an aborted test run's
       scene) and `Game/Assets/Resources/PerformanceTestRunInfo.json`/`Settings.json` (+ the Resources folder): leftovers
       that mark every build "-dirty". Then rebuild the zips (`Tools/unity.sh build` and `build-demo`).
