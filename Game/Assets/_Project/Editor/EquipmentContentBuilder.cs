@@ -17,28 +17,28 @@ namespace Abandoned.EditorTools
         {
             var items = new List<EquipmentDefinition>
             {
-                Item("flashlight", "Flashlight", "Lights the way (F). Essential when the power's off.", EquipmentKind.Flashlight, 50, 1, false, new Color(1f, 0.9f, 0.5f)),
-                Item("radio", "Walkie-talkie", "Hold R to talk to everyone with a radio, anywhere.", EquipmentKind.Radio, 100, 1, false, new Color(0.3f, 0.3f, 0.3f)),
-                Item("hand_trolley", "Hand Trolley", "Lets one person drag Heavy items alone.", EquipmentKind.HandTrolley, 400, 1, false, new Color(0.9f, 0.4f, 0.1f)),
-                Item("medkit", "Medkit", "Gets a downed crewmate back on their feet (single use).", EquipmentKind.Medkit, 300, 1, true, new Color(0.9f, 0.2f, 0.2f)),
-                Item("planks", "Planks", "A plank to bridge a hole in the floor (single use).", EquipmentKind.Planks, 150, 2, true, new Color(0.6f, 0.45f, 0.25f)),
-                Item("noise_maker", "Noise Maker", "Throw it: it shrieks a few seconds later and draws the Blind One (single use).", EquipmentKind.NoiseMaker, 250, 2, true, new Color(0.9f, 0.9f, 0.2f)),
-                Item("stress_scanner", "Stress Scanner", "Shows how close the floor ahead is to giving way.", EquipmentKind.StressScanner, 1200, 3, false, new Color(0.2f, 0.8f, 0.9f)),
+                Item("flashlight", "Flashlight", "Lights the way (F). Essential when the power's off.", EquipmentKind.Flashlight, 400, 1, false, new Color(1f, 0.9f, 0.5f)),
+                Item("radio", "Walkie-talkie", "Hold R to talk to everyone with a radio, anywhere.", EquipmentKind.Radio, 600, 1, false, new Color(0.3f, 0.3f, 0.3f)),
+                Item("hand_trolley", "Hand Trolley", "Lets one person drag Heavy items alone.", EquipmentKind.HandTrolley, 2500, 1, false, new Color(0.9f, 0.4f, 0.1f)),
+                Item("medkit", "Medkit", "Gets a downed crewmate back on their feet (single use).", EquipmentKind.Medkit, 1500, 1, true, new Color(0.9f, 0.2f, 0.2f)),
+                Item("planks", "Planks", "A plank to bridge a hole in the floor (single use).", EquipmentKind.Planks, 800, 2, true, new Color(0.6f, 0.45f, 0.25f)),
+                Item("noise_maker", "Noise Maker", "Throw it: it shrieks a few seconds later and draws the Blind One (single use).", EquipmentKind.NoiseMaker, 1200, 2, true, new Color(0.9f, 0.9f, 0.2f)),
+                Item("stress_scanner", "Stress Scanner", "Shows how close the floor ahead is to giving way.", EquipmentKind.StressScanner, 8000, 3, false, new Color(0.2f, 0.8f, 0.9f)),
                 // M9.4 (append only: the catalog order is the network index)
-                Item("crowbar", "Crowbar", "Strike the floor in front of you (use): weak floors break, sound ones crack first. Loud.", EquipmentKind.Crowbar, 350, 1, false, new Color(0.7f, 0.15f, 0.1f)),
-                Item("backpack", "Backpack", "Two more pocket slots while you carry it.", EquipmentKind.Backpack, 600, 2, false, new Color(0.3f, 0.4f, 0.25f)),
-                Item("support_jack", "Support Jack", "Brace the floor you stand on from below: it holds 60 % more until the next job (single use).", EquipmentKind.SupportJack, 500, 3, true, new Color(0.95f, 0.75f, 0.1f)),
+                Item("crowbar", "Crowbar", "Strike the floor in front of you (use): weak floors break, sound ones crack first. Loud.", EquipmentKind.Crowbar, 2000, 1, false, new Color(0.7f, 0.15f, 0.1f)),
+                Item("backpack", "Backpack", "Two more pocket slots while you carry it.", EquipmentKind.Backpack, 4000, 2, false, new Color(0.3f, 0.4f, 0.25f)),
+                Item("support_jack", "Support Jack", "Brace the floor you stand on from below: it holds 60 % more until the next job (single use).", EquipmentKind.SupportJack, 2500, 8, true, new Color(0.95f, 0.75f, 0.1f)),
                 // M10 (append only)
                 Item("flatbed", "Flatbed Trolley", "A flatbed and a fold-out ramp: a short crew, or one stubborn person, can drag Huge items (slowly). Works as a hand trolley too.",
-                    EquipmentKind.Flatbed, 2000, 3, false, new Color(0.25f, 0.45f, 0.75f)),
+                    EquipmentKind.Flatbed, 9000, 3, false, new Color(0.25f, 0.45f, 0.75f)),
                 Item("rope_pulley", "Rope & Pulley", "Rig it over a hole in the floor (use, facing the hole): loot dropped down it and crewmates climbing down come down gently. Lasts the job.",
-                    EquipmentKind.RopePulley, 600, 2, true, new Color(0.75f, 0.6f, 0.35f)),
+                    EquipmentKind.RopePulley, 2000, 8, true, new Color(0.75f, 0.6f, 0.35f)),
                 Item("bolt_cutters", "Bolt Cutters", "Cuts the padlock on a store's shutter (E on the shutter), quietly. A crowbar gets you in too, loudly.",
-                    EquipmentKind.BoltCutters, 1500, 2, false, new Color(0.8f, 0.2f, 0.2f)),
+                    EquipmentKind.BoltCutters, 3500, 2, false, new Color(0.8f, 0.2f, 0.2f)),
                 Item("motion_detector", "Motion Detector", "In hand: pings anything moving within 22 m, and which way it is. The Stalker hates it.",
-                    EquipmentKind.MotionDetector, 3500, 4, false, new Color(0.3f, 0.85f, 0.4f)),
+                    EquipmentKind.MotionDetector, 9000, 4, false, new Color(0.3f, 0.85f, 0.4f)),
                 Item("night_vision", "Night Vision", "In hand, use to switch on: see in the dark for two minutes of battery (it recharges while off).",
-                    EquipmentKind.NightVision, 6000, 6, false, new Color(0.35f, 0.75f, 0.3f)),
+                    EquipmentKind.NightVision, 14000, 6, false, new Color(0.35f, 0.75f, 0.3f)),
             };
             CreateNoiseMaker();
             CreateSupportJack();

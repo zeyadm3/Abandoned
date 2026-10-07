@@ -110,13 +110,13 @@ namespace Abandoned.Tests
             yield return Frames();
             Assert.AreEqual(4, company.OwnedCount(flashlight), "no money, no sale");
 
-            company.Save.money = 1000;
+            company.Save.money = catalog.At(flashlight).Price + 100;
             company.RequestBuy(noise);
             company.RequestBuy(flashlight);
             yield return Frames();
             Assert.AreEqual(0, company.OwnedCount(noise), "noise makers unlock at level 2");
             Assert.AreEqual(5, company.OwnedCount(flashlight));
-            Assert.AreEqual(950, company.State.Money);
+            Assert.AreEqual(100, company.State.Money);
             Assert.AreEqual(5, new SaveStore(folder).Load().CountOf("flashlight"), "saved at once");
         }
     }

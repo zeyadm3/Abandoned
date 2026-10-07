@@ -35,7 +35,7 @@ namespace Abandoned.Company
             screen.Show(open);
             if (!open) return;
 
-            key.Clear().Append(company.IsServer).Append('|').Append(company.Selected);
+            key.Clear().Append(company.IsServer).Append('|').Append(company.Selected).Append('|').Append(CompanyService.CrewSize);
             foreach (Contract c in company.Board) key.Append('|').Append(c.Seed);
             screen.Build(key.ToString(), panel => Fill(panel, company));
         }
@@ -62,7 +62,8 @@ namespace Abandoned.Company
                     MenuKit.Text(card, $"<i>\"{quip}\"</i>").AddToClassList("text--small");
                 if (company.ModifierOf(c) is Contracts.ContractModifier m && !string.IsNullOrEmpty(m.Description))
                     MenuKit.Text(card, m.Description).AddToClassList("text--small");
-                MenuKit.Text(card, $"Quota <b>${c.Quota:N0}</b>");
+                int crew = CompanyService.CrewSize;
+                MenuKit.Text(card, $"Quota <b>${company.QuotaFor(c):N0}</b>" + (crew < 4 ? $"  (crew of {crew})" : ""));
                 MenuKit.Text(card, $"Loot ${c.LootMin:N0} - ${c.LootMax:N0}", "text").AddToClassList("text--small");
                 MenuKit.Text(card, $"Threat {Contract.ThreatName(c.ThreatLevel)} (known threats: ???)").AddToClassList("text--small");
                 MenuKit.Text(card, $"Stability {c.Stability:P0}").AddToClassList("text--small");

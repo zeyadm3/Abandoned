@@ -61,7 +61,7 @@ namespace Abandoned.Tests
             yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Mall" && RunState.Current != null && RunState.Current.IsSpawned,
                 10f, "everyone drove to the mall");
             RunNetState s = RunState.Current.State;
-            Assert.AreEqual(job.Quota, s.Quota, "the contract's quota");
+            Assert.AreEqual(company.QuotaFor(job), s.Quota, "the contract's quota for this crew");
             Assert.AreEqual(job.WindowSeconds, s.Window, 0.01f, "the contract's window");
             Assert.AreEqual(job.Seed, s.Seed, "the contract's seed");
             Assert.AreEqual(job.PowerOff, s.PowerOff);
@@ -91,7 +91,7 @@ namespace Abandoned.Tests
             Assert.IsFalse(o.QuotaMet, "one item won't make quota");
             Assert.AreEqual(haul, o.Payout);
             Assert.Greater(o.Penalty, 0, "the shortfall costs money");
-            Assert.AreEqual(o.Payout - o.Penalty, company.State.Money, "debt is negative money");
+            Assert.AreEqual(o.Payout - o.Penalty - o.Costs, company.State.Money, "debt is negative money");
             Assert.AreEqual(1, company.State.MissedQuotas);
             Assert.IsTrue(File.Exists(Path.Combine(folder, SaveStore.FileName)), "saved on the host's machine");
             Assert.AreEqual(company.State.Money, new SaveStore(folder).Load().money, "the file says the same");

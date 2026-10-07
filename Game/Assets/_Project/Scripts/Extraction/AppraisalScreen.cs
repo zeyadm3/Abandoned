@@ -110,6 +110,7 @@ namespace Abandoned.Extraction
             if (o.Run == 0) return;
             MenuKit.Text(panel, "PAYDAY", "section");
             MenuKit.Text(panel, $"Payout <b>${o.Payout:N0}</b>" + (o.Penalty > 0 ? $"   <color=#ff7766>quota penalty -${o.Penalty:N0}</color>" : "") +
+                                (o.Costs > 0 ? $"   running costs -${o.Costs:N0}" : "") +
                                 $"   +{o.Xp} xp" + (o.LevelledUp ? $"   <color=#7dff7d>LEVEL {o.NewLevel}!</color>" : ""));
             int balance = company.State.Money;
             MenuKit.Text(panel, $"Company money: {(balance < 0 ? $"<color=#ff7766>DEBT ${-balance:N0}</color>" : $"${balance:N0}")}");

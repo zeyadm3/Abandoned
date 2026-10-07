@@ -20,6 +20,11 @@ namespace Abandoned.Company
         [Tooltip("A missed quota costs this share of the shortfall (debt).")]
         [field: SerializeField, Range(0f, 2f)] public float ShortfallPenalty { get; private set; } = 0.5f;
 
+        [Tooltip("Every job costs this much (fuel, rent, insurance), paid at payday whatever the haul (M10.9).")]
+        [field: SerializeField, Min(0)] public int RunningCostBase { get; private set; } = 6000;
+        [Tooltip("...plus this much per company level (bigger jobs, bigger bills).")]
+        [field: SerializeField, Min(0)] public int RunningCostPerLevel { get; private set; } = 1200;
+
         [Tooltip("What a full mall run tends to hold ($), for the board's loot estimates.")]
         [field: SerializeField, Min(0)] public int LootEstimate { get; private set; } = 300000;
 
@@ -28,6 +33,8 @@ namespace Abandoned.Company
             for (int i = 1; i < LevelXp.Length; i++)
                 if (LevelXp[i] <= LevelXp[i - 1]) errors.Add($"{name}: LevelXp must increase.");
         }
+
+        public int RunningCost(int level) => RunningCostBase + RunningCostPerLevel * Mathf.Max(0, level - 1);
 
         public int LevelFor(int xp)
         {

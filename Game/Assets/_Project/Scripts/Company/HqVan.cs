@@ -13,7 +13,7 @@ namespace Abandoned.Company
             if (company == null) return null;
             if (company.Selected < 0) return "Pick a contract at the board first";
             Contract c = company.Board[company.Selected];
-            return $"Drive to {c.Location} ({c.ModifierName}, quota ${c.Quota:N0})";
+            return $"Drive to {c.Location} ({c.ModifierName}, quota ${company.QuotaFor(c):N0})";
         }
 
         public void Use(GameObject user)

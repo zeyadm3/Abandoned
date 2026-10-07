@@ -6,13 +6,13 @@ namespace Abandoned.Company
     /// <summary>The last run's effect on the company, for the appraisal on every machine.</summary>
     public struct OutcomeNet : INetworkSerializable, IEquatable<OutcomeNet>
     {
-        public int Run, Payout, Penalty, Xp, NewLevel, MissedInARow, Haul, Quota;
+        public int Run, Payout, Penalty, Xp, NewLevel, MissedInARow, Haul, Quota, Costs;
         public bool QuotaMet, LevelledUp, Bankrupt;
 
         public static OutcomeNet Of(RunOutcome o, int run) => new()
         {
             Run = run, Payout = o.Payout, Penalty = o.Penalty, Xp = o.Xp, NewLevel = o.NewLevel, MissedInARow = o.MissedInARow,
-            Haul = o.Haul, Quota = o.Quota,
+            Haul = o.Haul, Quota = o.Quota, Costs = o.Costs,
             QuotaMet = o.QuotaMet, LevelledUp = o.LevelledUp, Bankrupt = o.Bankrupt,
         };
 
@@ -26,6 +26,7 @@ namespace Abandoned.Company
             s.SerializeValue(ref MissedInARow);
             s.SerializeValue(ref Haul);
             s.SerializeValue(ref Quota);
+            s.SerializeValue(ref Costs);
             s.SerializeValue(ref QuotaMet);
             s.SerializeValue(ref LevelledUp);
             s.SerializeValue(ref Bankrupt);

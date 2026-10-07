@@ -66,7 +66,7 @@ namespace Abandoned.Tests
             Assert.IsTrue(o.QuotaMet);
             Assert.AreEqual(60000, o.Payout);
             Assert.AreEqual(0, o.Penalty);
-            Assert.AreEqual(60000, save.money);
+            Assert.AreEqual(60000 - config.RunningCost(1), save.money, "the job's running costs come off");
             Assert.AreEqual(0, save.missedQuotas, "the streak resets");
             Assert.AreEqual(50 + config.QuotaXp, save.xp);
             Assert.AreEqual(config.LevelFor(save.xp), save.level);
@@ -113,7 +113,7 @@ namespace Abandoned.Tests
             Assert.IsFalse(o.QuotaMet);
             Assert.AreEqual(10000, o.Payout, "no bonus when the quota is missed");
             Assert.AreEqual(15000, o.Penalty, "half the shortfall");
-            Assert.AreEqual(1000 + 10000 - 15000, save.money, "debt is negative money, not a lost save");
+            Assert.AreEqual(1000 + 10000 - 15000 - config.RunningCost(1), save.money, "debt is negative money, not a lost save");
 
             CompanyLedger.Apply(save, config, 0, 40000, 0f);
             RunOutcome third = CompanyLedger.Apply(save, config, 0, 40000, 0f);

@@ -168,6 +168,20 @@ namespace Abandoned.Company
 
         // ---- The board and the van ----
 
+        /// <summary>Players in the session, on every machine.</summary>
+        public static int CrewSize
+        {
+            get
+            {
+                int n = 0;
+                foreach (NetworkPlayer p in NetworkPlayer.All) if (p != null && p.IsSpawned) n++;
+                return Mathf.Max(1, n);
+            }
+        }
+
+        /// <summary>The quota this crew owes on a board contract (M10.9): a short crew owes less.</summary>
+        public int QuotaFor(Contract c) => Mathf.Max(1000, Mathf.RoundToInt(c.Quota * contracts.CrewScale(CrewSize) / 1000f) * 1000);
+
         /// <summary>The contract's modifier asset (null for none/unknown).</summary>
         public ContractModifier ModifierOf(Contract c)
         {
@@ -214,6 +228,7 @@ namespace Abandoned.Company
             if (selected.Value < 0 || selected.Value >= Board.Count || SessionTravel.Current == null) return;
             if (SessionTravel.Current.Level != HomeLevel) return;
             Contract c = Board[selected.Value];
+            c.Quota = QuotaFor(c); // the crew that leaves is the crew that owes
             active.Value = c;
             // Written before leaving: quitting mid-job must not dodge the missed quota (settled on next load).
             save.pendingQuota = c.Quota;

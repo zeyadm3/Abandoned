@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
                 Modifier("fragile_collection", "Fragile Collection", "Lots of glass and antiques. Don't drop anything.", fragile: 3f, bonus: 0.1f),
                 // M9.2 (GDD 14).
                 Modifier("night", "Night Job", "After dark: the building is darker, and something extra is awake in there.", bonus: 0.2f,
-                    night: true, extraThreats: 1, minLevel: 2),
+                    night: true, extraThreats: 1, minLevel: 15),
                 Modifier("heavy_jackpot", "Heavy Jackpot", "Word is there's more than one big prize in there. Bring a crew and a trolley.",
                     bonus: 0.1f, extraJackpots: 1),
                 Modifier("picked_over", "Already Picked Over", "Someone got here first: much less loot, a better bonus for what's left.",
@@ -40,7 +40,7 @@ namespace Abandoned.EditorTools
                 Modifier("hot_property", "Hot Property", "Two big prizes and a buyer who won't wait: a short window, a fat bonus.",
                     window: 0.55f, bonus: 0.4f, extraJackpots: 1, minLevel: 8),
                 Modifier("condemned", "Condemned", "Scheduled for demolition. Stability -30 %, something extra awake inside. Danger money.",
-                    stability: -0.3f, bonus: 0.45f, extraThreats: 1, minLevel: 10),
+                    stability: -0.3f, bonus: 0.45f, extraThreats: 1, minLevel: 15),
             };
             // Append any modifier the board doesn't have yet (kept order; inspector edits stay).
             var current = new System.Collections.Generic.List<ContractModifier>(contracts.Modifiers ?? new ContractModifier[0]);

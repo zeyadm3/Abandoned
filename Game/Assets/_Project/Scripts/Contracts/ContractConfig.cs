@@ -16,6 +16,8 @@ namespace Abandoned.Contracts
         [Tooltip("Quota at company level 1; grows by QuotaGrowth per level.")]
         [field: SerializeField, Min(0)] public int BaseQuota { get; private set; } = 30000;
         [field: SerializeField, Range(0f, 1f)] public float QuotaGrowth { get; private set; } = 0.15f;
+        [Tooltip("Quota share for a crew of 1, 2, 3, 4 (M10.9): solo is playable, co-op is the focus (GDD 3).")]
+        [field: SerializeField] public float[] CrewQuotaScale { get; private set; } = { 0.55f, 0.75f, 0.9f, 1f };
         [Tooltip("Random spread of the quota (+/-).")]
         [field: SerializeField, Range(0f, 0.5f)] public float QuotaSpread { get; private set; } = 0.15f;
         [Tooltip("Extraction window range (s).")]
@@ -26,6 +28,9 @@ namespace Abandoned.Contracts
         [field: SerializeField, Range(0f, 1f)] public float BonusMax { get; private set; } = 0.2f;
         [Tooltip("Chance a contract has no power (lights off) before modifiers.")]
         [field: SerializeField, Range(0f, 1f)] public float PowerOffChance { get; private set; } = 0.2f;
+
+        public float CrewScale(int crew) => CrewQuotaScale == null || CrewQuotaScale.Length == 0 ? 1f
+            : CrewQuotaScale[Mathf.Clamp(crew, 1, CrewQuotaScale.Length) - 1];
 
         public void Validate(List<string> errors)
         {
