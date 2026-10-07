@@ -4,6 +4,49 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Fix pass — 0.12.2 (2026-10-08)
+
+Fixes the five problems from the 0.12.1 play test. Per the user: no gameplay, EditMode/PlayMode/nettests
+or screenshot QA; compile, `Tools/unity.sh rebuild-horror` and `Tools/unity.sh build` only (all passed,
+no project warnings). Builds are stamped **0.12.2**, code commit **eb11c36** (clean). Archives in
+`~/Documents/Abandoned-builds/dev/`: `Abandoned-0.12.2-eb11c36-Mac.zip` (53 MB; 152 MB app) and
+`Abandoned-0.12.2-eb11c36-Windows.zip` (45 MB; 133 MB player). TestMap untouched. Commits: cc2450e (text),
+a4d51b5 (materials), 0edc22d (collider audit), fdd09b7 (stairs/kit), 19b65de (menus), eb11c36 (version + regen).
+
+- **1. Stairs.** Root cause: `Tools/Blender/environment.py` mapped Unity z to Blender -Y, so all 52 kit
+  models imported mirrored along Z. Every flight's steps were drawn *behind* its foot over open floor (no
+  collider: you walked through them) while its ramp stood undrawn. `xyz()` fixed, lettering re-faced,
+  normals made consistent, all FBX re-exported (same GUIDs); asymmetric kit props/signs now face the way
+  the builders intended. MallFlights fits ramp + handrail-height rails to the model and checks slope/lip
+  against PlayerMovementConfig. The basement stair surfaced under Stairs_G1; it now rises in column 12
+  (`MallLayout.BasementFlight`), and the loading-bay east door opens onto floor again. Stairs remain
+  StructuralSections (escalators collapse, service stairs are the never-collapse route); NavMesh is baked
+  over the ramps. New rebuild check `MallFlightValidator` (player capsule sweep, ground/headroom/slope/lip,
+  NavMesh foot-to-head path): 5 flights, 0 problems.
+- **2. Invisible blocks.** New rebuild check `InvisibleColliderAudit` (Mall + HQ): every solid collider on a
+  player layer must sit inside visible geometry; deliberate ones get `IntentionalInvisibleCollider` and are
+  listed (none). First run reported exactly the flights' ramps and rails (the mirror above); now 0 / 0.
+- **3. Textures.** New `MaterialAudit` at the end of rebuild-horror over Mall, HQ, every prefab and our
+  .mat assets: Kenney FBX materials remapped to editable URP Lit copies (Art/Generated/ThirdPartyMaterials),
+  non-URP shaders converted, untextured materials given original grain maps (soft sprite for particles), the
+  light shaft's unsaveable built-in white texture replaced. Report: 257 materials, 0 problems.
+- **4. Mirrored text.** TextMesh signs/labels/crew numbers used the font's GUI/Text material (double-sided,
+  no depth test: readable mirrored from behind, even through walls). New `Abandoned/WorldText` shader
+  (depth tested, drawn only from the reading side) via `WorldTextMaterial` + runtime `WorldTextBinding`;
+  kit lettering (Chalk) and notices (Paper) are back-face culled.
+- **5. Menus.** Title: eye-level HQ view (`MenuVantage`) drifting through dust; rare random beats (a tube
+  dies, a figure at the far end gone on the next flicker, a groan + shudder); worn, fringed, glitching logo;
+  grain, scanlines, vignette, VHS band; static cut / flicker-in / CRT-off transitions. Buttons: hover and
+  focus jitter, glow, scratched marker, static; press-in, flash, glitch; Host/Join/Start/Leave/Quit jolt the
+  screen. Pause fades in with a flicker; a runtime URP volume (`MenuPostEffects`) darkens, desaturates and
+  blurs the running game. Tunables in `Data/UI/Resources/MenuEffectsConfig`; Settings > Video and
+  Accessibility > "Reduce menu effects". Original procedural textures, credited in Docs/ASSET_CREDITS.md.
+- **Test first:** walk up/down all four flights and the basement stair; walk the atrium escalator area and
+  loading bay for invisible walls; look for flat grey/white/pink surfaces (Kenney loot, HQ); view signs,
+  notices and crew numbers from behind; main menu (backdrop beats need ~15-30 s), hover/keys/gamepad on
+  buttons, Host/Join; Esc in a game (blur, flicker-in), then "Reduce menu effects". MallTests' stair test
+  coordinates were updated to the current layout but not run.
+
 ## Horror repair pass — 0.12.1 (2026-10-08)
 
 Implemented following the user's 0.12.0 play pass. Compilation passed with no project warnings;
