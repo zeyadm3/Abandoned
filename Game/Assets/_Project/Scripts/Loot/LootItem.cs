@@ -125,6 +125,15 @@ namespace Abandoned.Loot
             ValueChanged?.Invoke(this);
         }
 
+        /// <summary>Host: the whole item is worth this much more (or less), damage so far included (locked-store stock, M10.4).</summary>
+        public void ScaleValue(float factor)
+        {
+            if (!initialized || factor <= 0f) return;
+            FullValue = Mathf.RoundToInt(FullValue * factor);
+            CurrentValue = Mathf.RoundToInt(CurrentValue * factor);
+            ValueChanged?.Invoke(this);
+        }
+
         /// <summary>Client: the host's value state arrived.</summary>
         public void ApplyNetworkValue(int fullValue, int currentValue, float condition, bool shattered)
         {

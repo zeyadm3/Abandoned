@@ -33,6 +33,8 @@ namespace Abandoned.EditorTools
                     EquipmentKind.Flatbed, 2000, 3, false, new Color(0.25f, 0.45f, 0.75f)),
                 Item("rope_pulley", "Rope & Pulley", "Rig it over a hole in the floor (use, facing the hole): loot dropped down it and crewmates climbing down come down gently. Lasts the job.",
                     EquipmentKind.RopePulley, 600, 2, true, new Color(0.75f, 0.6f, 0.35f)),
+                Item("bolt_cutters", "Bolt Cutters", "Cuts the padlock on a store's shutter (E on the shutter), quietly. A crowbar gets you in too, loudly.",
+                    EquipmentKind.BoltCutters, 1500, 2, false, new Color(0.8f, 0.2f, 0.2f)),
             };
             CreateNoiseMaker();
             CreateSupportJack();

@@ -89,12 +89,24 @@ namespace Abandoned.EditorTools
             var config = LoadOrCreateAsset<Abandoned.Extraction.ExtractionConfig>(ExtractionConfigPath);
             LoadOrCreateAsset<Abandoned.Extraction.DangerConfig>(DangerConfigPath);
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath);
-            if (existing != null && existing.GetComponent<Abandoned.Extraction.RunState>() != null) return existing;
+            if (existing != null && existing.GetComponent<Abandoned.Extraction.RunState>() != null)
+            {
+                // M10.4: the run's shutters ride on the same object (keeps the prefab and its network hash).
+                if (existing.GetComponent<Abandoned.Extraction.RunShutters>() == null)
+                {
+                    GameObject contents = PrefabUtility.LoadPrefabContents(RunStatePrefabPath);
+                    contents.AddComponent<Abandoned.Extraction.RunShutters>();
+                    PrefabUtility.SaveAsPrefabAsset(contents, RunStatePrefabPath);
+                    PrefabUtility.UnloadPrefabContents(contents);
+                }
+                return existing;
+            }
             var root = new GameObject("RunState");
             var networkObject = root.AddComponent<Unity.Netcode.NetworkObject>();
             networkObject.DontDestroyWithOwner = true;
             networkObject.SynchronizeTransform = false;
             SerializedWiring.Set(root.AddComponent<Abandoned.Extraction.RunState>(), "config", config);
+            root.AddComponent<Abandoned.Extraction.RunShutters>();
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, RunStatePrefabPath);
             Object.DestroyImmediate(root);
             NetworkObjectIds.StampPrefab(prefab);

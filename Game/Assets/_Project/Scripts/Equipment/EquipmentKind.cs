@@ -17,5 +17,6 @@ namespace Abandoned.Equipment
         // M10 (append only)
         Flatbed,
         RopePulley,
+        BoltCutters,
     }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8387013423877766413}
   - component: {fileID: 7481606725720052527}
   - component: {fileID: 5962807260043782172}
+  - component: {fileID: 8416892481906461681}
   m_Layer: 0
   m_Name: RunState
   m_TagString: Untagged
@@ -74,3 +75,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Extraction.RunState
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: bad2c47fd127a4b1fb86cc8c53ff7de2, type: 2}
+--- !u!114 &8416892481906461681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365103002960003569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a002239122edd45f083b455edec141b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Extraction.RunShutters
+  ShowTopMostFoldoutHeaderGroup: 1
+  lockedMin: 2
+  lockedMax: 3
+  lockedValueBonus: 1.5
+  cutSeconds: 1.6
+  pryStrikes: 4
+  pryCooldown: 0.6
+  reach: 3

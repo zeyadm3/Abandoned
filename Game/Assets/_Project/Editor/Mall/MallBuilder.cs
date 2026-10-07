@@ -64,6 +64,7 @@ namespace Abandoned.EditorTools
             int fixtures = BuildLights(root); // after Populate: fixtures hang from the tiles' sections
             MallProps.ParkVehicles(root.Find("Exterior"));
             BakeNavMesh(root);
+            int shutters = MallShutters.Place(root); // after the bake: runtime obstacles, not walls
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             bool occlusion = OcclusionBake.Bake(); // needs the saved scene: the data lives beside it
@@ -71,7 +72,7 @@ namespace Abandoned.EditorTools
             AddToBuildSettings();
             int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {fixtures} light fixtures, {networkObjects} network objects, occlusion {(occlusion ? "baked" : "FAILED")}.");
+            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {fixtures} light fixtures, {shutters} shutters, {networkObjects} network objects, occlusion {(occlusion ? "baked" : "FAILED")}.");
         }
 
         public static string TileName(Vector2Int c, int floor) =>

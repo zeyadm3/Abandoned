@@ -115,7 +115,7 @@ namespace Abandoned.Extraction
                     bool armored = company.HasUpgrade(Company.TruckUpgradeKind.Armor);
                     RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff,
                         m != null && m.Night, m != null && m.Storm, m != null ? m.ExtraThreats : 0, m != null ? m.HearingMultiplier : 1f,
-                        m != null ? m.DecayMultiplier : 1f, cargo, honk, armored);
+                        m != null ? m.DecayMultiplier : 1f, cargo, honk, armored, m != null && m.Sealed);
                 }
                 else RunState.TermsSource = null;
                 BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);

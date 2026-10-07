@@ -61,11 +61,14 @@ namespace Abandoned.Extraction
             /// <summary>Truck upgrades (M10.1): cargo capacity multiplier, honk seconds (0 = the config's), armor.</summary>
             public readonly float CargoMultiplier, HonkSeconds;
             public readonly bool Armored;
+            /// <summary>Sealed job (M10.4): every shutter starts down.</summary>
+            public readonly bool Sealed;
 
             public RunTerms(int quota, float window, float bonus, bool powerOff, bool night = false, bool storm = false,
                 int extraThreats = 0, float hearing = 1f, float decay = 1f, float cargoMultiplier = 1f, float honkSeconds = 0f,
-                bool armored = false)
+                bool armored = false, bool isSealed = false)
             {
+                Sealed = isSealed;
                 CargoMultiplier = cargoMultiplier;
                 HonkSeconds = honkSeconds;
                 Armored = armored;

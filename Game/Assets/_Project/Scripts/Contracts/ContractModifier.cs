@@ -39,6 +39,8 @@ namespace Abandoned.Contracts
         [field: SerializeField, Range(0.5f, 3f)] public float DecayMultiplier { get; private set; } = 1f;
         [Tooltip("Storm: the wind howls through the building (cosmetic; pair with hearing/decay).")]
         [field: SerializeField] public bool Storm { get; private set; }
+        [Tooltip("Sealed (M10.4): the front entrance and every store are shuttered; bring bolt cutters or a crowbar.")]
+        [field: SerializeField] public bool Sealed { get; private set; }
         [Tooltip("Lowest company level this can roll at.")]
         [field: SerializeField, Range(1, 30)] public int MinLevel { get; private set; } = 1;
 
@@ -51,8 +53,9 @@ namespace Abandoned.Contracts
         public void EditorSetup(string id, string displayName, string description, float stabilityDelta = 0f,
             float windowMultiplier = 1f, float bonusDelta = 0f, bool powerOff = false, float fragileRarity = 1f,
             float lootMultiplier = 1f, int minLevel = 1, int extraJackpots = 0, bool night = false, int extraThreats = 0,
-            float hearingMultiplier = 1f, float decayMultiplier = 1f, bool storm = false)
+            float hearingMultiplier = 1f, float decayMultiplier = 1f, bool storm = false, bool isSealed = false)
         {
+            Sealed = isSealed;
             ExtraJackpots = extraJackpots;
             Night = night;
             ExtraThreats = extraThreats;

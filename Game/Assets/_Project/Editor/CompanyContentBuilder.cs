@@ -34,6 +34,13 @@ namespace Abandoned.EditorTools
                     loot: 0.55f, bonus: 0.25f),
                 Modifier("storm", "Storm", "The storm covers your footsteps, but the wind and rain are working on the structure too.",
                     bonus: 0.15f, hearing: 0.6f, decay: 1.4f, storm: true, minLevel: 2),
+                // M10 (GDD 14 "sealed"; GDD 13 harder/elite modifiers at higher levels).
+                Modifier("sealed", "Sealed", "The front is shuttered and every store is locked down. Bring bolt cutters or a crowbar; what's locked away is worth more.",
+                    bonus: 0.15f, isSealed: true, minLevel: 2),
+                Modifier("hot_property", "Hot Property", "Two big prizes and a buyer who won't wait: a short window, a fat bonus.",
+                    window: 0.55f, bonus: 0.4f, extraJackpots: 1, minLevel: 8),
+                Modifier("condemned", "Condemned", "Scheduled for demolition. Stability -30 %, something extra awake inside. Danger money.",
+                    stability: -0.3f, bonus: 0.45f, extraThreats: 1, minLevel: 10),
             };
             // Append any modifier the board doesn't have yet (kept order; inspector edits stay).
             var current = new System.Collections.Generic.List<ContractModifier>(contracts.Modifiers ?? new ContractModifier[0]);
@@ -124,14 +131,15 @@ namespace Abandoned.EditorTools
         // Created when missing; never overwritten, so inspector tuning is kept.
         private static ContractModifier Modifier(string id, string displayName, string description, float stability = 0f,
             float window = 1f, float bonus = 0f, bool powerOff = false, float fragile = 1f, float loot = 1f, int minLevel = 1,
-            int extraJackpots = 0, bool night = false, int extraThreats = 0, float hearing = 1f, float decay = 1f, bool storm = false)
+            int extraJackpots = 0, bool night = false, int extraThreats = 0, float hearing = 1f, float decay = 1f, bool storm = false,
+            bool isSealed = false)
         {
             string path = $"{ContractFolder}/Modifier_{id}.asset";
             var m = AssetDatabase.LoadAssetAtPath<ContractModifier>(path);
             if (m != null) return m;
             m = ScriptableObject.CreateInstance<ContractModifier>();
             m.EditorSetup(id, displayName, description, stability, window, bonus, powerOff, fragile, loot, minLevel,
-                extraJackpots, night, extraThreats, hearing, decay, storm);
+                extraJackpots, night, extraThreats, hearing, decay, storm, isSealed);
             AssetDatabase.CreateAsset(m, path);
             return m;
         }

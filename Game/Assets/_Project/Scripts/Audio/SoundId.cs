@@ -29,6 +29,9 @@ namespace Abandoned.Audio
         HunterStep,
         HunterLanding,
         CrowbarHit,
-        JackPlaced
+        JackPlaced,
+        // M10.4: shutters
+        ShutterOpen,
+        BoltCut,
     }
 }
