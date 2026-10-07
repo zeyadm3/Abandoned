@@ -7,8 +7,11 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 ## Horror repair pass — 0.12.1 (2026-10-08)
 
 Implemented following the user's 0.12.0 play pass. Compilation passed with no project warnings;
-`Tools/unity.sh rebuild-horror` passed with no scene generation errors. Final Mac/Windows builds
-are pending. No gameplay, EditMode/PlayMode/nettests, screenshots or QA passes;
+`Tools/unity.sh rebuild-horror` passed with no scene generation errors. Final Mac universal and
+Windows x64 shareable Mono builds succeeded, stamped version **0.12.1**, code commit **2a2b4d8**.
+Archives in `~/Documents/Abandoned-builds/dev/`: `Abandoned-0.12.1-2a2b4d8-Mac.zip`
+(53 MB compressed, 150 MB app) and `Abandoned-0.12.1-2a2b4d8-Windows.zip`
+(45 MB compressed, 131 MB player). No gameplay, EditMode/PlayMode/nettests, screenshots or QA passes;
 the user tests the completed builds. TestMap and the pre-existing material edits remain unchanged.
 
 - **Interface:** corrected panel bounds, scrolling and icon layout; removed the yellow arrow shown
