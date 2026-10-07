@@ -61,13 +61,15 @@ namespace Abandoned.EditorTools
             BuildLights(Group("Lights", root));
             PlaceCamera();
             MallPopulator.Populate(root);
+            int props = MallProps.Place(root, root.Find(TilesGroup));
+            MallProps.ParkVehicles(root.Find("Exterior"));
             BakeNavMesh(root);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildSettings();
             int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {networkObjects} network objects.");
+            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {networkObjects} network objects.");
         }
 
         public static string TileName(Vector2Int c, int floor) =>

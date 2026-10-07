@@ -68,13 +68,22 @@ namespace Abandoned.EditorTools
             networkObject.DontDestroyWithOwner = true;
             // Loot is never parented under network objects; in-scene items sit under plain group objects.
             networkObject.AutoObjectParentSync = false;
-            Material material = GreyboxFactory.GetMaterial($"Loot_{definition.Id}", definition.Color);
-            GameObject visual = GreyboxFactory.Primitive(ToPrimitive(definition.Shape), "Visual", root.transform, Vector3.zero,
-                VisualScale(definition.Shape, definition.Size), material, withCollider: true);
+            // A model brings its own materials; only placeholders need a greybox one.
+            Material material = definition.Model != null ? null : GreyboxFactory.GetMaterial($"Loot_{definition.Id}", definition.Color);
+            GameObject visual = GreyboxFactory.Primitive(ToPrimitive(ColliderShape(definition)), "Visual", root.transform, Vector3.zero,
+                VisualScale(ColliderShape(definition), definition.Size), material, withCollider: true);
             // Physics mass is clamped for stability, so Heavy/Huge items get grippy friction instead:
             // a carried laptop can't shove a 2-ton statue across the floor.
             if (definition.CarryClass >= CarryClass.Heavy)
                 visual.GetComponent<Collider>().sharedMaterial = HeavyFriction();
+            if (definition.Model != null)
+            {
+                // The art model shows; the Size box stays as the collider (no renderer, so hiding and
+                // showing the item's renderers never brings the placeholder back).
+                Object.DestroyImmediate(visual.GetComponent<MeshRenderer>());
+                Object.DestroyImmediate(visual.GetComponent<MeshFilter>());
+                ModelFit.Place(definition.Model, root.transform, Vector3.zero, definition.Size, definition.ModelYaw);
+            }
 
             var body = root.AddComponent<Rigidbody>();
             body.mass = definition.PhysicsMass;
@@ -141,8 +150,10 @@ namespace Abandoned.EditorTools
             if (body == null || !Mathf.Approximately(body.mass, definition.PhysicsMass))
                 errors.Add($"{n}: Rigidbody mass differs from PhysicsMass; run Generate Loot Prefabs.");
             Transform visual = prefab.transform.Find("Visual");
-            if (visual == null || (visual.localScale - VisualScale(definition.Shape, definition.Size)).sqrMagnitude > 1e-6f)
+            if (visual == null || (visual.localScale - VisualScale(ColliderShape(definition), definition.Size)).sqrMagnitude > 1e-6f)
                 errors.Add($"{n}: visual size differs from Size; run Generate Loot Prefabs.");
+            if ((definition.Model != null) != (prefab.transform.Find("Model") != null))
+                errors.Add($"{n}: model differs from the definition's; run Generate Loot Prefabs.");
             var item = prefab.GetComponent<LootItem>();
             if (item == null || item.Definition != definition)
                 errors.Add($"{n}: LootItem doesn't point at its definition.");
@@ -172,6 +183,9 @@ namespace Abandoned.EditorTools
             SetInt(instance.GetComponent<LootItem>(), "seed", seed);
             return instance;
         }
+
+        // A model's Size box hugs it, so a box collider fits best; placeholders keep their own shape.
+        private static PlaceholderShape ColliderShape(LootDefinition d) => d.Model != null ? PlaceholderShape.Cube : d.Shape;
 
         private static PrimitiveType ToPrimitive(PlaceholderShape shape) => shape switch
         {

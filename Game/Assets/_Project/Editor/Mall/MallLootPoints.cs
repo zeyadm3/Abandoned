@@ -70,7 +70,7 @@ namespace Abandoned.EditorTools
 
         private static bool UnderFlight(Vector2Int c, int floor) => Flights.Any(f => f.Floor == floor && f.Tiles.Contains(c));
 
-        private static bool IsJackpotTile(Vector2Int c, int floor) => Jackpots.Any(j => j.floor == floor && j.x == c.x && j.z == c.y);
+        public static bool IsJackpotTile(Vector2Int c, int floor) => Jackpots.Any(j => j.floor == floor && j.x == c.x && j.z == c.y);
 
         private static int Hash(Vector2Int c, int floor) => Mathf.Abs((c.x * 73856093) ^ (c.y * 19349663) ^ (floor * 83492791));
     }

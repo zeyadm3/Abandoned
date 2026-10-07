@@ -25,6 +25,7 @@ namespace Abandoned.EditorTools
             NetworkContentBuilder.CreateMissing();
             BuildInfoAsset.CreateMissing();
             LootCatalogBuilder.CreateMissing();
+            LootModelBuilder.AssignMissing();
             LootPrefabGenerator.GenerateAll();
             StructureContentBuilder.CreateMissing();
             EquipmentContentBuilder.CreateMissing();
@@ -89,7 +90,14 @@ namespace Abandoned.EditorTools
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(13f, 5.6f, 9f), new Vector3(26f, 5f, 22f), "M5_mall_walkway1"));
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(20f, 1.6f, 6f), new Vector3(22f, 6f, 24f), "M5_mall_atrium_up"));
             shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(-20f, 40f, 20f), new Vector3(24f, 0f, 20f), "M5_mall_side"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(10f, 5.6f, 2f), new Vector3(2f, 4.6f, 30f), "M7_mall_furniture_store"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(10f, 1.6f, 1f), new Vector3(2f, 0.8f, 18f), "M7_mall_electronics"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(38f, 9.6f, 1f), new Vector3(46f, 8.8f, 20f), "M7_mall_offices"));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(24f, 6f, -22f), new Vector3(20f, 1f, -6f), "M7_mall_parking"));
 
+            float width = ArtPreview.BuildLootLineup();
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(width * 0.25f, 1.6f, -3.2f), new Vector3(width * 0.25f, 0.4f, 0f), "M7_loot_lineup_a", 60f));
+            shots.Add(ScreenshotCapture.CaptureFrom(new Vector3(width * 0.72f, 2.2f, -4.5f), new Vector3(width * 0.72f, 0.6f, 0f), "M7_loot_lineup_b", 60f));
             Debug.Log("Screenshots written:\n" + string.Join("\n", shots));
             return true;
         });

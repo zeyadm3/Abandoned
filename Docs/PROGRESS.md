@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M6 review): compile clean; verify ALL PASS; EditMode 208/208; PlayMode 223/223;
-  nettest basic/loot/sharedcarry/collapse/robust/voice/run/travel/company 4/4.
+- Last verified (M7.1): compile clean; verify ALL PASS; EditMode 208/208; PlayMode 223/223;
+  nettest loot 4/4 (M6 review: all nine nettests 4/4).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -20,10 +20,12 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M5 done** (tag `milestone-5`, review fixed): greybox mall, seeded loot, runs + truck + appraisal, Blind One, danger (Docs/progress/M5.md).
 - **M6 done** (tag `milestone-6`, review fixed): persistent session + travel, HQ, save, contracts, payday/debt/bankruptcy, shop + gear, Stalker + Collector, ghosts (Docs/progress/M6.md).
 
+- **M7 in progress** (version 0.7.0; Docs/progress/M7.md): 7.1 art pass done (Kenney CC0 loot models,
+  mall set dressing, vehicles; credits in Docs/ASSET_CREDITS.md).
+
 ## Next
-M6 done (tag `milestone-6`, review fixed; Docs/progress/M6.md).
--> M7 vertical slice: 7.1 art pass (Kenney CC0 furniture/car kits, credits in Docs/ASSET_CREDITS.md),
-7.2 lighting, 7.3 audio, 7.4 menus (main/lobby/settings/pause), 7.5 cosmetics, 7.6 performance.
+-> M7.2 lighting pass (baked lighting, flashlight shadows, dust, fog, daylight shafts), then
+7.3 audio, 7.4 menus (main/lobby/settings/pause), 7.5 cosmetics, 7.6 performance.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->

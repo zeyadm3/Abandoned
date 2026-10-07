@@ -49,6 +49,21 @@ namespace Abandoned.EditorTools
             Add("grandfather_clock", "Grandfather Clock", 4000, 8000, 70f, CarryClass.Heavy, new(0.6f, 2f, 0.4f), Fragility.High, SurfaceMaterial.Wood, 0.8f, 0.4f, PlaceholderShape.Cube, new(0.4f, 0.24f, 0.12f));
             Add("film_projector", "Film Projector", 5000, 12000, 90f, CarryClass.Heavy, new(0.7f, 0.8f, 1.1f), Fragility.Medium, SurfaceMaterial.Metal, 0.7f, 0.4f, PlaceholderShape.Cube, new(0.25f, 0.25f, 0.3f));
 
+            // M7.1: household and electronics loot with Kenney Furniture Kit models (LootModelBuilder sizes the box to the model).
+            Add("vintage_tv", "Vintage TV", 600, 1500, 18f, CarryClass.TwoHand, new(0.6f, 0.5f, 0.45f), Fragility.Medium, SurfaceMaterial.Glass, 0.4f, 0.9f, PlaceholderShape.Cube, new(0.45f, 0.35f, 0.25f));
+            Add("hifi_speaker", "Hi-fi Speaker", 400, 1200, 14f, CarryClass.TwoHand, new(0.35f, 0.8f, 0.35f), Fragility.Low, SurfaceMaterial.Wood, 0.3f, 1f, PlaceholderShape.Cube, new(0.2f, 0.2f, 0.2f));
+            Add("microwave", "Microwave", 100, 300, 12f, CarryClass.TwoHand, new(0.5f, 0.3f, 0.35f), Fragility.Low, SurfaceMaterial.Metal, 0.4f, 1.2f, PlaceholderShape.Cube, new(0.85f, 0.85f, 0.85f));
+            Add("toaster", "Toaster", 40, 120, 2f, CarryClass.OneHand, new(0.3f, 0.2f, 0.18f), Fragility.Low, SurfaceMaterial.Metal, 0.3f, 1.5f, PlaceholderShape.Cube, new(0.8f, 0.8f, 0.8f));
+            Add("blender", "Blender", 60, 200, 2.5f, CarryClass.OneHand, new(0.18f, 0.4f, 0.18f), Fragility.High, SurfaceMaterial.Glass, 0.3f, 1.2f, PlaceholderShape.Cylinder, new(0.7f, 0.8f, 0.9f));
+            Add("designer_lamp", "Designer Lamp", 200, 900, 3f, CarryClass.OneHand, new(0.3f, 0.55f, 0.3f), Fragility.High, SurfaceMaterial.Glass, 0.3f, 1f, PlaceholderShape.Cylinder, new(0.95f, 0.9f, 0.7f));
+            Add("computer_monitor", "Computer Monitor", 150, 500, 5f, CarryClass.OneHand, new(0.55f, 0.45f, 0.2f), Fragility.Medium, SurfaceMaterial.Plastic, 0.3f, 1.3f, PlaceholderShape.Cube, new(0.15f, 0.15f, 0.15f));
+            Add("retro_radio", "Retro Radio", 300, 900, 3f, CarryClass.OneHand, new(0.35f, 0.25f, 0.15f), Fragility.Medium, SurfaceMaterial.Wood, 0.3f, 1f, PlaceholderShape.Cube, new(0.55f, 0.35f, 0.2f));
+            Add("washing_machine", "Washing Machine", 300, 700, 70f, CarryClass.Heavy, new(0.65f, 0.9f, 0.65f), Fragility.Low, SurfaceMaterial.Metal, 0.6f, 0.7f, PlaceholderShape.Cube, new(0.9f, 0.9f, 0.9f));
+            Add("fridge", "Fridge", 500, 1200, 90f, CarryClass.Heavy, new(0.7f, 1.8f, 0.7f), Fragility.Low, SurfaceMaterial.Metal, 0.6f, 0.6f, PlaceholderShape.Cube, new(0.9f, 0.9f, 0.95f));
+            Add("designer_chair", "Designer Chair", 1500, 5000, 12f, CarryClass.TwoHand, new(0.75f, 0.8f, 0.75f), Fragility.Medium, SurfaceMaterial.Fabric, 0.2f, 0.7f, PlaceholderShape.Cube, new(0.6f, 0.3f, 0.2f));
+            Add("designer_sofa", "Designer Sofa", 3000, 9000, 80f, CarryClass.Heavy, new(1.9f, 0.8f, 0.9f), Fragility.Medium, SurfaceMaterial.Fabric, 0.3f, 0.5f, PlaceholderShape.Cube, new(0.3f, 0.4f, 0.6f));
+            Add("bear_head", "Mounted Bear Head", 300, 1200, 6f, CarryClass.TwoHand, new(0.5f, 0.6f, 0.4f), Fragility.Low, SurfaceMaterial.Fabric, 0.1f, 0.8f, PlaceholderShape.Capsule, new(0.6f, 0.4f, 0.25f));
+
             // Gear that behaves like loot (M6.4b): a plank from the Planks equipment. Worth nothing, never spawned.
             Add("plank", "Plank", 0, 0, 12f, CarryClass.TwoHand, new(0.4f, 0.08f, 4.4f), Fragility.None, SurfaceMaterial.Wood, 0.3f, 0f, PlaceholderShape.Cube, new(0.62f, 0.47f, 0.28f));
             LootDefinition plank = Load("plank");
@@ -79,6 +94,19 @@ namespace Abandoned.EditorTools
             Spawn("espresso_machine", "food", "furniture");
             Spawn("grandfather_clock", "furniture", "gallery");
             Spawn("film_projector", "cinema", "stock");
+            Spawn("vintage_tv", "electronics", "furniture", "stock");
+            Spawn("hifi_speaker", "electronics", "cinema");
+            Spawn("microwave", "food", "stock");
+            Spawn("toaster", "food", "furniture");
+            Spawn("blender", "food", "furniture");
+            Spawn("designer_lamp", "furniture", "gallery", "office");
+            Spawn("computer_monitor", "electronics", "office");
+            Spawn("retro_radio", "electronics", "furniture", "stock");
+            Spawn("washing_machine", "stock", "furniture");
+            Spawn("fridge", "food", "stock");
+            Spawn("designer_chair", "furniture", "gallery");
+            Spawn("designer_sofa", "furniture");
+            Spawn("bear_head", "furniture", "gallery", "toys");
             // Jackpots: only on jackpot points (gallery, furniture floor, loading bay).
             Spawn("marble_statue", true, "gallery");
             Spawn("grand_piano", true, "furniture", "gallery");

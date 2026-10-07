@@ -80,13 +80,20 @@ namespace Abandoned.Tests
                 yield return new WaitForFixedUpdate();
             }
             Assert.Greater(hostTv.LastStruckSpeed, 2.5f, "the host took the strike the carrier reported, at the carrier's speed");
+            // A tall item rocks back onto its base after a shove, so judge the largest movement, not where it ends.
+            float moved = 0f, turned = 0f;
+            float watchUntil = Time.time + 1.5f;
+            while (Time.time < watchUntil)
+            {
+                moved = Mathf.Max(moved, Vector3.Distance(hostTv.transform.position, tvStart));
+                turned = Mathf.Max(turned, Quaternion.Angle(hostTv.transform.rotation, tvStartRotation));
+                yield return new WaitForFixedUpdate();
+            }
+            Assert.IsTrue(moved > 0.02f || turned > 3f, $"the host pushed the struck TV (it isn't an immovable wall): moved {moved:0.000} m, " +
+                $"turned {turned:0.0} deg, struck at {hostTv.LastStruckSpeed:0.0} m/s");
             yield return WaitFor(() => NetLootKit.Copies(net, tv).All(c => c.Item.CurrentValue < fullValue),
                 "every machine to see the struck TV lose value", 5f);
-
             yield return NetLootKit.Settle(1.5f);
-            bool moved = Vector3.Distance(hostTv.transform.position, tvStart) > 0.03f
-                         || Quaternion.Angle(hostTv.transform.rotation, tvStartRotation) > 3f;
-            Assert.IsTrue(moved, "the host pushed the struck TV (it isn't an immovable wall)");
             Assert.Less(Vector3.Distance(clientTv.transform.position, hostTv.transform.position), 0.15f, "the carrier sees where the TV went");
         }
 

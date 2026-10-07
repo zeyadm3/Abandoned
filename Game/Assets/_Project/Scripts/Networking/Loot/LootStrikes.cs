@@ -52,11 +52,15 @@ namespace Abandoned.Networking
             reporter.Config.StruckPushTransfer * Mathf.Min(1f, reporter.Grabbable.Body.mass / Mathf.Max(0.01f, struck.mass));
 
         // The carrier's normal points from the struck item toward the carried one; don't trust its sign.
+        // A shove moves resting loot along the floor: hit on its top, a downward push would do nothing.
         private static Vector3 PushDirection(Rigidbody struck, Vector3 point, Vector3 normal)
         {
             Vector3 away = struck.worldCenterOfMass - point;
             Vector3 dir = float.IsFinite(normal.sqrMagnitude) && normal.sqrMagnitude > 1e-6f ? -normal.normalized : away.normalized;
-            return Vector3.Dot(dir, away) < 0f ? -dir : dir;
+            if (Vector3.Dot(dir, away) < 0f) dir = -dir;
+            Vector3 flat = new(dir.x, 0f, dir.z);
+            if (flat.sqrMagnitude < 0.04f) flat = new Vector3(away.x, 0f, away.z);
+            return flat.sqrMagnitude > 1e-6f ? flat.normalized : dir;
         }
     }
 }

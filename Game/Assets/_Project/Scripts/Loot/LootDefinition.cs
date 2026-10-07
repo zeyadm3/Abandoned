@@ -55,6 +55,12 @@ namespace Abandoned.Loot
         [Tooltip("Gear that behaves like loot (a plank to carry and lay down): never spawned in a run, worth nothing.")]
         [field: SerializeField] public bool Utility { get; private set; }
 
+        [field: Header("Model")]
+        [field: Tooltip("Art model (an imported FBX), fitted inside Size; the Size box stays the collider. Empty = the placeholder shape.")]
+        [field: SerializeField] public GameObject Model { get; private set; }
+        [field: Tooltip("Turns the model (degrees about up) so it lines up with the Size box.")]
+        [field: SerializeField] public float ModelYaw { get; private set; }
+
         [field: Header("Placeholder visual")]
         [field: SerializeField] public PlaceholderShape Shape { get; private set; } = PlaceholderShape.Cube;
         [field: SerializeField] public Color Color { get; private set; } = Color.white;
@@ -118,6 +124,14 @@ namespace Abandoned.Loot
         }
 
         public void EditorSetUtility(bool utility) => Utility = utility;
+
+        /// <summary>Editor-only: the art model, and the Size box that hugs it.</summary>
+        public void EditorSetModel(GameObject model, float yaw, Vector3 size)
+        {
+            Model = model;
+            ModelYaw = yaw;
+            Size = size;
+        }
 #endif
     }
 }
