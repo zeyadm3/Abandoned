@@ -73,7 +73,7 @@ namespace Abandoned.EditorTools
             ThreatContentBuilder.CreateBlindOne(); ThreatContentBuilder.CreateOthers();
             NewThreatContentBuilder.Create();
             NetworkContentBuilder.RegisterNetworkPrefabs();
-            UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing();
+            UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing(); MenuEffectsBuilder.Create();
             MaterialAudit.RemapThirdPartyMaterials(); // before the scenes so their models already use URP copies
             MallBuilder.Build(); HqBuilder.Build(); GeneratedMaterialRepair.Rebuild(); BuildScenes.ApplyToEditorSettings();
             MaterialAudit.Run(); // last: reads both saved scenes and every prefab, fixes, then reports what's left

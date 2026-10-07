@@ -7,10 +7,11 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The title screen over the HQ garage while offline (UI step 6, R.E.P.O.-style): the stencilled logo and
-    /// a short list of big words (Play, Settings, Achievements, Credits, Quit) on a shaded left side, the
-    /// garage drifting slowly behind, a company memo and the version at the bottom. Says why the last game
-    /// ended. Play opens <see cref="PlayView"/> (solo, host, join).
+    /// The title screen while offline (UI step 6; horror pass 0.12.2): the worn, glitching logo
+    /// (<see cref="MenuTitle"/>) and a short list of big words (Play, Settings, Achievements, Credits, Quit)
+    /// on a shaded left side, the HQ drifting darkly behind (<see cref="MenuBackdrop"/>, run by MenuUi), a
+    /// company memo and the version at the bottom. Says why the last game ended. Play opens
+    /// <see cref="PlayView"/> (solo, host, join).
     /// </summary>
     public class MainMenuView
     {
@@ -26,8 +27,7 @@ namespace Abandoned.UI
         private readonly MenuUi menu;
         private readonly Label notice, memo;
         private readonly VisualElement noticeBox;
-        private Camera driftCamera;
-        private Quaternion driftBase;
+        private readonly MenuTitle title;
         private int memoShown = -1;
 
         public VisualElement Root { get; }
@@ -46,9 +46,7 @@ namespace Abandoned.UI
             column.AddToClassList("main__column");
             Root.Add(column);
 
-            Label title = MenuKit.Text(column, "ABANDONED", "title");
-            title.AddToClassList("main__logo");
-            if (menu.TitleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(menu.TitleFont);
+            title = new MenuTitle(column, "ABANDONED", menu.TitleFont, MenuEffectsConfig.Current);
             MenuKit.Text(column, Demo.IsDemo ? $"DEMO - {Demo.MaxJobs} jobs at the abandoned mall" : "SALVAGE CREW WANTED. BUILDINGS UNSTABLE.", "subtitle");
             UiKit.Hazard(column).AddToClassList("main__tape");
 
@@ -65,7 +63,7 @@ namespace Abandoned.UI
             MenuKit.Button(column, "Settings", () => menu.Push(MenuScreen.Settings)).AddToClassList("main__button");
             MenuKit.Button(column, "Achievements", () => menu.Push(MenuScreen.Achievements)).AddToClassList("main__button");
             MenuKit.Button(column, "Credits", () => menu.Push(MenuScreen.Credits)).AddToClassList("main__button");
-            MenuKit.Button(column, "Quit", menu.Quit, SoundId.UiBack).AddToClassList("main__button");
+            MenuKit.Button(column, "Quit", menu.Quit, SoundId.UiBack, important: true).AddToClassList("main__button");
 
             VisualElement links = MenuKit.Row(Root);
             links.style.flexWrap = Wrap.Wrap;
@@ -78,7 +76,7 @@ namespace Abandoned.UI
             MenuKit.Text(Root, $"v{VersionInfo.Display}", "footer");
         }
 
-        /// <summary>Every frame while showing: the last game's notice, the memo, the drifting garage.</summary>
+        /// <summary>Every frame while showing: the last game's notice, the memo, the logo's signal.</summary>
         public void Refresh()
         {
             string message = SessionEndNotice.Message;
@@ -90,21 +88,7 @@ namespace Abandoned.UI
                 memoShown = m;
                 memo.text = Memos[m];
             }
-            Drift();
-        }
-
-        // A slow look around the garage behind the menu (the HQ's scene camera; nobody is playing yet).
-        private void Drift()
-        {
-            Camera cam = Camera.main;
-            if (cam == null || menu.Bootstrap.IsRunning) { driftCamera = null; return; }
-            if (cam != driftCamera)
-            {
-                driftCamera = cam;
-                driftBase = cam.transform.rotation;
-            }
-            float t = Time.unscaledTime;
-            cam.transform.rotation = driftBase * Quaternion.Euler(Mathf.Sin(t * 0.11f) * 1.5f, Mathf.Sin(t * 0.07f) * 4f, 0f);
+            title.Tick();
         }
     }
 }

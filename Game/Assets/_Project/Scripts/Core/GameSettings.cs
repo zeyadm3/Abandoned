@@ -14,11 +14,12 @@ namespace Abandoned.Core
         public const float MinFov = 60f, MaxFov = 100f, DefaultFov = 75f;
 
         private const string SensitivityKey = "settings.sensitivity", FovKey = "settings.fov", BobKey = "settings.headbob",
-            ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale";
+            ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale",
+            ReduceMenuEffectsKey = "settings.reducemenufx";
         public const float MinUiScale = 0.75f, MaxUiScale = 1.5f;
 
         private static float? sensitivity, fov, uiScale;
-        private static bool? headBob, shake, subtitles, colorblind;
+        private static bool? headBob, shake, subtitles, colorblind, reduceMenuEffects;
 
         public static event Action Changed;
 
@@ -61,6 +62,16 @@ namespace Abandoned.Core
             set => Set(ref colorblind, ColorblindKey, value);
         }
 
+        /// <summary>
+        /// Calms the menus for players sensitive to flashing: no flicker, glitches, jitter, shakes or static
+        /// cuts (the dark, grain and blur stay; nothing in them flashes).
+        /// </summary>
+        public static bool ReduceMenuEffects
+        {
+            get => reduceMenuEffects ??= Prefs.GetInt(ReduceMenuEffectsKey, 0) == 1;
+            set => Set(ref reduceMenuEffects, ReduceMenuEffectsKey, value);
+        }
+
         /// <summary>How big the menus and HUD are (UI step 5): 1 = designed size at 1080p, scaled with the screen.</summary>
         public static float UiScale
         {
@@ -71,10 +82,10 @@ namespace Abandoned.Core
         /// <summary>Back to defaults (tests; a "reset" button later).</summary>
         public static void ResetAll()
         {
-            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey, UiScaleKey }) Prefs.Delete(key);
+            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey, UiScaleKey, ReduceMenuEffectsKey }) Prefs.Delete(key);
             Prefs.Save(); // a delete that isn't flushed can come back next launch
             sensitivity = fov = uiScale = null;
-            headBob = shake = subtitles = colorblind = null;
+            headBob = shake = subtitles = colorblind = reduceMenuEffects = null;
             Changed?.Invoke();
         }
 
@@ -96,7 +107,7 @@ namespace Abandoned.Core
         private static void ResetStatics()
         {
             sensitivity = fov = null;
-            headBob = shake = subtitles = colorblind = null;
+            headBob = shake = subtitles = colorblind = reduceMenuEffects = null;
             Changed = null;
         }
     }

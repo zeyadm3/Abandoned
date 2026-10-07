@@ -1720,3 +1720,55 @@
 .menu-short .main__buttons .menu-button { font-size: 28px; min-height: 40px; }
 .menu-short .main__column { padding-bottom: 80px; }
 .menu-short .wardrobe__preview { width: 220px; height: 280px; }
+
+/* ---- 0.12.2 horror menus: overlays, the worn title, tactile buttons ---- */
+
+/* Overlay layers sit over menu screens only; their textures and strengths come from MenuEffectsConfig. */
+.menu-fx, .menu-fx__flash, .menu-fx__transition { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.menu-fx__vignette { -unity-background-scale-mode: stretch-to-fill; }
+.menu-fx__band { -unity-background-image-tint-color: rgba(255, 255, 255, 1); }
+
+/* The game behind the pause menu is drained and blurred by the post volume; let it show through. */
+.pause.backdrop--dim { background-color: rgba(4, 6, 6, 0.42); }
+
+/* Title: ghost layers fringe the stencil letters; scratches and a stain sit over the paint. */
+.menu-title { position: relative; align-self: flex-start; }
+.menu-title__ghost { position: absolute; left: 0; top: 0; text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+.menu-title__wear {
+    position: absolute;
+    left: -2%; right: -2%; top: 8%; bottom: 4%;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(14, 15, 13);
+}
+.menu-title__stain {
+    position: absolute;
+    left: 46%; top: -6%; width: 34%; height: 92%;
+    -unity-background-scale-mode: stretch-to-fill;
+    opacity: 0.5;
+}
+
+/* Tactile buttons: glow (button background), a scratched marker under lit words, a breath of static. */
+.menu-button { -unity-background-scale-mode: stretch-to-fill; }
+.menu-button__marker {
+    position: absolute;
+    left: 0; bottom: 3px;
+    width: 0; height: 4px;
+    opacity: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: var(--c-accent);
+    transition-property: width, opacity;
+    transition-duration: 0.12s, 0.08s;
+    transition-timing-function: ease-out;
+}
+.menu-button--lit > .menu-button__marker { width: 62%; opacity: 0.85; }
+.menu-button--small > .menu-button__marker { display: none; }
+.menu-button__static {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    opacity: 0;
+    background-size: 128px 128px;
+}
+.menu-button--lit { color: var(--c-accent-hot); text-shadow: 0 0 8px rgba(214, 140, 72, 0.55); }
+.menu-button--small.menu-button--lit { text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+.menu-button--pressed { color: rgb(240, 226, 190); transition-duration: 0s; }
+.menu-button--glitch { letter-spacing: 6px; text-shadow: 3px 0 0 rgba(190, 40, 30, 0.7); }

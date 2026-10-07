@@ -51,6 +51,12 @@ namespace Abandoned.EditorTools
                 camera.transform.position = new Vector3(12f, 18f, -14f);
                 camera.transform.LookAt(new Vector3(12f, 0f, 8f));
             }
+            // Title screen: eye height in the garage, looking through the office doorway at its failing tubes.
+            var vantage = new GameObject("MenuVantage");
+            vantage.transform.SetParent(root, false);
+            vantage.transform.position = new Vector3(2.2f, 1.62f, 1.2f);
+            vantage.transform.rotation = Quaternion.LookRotation(new Vector3(22f, 1.35f, 8.9f) - vantage.transform.position);
+            vantage.AddComponent<Abandoned.UI.MenuVantage>();
             NetworkSceneBuilder.Add();
             var ui = new GameObject("CompanyUI");
             ui.AddComponent<HqHud>();

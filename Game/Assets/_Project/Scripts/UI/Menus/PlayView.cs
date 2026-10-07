@@ -46,12 +46,12 @@ namespace Abandoned.UI
             body.Add(cards);
 
             VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "Just you and the building. Hard, not impossible: the trolley helps. Friends can still join you at the HQ.");
-            MenuKit.Button(solo, "Start", () => b.StartHost(), SoundId.UiConfirm);
+            MenuKit.Button(solo, "Start", () => b.StartHost(), SoundId.UiConfirm, important: true);
 
             VisualElement host = Card(cards, "HOST A CREW", "icon/multiplayer", "Run the company: up to four, friends join you at the HQ between jobs.");
             hostHow = MenuKit.Text(host, "", "text");
             hostHow.AddToClassList("text--small");
-            hostButton = MenuKit.Button(host, "Host", () => b.StartHost(), SoundId.UiConfirm);
+            hostButton = MenuKit.Button(host, "Host", () => b.StartHost(), SoundId.UiConfirm, important: true);
 
             VisualElement join = Card(cards, "JOIN", "icon/exitRight", "Work for a friend's company.");
             joinHow = MenuKit.Text(join, "", "text");
@@ -59,7 +59,7 @@ namespace Abandoned.UI
             address = new TextField { value = b.Config != null ? $"{b.Config.DefaultJoinAddress}:{b.Config.Port}" : "" };
             address.AddToClassList("field");
             join.Add(address);
-            MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm);
+            MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, important: true);
 
             status = MenuKit.Text(body, "", "text");
             status.AddToClassList("text--small");

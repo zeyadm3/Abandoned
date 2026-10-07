@@ -40,6 +40,9 @@ namespace Abandoned.UI
         private AchievementsView achievements;
         private bool demoEndShown;
         private bool paused, pausedForScreen;
+        private MenuScreenFx fx;
+        private MenuPostEffects post;
+        private MenuBackdrop backdrop;
 
         public static MenuUi Current { get; private set; }
         public MenuScreen Showing { get; private set; } = (MenuScreen)(-1);
@@ -124,6 +127,13 @@ namespace Abandoned.UI
             UiKit.FillScreen(wear);
             wear.AddToClassList("horror-grime");
             root.Add(wear);
+            // 0.12.2: grain, scanlines, vignette and screen transitions over the menus; the 3D view behind
+            // them is darkened (title) or drained and blurred (pause) by a URP volume.
+            MenuEffectsConfig effects = MenuEffectsConfig.Current;
+            fx = new MenuScreenFx(root, effects);
+            post = GetComponent<MenuPostEffects>();
+            if (post == null) post = gameObject.AddComponent<MenuPostEffects>();
+            backdrop = new MenuBackdrop(effects);
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
             SubtitleFeed.Heard += subtitles.Add;
@@ -138,6 +148,9 @@ namespace Abandoned.UI
             GameSettings.Changed -= ApplyUiScale;
             CursorOwner.Set(this, false);
             if (subtitles != null) SubtitleFeed.Heard -= subtitles.Add;
+            fx?.Detach();
+            backdrop?.Stop();
+            if (post != null) post.Mode = MenuBackdropMode.None;
             if (Current == this) Current = null;
         }
 
@@ -168,6 +181,11 @@ namespace Abandoned.UI
             if (top != Showing) Show(top);
             bool menuVisible = top != MenuScreen.None || CursorOwner.UiActive;
             MenuKit.Show(wear, menuVisible);
+            fx.SetVisible(top != MenuScreen.None);
+            fx.Tick();
+            post.Mode = !running ? MenuBackdropMode.Title : top != MenuScreen.None ? MenuBackdropMode.Pause : MenuBackdropMode.None;
+            if (!running) backdrop.Tick();
+            else backdrop.Stop();
             if (menuVisible && Time.unscaledTime >= nextCrtTwitch)
             {
                 crtTwitchUntil = Time.unscaledTime + 0.07f;
@@ -285,7 +303,15 @@ namespace Abandoned.UI
 
         private void Show(MenuScreen screen)
         {
+            MenuScreen previous = Showing;
             Showing = screen;
+            // Screens never just swap: boot and the pause menu flicker in, going back to the game switches
+            // the "set" off like an old CRT, and moving between menus is a hard cut through static.
+            if (previous == (MenuScreen)(-1)) fx.Play(MenuTransition.FlickerIn);
+            else if (screen == MenuScreen.None) fx.Play(MenuTransition.CrtOff);
+            else if (previous == MenuScreen.None) fx.Play(MenuTransition.FlickerIn);
+            else fx.Play(MenuTransition.StaticCut);
+            if (previous == MenuScreen.None && views.TryGetValue(screen, out VisualElement opening)) fx.FadeIn(opening);
             if (screen != MenuScreen.Wardrobe) WardrobePreview.Hide();
             foreach (KeyValuePair<MenuScreen, VisualElement> v in views) MenuKit.Show(v.Value, v.Key == screen);
             MenuKit.Show(hud, screen == MenuScreen.None && !clipMode);

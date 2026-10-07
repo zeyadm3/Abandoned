@@ -58,8 +58,8 @@ namespace Abandoned.UI
             MenuKit.Button(left, "How to play", () => menu.Push(MenuScreen.HowToPlay));
             MenuKit.Button(left, "Achievements", () => menu.Push(MenuScreen.Achievements));
             invite = MenuKit.Button(left, "Invite friends", () => menu.Lobby?.Flow?.OpenInviteOverlay());
-            leave = MenuKit.Button(left, "Leave game", () => menu.Bootstrap.Disconnect(), SoundId.UiBack);
-            MenuKit.Button(left, "Quit to desktop", menu.Quit, SoundId.UiBack);
+            leave = MenuKit.Button(left, "Leave game", () => menu.Bootstrap.Disconnect(), SoundId.UiBack, important: true);
+            MenuKit.Button(left, "Quit to desktop", menu.Quit, SoundId.UiBack, important: true);
             MenuKit.Button(left, "Report a problem", () =>
             {
                 Launch.OpenLogFolder();

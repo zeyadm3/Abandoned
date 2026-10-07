@@ -36,11 +36,15 @@ namespace Abandoned.UI
             return label;
         }
 
-        public static Button Button(VisualElement parent, string text, Action onClick, SoundId sound = SoundId.UiClick, bool small = false)
+        /// <param name="important">Host, Join, Quit: the press flashes the screen and jolts it.</param>
+        public static Button Button(VisualElement parent, string text, Action onClick, SoundId sound = SoundId.UiClick, bool small = false,
+            bool important = false)
         {
-            var button = new Button(() =>
+            Button button = null;
+            button = new Button(() =>
             {
                 GameAudio.PlayUi(sound);
+                if (important) MenuTactile.Important(button);
                 onClick();
             }) { text = text };
             button.AddToClassList("menu-button");
@@ -52,10 +56,9 @@ namespace Abandoned.UI
             if (small) button.AddToClassList("menu-button--small");
             button.RegisterCallback<PointerEnterEvent>(_ =>
             {
-                if (!button.enabledSelf) return;
-                GameAudio.PlayUi(SoundId.UiClick, 0.25f);
-                if (!small) UiKit.Jolt(button);
+                if (button.enabledSelf) GameAudio.PlayUi(SoundId.UiClick, 0.25f);
             });
+            MenuTactile.Attach(button, small);
             parent.Add(button);
             return button;
         }

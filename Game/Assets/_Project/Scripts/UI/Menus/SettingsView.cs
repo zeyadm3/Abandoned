@@ -107,6 +107,7 @@ namespace Abandoned.UI
                 MenuKit.Choice(body, "Quality", quality, VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
             MenuKit.Choice(body, "Shadows", VideoSettings.ShadowNames, VideoSettings.Shadows, i => VideoSettings.Shadows = i);
             MenuKit.Range(body, "Brightness", -1f, 1.5f, VideoSettings.Brightness, "+0.0;-0.0;0", v => VideoSettings.Brightness = v);
+            MenuKit.Toggle(body, "Reduce menu effects", GameSettings.ReduceMenuEffects, v => GameSettings.ReduceMenuEffects = v);
             MenuKit.Text(body, "Window and resolution changes apply to the built game (the editor's Game view keeps its own size).", "text")
                 .AddToClassList("text--small");
         }
@@ -159,6 +160,7 @@ namespace Abandoned.UI
             MenuKit.Toggle(body, "Colourblind-safe scanner", GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v);
             MenuKit.Toggle(body, "Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v);
             MenuKit.Toggle(body, "Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v);
+            MenuKit.Toggle(body, "Reduce menu effects (no flicker or glitches)", GameSettings.ReduceMenuEffects, v => GameSettings.ReduceMenuEffects = v);
         }
     }
 }
