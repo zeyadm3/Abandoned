@@ -15,11 +15,14 @@ namespace Abandoned.Core
 
         private const string SensitivityKey = "settings.sensitivity", FovKey = "settings.fov", BobKey = "settings.headbob",
             ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale",
-            ReduceMenuEffectsKey = "settings.reducemenufx";
+            ReduceMenuEffectsKey = "settings.reducemenufx", InvertYKey = "settings.inverty", CrouchToggleKey = "settings.crouchtoggle",
+            CrosshairKey = "settings.crosshair", SubtitleSizeKey = "settings.subtitlesize", MuteUnfocusedKey = "settings.muteunfocused";
+        public static readonly string[] SubtitleSizeNames = { "Small", "Medium", "Large" };
         public const float MinUiScale = 0.75f, MaxUiScale = 1.5f;
 
         private static float? sensitivity, fov, uiScale;
-        private static bool? headBob, shake, subtitles, colorblind, reduceMenuEffects;
+        private static bool? headBob, shake, subtitles, colorblind, reduceMenuEffects, invertY, crouchToggle, crosshair, muteUnfocused;
+        private static int? subtitleSize;
 
         public static event Action Changed;
 
@@ -72,6 +75,44 @@ namespace Abandoned.Core
             set => Set(ref reduceMenuEffects, ReduceMenuEffectsKey, value);
         }
 
+        public static bool InvertY
+        {
+            get => invertY ??= Prefs.GetInt(InvertYKey, 0) == 1;
+            set => Set(ref invertY, InvertYKey, value);
+        }
+
+        /// <summary>Crouch latches on a press instead of while held (the movement config can also force it).</summary>
+        public static bool CrouchToggle
+        {
+            get => crouchToggle ??= Prefs.GetInt(CrouchToggleKey, 0) == 1;
+            set => Set(ref crouchToggle, CrouchToggleKey, value);
+        }
+
+        public static bool ShowCrosshair
+        {
+            get => crosshair ??= Prefs.GetInt(CrosshairKey, 1) == 1;
+            set => Set(ref crosshair, CrosshairKey, value);
+        }
+
+        /// <summary>Index into <see cref="SubtitleSizeNames"/>.</summary>
+        public static int SubtitleSize
+        {
+            get => subtitleSize ??= Mathf.Clamp(Prefs.GetInt(SubtitleSizeKey, 1), 0, SubtitleSizeNames.Length - 1);
+            set
+            {
+                subtitleSize = Mathf.Clamp(value, 0, SubtitleSizeNames.Length - 1);
+                Prefs.SetInt(SubtitleSizeKey, subtitleSize.Value);
+                Changed?.Invoke();
+            }
+        }
+
+        /// <summary>All game sound pauses while the window isn't focused.</summary>
+        public static bool MuteWhenUnfocused
+        {
+            get => muteUnfocused ??= Prefs.GetInt(MuteUnfocusedKey, 0) == 1;
+            set => Set(ref muteUnfocused, MuteUnfocusedKey, value);
+        }
+
         /// <summary>How big the menus and HUD are (UI step 5): 1 = designed size at 1080p, scaled with the screen.</summary>
         public static float UiScale
         {
@@ -82,10 +123,12 @@ namespace Abandoned.Core
         /// <summary>Back to defaults (tests; a "reset" button later).</summary>
         public static void ResetAll()
         {
-            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey, UiScaleKey, ReduceMenuEffectsKey }) Prefs.Delete(key);
+            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey, UiScaleKey, ReduceMenuEffectsKey,
+                         InvertYKey, CrouchToggleKey, CrosshairKey, SubtitleSizeKey, MuteUnfocusedKey }) Prefs.Delete(key);
             Prefs.Save(); // a delete that isn't flushed can come back next launch
             sensitivity = fov = uiScale = null;
-            headBob = shake = subtitles = colorblind = reduceMenuEffects = null;
+            headBob = shake = subtitles = colorblind = reduceMenuEffects = invertY = crouchToggle = crosshair = muteUnfocused = null;
+            subtitleSize = null;
             Changed?.Invoke();
         }
 
@@ -107,7 +150,8 @@ namespace Abandoned.Core
         private static void ResetStatics()
         {
             sensitivity = fov = null;
-            headBob = shake = subtitles = colorblind = reduceMenuEffects = null;
+            headBob = shake = subtitles = colorblind = reduceMenuEffects = invertY = crouchToggle = crosshair = muteUnfocused = null;
+            subtitleSize = null;
             Changed = null;
         }
     }

@@ -44,6 +44,9 @@ namespace Abandoned.UI
 
         public void Tick()
         {
+            int size = Core.GameSettings.SubtitleSize;
+            Root.EnableInClassList("subtitles--small", size == 0);
+            Root.EnableInClassList("subtitles--large", size == 2);
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 if (Time.time < lines[i].until) continue;

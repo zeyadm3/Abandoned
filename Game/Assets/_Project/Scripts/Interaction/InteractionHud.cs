@@ -48,6 +48,8 @@ namespace Abandoned.Interaction
             prompt.EnableInClassList("hud-prompt-row--hint", hint);
             bool target = interactor.Target != null || (carrier.Held == null && interactor.UseTarget != null);
             crosshair.EnableInClassList("hud-crosshair--target", target);
+            // Settings > Gameplay > Crosshair: off hides the dot, but the ring still shows on something usable.
+            crosshair.EnableInClassList("hud-crosshair--hidden", !GameSettings.ShowCrosshair && !target);
             UI.MenuKit.Show(charge, interactor.Charge > 0f);
             chargeFill.style.width = Length.Percent(interactor.Charge * 100f);
         }

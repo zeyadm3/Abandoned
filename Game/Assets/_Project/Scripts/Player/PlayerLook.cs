@@ -77,7 +77,7 @@ namespace Abandoned.Player
         {
             float sensitivity = config.MouseSensitivity * GameSettings.Sensitivity;
             yaw += delta.x * sensitivity;
-            pitch = Mathf.Clamp(pitch - delta.y * sensitivity, -config.MaxPitch, config.MaxPitch);
+            pitch = Mathf.Clamp(pitch - delta.y * sensitivity * (GameSettings.InvertY ? -1f : 1f), -config.MaxPitch, config.MaxPitch);
 
             transform.rotation = Quaternion.Euler(0f, yaw, 0f);
             cameraRoot.localRotation = Quaternion.Euler(pitch, 0f, 0f);

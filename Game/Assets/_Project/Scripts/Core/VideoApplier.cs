@@ -70,6 +70,8 @@ namespace Abandoned.Core
                 QualitySettings.renderPipeline = runtimeAsset;
             }
             runtimeAsset.shadowDistance = VideoSettings.ShadowDistances[VideoSettings.Shadows];
+            runtimeAsset.renderScale = VideoSettings.RenderScale;
+            runtimeAsset.msaaSampleCount = VideoSettings.AntiAliasingSamples[VideoSettings.AntiAliasing];
         }
 
         private void Brightness()

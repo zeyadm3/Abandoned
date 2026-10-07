@@ -106,6 +106,8 @@ namespace Abandoned.Player
 
         private void Update() => Simulate(inputReader.Current, Time.deltaTime);
 
+        private bool CrouchToggles => config.CrouchIsToggle || GameSettings.CrouchToggle;
+
         public void Simulate(PlayerInputFrame input, float dt)
         {
             clock += dt;
@@ -237,11 +239,11 @@ namespace Abandoned.Player
         private void UpdateCrouch(PlayerInputFrame input, float dt)
         {
             if (input.CrouchPressed) crouchToggled = !crouchToggled;
-            bool wantsCrouch = config.CrouchIsToggle ? crouchToggled : input.CrouchHeld;
+            bool wantsCrouch = CrouchToggles ? crouchToggled : input.CrouchHeld;
 
             if (wantsCrouch) IsCrouching = true;
             else if (IsCrouching && CanStand()) IsCrouching = false;
-            else if (IsCrouching && config.CrouchIsToggle) crouchToggled = true; // blocked: stay crouched
+            else if (IsCrouching && CrouchToggles) crouchToggled = true; // blocked: stay crouched
 
             float targetHeight = IsCrouching ? config.CrouchHeight : config.StandingHeight;
             SetHeight(Mathf.MoveTowards(controller.height, targetHeight, config.CrouchTransitionSpeed * dt));

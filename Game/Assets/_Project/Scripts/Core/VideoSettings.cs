@@ -13,9 +13,13 @@ namespace Abandoned.Core
         public static readonly int[] FrameCaps = { 0, 30, 60, 90, 120, 144, 240 };
         public static readonly string[] ShadowNames = { "Off", "Low", "Medium", "High" };
         public static readonly float[] ShadowDistances = { 0f, 15f, 25f, 35f };
+        public static readonly string[] AntiAliasingNames = { "Off", "MSAA 2x", "MSAA 4x" };
+        public static readonly int[] AntiAliasingSamples = { 1, 2, 4 };
+        public const float MinRenderScale = 0.5f;
 
         private const string ModeKey = "video.mode", WidthKey = "video.width", HeightKey = "video.height", VsyncKey = "video.vsync",
-            CapKey = "video.cap", QualityKey = "video.quality", ShadowsKey = "video.shadows", BrightnessKey = "video.brightness";
+            CapKey = "video.cap", QualityKey = "video.quality", ShadowsKey = "video.shadows", BrightnessKey = "video.brightness",
+            ScaleKey = "video.renderscale", AaKey = "video.aa";
 
         public static event Action Changed;
 
@@ -64,6 +68,28 @@ namespace Abandoned.Core
         {
             get => Prefs.GetFloat(BrightnessKey, 0f);
             set { Prefs.SetFloat(BrightnessKey, Mathf.Clamp(value, -1f, 1.5f)); Changed?.Invoke(); }
+        }
+
+        /// <summary>3D resolution as a fraction of the window (UI stays sharp); lower is faster on weak GPUs.</summary>
+        public static float RenderScale
+        {
+            get => Mathf.Clamp(Prefs.GetFloat(ScaleKey, 1f), MinRenderScale, 1f);
+            set { Prefs.SetFloat(ScaleKey, Mathf.Clamp(value, MinRenderScale, 1f)); Changed?.Invoke(); }
+        }
+
+        /// <summary>Index into <see cref="AntiAliasingNames"/>.</summary>
+        public static int AntiAliasing
+        {
+            get => Mathf.Clamp(Prefs.GetInt(AaKey, 1), 0, AntiAliasingNames.Length - 1);
+            set { Prefs.SetInt(AaKey, Mathf.Clamp(value, 0, AntiAliasingNames.Length - 1)); Changed?.Invoke(); }
+        }
+
+        /// <summary>Back to the shipped look and window (Settings > Restore defaults on the Video/Graphics pages).</summary>
+        public static void ResetAll()
+        {
+            foreach (string key in new[] { ModeKey, WidthKey, HeightKey, VsyncKey, CapKey, QualityKey, ShadowsKey, BrightnessKey, ScaleKey, AaKey })
+                Prefs.Delete(key);
+            Changed?.Invoke();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
