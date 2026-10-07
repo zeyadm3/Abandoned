@@ -33,6 +33,7 @@ namespace Abandoned.EditorTools
             BuildShell(root);
             BuildStations(root);
             HqDressingBuilder.Build(root);
+            PlaceGarageDoor(root);
 
             Transform spawns = Group("Spawns", root);
             for (int i = 0; i < 4; i++)
@@ -66,11 +67,27 @@ namespace Abandoned.EditorTools
             AmbienceBuilder.Hq(root);
             InvisibleColliderAudit.Run(root, "HQ");
 
-            EditorSceneManager.SaveScene(scene, ScenePath);
+            // Our own save must not be captured as a hand placement (HqPlacementSync).
+            HqPlacementSync.Building = true;
+            try { EditorSceneManager.SaveScene(scene, ScenePath); }
+            finally { HqPlacementSync.Building = false; }
             List<EditorBuildSettingsScene> scenes = EditorBuildSettings.scenes.ToList();
             if (scenes.All(s => s.path != ScenePath)) EditorBuildSettings.scenes = scenes.Append(new EditorBuildSettingsScene(ScenePath, true)).ToArray();
             AssetDatabase.SaveAssets();
             Debug.Log($"Salvage depot HQ saved to {ScenePath}.");
+        }
+
+        /// <summary>The car garage door, wherever it was last placed by hand (HqPlacements; default: the garage opening).</summary>
+        private static void PlaceGarageDoor(Transform root)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(GarageDoorBuilder.PrefabPath);
+            if (prefab == null) prefab = GarageDoorBuilder.Create();
+            HqPlacements placements = HqPlacementSync.Load();
+            var door = (GameObject)PrefabUtility.InstantiatePrefab(prefab, root);
+            door.name = "GarageDoor";
+            door.transform.SetPositionAndRotation(placements.GarageDoorPosition, placements.GarageDoorRotation);
+            door.transform.localScale = placements.GarageDoorScale;
+            door.GetComponent<GarageDoor>().EditorSetOpen(placements.GarageDoorOpen);
         }
 
         private static void BuildShell(Transform root)
