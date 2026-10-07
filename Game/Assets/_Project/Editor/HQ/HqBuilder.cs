@@ -7,24 +7,16 @@ using Unity.Cinemachine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using static Abandoned.EditorTools.GreyboxFactory;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>
-    /// Builds Scenes/HQ.unity (GDD 5: company HQ between runs): a 24 x 16 m one-storey greybox with a
-    /// garage (the van that drives everyone to the job, the players' spawn), an office (the contract
-    /// board) and a shop corner (the terminal, 6.4). No in-scene network objects: the HQ is where
-    /// players join and every level spawns its networked things itself (session travel, M6.0).
-    /// </summary>
+    /// <summary>A dim salvage depot: warm departure bay, cold office and worn equipment workshop.</summary>
     public static class HqBuilder
     {
         public const string ScenePath = "Assets/_Project/Scenes/HQ.unity";
-        private const float W = 24f, D = 16f, H = 4f, Wall = 0.2f;
-        private static readonly WallOpening GarageDoor = new(8f, 0f, 3.4f);
-        private static readonly WallOpening Doorway = new(2f, 0f, 2.4f);
+        private const float Width = 24f, Depth = 16f, Height = 4f;
 
         [MenuItem("Tools/Abandoned/Create HQ")]
         public static void Create()
@@ -35,59 +27,19 @@ namespace Abandoned.EditorTools
 
         public static void Build()
         {
+            CustomMallArt.Prepare();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             Transform root = new GameObject("HQ").transform;
-            Material floor = GetMaterial("Greybox_HQFloor", new Color(0.42f, 0.43f, 0.45f));
-            Material wall = GetMaterial("Greybox_Wall", new Color(0.82f, 0.81f, 0.78f));
-            Material frame = GetMaterial("Greybox_DoorFrame", new Color(0.95f, 0.8f, 0.1f));
-            Material ground = GetMaterial("Greybox_Ground", new Color(0.36f, 0.4f, 0.32f));
-
-            Transform shell = Group("Shell", root);
-            Box("Floor", shell, new Vector3(W / 2f, -0.15f, D / 2f), new Vector3(W, 0.3f, D), floor).AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-            Box("Ground", shell, new Vector3(W / 2f, -0.4f, -10f), new Vector3(W + 40f, 0.3f, 20f), ground).AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Dirt);
-            Box("Roof", shell, new Vector3(W / 2f, H + 0.15f, D / 2f), new Vector3(W, 0.3f, D), GetMaterial("Greybox_Roof", new Color(0.35f, 0.35f, 0.37f)));
-            // Outer walls: the garage's south side is one wide door.
-            GreyboxWall.Panel(shell, "Wall_S_Garage", new Vector3(0f, 0f, -Wall / 2f), Vector3.right, 12f, H, Wall, GarageDoor, wall, frame);
-            GreyboxWall.Panel(shell, "Wall_S_Office", new Vector3(12f, 0f, -Wall / 2f), Vector3.right, 12f, H, Wall, null, wall, frame);
-            GreyboxWall.Panel(shell, "Wall_N", new Vector3(0f, 0f, D + Wall / 2f), Vector3.right, W, H, Wall, null, wall, frame);
-            GreyboxWall.Panel(shell, "Wall_W", new Vector3(-Wall / 2f, 0f, 0f), Vector3.forward, D, H, Wall, null, wall, frame);
-            GreyboxWall.Panel(shell, "Wall_E", new Vector3(W + Wall / 2f, 0f, 0f), Vector3.forward, D, H, Wall, null, wall, frame);
-            // Garage | office/shop, and office | shop.
-            GreyboxWall.Panel(shell, "Wall_GarageOffice", new Vector3(12f, 0f, 0f), Vector3.forward, 10f, H, Wall, Doorway, wall, frame);
-            GreyboxWall.Panel(shell, "Wall_GarageShop", new Vector3(12f, 0f, 10f), Vector3.forward, 6f, H, Wall, Doorway, wall, frame);
-            GreyboxWall.Panel(shell, "Wall_OfficeShop", new Vector3(12f, 0f, 10f), Vector3.right, 12f, H, Wall, Doorway, wall, frame);
-            MarkStatic(shell);
-
-            // The contract board on the office's south wall, facing in; the van in the garage; the shop counter.
-            GameObject board = Box("ContractBoard", root, new Vector3(18f, 1.7f, 0.25f), new Vector3(4f, 1.8f, 0.15f), GetMaterial("Greybox_Board", new Color(0.55f, 0.4f, 0.25f)));
-            board.AddComponent<ContractBoard>();
-            GameObject van = Box("Van", root, new Vector3(6f, 1.25f, 9f), new Vector3(2.4f, 2.4f, 5f), GetMaterial("Greybox_Truck", new Color(0.7f, 0.22f, 0.2f)));
-            van.AddComponent<HqVan>();
-            Vehicles.Dress(van, Vehicles.Van);
-            Box("ShopCounter", root, new Vector3(18f, 0.55f, 13.5f), new Vector3(3f, 1.1f, 0.8f), GetMaterial("Greybox_Prop", new Color(0.55f, 0.42f, 0.3f)));
-            Box("ShopTerminal", root, new Vector3(18f, 1.35f, 13.6f), new Vector3(0.8f, 0.5f, 0.3f), GetMaterial("Greybox_Terminal", new Color(0.15f, 0.35f, 0.45f)))
-                .AddComponent<Abandoned.Equipment.ShopTerminal>();
-            Box("GearRack", root, new Vector3(0.5f, 1.2f, 12f), new Vector3(0.6f, 2.4f, 3f), GetMaterial("Greybox_Rack", new Color(0.3f, 0.32f, 0.35f)))
-                .AddComponent<Abandoned.Equipment.GearRack>();
-            // M7.5: the crew's lockers (wardrobe) on the garage's west wall.
-            GameObject lockers = Box("Lockers", root, new Vector3(0.35f, 1f, 6.5f), new Vector3(0.5f, 2f, 2.4f), GetMaterial("Greybox_Lockers", new Color(0.32f, 0.42f, 0.5f)));
-            lockers.AddComponent<Abandoned.UI.WardrobeLocker>();
-            // M10.7: the boss's answering machine on the office desk, by the contract board.
-            Box("OfficeDesk", root, new Vector3(21.5f, 0.4f, 2.2f), new Vector3(2f, 0.8f, 1f), GetMaterial("Greybox_Prop", new Color(0.55f, 0.42f, 0.3f)));
-            GameObject machine = Box("AnsweringMachine", root, new Vector3(21.5f, 0.88f, 2.2f), new Vector3(0.4f, 0.15f, 0.3f),
-                GetMaterial("Greybox_AnsweringMachine", new Color(0.12f, 0.12f, 0.13f)));
-            Material blink = GetMaterial("Greybox_MessageLight", new Color(1f, 0.15f, 0.1f));
-            blink.SetColor("_EmissionColor", new Color(3f, 0.3f, 0.2f));
-            blink.EnableKeyword("_EMISSION");
-            GameObject lamp = Box("MessageLight", machine.transform, new Vector3(0.3f, 0.6f, 0f), new Vector3(0.12f, 0.4f, 0.15f), blink, withCollider: false);
-            machine.AddComponent<AnsweringMachine>().EditorSetup(lamp.GetComponent<Renderer>());
+            BuildShell(root);
+            BuildStations(root);
+            HqDressingBuilder.Build(root);
 
             Transform spawns = Group("Spawns", root);
             for (int i = 0; i < 4; i++)
             {
-                var spawn = new GameObject($"PlayerSpawn_{i}").transform;
+                Transform spawn = new GameObject($"PlayerSpawn_{i}").transform;
                 spawn.SetParent(spawns, false);
-                spawn.SetPositionAndRotation(new Vector3(3f + i * 1.5f, 0.05f, 3.5f), Quaternion.identity);
+                spawn.SetPositionAndRotation(new Vector3(3f + i * 1.5f, .05f, 3.5f), Quaternion.identity);
                 spawn.gameObject.AddComponent<PlayerSpawnPoint>().EditorSetup(i);
             }
 
@@ -96,33 +48,123 @@ namespace Abandoned.EditorTools
             if (camera != null)
             {
                 if (camera.GetComponent<CinemachineBrain>() == null) camera.gameObject.AddComponent<CinemachineBrain>();
-                camera.transform.position = new Vector3(W / 2f, 18f, -14f);
-                camera.transform.LookAt(new Vector3(W / 2f, 0f, D / 2f));
+                camera.transform.position = new Vector3(12f, 18f, -14f);
+                camera.transform.LookAt(new Vector3(12f, 0f, 8f));
             }
             NetworkSceneBuilder.Add();
             var ui = new GameObject("CompanyUI");
             ui.AddComponent<HqHud>();
             ui.AddComponent<ContractBoardScreen>();
             ui.AddComponent<Abandoned.Equipment.GearScreens>();
-
             LevelAtmosphere.Apply("HQ", LevelAtmosphere.Hq, root);
             AmbienceBuilder.Hq(root);
-            foreach (Vector3 at in new[] { new Vector3(6f, 3.4f, 8f), new Vector3(18f, 3.4f, 5f), new Vector3(18f, 3.4f, 13f) })
-            {
-                var light = new GameObject("Light").AddComponent<Light>();
-                light.transform.SetParent(root, false);
-                light.transform.position = at;
-                light.type = LightType.Point;
-                light.range = 12f;
-                light.intensity = 7f;
-                light.shadows = LightShadows.None;
-            }
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             List<EditorBuildSettingsScene> scenes = EditorBuildSettings.scenes.ToList();
             if (scenes.All(s => s.path != ScenePath)) EditorBuildSettings.scenes = scenes.Append(new EditorBuildSettingsScene(ScenePath, true)).ToArray();
             AssetDatabase.SaveAssets();
-            Debug.Log($"HQ saved to {ScenePath}.");
+            Debug.Log($"Salvage depot HQ saved to {ScenePath}.");
+        }
+
+        private static void BuildShell(Transform root)
+        {
+            Transform shell = Group("Shell", root);
+            Material concrete = CustomMallArt.Material("Concrete");
+            GameObject slab = Box("Floor", shell, new Vector3(12f, -.15f, 8f), new Vector3(Width, .3f, Depth), concrete);
+            slab.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
+            CustomMallArt.HidePrimitive(slab);
+            GameObject roof = Box("Roof", shell, new Vector3(12f, Height + .15f, 8f), new Vector3(Width, .3f, Depth), CustomMallArt.Material("Metal"));
+            CustomMallArt.HidePrimitive(roof);
+            Box("Yard", shell, new Vector3(12f, -.4f, -10f), new Vector3(64f, .3f, 20f), CustomMallArt.Material("Dirt"))
+                .AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Dirt);
+
+            // Each solid portion is a modular visual over its own authoritative collision box.
+            Solid("GaragePierL", new Vector3(1f, 0f, -.1f), 2f);
+            Solid("GaragePierR", new Vector3(11f, 0f, -.1f), 2f);
+            Solid("GarageHeader", new Vector3(6f, 3.4f, -.1f), 8f, .6f);
+            for (int x = 0; x < 6; x++)
+            {
+                if (x >= 3) Solid($"South_{x}", new Vector3(x * 4f + 2f, 0f, -.1f), 4f);
+                Solid($"North_{x}", new Vector3(x * 4f + 2f, 0f, Depth + .1f), 4f);
+            }
+            for (int z = 0; z < 4; z++)
+            {
+                Solid($"West_{z}", new Vector3(-.1f, 0f, z * 4f + 2f), 4f, Height, 90f);
+                Solid($"East_{z}", new Vector3(Width + .1f, 0f, z * 4f + 2f), 4f, Height, 90f);
+            }
+            // The three original doorways remain 2 m wide and 2.4 m high, including bulky gear routes.
+            Solid("GarageOfficeSouth", new Vector3(12f, 0f, 2f), 4f, Height, 90f);
+            Solid("GarageOfficeNorth", new Vector3(12f, 0f, 8f), 4f, Height, 90f);
+            Solid("GarageOfficeHeader", new Vector3(12f, 2.4f, 5f), 2f, 1.6f, 90f);
+            Solid("GarageShopSouth", new Vector3(12f, 0f, 11f), 2f, Height, 90f);
+            Solid("GarageShopNorth", new Vector3(12f, 0f, 15f), 2f, Height, 90f);
+            Solid("GarageShopHeader", new Vector3(12f, 2.4f, 13f), 2f, 1.6f, 90f);
+            Solid("OfficeShopWest", new Vector3(14f, 0f, 10f), 4f);
+            Solid("OfficeShopWestJamb", new Vector3(16.5f, 0f, 10f), 1f);
+            Solid("OfficeShopEast", new Vector3(21f, 0f, 10f), 4f);
+            Solid("OfficeShopEastJamb", new Vector3(23.5f, 0f, 10f), 1f);
+            Solid("OfficeShopHeader", new Vector3(18f, 2.4f, 10f), 2f, 1.6f);
+            MarkStatic(shell);
+
+            void Solid(string name, Vector3 floor, float length, float height = Height, float yaw = 0f)
+            {
+                var wall = new GameObject(name);
+                wall.transform.SetParent(shell, false);
+                wall.transform.SetLocalPositionAndRotation(floor, Quaternion.Euler(0f, yaw, 0f));
+                var collider = wall.AddComponent<BoxCollider>();
+                collider.center = Vector3.up * height * .5f;
+                collider.size = new Vector3(length, height, .2f);
+                CustomMallArt.Place("WallSolid", wall.transform, Vector3.zero, Quaternion.identity, new Vector3(length / 4f, height / 3.82f, 1f));
+            }
+        }
+
+        private static void BuildStations(Transform root)
+        {
+            Material wood = CustomMallArt.Material("Wood"), metal = CustomMallArt.Material("Metal"), trim = CustomMallArt.Material("Trim");
+            GameObject board = Box("ContractBoard", root, new Vector3(18f, 1.7f, .25f), new Vector3(4f, 1.8f, .15f), wood);
+            board.AddComponent<ContractBoard>();
+            HqDressingBuilder.ContractFace(board.transform);
+
+            GameObject van = Box("Van", root, new Vector3(6f, 1.25f, 9f), new Vector3(2.4f, 2.4f, 5f), trim);
+            van.AddComponent<HqVan>();
+            Vehicles.Dress(van, Vehicles.Van);
+            foreach (Renderer renderer in van.GetComponentsInChildren<Renderer>())
+            {
+                if (renderer.sharedMaterial == null) continue;
+                var block = new MaterialPropertyBlock();
+                block.SetColor("_BaseColor", new Color(.33f, .36f, .31f));
+                renderer.SetPropertyBlock(block);
+            }
+
+            GameObject counter = Box("ShopCounter", root, new Vector3(18f, .55f, 13.5f), new Vector3(3f, 1.1f, .8f), wood);
+            CustomMallArt.Fit(counter, "Counter", Vector3.one);
+            GameObject terminal = Box("ShopTerminal", root, new Vector3(18f, 1.35f, 13.6f), new Vector3(.8f, .5f, .3f), trim);
+            terminal.AddComponent<Abandoned.Equipment.ShopTerminal>();
+            HqDressingBuilder.TerminalFace(terminal.transform);
+
+            Transform rack = Station(root, "GearRack", new Vector3(.65f, 0f, 12f), new Vector3(.62f, 2.4f, 3f));
+            rack.gameObject.AddComponent<Abandoned.Equipment.GearRack>();
+            CustomMallArt.Place("RetailShelf", rack, Vector3.zero, Quaternion.Euler(0f, 90f, 0f), new Vector3(1.74f, 1.12f, 1.12f));
+            Transform lockers = Station(root, "Lockers", new Vector3(.4f, 0f, 6.5f), new Vector3(.55f, 2.1f, 2.4f));
+            lockers.gameObject.AddComponent<Abandoned.UI.WardrobeLocker>();
+            CustomMallArt.Place("DepotLockers", lockers, Vector3.zero, Quaternion.Euler(0f, 90f, 0f), new Vector3(1.33f, 1f, 1f));
+
+            GameObject desk = Box("OfficeDesk", root, new Vector3(21.5f, .4f, 2.2f), new Vector3(2f, .8f, 1f), wood);
+            CustomMallArt.Fit(desk, "Counter", Vector3.one);
+            GameObject machine = Box("AnsweringMachine", root, new Vector3(21.5f, .88f, 2.2f), new Vector3(.4f, .15f, .3f), metal);
+            Material blink = PolishAssets.Material("HQ_MessageLamp", new Color(.62f, .23f, .075f), emission: 1.6f);
+            GameObject lamp = Box("MessageLight", machine.transform, new Vector3(.3f, .6f, 0f), new Vector3(.12f, .4f, .15f), blink, false);
+            machine.AddComponent<AnsweringMachine>().EditorSetup(lamp.GetComponent<Renderer>());
+        }
+
+        private static Transform Station(Transform parent, string name, Vector3 floor, Vector3 size)
+        {
+            Transform station = Group(name, parent);
+            station.localPosition = floor;
+            var collider = station.gameObject.AddComponent<BoxCollider>();
+            collider.center = Vector3.up * size.y * .5f;
+            collider.size = size;
+            return station;
         }
     }
 }
