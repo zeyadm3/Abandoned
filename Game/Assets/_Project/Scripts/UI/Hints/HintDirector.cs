@@ -82,6 +82,7 @@ namespace Abandoned.UI
             if (ThreatNear<BlindOne>(me) && Unseen(HintId.BlindOne) is HintId blind) return blind;
             if (ThreatNear<Stalker>(me) && Unseen(HintId.Stalker) is HintId stalker) return stalker;
             if (ThreatNear<Collector>(me) && Unseen(HintId.Collector) is HintId collector) return collector;
+            if (ThreatNear<Hunter>(me) && Unseen(HintId.Hunter) is HintId hunter) return hunter;
             if (run.Elapsed > RunGoalDelay && Unseen(HintId.RunGoal) is HintId goal) return goal;
             if (run.State.PowerOff && Unseen(HintId.PowerOff) is HintId power) return power;
 

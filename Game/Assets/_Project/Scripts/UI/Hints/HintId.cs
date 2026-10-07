@@ -16,6 +16,7 @@ namespace Abandoned.UI
         Stalker,
         Collector,
         Ghost,
-        TruckLeaving
+        TruckLeaving,
+        Hunter
     }
 }

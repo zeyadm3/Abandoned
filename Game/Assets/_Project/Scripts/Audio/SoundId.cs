@@ -24,6 +24,9 @@ namespace Abandoned.Audio
         UiBack,
         UiError,
         UiOpen,
-        UiClose
+        UiClose,
+        // Append only: the SoundBank stores these by number.
+        HunterStep,
+        HunterLanding
     }
 }

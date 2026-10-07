@@ -62,6 +62,9 @@ namespace Abandoned.EditorTools
             Cue(SoundId.Coins, new SoundCue(Clips(Rpg, "handleCoins"), 1f, Normal, 1f, 10f));
             // Far-off settling: metal ticking and a pot rolling somewhere, never a creak (creaks are warnings).
             Cue(SoundId.DistantSettle, new SoundCue(Clips(Rpg, "metalPot").Concat(Clips(Impact, "impactTin_medium")).ToArray(), 0.5f, Low, 6f, 40f));
+            // The Hunter (M9.1): its heavy tread and the crash when it falls through a floor.
+            Cue(SoundId.HunterStep, new SoundCue(Clips(Impact, "impactSoft_heavy"), 1f, new Vector2(0.42f, 0.52f), 4f, 38f));
+            Cue(SoundId.HunterLanding, new SoundCue(Clips(Impact, "impactWood_heavy").Concat(Clips(Impact, "impactMining")).ToArray(), 1f, new Vector2(0.35f, 0.45f), 6f, 60f));
             // Menus (M7.4).
             Cue(SoundId.UiClick, new SoundCue(Clips(Ui, "click_"), 0.6f, Normal, 1f, 5f));
             Cue(SoundId.UiConfirm, new SoundCue(Clips(Ui, "confirmation_"), 0.7f, Normal, 1f, 5f));

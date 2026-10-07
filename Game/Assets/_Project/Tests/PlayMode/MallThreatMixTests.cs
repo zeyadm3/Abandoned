@@ -40,7 +40,7 @@ namespace Abandoned.Tests
         {
             ThreatDirector director = ThreatDirector.Current;
             var counts = Enumerable.Range(1, 400).GroupBy(director.Opening).ToDictionary(g => g.Key, g => g.Count());
-            Assert.AreEqual(3, counts.Count, "all three kinds can open a run");
+            Assert.AreEqual(4, counts.Count, "all four kinds can open a run");
             Assert.Greater(counts[0], counts[1], "the Blind One most often");
         }
 

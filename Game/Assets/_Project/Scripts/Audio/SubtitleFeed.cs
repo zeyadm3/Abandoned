@@ -25,6 +25,8 @@ namespace Abandoned.Audio
             SoundId.Horn => "truck horn",
             SoundId.NoiseMakerShriek => "shrieking alarm",
             SoundId.RadioStatic => "radio static",
+            SoundId.HunterStep => "heavy footsteps",
+            SoundId.HunterLanding => "something heavy crashes down",
             _ => null,
         };
 

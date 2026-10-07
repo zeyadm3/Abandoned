@@ -19,6 +19,8 @@ namespace Abandoned.EditorTools
         public const string CollectorPrefabPath = Folder + "/Collector.prefab";
         public const string StalkerConfigPath = "Assets/_Project/Data/Threats/StalkerConfig.asset";
         public const string CollectorConfigPath = "Assets/_Project/Data/Threats/CollectorConfig.asset";
+        public const string HunterPrefabPath = Folder + "/Hunter.prefab";
+        public const string HunterConfigPath = "Assets/_Project/Data/Threats/HunterConfig.asset";
 
         /// <summary>The Stalker (tall, thin, dark) and the Collector (small, hunched, with a sack). Created when missing.</summary>
         public static void CreateOthers()
@@ -35,6 +37,20 @@ namespace Abandoned.EditorTools
                 foreach (float side in new[] { -1f, 1f })
                     Primitive(PrimitiveType.Capsule, "Arm", v, new Vector3(side * 0.3f, 1.1f, 0f), new Vector3(0.1f, 0.95f, 0.1f), m, withCollider: false);
                 Primitive(PrimitiveType.Sphere, "Eyes", v, new Vector3(0f, 2.5f, 0.13f), new Vector3(0.18f, 0.04f, 0.04f), GetMaterial("Greybox_StalkerEyes", new Color(0.9f, 0.9f, 0.85f)), withCollider: false);
+            });
+            // M9.1: the Hunter: big, broad, heavy-shouldered, a dull red glow for eyes.
+            var hunterConfig = LoadOrCreateAsset<HunterConfig>(HunterConfigPath);
+            Body(HunterPrefabPath, "Hunter", 2.5f, 0.55f, new Color(0.3f, 0.2f, 0.18f), root =>
+            {
+                root.AddComponent<Hunter>().EditorSetup(hunterConfig);
+                Transform v = Group("Visual", root.transform);
+                Material m = GetMaterial("Greybox_Hunter", new Color(0.3f, 0.2f, 0.18f));
+                Primitive(PrimitiveType.Capsule, "Body", v, Vector3.up * 1.15f, new Vector3(1f, 1.15f, 0.8f), m, withCollider: false);
+                Primitive(PrimitiveType.Sphere, "Shoulders", v, new Vector3(0f, 1.85f, 0.05f), new Vector3(1.3f, 0.6f, 0.8f), m, withCollider: false);
+                Primitive(PrimitiveType.Sphere, "Head", v, new Vector3(0f, 2.25f, 0.25f), new Vector3(0.42f, 0.38f, 0.42f), m, withCollider: false);
+                foreach (float side in new[] { -1f, 1f })
+                    Primitive(PrimitiveType.Capsule, "Arm", v, new Vector3(side * 0.7f, 1.2f, 0.1f), new Vector3(0.28f, 0.9f, 0.28f), m, withCollider: false);
+                Primitive(PrimitiveType.Sphere, "Eyes", v, new Vector3(0f, 2.3f, 0.45f), new Vector3(0.26f, 0.05f, 0.05f), GetMaterial("Greybox_HunterEyes", new Color(0.9f, 0.25f, 0.15f)), withCollider: false);
             });
             Body(CollectorPrefabPath, "Collector", 1.3f, 0.35f, new Color(0.42f, 0.36f, 0.28f), root =>
             {
