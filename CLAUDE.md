@@ -267,3 +267,6 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   `[MallValidation]` (flights walkable + NavMesh, invisible colliders in Mall/HQ) and `[MaterialAudit]`;
   keep both at 0. World text uses Abandoned/WorldText via WorldTextMaterial, never a font's GUI material.
   Menu effect tunables: Data/UI/Resources/MenuEffectsConfig; "Reduce menu effects" in Settings.
+- 2026-10-08 (0.12.3): the user hand-tuned Scenes/HQ.unity (tube intensities 30-50, moved labels/pillars, removed
+  the NO CREW LEFT BEHIND label, yard door lamp and EXIT sign). rebuild-horror regenerates HQ and would drop them:
+  port them into HqBuilder/HqDressingBuilder first (or ask). The garage door's pose is kept via HqPlacements.
