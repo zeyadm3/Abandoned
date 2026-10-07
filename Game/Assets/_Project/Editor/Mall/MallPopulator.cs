@@ -67,6 +67,18 @@ namespace Abandoned.EditorTools
             run.AddComponent<Abandoned.Extraction.RunHud>();
             SerializedWiring.Set(run.AddComponent<Abandoned.Extraction.AppraisalScreen>(), "director", director);
 
+            // Threats appear out of sight of the entrance: cinema (floor 2), loading bay, food court.
+            Transform threatSpawns = GreyboxFactory.Group("ThreatSpawns", root);
+            foreach ((int floor, int x, int z) in new[] { (2, 1, 5), (0, 9, 8), (0, 5, 9) })
+            {
+                var point = new GameObject($"ThreatSpawn_{floor}_{x}_{z}");
+                point.transform.SetParent(threatSpawns, false);
+                point.transform.position = TileTopCenter(new Vector2Int(x, z), floor);
+                point.AddComponent<Abandoned.Threats.ThreatSpawnPoint>();
+            }
+            new GameObject("Threats").AddComponent<Abandoned.Threats.ThreatDirector>().Setup(bootstrap,
+                UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.BlindOnePrefabPath).GetComponent<Unity.Netcode.NetworkObject>());
+
             var debugViews = new GameObject("DebugViews");
             debugViews.AddComponent<NoiseDebugView>();
             debugViews.AddComponent<LootDebugView>();
@@ -92,10 +104,20 @@ namespace Abandoned.EditorTools
                     }
                     SectionType type = tile.name.StartsWith("Walk") ? SectionType.Balcony : SectionType.Floor;
                     setup.AddSection(tile, type, collapsible: f > 0, health, capacity);
+                    if (f > 0) SectionNavCarver.EditorAdd(tile.gameObject, new Vector3(Tile, 0.3f, Tile));
                 }
             }
             foreach (Flight flight in Flights)
-                setup.AddSection(root.Find($"{MallBuilder.FlightsGroup}/{flight.Name}"), SectionType.Stair, flight.CanCollapse, fractured: false);
+            {
+                Transform piece = root.Find($"{MallBuilder.FlightsGroup}/{flight.Name}");
+                setup.AddSection(piece, SectionType.Stair, flight.CanCollapse, fractured: false);
+                if (!flight.CanCollapse) continue;
+                // The flight's own frame: z runs up the flight from its foot.
+                SectionNavCarver.EditorAdd(piece.gameObject, new Vector3(2.8f, 1f, 2f * Tile));
+                var obstacle = piece.GetComponent<UnityEngine.AI.NavMeshObstacle>();
+                obstacle.center = new Vector3(0f, StoryHeight / 2f, Tile);
+                obstacle.size = new Vector3(2.8f, StoryHeight + 1f, 2f * Tile);
+            }
             foreach (string weak in WeakSpots.Keys)
                 if (!matched.Contains(weak)) Debug.LogError($"Mall weak spot '{weak}' matches no tile (layout changed?).");
             setup.AddSimulation(DefaultStability, DefaultSeed);

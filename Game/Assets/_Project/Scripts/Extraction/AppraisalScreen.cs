@@ -50,7 +50,7 @@ namespace Abandoned.Extraction
             GUILayout.EndScrollView();
 
             foreach (RunResults.Player p in r.Players)
-                GUILayout.Label(p.Extracted ? $"{p.Name}: made it out" :
+                GUILayout.Label(p.Extracted ? $"{p.Name}: made it out" : p.Died ? $"<color=#ff7766>{p.Name}: died in there</color>" :
                     $"<color=#ff7766>{p.Name}: left behind{(p.PocketValueLost > 0 ? $" (lost ${p.PocketValueLost:N0} in their pockets)" : "")}</color>", label);
             foreach (string line in r.Stats) GUILayout.Label("• " + line, label);
 

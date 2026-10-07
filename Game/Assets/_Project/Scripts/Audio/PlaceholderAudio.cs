@@ -41,6 +41,22 @@ namespace Abandoned.Audio
             return clip;
         }
 
+        private static AudioClip click;
+
+        /// <summary>The Blind One's echolocation click: a short dry knock with a hollow ring.</summary>
+        public static AudioClip Click()
+        {
+            if (click != null) return click;
+            var random = new System.Random(7);
+            click = Build("BlindOne_Click", 0.09f, t =>
+            {
+                float env = Mathf.Exp(-t * 70f);
+                float knock = ((float)random.NextDouble() * 2f - 1f) * 0.6f + Mathf.Sin(2f * Mathf.PI * 1800f * t) * 0.5f;
+                return knock * env * 0.8f;
+            });
+            return click;
+        }
+
         private static AudioClip horn;
 
         /// <summary>A truck's two-note horn (one blast; the truck repeats it while it waits).</summary>

@@ -29,6 +29,10 @@ namespace Abandoned.Extraction
             string line = $"<color={haulColor}>Haul ${s.Haul:N0}</color> / Quota ${s.Quota:N0}     {cargo}     {window}";
             GUI.Label(new Rect(0f, 8f, Screen.width, 28f), line, style);
 
+            Networking.NetworkPlayer me = Networking.NetworkPlayer.Local;
+            if (me != null && me.IsDead)
+                GUI.Label(new Rect(0f, Screen.height * 0.4f, Screen.width, 60f), "<color=#ff5544>YOU DIED</color>", big);
+
             if (s.Phase == RunPhase.Honking)
                 GUI.Label(new Rect(0f, Screen.height * 0.25f, Screen.width, 60f),
                     $"<color=#ffd24d>TRUCK LEAVES IN {Mathf.CeilToInt(run.HonkRemaining)} - GET IN!</color>", big);

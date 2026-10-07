@@ -19,7 +19,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-5.5 Blind One -> 5.6 danger.
+5.6 danger -> M5 review, MVP checklist, tag, builds -> M6.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -53,7 +53,9 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
       loot to the truck at the loading bay (east), watch "Haul $X / Quota $40,000" rise, press E on the
       yellow lever in the bay: 10 s of honking, then it leaves and the appraisal shows (items, damage, who
       made it out, funny stats); host presses "Next run": everyone is back in the parking lot with new loot
-      in a restored building. Judge distances and the 15 min window.
+      in a restored building. Judge distances and the 15 min window. M5.5: 45 s in, the Blind One
+      appears (listen for clicking): sprint and drop things near it and it hunts you; touch = death
+      ("YOU DIED", body stays down); crouch-walking past it should be possible. F1 shows what it heard.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## How to verify (batch mode, Unity must be closed)

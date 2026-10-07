@@ -61,6 +61,7 @@ namespace Abandoned.EditorTools
             BuildLights(Group("Lights", root));
             PlaceCamera();
             MallPopulator.Populate(root);
+            BakeNavMesh(root);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildSettings();
@@ -188,6 +189,27 @@ namespace Abandoned.EditorTools
                     light.color = new Color(1f, 0.95f, 0.85f);
                     light.shadows = LightShadows.None;
                 }
+        }
+
+        public const string NavMeshPath = "Assets/_Project/Scenes/Mall_NavMesh.asset";
+
+        /// <summary>
+        /// Baked once with every floor intact; collapses carve holes at runtime (SectionNavCarver), so
+        /// there's never a runtime rebake. Players, loot and debris aren't walls.
+        /// </summary>
+        private static void BakeNavMesh(Transform root)
+        {
+            var surface = root.gameObject.AddComponent<Unity.AI.Navigation.NavMeshSurface>();
+            surface.collectObjects = Unity.AI.Navigation.CollectObjects.Children;
+            surface.useGeometry = UnityEngine.AI.NavMeshCollectGeometry.PhysicsColliders;
+            // Every collapsible tile carries a (disabled) carving obstacle; by default the bake skips
+            // anything with an obstacle, which would leave the upper floors out of the mesh.
+            surface.ignoreNavMeshObstacle = false;
+            surface.layerMask = ~LayerMask.GetMask(Abandoned.Core.GameLayers.Player, Abandoned.Core.GameLayers.Loot,
+                Abandoned.Core.GameLayers.Debris, "Ignore Raycast");
+            surface.BuildNavMesh();
+            AssetDatabase.DeleteAsset(NavMeshPath);
+            AssetDatabase.CreateAsset(surface.navMeshData, NavMeshPath);
         }
 
         private static void PlaceCamera()

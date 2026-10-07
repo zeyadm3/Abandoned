@@ -46,6 +46,9 @@ namespace Abandoned.Player
         /// <summary>Another machine's player: never ragdolls itself, mirrors the owner's state instead.</summary>
         public bool IsRemote { get; private set; }
 
+        /// <summary>Dead: stay down (no getting up on its own) until something calls <see cref="Recover"/>.</summary>
+        public bool HoldDown { get; set; }
+
         /// <summary>Where the fallen body is (only meaningful while ragdolled).</summary>
         public Vector3 BodyPosition => IsRemote ? remoteBodyPosition : pelvis.position;
 
@@ -155,6 +158,7 @@ namespace Abandoned.Player
         public void Tick(float dt)
         {
             ragdollTime += dt;
+            if (HoldDown) return;
             bool settled = ragdollTime >= config.MinRagdollTime && pelvis.linearVelocity.magnitude < config.SettledSpeed;
             if (settled || ragdollTime >= config.MaxRagdollTime) Recover();
         }

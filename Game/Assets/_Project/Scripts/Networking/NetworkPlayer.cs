@@ -29,6 +29,9 @@ namespace Abandoned.Networking
         private readonly NetworkVariable<PlayerNetState> state = new(default,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+        // Host-written: death is the host's call (a monster's contact, left behind), never the owner's.
+        private readonly NetworkVariable<bool> dead = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
         private static readonly List<NetworkPlayer> Spawned = new();
 
         public static IReadOnlyList<NetworkPlayer> All => Spawned;
@@ -39,6 +42,10 @@ namespace Abandoned.Networking
         public static event Action<NetworkPlayer> LocalPlayerSpawned;
 
         public PlayerNetState State => state.Value;
+        public bool IsDead => dead.Value;
+
+        /// <summary>Every machine: a player died (this one, now dead) or came back (next run).</summary>
+        public static event Action<NetworkPlayer, bool> DeathChanged;
         public PlayerMotor Motor => motor;
         public PlayerRagdoll Ragdoll => ragdoll;
         public PlayerCarrier Carrier => carrier;
@@ -55,10 +62,12 @@ namespace Abandoned.Networking
                 if (TryGetComponent(out PlayerLook look)) look.SyncYawFromTransform();
                 motor.Landed += OnOwnerLanded;
                 ragdoll.Ended += OnOwnerGotUp;
+                dead.OnValueChanged += OnDeadChanged;
                 LocalPlayerSpawned?.Invoke(this);
                 return;
             }
 
+            dead.OnValueChanged += OnDeadChanged;
             foreach (Behaviour b in ownerOnlyBehaviours) if (b != null) b.enabled = false;
             foreach (GameObject go in ownerOnlyObjects) if (go != null) go.SetActive(false);
             ragdoll.MakeRemote();
@@ -72,6 +81,7 @@ namespace Abandoned.Networking
         {
             Spawned.Remove(this);
             state.OnValueChanged -= OnStateChanged;
+            dead.OnValueChanged -= OnDeadChanged;
             if (!IsOwner) return;
             motor.Landed -= OnOwnerLanded;
             ragdoll.Ended -= OnOwnerGotUp;
@@ -132,10 +142,35 @@ namespace Abandoned.Networking
                 networkTransform.Teleport(transform.position, transform.rotation, transform.localScale);
         }
 
-        /// <summary>Host: put this player back on a spawn point for a new run (the owner moves itself).</summary>
+        /// <summary>Host: put this player back on a spawn point for a new run (the owner moves itself), alive.</summary>
         public void ServerRespawn(Pose pose)
         {
-            if (IsServer) RespawnRpc(pose.position, pose.rotation);
+            if (!IsServer) return;
+            dead.Value = false;
+            RespawnRpc(pose.position, pose.rotation);
+        }
+
+        /// <summary>Host: this player dies (monster contact). Their body falls where they stood.</summary>
+        public void ServerKill()
+        {
+            if (!IsServer || dead.Value) return;
+            dead.Value = true;
+            // GDD 11: a dead player's pocket loot drops where they died, for the others to recover.
+            foreach (Grabbable item in new List<Grabbable>(carrier.Inventory.Items))
+                if (NetworkLoot.Of(item) is NetworkLoot loot) LootServerActions.FreeOrphan(loot);
+        }
+
+        // Dead: the body goes down for good (local ragdoll, GDD 11) and the controls stop. Alive again: back up.
+        private void OnDeadChanged(bool was, bool now)
+        {
+            if (IsOwner)
+            {
+                if (now) ragdoll.Enter(Vector3.zero);
+                ragdoll.HoldDown = now;
+                foreach (Behaviour b in ownerOnlyBehaviours)
+                    if (b is PlayerMotor || b is PlayerInteractor) b.enabled = !now;
+            }
+            DeathChanged?.Invoke(this, now);
         }
 
         [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
@@ -160,6 +195,7 @@ namespace Abandoned.Networking
             Spawned.Clear();
             Local = null;
             LocalPlayerSpawned = null;
+            DeathChanged = null;
         }
     }
 }

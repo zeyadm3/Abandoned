@@ -33,6 +33,8 @@ namespace Abandoned.Extraction
             public ulong ClientId;
             public string Name;
             public bool Extracted;
+            /// <summary>Killed during the run (a threat), as opposed to just left behind.</summary>
+            public bool Died;
             /// <summary>Pocket loot lost by being left behind.</summary>
             public int PocketValueLost;
 
@@ -41,6 +43,7 @@ namespace Abandoned.Extraction
                 s.SerializeValue(ref ClientId);
                 s.SerializeValue(ref Name);
                 s.SerializeValue(ref Extracted);
+                s.SerializeValue(ref Died);
                 s.SerializeValue(ref PocketValueLost);
             }
         }

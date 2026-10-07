@@ -66,6 +66,8 @@ namespace Abandoned.Extraction
             if (State.Phase == RunPhase.Honking) Honk();
             if (!IsServer) return;
             if (State.Phase == RunPhase.Running && Time.time >= nextTally) Tally();
+            // Nobody left to drive: the run is over (the truck "leaves" with whatever is already in it).
+            if (State.Phase == RunPhase.Running && EveryoneDead()) Depart();
             if (State.Phase == RunPhase.Honking && Now >= State.HonkEnd) Depart();
         }
 
@@ -123,6 +125,18 @@ namespace Abandoned.Extraction
             if (!s.Equals(State)) state.Value = s;
         }
 
+        private bool EveryoneDead()
+        {
+            bool any = false;
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || p.NetworkManager != NetworkManager) continue;
+                if (!p.IsDead) return false;
+                any = true;
+            }
+            return any;
+        }
+
         private void Depart()
         {
             TruckCargo truck = TruckCargo.Current;
@@ -136,7 +150,7 @@ namespace Abandoned.Extraction
             {
                 if (p == null || p.NetworkManager != NetworkManager) continue;
                 Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
-                bool extracted = truck != null && truck.Carries(at);
+                bool extracted = !p.IsDead && truck != null && truck.Carries(at);
                 int lost = 0;
                 foreach (Grabbable pocketed in p.Carrier.Inventory.Items)
                 {
@@ -145,7 +159,7 @@ namespace Abandoned.Extraction
                     if (extracted) items.Add(new RunResults.Item { Name = item.Definition.DisplayName, StartValue = item.FullValue, FinalValue = item.CurrentValue, Pocketed = true });
                     else lost += item.CurrentValue;
                 }
-                players.Add(new RunResults.Player { ClientId = p.OwnerClientId, Name = $"Player {p.OwnerClientId + 1}", Extracted = extracted, PocketValueLost = lost });
+                players.Add(new RunResults.Player { ClientId = p.OwnerClientId, Name = $"Player {p.OwnerClientId + 1}", Extracted = extracted, Died = p.IsDead, PocketValueLost = lost });
             }
 
             RunResults results = RunResults.From(items, players, State.Quota, State.Seed, Time.time - startedAt);

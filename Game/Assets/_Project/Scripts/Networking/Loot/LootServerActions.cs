@@ -92,13 +92,16 @@ namespace Abandoned.Networking
             return thrown + inherited;
         }
 
-        /// <summary>Host: the holder left the session; the item drops where they last were.</summary>
+        /// <summary>Host: the holder left the session (or died); the item drops where they last were.</summary>
         public static void FreeOrphan(NetworkLoot loot)
         {
             Grabbable item = loot.Grabbable;
             if (loot.OwnerClientId != NetworkManager.ServerClientId) loot.NetworkObject.RemoveOwnership();
             loot.SyncPhysicsAuthority();
-            if (item.IsPocketed) item.Unpocket(loot.LastHolderPosition + Vector3.up, item.transform.rotation, Vector3.zero);
+            Vector3 drop = loot.LastHolderPosition + Vector3.up;
+            // A holder who's still here (died, rather than left) also has it taken out of their inventory.
+            if (item.IsPocketed && item.PocketHolder != null) item.PocketHolder.ApplyUnpocket(item, drop, item.transform.rotation, Vector3.zero);
+            else if (item.IsPocketed) item.Unpocket(drop, item.transform.rotation, Vector3.zero);
             else item.EndHold(Vector3.zero);
             loot.ServerSetHold(LootHoldMode.Free, null);
             loot.ServerTeleport();
