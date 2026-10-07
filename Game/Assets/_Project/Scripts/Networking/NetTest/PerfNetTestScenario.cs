@@ -97,14 +97,14 @@ namespace Abandoned.Networking
         }
 
         // A lap of the ground-floor concourse, one lane per machine, so everyone keeps moving.
-        private static void Wander(NetTestContext ctx, int lane, float t)
+        internal static void Wander(NetTestContext ctx, int lane, float t)
         {
             float a = t * 0.4f + lane * 1.6f;
             ctx.OwnPlayer.OwnerTeleport(new Vector3(24f + Mathf.Cos(a) * (6f + lane), 0.05f, 16f + Mathf.Sin(a) * 9f));
         }
 
         // Host: fling resting loot into the air (host-simulated, so it's real physics and replication).
-        private static int Throw(NetTestContext ctx, System.Random random, int count)
+        internal static int Throw(NetTestContext ctx, System.Random random, int count)
         {
             var free = Object.FindObjectsByType<NetworkLoot>(FindObjectsSortMode.None)
                 .Where(l => l.IsSpawned && l.NetworkManager == ctx.Manager && l.Hold.Mode == LootHoldMode.Free && !l.Grabbable.Body.isKinematic)
@@ -115,7 +115,7 @@ namespace Abandoned.Networking
         }
 
         // Host: the upper floors around the atrium give way (debris on every machine, cascades below).
-        private static int Drop(int count)
+        internal static int Drop(int count)
         {
             StructureSimulation sim = Object.FindAnyObjectByType<StructureSimulation>();
             if (sim == null) return 0;

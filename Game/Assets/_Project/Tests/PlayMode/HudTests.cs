@@ -41,6 +41,14 @@ namespace Abandoned.Tests
             yield return null;
             yield return null;
             Assert.AreEqual(DisplayStyle.Flex, HudLayer.Root.resolvedStyle.display, "back with the game");
+
+            // Clip mode (M8.7, F10): just the game on screen.
+            MenuUi.Current.ClipMode = true;
+            yield return null;
+            Assert.AreEqual(DisplayStyle.None, HudLayer.Root.resolvedStyle.display, "clip mode hides the HUD");
+            MenuUi.Current.ClipMode = false;
+            yield return null;
+            Assert.AreEqual(DisplayStyle.Flex, HudLayer.Root.resolvedStyle.display, "and brings it back");
         }
     }
 }

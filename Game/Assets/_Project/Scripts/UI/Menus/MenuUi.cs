@@ -112,6 +112,24 @@ namespace Abandoned.UI
 
             if (top == MenuScreen.Main) main.Refresh();
             else if (top == MenuScreen.Pause) pause.Refresh();
+            if (Keyboard.current != null && Keyboard.current.f10Key.wasPressedThisFrame) ClipMode = !ClipMode;
+        }
+
+        private bool clipMode;
+
+        /// <summary>
+        /// Clip mode (M8.7, F10): the HUD, tips and captions go away so the screen is just the game, for
+        /// capturing trailer shots (GDD 29). Menus still open over it.
+        /// </summary>
+        public bool ClipMode
+        {
+            get => clipMode;
+            set
+            {
+                clipMode = value;
+                MenuKit.Show(hud, Showing == MenuScreen.None && !clipMode);
+                if (subtitles != null) MenuKit.Show(subtitles.Root, !clipMode);
+            }
         }
 
         // The demo's last job is done: once per arrival at the HQ, the crew gets the end screen.
@@ -192,7 +210,7 @@ namespace Abandoned.UI
         {
             Showing = screen;
             foreach (KeyValuePair<MenuScreen, VisualElement> v in views) MenuKit.Show(v.Value, v.Key == screen);
-            MenuKit.Show(hud, screen == MenuScreen.None);
+            MenuKit.Show(hud, screen == MenuScreen.None && !clipMode);
         }
 
         private static bool EscapePressed() => Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;

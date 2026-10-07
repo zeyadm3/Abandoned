@@ -11,7 +11,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M8.4): compile clean; verify ALL PASS; EditMode 217/217; PlayMode 245/245 (M8.1b nettest company 4/4);
+- Last verified (M8.7): compile clean; verify ALL PASS; EditMode 217/217; PlayMode 246/246; nettest soak 4/4;
   M7 tag: all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
@@ -29,8 +29,10 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 ## Next
 M7 done (tag `milestone-7`; builds in ~/Documents/Abandoned-builds/dev/).
 -> M8 demo (Docs/progress/M8.md; version 0.8.0): 8.1 HUD pass done (in-run HUD, HQ + appraisal
-screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour done (`Tools/unity.sh build-demo`), 8.4 floor warnings + truck pop-ups done; next 8.4 juice, 8.5 set pieces, 8.6 soak,
-8.7 clip mode.
+screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour done (`Tools/unity.sh build-demo`), 8.4 floor warnings + truck pop-ups done.
+8.5 bridge piano jackpot, 8.6 `nettest soak` (3 runs, no growth in objects/managed memory), 8.7 F10 clip
+mode done. Next: the M8 review (read the M8 diff for bugs), all eleven nettests, tag milestone-8,
+`build` + `build-demo`. Then M9 content.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
@@ -89,6 +91,8 @@ screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour
       lower the limit for a quick check): back at the HQ after the 5th the end screen shows; Wishlist opens
       the Steam overlay (with Steam running) or the browser. When the real App ID exists, set
       Data/Core/Resources/DemoConfig StoreAppId.
+- [ ] Trailer capture (M8.7): F10 hides the HUD (tips and captions too) for clean shots; F10 again brings it
+      back. Tell me if you want a free-flying camera for the host as well.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
 ## Committing
