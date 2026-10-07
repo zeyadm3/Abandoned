@@ -10,5 +10,9 @@ namespace Abandoned.Equipment
         HandTrolley,
         Planks,
         NoiseMaker,
+        // M9.4 (append only: definitions store these by number)
+        Backpack,
+        SupportJack,
+        Crowbar,
     }
 }

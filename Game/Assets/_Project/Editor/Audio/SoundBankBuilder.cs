@@ -65,6 +65,9 @@ namespace Abandoned.EditorTools
             // The Hunter (M9.1): its heavy tread and the crash when it falls through a floor.
             Cue(SoundId.HunterStep, new SoundCue(Clips(Impact, "impactSoft_heavy"), 1f, new Vector2(0.42f, 0.52f), 4f, 38f));
             Cue(SoundId.HunterLanding, new SoundCue(Clips(Impact, "impactWood_heavy").Concat(Clips(Impact, "impactMining")).ToArray(), 1f, new Vector2(0.35f, 0.45f), 6f, 60f));
+            // Gear (M9.4): the crowbar's clang, the jack braced.
+            Cue(SoundId.CrowbarHit, new SoundCue(Clips(Impact, "impactMetal_heavy"), 1f, new Vector2(0.85f, 1f), 3f, 40f));
+            Cue(SoundId.JackPlaced, new SoundCue(Clips(Rpg, "metalLatch"), 1f, new Vector2(0.6f, 0.7f), 2f, 20f));
             // Menus (M7.4).
             Cue(SoundId.UiClick, new SoundCue(Clips(Ui, "click_"), 0.6f, Normal, 1f, 5f));
             Cue(SoundId.UiConfirm, new SoundCue(Clips(Ui, "confirmation_"), 0.7f, Normal, 1f, 5f));

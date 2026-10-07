@@ -35,7 +35,11 @@ namespace Abandoned.Structure
         public bool CanCollapse => canCollapse;
         public StructureConfig Config => config;
         public Transform Visual => visual;
-        public float Capacity { get; private set; }
+        /// <summary>Load it holds before overload drains it: the profile, stability, authoring, and any support jack.</summary>
+        public float Capacity => baseCapacity * Reinforcement;
+        /// <summary>Host: a support jack under it (M9.4) multiplies its capacity until the next restore.</summary>
+        public float Reinforcement { get; private set; } = 1f;
+        private float baseCapacity;
         public float MaxHealth { get; private set; }
         public float Health { get; private set; }
         public float Load { get; private set; }
@@ -92,15 +96,19 @@ namespace Abandoned.Structure
         public void Configure(float capacityScale, float decayScale, int seedBase)
         {
             SectionProfile profile = config.Profile(type);
-            Capacity = profile.Capacity * capacityScale * capacityMultiplier;
+            baseCapacity = profile.Capacity * capacityScale * capacityMultiplier;
             MaxHealth = profile.MaxHealth;
             DecayScale = decayScale;
             collapseSeedBase = seedBase;
         }
 
         /// <summary>Back to authored health with colliders on; used at start and by the debug reroll.</summary>
+        /// <summary>Host: braced from below (a support jack); a restore takes it away again.</summary>
+        public void Reinforce(float multiplier) => Reinforcement = Mathf.Max(Reinforcement, multiplier);
+
         public void ResetState()
         {
+            Reinforcement = 1f;
             Health = MaxHealth * initialHealth;
             Load = 0f;
             FailingTime = 0f;

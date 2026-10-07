@@ -117,6 +117,7 @@ namespace Abandoned.EditorTools
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(SessionTravelPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(CompanyContentBuilder.CompanyServicePrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(EquipmentContentBuilder.NoiseMakerPrefabPath));
+            prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(EquipmentContentBuilder.SupportJackPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.BlindOnePrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.StalkerPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.CollectorPrefabPath));

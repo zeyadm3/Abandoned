@@ -27,6 +27,8 @@ namespace Abandoned.Audio
         UiClose,
         // Append only: the SoundBank stores these by number.
         HunterStep,
-        HunterLanding
+        HunterLanding,
+        CrowbarHit,
+        JackPlaced
     }
 }

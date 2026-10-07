@@ -11,7 +11,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M9.3): compile clean; verify ALL PASS; EditMode 218/218; PlayMode 250/250 (M9.2 nettest company/run 4/4)
+- Last verified (M9.4): compile clean; verify ALL PASS; EditMode 218/218; PlayMode 253/253; nettest basic 4/4
   (M8 tag: all eleven nettests 4/4, loot on a rerun);
   M7 tag: all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
@@ -37,8 +37,8 @@ screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour
 8.5 bridge piano jackpot, 8.6 `nettest soak`, 8.7 F10 clip mode, review fixed.
 M8 done (tag `milestone-8`; `build` + `build-demo` zips in ~/Documents/Abandoned-builds/dev/).
 -> M9 content (Docs/progress/M9.md; version 0.9.0; mall-only per the decisions log): 9.1 the Hunter done,
-9.2 modifiers (8) done, 9.3 loot table (57 items) done; next 9.4 gear (backpack, support jack, crowbar),
-9.5 achievements, 9.6 Steam Cloud.
+9.2 modifiers (8) done, 9.3 loot table (57 items) done, 9.4 gear (crowbar, backpack, support jack) done; next 9.5 achievements,
+9.6 Steam Cloud.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->

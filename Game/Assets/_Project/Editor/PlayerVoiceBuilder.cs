@@ -81,6 +81,7 @@ namespace Abandoned.EditorTools
             if (plank != null) Set(equipment, "plankPrefab", plank.GetComponent<Unity.Netcode.NetworkObject>());
             else Debug.LogError("Loot_plank prefab missing; run Rebuild Content.");
             Set(equipment, "noiseMakerPrefab", EquipmentContentBuilder.CreateNoiseMaker().GetComponent<Unity.Netcode.NetworkObject>());
+            Set(equipment, "supportJackPrefab", EquipmentContentBuilder.CreateSupportJack().GetComponent<Unity.Netcode.NetworkObject>());
             // Death (M6.7): a ghost camera that orbits living teammates; inactive until needed.
             var ghostObject = new GameObject("GhostCamera");
             ghostObject.transform.SetParent(root.transform, false);

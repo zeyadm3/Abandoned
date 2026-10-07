@@ -4,6 +4,7 @@ using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Networking;
 using Abandoned.Player;
+using Abandoned.Structure;
 using Abandoned.Voice;
 using Unity.Netcode;
 using UnityEngine;
@@ -26,6 +27,14 @@ namespace Abandoned.Equipment
         [Tooltip("Spawned by the Planks gear: a loot-like plank to carry and lay across a hole.")]
         [SerializeField] private NetworkObject plankPrefab;
         [SerializeField] private NetworkObject noiseMakerPrefab;
+        [SerializeField] private NetworkObject supportJackPrefab;
+        [Tooltip("Pocket slots a backpack adds.")]
+        [SerializeField, Range(0, 6)] private int backpackSlots = 2;
+        [Tooltip("Crowbar: reach (m), strike momentum (kg·m/s, before the structure's threshold) and seconds between strikes.")]
+        [SerializeField] private float crowbarReach = 2.6f;
+        [SerializeField] private float crowbarMomentum = 1500f;
+        [SerializeField] private float crowbarCooldown = 0.7f;
+        private float nextPry;
         [SerializeField, Min(0.5f)] private float reviveReach = 2.5f;
         [SerializeField] private Vector2 throwSpeed = new(9f, 3f);
 
@@ -118,6 +127,7 @@ namespace Abandoned.Equipment
                 flashlight.enabled = on;
             }
             if (carrier != null) carrier.SoloDragAllowed = !CompanyService.RulesApply || Has(EquipmentKind.HandTrolley);
+            if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = Has(EquipmentKind.Backpack) ? backpackSlots : 0;
         }
 
         private void Update()
@@ -135,7 +145,7 @@ namespace Abandoned.Equipment
             if (input.Slot2Pressed) SelectRpc(1);
             if (input.FlashlightPressed && Has(EquipmentKind.Flashlight)) LightRpc(!state.Value.LightOn);
             // Single-use gear: the left mouse button with empty hands.
-            if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && d.Consumable) UseRpc(state.Value.Active);
+            if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar)) UseRpc(state.Value.Active);
         }
 
         // Like the interactor: clicks on a screen (gear rack, shop, pause) and the click that
@@ -190,12 +200,15 @@ namespace Abandoned.Equipment
             // A knocked-down player's root stays where they fell from: nothing is used from there.
             if (player == null || player.IsDead || carrier.Held != null || carrier.IsRagdolled) return;
             EquipmentDefinition d = InSlot(slot);
-            if (d == null || !d.Consumable) return;
+            if (d == null) return;
+            if (d.Kind == EquipmentKind.Crowbar) { Pry(); return; } // a tool: never used up
+            if (!d.Consumable) return;
             bool used = d.Kind switch
             {
                 EquipmentKind.Medkit => Revive(),
                 EquipmentKind.Planks => LayPlanks(),
                 EquipmentKind.NoiseMaker => Throw(),
+                EquipmentKind.SupportJack => PlaceJack(),
                 _ => false,
             };
             if (used) ServerConsume(slot);
@@ -220,6 +233,51 @@ namespace Abandoned.Equipment
             }
             return Spawn(plankPrefab, at, rotation) != null;
         }
+
+        // Host (M9.4): brace the floor you're standing on from below: the post runs down to whatever is under it.
+        private bool PlaceJack()
+        {
+            StructuralSection section = SectionQuery.Under(transform.position);
+            if (supportJackPrefab == null || section == null || !section.CanCollapse || section.Reinforcement > 1f)
+            {
+                HintRpc(section != null && section.Reinforcement > 1f ? "This floor is already braced" : "Stand on a floor that could give way to brace it");
+                return false;
+            }
+            Vector3 centre = section.transform.position;
+            float underside = centre.y - 0.35f;
+            if (!Physics.Raycast(new Vector3(centre.x, underside - 0.05f, centre.z), Vector3.down, out RaycastHit below, 8f, wallMask, QueryTriggerInteraction.Ignore))
+            {
+                HintRpc("Nothing below to brace it against");
+                return false;
+            }
+            NetworkObject jack = Spawn(supportJackPrefab, below.point, Quaternion.identity);
+            if (jack == null) return false;
+            jack.GetComponent<SupportJack>().Brace(section, underside - below.point.y);
+            SoundRpc(Audio.SoundId.JackPlaced, below.point + Vector3.up);
+            Debug.Log($"[Gear] Player {OwnerClientId} braced {section.name} (capacity now {section.Capacity:0} kg).");
+            return true;
+        }
+
+        // Host (M9.4): strike the section in front of you; enough strikes break even a sound floor (always
+        // through a Cracking warning first). Loud: monsters hear it.
+        private void Pry()
+        {
+            if (Time.time < nextPry) return;
+            nextPry = Time.time + crowbarCooldown;
+            int mask = 1 << Mathf.Max(0, GameLayers.StructureLayer);
+            Vector3 eye = player.transform.position + Vector3.up * 1.5f;
+            // Where its owner is looking: body yaw and the replicated camera pitch (the host has no remote camera).
+            Vector3 aim = Quaternion.Euler(player.State.Pitch, transform.eulerAngles.y, 0f) * Vector3.forward;
+            if (!Physics.Raycast(eye, aim, out RaycastHit hit, crowbarReach, mask, QueryTriggerInteraction.Ignore)) return;
+            StructuralSection section = hit.collider.GetComponentInParent<StructuralSection>();
+            if (section == null || !section.CanCollapse) return;
+            section.ApplyImpact(crowbarMomentum);
+            NoiseSystem.Emit(hit.point, 0.7f, NoiseSource.Other);
+            SoundRpc(Audio.SoundId.CrowbarHit, hit.point);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void SoundRpc(Audio.SoundId id, Vector3 at) => Audio.GameAudio.Play(id, at, 1f);
 
         // Host: the nearest downed crewmate within reach and in sight gets up.
         private bool Revive()

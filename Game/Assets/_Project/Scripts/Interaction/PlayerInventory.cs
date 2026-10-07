@@ -21,8 +21,10 @@ namespace Abandoned.Interaction
             }
         }
         public int Count => Items.Count;
-        public int Capacity => config.PocketSlots;
-        public bool HasSpace => items.Count < config.PocketSlots;
+        /// <summary>Extra pockets from gear (a backpack, M9.4); set on every machine from the replicated slots.</summary>
+        public int ExtraSlots { get; set; }
+        public int Capacity => config.PocketSlots + ExtraSlots;
+        public bool HasSpace => items.Count < Capacity;
 
         public float TotalWeight
         {

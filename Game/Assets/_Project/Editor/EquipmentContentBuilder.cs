@@ -24,13 +24,39 @@ namespace Abandoned.EditorTools
                 Item("planks", "Planks", "A plank to bridge a hole in the floor (single use).", EquipmentKind.Planks, 150, 2, true, new Color(0.6f, 0.45f, 0.25f)),
                 Item("noise_maker", "Noise Maker", "Throw it: it shrieks a few seconds later and draws the Blind One (single use).", EquipmentKind.NoiseMaker, 250, 2, true, new Color(0.9f, 0.9f, 0.2f)),
                 Item("stress_scanner", "Stress Scanner", "Shows how close the floor ahead is to giving way.", EquipmentKind.StressScanner, 1200, 3, false, new Color(0.2f, 0.8f, 0.9f)),
+                // M9.4 (append only: the catalog order is the network index)
+                Item("crowbar", "Crowbar", "Strike the floor in front of you (use): weak floors break, sound ones crack first. Loud.", EquipmentKind.Crowbar, 350, 1, false, new Color(0.7f, 0.15f, 0.1f)),
+                Item("backpack", "Backpack", "Two more pocket slots while you carry it.", EquipmentKind.Backpack, 600, 2, false, new Color(0.3f, 0.4f, 0.25f)),
+                Item("support_jack", "Support Jack", "Brace the floor you stand on from below: it holds 60 % more until the next job (single use).", EquipmentKind.SupportJack, 500, 3, true, new Color(0.95f, 0.75f, 0.1f)),
             };
             CreateNoiseMaker();
+            CreateSupportJack();
             var catalog = SerializedWiring.LoadOrCreateAsset<EquipmentCatalog>(CatalogPath);
             catalog.EditorSet(items);
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
             return catalog;
+        }
+
+        public const string SupportJackPrefabPath = "Assets/_Project/Prefabs/Equipment/SupportJack.prefab";
+
+        /// <summary>The support jack post (M9.4): host-placed, static; the post stretches to fit. Created when missing.</summary>
+        public static GameObject CreateSupportJack()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(SupportJackPrefabPath);
+            if (existing != null && existing.GetComponent<SupportJack>() != null) return existing;
+            if (!AssetDatabase.IsValidFolder("Assets/_Project/Prefabs/Equipment")) AssetDatabase.CreateFolder("Assets/_Project/Prefabs", "Equipment");
+            var root = new GameObject("SupportJack");
+            root.AddComponent<Unity.Netcode.NetworkObject>().DontDestroyWithOwner = true;
+            Material yellow = GreyboxFactory.GetMaterial("Greybox_SupportJack", new Color(0.95f, 0.75f, 0.1f));
+            GreyboxFactory.Primitive(PrimitiveType.Cylinder, "Base", root.transform, Vector3.up * 0.05f, new Vector3(0.5f, 0.05f, 0.5f), yellow, withCollider: false);
+            GameObject post = GreyboxFactory.Primitive(PrimitiveType.Cylinder, "Post", root.transform, Vector3.up, new Vector3(0.18f, 1f, 0.18f), yellow, withCollider: true);
+            var jack = root.AddComponent<SupportJack>();
+            SerializedWiring.Set(jack, "post", post.transform);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, SupportJackPrefabPath);
+            Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
+            return prefab;
         }
 
         /// <summary>The thrown noise maker: host-simulated, server-authoritative transform. Created when missing.</summary>

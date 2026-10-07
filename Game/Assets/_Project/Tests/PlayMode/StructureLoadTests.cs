@@ -20,8 +20,13 @@ namespace Abandoned.Tests
         // An upper-floor tile 4 m up, with the ground below.
         private static readonly Vector3 Upper = new(0f, 4f, 0f);
 
-        [SetUp]
-        public void SetUp() => rig = StructureTestRig.Create();
+        [UnitySetUp]
+        public IEnumerator SetUp()
+        {
+            // A level left loaded by an earlier test (its structure, its load sources) would get in the way.
+            yield return NetTestHarness.CleanWorld();
+            rig = StructureTestRig.Create();
+        }
 
         [UnityTearDown]
         public IEnumerator TearDown()
