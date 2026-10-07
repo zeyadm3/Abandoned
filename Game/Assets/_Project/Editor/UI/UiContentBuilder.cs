@@ -50,7 +50,9 @@ namespace Abandoned.EditorTools
         // Icon packs and their id prefixes (UiIcons): colour item art, white menu icons, white HUD symbols, mouse glyphs.
         private static readonly (string folder, string prefix)[] IconPacks =
         {
-            ("Kenney/GenericItems", "item"), ("Kenney/GameIcons", "icon"), ("Kenney/BoardGameIcons", "board"), ("Kenney/InputPrompts", "mouse"),
+            (ThirdPartyModelImport.Root + "Kenney/GenericItems", "item"), (ThirdPartyModelImport.Root + "Kenney/GameIcons", "icon"),
+            (ThirdPartyModelImport.Root + "Kenney/BoardGameIcons", "board"), (ThirdPartyModelImport.Root + "Kenney/InputPrompts", "mouse"),
+            (LootIconRenderer.Folder, "loot"),
         };
 
         /// <summary>Data/UI/Resources/UiIcons: every icon PNG in the packs by "prefix/name".</summary>
@@ -61,7 +63,7 @@ namespace Abandoned.EditorTools
             var list = new List<Abandoned.UI.UiIcons.Entry>();
             foreach ((string folder, string prefix) in IconPacks)
             {
-                string path = ThirdPartyModelImport.Root + folder;
+                string path = folder;
                 if (!AssetDatabase.IsValidFolder(path)) continue;
                 foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { path }))
                 {

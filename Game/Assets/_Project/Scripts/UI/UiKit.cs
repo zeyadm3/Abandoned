@@ -41,6 +41,45 @@ namespace Abandoned.UI
             return cap;
         }
 
+        private static readonly System.Text.RegularExpressions.Regex KeyToken = new(@"\[([^\]]+)\]");
+
+        /// <summary>
+        /// Fills a prompt row from text with [key] markers ("[E] Pick up   [RMB] drop"): each key becomes a key
+        /// cap followed by its words. Text without markers is one plain part.
+        /// </summary>
+        public static void Prompt(VisualElement row, string prompt)
+        {
+            row.Clear();
+            if (string.IsNullOrEmpty(prompt)) return;
+            var matches = KeyToken.Matches(prompt);
+            if (matches.Count == 0)
+            {
+                PromptPart(row, null, prompt);
+                return;
+            }
+            if (matches[0].Index > 0) PromptPart(row, null, prompt.Substring(0, matches[0].Index).Trim());
+            for (int i = 0; i < matches.Count; i++)
+            {
+                int start = matches[i].Index + matches[i].Length;
+                int end = i + 1 < matches.Count ? matches[i + 1].Index : prompt.Length;
+                PromptPart(row, matches[i].Groups[1].Value, prompt.Substring(start, end - start).Trim());
+            }
+        }
+
+        private static void PromptPart(VisualElement row, string key, string words)
+        {
+            var part = new VisualElement { pickingMode = PickingMode.Ignore };
+            part.AddToClassList("hud-prompt__part");
+            if (key != null) Key(part, key);
+            if (!string.IsNullOrEmpty(words))
+            {
+                var text = new Label(words) { pickingMode = PickingMode.Ignore };
+                text.AddToClassList("hud-prompt__text");
+                part.Add(text);
+            }
+            row.Add(part);
+        }
+
         /// <summary>An icon by id (see <see cref="UiIcons"/>); an empty box when it's missing.</summary>
         public static VisualElement Icon(VisualElement parent, string id, string size = null)
         {

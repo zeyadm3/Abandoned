@@ -1,4 +1,3 @@
-using System.Text;
 using Abandoned.Core;
 using Abandoned.Player;
 using UnityEngine;
@@ -7,9 +6,9 @@ using UnityEngine.UIElements;
 namespace Abandoned.Interaction
 {
     /// <summary>
-    /// The player's interaction HUD (M8.1): crosshair, what you can do with what you're looking at or
-    /// holding, rejection hints, the throw charge, and the pockets (Inventory key). Keys follow the
-    /// player's bindings. F1 adds carry debug numbers (OnGUI, debug only).
+    /// The player's interaction HUD (M8.1; key caps in UI step 2): crosshair (a ring on something usable),
+    /// what you can do with what you're looking at or holding, rejection hints and the throw charge. Keys
+    /// follow the player's bindings. The pockets moved to UI.PlayerHud. F1 adds carry debug numbers.
     /// </summary>
     public class InteractionHud : MonoBehaviour
     {
@@ -18,9 +17,8 @@ namespace Abandoned.Interaction
         [SerializeField] private PlayerInputReader inputReader;
 
         private GUIStyle box;
-        private readonly StringBuilder text = new();
-        private VisualElement crosshair, charge, chargeFill;
-        private Label prompt, inventory;
+        private VisualElement crosshair, charge, chargeFill, prompt;
+        private string shownPrompt;
 
         /// <summary>Tests: the prompt under the crosshair (null when none).</summary>
         public string Prompt { get; private set; }
@@ -32,26 +30,31 @@ namespace Abandoned.Interaction
             {
                 if (UI.HudLayer.Root == null) return;
                 crosshair = UI.HudLayer.Add(new VisualElement(), "hud-crosshair");
-                prompt = UI.HudLayer.Label("hud-prompt");
+                prompt = UI.HudLayer.Add(new VisualElement(), "hud-prompt-row");
                 charge = UI.HudLayer.Add(new VisualElement(), "hud-charge");
                 chargeFill = new VisualElement { pickingMode = PickingMode.Ignore };
                 chargeFill.AddToClassList("hud-charge__fill");
                 charge.Add(chargeFill);
-                inventory = UI.HudLayer.Label("hud-panel", "hud-inventory");
             }
-            UI.MenuKit.Show(prompt, Prompt != null);
-            if (Prompt != null && prompt.text != Prompt) prompt.text = Prompt;
-            prompt.EnableInClassList("hud-prompt--hint", hint);
+            // Key caps for [key] markers; rebuilt only when the words change.
+            // The pockets list (Inventory held) takes the bottom of the screen; the prompt steps aside.
+            UI.MenuKit.Show(prompt, Prompt != null && !inputReader.Current.InventoryHeld);
+            if (Prompt != shownPrompt)
+            {
+                shownPrompt = Prompt;
+                UI.UiKit.Prompt(prompt, Prompt);
+                prompt.BringToFront(); // over any value tags behind it
+            }
+            prompt.EnableInClassList("hud-prompt-row--hint", hint);
+            bool target = interactor.Target != null || (carrier.Held == null && interactor.UseTarget != null);
+            crosshair.EnableInClassList("hud-crosshair--target", target);
             UI.MenuKit.Show(charge, interactor.Charge > 0f);
             chargeFill.style.width = Length.Percent(interactor.Charge * 100f);
-            bool pockets = inputReader.Current.InventoryHeld;
-            UI.MenuKit.Show(inventory, pockets);
-            if (pockets) inventory.text = InventoryText();
         }
 
         private void OnDisable()
         {
-            foreach (VisualElement e in new[] { crosshair, prompt, charge, inventory }) if (e != null) UI.MenuKit.Show(e, false);
+            foreach (VisualElement e in new[] { crosshair, prompt, charge }) if (e != null) UI.MenuKit.Show(e, false);
         }
 
         private void OnEnable()
@@ -64,7 +67,6 @@ namespace Abandoned.Interaction
             UI.HudLayer.Remove(crosshair);
             UI.HudLayer.Remove(prompt);
             UI.HudLayer.Remove(charge);
-            UI.HudLayer.Remove(inventory);
         }
 
         private string BuildPrompt(out bool hint)
@@ -87,21 +89,6 @@ namespace Abandoned.Interaction
             if (!DebugView.Visible) return;
             box ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
             DrawDebug();
-        }
-
-        private string InventoryText()
-        {
-            text.Clear();
-            text.AppendLine($"<b>POCKETS</b> {carrier.Inventory.Count}/{carrier.Inventory.Capacity}   ({InputBindings.Display("Drop")} drops the last)");
-            int total = 0;
-            foreach (Grabbable item in carrier.Inventory.Items)
-            {
-                int value = item.TryGetComponent(out IValuable v) ? v.CurrentValue : 0;
-                total += value;
-                text.AppendLine($"  {item.DisplayName}  ${value:N0}");
-            }
-            text.Append($"<b>TOTAL</b> ${total:N0}");
-            return text.ToString();
         }
 
         private void DrawDebug()
@@ -128,10 +115,7 @@ namespace Abandoned.Interaction
                    $"\nCrew cap   {shared.CarrierMaxSpeed:0.0} m/s, tether {tether:0.00}/{shared.Config.TetherSlack:0.0} m";
         }
 
-        private static string Describe(Grabbable g)
-        {
-            string value = g.TryGetComponent(out IValuable v) ? $"${v.CurrentValue:N0} · " : "";
-            return $"{g.DisplayName} ({value}{g.Weight:0.#} kg)";
-        }
+        // The value tag over the item says what it's worth (UI.LootTags); the prompt says what it is and weighs.
+        private static string Describe(Grabbable g) => $"{g.DisplayName} ({g.Weight:0.#} kg)";
     }
 }

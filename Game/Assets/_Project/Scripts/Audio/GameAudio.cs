@@ -103,6 +103,7 @@ namespace Abandoned.Audio
             SoundId.Horn => PlaceholderAudio.Horn(),
             SoundId.NoiseMakerShriek => PlaceholderAudio.Shriek(),
             SoundId.RadioStatic => PlaceholderAudio.Static(),
+            SoundId.ScanPing => PlaceholderAudio.Ping(),
             _ => null,
         };
 

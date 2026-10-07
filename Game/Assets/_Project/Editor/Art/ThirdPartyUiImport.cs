@@ -3,7 +3,7 @@ using UnityEditor;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Import settings for third-party UI art (UI overhaul step 1): Kenney CC0 icon PNGs become crisp UI
+    /// Import settings for UI art (UI overhaul): Kenney CC0 icon PNGs and our rendered loot icons become crisp UI
     /// textures (no mipmaps, clamped, uncompressed, alpha as transparency) for UI Toolkit backgrounds.
     /// </summary>
     public class ThirdPartyUiImport : AssetPostprocessor
@@ -12,9 +12,9 @@ namespace Abandoned.EditorTools
 
         private void OnPreprocessTexture()
         {
-            if (!assetPath.StartsWith(ThirdPartyModelImport.Root)) return;
-            bool icon = false;
-            foreach (string folder in IconFolders) icon |= assetPath.Contains(folder);
+            bool icon = assetPath.StartsWith(LootIconRenderer.Folder + "/");
+            if (assetPath.StartsWith(ThirdPartyModelImport.Root))
+                foreach (string folder in IconFolders) icon |= assetPath.Contains(folder);
             if (!icon) return;
             var importer = (TextureImporter)assetImporter;
             importer.textureType = TextureImporterType.Default;

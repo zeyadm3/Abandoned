@@ -528,7 +528,7 @@
 
 .hud-voice {
     position: absolute;
-    left: 18px; bottom: 54px;
+    left: 28px; bottom: 112px;
     font-size: 17px;
     color: rgb(187, 187, 187);
 }
@@ -613,3 +613,261 @@
     width: 380px;
     border-left-color: var(--c-good);
 }
+
+/* ---- Run HUD (UI step 2): haul vs quota up top, the window clock top right ---- */
+
+.run-haul {
+    position: absolute;
+    top: 12px; left: 0; right: 0;
+    align-items: center;
+}
+
+.run-haul__row { flex-direction: row; align-items: flex-end; }
+
+.run-haul__label {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--c-dim);
+    margin-right: 10px;
+    margin-bottom: 9px;
+}
+
+.run-haul__amount {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 46px;
+    color: var(--c-money);
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.65);
+}
+
+.run-haul__quota {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 22px;
+    color: var(--c-text);
+    margin-left: 10px;
+    margin-bottom: 7px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.65);
+}
+
+.run-haul__bar { width: 380px; height: 8px; margin-top: 1px; }
+
+.run-haul__cargo {
+    font-size: 15px;
+    color: var(--c-dim);
+    margin-top: 5px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+.run-haul__cargo--bad { color: var(--c-bad); }
+
+.run-haul__met {
+    margin-top: 6px;
+    opacity: 0;
+    scale: 1.6 1.6;
+    transition-property: scale, opacity;
+    transition-duration: 0.18s;
+}
+
+.run-haul__met--on { opacity: 1; scale: 1 1; }
+
+.run-clock {
+    position: absolute;
+    top: 18px; right: 28px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(10, 11, 12, 0.62);
+    padding: 4px 14px 4px 10px;
+    border-radius: 3px;
+}
+
+.run-clock__time {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 30px;
+    margin-left: 6px;
+    color: var(--c-text);
+}
+
+.run-clock--late { background-color: rgba(90, 14, 10, 0.75); }
+.run-clock--late .run-clock__time { color: rgb(255, 150, 130); font-size: 24px; }
+
+/* ---- Prompts and crosshair (UI step 2) ---- */
+
+.hud-prompt-row {
+    position: absolute;
+    left: 0; right: 0; top: 54%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.hud-prompt__part {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 4px 0 4px;
+    padding: 4px 10px 4px 6px;
+    background-color: rgba(10, 11, 12, 0.6);
+    border-radius: 3px;
+}
+
+.hud-prompt__text {
+    font-size: 21px;
+    color: var(--c-text);
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.75);
+}
+
+.hud-prompt-row--hint .hud-prompt__text { color: rgb(255, 150, 110); }
+
+.hud-crosshair--target {
+    width: 16px; height: 16px;
+    margin-left: -8px; margin-top: -8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+/* ---- Player HUD (UI step 2): stamina bottom left, hand slots and pockets bottom right ---- */
+
+.player-stamina {
+    position: absolute;
+    left: 28px; bottom: 26px;
+    width: 300px;
+}
+
+.player-stamina__label {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--c-dim);
+    margin-bottom: 3px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+.player-stamina .bar { height: 9px; }
+
+.player-load {
+    font-size: 15px;
+    color: var(--c-accent);
+    margin-top: 5px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+.player-slots {
+    position: absolute;
+    right: 28px; bottom: 22px;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.slot {
+    width: 62px; height: 62px;
+    margin-left: 6px;
+    background-color: rgba(10, 11, 12, 0.72);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+    transition-property: translate, border-color;
+    transition-duration: 0.1s;
+}
+
+.slot--hand { width: 76px; height: 76px; }
+.slot--active { border-color: var(--c-accent); translate: 0 -8px; }
+
+.slot__icon { width: 44px; height: 44px; -unity-background-scale-mode: scale-to-fit; }
+.slot--hand .slot__icon { width: 54px; height: 54px; }
+.slot--empty .slot__icon { opacity: 0; }
+
+.slot__key {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    position: absolute;
+    left: 5px; top: 1px;
+    font-size: 15px;
+    color: var(--c-dim);
+}
+
+.slot__value {
+    -unity-font-definition: url("../ThirdParty/Fonts/Barlow/Barlow-Bold.ttf");
+    position: absolute;
+    right: 4px; bottom: 1px;
+    font-size: 13px;
+    color: var(--c-money);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+}
+
+.slot-gap { width: 18px; }
+
+.pockets-detail { right: 28px; bottom: 116px; width: 340px; }
+
+/* ---- Loot tags: the value over loot you look at, hold, or scan (UI step 2) ---- */
+
+.loot-tag {
+    position: absolute;
+    translate: -50% -100%;
+    align-items: center;
+    background-color: rgba(10, 11, 12, 0.74);
+    padding: 3px 10px 4px 10px;
+    border-radius: 3px;
+    border-bottom-width: 3px;
+    border-bottom-color: var(--c-text);
+    scale: 1 1;
+    opacity: 1;
+    transition-property: scale, opacity;
+    transition-duration: 0.12s;
+}
+
+.loot-tag--hidden { scale: 0.5 0.5; opacity: 0; }
+
+/* What you hold: pinned under the prompt instead of on the item (it's right in front of your face). */
+.loot-tag--held { left: 50%; top: 61%; translate: -50% 0; }
+.loot-tag--scan { background-color: rgba(10, 11, 12, 0.55); padding: 1px 8px 2px 8px; }
+
+.loot-tag__value {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 28px;
+    color: var(--c-text);
+}
+
+.loot-tag--scan .loot-tag__value { font-size: 22px; }
+
+.loot-tag__name { font-size: 15px; color: var(--c-dim); }
+.loot-tag__meta { flex-direction: row; margin-top: 3px; }
+.loot-tag__meta .tag { margin: 0 2px 0 2px; font-size: 14px; }
+.tag--warn { background-color: var(--c-bad); color: var(--c-text); }
+.tag--dim { background-color: var(--c-panel-3); color: var(--c-text); }
+
+.loot-tag--t1 { border-bottom-color: var(--c-money); }
+.loot-tag--t1 .loot-tag__value { color: var(--c-money); }
+.loot-tag--t2 { border-bottom-color: var(--c-accent); }
+.loot-tag--t2 .loot-tag__value { color: var(--c-accent); }
+.loot-tag--t3 { border-bottom-color: rgb(255, 120, 40); }
+.loot-tag--t3 .loot-tag__value { color: rgb(255, 140, 60); }
+.loot-tag--broken .loot-tag__value { color: var(--c-bad); }
+
+/* The scan's ping: a ring that races out from the crosshair. */
+.scan-ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 200px; height: 200px;
+    margin-left: -100px; margin-top: -100px;
+    border-width: 3px;
+    border-color: rgba(255, 194, 26, 0.9);
+    border-radius: 100px;
+    scale: 0.1 0.1;
+    opacity: 1;
+    transition-property: scale, opacity;
+    transition-duration: 0.7s, 0.7s;
+    transition-timing-function: ease-out, ease-in;
+}
+
+.scan-ring--out { scale: 10 10; opacity: 0; }
+
+.scan-ready {
+    position: absolute;
+    left: 28px; bottom: 74px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.scan-ready__text { font-size: 15px; color: var(--c-dim); text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7); }

@@ -71,17 +71,16 @@ namespace Abandoned.Tests
             Camera camera = Camera.main;
             var rt = new RenderTexture(width, height, 24);
             bool clear = panel.clearColor;
-            // The scene first, by hand (batch mode never reaches end of frame), then the menu draws over it.
-            if (camera != null)
-            {
-                camera.targetTexture = rt;
-                camera.Render();
-                camera.targetTexture = null;
-            }
+            // The UI lays out at the capture size first (world tags move to their new spots), then the scene is
+            // drawn by hand over whatever that left (batch mode never reaches end of frame), then the UI once on top.
             panel.clearColor = false;
             panel.targetTexture = rt;
+            if (camera != null) camera.targetTexture = rt; // same aspect for world-anchored tags while they lay out
             yield return null;
             yield return null;
+            if (camera != null) camera.Render();
+            yield return null;
+            if (camera != null) camera.targetTexture = null;
             RenderTexture.active = rt;
             var tex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
             tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);

@@ -5,18 +5,19 @@ using UnityEngine.UIElements;
 namespace Abandoned.Extraction
 {
     /// <summary>
-    /// The run HUD (M8.1): haul vs quota along the top so "one more floor" always has a number (GDD 10),
-    /// cargo space and the extraction window beside it; big banners for the truck's departure countdown
-    /// and for your own death.
+    /// The run HUD (M8.1, redesigned in UI step 2): haul vs quota big at the top with a fill bar so "one more
+    /// floor" always has a number (GDD 10), cargo space under it, the extraction window as a clock top right;
+    /// banners for the truck's departure countdown and for your own death.
     /// </summary>
     public class RunHud : MonoBehaviour
     {
         private static readonly Color GainColor = new(0.5f, 1f, 0.5f);
 
-        private VisualElement top;
-        private Label haul, cargo, window, leaving, died;
+        private VisualElement top, haulBar, clock;
+        private Label amount, quota, cargo, met, time, leaving, died;
         private RunState shownRun;
         private int shownHaul;
+        private bool metShown;
 
         private void Update()
         {
@@ -28,6 +29,7 @@ namespace Abandoned.Extraction
                 Build();
             }
             MenuKit.Show(top, showing);
+            MenuKit.Show(clock, showing);
             if (!showing)
             {
                 MenuKit.Show(leaving, false);
@@ -37,13 +39,21 @@ namespace Abandoned.Extraction
 
             RunNetState s = run.State;
             HaulGain(run, s.Haul);
-            SetText(haul, $"HAUL ${s.Haul:N0} / ${s.Quota:N0}");
-            haul.EnableInClassList("hud-chip--good", s.Haul >= s.Quota);
-            SetText(cargo, s.Overloaded ? $"CARGO {s.CargoVolume:0.0}/{s.CargoCapacity:0} M3 - OVERLOADED" : $"CARGO {s.CargoVolume:0.0}/{s.CargoCapacity:0} M3");
-            cargo.EnableInClassList("hud-chip--bad", s.Overloaded);
+            bool quotaMet = s.Haul >= s.Quota;
+            SetText(amount, $"${s.Haul:N0}");
+            SetText(quota, $"/ ${s.Quota:N0}");
+            UiKit.SetBar(haulBar, s.Quota > 0 ? (float)s.Haul / s.Quota : 1f, quotaMet ? "good" : null);
+            if (quotaMet != metShown)
+            {
+                metShown = quotaMet;
+                met.EnableInClassList("run-haul__met--on", quotaMet);
+                if (quotaMet) UiKit.Jolt(met);
+            }
+            SetText(cargo, s.Overloaded ? $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3  -  OVERLOADED" : $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3");
+            cargo.EnableInClassList("run-haul__cargo--bad", s.Overloaded);
             float w = run.WindowRemaining;
-            SetText(window, run.WindowClosed ? "WINDOW CLOSED - DANGER RISING" : $"WINDOW {(int)w / 60}:{(int)w % 60:00}");
-            window.EnableInClassList("hud-chip--bad", run.WindowClosed);
+            SetText(time, run.WindowClosed ? "WINDOW CLOSED" : $"{(int)w / 60}:{(int)w % 60:00}");
+            clock.EnableInClassList("run-clock--late", run.WindowClosed);
 
             bool honking = s.Phase == RunPhase.Honking;
             MenuKit.Show(leaving, honking);
@@ -72,21 +82,31 @@ namespace Abandoned.Extraction
 
         private void Build()
         {
-            top = HudLayer.Add(new VisualElement(), "hud-top");
-            haul = Chip();
-            cargo = Chip();
-            window = Chip();
+            top = HudLayer.Add(new VisualElement(), "run-haul");
+            VisualElement row = new() { pickingMode = PickingMode.Ignore };
+            row.AddToClassList("run-haul__row");
+            top.Add(row);
+            Text(row, "HAUL", "run-haul__label");
+            amount = Text(row, "", "run-haul__amount");
+            quota = Text(row, "", "run-haul__quota");
+            haulBar = UiKit.Bar(top, "run-haul__bar");
+            cargo = Text(top, "", "run-haul__cargo");
+            met = UiKit.Tag(top, "QUOTA MET");
+            met.AddToClassList("run-haul__met");
+            clock = HudLayer.Add(new VisualElement(), "run-clock");
+            UiKit.Icon(clock, "board/hourglass", "small");
+            time = Text(clock, "", "run-clock__time");
             leaving = HudLayer.Label("hud-banner");
             died = HudLayer.Label("hud-banner", "hud-banner--dead");
             died.text = "YOU DIED";
         }
 
-        private Label Chip()
+        private static Label Text(VisualElement parent, string text, string cls)
         {
-            var chip = new Label { pickingMode = PickingMode.Ignore };
-            chip.AddToClassList("hud-chip");
-            top.Add(chip);
-            return chip;
+            var label = new Label(text) { pickingMode = PickingMode.Ignore };
+            label.AddToClassList(cls);
+            parent.Add(label);
+            return label;
         }
 
         // Labels re-layout on every text set; only touch them when the text changed.
@@ -98,11 +118,12 @@ namespace Abandoned.Extraction
         private void OnDestroy()
         {
             HudLayer.Remove(top);
+            HudLayer.Remove(clock);
             HudLayer.Remove(leaving);
             HudLayer.Remove(died);
         }
 
         /// <summary>Tests: what the top bar says.</summary>
-        public string HaulText => haul != null ? haul.text : null;
+        public string HaulText => amount != null ? $"HAUL {amount.text} {quota.text}" : null;
     }
 }

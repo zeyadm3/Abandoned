@@ -141,6 +141,24 @@ namespace Abandoned.Audio
             return clip;
         }
 
+        private static AudioClip ping;
+
+        /// <summary>The loot scan's sonar ping: a bright tone sliding down, with a faint echo.</summary>
+        public static AudioClip Ping()
+        {
+            if (ping != null) return ping;
+            float phase = 0f;
+            ping = Build("Placeholder_Ping", 1.1f, t =>
+            {
+                float f = Mathf.Lerp(1500f, 1100f, Mathf.Clamp01(t / 0.25f));
+                phase += 2f * Mathf.PI * f / SampleRate;
+                float hit = Mathf.Exp(-t * 7f);
+                float echo = t > 0.32f ? Mathf.Exp(-(t - 0.32f) * 9f) * 0.3f : 0f;
+                return Mathf.Sin(phase) * (hit + echo) * 0.5f;
+            });
+            return ping;
+        }
+
         /// <summary>Decaying inharmonic partials: bells, glass, metal.</summary>
         private static AudioClip Tones(string name, float seconds, float decay, float noise, params float[] partials)
         {

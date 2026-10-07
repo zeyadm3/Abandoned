@@ -106,6 +106,11 @@ namespace Abandoned.EditorTools
             Set(goggles, "inputReader", reader);
             Set(goggles, "carrier", root.GetComponent<Abandoned.Interaction.PlayerCarrier>());
             Set(goggles, "eye", cameraRoot);
+            // UI overhaul step 2: the player's own HUD and the loot value tags / scan (owner only).
+            root.AddComponent<Abandoned.UI.PlayerHud>().EditorSetup(root.GetComponent<Abandoned.Networking.NetworkPlayer>(),
+                root.GetComponent<Abandoned.Player.PlayerStamina>(), root.GetComponent<Abandoned.Interaction.PlayerCarrier>(), equipment, reader);
+            root.AddComponent<Abandoned.UI.LootTags>().EditorSetup(root.GetComponent<Abandoned.Networking.NetworkPlayer>(),
+                root.GetComponent<Abandoned.Interaction.PlayerInteractor>(), root.GetComponent<Abandoned.Interaction.PlayerCarrier>(), reader);
             return new Result(transmitter, hud);
         }
     }

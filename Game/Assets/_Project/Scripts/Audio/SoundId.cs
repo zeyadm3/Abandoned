@@ -33,5 +33,7 @@ namespace Abandoned.Audio
         // M10.4: shutters
         ShutterOpen,
         BoltCut,
+        // UI overhaul: the loot scan's sonar ping
+        ScanPing,
     }
 }
