@@ -15,7 +15,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator ImpactsPlayALibraryClipFromThePool()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             int before = GameAudio.ImpactCount;
             GameAudio.PlayImpact(SurfaceMaterial.Glass, new Vector3(1f, 1f, 1f), 1f);
             yield return null;
@@ -30,7 +30,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheMallHumsOnlyWhileItsLightsAreOn()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             LevelAmbience ambience = Object.FindAnyObjectByType<LevelAmbience>();
             Assert.IsNotNull(ambience, "the mall has ambience");
             yield return new WaitForSeconds(0.8f);

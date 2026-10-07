@@ -71,11 +71,11 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheWardrobeOpensFromTheLockersAndClosesIntoTheGame()
         {
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             var lockers = Object.FindAnyObjectByType<WardrobeLocker>();
             Assert.IsNotNull(lockers, "the HQ has lockers");
-            Assert.IsNotNull(lockers.UsePrompt(TestBuildingScene.Player));
-            lockers.Use(TestBuildingScene.Player);
+            Assert.IsNotNull(lockers.UsePrompt(TestMapScene.Player));
+            lockers.Use(TestMapScene.Player);
             yield return null;
             Assert.AreEqual(MenuScreen.Wardrobe, MenuUi.Current.Showing);
             Assert.IsTrue(Core.CursorOwner.UiActive);

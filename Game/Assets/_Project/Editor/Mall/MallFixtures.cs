@@ -56,7 +56,7 @@ namespace Abandoned.EditorTools
         private static void Build(Transform parent, Vector2Int c, int floor, Zone zone, StructuralSection ceiling, Material panelMaterial)
         {
             int hash = Hash(c, floor);
-            float ceilingY = FloorY(floor) + StoryHeight - (floor + 1 < Floors ? TestBuildingBuilder.SlabThickness : 0f);
+            float ceilingY = FloorY(floor) + StoryHeight - (floor + 1 < Floors ? TestMapBuilder.SlabThickness : 0f);
             var holder = new GameObject($"Fixture_{floor}_{c.x}_{c.y}");
             holder.transform.SetParent(parent, false);
             holder.transform.position = new Vector3((c.x + 0.5f) * Tile, ceilingY, (c.y + 0.5f) * Tile);

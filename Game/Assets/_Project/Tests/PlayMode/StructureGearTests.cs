@@ -21,9 +21,9 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return TestBuildingScene.Load("Mall");
-            rig = ForExisting(TestBuildingScene.Player);
-            gear = TestBuildingScene.Player.GetComponent<PlayerEquipment>();
+            yield return TestMapScene.Load("Mall");
+            rig = ForExisting(TestMapScene.Player);
+            gear = TestMapScene.Player.GetComponent<PlayerEquipment>();
         }
 
         private IEnumerator Equip(string id)

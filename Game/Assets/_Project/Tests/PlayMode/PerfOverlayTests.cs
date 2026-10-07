@@ -12,7 +12,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheF1PerfLineStartsAndStopsCleanly()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             Assert.IsNotNull(Object.FindAnyObjectByType<PerfOverlay>(), "the mall has the perf readout");
             DebugView.SetVisible(true);
             yield return new WaitForSeconds(1.3f);

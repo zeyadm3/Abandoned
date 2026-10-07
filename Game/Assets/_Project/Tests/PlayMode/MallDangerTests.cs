@@ -18,7 +18,7 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             for (int i = 0; i < 60 && RunState.Current == null; i++) yield return null;
             director = Object.FindAnyObjectByType<DangerDirector>();
             // Same rules, minutes squeezed into seconds.

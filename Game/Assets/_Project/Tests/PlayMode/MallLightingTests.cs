@@ -16,7 +16,7 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
         }
 
         [Test]

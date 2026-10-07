@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
         private static readonly WallOpening WideDoor = new(3.5f, 0f, 3.4f);   // the piano/statue/rack route
         private static readonly WallOpening Window = new(1.4f, 1.0f, 1.3f);   // rope-point fallback (GDD 6.4)
 
-        private static float WallHeight => StoryHeight - TestBuildingBuilder.SlabThickness;
+        private static float WallHeight => StoryHeight - TestMapBuilder.SlabThickness;
 
         public static int Build(Transform parent, int floor, Material wall, Material frame, Material railing)
         {

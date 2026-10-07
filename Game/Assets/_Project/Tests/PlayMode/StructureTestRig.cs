@@ -46,7 +46,7 @@ namespace Abandoned.Tests
             return rig;
         }
 
-        /// <summary>A 4 x 0.3 x 4 m section with its walking surface at topCentre, built like TestBuilding's tiles.</summary>
+        /// <summary>A 4 x 0.3 x 4 m section with its walking surface at topCentre, built like TestMap's tiles.</summary>
         public StructuralSection AddTile(string name, Vector3 topCentre, SectionType type = SectionType.Floor,
             bool collapsible = true, float health = 1f, float capacity = 1f, bool presentation = true,
             bool colliderOnChild = false, float tiltDegrees = 0f)

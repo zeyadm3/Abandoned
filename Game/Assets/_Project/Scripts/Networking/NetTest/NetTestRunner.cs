@@ -17,7 +17,7 @@ namespace Abandoned.Networking
     {
         private const string Loopback = "127.0.0.1";
         /// <summary>Where scenarios run unless they say otherwise (INetTestScene).</summary>
-        public const string DefaultScene = "TestBuilding";
+        public const string DefaultScene = "TestMap";
         private const float BootstrapTimeout = 15f;
         // Four headless instances share one Mac; uncapped frame rates would starve each other.
         private const int FrameRate = 60;

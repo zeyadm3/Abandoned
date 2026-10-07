@@ -20,7 +20,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator PauseSettingsResumeThenLeaveToTheMainMenu()
         {
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             MenuUi menu = MenuUi.Current;
             Assert.IsNotNull(menu, "the session has menus");
             yield return null;
@@ -49,7 +49,7 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(MenuScreen.None, menu.Showing);
             Assert.IsFalse(CursorOwner.UiActive);
-            Assert.IsTrue(TestBuildingScene.Player.GetComponent<PlayerLook>().CursorCaptured, "back in the game: the look has the mouse again");
+            Assert.IsTrue(TestMapScene.Player.GetComponent<PlayerLook>().CursorCaptured, "back in the game: the look has the mouse again");
 
             menu.Bootstrap.Disconnect();
             float until = Time.time + 8f;

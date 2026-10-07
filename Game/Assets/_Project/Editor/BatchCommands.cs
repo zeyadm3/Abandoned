@@ -42,7 +42,7 @@ namespace Abandoned.EditorTools
             ThreatContentBuilder.CreateBlindOne();
             ThreatContentBuilder.CreateOthers();
             NetworkContentBuilder.RegisterNetworkPrefabs();
-            TestBuildingBuilder.Build();
+            TestMapBuilder.Build();
             MallBuilder.Build();
             HqBuilder.Build();
             BuildScenes.ApplyToEditorSettings();
@@ -69,7 +69,7 @@ namespace Abandoned.EditorTools
 
         public static void Screenshots() => RunAndExit(() =>
         {
-            EditorSceneManager.OpenScene(TestBuildingBuilder.ScenePath, OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(TestMapBuilder.ScenePath, OpenSceneMode.Single);
             var shots = new List<string>
             {
                 ScreenshotCapture.CaptureFrom(new Vector3(10f, 10f, -24f), new Vector3(10f, 2f, 8f), "M1_overview"),

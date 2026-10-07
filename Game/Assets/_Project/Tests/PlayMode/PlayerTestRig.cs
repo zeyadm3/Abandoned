@@ -33,7 +33,7 @@ namespace Abandoned.Tests
             return rig;
         }
 
-        /// <summary>Takes control of an existing player (e.g. the one in TestBuilding).</summary>
+        /// <summary>Takes control of an existing player (e.g. the one in TestMap).</summary>
         public static PlayerTestRig ForExisting(GameObject player)
         {
             var rig = new PlayerTestRig();

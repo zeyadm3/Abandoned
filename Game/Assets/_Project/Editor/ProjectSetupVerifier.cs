@@ -96,8 +96,8 @@ namespace Abandoned.EditorTools
             // but the dangling entry stays in EditorBuildSettings until it is removed explicitly.
             Check(!HasProjectWideActionsEntry(), ProjectWideActionsLabel());
 
-            string scene = TestBuildingBuilder.ScenePath;
-            Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Create Test Building)");
+            string scene = TestMapBuilder.ScenePath;
+            Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Create Test Map)");
             Check(Array.Exists(EditorBuildSettings.scenes, s => s.path == scene), $"Scene {scene} in Build Settings");
             Check(EditorBuildSettings.scenes.Select(s => s.path).SequenceEqual(BuildScenes.All) &&
                   BuildScenes.All.All(File.Exists), "Build Settings scenes = BuildScenes.All, all exist (Tools/unity.sh rebuild)");

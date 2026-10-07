@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Abandoned.Networking
 {
     /// <summary>
-    /// Networked structure end to end: every client stands on TestBuilding's rotten tile (Tile_U_3_3,
+    /// Networked structure end to end: every client stands on TestMap's rotten tile (Tile_U_3_3,
     /// ~220 kg capacity) and the host drops a server rack in the middle of it. The host computes the
     /// load from the clients' replicated positions plus the rack, drains the tile, runs its Failing
     /// window and collapses it. Every machine then reports which sections it shows collapsed (id, seed,

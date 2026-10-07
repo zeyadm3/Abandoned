@@ -14,7 +14,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator NightAndStormChangeTheRun()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             RunState run = RunState.Current;
             var power = Object.FindAnyObjectByType<PowerController>();
             yield return null;

@@ -103,7 +103,7 @@ namespace Abandoned.EditorTools
 
         private static void CreateTile(string name, Transform parent, Vector3 topCenter, Material material)
         {
-            float slab = TestBuildingBuilder.SlabThickness;
+            float slab = TestMapBuilder.SlabThickness;
             var root = new GameObject(name);
             root.transform.SetParent(parent, false);
             root.transform.localPosition = topCenter;

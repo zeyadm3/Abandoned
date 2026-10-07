@@ -26,7 +26,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator DrawingTheMallStaysInBudgetAndOcclusionHelps()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             var go = new GameObject("BudgetCamera");
             var cam = go.AddComponent<Camera>();
             cam.fieldOfView = 75f;

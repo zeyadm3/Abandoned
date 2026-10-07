@@ -127,7 +127,7 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
   - Cut for launch: dragging a body back to the truck to revive. Death ragdolls stay local.
   - Hospital and Hotel are post-Early-Access candidates; the mall carries Early Access.
   - Every StructuralSection gets a per-section "can collapse" flag (M2). It's off for
-    TestBuilding ground-floor tiles (nothing below them). It's per-section, not a
+    TestMap (then TestBuilding) ground-floor tiles (nothing below them). It's per-section, not a
     "ground floor never collapses" rule, because real levels may have basements.
 - 2026-10-06 (autonomous build M3–M10, user brief):
   - Voice: free, built on Steam's voice API + NGO behind IVoiceService (Dissonance later if bought).
@@ -241,3 +241,6 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     accessory cosmetic slot, the boss's voicemails (CompanyMessages), synthesised music (MusicPlayer, never in batch),
     balance (running costs per job, gear x5-8, GDD 13 unlock levels, crew-size quota scale; Docs/BALANCE.md), F9 free
     camera, LaunchConfig links, `Tools/unity.sh build-release` (refuses App ID 480). Version 0.10.0.
+- 2026-10-07 (user): the old TestBuilding scene is renamed **TestMap** (Scenes/TestMap.unity, TestMapBuilder). It's a
+  feature-testing map for us, not a level: it's never in a job and never in a shared build (BuildScenes.ForPlayer
+  keeps it only in Dev builds, for nettests). The mall is the game's map.

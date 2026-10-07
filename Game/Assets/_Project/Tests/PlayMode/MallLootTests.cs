@@ -12,7 +12,7 @@ namespace Abandoned.Tests
     public class MallLootTests
     {
         [UnitySetUp]
-        public IEnumerator SetUp() => TestBuildingScene.Load("Mall", randomRun: true);
+        public IEnumerator SetUp() => TestMapScene.Load("Mall", randomRun: true);
 
         [UnityTest]
         public IEnumerator TheHostSpawnsASeededRunOfLootWithOneOrTwoJackpots()

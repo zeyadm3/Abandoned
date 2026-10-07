@@ -11,7 +11,7 @@ namespace Abandoned.Tests
 {
     /// <summary>
     /// The multi-process 'collapse' scenario run in one process with a host and three clients, each with
-    /// its own copy of a TestBuilding-like rotten tile (same name, place and weakness), so a failing
+    /// its own copy of a TestMap-like rotten tile (same name, place and weakness), so a failing
     /// Tools/nettest.sh collapse points at the build/launch side rather than the scenario or sync code.
     /// </summary>
     public class CollapseNetTestScenarioTests

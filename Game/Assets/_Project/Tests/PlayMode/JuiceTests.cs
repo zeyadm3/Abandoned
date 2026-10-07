@@ -17,8 +17,8 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator ACrackingFloorUnderYouIsAnnounced()
         {
-            yield return TestBuildingScene.Load("Mall");
-            GameObject me = TestBuildingScene.Player;
+            yield return TestMapScene.Load("Mall");
+            GameObject me = TestMapScene.Player;
             var warning = Object.FindAnyObjectByType<FloorWarningHud>();
             Assert.IsNotNull(warning, "the session has the floor warning");
             // Stand on a sound upper-floor tile, then hammer it.
@@ -39,7 +39,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator LootReachingTheTruckPopsItsValue()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             TruckCargo truck = TruckCargo.Current;
             NetworkLoot cargo = Object.FindAnyObjectByType<NetworkLootSpawner>().Spawned
                 .First(l => l != null && l.Item.Definition.CarryClass == CarryClass.OneHand && l.Item.Definition.Fragility <= Abandoned.Loot.Fragility.Medium);

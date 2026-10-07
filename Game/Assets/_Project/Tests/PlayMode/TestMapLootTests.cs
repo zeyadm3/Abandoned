@@ -11,15 +11,15 @@ using UnityEngine.TestTools;
 namespace Abandoned.Tests
 {
     /// <summary>
-    /// The 10 placed loot items in TestBuilding spawn cleanly and settle without damage, and in the
+    /// The 10 placed loot items in TestMap spawn cleanly and settle without damage, and in the
     /// solo session (the player hosts) they are spawned network objects simulated and valued here.
     /// </summary>
-    public class TestBuildingLootTests
+    public class TestMapLootTests
     {
         [UnityTest]
         public IEnumerator PlacedLootSettlesWithoutFallingOrBreaking()
         {
-            yield return TestBuildingScene.Load();
+            yield return TestMapScene.Load();
             LootItem[] items = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None);
             Assert.AreEqual(13, items.Length, "10 M1 items + 3 M2 structure test pieces");
             Assert.GreaterOrEqual(items.Count(i => i.transform.position.y > 3.5f), 3, "some loot upstairs");
@@ -43,7 +43,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator SoloHostSpawnsPlacedLootAsHostOwnedNetworkObjects()
         {
-            yield return TestBuildingScene.Load();
+            yield return TestMapScene.Load();
             NetworkLoot[] loot = Object.FindObjectsByType<NetworkLoot>(FindObjectsSortMode.None);
             Assert.AreEqual(13, loot.Length);
             Assert.IsInstanceOf<NetworkInteractionHandler>(InteractionService.Handler);

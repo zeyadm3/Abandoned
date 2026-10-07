@@ -12,8 +12,8 @@ using static Abandoned.Tests.PlayerTestRig;
 
 namespace Abandoned.Tests
 {
-    /// <summary>The M2 exit test, automated: TestBuilding's weak spots and dragging a rack through a rotten floor.</summary>
-    public class TestBuildingStructureTests
+    /// <summary>The M2 exit test, automated: TestMap's weak spots and dragging a rack through a rotten floor.</summary>
+    public class TestMapStructureTests
     {
         private static StructuralSection Section(string name) =>
             Object.FindObjectsByType<StructuralSection>(FindObjectsSortMode.None).First(s => s.name == name);
@@ -26,7 +26,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator BuildingIsStableAtRestButTheWeakSpotsWarn()
         {
-            yield return TestBuildingScene.Load();
+            yield return TestMapScene.Load();
             var sim = Object.FindFirstObjectByType<StructureSimulation>();
             Assert.AreEqual(14 + 20 + 2, sim.Sections.Count, "every tile and stair segment is a section");
             Assert.IsTrue(sim.Sections.Where(s => s.name.StartsWith("Tile_G")).All(s => !s.CanCollapse), "ground floor can't collapse");
@@ -46,8 +46,8 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator DraggingTheServerRackBreaksThroughTheRottenFloor()
         {
-            yield return TestBuildingScene.Load();
-            var rig = ForExisting(TestBuildingScene.Player);
+            yield return TestMapScene.Load();
+            var rig = ForExisting(TestMapScene.Player);
             var carrier = rig.Player.GetComponent<PlayerCarrier>();
             LootItem rack = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None)
                 .First(l => l.Definition.Id == "server_rack" && l.transform.position.y > 3f);
@@ -84,7 +84,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator LoweringStabilityBringsTheStatueDown()
         {
-            yield return TestBuildingScene.Load();
+            yield return TestMapScene.Load();
             var sim = Object.FindFirstObjectByType<StructureSimulation>();
             StructuralSection balcony = Section("Balcony_U_3_2");
             yield return WaitFixed(1f);

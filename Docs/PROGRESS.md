@@ -135,7 +135,7 @@ the rebuild changed on purpose (ProjectSettings, EditorBuildSettings). Leave the
 ## How to verify (batch mode, Unity must be closed)
 ```
 Tools/unity.sh compile      # zero errors, no warnings from Assets/_Project
-Tools/unity.sh rebuild      # regenerates generated content (Player prefab, TestBuilding, loot, network prefabs)
+Tools/unity.sh rebuild      # regenerates generated content (Player prefab, TestMap, loot, network prefabs)
 Tools/unity.sh verify       # Verify Project Setup + Content Validator
 Tools/unity.sh editmode     # -> Game/TestResults/EditMode.xml
 Tools/unity.sh playmode     # -> Game/TestResults/PlayMode.xml

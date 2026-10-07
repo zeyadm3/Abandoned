@@ -16,9 +16,9 @@ namespace Abandoned.EditorTools
     /// Layout (tile grid x 0..4, z 0..3, front/south at z = 0):
     ///   atrium = tiles (1..2, 1..2), stairwell = tiles (4, 1..2) rising north.
     /// </summary>
-    public static class TestBuildingBuilder
+    public static class TestMapBuilder
     {
-        public const string ScenePath = "Assets/_Project/Scenes/TestBuilding.unity";
+        public const string ScenePath = "Assets/_Project/Scenes/TestMap.unity";
 
         public const float Tile = 4f;
         private const int TilesX = 5;
@@ -47,11 +47,11 @@ namespace Abandoned.EditorTools
 
         private static Material tileA, tileB, balcony, stairs, wall, column, railing, frame, ground, asphalt, line, truck;
 
-        [MenuItem("Tools/Abandoned/Create Test Building")]
+        [MenuItem("Tools/Abandoned/Create Test Map")]
         public static void Create()
         {
             if (File.Exists(ScenePath) &&
-                !EditorUtility.DisplayDialog("Create Test Building",
+                !EditorUtility.DisplayDialog("Create Test Map",
                     $"{ScenePath} already exists. Rebuild and overwrite it?", "Overwrite", "Cancel"))
                 return;
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -64,21 +64,21 @@ namespace Abandoned.EditorTools
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             LoadMaterials();
 
-            Transform root = new GameObject("TestBuilding").transform;
+            Transform root = new GameObject("TestMap").transform;
             int groundTiles = BuildGroundFloor(Group("GroundFloor", root));
             (int upperTiles, int balconyTiles) = BuildUpperFloor(Group("UpperFloor", root));
             int stairSegments = BuildStairs(Group("Stairs", root));
             BuildColumns(Group("Columns", root));
             BuildExterior(Group("Exterior", root));
             PlaceCamera();
-            TestBuildingPopulator.Populate(root);
+            TestMapPopulator.Populate(root);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildSettings();
             int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
 
-            Debug.Log($"Test building saved to {ScenePath}: {groundTiles} ground tiles, " +
+            Debug.Log($"Test map saved to {ScenePath}: {groundTiles} ground tiles, " +
                       $"{upperTiles} upper tiles ({balconyTiles} balcony), {stairSegments} stair segments, {networkObjects} network objects.");
         }
 

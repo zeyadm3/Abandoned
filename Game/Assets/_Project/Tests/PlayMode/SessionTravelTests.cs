@@ -23,11 +23,11 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheHostTravelsToTheMallAndBackWithoutDroppingTheSession()
         {
-            yield return TestBuildingScene.Load("TestBuilding");
+            yield return TestMapScene.Load("TestMap");
             NetworkManager manager = NetworkManager.Singleton;
             NetworkPlayer me = NetworkPlayer.Local;
             yield return WaitUntil(() => SessionTravel.Current != null, 3f, "the session spawned its travel object");
-            Assert.AreEqual("TestBuilding", SessionTravel.Current.Level);
+            Assert.AreEqual("TestMap", SessionTravel.Current.Level);
             Assert.AreSame(NetworkBootstrap.Persistent, NetworkBootstrap.Instance, "the first scene's session is the game's session");
             Abandoned.UI.MenuUi menus = Abandoned.UI.MenuUi.Current;
             Assert.IsNotNull(menus, "the session has its menus");
@@ -43,8 +43,8 @@ namespace Abandoned.Tests
             yield return WaitUntil(() => Vector3.Distance(me.transform.position, PlayerSpawnPoint.PoseFor(0).position) < 1f, 3f, "placed on the mall's spawn");
             Assert.Greater(Object.FindAnyObjectByType<NetworkLootSpawner>().Spawned.Count, 40, "the mall's loot spawned once everyone was there");
 
-            SessionTravel.Current.Travel("TestBuilding");
-            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "TestBuilding" && Object.FindAnyObjectByType<StructureNetSync>() != null,
+            SessionTravel.Current.Travel("TestMap");
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "TestMap" && Object.FindAnyObjectByType<StructureNetSync>() != null,
                 10f, "back in the test building with its structure sync");
             Assert.IsNull(RunState.Current, "the mall's run didn't come back with us");
             Assert.AreSame(me, NetworkPlayer.Local);

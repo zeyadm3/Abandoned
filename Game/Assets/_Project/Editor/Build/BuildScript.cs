@@ -130,7 +130,7 @@ namespace Abandoned.EditorTools
 
             var options = new BuildPlayerOptions
             {
-                scenes = BuildScenes.All,
+                scenes = BuildScenes.ForPlayer(flavor),
                 locationPathName = ExecutablePath(platform, flavor),
                 target = TargetOf(platform),
                 targetGroup = BuildTargetGroup.Standalone,

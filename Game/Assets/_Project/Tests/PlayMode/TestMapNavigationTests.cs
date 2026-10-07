@@ -8,20 +8,20 @@ using static Abandoned.Tests.PlayerTestRig;
 namespace Abandoned.Tests
 {
     /// <summary>
-    /// Walks the real TestBuilding with the scene's player: doors, stairs, balconies, railings.
-    /// Coordinates follow TestBuildingBuilder: 4m tiles, x 0..20, z 0..16, upper floor at y = 4.
+    /// Walks the real TestMap with the scene's player: doors, stairs, balconies, railings.
+    /// Coordinates follow TestMapBuilder: 4m tiles, x 0..20, z 0..16, upper floor at y = 4.
     /// </summary>
-    public class TestBuildingNavigationTests
+    public class TestMapNavigationTests
     {
-        private const string SceneName = "TestBuilding";
+        private const string SceneName = "TestMap";
         private static readonly Vector2 Forward = Vector2.up;
         private PlayerTestRig rig;
 
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return TestBuildingScene.Load();
-            rig = ForExisting(TestBuildingScene.Player);
+            yield return TestMapScene.Load();
+            rig = ForExisting(TestMapScene.Player);
         }
 
         [Test]

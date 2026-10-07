@@ -15,7 +15,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheRunHudShowsHaulVsQuotaAndHidesBehindTheMenu()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             yield return null;
             yield return null;
             Assert.IsNotNull(HudLayer.Root, "the session's menus host the HUD");
@@ -25,7 +25,7 @@ namespace Abandoned.Tests
             Assert.AreEqual(DisplayStyle.Flex, HudLayer.Root.resolvedStyle.display);
 
             // Something to look at: the nearest loot, a couple of metres ahead.
-            GameObject me = TestBuildingScene.Player;
+            GameObject me = TestMapScene.Player;
             var loot = Object.FindAnyObjectByType<Networking.NetworkLoot>();
             loot.Grabbable.Body.position = me.transform.position + me.transform.forward * 1.4f + Vector3.up * 1.2f;
             loot.transform.position = loot.Grabbable.Body.position;

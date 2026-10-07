@@ -21,8 +21,8 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return TestBuildingScene.Load(SceneName);
-            rig = ForExisting(TestBuildingScene.Player);
+            yield return TestMapScene.Load(SceneName);
+            rig = ForExisting(TestMapScene.Player);
         }
 
         [Test]

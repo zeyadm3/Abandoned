@@ -9,9 +9,9 @@ namespace Abandoned.Tests
     public class SurfaceTests
     {
         [UnityTest]
-        public IEnumerator TestBuildingSurfacesSoundRight()
+        public IEnumerator TestMapSurfacesSoundRight()
         {
-            yield return TestBuildingScene.Load();
+            yield return TestMapScene.Load();
             Assert.AreEqual(SurfaceMaterial.Concrete, Probe(new Vector3(2f, 1f, 2f)));
             Assert.AreEqual(SurfaceMaterial.Wood, Probe(new Vector3(3.5f, 5f, 13f))); // clear of the safe at (2, 14)
             Assert.AreEqual(SurfaceMaterial.Metal, Probe(new Vector3(18f, 3f, 6f)));

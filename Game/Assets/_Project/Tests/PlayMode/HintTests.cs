@@ -26,7 +26,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheHqSaysReadTheBoardFirst()
         {
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             yield return WaitForTip(HintId.HqBoard, 3f);
             Assert.AreEqual(HintId.HqBoard, HintDirector.Current.Showing);
             Assert.IsTrue(Hints.Seen(HintId.HqBoard));
@@ -37,7 +37,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator ARunExplainsTheGoal()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             yield return WaitForTip(HintId.RunGoal, 6f);
             Assert.AreEqual(HintId.RunGoal, HintDirector.Current.Showing);
             StringAssert.Contains("truck", Hints.Text(HintId.RunGoal));
@@ -47,7 +47,7 @@ namespace Abandoned.Tests
         public IEnumerator TipsCanBeSwitchedOff()
         {
             Hints.Enabled = false;
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             yield return new WaitForSeconds(1.5f);
             Assert.IsNull(HintDirector.Current.Showing);
             Assert.IsFalse(Hints.Seen(HintId.HqBoard), "nothing was used up while tips were off");

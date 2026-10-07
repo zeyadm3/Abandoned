@@ -18,7 +18,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator ThePianoWaitsOnTheWeakBridge()
         {
-            yield return TestBuildingScene.Load("Mall");
+            yield return TestMapScene.Load("Mall");
             NetworkLootSpawner spawner = Object.FindAnyObjectByType<NetworkLootSpawner>();
             LootSpawnPoint bridge = spawner.Points().FirstOrDefault(p => p.name == "LootPoint_1_06_05_J");
             Assert.IsNotNull(bridge, "a jackpot point on the bridge");

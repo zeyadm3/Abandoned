@@ -51,7 +51,7 @@ namespace Abandoned.Tests
             if (config == null || playerPrefab == null || prefabs == null) throw new InvalidOperationException("Network content missing; run RebuildContent.");
         }
 
-        /// <summary>A fresh empty scene: leftovers (TestBuilding's auto-hosted session) would share the process.</summary>
+        /// <summary>A fresh empty scene: leftovers (TestMap's auto-hosted session) would share the process.</summary>
         public static IEnumerator CleanWorld()
         {
             // A scene session from an earlier test outlives its scene on purpose; tests start clean.

@@ -17,7 +17,7 @@ namespace Abandoned.Tests
         public IEnumerator AnUnlockShowsAToastAndTheList()
         {
             Achievements.ResetAll();
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             var toast = Object.FindAnyObjectByType<AchievementToast>();
             Assert.IsNotNull(toast, "the session has the toast");
             Achievements.Increment(Achievements.StatDeaths);

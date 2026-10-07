@@ -35,7 +35,7 @@ namespace Abandoned.EditorTools
         /// <summary>Component types each scene must contain at least once.</summary>
         private static readonly Dictionary<string, Type[]> SceneRequirements = new()
         {
-            [TestBuildingBuilder.ScenePath] = new[]
+            [TestMapBuilder.ScenePath] = new[]
             {
                 typeof(PlayerSpawnPoint), typeof(Abandoned.Networking.NetworkBootstrap), typeof(DebugViewToggle), typeof(CinemachineBrain),
                 typeof(Abandoned.Loot.LootItem), typeof(Abandoned.Structure.StructureSimulation),

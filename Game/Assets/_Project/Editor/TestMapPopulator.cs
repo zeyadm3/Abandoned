@@ -12,12 +12,12 @@ using UnityEngine;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Adds the gameplay objects to the TestBuilding scene after its geometry is built:
+    /// Adds the gameplay objects to the TestMap scene after its geometry is built:
     /// the F1 debug toggle, camera brain, player spawn points, the network session objects, props and
     /// loot. There is no scene-placed player: NGO spawns one per connected player (the solo player hosts).
-    /// Coordinates follow TestBuildingBuilder: ground floor y = 0, upper floor y = 4.
+    /// Coordinates follow TestMapBuilder: ground floor y = 0, upper floor y = 4.
     /// </summary>
-    public static class TestBuildingPopulator
+    public static class TestMapPopulator
     {
         // Parking lot, in front of the narrow door, facing the building. Slot 0 (the host) stands here.
         public static readonly Vector3 SpawnPosition = new(6f, 0.05f, -6f);
@@ -115,7 +115,7 @@ namespace Abandoned.EditorTools
                 AddSection(setup, segment, SectionType.Stair, false, matched, fractured: false);
 
             foreach (string weak in WeakSpots.Keys)
-                if (!matched.Contains(weak)) Debug.LogError($"TestBuilding weak spot '{weak}' matches no section (renamed?).");
+                if (!matched.Contains(weak)) Debug.LogError($"TestMap weak spot '{weak}' matches no section (renamed?).");
             setup.AddSimulation(TestStability, TestSeed);
         }
 
@@ -136,7 +136,7 @@ namespace Abandoned.EditorTools
             Transform group = root.Find(path);
             if (group == null)
             {
-                Debug.LogError($"TestBuilding: '{path}' not found; the builder and populator disagree.");
+                Debug.LogError($"TestMap: '{path}' not found; the builder and populator disagree.");
                 yield break;
             }
             foreach (Transform child in group) yield return child;

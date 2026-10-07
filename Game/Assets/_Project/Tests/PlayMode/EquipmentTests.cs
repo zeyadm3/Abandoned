@@ -22,7 +22,7 @@ namespace Abandoned.Tests
         {
             folder = Path.Combine(Path.GetTempPath(), "AbandonedGear_" + System.Guid.NewGuid().ToString("N"));
             CompanyService.SaveFolderOverride = folder;
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             float end = Time.realtimeSinceStartup + 3f;
             while ((CompanyService.Current == null || Mine() == null) && Time.realtimeSinceStartup < end) yield return null;
         }

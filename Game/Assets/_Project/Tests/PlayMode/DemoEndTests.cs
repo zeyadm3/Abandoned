@@ -18,7 +18,7 @@ namespace Abandoned.Tests
         public IEnumerator TheHqEndsTheDemoAndTheHostCanStartOver()
         {
             Demo.Force(true, 0); // a demo whose jobs are all done
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             float until = Time.time + 5f;
             while (Time.time < until && (MenuUi.Current == null || MenuUi.Current.Showing != MenuScreen.DemoEnd)) yield return null;
             CompanyService company = CompanyService.Current;
@@ -30,13 +30,13 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(-1, company.Selected, "no more jobs in the demo");
             var board = Object.FindAnyObjectByType<ContractBoard>();
-            StringAssert.Contains("demo is over", board.UsePrompt(TestBuildingScene.Player));
+            StringAssert.Contains("demo is over", board.UsePrompt(TestMapScene.Player));
 
             MenuUi.Current.Back();
             yield return null;
             yield return null;
             Assert.AreEqual(MenuScreen.None, MenuUi.Current.Showing, "back to walking around the HQ");
-            board.Use(TestBuildingScene.Player);
+            board.Use(TestMapScene.Player);
             yield return null;
             Assert.AreEqual(MenuScreen.DemoEnd, MenuUi.Current.Showing, "the board shows the end again");
 

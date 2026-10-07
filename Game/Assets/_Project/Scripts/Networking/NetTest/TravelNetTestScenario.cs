@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 namespace Abandoned.Networking
 {
     /// <summary>
-    /// Session travel across processes (M6.0): host + clients start in TestBuilding, the host takes
+    /// Session travel across processes (M6.0): host + clients start in TestMap, the host takes
     /// everyone to the mall (every machine loads it, the run and its loot appear for all, everyone stands
     /// on their own mall spawn) and back again, all on one connection: same client ids, no rejoin.
     /// </summary>
@@ -30,7 +30,7 @@ namespace Abandoned.Networking
             if (ctx.Aborted) yield break;
             List<ulong> clients = ctx.Manager.ConnectedClientsIds.Where(id => id != ctx.Manager.LocalClientId).ToList();
 
-            foreach (string level in new[] { "Mall", "TestBuilding" })
+            foreach (string level in new[] { "Mall", "TestMap" })
             {
                 SessionTravel.Current.Travel(level);
                 bool mall = level == "Mall";

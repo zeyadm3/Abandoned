@@ -7,19 +7,19 @@ using UnityEngine.SceneManagement;
 namespace Abandoned.Tests
 {
     /// <summary>
-    /// Loads TestBuilding the way a solo player gets it: the scene auto-hosts (editor rule) and NGO
+    /// Loads TestMap the way a solo player gets it: the scene auto-hosts (editor rule) and NGO
     /// spawns the player at spawn point 0. There's no scene-placed player any more.
     /// </summary>
-    public static class TestBuildingScene
+    public static class TestMapScene
     {
-        public const string Name = "TestBuilding";
+        public const string Name = "TestMap";
         private const int MaxFramesToSpawn = 120;
 
         public static GameObject Player => NetworkPlayer.Local != null ? NetworkPlayer.Local.gameObject : null;
 
         public static IEnumerator Load() => Load(Name);
 
-        /// <summary>Any session scene (TestBuilding, Mall): load it and wait for the auto-hosted solo player.</summary>
+        /// <summary>Any session scene (TestMap, Mall): load it and wait for the auto-hosted solo player.</summary>
         public static IEnumerator Load(string sceneName, bool randomRun = false)
         {
             // Each test gets its scene's own session (the persistent one from the last test goes).

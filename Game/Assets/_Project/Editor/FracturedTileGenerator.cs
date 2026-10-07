@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
         public const string PrefabPath = "Assets/_Project/Prefabs/Structure/Fractured_Tile_4x4.prefab";
 
         // Must match the tiles it replaces; shared with the builder so they can't drift apart.
-        private static readonly Vector3 TileSize = new(TestBuildingBuilder.Tile, TestBuildingBuilder.SlabThickness, TestBuildingBuilder.Tile);
+        private static readonly Vector3 TileSize = new(TestMapBuilder.Tile, TestMapBuilder.SlabThickness, TestMapBuilder.Tile);
         private const int Cells = 5;
         private const float Jitter = 0.35f;
         private const int Seed = 7;

@@ -24,7 +24,7 @@ namespace Abandoned.Tests
         {
             folder = Path.Combine(Path.GetTempPath(), "AbandonedCompanyLoop_" + System.Guid.NewGuid().ToString("N"));
             CompanyService.SaveFolderOverride = folder;
-            yield return TestBuildingScene.Load("HQ", randomRun: true);
+            yield return TestMapScene.Load("HQ", randomRun: true);
         }
 
         [UnityTearDown]
@@ -75,7 +75,7 @@ namespace Abandoned.Tests
             Vector3 bay = truck.transform.TransformPoint(new Vector3(0f, 1.2f, -1.2f));
             cargo.Grabbable.Body.position = bay;
             cargo.transform.position = bay;
-            PlayerTestRig rig = ForExisting(TestBuildingScene.Player);
+            PlayerTestRig rig = ForExisting(TestMapScene.Player);
             rig.Teleport(truck.transform.position + Vector3.up * 0.45f + truck.transform.forward * 0.8f);
             rig.Settle();
             yield return new WaitForSeconds(0.6f);

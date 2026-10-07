@@ -21,8 +21,8 @@ namespace Abandoned.Tests
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            yield return TestBuildingScene.Load("Mall");
-            rig = ForExisting(TestBuildingScene.Player);
+            yield return TestMapScene.Load("Mall");
+            rig = ForExisting(TestMapScene.Player);
             for (int i = 0; i < 60 && RunState.Current == null; i++) yield return null;
             run = RunState.Current;
             truck = TruckCargo.Current;

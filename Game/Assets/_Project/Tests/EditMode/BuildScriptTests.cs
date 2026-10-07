@@ -47,7 +47,9 @@ namespace Abandoned.Tests
             foreach (string scene in BuildScenes.All) FileAssert.Exists(scene);
             Assert.AreEqual(HqBuilder.ScenePath, BuildScenes.All[0], "first scene is what a build opens: the HQ");
             CollectionAssert.Contains(BuildScenes.All, MallBuilder.ScenePath);
-            CollectionAssert.Contains(BuildScenes.All, TestBuildingBuilder.ScenePath, "nettests run in TestBuilding");
+            CollectionAssert.Contains(BuildScenes.All, TestMapBuilder.ScenePath, "nettests run in TestMap");
+            CollectionAssert.Contains(BuildScenes.ForPlayer(BuildFlavor.Dev), TestMapBuilder.ScenePath, "the nettest build carries it");
+            CollectionAssert.DoesNotContain(BuildScenes.ForPlayer(BuildFlavor.Shareable), TestMapBuilder.ScenePath, "not a level: never shipped");
         }
     }
 }

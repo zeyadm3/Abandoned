@@ -17,7 +17,7 @@ namespace Abandoned.Tests
         public IEnumerator SetUp()
         {
             GameSettings.ResetAll();
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
         }
 
         [TearDown]
@@ -26,7 +26,7 @@ namespace Abandoned.Tests
         [Test]
         public void SensitivityScalesTheLook()
         {
-            PlayerLook look = TestBuildingScene.Player.GetComponent<PlayerLook>();
+            PlayerLook look = TestMapScene.Player.GetComponent<PlayerLook>();
             float before = look.transform.eulerAngles.y;
             look.ApplyLook(new Vector2(10f, 0f));
             float normal = Mathf.DeltaAngle(before, look.transform.eulerAngles.y);
@@ -39,7 +39,7 @@ namespace Abandoned.Tests
         [Test]
         public void FieldOfViewFollowsTheSetting()
         {
-            var cam = TestBuildingScene.Player.GetComponentInChildren<CinemachineCamera>();
+            var cam = TestMapScene.Player.GetComponentInChildren<CinemachineCamera>();
             Assert.AreEqual(GameSettings.DefaultFov, cam.Lens.FieldOfView, 1e-3f);
             GameSettings.FieldOfView = 90f;
             Assert.AreEqual(90f, cam.Lens.FieldOfView, 1e-3f);
@@ -48,8 +48,8 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator CameraShakeCanBeSwitchedOff()
         {
-            var feel = TestBuildingScene.Player.GetComponent<PlayerCameraFeel>();
-            Vector3 at = TestBuildingScene.Player.transform.position;
+            var feel = TestMapScene.Player.GetComponent<PlayerCameraFeel>();
+            Vector3 at = TestMapScene.Player.transform.position;
             GameSettings.CameraShake = false;
             CameraShake.Emit(at, 5000f);
             Assert.AreEqual(0f, feel.Trauma, "shake off: nothing");

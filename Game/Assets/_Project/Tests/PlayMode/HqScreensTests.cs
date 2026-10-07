@@ -15,7 +15,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator BoardShopAndRackOpenAndClose()
         {
-            yield return TestBuildingScene.Load("HQ");
+            yield return TestMapScene.Load("HQ");
             yield return new WaitUntil(() => CompanyService.Current != null && CompanyService.Current.IsSpawned);
             yield return null;
             HqHud hud = Object.FindAnyObjectByType<HqHud>();
