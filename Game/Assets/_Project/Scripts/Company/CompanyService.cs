@@ -270,6 +270,16 @@ namespace Abandoned.Company
             return true;
         }
 
+        /// <summary>Host: a wardrobe purchase (0.12.5). Money only: a coverall isn't company stock.</summary>
+        public bool TryCharge(int price, string what)
+        {
+            if (!IsServer || save == null || price < 0 || save.money < price) return false;
+            save.money -= price;
+            Saved();
+            Debug.Log($"[Company] Wardrobe: {what} for ${price:N0}; ${save.money:N0} left.");
+            return true;
+        }
+
         /// <summary>Anyone at the shop: buy one of a catalog item (the host checks level and money).</summary>
         public void RequestBuy(int index)
         {

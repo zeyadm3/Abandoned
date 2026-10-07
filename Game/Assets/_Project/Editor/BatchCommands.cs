@@ -67,6 +67,7 @@ namespace Abandoned.EditorTools
             CustomMallArt.Prepare();
             HealthContentBuilder.Create();
             EquipmentContentBuilder.CreateMissing();
+            CosmeticsBuilder.CreateMissing(); // before the player prefab, which references the catalog
             PlayerPrefabBuilder.Create();
             NetworkContentBuilder.CreateRunStatePrefab();
             HorrorContentBuilder.Create();

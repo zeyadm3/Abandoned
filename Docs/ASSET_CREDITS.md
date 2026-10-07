@@ -45,6 +45,7 @@ Original assets for the 0.12.0 horror redesign (2026-10-08):
 | Salvage paperwork texture | ABANDONED original art | Project-owned original work | Editor/UI/UiHorrorTextureBuilder.cs | Procedural worn paper and grime for readable horror menus | Art/UI/ |
 | Menu film grain, vignette, scratches, stain and glow | ABANDONED original art | Project-owned original work | Editor/UI/MenuEffectsBuilder.cs | 0.12.2 procedural textures for the horror menus' grain, vignette, worn title and button glow | Art/UI/Menu*.png |
 | Surface grain and soft particle maps | ABANDONED original art | Project-owned original work | Editor/Art/PolishAssets.cs, Editor/Art/MaterialAudit.cs | 0.12.2 procedural maps for previously untextured materials | Art/Polish/ |
+| Wardrobe and HQ props | ABANDONED original art | Project-owned original work | Tools/Blender/environment.py | 0.12.5: 14 hats and 11 accessories fitted to the crew worker, the HQ answering machine, 11 more procedural palette textures | Art/Custom/Environment/Cosmetics/, Art/Custom/Environment/ |
 | World text shader | ABANDONED original code | Project-owned original work | Art/Shaders/WorldText.shader | Single-sided, depth-tested sign and label text | Art/Shaders/ |
 
 No paid packs or new Unity packages were added for this pass. Existing CC0 vehicle/loot/audio and OFL font credits above still apply.

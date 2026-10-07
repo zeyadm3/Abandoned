@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 4344126812984709020}
   - component: {fileID: 6855541990892065754}
   - component: {fileID: 2475126909542517239}
-  - component: {fileID: 817453506280264209}
-  - component: {fileID: 5244287474574887490}
+  - component: {fileID: 8265162219411662424}
+  - component: {fileID: 1506142905808801900}
   m_Layer: 0
   m_Name: BlindOne
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6176378913666348043}
+  - {fileID: 1897451688809729876}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7875849393837896326
@@ -172,7 +172,7 @@ CapsuleCollider:
   m_Height: 2.4
   m_Direction: 1
   m_Center: {x: 0, y: 1.2, z: 0}
---- !u!114 &817453506280264209
+--- !u!114 &8265162219411662424
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 7642497993902432211}
---- !u!114 &5244287474574887490
+  animator: {fileID: 1360091877983493852}
+--- !u!114 &1506142905808801900
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5284b08e2ae44303a72982ce7e1e546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatHorrorAudio
---- !u!1 &9002137236998695561
+--- !u!1 &6765485659470157982
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6176378913666348043}
+  - component: {fileID: 1897451688809729876}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -214,29 +214,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6176378913666348043
+--- !u!4 &1897451688809729876
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9002137236998695561}
+  m_GameObject: {fileID: 6765485659470157982}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4390930177883719081}
+  - {fileID: 4899960993056310438}
   m_Father: {fileID: 4531252985599309574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &4279843268494107202
+--- !u!1001 &4866862818493277005
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 6176378913666348043}
+    m_TransformParent: {fileID: 1897451688809729876}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -291,13 +291,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
---- !u!4 &4390930177883719081 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
-  m_PrefabInstance: {fileID: 4279843268494107202}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &7642497993902432211 stripped
+--- !u!95 &1360091877983493852 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
-  m_PrefabInstance: {fileID: 4279843268494107202}
+  m_PrefabInstance: {fileID: 4866862818493277005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4899960993056310438 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
+  m_PrefabInstance: {fileID: 4866862818493277005}
   m_PrefabAsset: {fileID: 0}

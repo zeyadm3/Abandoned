@@ -1800,3 +1800,69 @@
 .settings__reset { align-self: center; }
 .menu-compact .settings__nav { width: 190px; min-width: 160px; margin-right: 14px; }
 .menu-compact .settings__nav-button { font-size: 22px; }
+
+/* ---- 0.12.5 wardrobe: landscape, you on the left, cards in the middle, the pick on the right ---- */
+.wardrobe { height: 88%; }
+.wardrobe__header { justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+.wardrobe__money { align-items: flex-end; flex-shrink: 1; min-width: 0; }
+.wardrobe__funds {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 20px; color: var(--c-money); -unity-text-align: middle-right;
+}
+.wardrobe__status { font-size: 15px; color: var(--c-accent); -unity-text-align: middle-right; min-height: 20px; }
+.wardrobe__body { flex-grow: 1; flex-shrink: 1; min-height: 0; align-items: stretch; margin-top: 8px; }
+.wardrobe__stage { width: 380px; min-width: 300px; flex-shrink: 0; margin-right: 22px; }
+.wardrobe__preview {
+    flex-grow: 1; min-height: 320px;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgb(16, 17, 19);
+    border-width: 1px; border-color: var(--c-line);
+}
+.wardrobe__hint { font-size: 14px; color: var(--c-faint); margin-top: 6px; }
+.wardrobe__shelf { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.wardrobe__tabs { flex-shrink: 0; margin-bottom: 10px; }
+.wardrobe__tabs .menu-button--small { margin-left: 0; margin-right: 8px; }
+.wardrobe__scroll { flex-grow: 1; }
+.wardrobe__grid { flex-direction: row; flex-wrap: wrap; align-content: flex-start; }
+.wardrobe__card {
+    width: 168px; height: 128px; margin: 0 10px 10px 0; padding: 10px;
+    flex-direction: column; align-items: flex-start; justify-content: space-between;
+    background-color: var(--c-panel-2); border-width: 1px; border-color: var(--c-line); border-radius: 0;
+    -unity-background-image-tint-color: rgba(0, 0, 0, 0);
+}
+.wardrobe__card:hover { border-color: var(--c-accent); background-color: var(--c-panel-3); }
+.wardrobe__card--selected { border-color: var(--c-accent-hot); border-width: 2px; background-color: rgb(52, 48, 36); }
+.wardrobe__card--locked { opacity: 0.62; }
+.wardrobe__chip {
+    width: 34px; height: 34px; border-width: 1px; border-color: rgba(0, 0, 0, 0.5);
+    background-color: rgb(40, 44, 40); align-items: center; justify-content: center;
+}
+.wardrobe__chip Label {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 20px; color: var(--c-accent); -unity-text-align: middle-center;
+}
+.wardrobe__card-name {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 19px; color: var(--c-text); white-space: normal; -unity-text-align: upper-left;
+}
+.wardrobe__card-tag {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 13px; color: var(--c-money); letter-spacing: 1px;
+}
+.wardrobe__card-tag--reward { color: rgb(205, 145, 116); }
+.wardrobe__detail {
+    width: 330px; min-width: 260px; flex-shrink: 0; margin-left: 22px; padding: 18px;
+    background-color: rgba(0, 0, 0, 0.25); border-left-width: 2px; border-left-color: var(--c-accent);
+}
+.wardrobe__detail-swatch { height: 10px; margin-bottom: 10px; }
+.wardrobe__detail-name {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 34px; color: var(--c-text); white-space: normal;
+}
+.wardrobe__detail-about { font-size: 17px; color: var(--c-dim); white-space: normal; margin: 6px 0 14px 0; }
+.wardrobe__detail-unlock { font-size: 16px; color: var(--c-accent); white-space: normal; margin-bottom: 16px; }
+.wardrobe__action { font-size: 30px; }
+.wardrobe__done { flex-shrink: 0; margin-top: 8px; align-self: flex-start; }
+.menu-compact .wardrobe__stage { width: 280px; min-width: 220px; }
+.menu-compact .wardrobe__detail { width: 260px; min-width: 220px; }
+.menu-compact .wardrobe__card { width: 148px; }

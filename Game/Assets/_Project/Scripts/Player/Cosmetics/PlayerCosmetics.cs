@@ -1,3 +1,4 @@
+using Abandoned.Company;
 using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -35,6 +36,10 @@ namespace Abandoned.Player
         private int defaultSeat = -1;
 
         public CosmeticCatalog Catalog => catalog;
+
+        /// <summary>The wardrobe's last purchase result ("" while none), for its status line.</summary>
+        public string PurchaseMessage { get; private set; } = "";
+        public bool PurchasePending { get; private set; }
         public CosmeticChoice Choice => choice.Value;
         public GameObject HatInstance => hat;
 
@@ -66,6 +71,56 @@ namespace Abandoned.Player
             choice.Value = outfit;
             PlayerProfile.Wear(catalog.Coverall(outfit.Coverall)?.Id, catalog.Hat(outfit.Hat)?.Id, catalog.Accessory(outfit.Accessory)?.Id);
             Apply();
+        }
+
+        // ---- Wardrobe purchases (0.12.5): the owner asks, the host charges the company, the owner keeps it. ----
+
+        public CosmeticDefinition Definition(CosmeticKind kind, int index) => catalog == null ? null : kind switch
+        {
+            CosmeticKind.Coverall => catalog.Coverall(index),
+            CosmeticKind.Hat => catalog.Hat(index),
+            _ => catalog.Accessory(index),
+        };
+
+        /// <summary>Owner: buy a wardrobe item with company money (the host checks the price and the funds).</summary>
+        public void RequestBuy(CosmeticKind kind, int index)
+        {
+            CosmeticDefinition d = Definition(kind, index);
+            if (!IsOwner || PurchasePending || d == null || d.Unlock != CosmeticUnlock.Buy || PlayerProfile.Owns(d)) return;
+            PurchasePending = true;
+            PurchaseMessage = "Signing the requisition...";
+            BuyRpc(kind, index);
+        }
+
+        [Rpc(SendTo.Server)]
+        private void BuyRpc(CosmeticKind kind, int index)
+        {
+            CosmeticDefinition d = Definition(kind, index);
+            CompanyService company = CompanyService.Current;
+            if (d == null || d.Unlock != CosmeticUnlock.Buy) BuyResultRpc(kind, index, false, "That isn't for sale.");
+            else if (company == null || !company.IsSpawned) BuyResultRpc(kind, index, false, "Only at the HQ: the company pays for it.");
+            else if (!company.TryCharge(d.Price, d.DisplayName)) BuyResultRpc(kind, index, false, $"The company can't afford ${d.Price:N0}.");
+            else BuyResultRpc(kind, index, true, "");
+        }
+
+        [Rpc(SendTo.Owner)]
+        private void BuyResultRpc(CosmeticKind kind, int index, bool bought, string reason)
+        {
+            PurchasePending = false;
+            CosmeticDefinition d = Definition(kind, index);
+            if (!bought || d == null)
+            {
+                PurchaseMessage = reason;
+                return;
+            }
+            PlayerProfile.Grant(d);
+            PurchaseMessage = $"Bought: {d.DisplayName}.";
+            Wear(kind switch
+            {
+                CosmeticKind.Coverall => choice.Value.WithCoverall(index),
+                CosmeticKind.Hat => choice.Value.WithHat(index),
+                _ => choice.Value.WithAccessory(index),
+            });
         }
 
         private void Update()

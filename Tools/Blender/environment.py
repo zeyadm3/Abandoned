@@ -20,6 +20,10 @@ PALETTE = {
  'Mould': (.11,.17,.10), 'Stain': (.18,.18,.12), 'Water': (.12,.20,.21),
  'Dirt': (.22,.23,.16), 'LightAmber': (.68,.50,.27), 'LightRed': (.51,.055,.025),
  'Chalk': (.64,.61,.48), 'Black': (.04,.045,.04), 'Brass': (.42,.34,.16),
+ # 0.12.5 wardrobe
+ 'Hazard': (.86,.62,.12), 'Wool': (.46,.12,.12), 'Denim': (.18,.26,.38), 'Felt': (.24,.19,.15),
+ 'Leather': (.33,.21,.12), 'Gold': (.80,.62,.22), 'White': (.80,.80,.76), 'Canvas': (.36,.38,.25),
+ 'Orange': (.86,.38,.10), 'Lens': (.30,.48,.42), 'Cardboard': (.55,.42,.26),
 }
 MATS = {}
 for key, color in PALETTE.items():
@@ -90,6 +94,9 @@ def irregular(name,p,s,key,seed):
         a=i*math.tau/18;r=rng.uniform(.58,1)
         verts.append((p[0]+math.cos(a)*s[0]*r,p[1]+rng.uniform(0,.002),p[2]+math.sin(a)*s[1]*r))
     return mesh(name,verts,[(0,i+1,(i+1)%18+1) for i in range(18)],key)
+def cone(name,p,r1,r2,h,key='Orange',verts=16):
+    bpy.ops.mesh.primitive_cone_add(vertices=verts,radius1=r1,radius2=r2,depth=h,location=xyz(p))
+    obj=bpy.context.object;obj.name=name;return material(obj,key)
 def letters(text,p,size,key='Chalk'):
     bpy.ops.object.text_add(location=xyz(p)); obj=bpy.context.object;obj.name='Inscription'
     # Blender text lies in XY, read from +Z: stand it up (X 90), then face Blender +Y = Unity +Z (Z 180).
@@ -98,7 +105,7 @@ def letters(text,p,size,key='Chalk'):
 def begin():
     global OBJECTS
     bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False);OBJECTS=[]
-def export(name):
+def export(name, sub=''):
     if ONLY and name not in ONLY: return
     bpy.ops.object.select_all(action='DESELECT')
     for o in OBJECTS:o.select_set(True)
@@ -108,7 +115,8 @@ def export(name):
     bpy.context.scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
     # Hand-built meshes (rings, fans, lettering) must face outward like the primitives do.
     bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.uv.smart_project(angle_limit=1.15,island_margin=.02);bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.export_scene.fbx(filepath=os.path.join(OUT,name+'.fbx'),use_selection=True,object_types={'MESH'},axis_forward='-Z',axis_up='Y',apply_unit_scale=True,bake_space_transform=True,use_mesh_modifiers=True,mesh_smooth_type='FACE',add_leaf_bones=False,path_mode='RELATIVE',bake_anim=False)
+    os.makedirs(os.path.join(OUT,sub),exist_ok=True)
+    bpy.ops.export_scene.fbx(filepath=os.path.join(OUT,sub,name+'.fbx'),use_selection=True,object_types={'MESH'},axis_forward='-Z',axis_up='Y',apply_unit_scale=True,bake_space_transform=True,use_mesh_modifiers=True,mesh_smooth_type='FACE',add_leaf_bones=False,path_mode='RELATIVE',bake_anim=False)
     print('EXPORTED '+name)
 
 # Modular walls, finish layers and openings; trims project 3 cm on each face.
@@ -300,4 +308,82 @@ rod('CoilCord',(.165,.05,.09),(.12,.01,.15),.006,'Rubber')
 rod('PowerLead',(-.12,.015,-.11),(-.2,.005,-.3),.004,'Black')
 box('StickyNote',(-.12,.0605,.085),(.05,.002,.045),'Paper',0)
 export('AnsweringMachine')
+# ---- 0.12.5 wardrobe: hats and accessories for the crew worker ----
+# Origin = the worker's HeadAnchor (crown): the head is ~0.27 wide, 0.25 deep, its centre 0.12 below the
+# crown, eyes at (+-0.06, -0.115, 0.13), mouth ~(0, -0.19, 0.11). Body pieces: chest front z ~0.15 at
+# y -0.3..-0.5, back z ~-0.15, belt line y -0.67. Front is +Z. Exported to Environment/Cosmetics/.
+def wear(name): export(name,'Cosmetics')
+def hardhat(name,key):
+    begin();ellipsoid('Shell',(0,-.02,0),(.165,.13,.175),key,2)
+    ellipsoid('Brim',(0,-.065,.012),(.205,.014,.225),key,2)
+    box('Ridge',(0,.1,0),(.045,.03,.24),key);box('Badge',(0,.0,.16),(.07,.045,.012),'Black',0)
+    ring('Harness',(0,-.075,0),.15,.138,.02,'Black',18);wear(name)
+hardhat('Hat_hardhat','Hazard')
+begin();ellipsoid('Knit',(0,-.03,-.005),(.152,.13,.148),'Wool',2);ring('Cuff',(0,-.09,-.005),.158,.13,.06,'Wool',22)
+for i in range(10):a=i*math.tau/10;box('Rib',(math.sin(a)*.157,-.09,math.cos(a)*.152-.005),(.012,.055,.012),'Black',0,rot=-math.degrees(a))
+ellipsoid('Pompom',(0,.11,-.01),(.05,.045,.05),'White',2);wear('Hat_beanie')
+begin();ellipsoid('Crown',(0,-.035,-.005),(.148,.1,.15),'Denim',2);box('Peak',(0,-.075,.17),(.17,.014,.13),'Denim',.004)
+box('Logo',(0,.0,.142),(.06,.035,.01),'Hazard',0);cylinder('Button',(0,.07,-.005),.016,.012,'Denim',10)
+box('Strap',(0,-.08,-.15),(.08,.02,.012),'Black',0);wear('Hat_cap')
+begin();cylinder('Crown',(0,-.02,0),.142,.11,'Canvas',20);ring('Band',(0,-.055,0),.146,.14,.03,'Leather',20)
+cylinder('Top',(0,.04,0),.12,.012,'Canvas',20);ring('Brim',(0,-.075,0),.24,.14,.016,'Canvas',24);wear('Hat_bucket')
+begin();ellipsoid('Dome',(0,-.02,0),(.16,.13,.17),'White',2);ellipsoid('Brim',(0,-.065,0),(.19,.014,.2),'White',2)
+rod('Lamp',(0,-.01,.15),(0,-.01,.215),.035,'Metal',14);rod('Lens',(0,-.01,.212),(0,-.01,.222),.03,'LightAmber',14)
+box('LampMount',(0,-.03,.15),(.08,.05,.03),'Black');rod('Cable',(.05,-.03,.13),(.12,-.12,-.1),.006,'Black');wear('Hat_miner')
+begin();ring('Band',(0,-.06,0),.152,.14,.03,'Black',20);box('Visor',(0,-.135,.16),(.23,.23,.025),'Trim',.006)
+box('Window',(0,-.11,.174),(.13,.045,.006),'Lens',0);box('Hinge',(-.13,-.06,.1),(.02,.03,.03),'Metal');box('Hinge',(.13,-.06,.1),(.02,.03,.03),'Metal')
+box('Chin',(0,-.25,.13),(.2,.03,.07),'Trim');wear('Hat_welding')
+begin();cylinder('Crown',(0,.0,0),.125,.12,'Felt',22);box('Pinch',(0,.06,0),(.06,.015,.2),'Felt',0)
+ring('Band',(0,-.04,0),.128,.123,.03,'Black',22);ring('Brim',(0,-.06,0),.235,.12,.014,'Felt',26);box('Feather',(.11,-.02,-.05),(.012,.07,.02),'Brass',0);wear('Hat_fedora')
+begin();ellipsoid('Hood',(0,-.11,-.01),(.18,.2,.175),'Hazard',2);box('Faceplate',(0,-.13,.165),(.17,.12,.012),'Lens',0)
+box('Frame',(0,-.13,.16),(.19,.14,.01),'Black',0);rod('Filter',(0,-.25,.13),(0,-.29,.2),.035,'Black',14)
+ring('Collar',(0,-.29,0),.19,.16,.04,'Rubber',20);wear('Hat_hazmat')
+begin();cone('Cone',(0,.12,0),.16,.025,.36,'Orange',18);box('Base',(0,-.065,0),(.36,.025,.36),'Orange',.004)
+for y,r in ((.06,.122),(.17,.075)):ring('Reflector',(0,y,0),r+.004,r-.01,.045,'White',18)
+wear('Hat_cone')
+begin();box('Box',(0,-.12,0),(.34,.36,.34),'Cardboard',.004)
+for x in (-.06,.06):box('EyeHole',(x,-.11,.171),(.045,.03,.004),'Black',0)
+box('Tape',(0,.061,0),(.07,.004,.345),'Paper',0);box('FlapL',(-.12,.068,0),(.1,.01,.33),'Cardboard',0);box('FlapR',(.12,.068,0),(.1,.01,.33),'Cardboard',0)
+letters('FRAGILE',(0,-.21,.172),.04,'Wool');wear('Hat_box')
+begin();ring('Band',(0,-.06,0),.152,.14,.035,'Black',20);rod('TopStrap',(0,.02,-.12),(0,.02,.12),.012,'Black');box('Mount',(0,-.06,.16),(.07,.05,.04),'Metal')
+for x in (-.035,.035):rod('Tube',(x,-.1,.18),(x,-.1,.27),.022,'Black',14);rod('Eyepiece',(x,-.1,.268),(x,-.1,.275),.019,'Lens',14)
+box('Battery',(0,-.05,-.17),(.08,.05,.04),'Trim');wear('Hat_nvg')
+hardhat('Hat_goldhat','Gold')
+begin();ring('Ring',(0,-.03,0),.155,.135,.06,'Rust',22)
+for i in range(7):a=i*math.tau/7;rod('Spike',(math.sin(a)*.145,0,math.cos(a)*.145),(math.sin(a)*.15,.09+.02*(i%2),math.cos(a)*.15),.012,'Rust')
+for i in range(7):a=(i+.5)*math.tau/7;cylinder('Bolt',(math.sin(a)*.156,-.03,math.cos(a)*.156),.012,.02,'Brass',8)
+wear('Hat_crown')
+begin();cylinder('Pot',(0,.0,0),.15,.13,'Metal',22);cylinder('Rim',(0,.065,0),.158,.01,'Metal',22);rod('Handle',(.14,.03,0),(.36,.05,0),.016,'Black');wear('Hat_saucepan')
+
+begin();ring('Strap',(0,-.11,-.005),.148,.138,.025,'Black',22)
+for x in (-.052,.052):box('Frame',(x,-.115,.128),(.075,.05,.02),'Trim',.004);box('Lens',(x,-.115,.139),(.062,.038,.004),'Lens',0)
+box('Bridge',(0,-.11,.135),(.03,.015,.012),'Trim',0);wear('Acc_goggles')
+begin();ellipsoid('Mask',(0,-.195,.115),(.075,.06,.045),'White',2);ring('Strap',(0,-.17,-.005),.142,.135,.012,'White',20)
+cylinder('Valve',(.03,-.2,.155),.014,.01,'Black',10);wear('Acc_dustmask')
+begin();ellipsoid('Bandana',(0,-.2,.04),(.15,.075,.105),'Wool',2);ellipsoid('Knot',(0,-.17,-.13),(.03,.03,.03),'Wool',1)
+box('Tail',(.01,-.21,-.15),(.02,.08,.01),'Wool',0);wear('Acc_bandana')
+begin()
+for x in (-1,1):rod('Cup',(x*.13,-.12,0),(x*.175,-.12,0),.06,'Hazard',16);rod('Pad',(x*.128,-.12,0),(x*.138,-.12,0),.052,'Black',16)
+rod('BandL',(-.15,-.08,0),(-.11,.04,0),.012,'Black');rod('BandTop',(-.11,.04,0),(.11,.04,0),.012,'Black');rod('BandR',(.11,.04,0),(.15,-.08,0),.012,'Black');wear('Acc_earmuffs')
+begin();box('Front',(0,-.67,.148),(.39,.065,.02),'Leather',.004);box('Back',(0,-.67,-.148),(.39,.065,.02),'Leather',.004)
+box('SideL',(-.195,-.67,0),(.02,.065,.3),'Leather',.004);box('SideR',(.195,-.67,0),(.02,.065,.3),'Leather',.004)
+box('Pouch',(-.14,-.72,.165),(.08,.1,.04),'Leather',.006);box('Pouch',(.15,-.71,.14),(.06,.08,.04),'Canvas',.006)
+rod('Hammer',(.21,-.64,.05),(.21,-.82,.05),.012,'Wood');box('HammerHead',(.21,-.64,.05),(.025,.025,.08),'Metal');box('Buckle',(0,-.67,.16),(.05,.04,.01),'Brass',0);wear('Acc_toolbelt')
+begin();box('Pack',(0,-.44,-.24),(.34,.4,.16),'Canvas',.02);box('Flap',(0,-.27,-.235),(.33,.08,.17),'Canvas',.01);box('Pocket',(0,-.52,-.33),(.24,.16,.04),'Canvas',.01)
+for x in (-.11,.11):rod('Strap',(x,-.25,-.16),(x,-.27,.145),.014,'Black');rod('StrapFront',(x,-.27,.15),(x,-.5,.15),.014,'Black')
+rod('Bedroll',(-.18,-.66,-.24),(.18,-.66,-.24),.055,'Wool',14);wear('Acc_rucksack')
+begin();ellipsoid('Face',(0,-.16,.075),(.125,.13,.085),'Rubber',2)
+for x in (-.045,.045):rod('Eye',(x,-.115,.125),(x,-.115,.145),.03,'Lens',14);rod('EyeRim',(x,-.115,.12),(x,-.115,.135),.034,'Black',14)
+rod('Filter',(0,-.205,.13),(0,-.25,.21),.04,'Metal',16);ring('Strap',(0,-.11,-.01),.145,.137,.02,'Black',20);wear('Acc_gasmask')
+begin()
+for i in range(8):a=i*math.tau/8;b=(i+1)*math.tau/8;rod('Chain',(math.sin(a)*.1,-.26-.02*math.cos(a),math.cos(a)*.09),(math.sin(b)*.1,-.26-.02*math.cos(b),math.cos(b)*.09),.004,'Metal')
+rod('Drop',(0,-.27,.11),(0,-.36,.16),.004,'Metal');box('Tag',(-.012,-.38,.165),(.03,.05,.004),'Metal',0);box('Tag',(.012,-.39,.168),(.03,.05,.004),'Metal',0);wear('Acc_dogtags')
+begin();box('Radio',(.13,-.36,.175),(.055,.1,.035),'Black',.006);rod('Antenna',(.15,-.31,.175),(.15,-.17,.175),.005,'Black')
+box('Grille',(.13,-.38,.194),(.04,.04,.004),'Trim',0);cylinder('Led',(.112,-.32,.194),.004,.004,'LightRed',8);rod('Cord',(.13,-.41,.16),(.07,-.5,.14),.004,'Black');wear('Acc_radio')
+begin()
+for s in (-1,1):ellipsoid('Half',(s*.035,-.165,.128),(.04,.014,.014),'Leather',1);ellipsoid('Curl',(s*.078,-.155,.12),(.016,.016,.012),'Leather',1)
+wear('Acc_moustache')
+begin()
+for x in (-.052,.052):box('Lens',(x,-.115,.138),(.07,.045,.008),'Black',.003)
+box('Bridge',(0,-.105,.14),(.03,.008,.008),'Gold',0);rod('ArmL',(-.09,-.105,.135),(-.14,-.11,.0),.004,'Gold');rod('ArmR',(.09,-.105,.135),(.14,-.11,.0),.004,'Gold');wear('Acc_shades')
 print('Original ABANDONED environment kit generated.')

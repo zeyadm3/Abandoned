@@ -24,6 +24,11 @@ namespace Abandoned.EditorTools
             ["LightAmber"] = new(.68f, .50f, .27f), ["LightRed"] = new(.51f, .055f, .025f),
             ["Chalk"] = new(.64f, .61f, .48f), ["Black"] = new(.04f, .045f, .04f),
             ["Brass"] = new(.42f, .34f, .16f),
+            // 0.12.5 wardrobe
+            ["Hazard"] = new(.86f, .62f, .12f), ["Wool"] = new(.46f, .12f, .12f), ["Denim"] = new(.18f, .26f, .38f),
+            ["Felt"] = new(.24f, .19f, .15f), ["Leather"] = new(.33f, .21f, .12f), ["Gold"] = new(.80f, .62f, .22f),
+            ["White"] = new(.80f, .80f, .76f), ["Canvas"] = new(.36f, .38f, .25f), ["Orange"] = new(.86f, .38f, .10f),
+            ["Lens"] = new(.30f, .48f, .42f), ["Cardboard"] = new(.55f, .42f, .26f),
         };
 
         public static void Prepare()
@@ -58,8 +63,8 @@ namespace Abandoned.EditorTools
             Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>($"{Folder}/Textures/ENV_{key}.png");
             material.SetTexture("_BaseMap", texture);
             material.SetColor("_BaseColor", texture != null ? Color.white : Palette.GetValueOrDefault(key, Color.gray));
-            material.SetFloat("_Smoothness", key is "Water" or "Glass" ? .76f : key is "Metal" or "Brass" ? .45f : .11f);
-            material.SetFloat("_Metallic", key is "Metal" or "Brass" or "Rust" ? .65f : 0f);
+            material.SetFloat("_Smoothness", key is "Water" or "Glass" or "Lens" ? .76f : key is "Metal" or "Brass" or "Gold" ? .45f : .11f);
+            material.SetFloat("_Metallic", key is "Metal" or "Brass" or "Rust" or "Gold" ? .65f : 0f);
             // Glass and flat grime decals have no thickness, so both faces stay visible by torchlight. Lettering
             // (Chalk) and notices (Paper) are closed meshes: single-sided, so no sign reads mirrored from behind.
             material.SetFloat("_Cull", key is "Glass" or "Mould" or "Water" or "Stain" ? (float)CullMode.Off : (float)CullMode.Back);

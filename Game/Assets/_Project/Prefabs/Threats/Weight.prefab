@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &360412372525405325
+--- !u!1 &3526730806124883957
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5887229826231628514}
+  - component: {fileID: 1818022864051506727}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -16,20 +16,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5887229826231628514
+--- !u!4 &1818022864051506727
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360412372525405325}
+  m_GameObject: {fileID: 3526730806124883957}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8316385541415574960}
+  - {fileID: 4737165793432672534}
   m_Father: {fileID: 647127903669196140}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7035167311336727105
@@ -46,8 +46,8 @@ GameObject:
   - component: {fileID: 4211864276720848780}
   - component: {fileID: 8009677456685023807}
   - component: {fileID: 1557746397105926600}
-  - component: {fileID: 7924955817043617164}
-  - component: {fileID: 5986966549213530102}
+  - component: {fileID: 162682951367934731}
+  - component: {fileID: 9006646257259068852}
   m_Layer: 0
   m_Name: Weight
   m_TagString: Untagged
@@ -68,7 +68,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5887229826231628514}
+  - {fileID: 1818022864051506727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4054930716283291427
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.TheWeight
   ShowTopMostFoldoutHeaderGroup: 1
   definition: {fileID: 11400000, guid: 2698af741ab42435ea67db33f1b76d1d, type: 2}
---- !u!114 &7924955817043617164
+--- !u!114 &162682951367934731
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -216,8 +216,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 2704851668620068810}
---- !u!114 &5986966549213530102
+  animator: {fileID: 1683756803266069356}
+--- !u!114 &9006646257259068852
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -229,13 +229,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5284b08e2ae44303a72982ce7e1e546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatHorrorAudio
---- !u!1001 &8422582235088583259
+--- !u!1001 &5059638384517119741
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5887229826231628514}
+    m_TransformParent: {fileID: 1818022864051506727}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ed39514adb6ef4f2e8094665c7f0254f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -290,13 +290,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed39514adb6ef4f2e8094665c7f0254f, type: 3}
---- !u!95 &2704851668620068810 stripped
+--- !u!95 &1683756803266069356 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: ed39514adb6ef4f2e8094665c7f0254f, type: 3}
-  m_PrefabInstance: {fileID: 8422582235088583259}
+  m_PrefabInstance: {fileID: 5059638384517119741}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &8316385541415574960 stripped
+--- !u!4 &4737165793432672534 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ed39514adb6ef4f2e8094665c7f0254f, type: 3}
-  m_PrefabInstance: {fileID: 8422582235088583259}
+  m_PrefabInstance: {fileID: 5059638384517119741}
   m_PrefabAsset: {fileID: 0}
