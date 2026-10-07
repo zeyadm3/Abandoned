@@ -92,8 +92,8 @@ namespace Abandoned.Threats
         {
             AudioListener ear = VoiceListener.Current;
             Vector3 at = ear != null ? ear.transform.position : Vector3.zero;
-            AudioSource.PlayClipAtPoint(PlaceholderAudio.GetStructureClip(StructureSound.Groan), at + Vector3.up * 3f, 1f);
-            AudioSource.PlayClipAtPoint(PlaceholderAudio.Static(), at, 0.6f);
+            GameAudio.Play(SoundId.Groan, at + Vector3.up * 3f, 1f);
+            GameAudio.Play(SoundId.RadioStatic, at, 0.6f);
             flickerUntil = Time.time + FlickerSeconds;
             LightFixture.Disturb(FlickerSeconds); // fixtures run their own flicker
         }

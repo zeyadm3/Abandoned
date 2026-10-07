@@ -111,7 +111,12 @@ namespace Abandoned.Equipment
 
         private void Apply()
         {
-            if (flashlight != null) flashlight.enabled = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead;
+            if (flashlight != null)
+            {
+                bool on = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead;
+                if (on != flashlight.enabled && !IsDead) Audio.GameAudio.Play(Audio.SoundId.FlashlightClick, flashlight.transform.position, 0.6f);
+                flashlight.enabled = on;
+            }
             if (carrier != null) carrier.SoloDragAllowed = !CompanyService.RulesApply || Has(EquipmentKind.HandTrolley);
         }
 

@@ -15,8 +15,13 @@ namespace Abandoned.Tests
         private StructureTestRig rig;
         private static readonly Vector3 Upper = new(0f, 4f, 0f);
 
-        [SetUp]
-        public void SetUp() => rig = StructureTestRig.Create();
+        [UnitySetUp]
+        public IEnumerator SetUp()
+        {
+            // A level loaded by an earlier test (the mall's sections, its run) would sound and break here too.
+            yield return NetTestHarness.CleanWorld();
+            rig = StructureTestRig.Create();
+        }
 
         [UnityTearDown]
         public IEnumerator TearDown()
@@ -39,12 +44,12 @@ namespace Abandoned.Tests
             Assert.AreEqual(0f, view.DustRate);
 
             TestLoad.Create(Upper + Vector3.up * 0.05f, tile.Capacity * 3f);
-            int sounds = PlaceholderAudio.StructureSoundCount;
+            int sounds = GameAudio.StructureSoundCount;
             rig.StepUntil(() => tile.Stage == StructuralStage.Cracking, 30f);
             yield return null;
             Assert.AreEqual(rig.Visuals.CracksWhenCracking, view.CrackCount);
             Assert.AreEqual(rig.Visuals.CrackingDust, view.DustRate, 1e-3f);
-            Assert.Greater(PlaceholderAudio.StructureSoundCount, sounds, "getting worse is announced");
+            Assert.Greater(GameAudio.StructureSoundCount, sounds, "getting worse is announced");
             var block = new MaterialPropertyBlock();
             visual.GetPropertyBlock(block);
             Assert.AreNotEqual(Color.white, block.GetColor("_BaseColor"), "tinted");
@@ -54,7 +59,7 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(rig.Visuals.CracksWhenFailing, view.CrackCount);
             Assert.Less(tile.Visual.localPosition.y, -0.15f - rig.Visuals.SagDepth * 0.5f, "sagging before it goes");
-            Assert.AreEqual(StructureSound.Snap, PlaceholderAudio.LastStructureSound);
+            Assert.AreEqual(StructureSound.Snap, GameAudio.LastStructureSound);
         }
 
         [UnityTest]
@@ -86,7 +91,7 @@ namespace Abandoned.Tests
             int debrisLayer = GameLayers.DebrisLayer;
             Assert.IsTrue(chunks.All(c => c.gameObject.layer == debrisLayer), "debris is on its own layer");
             Assert.AreEqual(before + chunks.Length, DebrisSpawner.LiveChunks);
-            Assert.AreEqual(StructureSound.Crash, PlaceholderAudio.LastStructureSound);
+            Assert.AreEqual(StructureSound.Crash, GameAudio.LastStructureSound);
 
             for (float t = 0f; t < 1.5f; t += Time.fixedDeltaTime) yield return new WaitForFixedUpdate();
             float meanY = chunks.Average(c => c.position.y);

@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Abandoned.Audio
 {
     /// <summary>
-    /// Synthesised placeholder sounds (no audio assets yet): a distinct impact per material so
-    /// glass rings, metal clangs and wood thuds are already recognisable. Replaced by library
-    /// sounds in the audio pass.
+    /// Synthesised sounds: the fallback for any SoundBank cue without library clips (GameAudio), and
+    /// the signatures no CC0 library sound fits (the Blind One's click, the horn, the shriek, static).
+    /// A distinct impact per material, so glass rings, metal clangs and wood thuds stay recognisable.
     /// </summary>
     public static class PlaceholderAudio
     {
@@ -16,16 +16,6 @@ namespace Abandoned.Audio
         private static readonly Dictionary<SurfaceMaterial, AudioClip> ImpactClips = new();
         private static readonly Dictionary<SurfaceMaterial, AudioClip> FootstepClips = new();
         private static readonly Dictionary<StructureSound, AudioClip> StructureClips = new();
-
-        public static StructureSound? LastStructureSound { get; private set; }
-        public static int StructureSoundCount { get; private set; }
-
-        public static void PlayStructure(StructureSound sound, Vector3 position, float volume01)
-        {
-            LastStructureSound = sound;
-            StructureSoundCount++;
-            AudioSource.PlayClipAtPoint(GetStructureClip(sound), position, Mathf.Clamp01(volume01));
-        }
 
         public static AudioClip GetStructureClip(StructureSound sound)
         {
@@ -120,25 +110,6 @@ namespace Abandoned.Audio
             });
         }
 
-        /// <summary>Last material played and total plays; used by tests and the debug overlay.</summary>
-        public static SurfaceMaterial? LastImpactMaterial { get; private set; }
-        public static int ImpactCount { get; private set; }
-
-        public static void PlayImpact(SurfaceMaterial material, Vector3 position, float volume01)
-        {
-            LastImpactMaterial = material;
-            ImpactCount++;
-            AudioSource.PlayClipAtPoint(GetImpactClip(material), position, Mathf.Clamp01(volume01));
-        }
-
-        public static SurfaceMaterial? LastFootstepMaterial { get; private set; }
-
-        public static void PlayFootstep(SurfaceMaterial material, Vector3 position, float volume01)
-        {
-            LastFootstepMaterial = material;
-            AudioSource.PlayClipAtPoint(GetFootstepClip(material), position, Mathf.Clamp01(volume01));
-        }
-
         public static AudioClip GetFootstepClip(SurfaceMaterial material)
         {
             if (FootstepClips.TryGetValue(material, out AudioClip clip) && clip != null) return clip;
@@ -214,11 +185,6 @@ namespace Abandoned.Audio
             ImpactClips.Clear();
             FootstepClips.Clear();
             StructureClips.Clear();
-            LastStructureSound = null;
-            StructureSoundCount = 0;
-            LastImpactMaterial = null;
-            LastFootstepMaterial = null;
-            ImpactCount = 0;
         }
     }
 }

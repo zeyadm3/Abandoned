@@ -38,7 +38,7 @@ namespace Abandoned.Equipment
             if (shrieking.Value && Time.time >= nextSound)
             {
                 nextSound = Time.time + interval * 2f;
-                AudioSource.PlayClipAtPoint(PlaceholderAudio.Shriek(), transform.position, 1f);
+                GameAudio.Play(SoundId.NoiseMakerShriek, transform.position, 1f);
             }
             if (!IsServer) return;
             float age = Time.time - spawnedAt;

@@ -102,9 +102,9 @@ namespace Abandoned.Structure
             Vector3 at = section.SurfaceBounds.center;
             switch (stage)
             {
-                case StructuralStage.Stressed: PlaceholderAudio.PlayStructure(StructureSound.Creak, at, visuals.CreakVolume); break;
-                case StructuralStage.Cracking: PlaceholderAudio.PlayStructure(StructureSound.Groan, at, visuals.GroanVolume); break;
-                case StructuralStage.Failing: PlaceholderAudio.PlayStructure(StructureSound.Snap, at, visuals.SnapVolume); break;
+                case StructuralStage.Stressed: GameAudio.PlayStructure(StructureSound.Creak, at, visuals.CreakVolume); break;
+                case StructuralStage.Cracking: GameAudio.PlayStructure(StructureSound.Groan, at, visuals.GroanVolume); break;
+                case StructuralStage.Failing: GameAudio.PlayStructure(StructureSound.Snap, at, visuals.SnapVolume); break;
             }
         }
 
@@ -243,7 +243,7 @@ namespace Abandoned.Structure
             if (s.CollapsedQuietly) return;
 
             Vector3 centre = s.SurfaceBounds.center;
-            PlaceholderAudio.PlayStructure(StructureSound.Crash, centre, 1f);
+            GameAudio.PlayStructure(StructureSound.Crash, centre, 1f);
             CameraShake.Emit(centre, visuals.CollapseShake);
             debris = DebrisSpawner.Spawn(section, fracturedPrefab, renderers.Length > 0 ? renderers[0].sharedMaterial : null,
                 visuals, s.CollapseSeed);

@@ -166,6 +166,9 @@ namespace Abandoned.Networking
         {
             requestGuard.Clear();
             Reconcile();
+            // Every machine hears the item change hands (cloth for a grab, a rustle into a pocket).
+            if (current.Mode != previous.Mode && current.Mode != LootHoldMode.Free)
+                Audio.GameAudio.Play(current.Mode == LootHoldMode.Pocketed ? Audio.SoundId.LootPocket : Audio.SoundId.LootPickup, transform.position, 0.7f);
         }
 
         /// <summary>Client: copies the host's hold state onto this machine's item and holder copies.</summary>

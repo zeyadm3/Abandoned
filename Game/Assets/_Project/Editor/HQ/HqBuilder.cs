@@ -94,6 +94,7 @@ namespace Abandoned.EditorTools
             ui.AddComponent<Abandoned.Equipment.GearScreens>();
 
             LevelAtmosphere.Apply("HQ", LevelAtmosphere.Hq, root);
+            AmbienceBuilder.Hq(root);
             foreach (Vector3 at in new[] { new Vector3(6f, 3.4f, 8f), new Vector3(18f, 3.4f, 5f), new Vector3(18f, 3.4f, 13f) })
             {
                 var light = new GameObject("Light").AddComponent<Light>();

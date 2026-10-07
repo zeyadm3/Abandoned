@@ -55,8 +55,16 @@ namespace Abandoned.Threats
             base.OnNetworkDespawn();
         }
 
+        private float nextJingle;
+
         private void Update()
         {
+            // Every machine: a loaded Collector jingles as it runs, so you hear your loot leaving.
+            if (IsSpawned && state.Value == CollectorState.Carrying && Time.time >= nextJingle)
+            {
+                nextJingle = Time.time + 0.8f;
+                Audio.GameAudio.Play(Audio.SoundId.CollectorJingle, transform.position + Vector3.up, 0.8f);
+            }
             if (!IsServer || !IsSpawned) return;
             if (!agent.isOnNavMesh)
             {

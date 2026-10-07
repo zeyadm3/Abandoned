@@ -85,6 +85,10 @@ namespace Abandoned.Extraction
         private void Update()
         {
             if (!IsSpawned) return;
+            // Every machine: the lever clunks when someone starts the truck.
+            if (State.Phase == RunPhase.Honking && shownPhase != RunPhase.Honking && TruckCargo.Current != null)
+                GameAudio.Play(SoundId.Lever, TruckCargo.Current.Ignition.position, 1f);
+            shownPhase = State.Phase;
             if (State.Phase == RunPhase.Honking) Honk();
             if (!IsServer) return;
             if (State.Phase == RunPhase.Running && Time.time >= nextTally) Tally();
@@ -132,11 +136,13 @@ namespace Abandoned.Extraction
             Debug.Log($"[Run] Player {client} started the truck; leaving in {config.HonkSeconds:0} s.");
         }
 
+        private RunPhase shownPhase;
+
         private void Honk()
         {
             if (Time.time < nextHorn || TruckCargo.Current == null) return;
             nextHorn = Time.time + config.HornInterval;
-            AudioSource.PlayClipAtPoint(PlaceholderAudio.Horn(), TruckCargo.Current.Ignition.position, 1f);
+            GameAudio.Play(SoundId.Horn, TruckCargo.Current.Ignition.position, 1f);
         }
 
         // ---- Host ----

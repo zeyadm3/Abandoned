@@ -62,14 +62,14 @@ namespace Abandoned.Tests
             Assert.Greater(full, 0);
             bool shattered = false;
             vase.Shattered += (_, _) => shattered = true;
-            int soundsBefore = PlaceholderAudio.ImpactCount;
+            int soundsBefore = GameAudio.ImpactCount;
 
             yield return WaitFixed(1.5f);
 
             Assert.IsTrue(shattered, "vase should shatter");
             Assert.IsTrue(vase == null, "shattered item is removed");
-            Assert.Greater(PlaceholderAudio.ImpactCount, soundsBefore);
-            Assert.AreEqual(SurfaceMaterial.Glass, PlaceholderAudio.LastImpactMaterial);
+            Assert.Greater(GameAudio.ImpactCount, soundsBefore);
+            Assert.AreEqual(SurfaceMaterial.Glass, GameAudio.LastImpactMaterial);
             Assert.Greater(FloatingTextOverlay.Instance.ActiveCount, 0, "shows $X → $0");
             int debris = GameLayers.DebrisLayer;
             Assert.IsTrue(Object.FindObjectsByType<Rigidbody>(FindObjectsSortMode.None).Any(b => b.gameObject.layer == debris),

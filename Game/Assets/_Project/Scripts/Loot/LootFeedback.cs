@@ -39,7 +39,7 @@ namespace Abandoned.Loot
             CameraShake.Emit(point, loot.GameplayWeight * speed);
             if (speed < damageConfig.MinSoundSpeed) return;
             float volume = Mathf.Clamp01(speed / damageConfig.FullVolumeSpeed);
-            PlaceholderAudio.PlayImpact(loot.Definition.Material, point, volume);
+            GameAudio.PlayImpact(loot.Definition.Material, point, volume);
         }
 
         private void OnDamaged(LootItem loot, int loss, Vector3 point) =>
@@ -48,7 +48,7 @@ namespace Abandoned.Loot
         private void OnShattered(LootItem loot, Vector3 point)
         {
             FloatingText.Show(point + Vector3.up * 0.3f, $"${loot.FullValue:N0} → $0", LossColor);
-            PlaceholderAudio.PlayImpact(loot.Definition.Material, point, 1f);
+            GameAudio.PlayImpact(loot.Definition.Material, point, 1f);
             var visual = loot.GetComponentInChildren<Renderer>();
             ShatterEffect.Spawn(loot.transform.position, loot.Definition.Size, visual != null ? visual.sharedMaterial : null);
         }

@@ -166,7 +166,7 @@ namespace Abandoned.Threats
             if (Time.time < nextClick) return;
             BlindOneState s = state.Value;
             nextClick = Time.time + (s == BlindOneState.Hunt ? config.HuntClickInterval : config.ClickInterval) * Random.Range(0.85f, 1.15f);
-            if (s != BlindOneState.Attack) AudioSource.PlayClipAtPoint(PlaceholderAudio.Click(), transform.position + Vector3.up * 2f, s == BlindOneState.Hunt ? 1f : 0.7f);
+            if (s != BlindOneState.Attack) GameAudio.Play(SoundId.BlindOneClick, transform.position + Vector3.up * 2f, s == BlindOneState.Hunt ? 1f : 0.7f);
         }
 
         private void OnGUI()

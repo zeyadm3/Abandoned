@@ -72,7 +72,7 @@ namespace Abandoned.Player
                 : motor.IsCrouching ? settings.CrouchStepVolume
                 : settings.WalkStepVolume;
             StepCount++;
-            if (settings.FootstepsEnabled) PlaceholderAudio.PlayFootstep(LastSurface, position, LastVolume);
+            if (settings.FootstepsEnabled) GameAudio.PlayFootstep(LastSurface, position, LastVolume);
             // Threats hear steps whether or not the player has footstep audio turned on.
             PlayerMovementConfig c = motor.Config;
             float noise = motor.IsSprinting ? c.SprintNoise : motor.IsCrouching ? c.CrouchNoise : c.WalkNoise;

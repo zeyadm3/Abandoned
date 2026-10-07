@@ -17,8 +17,17 @@ namespace Abandoned.Extraction
 
         public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null;
 
+        private bool shown;
+
         // The appraisal owns the mouse while it's up, so a click is a click on the button.
-        private void Update() => Core.CursorOwner.Set(this, Showing);
+        private void Update()
+        {
+            bool showing = Showing;
+            Core.CursorOwner.Set(this, showing);
+            // The money comes in with the screen: a cash register sound once per appraisal.
+            if (showing && !shown) Audio.GameAudio.PlayUi(Audio.SoundId.Coins);
+            shown = showing;
+        }
 
         private void OnDisable() => Core.CursorOwner.Set(this, false);
 

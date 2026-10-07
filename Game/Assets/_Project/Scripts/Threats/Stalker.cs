@@ -131,7 +131,7 @@ namespace Abandoned.Threats
         {
             if (Time.time < nextBreath) return;
             nextBreath = Time.time + (state.Value == StalkerState.Rush ? 0.6f : 2.2f);
-            AudioSource.PlayClipAtPoint(Audio.PlaceholderAudio.GetStructureClip(Audio.StructureSound.Creak), transform.position + Vector3.up * 1.8f, 0.35f);
+            Audio.GameAudio.Play(Audio.SoundId.Creak, transform.position + Vector3.up * 1.8f, 0.35f);
         }
     }
 }

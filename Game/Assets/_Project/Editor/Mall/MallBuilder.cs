@@ -182,6 +182,7 @@ namespace Abandoned.EditorTools
             int fixtures = MallFixtures.Place(lights, mall.Find(TilesGroup));
             MallFixtures.AddDust(lights);
             MallFixtures.AddSkylightShaft(lights, RenderSettings.sun != null ? RenderSettings.sun.transform.forward : Vector3.down);
+            AmbienceBuilder.Mall(mall);
             return fixtures;
         }
 
