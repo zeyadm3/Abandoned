@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Abandoned.Audio;
 using Abandoned.Core;
+using Abandoned.Extraction;
 using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -29,8 +30,8 @@ namespace Abandoned.Threats
         private BlindOneBrain brain;
         private int wallMask;
         private float nextRepath, nextClick;
-        private Vector3 wanderTarget;
-        private bool hasWanderTarget;
+        private Vector3 wanderTarget, lastGoal;
+        private bool hasWanderTarget, hasGoal;
 
         public static readonly List<BlindOne> All = new();
 
@@ -86,21 +87,47 @@ namespace Abandoned.Threats
         private void Update()
         {
             if (IsSpawned) Click();
-            if (!IsServer || !IsSpawned || brain == null || !agent.isOnNavMesh) return;
+            if (!IsServer || !IsSpawned || brain == null) return;
             heard.RemoveAll(h => Time.time - h.time > config.Memory);
+            if (!agent.isOnNavMesh)
+            {
+                RecoverOntoNavMesh();
+                return;
+            }
 
-            bool arrived = !agent.pathPending && agent.remainingDistance <= ArrivedDistance;
+            Vector3 goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
+            // "Arrived" only counts for the goal it is walking to now, not the one before it heard something.
+            bool arrived = hasGoal && (goal - lastGoal).sqrMagnitude < 1f && !agent.pathPending && agent.remainingDistance <= ArrivedDistance;
             brain.Tick(transform.position, arrived, Time.time);
             if (brain.State == BlindOneState.Wander && (arrived || !hasWanderTarget)) PickWanderTarget();
             agent.speed = brain.Speed * SpeedScale;
-            if (Time.time >= nextRepath)
+            goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
+            bool newGoal = !hasGoal || (goal - lastGoal).sqrMagnitude >= 1f;
+            if (newGoal || Time.time >= nextRepath)
             {
                 nextRepath = Time.time + RepathInterval;
-                Vector3 goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
                 if (NavMesh.SamplePosition(goal, out NavMeshHit hit, 3f, NavMesh.AllAreas)) agent.SetDestination(hit.position);
+                lastGoal = goal;
+                hasGoal = true;
             }
-            KillOnContact();
+            if (RunActive) KillOnContact();
             if (state.Value != brain.State) state.Value = brain.State;
+        }
+
+        // The truck has left: it stops hunting (appraisal, extracted players in the bay).
+        private static bool RunActive => RunState.Current == null || RunState.Current.State.Phase != RunPhase.Departed;
+
+        // The floor under it collapsed (its NavMesh is carved away): it drops to whatever is below.
+        private void RecoverOntoNavMesh()
+        {
+            Vector3 below = transform.position + Vector3.down * 4f;
+            if (NavMesh.SamplePosition(below, out NavMeshHit hit, 5f, NavMesh.AllAreas) ||
+                NavMesh.SamplePosition(transform.position, out hit, 6f, NavMesh.AllAreas))
+            {
+                agent.Warp(hit.position);
+                hasGoal = false;
+                Debug.Log($"[Threat] The Blind One fell to {hit.position}.");
+            }
         }
 
         private void PickWanderTarget()
@@ -120,6 +147,8 @@ namespace Abandoned.Threats
                 Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > config.AttackRange * config.AttackRange) continue;
+                // Touch, not through a wall: a player pressed against the far side of a partition is safe.
+                if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, wallMask, QueryTriggerInteraction.Ignore)) continue;
                 p.ServerKill();
                 Kills++;
                 brain.Attacked(Time.time);

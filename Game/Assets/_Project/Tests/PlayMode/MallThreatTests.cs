@@ -35,9 +35,11 @@ namespace Abandoned.Tests
         }
 
         [Test]
-        public void TheNavMeshReachesEveryFloorFromTheParkingLot()
+        public void TheNavMeshReachesEveryFloorButNotOutside()
         {
-            Vector3 parking = new(24f, 0f, -8f);
+            Vector3 parking = new(24f, 0f, 3f); // just inside the entrance
+            Assert.IsFalse(NavMesh.SamplePosition(new Vector3(24f, 0f, -8f), out _, 1f, NavMesh.AllAreas), "the parking lot isn't its territory");
+            Assert.IsFalse(NavMesh.SamplePosition(new Vector3(6f, 12.3f, 6f), out _, 1f, NavMesh.AllAreas), "nor the roof");
             Assert.IsTrue(Reachable(parking, new Vector3(6f, 0f, 30f)), "ground floor clothing store");
             Assert.IsTrue(Reachable(parking, new Vector3(6f, 4f, 20f)), "floor 1 furniture store");
             Assert.IsTrue(Reachable(parking, new Vector3(22f, 8f, 37f)), "floor 2 gallery");

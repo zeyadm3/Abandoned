@@ -125,9 +125,11 @@ namespace Abandoned.EditorTools
         {
             new(0, 2, 2, 3, 2), new(0, 2, 6, 3, 6), new(0, 9, 1, 8, 1), new(0, 9, 4, 8, 4),
             new(0, 9, 7, 8, 7, wide: true), // loading bay <-> concourse: big items come through here
-            new(1, 2, 3, 3, 3), new(1, 2, 6, 3, 6), new(1, 5, 1, 5, 2), new(1, 9, 3, 8, 3),
+            new(1, 2, 3, 3, 3), new(1, 2, 6, 3, 6, wide: true), // furniture: the piano's way out
+            new(1, 5, 1, 5, 2), new(1, 9, 3, 8, 3),
             new(1, 9, 7, 8, 7, wide: true),
-            new(2, 2, 5, 3, 5), new(2, 6, 1, 6, 2), new(2, 9, 2, 8, 2), new(2, 9, 7, 8, 7),
+            new(2, 2, 5, 3, 5), new(2, 6, 1, 6, 2), new(2, 9, 2, 8, 2),
+            new(2, 9, 7, 8, 7, wide: true), // floor 2 -> service stairs: a route for jackpots that never collapses
             new(2, 5, 8, 5, 7, wide: true), new(2, 6, 8, 6, 7, wide: true), // gallery: the statue's way out
         };
 
@@ -135,7 +137,7 @@ namespace Abandoned.EditorTools
         public static readonly (int floor, char side, int column, bool wide, bool window)[] Exterior =
         {
             (0, 'S', 5, true, false), (0, 'S', 6, true, false), // main entrance
-            (0, 'E', 8, true, false),                           // loading bay door to the truck
+            (0, 'E', 6, true, false),                           // loading bay door to the truck (clear of the service stairs)
             (0, 'W', 2, false, false),                          // electronics side exit
             (1, 'W', 5, false, true), (1, 'E', 2, false, true), // fallback rope windows (GDD 6.4)
             (2, 'S', 2, false, true), (2, 'N', 10, false, true),

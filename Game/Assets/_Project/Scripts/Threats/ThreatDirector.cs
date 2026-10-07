@@ -47,7 +47,7 @@ namespace Abandoned.Threats
             if (!IsHost) return;
             // First run of a session: the run state exists once hosting starts.
             if (spawnAt < 0f && RunState.Current != null && RunState.Current.IsSpawned) Schedule(RunState.Current.State.Seed);
-            if (spawnAt > 0f && Time.time >= spawnAt)
+            if (spawnAt > 0f && Time.time >= spawnAt && RunState.Current != null && RunState.Current.State.Phase == RunPhase.Running)
             {
                 spawnAt = 0f;
                 Spawn();

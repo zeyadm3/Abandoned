@@ -19,6 +19,8 @@ namespace Abandoned.Networking
         [SerializeField] private LootSpawnConfig config;
         [Tooltip("Run seed until the run flow sets one.")]
         [SerializeField] private int seed = 1;
+        [Tooltip("Spawn when hosting starts. Off where a RunDirector starts runs (it picks each run's seed).")]
+        [SerializeField] private bool spawnOnHostStart = true;
 
         private readonly List<NetworkLoot> spawned = new();
         private bool hooked, done;
@@ -27,11 +29,12 @@ namespace Abandoned.Networking
         public int Seed => seed;
         public int TotalValue => spawned.Where(l => l != null && l.Item.IsInitialized).Sum(l => l.Item.CurrentValue);
 
-        public void Setup(NetworkBootstrap networkBootstrap, LootCatalog lootCatalog, LootSpawnConfig spawnConfig)
+        public void Setup(NetworkBootstrap networkBootstrap, LootCatalog lootCatalog, LootSpawnConfig spawnConfig, bool autoSpawn = true)
         {
             bootstrap = networkBootstrap;
             catalog = lootCatalog;
             config = spawnConfig;
+            spawnOnHostStart = autoSpawn;
         }
 
         /// <summary>Before the session starts (the run flow): which run this is.</summary>
@@ -52,7 +55,7 @@ namespace Abandoned.Networking
 
         private void OnServerStarted()
         {
-            if (done) return;
+            if (done || !spawnOnHostStart) return;
             done = true;
             SpawnAll();
         }
@@ -82,10 +85,15 @@ namespace Abandoned.Networking
             IReadOnlyList<LootSpawnPoint> points = Points();
             List<LootDefinition> definitions = catalog.Entries.Select(e => e.definition).Where(d => d != null).ToList();
             var random = new System.Random(seed ^ 0x5f3759df);
+            done = true;
             foreach (LootSpawnPlanner.Placement p in LootSpawnPlanner.Plan(points, definitions, config, seed))
             {
                 GameObject prefab = catalog.PrefabFor(p.Definition);
-                if (prefab == null) continue;
+                if (prefab == null)
+                {
+                    Debug.LogError($"[Loot] No prefab for {p.Definition.Id} in the catalog (Tools/Abandoned/Generate Loot Prefabs).");
+                    continue;
+                }
                 Transform point = points[p.Point].transform;
                 Vector3 at = point.position + Vector3.up * (p.Definition.Size.y / 2f + 0.02f);
                 Quaternion yaw = Quaternion.Euler(0f, (float)random.NextDouble() * 360f, 0f);

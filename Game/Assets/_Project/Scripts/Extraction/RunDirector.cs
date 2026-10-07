@@ -20,8 +20,11 @@ namespace Abandoned.Extraction
         [SerializeField] private NetworkLootSpawner lootSpawner;
 
         [SerializeField] private StructureSimulation structure;
+        [Tooltip("0 = a random seed for each session's first run (contracts set it from M6).")]
+        [SerializeField] private int firstRunSeed;
 
         private NetworkObject spawned;
+        private bool started;
         private readonly RunStats stats = new();
 
         /// <summary>Host: a new run began (seed). Monsters and danger reset on this.</summary>
@@ -55,16 +58,25 @@ namespace Abandoned.Extraction
         {
             NetworkManager manager = bootstrap != null ? bootstrap.Manager : null;
             if (manager == null || !manager.IsServer) return;
-            int seed = new System.Random(Environment.TickCount ^ lootSpawner.Seed).Next(1, int.MaxValue);
+            BeginRun(NewSeed(), respawnPlayers: true);
+        }
+
+        private int NewSeed() => new System.Random(Environment.TickCount ^ (lootSpawner != null ? lootSpawner.Seed : 0)).Next(1, int.MaxValue);
+
+        // Building first (collapsed floors come back, pre-damage re-rolled), then the loot that stands on it.
+        private void BeginRun(int seed, bool respawnPlayers)
+        {
+            NetworkManager manager = bootstrap.Manager;
             if (spawned != null && spawned.IsSpawned) spawned.Despawn(true);
             spawned = null;
-            // Building first (collapsed floors come back), then the loot that stands on it.
             if (structure != null) structure.ApplyStability(structure.Stability, seed);
-            lootSpawner.Respawn(seed);
-            foreach (NetworkPlayer p in NetworkPlayer.All)
-                if (p != null && p.NetworkManager == manager && bootstrap.Slots.TryGetSlot(p.OwnerClientId, out int slot))
-                    p.ServerRespawn(PlayerSpawnPoint.PoseFor(slot));
-            Debug.Log($"[Run] Next run, seed {seed}.");
+            if (lootSpawner != null) lootSpawner.Respawn(seed);
+            if (respawnPlayers)
+                foreach (NetworkPlayer p in NetworkPlayer.All)
+                    if (p != null && p.NetworkManager == manager && bootstrap.Slots.TryGetSlot(p.OwnerClientId, out int slot))
+                        p.ServerRespawn(PlayerSpawnPoint.PoseFor(slot));
+            started = true;
+            Debug.Log($"[Run] Run seed {seed}.");
             RunStarted?.Invoke(seed);
         }
 
@@ -73,6 +85,8 @@ namespace Abandoned.Extraction
             NetworkManager manager = bootstrap != null ? bootstrap.Manager : null;
             if (manager == null || !manager.IsServer || !manager.IsListening || manager.ShutdownInProgress) return;
             if (spawned != null && spawned.IsSpawned) return;
+            // A session's first run: its own seed, not the one the scene was saved with.
+            if (!started) BeginRun(firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
             RunState.SeedSource = () => lootSpawner != null ? lootSpawner.Seed : 0;
             RunState.RunStatsSource = stats.Lines;
             spawned = manager.SpawnManager.InstantiateAndSpawn(runStatePrefab);

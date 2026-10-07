@@ -51,6 +51,7 @@ namespace Abandoned.EditorTools
         private static void GenerateFromContext(MenuCommand command)
         {
             Generate((LootDefinition)command.context);
+            WriteCatalog();
             AssetDatabase.SaveAssets();
         }
 

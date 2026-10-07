@@ -17,13 +17,10 @@ namespace Abandoned.Extraction
 
         public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null;
 
-        private void Update()
-        {
-            // Free the mouse so the button can be clicked.
-            if (!Showing) return;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        // The appraisal owns the mouse while it's up, so a click is a click on the button.
+        private void Update() => Core.CursorOwner.UiActive = Showing;
+
+        private void OnDisable() => Core.CursorOwner.UiActive = false;
 
         private void OnGUI()
         {

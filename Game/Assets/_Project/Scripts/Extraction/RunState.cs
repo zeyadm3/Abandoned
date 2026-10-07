@@ -99,6 +99,7 @@ namespace Abandoned.Extraction
             TruckCargo truck = TruckCargo.Current;
             NetworkObject player = NetworkManager.ConnectedClients.TryGetValue(client, out NetworkClient c) ? c.PlayerObject : null;
             if (State.Phase != RunPhase.Running || truck == null || player == null) return;
+            if (player.TryGetComponent(out NetworkPlayer np) && np.IsDead) return;
             if (Vector3.Distance(player.transform.position, truck.Ignition.position) > config.IgnitionRange) return;
             Tally();
             if (State.Overloaded) return;

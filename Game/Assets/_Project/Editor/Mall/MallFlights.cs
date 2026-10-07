@@ -13,11 +13,13 @@ namespace Abandoned.EditorTools
         private const float StepThickness = 0.35f, RampThickness = 0.2f;
         private const float EscalatorWidth = 2.4f, StairWidth = 3f, SideHeight = 1f;
 
+        public static float WidthOf(MallLayout.Flight f) => f.CanCollapse ? EscalatorWidth : StairWidth;
+
         public static Transform Build(MallLayout.Flight f, Transform parent, Material steps, Material sides)
         {
             float length = 2f * MallLayout.Tile, rise = MallLayout.StoryHeight;
             bool escalator = f.CanCollapse;
-            float width = escalator ? EscalatorWidth : StairWidth;
+            float width = WidthOf(f);
 
             // Pivot at the foot: the middle of the edge the flight starts from, on the lower floor.
             Vector3 dir = new(f.Dir.x, 0f, f.Dir.y);
@@ -35,15 +37,14 @@ namespace Abandoned.EditorTools
                 Box($"Step_{s}", visual, new Vector3(0f, top - StepThickness / 2f, (s + 0.5f) * stepDepth),
                     new Vector3(width, StepThickness, stepDepth), steps, withCollider: false);
             }
-            if (escalator)
+            // Side rails (balustrades on escalators): nobody steps off a flight over the atrium.
             {
-                // Balustrades read as an escalator in greybox; visual only.
                 float angle = Mathf.Atan2(rise, length) * Mathf.Rad2Deg;
                 foreach (float side in new[] { -1f, 1f })
                 {
                     var rail = Box($"Balustrade_{(side < 0 ? "L" : "R")}", visual,
                         new Vector3(side * (width / 2f + 0.1f), rise / 2f + SideHeight / 2f, length / 2f),
-                        new Vector3(0.15f, SideHeight, Mathf.Sqrt(length * length + rise * rise)), sides, withCollider: false);
+                        new Vector3(0.15f, SideHeight, Mathf.Sqrt(length * length + rise * rise)), sides);
                     rail.transform.localRotation = Quaternion.Euler(-angle, 0f, 0f);
                 }
             }

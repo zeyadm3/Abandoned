@@ -100,5 +100,25 @@ namespace Abandoned.Tests
                 ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
             Assert.IsFalse(blocked, "the statue can't leave the gallery");
         }
+
+        [Test]
+        public void TheLoadingBayDoorOpensOntoTheTruck()
+        {
+            rig.Teleport(new Vector3(42f, 0.05f, 26f), 90f);
+            rig.Settle();
+            float t = rig.RunUntil(Frame(Vector2.up), () => rig.Player.transform.position.x > 50f, 6f);
+            Assert.GreaterOrEqual(t, 0f, $"blocked between the loading bay and the truck at {rig.Player.transform.position}");
+            Assert.Greater(rig.Player.transform.position.y, 0.2f, "up the truck's ramp");
+        }
+
+        [Test]
+        public void TheEscalatorTopHasNoGapBesideIt()
+        {
+            // Floor 2, beside the top of Escalator_12 (z = 12, the escalator spans x 28.8..31.2).
+            rig.Teleport(new Vector3(28.4f, 8.05f, 10f));
+            rig.Settle();
+            rig.RunUntil(Frame(Vector2.up), () => false, 1.5f);
+            Assert.Greater(rig.Player.transform.position.y, 7.5f, "fell into the atrium beside the escalator");
+        }
     }
 }

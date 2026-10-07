@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
 using static Abandoned.EditorTools.MallLayout;
@@ -43,7 +44,7 @@ namespace Abandoned.EditorTools
                 if (voidA && voidB) return 0;
                 if (voidA || voidB)
                 {
-                    if (IsFlightOpening(a, b, floor)) return 0;
+                    if (IsFlightOpening(a, b, floor)) return FlightSideRails(rails, a, b, floor, y, railing);
                     Railing(rails, $"Rail_{floor}_{a.x}_{a.y}_{b.x}_{b.y}", a, b, y, railing);
                     return 1;
                 }
@@ -73,6 +74,26 @@ namespace Abandoned.EditorTools
                 : new Vector3((a.x + 0.5f) * Tile, y + RailingHeight / 2f, b.y * Tile);
             Vector3 size = east ? new Vector3(0.1f, RailingHeight, Tile) : new Vector3(Tile, RailingHeight, 0.1f);
             Box(name, parent, center, size, material);
+        }
+
+        // A flight is narrower than the 4 m edge it opens onto: rail off what's left on either side.
+        private static int FlightSideRails(Transform parent, Vector2Int a, Vector2Int b, int floor, float y, Material material)
+        {
+            float width = Flights.Where(f => f.Tiles.Contains(a) || f.Tiles.Contains(b) || f.Start - f.Dir == a || f.Start - f.Dir == b)
+                .Select(MallFlights.WidthOf).DefaultIfEmpty(Tile).Max();
+            float side = (Tile - width) / 2f;
+            if (side <= 0.05f) return 0;
+            bool east = b.x != a.x;
+            for (int s = -1; s <= 1; s += 2)
+            {
+                float offset = s * (Tile / 2f - side / 2f);
+                Vector3 center = east
+                    ? new Vector3(b.x * Tile, y + RailingHeight / 2f, (a.y + 0.5f) * Tile + offset)
+                    : new Vector3((a.x + 0.5f) * Tile + offset, y + RailingHeight / 2f, b.y * Tile);
+                Vector3 size = east ? new Vector3(0.1f, RailingHeight, side) : new Vector3(side, RailingHeight, 0.1f);
+                Box($"Rail_{floor}_{a.x}_{a.y}_{b.x}_{b.y}_{(s < 0 ? "L" : "R")}", parent, center, size, material);
+            }
+            return 2;
         }
 
         private static int Perimeter(Transform walls, int floor, float y, Material wall, Material frame)

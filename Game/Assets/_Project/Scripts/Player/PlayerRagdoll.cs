@@ -143,8 +143,9 @@ namespace Abandoned.Player
             if (IsRemote) return;
             if (inputReader != null && inputReader.isActiveAndEnabled && inputReader.Current.DebugRagdollPressed)
             {
-                if (IsRagdolled) Recover();
-                else Enter(motor.MovementVelocity);
+                // Dead players stay down (no getting up with the debug key either).
+                if (IsRagdolled && !HoldDown) Recover();
+                else if (!IsRagdolled) Enter(motor.MovementVelocity);
             }
             if (IsRagdolled) Tick(Time.deltaTime);
         }

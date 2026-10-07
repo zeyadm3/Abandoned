@@ -124,6 +124,7 @@ namespace Abandoned.EditorTools
                 if (prefab != null) LootPrefabGenerator.ValidatePrefab(definition, prefab, errors);
                 ValidateCrew(definition, errors);
             }
+            ValidateCatalog(errors);
 
             foreach (string guid in AssetDatabase.FindAssets("t:ScriptableObject", new[] { DataRoot }))
             {
@@ -131,6 +132,18 @@ namespace Abandoned.EditorTools
                 Object asset = AssetDatabase.LoadMainAssetAtPath(path);
                 if (asset == null) errors.Add($"{path}: asset failed to load (missing script?).");
                 else if (asset is IValidatable validatable) validatable.Validate(errors);
+            }
+        }
+
+        // A definition missing from the runtime catalog never spawns, silently.
+        private static void ValidateCatalog(List<string> errors)
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootCatalog>(LootCatalogBuilder.CatalogPath);
+            if (catalog == null) { errors.Add($"{LootCatalogBuilder.CatalogPath} missing (Tools/Abandoned/Generate Loot Prefabs)."); return; }
+            foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
+            {
+                var d = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                if (d != null && catalog.PrefabFor(d) == null) errors.Add($"{d.name}: not in the loot catalog (Tools/Abandoned/Generate Loot Prefabs).");
             }
         }
 

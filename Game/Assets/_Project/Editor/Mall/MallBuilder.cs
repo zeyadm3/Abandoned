@@ -207,6 +207,9 @@ namespace Abandoned.EditorTools
             surface.ignoreNavMeshObstacle = false;
             surface.layerMask = ~LayerMask.GetMask(Abandoned.Core.GameLayers.Player, Abandoned.Core.GameLayers.Loot,
                 Abandoned.Core.GameLayers.Debris, "Ignore Raycast");
+            // The monster stays inside: nothing outside the walls, nothing on the roof (GDD: it lives in the building).
+            foreach (string group in new[] { "Exterior", "Truck", "Roof" })
+                root.Find(group).gameObject.AddComponent<Unity.AI.Navigation.NavMeshModifier>().ignoreFromBuild = true;
             surface.BuildNavMesh();
             AssetDatabase.DeleteAsset(NavMeshPath);
             AssetDatabase.CreateAsset(surface.navMeshData, NavMeshPath);

@@ -43,6 +43,8 @@ namespace Abandoned.Extraction
             {
                 LootItem item = hits[i].GetComponentInParent<LootItem>();
                 if (item == null || item.IsShattered || !item.gameObject.activeInHierarchy) continue;
+                // A pocketed item keeps its colliders where it was picked up; it rides in the pocket, not the bay.
+                if (item.TryGetComponent(out Interaction.Grabbable grabbable) && grabbable.IsPocketed) continue;
                 Vector3 local = bay.transform.InverseTransformPoint(item.transform.position) - bay.center;
                 if (Mathf.Abs(local.x) <= bay.size.x / 2f && Mathf.Abs(local.y) <= bay.size.y / 2f + 0.5f && Mathf.Abs(local.z) <= bay.size.z / 2f)
                     found.Add(item);

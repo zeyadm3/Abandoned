@@ -23,6 +23,11 @@ namespace Abandoned.EditorTools
         public static int Place(Transform parent)
         {
             int count = 0;
+            // Heavy spots only where some heavy item can actually turn up (else they'd always be empty).
+            var heavyTags = new System.Collections.Generic.HashSet<string>(UnityEditor.AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder })
+                .Select(g => UnityEditor.AssetDatabase.LoadAssetAtPath<LootDefinition>(UnityEditor.AssetDatabase.GUIDToAssetPath(g)))
+                .Where(d => d != null && !d.Jackpot && d.CarryClass == CarryClass.Heavy && d.SpawnTags != null)
+                .SelectMany(d => d.SpawnTags));
             foreach ((int floor, int x, int z, string tag) in Jackpots)
                 count += Point(parent, floor, new Vector2Int(x, z), tag, CarryClass.Huge, CarryClass.Huge, true, Vector2.zero);
 
@@ -30,14 +35,14 @@ namespace Abandoned.EditorTools
                 foreach (Zone zone in ZonesByFloor[f])
                 {
                     bool store = zone.Kind == Kind.Store;
-                    bool heavyPlaced = false;
+                    bool heavyPlaced = !heavyTags.Contains(zone.Tag);
                     foreach (Vector2Int c in Tiles(zone))
                     {
                         if (IsVoid(c, f) || UnderFlight(c, f) || IsJackpotTile(c, f)) continue;
                         // Stores: every other tile; open areas: one in three, so they read as emptied.
                         if (store ? (c.x + c.y + f) % 2 != 0 : (c.x + 2 * c.y + f) % 3 != 0) continue;
                         Vector2 jitter = new((Hash(c, f) % 7 - 3) * 0.3f, (Hash(c, f) / 7 % 7 - 3) * 0.3f);
-                        bool heavy = store && !heavyPlaced;
+                        bool heavy = !heavyPlaced && !IsWalkwayTile(c, f);
                         heavyPlaced |= heavy;
                         count += Point(parent, f, c, IsWalkwayTile(c, f) ? "walkway" : zone.Tag,
                             heavy ? CarryClass.OneHand : CarryClass.Pocket, heavy ? CarryClass.Heavy : CarryClass.TwoHand, false,

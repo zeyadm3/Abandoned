@@ -18,6 +18,8 @@ namespace Abandoned.EditorTools
     public static class MallPopulator
     {
         public const float DefaultStability = 0.75f;
+        /// <summary>The loading bay's exterior door (east wall, column 6): the truck parks facing it.</summary>
+        public static float TruckDoorZ => 6.5f * Tile;
         public const int DefaultSeed = 1;
 
         /// <summary>Parking lot, facing the main entrance (slot 0 is the host's).</summary>
@@ -55,10 +57,10 @@ namespace Abandoned.EditorTools
             var spawner = new GameObject("LootSpawner").AddComponent<Abandoned.Networking.NetworkLootSpawner>();
             spawner.Setup(bootstrap,
                 UnityEditor.AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath),
-                UnityEditor.AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath));
+                UnityEditor.AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath), autoSpawn: false);
 
             // The truck waits outside the loading bay door, ramp facing it (GDD 10).
-            TruckBuilder.Build(GreyboxFactory.Group("Truck", root), new Vector3(TilesX * Tile + 2f, 0f, 8.5f * Tile), Vector3.right);
+            TruckBuilder.Build(GreyboxFactory.Group("Truck", root), new Vector3(TilesX * Tile + 2f, 0f, TruckDoorZ), Vector3.right);
             var run = new GameObject("Run");
             var director = run.AddComponent<Abandoned.Extraction.RunDirector>();
             director.Setup(bootstrap,
@@ -119,8 +121,9 @@ namespace Abandoned.EditorTools
                 // The flight's own frame: z runs up the flight from its foot.
                 SectionNavCarver.EditorAdd(piece.gameObject, new Vector3(2.8f, 1f, 2f * Tile));
                 var obstacle = piece.GetComponent<UnityEngine.AI.NavMeshObstacle>();
-                obstacle.center = new Vector3(0f, StoryHeight / 2f, Tile);
-                obstacle.size = new Vector3(2.8f, StoryHeight + 1f, 2f * Tile);
+                // From just above the floor it starts on to above the one it reaches: the floor below stays walkable.
+                obstacle.center = new Vector3(0f, 0.4f + StoryHeight / 2f, Tile);
+                obstacle.size = new Vector3(2.8f, StoryHeight, 2f * Tile);
             }
             foreach (string weak in WeakSpots.Keys)
                 if (!matched.Contains(weak)) Debug.LogError($"Mall weak spot '{weak}' matches no tile (layout changed?).");

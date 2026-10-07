@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -47,6 +48,11 @@ namespace Abandoned.Player
         private void Update()
         {
             PlayerInputFrame input = inputReader.Current;
+            if (CursorOwner.UiActive)
+            {
+                if (CursorCaptured) SetCaptured(false);
+                return;
+            }
             if (input.PausePressed) SetCaptured(false);
             else if (!CursorCaptured && input.UsePressed) SetCaptured(true);
 

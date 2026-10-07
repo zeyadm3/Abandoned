@@ -124,6 +124,7 @@ namespace Abandoned.Tests
             Assert.IsFalse(me.Extracted);
             Assert.AreEqual(pocket.Item.CurrentValue, me.PocketValueLost);
             Assert.IsFalse(results.Items.Any(i => i.Pocketed), "left-behind pockets don't count");
+            Assert.AreEqual(0, results.Haul, "an item pocketed in the bay rides in the pocket, not the cargo");
         }
 
         private IEnumerator Depart(System.Action<RunResults> got)

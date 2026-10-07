@@ -56,6 +56,8 @@ namespace Abandoned.Networking
             if (ctx.Aborted) yield break;
             ctx.Note($"haul ${run.State.Haul:N0} with {cargo.Item.Definition.DisplayName}");
 
+            // The one who stayed outside meets something in the dark (host-decided death, seen by them).
+            ctx.PlayerOf(stayer).ServerKill();
             ctx.Channel.Send(driver, Start, "");
             yield return ctx.WaitFor(() => run.Results != null, "the truck to leave", StepTimeout);
             if (ctx.Aborted) yield break;
@@ -63,6 +65,7 @@ namespace Abandoned.Networking
             ctx.Note($"left with ${r.Haul:N0}; aboard: {string.Join(", ", r.Players.Select(p => $"{p.Name}={(p.Extracted ? "in" : "out")}"))}");
             if (r.Players.Count(p => p.Extracted) != players - 1) ctx.Fail($"expected {players - 1} aboard, got {r.Players.Count(p => p.Extracted)}");
             if (r.Players.Single(p => p.ClientId == stayer).Extracted) ctx.Fail("the client who stayed outside rode along");
+            if (!r.Players.Single(p => p.ClientId == stayer).Died) ctx.Fail("the killed client isn't marked dead in the results");
             ctx.Channel.SendToClients(Results, $"{r.Haul};{stayer}");
             var reports = new List<NetTestMessage>();
             yield return ctx.Collect(Results, clients.Count, reports, StepTimeout);
@@ -73,7 +76,14 @@ namespace Abandoned.Networking
             yield return ctx.WaitFor(() => RunState.Current != null && RunState.Current != run && RunState.Current.IsSpawned, "the next run", StepTimeout);
             if (ctx.Aborted) yield break;
             ctx.Note($"next run seed {RunState.Current.State.Seed}");
-            ctx.Channel.SendToClients(NextRun, RunState.Current.State.Seed.ToString());
+            yield return NetTestContext.Seconds(0.5f);
+            int generation = Object.FindAnyObjectByType<Abandoned.Structure.StructureSimulation>().Generation;
+            foreach (ulong c in clients)
+            {
+                // Each client's own slot, so a respawn onto the wrong spawn point fails.
+                Vector3 spawn = ctx.Bootstrap.Slots.TryGetSlot(c, out int slot) ? PlayerSpawnPoint.PoseFor(slot).position : Vector3.zero;
+                ctx.Channel.Send(c, NextRun, $"{RunState.Current.State.Seed};{LootCount(ctx.Manager)};{generation};{F(spawn.x)},{F(spawn.y)},{F(spawn.z)}");
+            }
             var respawned = new List<NetTestMessage>();
             yield return ctx.Collect(Respawned, clients.Count, respawned, StepTimeout);
             if (ctx.Aborted) yield break;
@@ -114,28 +124,37 @@ namespace Abandoned.Networking
                 yield return ctx.Receive(Results, StepTimeout, m => next = m);
                 if (ctx.Aborted) yield break;
             }
-            string[] expected = next.Payload.Split(';');
             yield return ctx.WaitFor(() => run.Results != null, "the results here", StepTimeout);
             if (ctx.Aborted) yield break;
             RunResults r = run.Results;
             RunResults.Player me = r.Players.Single(p => p.ClientId == ctx.Manager.LocalClientId);
-            string verdict = r.Haul.ToString() != expected[0] ? $"haul {r.Haul} vs host {expected[0]}"
-                : me.Extracted != board ? $"extracted={me.Extracted}, boarded={board}" : "ok";
+            bool deadHere = ctx.OwnPlayer.IsDead;
+            string verdict = me.Extracted != board ? $"extracted={me.Extracted}, boarded={board}"
+                : deadHere != !board ? $"dead here={deadHere}, but I {(board ? "boarded" : "stayed out and was killed")}"
+                : !board && !ctx.OwnPlayer.Ragdoll.IsRagdolled ? "killed but not lying down" : "ok";
             ctx.Note($"results: ${r.Haul:N0}, me {(me.Extracted ? "aboard" : "left behind")}");
             ctx.Channel.SendToHost(Results, verdict);
 
             NetTestMessage seedMessage = default;
             yield return ctx.Receive(NextRun, StepTimeout, m => seedMessage = m);
             if (ctx.Aborted) yield break;
+            string[] want = seedMessage.Payload.Split(';');
+            string[] xyz = want[3].Split(',');
+            var spawn = new Vector3(P(xyz[0]), P(xyz[1]), P(xyz[2]));
             yield return ctx.WaitFor(() => RunState.Current != null && RunState.Current != run && RunState.Current.IsSpawned
-                                           && RunState.Current.State.Seed.ToString() == seedMessage.Payload, "the next run here", StepTimeout);
+                                           && RunState.Current.State.Seed.ToString() == want[0], "the next run here", StepTimeout);
+            if (ctx.Aborted) yield break;
+            // The new run's loot all arrived and the old run's is gone; the building re-rolled here too.
+            yield return ctx.WaitFor(() => LootCount(ctx.Manager).ToString() == want[1], $"{want[1]} loot items here", StepTimeout);
             if (ctx.Aborted) yield break;
             yield return NetTestContext.Seconds(1f);
-            bool slotKnown = TryOwnSpawn(ctx, out Vector3 spawn);
             float off = Vector3.Distance(ctx.OwnPlayer.transform.position, spawn);
-            string again = !slotKnown ? "no spawn point" : off > 2f ? $"{off:0.0} m from my spawn after the next run" :
-                RunState.Current.State.Haul != 0 ? "haul not reset" : "ok";
-            ctx.Note($"next run: {off:0.0} m from spawn, {LootCount(ctx.Manager)} loot");
+            int generation = Object.FindAnyObjectByType<Abandoned.Structure.StructureSimulation>().Generation;
+            string again = off > 1.5f ? $"{off:0.0} m from my own spawn after the next run"
+                : generation.ToString() != want[2] ? $"structure generation {generation} vs host {want[2]}"
+                : ctx.OwnPlayer.IsDead || ctx.OwnPlayer.Ragdoll.IsRagdolled ? "still dead/down in the next run"
+                : RunState.Current.State.Haul != 0 ? "haul not reset" : "ok";
+            ctx.Note($"next run: {off:0.0} m from my spawn, {LootCount(ctx.Manager)} loot, generation {generation}, alive");
             ctx.Channel.SendToHost(Respawned, again);
             yield return ctx.Receive(Done, StepTimeout, m =>
             {
@@ -146,14 +165,8 @@ namespace Abandoned.Networking
         private static Vector3 BayPoint(int i) =>
             TruckCargo.Current.transform.position + new Vector3(0f, 0.45f, 0f) + Vector3.forward * (i % 2 == 0 ? 0.6f : -0.6f) + Vector3.right * (i * 0.5f - 0.5f);
 
-        // Same rule as the host's slots: the player's spawn point is the one nearest to where NGO first put them.
-        private static bool TryOwnSpawn(NetTestContext ctx, out Vector3 spawn)
-        {
-            PlayerSpawnPoint[] points = Object.FindObjectsByType<PlayerSpawnPoint>(FindObjectsSortMode.None);
-            spawn = points.Length == 0 ? Vector3.zero
-                : points.Select(p => p.transform.position).OrderBy(p => Vector3.Distance(p, ctx.OwnPlayer.transform.position)).First();
-            return points.Length > 0;
-        }
+        private static string F(float v) => v.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+        private static float P(string s) => float.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
 
         private static int LootCount(NetworkManager manager) =>
             manager.SpawnManager == null ? 0 : manager.SpawnManager.SpawnedObjectsList.Count(o => o != null && o.GetComponent<NetworkLoot>() != null);
