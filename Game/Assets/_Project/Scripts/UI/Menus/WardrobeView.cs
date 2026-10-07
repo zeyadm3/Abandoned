@@ -14,7 +14,7 @@ namespace Abandoned.UI
     public class WardrobeView
     {
         private readonly MenuUi menu;
-        private readonly VisualElement suits, hats, extras;
+        private readonly VisualElement suits, hats, extras, preview;
         private readonly Label progress;
 
         public VisualElement Root { get; }
@@ -26,11 +26,19 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
+            panel.AddToClassList("panel--xwide");
             MenuKit.Text(panel, "WARDROBE", "heading");
             progress = MenuKit.Text(panel, "", "subtitle");
+            // UI step 8: you, turning slowly, on the left; the choices on the right.
+            VisualElement columns = MenuKit.Row(panel);
+            columns.AddToClassList("wardrobe__columns");
+            preview = new VisualElement { pickingMode = PickingMode.Ignore };
+            preview.AddToClassList("wardrobe__preview");
+            columns.Add(preview);
             var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             scroll.AddToClassList("scroll");
-            panel.Add(scroll);
+            scroll.AddToClassList("wardrobe__choices");
+            columns.Add(scroll);
             MenuKit.Text(scroll, "COVERALLS", "section");
             suits = new VisualElement();
             suits.AddToClassList("wrap");
@@ -56,6 +64,7 @@ namespace Abandoned.UI
             progress.text = $"Runs {PlayerProfile.Runs}   made it out {PlayerProfile.Escapes}   lifetime haul ${PlayerProfile.Haul:N0}";
             if (me == null || me.Catalog == null) return;
             CosmeticChoice now = me.Choice;
+            preview.style.backgroundImage = Background.FromRenderTexture(WardrobePreview.Show(me.Catalog, now));
             Fill(suits, me.Catalog.Coveralls, now.Coverall, i => me.Wear(me.Choice.WithCoverall(i)), swatch: true);
             Fill(hats, me.Catalog.Hats, now.Hat, i => me.Wear(me.Choice.WithHat(i)), swatch: false);
             Fill(extras, me.Catalog.Accessories, now.Accessory, i => me.Wear(me.Choice.WithAccessory(i)), swatch: false);

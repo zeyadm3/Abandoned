@@ -241,6 +241,7 @@ namespace Abandoned.UI
         private void Show(MenuScreen screen)
         {
             Showing = screen;
+            if (screen != MenuScreen.Wardrobe) WardrobePreview.Hide();
             foreach (KeyValuePair<MenuScreen, VisualElement> v in views) MenuKit.Show(v.Value, v.Key == screen);
             MenuKit.Show(hud, screen == MenuScreen.None && !clipMode);
         }

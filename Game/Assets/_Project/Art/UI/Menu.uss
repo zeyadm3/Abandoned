@@ -1264,3 +1264,163 @@
 
 .tally--total .tally__label { color: var(--c-text); }
 .tally--total .tally__value { font-size: 30px; }
+
+/* ---- HQ supply terminal: amber CRT (UI step 8) ---- */
+
+.crt {
+    width: 1080px;
+    max-width: 94%;
+    background-color: rgb(30, 26, 20);
+    border-top-width: 0;
+    padding: 26px 26px 26px 26px;
+    border-radius: 18px;
+}
+
+.crt__screen {
+    background-color: var(--c-crt-bg);
+    border-radius: 14px;
+    padding: 22px 28px 18px 28px;
+    border-width: 3px;
+    border-color: rgb(60, 44, 18);
+    overflow: hidden;
+}
+
+.crt__scanlines {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    background-repeat: repeat repeat;
+    background-size: 4px 4px;
+}
+
+.crt__title, .crt__line, .crt__rule, .crt__name, .crt__note, .crt__price, .crt__about, .crt__cursor, .crt__button {
+    -unity-font-definition: url("../ThirdParty/Fonts/VT323/VT323-Regular.ttf");
+    color: var(--c-crt);
+    text-shadow: 0 0 6px rgba(255, 176, 0, 0.55);
+}
+
+.crt__title { font-size: 34px; }
+.crt__line { font-size: 24px; }
+.crt__rule { font-size: 22px; color: rgba(255, 176, 0, 0.55); overflow: hidden; white-space: nowrap; }
+.crt__list { max-height: 440px; min-height: 300px; }
+
+.crt__button {
+    font-size: 26px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    padding: 0 10px 0 0;
+    margin: 0 12px 0 0;
+}
+
+.crt__button:hover, .crt__button--on { color: var(--c-crt-bg); background-color: var(--c-crt); text-shadow: none; }
+
+.crt__row {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    margin: 0;
+    padding: 2px 6px 2px 6px;
+    min-height: 34px;
+}
+
+.crt__row:hover { background-color: var(--c-crt); }
+.crt__row:hover .crt__name, .crt__row:hover .crt__note, .crt__row:hover .crt__price { color: var(--c-crt-bg); text-shadow: none; }
+.crt__row--locked .crt__name, .crt__row--locked .crt__price { color: rgba(255, 176, 0, 0.4); }
+.crt__row--cant .crt__price { color: rgba(255, 176, 0, 0.55); }
+
+.crt__name { font-size: 28px; flex-grow: 1; }
+.crt__note { font-size: 22px; width: 150px; -unity-text-align: middle-right; color: rgba(255, 176, 0, 0.7); }
+.crt__price { font-size: 28px; width: 150px; -unity-text-align: middle-right; }
+.crt__about { font-size: 24px; min-height: 58px; white-space: normal; margin-top: 8px; }
+.crt__cursor { font-size: 26px; }
+
+/* The gear rack's buttons show the gear. */
+.rack__item { flex-direction: row; align-items: center; padding-left: 8px; }
+.rack__icon { margin-right: 6px; }
+
+/* ---- Contract board: job sheets pinned to cork (UI step 8) ---- */
+
+.board__cork {
+    background-color: rgb(120, 86, 52);
+    padding: 22px 16px 22px 16px;
+    border-width: 6px;
+    border-color: rgb(70, 50, 30);
+    border-radius: 4px;
+}
+
+.sheet {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 10px 0 10px;
+    padding: 22px 18px 16px 18px;
+    background-color: var(--c-paper);
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(205, 196, 172);
+}
+
+.sheet__pin {
+    position: absolute;
+    top: 6px; left: 50%;
+    width: 16px; height: 16px;
+    margin-left: -8px;
+    border-radius: 8px;
+    background-color: rgb(200, 40, 34);
+    border-bottom-width: 3px;
+    border-bottom-color: rgb(120, 20, 16);
+}
+
+.sheet__place {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: rgb(110, 102, 88);
+}
+
+.sheet__job {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 34px;
+    color: var(--c-paper-ink);
+    white-space: normal;
+}
+
+.sheet__quip { font-size: 16px; color: rgb(110, 102, 88); -unity-font-style: italic; white-space: normal; margin-bottom: 6px; }
+.sheet__text { font-size: 16px; color: var(--c-paper-ink); white-space: normal; margin-bottom: 8px; }
+
+.sheet__fact {
+    min-height: 26px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(42, 38, 32, 0.15);
+}
+
+.sheet__fact-label {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 14px;
+    color: rgb(110, 102, 88);
+    flex-grow: 1;
+}
+
+.sheet__fact-value, .sheet__fact-value--warn {
+    -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 16px;
+    color: var(--c-paper-ink);
+}
+
+.sheet__fact-value--warn { color: rgb(190, 40, 30); }
+.sheet__take { margin: 12px 0 0 0; align-self: stretch; }
+.sheet__stamp { position: absolute; top: 40%; left: 18%; font-size: 52px; }
+
+/* Wardrobe with a turning preview (UI step 8). */
+.wardrobe__columns { align-items: flex-start; flex-shrink: 1; }
+
+.wardrobe__preview {
+    width: 360px; height: 450px;
+    flex-shrink: 0;
+    margin-right: 24px;
+    border-width: 2px;
+    border-color: var(--c-line);
+    border-radius: 4px;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.wardrobe__choices { flex-grow: 1; max-height: 560px; }
