@@ -76,8 +76,12 @@ namespace Abandoned.EditorTools
                 point.transform.position = TileTopCenter(new Vector2Int(x, z), floor);
                 point.AddComponent<Abandoned.Threats.ThreatSpawnPoint>();
             }
-            new GameObject("Threats").AddComponent<Abandoned.Threats.ThreatDirector>().Setup(bootstrap,
+            var threats = new GameObject("Threats");
+            threats.AddComponent<Abandoned.Threats.ThreatDirector>().Setup(bootstrap,
                 UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.BlindOnePrefabPath).GetComponent<Unity.Netcode.NetworkObject>());
+            threats.AddComponent<Abandoned.Threats.DangerDirector>().Setup(
+                UnityEditor.AssetDatabase.LoadAssetAtPath<Abandoned.Extraction.DangerConfig>(NetworkContentBuilder.DangerConfigPath),
+                Object.FindAnyObjectByType<StructureSimulation>());
 
             var debugViews = new GameObject("DebugViews");
             debugViews.AddComponent<NoiseDebugView>();

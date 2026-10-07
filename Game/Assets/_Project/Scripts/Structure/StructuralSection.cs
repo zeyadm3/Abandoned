@@ -139,7 +139,8 @@ namespace Abandoned.Structure
                 return;
             }
 
-            float drain = StructureMath.OverloadDrain(Load, Capacity, config.OverloadDrainPerSecond, DecayScale, dt);
+            float danger = Simulation != null ? Simulation.DangerDecay : 1f;
+            float drain = StructureMath.OverloadDrain(Load, Capacity, config.OverloadDrainPerSecond, DecayScale * danger, dt);
             if (drain > 0f) Damage(drain);
             else UpdateStage();
             EmitCreaks(dt);
@@ -205,7 +206,7 @@ namespace Abandoned.Structure
             Collapsed?.Invoke(this);
         }
 
-        private void Damage(float amount)
+        internal void Damage(float amount)
         {
             if (IsCollapsed || IsMirror || Stage == StructuralStage.Failing || amount <= 0f) return;
             // Non-collapsible sections can crack but always keep a sliver of health.

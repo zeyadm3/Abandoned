@@ -71,6 +71,17 @@ namespace Abandoned.Extraction
             if (State.Phase == RunPhase.Honking && Now >= State.HonkEnd) Depart();
         }
 
+        /// <summary>Host: the danger director's verdict for this moment of the run.</summary>
+        public void SetDanger(int level)
+        {
+            if (!IsServer || State.Danger == level) return;
+            RunNetState s = State;
+            s.Danger = (byte)Mathf.Clamp(level, 0, 255);
+            state.Value = s;
+        }
+
+        public float Elapsed => Time.time - startedAt;
+
         // ---- Starting the truck ----
 
         /// <summary>This machine's player pressed the ignition.</summary>

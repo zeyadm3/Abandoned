@@ -19,7 +19,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-5.6 danger -> M5 review, MVP checklist, tag, builds -> M6.
+M5 review, MVP checklist (GDD 26), tag `milestone-5`, builds -> M6.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->

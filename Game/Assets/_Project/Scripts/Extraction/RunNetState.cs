@@ -8,6 +8,8 @@ namespace Abandoned.Extraction
     {
         public RunPhase Phase;
         public int Quota, Haul, Seed;
+        /// <summary>Danger level (M5.6): rises over the run, sharply after the window closes.</summary>
+        public byte Danger;
         public float CargoVolume, CargoCapacity;
         public double WindowEnd, HonkEnd;
 
@@ -17,6 +19,7 @@ namespace Abandoned.Extraction
             s.SerializeValue(ref Quota);
             s.SerializeValue(ref Haul);
             s.SerializeValue(ref Seed);
+            s.SerializeValue(ref Danger);
             s.SerializeValue(ref CargoVolume);
             s.SerializeValue(ref CargoCapacity);
             s.SerializeValue(ref WindowEnd);
@@ -25,7 +28,7 @@ namespace Abandoned.Extraction
 
         public bool Overloaded => CargoVolume > CargoCapacity;
 
-        public bool Equals(RunNetState o) => Phase == o.Phase && Quota == o.Quota && Haul == o.Haul && Seed == o.Seed &&
+        public bool Equals(RunNetState o) => Phase == o.Phase && Quota == o.Quota && Haul == o.Haul && Seed == o.Seed && Danger == o.Danger &&
                                              CargoVolume.Equals(o.CargoVolume) && CargoCapacity.Equals(o.CargoCapacity) &&
                                              WindowEnd.Equals(o.WindowEnd) && HonkEnd.Equals(o.HonkEnd);
     }

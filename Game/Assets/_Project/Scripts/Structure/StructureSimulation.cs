@@ -37,6 +37,9 @@ namespace Abandoned.Structure
         public IReadOnlyList<StructuralSection> Sections => sections;
         public StructureConfig Config => config;
         public float Stability => stability;
+
+        /// <summary>Host: danger (M5.6) makes overloaded sections fail faster; 1 = normal.</summary>
+        public float DangerDecay { get; set; } = 1f;
         public int Seed => seed;
         public int CollapseCount { get; private set; }
         /// <summary>Bumped by every <see cref="ApplyStability"/> (start, stability change, re-roll), so clients know to restore.</summary>
@@ -121,6 +124,28 @@ namespace Abandoned.Structure
         /// Client: the host re-rolled or changed stability. Scales and restores every section (debris
         /// cleared, colliders back); their health and stage then come from the host, not a local roll.
         /// </summary>
+        /// <summary>
+        /// Host, danger: the building ages on its own. Each picked collapsible section that can still fall
+        /// loses <paramref name="fraction"/> of its health, never below <paramref name="floor"/>: it creaks
+        /// and cracks, but only weight finishes the job.
+        /// </summary>
+        public int AgeRandomSections(int count, float fraction, float floor, System.Random random)
+        {
+            if (!HasAuthority || count <= 0) return 0;
+            var candidates = sections.FindAll(s => s.CanCollapse && !s.IsCollapsed && s.HealthFraction > floor);
+            int aged = 0;
+            for (int i = 0; i < count && candidates.Count > 0; i++)
+            {
+                StructuralSection s = candidates[random.Next(candidates.Count)];
+                candidates.Remove(s);
+                float amount = Mathf.Min(fraction, s.HealthFraction - floor) * s.MaxHealth;
+                if (amount <= 0f) continue;
+                s.Damage(amount);
+                aged++;
+            }
+            return aged;
+        }
+
         public void MirrorStability(float newStability, int newSeed, int hostGeneration)
         {
             // The host's generation, not a local count, so F1 shows the same number on every machine.

@@ -41,6 +41,22 @@ namespace Abandoned.Audio
             return clip;
         }
 
+        private static AudioClip radioStatic;
+
+        /// <summary>A burst of radio static (danger rising: every handset hisses).</summary>
+        public static AudioClip Static()
+        {
+            if (radioStatic != null) return radioStatic;
+            var random = new System.Random(11);
+            radioStatic = Build("Radio_Static", 1.2f, t =>
+            {
+                float env = Mathf.Clamp01(t / 0.05f) * Mathf.Clamp01((1.2f - t) / 0.3f);
+                float crackle = random.NextDouble() < 0.02 ? 1f : 0.35f;
+                return ((float)random.NextDouble() * 2f - 1f) * crackle * env * 0.35f;
+            });
+            return radioStatic;
+        }
+
         private static AudioClip click;
 
         /// <summary>The Blind One's echolocation click: a short dry knock with a hollow ring.</summary>

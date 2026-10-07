@@ -19,6 +19,7 @@ namespace Abandoned.EditorTools
         public const string StructureNetPrefabPath = NetworkPrefabFolder + "/StructureNet.prefab";
         public const string RunStatePrefabPath = NetworkPrefabFolder + "/RunState.prefab";
         public const string ExtractionConfigPath = "Assets/_Project/Data/Extraction/ExtractionConfig.asset";
+        public const string DangerConfigPath = "Assets/_Project/Data/Extraction/DangerConfig.asset";
 
         /// <summary>NGO's own generated list; NGO adds network prefabs to it on import, we make sure of ours.</summary>
         public const string PrefabListPath = "Assets/DefaultNetworkPrefabs.asset";
@@ -68,6 +69,7 @@ namespace Abandoned.EditorTools
         public static GameObject CreateRunStatePrefab()
         {
             var config = LoadOrCreateAsset<Abandoned.Extraction.ExtractionConfig>(ExtractionConfigPath);
+            LoadOrCreateAsset<Abandoned.Extraction.DangerConfig>(DangerConfigPath);
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath);
             if (existing != null && existing.GetComponent<Abandoned.Extraction.RunState>() != null) return existing;
             var root = new GameObject("RunState");
