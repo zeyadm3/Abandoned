@@ -28,7 +28,7 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             MenuKit.Text(panel, "WARDROBE", "heading");
             progress = MenuKit.Text(panel, "", "subtitle");
-            var scroll = new ScrollView();
+            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             scroll.AddToClassList("scroll");
             panel.Add(scroll);
             MenuKit.Text(scroll, "COVERALLS", "section");

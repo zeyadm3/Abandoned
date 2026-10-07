@@ -73,7 +73,7 @@ namespace Abandoned.Extraction
             string verdict = r.QuotaMet ? "<color=#7dff7d>QUOTA MET</color>" : "<color=#ff7766>QUOTA MISSED</color>";
             MenuKit.Text(panel, $"HAUL ${r.Haul:N0} / QUOTA ${r.Quota:N0}   {verdict}   ({(int)r.Seconds / 60}:{(int)r.Seconds % 60:00})", "subtitle");
 
-            var scroll = new ScrollView();
+            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             scroll.AddToClassList("scroll");
             scroll.style.maxHeight = 300;
             panel.Add(scroll);

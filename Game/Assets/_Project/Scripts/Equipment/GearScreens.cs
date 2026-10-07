@@ -54,7 +54,7 @@ namespace Abandoned.Equipment
             int money = company.State.Money;
             MenuKit.Text(panel, "SHOP", "heading");
             MenuKit.Text(panel, $"COMPANY MONEY {(money < 0 ? $"DEBT ${-money:N0}" : $"${money:N0}")}   LEVEL {company.State.Level}", "subtitle");
-            var scroll = new ScrollView();
+            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             scroll.AddToClassList("scroll");
             panel.Add(scroll);
             for (int i = 0; i < catalog.Items.Count; i++)

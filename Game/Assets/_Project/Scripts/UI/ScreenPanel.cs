@@ -4,8 +4,8 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// A centred, clickable panel on the HUD layer for screens the world opens (contract board, shop,
-    /// gear rack, appraisal). Contents are rebuilt only when the screen's state key changes.
+    /// A centred, clickable panel just above the HUD layer for screens the world opens (contract board,
+    /// shop, gear rack, appraisal). Contents are rebuilt only when the screen's state key changes.
     /// </summary>
     public sealed class ScreenPanel
     {
@@ -23,8 +23,13 @@ namespace Abandoned.UI
         /// <summary>Null when there's no HUD (bare test rigs).</summary>
         public static ScreenPanel Create(bool wide)
         {
-            VisualElement root = HudLayer.Add(new VisualElement(), "backdrop", "backdrop--dim", "backdrop--center");
-            if (root == null) return null;
+            VisualElement hud = HudLayer.Root;
+            if (hud == null || hud.parent == null) return null;
+            // Beside the HUD layer, not in it: clip mode (F10) hides the HUD, but an open board must stay
+            // visible. Still under the menus, which come later in the document.
+            var root = new VisualElement();
+            foreach (string c in new[] { "backdrop", "backdrop--dim", "backdrop--center" }) root.AddToClassList(c);
+            hud.parent.Insert(hud.parent.IndexOf(hud) + 1, root);
             root.pickingMode = PickingMode.Position; // the panel's buttons take the clicks
             return new ScreenPanel(root, MenuKit.Panel(root, wide));
         }

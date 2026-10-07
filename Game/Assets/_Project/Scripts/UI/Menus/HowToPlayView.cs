@@ -17,7 +17,7 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             MenuKit.Text(panel, "HOW TO PLAY", "heading");
-            var scroll = new ScrollView();
+            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             scroll.AddToClassList("scroll");
             panel.Add(scroll);
             MenuKit.Text(scroll, "THE JOB", "section");

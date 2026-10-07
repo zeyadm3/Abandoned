@@ -18,6 +18,7 @@ namespace Abandoned.Voice
 
         private readonly StringBuilder text = new();
         private readonly Dictionary<NetworkVoice, Label> marks = new();
+        private readonly List<NetworkVoice> gone = new();
         private GUIStyle style;
         private Label own;
 
@@ -76,8 +77,8 @@ namespace Abandoned.Voice
                 if (mark.text != glyph) mark.text = glyph;
                 UI.HudLayer.Place(mark, v.transform.position + Vector3.up * 2.4f, cam);
             }
-            // Speakers who left.
-            var gone = new List<NetworkVoice>();
+            // Speakers who left (a reused list: this runs every frame).
+            gone.Clear();
             foreach (KeyValuePair<NetworkVoice, Label> m in marks) if (m.Key == null) gone.Add(m.Key);
             foreach (NetworkVoice g in gone) { UI.HudLayer.Remove(marks[g]); marks.Remove(g); }
         }
