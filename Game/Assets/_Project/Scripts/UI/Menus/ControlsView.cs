@@ -42,9 +42,7 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             MenuKit.Text(panel, "CONTROLS", "heading");
             MenuKit.Text(panel, "Click a key, then press the new one. Esc cancels.", "subtitle");
-            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            panel.Add(scroll);
+            var scroll = MenuKit.Scroll(panel);
 
             foreach (string name in InputBindings.Rebindable)
             {

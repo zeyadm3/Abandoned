@@ -3,7 +3,7 @@
    Fonts (OFL): Barlow (body, set on the root from code), Barlow Condensed (display), Saira Stencil One (titles),
    IBM Plex Mono (receipts), VT323 (the HQ terminal). Sizes are at the 1920x1080 reference (scaled by height). */
 
-:root {
+:root, .menu-root {
     --c-ink: rgb(11, 13, 13);
     --c-panel: rgba(22, 25, 24, 0.97);
     --c-panel-2: rgb(30, 34, 32);
@@ -1316,7 +1316,7 @@
     margin: 0 12px 0 0;
 }
 
-.crt__button:hover, .crt__button--on { color: var(--c-crt-bg); background-color: var(--c-crt); text-shadow: none; }
+.crt__button:hover, .crt__button--on { color: var(--c-crt-bg); background-color: var(--c-crt); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
 
 .crt__row {
     flex-direction: row;
@@ -1329,7 +1329,7 @@
 }
 
 .crt__row:hover { background-color: var(--c-crt); }
-.crt__row:hover .crt__name, .crt__row:hover .crt__note, .crt__row:hover .crt__price { color: var(--c-crt-bg); text-shadow: none; }
+.crt__row:hover .crt__name, .crt__row:hover .crt__note, .crt__row:hover .crt__price { color: var(--c-crt-bg); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
 .crt__row--locked .crt__name, .crt__row--locked .crt__price { color: rgba(255, 176, 0, 0.4); }
 .crt__row--cant .crt__price { color: rgba(255, 176, 0, 0.55); }
 
@@ -1600,9 +1600,7 @@
 .horror-danger--final .horror-danger__mark--on { background-color: var(--c-bad); }
 .horror-radio {
     position: absolute;
-    left: 50%; bottom: 56px;
-    translate: -50% 0;
-    width: 66%; max-width: 850px;
+    left: 23%; right: 23%; bottom: 56px;
     padding: 10px 18px 12px 18px;
     background-color: rgba(9, 16, 13, 0.94);
     border-left-width: 2px;
@@ -1619,3 +1617,106 @@
 .horror-radio__line { font-size: 18px; white-space: normal; color: rgb(218, 222, 200); -unity-text-align: middle-center; }
 .horror-radio--urgent { border-left-color: var(--c-bad); background-color: rgba(35, 14, 10, 0.96); }
 .horror-radio--urgent .horror-radio__caption { color: rgb(227, 145, 123); }
+
+/* Bounds and flow are shared by menus and the world-space terminal panels. */
+.menu-root Label { min-width: 0; flex-shrink: 0; white-space: normal; }
+.backdrop { padding: 20px; }
+.backdrop--center { padding: 20px; }
+.panel { flex-direction: column; min-width: 0; min-height: 0; padding: 24px 30px; }
+.scroll { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.scroll .unity-scroll-view__content-viewport { min-width: 0; min-height: 0; }
+.scroll .unity-scroll-view__content-container { min-width: 0; flex-shrink: 0; }
+.scroll .unity-scroller--horizontal { display: none; }
+.heading { font-size: 44px; margin-bottom: 12px; }
+.title { font-size: 64px; margin-bottom: 0; }
+.subtitle { white-space: normal; margin-bottom: 18px; }
+.text, .notice, .credits__body { min-width: 0; white-space: normal; }
+.row { min-width: 0; flex-shrink: 0; }
+.menu-button { height: auto; min-height: 46px; font-size: 30px; flex-shrink: 0; white-space: normal; }
+.menu-button--small { height: auto; min-height: 36px; font-size: 20px; }
+.menu-button__arrow { display: none; }
+.main__column { width: 720px; max-width: 88%; min-width: 0; padding-left: 0; margin-left: 6%; }
+.main__logo { font-size: 88px; margin-bottom: 0; }
+.main__buttons .menu-button { font-size: 36px; min-height: 50px; height: auto; }
+.main__links { flex-wrap: wrap; }
+.main__memo { right: 7%; white-space: normal; }
+.pause__scroll { width: 100%; height: 100%; }
+.pause__scroll .unity-scroll-view__content-container { align-items: center; padding: 26px 0; }
+.pause__columns { align-items: flex-start; min-width: 0; flex-shrink: 0; }
+.pause__left { width: 350px; min-width: 0; margin-right: 28px; flex-shrink: 0; }
+.pause__left .title { font-size: 56px; }
+.pause__crew { min-width: 0; min-height: 0; }
+.pause__crew-list { min-width: 0; min-height: 0; }
+.crew__row { flex-wrap: wrap; min-height: 84px; height: auto; padding: 6px 0; flex-shrink: 0; }
+.crew__who { min-width: 0; flex-basis: 150px; flex-grow: 1; flex-shrink: 1; }
+.crew__name { font-size: 22px; white-space: normal; }
+.crew__tags { white-space: normal; }
+.crew__ping { width: 56px; flex-shrink: 0; }
+.crew__volume { width: 120px; min-width: 100px; flex-shrink: 0; }
+.crew__mute { flex-shrink: 0; }
+.setting { min-height: 48px; height: auto; min-width: 0; flex-shrink: 0; }
+.setting__label { width: 36%; min-width: 0; flex-shrink: 1; white-space: normal; }
+.setting__control { flex-basis: 0; min-width: 100px; flex-grow: 1; flex-shrink: 1; }
+.setting__value { width: 88px; min-width: 70px; flex-shrink: 0; }
+.choice__value { width: auto; max-width: 43%; min-width: 0; flex-grow: 1; flex-shrink: 1; white-space: normal; }
+.choice__arrow { width: 40px; min-width: 40px; flex-shrink: 0; }
+.settings__tabs { flex-wrap: wrap; flex-shrink: 0; }
+.settings__body { min-height: 0; min-width: 0; }
+.field { min-height: 42px; height: auto; min-width: 0; flex-shrink: 0; }
+.field .unity-text-input { min-width: 0; }
+.hud-cards { flex-wrap: wrap; min-width: 0; flex-shrink: 0; }
+.play__body { min-height: 0; }
+.play__card { flex-basis: 260px; min-width: 0; flex-shrink: 0; }
+.play__blurb { min-height: 0; height: auto; white-space: normal; }
+.play__title { min-width: 0; flex-shrink: 1; white-space: normal; }
+.play__card .menu-button { font-size: 26px; }
+.appraisal { min-width: 0; min-height: 0; }
+.appraisal__columns { flex-wrap: wrap; min-width: 0; flex-shrink: 0; }
+.receipt { width: 48%; flex-basis: 48%; min-width: 280px; max-width: 550px; margin-right: 20px; rotate: 0deg; }
+.appraisal__side { min-width: 0; flex-basis: 280px; flex-grow: 1; flex-shrink: 0; }
+.receipt__items { min-height: 140px; max-height: 360px; }
+.receipt__row { height: auto; min-height: 28px; flex-shrink: 0; }
+.receipt__name, .receipt__line { flex-basis: 0; min-width: 0; flex-grow: 1; flex-shrink: 1; white-space: normal; }
+.receipt__value { width: 106px; min-width: 106px; flex-shrink: 0; }
+.receipt__old { width: 64px; min-width: 64px; flex-shrink: 0; }
+.receipt__stamp, .sheet__stamp { position: relative; top: auto; right: auto; bottom: auto; left: auto; align-self: flex-start; margin-top: 12px; font-size: 26px; rotate: 0deg; scale: 1 1; white-space: normal; }
+.tally__row { min-height: 32px; height: auto; flex-shrink: 0; }
+.tally__label { min-width: 0; flex-shrink: 1; white-space: normal; }
+.tally__value { min-width: 90px; flex-shrink: 0; }
+.crt { min-width: 0; min-height: 0; }
+.crt__screen { min-width: 0; }
+.crt__list { min-height: 160px; max-height: 440px; }
+.crt__row { min-height: 46px; height: auto; flex-shrink: 0; min-width: 0; }
+.crt__name { font-size: 22px; min-width: 0; flex-basis: 0; flex-grow: 1; flex-shrink: 1; white-space: normal; }
+.crt__note { width: 120px; min-width: 100px; font-size: 18px; flex-shrink: 0; white-space: normal; }
+.crt__price { width: 106px; min-width: 90px; font-size: 22px; flex-shrink: 0; }
+.crt__about { height: auto; min-height: 72px; font-size: 20px; white-space: normal; }
+.sheet { min-width: 240px; flex-basis: 260px; flex-shrink: 0; rotate: 0deg; }
+.sheet__facts { min-width: 0; }
+.sheet__fact { height: auto; min-height: 32px; flex-shrink: 0; }
+.sheet__fact-label { width: 35%; min-width: 0; flex-shrink: 1; white-space: normal; }
+.sheet__fact-value { width: 65%; min-width: 0; flex-shrink: 1; white-space: normal; }
+.wardrobe__columns { min-width: 0; min-height: 0; flex-grow: 1; align-items: stretch; }
+.wardrobe__choices { min-width: 0; min-height: 0; }
+.icon, .slot__icon { background-size: contain; flex-shrink: 0; }
+.rack__button { flex-direction: row; align-items: center; min-height: 40px; height: auto; max-width: 100%; }
+.rack__name { min-width: 0; flex-grow: 1; flex-shrink: 1; font-size: 18px; white-space: normal; }
+.hud-voice { bottom: 178px; }
+.chat { bottom: 214px; width: 440px; max-width: 30%; }
+.chat__log { max-height: 260px; }
+.chat__line { min-width: 0; white-space: normal; }
+.toast-stack { top: 124px; width: 340px; }
+.hint { top: 124px; width: 340px; }
+.run-clock { top: 78px; }
+.subtitles { bottom: 142px; left: 22%; right: 22%; width: auto; }
+.horror-radio__line { min-width: 0; white-space: normal; }
+.menu-compact .pause__columns { flex-direction: column; align-items: stretch; }
+.menu-compact .pause__left { width: 100%; margin-right: 0; margin-bottom: 24px; }
+.menu-compact .pause__crew { width: 100%; max-width: 100%; }
+.menu-compact .wardrobe__preview { width: 240px; height: 320px; margin-right: 16px; }
+.menu-compact .receipt { width: 100%; flex-basis: 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; }
+.menu-compact .appraisal__side { flex-basis: 100%; }
+.menu-short .main__logo { font-size: 66px; }
+.menu-short .main__buttons .menu-button { font-size: 28px; min-height: 40px; }
+.menu-short .main__column { padding-bottom: 80px; }
+.menu-short .wardrobe__preview { width: 220px; height: 280px; }

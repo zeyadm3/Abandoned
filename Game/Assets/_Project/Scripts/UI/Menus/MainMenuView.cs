@@ -41,6 +41,8 @@ namespace Abandoned.UI
             shade.AddToClassList("main__shade");
             Root.Add(shade);
             var column = new VisualElement();
+            column.style.flexDirection = FlexDirection.Column;
+            column.style.minWidth = 0;
             column.AddToClassList("main__column");
             Root.Add(column);
 
@@ -54,6 +56,8 @@ namespace Abandoned.UI
             noticeBox.AddToClassList("main__notice");
             column.Add(noticeBox);
             notice = MenuKit.Text(noticeBox, "", "text");
+            notice.style.flexGrow = 1;
+            notice.style.flexShrink = 1;
             notice.AddToClassList("text--error");
             MenuKit.Button(noticeBox, "OK", SessionEndNotice.Clear, SoundId.UiConfirm, small: true);
 
@@ -64,6 +68,7 @@ namespace Abandoned.UI
             MenuKit.Button(column, "Quit", menu.Quit, SoundId.UiBack).AddToClassList("main__button");
 
             VisualElement links = MenuKit.Row(Root);
+            links.style.flexWrap = Wrap.Wrap;
             links.AddToClassList("main__links");
             if (Launch.HasDiscord) MenuKit.Button(links, "Discord", Launch.OpenDiscord, small: true);
             if (Launch.HasFeedback) MenuKit.Button(links, "Feedback", Launch.OpenFeedback, small: true);

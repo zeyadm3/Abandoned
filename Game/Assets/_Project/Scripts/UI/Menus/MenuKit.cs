@@ -11,6 +11,14 @@ namespace Abandoned.UI
         public static VisualElement Panel(VisualElement parent, bool wide = false)
         {
             var panel = new VisualElement();
+            panel.style.flexDirection = FlexDirection.Column;
+            panel.style.width = wide ? 960f : 660f;
+            panel.style.height = Length.Percent(86f);
+            panel.style.flexShrink = 1;
+            panel.style.minWidth = 0;
+            panel.style.minHeight = 0;
+            panel.style.maxWidth = Length.Percent(92f);
+            panel.style.maxHeight = Length.Percent(92f);
             panel.AddToClassList("panel");
             if (wide) panel.AddToClassList("panel--wide");
             parent.Add(panel);
@@ -20,6 +28,9 @@ namespace Abandoned.UI
         public static Label Text(VisualElement parent, string text, string cls = "text")
         {
             var label = new Label(text);
+            label.style.minWidth = 0;
+            label.style.flexShrink = 0;
+            label.style.whiteSpace = WhiteSpace.Normal;
             label.AddToClassList(cls);
             parent.Add(label);
             return label;
@@ -33,14 +44,12 @@ namespace Abandoned.UI
                 onClick();
             }) { text = text };
             button.AddToClassList("menu-button");
+            button.style.minHeight = small ? 36f : 46f;
+            button.style.height = StyleKeyword.Auto;
+            button.style.flexShrink = 0;
+            button.style.minWidth = 0;
+            button.style.whiteSpace = WhiteSpace.Normal;
             if (small) button.AddToClassList("menu-button--small");
-            else
-            {
-                // Big buttons: an arrow that shows on hover, a tick and a little jolt as the pointer lands.
-                var arrow = new Label("\u25B6") { pickingMode = PickingMode.Ignore };
-                arrow.AddToClassList("menu-button__arrow");
-                button.Add(arrow);
-            }
             button.RegisterCallback<PointerEnterEvent>(_ =>
             {
                 if (!button.enabledSelf) return;
@@ -54,9 +63,33 @@ namespace Abandoned.UI
         public static VisualElement Row(VisualElement parent)
         {
             var row = new VisualElement();
+            row.style.flexDirection = FlexDirection.Row;
+            row.style.alignItems = Align.Center;
+            row.style.flexShrink = 0;
+            row.style.minWidth = 0;
             row.AddToClassList("row");
             parent.Add(row);
             return row;
+        }
+
+        public static ScrollView Scroll(VisualElement parent, params string[] classes)
+        {
+            var scroll = new ScrollView(ScrollViewMode.Vertical)
+            {
+                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
+                verticalScrollerVisibility = ScrollerVisibility.Auto
+            };
+            scroll.style.flexGrow = 1;
+            scroll.style.flexShrink = 1;
+            scroll.style.minHeight = 0;
+            scroll.style.minWidth = 0;
+            scroll.contentContainer.style.flexDirection = FlexDirection.Column;
+            scroll.contentContainer.style.flexShrink = 0;
+            scroll.contentContainer.style.minWidth = 0;
+            scroll.AddToClassList("scroll");
+            foreach (string cls in classes) scroll.AddToClassList(cls);
+            parent?.Add(scroll);
+            return scroll;
         }
 
         /// <summary>A labelled 0..100% slider; <paramref name="commit"/> runs as it moves.</summary>
@@ -133,6 +166,11 @@ namespace Abandoned.UI
         private static VisualElement Setting(VisualElement parent, string label, out Label value)
         {
             var row = new VisualElement();
+            row.style.flexDirection = FlexDirection.Row;
+            row.style.alignItems = Align.Center;
+            row.style.minHeight = 48f;
+            row.style.flexShrink = 0;
+            row.style.minWidth = 0;
             row.AddToClassList("setting");
             var name = new Label(label);
             name.AddToClassList("setting__label");
@@ -144,7 +182,9 @@ namespace Abandoned.UI
             return row;
         }
 
-        public static void Show(VisualElement element, bool visible) =>
-            element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+        public static void Show(VisualElement element, bool visible)
+        {
+            if (element != null) element.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace Abandoned.EditorTools
         public static void Prepare()
         {
             PolishAssets.EnsureFolder(Folder + "/Materials");
+            Materials.Clear();
             foreach (string key in Palette.Keys) Material(key);
         }
 
@@ -60,12 +61,13 @@ namespace Abandoned.EditorTools
             material.SetFloat("_Smoothness", key is "Water" or "Glass" ? .76f : key is "Metal" or "Brass" ? .45f : .11f);
             material.SetFloat("_Metallic", key is "Metal" or "Brass" or "Rust" ? .65f : 0f);
             // Glass and thin grime surfaces have no thickness; both faces must remain readable by torchlight.
-            material.SetFloat("_Cull", key is "Glass" or "Mould" or "Water" or "Stain" ? (float)CullMode.Off : (float)CullMode.Back);
+            material.SetFloat("_Cull", key is "Glass" or "Mould" or "Water" or "Stain" or "Chalk" or "Paper" ? (float)CullMode.Off : (float)CullMode.Back);
             if (key is "LightAmber" or "LightRed")
             {
                 material.EnableKeyword("_EMISSION");
-                material.SetColor("_EmissionColor", Palette[key] * .8f);
+                material.SetColor("_EmissionColor", Palette[key] * 1.5f);
             }
+            GeneratedMaterialRepair.Apply(material);
         }
 
         private static readonly Dictionary<string, string> Aliases = new()
@@ -100,22 +102,25 @@ namespace Abandoned.EditorTools
         public static GameObject Place(string name, Transform parent, Vector3 localPosition, Quaternion localRotation, Vector3 scale)
         {
             GameObject model = Model(name);
-            GameObject instance = model != null ? (GameObject)PrefabUtility.InstantiatePrefab(model, parent) : new GameObject(name);
-            if (model == null)
+            if(model==null)throw new System.InvalidOperationException($"Custom environment model missing: {name}. Regenerate Tools/Blender/environment.py.");
+            // FBX roots may carry centimetre/axis conversion. Place a neutral metre-space holder,
+            // never overwrite those import corrections with the level's requested transform.
+            var instance=new GameObject(name);
+            instance.transform.SetParent(parent,false);
+            instance.transform.SetLocalPositionAndRotation(localPosition,localRotation);
+            instance.transform.localScale=scale;
+            var geometry=(GameObject)PrefabUtility.InstantiatePrefab(model,instance.transform);
+            geometry.name="Geometry";
+            foreach(Collider collider in geometry.GetComponentsInChildren<Collider>())Object.DestroyImmediate(collider);
+            foreach(Renderer renderer in geometry.GetComponentsInChildren<Renderer>())
             {
-                instance.transform.SetParent(parent, false);
-                Debug.LogError($"Custom environment model missing: {name}. Run Tools/Blender/environment.py before rebuilding content.");
-            }
-            instance.name = name;
-            instance.transform.SetLocalPositionAndRotation(localPosition, localRotation);
-            instance.transform.localScale = scale;
-            foreach (Collider collider in instance.GetComponentsInChildren<Collider>()) Object.DestroyImmediate(collider);
-            foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>())
-            {
-                Material[] mapped = renderer.sharedMaterials;
-                for (int i = 0; i < mapped.Length; i++)
-                    if (mapped[i] != null && mapped[i].name.StartsWith("ENV_")) mapped[i] = Material(mapped[i].name);
-                renderer.sharedMaterials = mapped;
+                Material[] mapped=renderer.sharedMaterials;
+                for(int i=0;i<mapped.Length;i++)
+                {
+                    if(mapped[i]==null)throw new System.InvalidOperationException($"Missing material in environment model {name}.");
+                    if(mapped[i].name.StartsWith("ENV_"))mapped[i]=Material(mapped[i].name);
+                }
+                renderer.sharedMaterials=mapped;
             }
             return instance;
         }

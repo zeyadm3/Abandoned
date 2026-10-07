@@ -26,9 +26,11 @@ namespace Abandoned.EditorTools
             string modelPath = $"{ArtFolder}/{modelName}.fbx";
             GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
             if (source == null) throw new InvalidOperationException($"Missing custom threat model: {modelPath}. Run Tools/Blender/threats.py first.");
-            GameObject visual = (GameObject)PrefabUtility.InstantiatePrefab(source);
-            visual.name = "Visual"; visual.transform.SetParent(root.transform, false);
-            Animator animator = visual.GetComponent<Animator>() ?? visual.AddComponent<Animator>();
+            var visual = new GameObject("Visual");
+            visual.transform.SetParent(root.transform, false);
+            GameObject imported = (GameObject)PrefabUtility.InstantiatePrefab(source);
+            imported.transform.SetParent(visual.transform, false);
+            Animator animator = imported.GetComponent<Animator>() ?? imported.AddComponent<Animator>();
             animator.runtimeAnimatorController = Controller(modelName, modelPath);
             animator.avatar = AssetDatabase.LoadAllAssetsAtPath(modelPath).OfType<Avatar>().FirstOrDefault();
             animator.applyRootMotion = false; animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
@@ -71,15 +73,33 @@ namespace Abandoned.EditorTools
             EditorUtility.SetDirty(controller);
             return controller;
         }
+        private static int MaterialIndex(string importedName)
+        {
+            int index = Array.FindIndex(Names, name => importedName.Contains("THREAT_" + name) || importedName.Contains("CustomThreat_" + name));
+            return index >= 0 ? index : 0;
+        }
+        public static string MaterialPath(string importedName) => $"{PolishAssets.Folder}/CustomThreat_{Names[MaterialIndex(importedName)]}.mat";
+        public static void ConfigureMaterial(Material material, string importedName)
+        {
+            int index = MaterialIndex(importedName);
+            material.shader = Shader.Find("Universal Render Pipeline/Lit");
+            Texture2D grime = AssetDatabase.LoadAssetAtPath<Texture2D>(ArtFolder + "/ThreatGrime.png");
+            material.SetColor("_BaseColor", Colors[index]);
+            material.SetTexture("_BaseMap", grime);
+            material.SetFloat("_Smoothness", 0.08f);
+            material.SetFloat("_Metallic", index == 4 ? 0.45f : 0f);
+            if (index == 5)
+            {
+                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+                material.EnableKeyword("_EMISSION");
+                material.SetColor("_EmissionColor", Colors[index] * 0.18f);
+            }
+        }
         private static Material Material(string importedName)
         {
-            int index = Array.FindIndex(Names, n => importedName.Contains("THREAT_" + n));
-            if (index < 0) index = 0;
+            int index = MaterialIndex(importedName);
             Material material = PolishAssets.Material("CustomThreat_" + Names[index], Colors[index], emission: index == 5 ? 0.18f : 0f);
-            Texture2D grime = AssetDatabase.LoadAssetAtPath<Texture2D>(ArtFolder + "/ThreatGrime.png");
-            if (material.HasProperty("_BaseMap")) material.SetTexture("_BaseMap", grime);
-            if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", 0.08f);
-            if (material.HasProperty("_Metallic")) material.SetFloat("_Metallic", index == 4 ? 0.45f : 0f);
+            ConfigureMaterial(material, importedName);
             EditorUtility.SetDirty(material);
             return material;
         }

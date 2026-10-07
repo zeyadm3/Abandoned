@@ -17,6 +17,7 @@ namespace Abandoned.UI
         internal static void Attach(VisualElement layer)
         {
             root = layer;
+            UiKit.FillScreen(root);
             world = null;
             root.AddToClassList("horror-hud");
         }
@@ -44,6 +45,7 @@ namespace Abandoned.UI
                 if (world == null || world.parent != Root)
                 {
                     world = new VisualElement { pickingMode = PickingMode.Ignore };
+                    UiKit.FillScreen(world);
                     world.AddToClassList("hud-layer");
                     Root.Insert(0, world);
                 }

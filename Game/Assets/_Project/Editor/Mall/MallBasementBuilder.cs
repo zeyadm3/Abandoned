@@ -24,7 +24,7 @@ namespace Abandoned.EditorTools
                 var collider = tile.gameObject.AddComponent<BoxCollider>();
                 collider.center = new Vector3(0,-0.15f,0);
                 collider.size = new Vector3(4,0.3f,4);
-                CustomMallArt.Place("floor", tile, Vector3.zero, Quaternion.identity);
+                CustomMallArt.Place("FloorConcrete", tile, Vector3.zero, Quaternion.identity, new Vector3(1f, .3f / .18f, 1f));
                 tile.GetChild(0).name = "Visual";
                 tile.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
                 if ((x+z)%3==0 && !(x==13 && z>=8 && z<=10))
@@ -39,6 +39,18 @@ namespace Abandoned.EditorTools
             GreyboxWall.Panel(basement,"EastRetainingWall",new Vector3(56,-4,24),Vector3.forward,24,4,0.3f,null,concrete,concrete);
             GreyboxWall.Panel(basement,"SouthRetainingWall",new Vector3(40,-4,24),Vector3.right,16,4,0.3f,null,concrete,concrete);
             GreyboxWall.Panel(basement,"NorthRetainingWall",new Vector3(40,-4,48),Vector3.right,16,4,0.3f,null,concrete,concrete);
+            foreach (string name in new[] { "WestRetainingWall", "EastRetainingWall", "SouthRetainingWall", "NorthRetainingWall" })
+                foreach (Renderer renderer in basement.Find(name).GetComponentsInChildren<Renderer>()) renderer.enabled = false;
+            for (int z = 6; z < 12; z++)
+            {
+                CustomMallArt.Place("WallSolid", basement, new Vector3(40f, -4f, z * 4f + 2f), Quaternion.Euler(0f, 90f, 0f), new Vector3(1f, 4f / 3.82f, 1.5f));
+                CustomMallArt.Place("WallSolid", basement, new Vector3(56f, -4f, z * 4f + 2f), Quaternion.Euler(0f, 90f, 0f), new Vector3(1f, 4f / 3.82f, 1.5f));
+            }
+            for (int x = 10; x < 14; x++)
+            {
+                CustomMallArt.Place("WallSolid", basement, new Vector3(x * 4f + 2f, -4f, 24f), Quaternion.identity, new Vector3(1f, 4f / 3.82f, 1.5f));
+                CustomMallArt.Place("WallSolid", basement, new Vector3(x * 4f + 2f, -4f, 48f), Quaternion.identity, new Vector3(1f, 4f / 3.82f, 1.5f));
+            }
             MallFlights.Build(new MallLayout.Flight("BasementServiceStairs",-1,13,8,Vector2Int.up,false),basement,concrete,concrete);
             for (int z=7;z<=11;z+=2)
             {

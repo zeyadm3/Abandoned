@@ -4,6 +4,26 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Horror repair pass — 0.12.1 (2026-10-08)
+
+Implemented following the user's 0.12.0 play pass. Compilation passed with no project warnings;
+`Tools/unity.sh rebuild-horror` passed with no scene generation errors. Final Mac/Windows builds
+are pending. No gameplay, EditMode/PlayMode/nettests, screenshots or QA passes;
+the user tests the completed builds. TestMap and the pre-existing material edits remain unchanged.
+
+- **Interface:** corrected panel bounds, scrolling and icon layout; removed the yellow arrow shown
+  while the ESC menu was open. Existing screens and interaction flows remain available.
+- **Custom art / enclosure:** placement preserves imported FBX units, axes and root transforms.
+  Repaired solid doorway headers/jambs, continuous opaque roofs and complete backed ceiling grids;
+  ceiling dressing follows its supporting structural section. Corrected floor thickness, prop
+  collision bounds, doorway clearance and note placement. Texture references remap to the original
+  procedural maps; emission settings now survive subsequent content generation.
+- **Threats:** corrected animation looping and phase transitions.
+- **Lighting / atmosphere:** actual light output and diffuser glow now share the same authored
+  flicker, including power loss and alarm changes. Darker indoor fog and sheltered spatial ambience
+  reinforce entering an enclosed building; the arrival blackout wave now affects the intended hall
+  lights in sequence instead of leaving inconsistent fixture states.
+
 ## Full horror redesign — 0.12.0 (2026-10-08)
 
 User direction: fully autonomous authoring; no gameplay, EditMode/PlayMode/nettests, screenshots,

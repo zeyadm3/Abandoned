@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Abandoned.Structure;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -43,6 +44,7 @@ namespace Abandoned.EditorTools
             CustomMallArt.Prepare();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             Transform root = new GameObject("Mall").transform;
+            root.gameObject.AddComponent<BuildingInteriorAtmosphere>().EditorSetup(new Bounds(new Vector3(28f, 4f, 24f), new Vector3(56f, 16f, 48f)));
 
             int tiles = BuildTiles(Group(TilesGroup, root));
             Material steps = PolishAssets.Material("Mall_Stairs", new Color(0.43f, 0.4f, 0.32f));
@@ -62,6 +64,7 @@ namespace Abandoned.EditorTools
             MallBasementBuilder.Build(root);
             PlaceCamera();
             MallPopulator.Populate(root);
+            BuildCeilings(root);
             int props = MallProps.Place(root, root.Find(TilesGroup));
             MallDecayBuilder.Place(root);
             int fixtures = BuildLights(root); // after Populate: fixtures hang from the tiles' sections
@@ -71,11 +74,10 @@ namespace Abandoned.EditorTools
             int shutters = MallShutters.Place(root); // after the bake: runtime obstacles, not walls
 
             EditorSceneManager.SaveScene(scene, ScenePath);
-            bool occlusion = false; // Realtime scene generation; no visual capture/QA pass during this build.
             AddToBuildSettings();
             int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {fixtures} light fixtures, {shutters} shutters, {networkObjects} network objects, occlusion {(occlusion ? "baked" : "FAILED")}.");
+            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {fixtures} light fixtures, {shutters} shutters, {networkObjects} network objects, occlusion not baked.");
         }
 
         public static string TileName(Vector2Int c, int floor) =>
@@ -118,7 +120,7 @@ namespace Abandoned.EditorTools
             var collider = root.AddComponent<BoxCollider>();
             collider.center = center;
             collider.size = size;
-            GameObject visual = CustomMallArt.Place("floor", root.transform, Vector3.zero, Quaternion.identity);
+            GameObject visual = CustomMallArt.Place("floor", root.transform, Vector3.zero, Quaternion.identity, new Vector3(1f, slab / .18f, 1f));
             visual.name = "Visual";
         }
 
@@ -129,41 +131,60 @@ namespace Abandoned.EditorTools
             foreach (Vector2Int corner in new[] { new Vector2Int(Atrium.xMin, Atrium.yMin), new Vector2Int(Atrium.xMax, Atrium.yMin),
                          new Vector2Int(Atrium.xMin, Atrium.yMax), new Vector2Int(Atrium.xMax, Atrium.yMax) })
             {
-                Box($"Column_{corner.x}_{corner.y}", parent, new Vector3(corner.x * Tile, h / 2f, corner.y * Tile), new Vector3(0.6f,h,0.6f),material).GetComponent<Renderer>().enabled=false;
-                for(int f=0;f<Floors;f++) CustomMallArt.Place("pillar",parent,new Vector3(corner.x*Tile,f*StoryHeight,corner.y*Tile),Quaternion.identity);
+                Box($"Column_{corner.x}_{corner.y}", parent, new Vector3(corner.x * Tile, h / 2f, corner.y * Tile), new Vector3(.86f,h,.86f),material).GetComponent<Renderer>().enabled=false;
+                for(int f=0;f<Floors;f++) CustomMallArt.Place("pillar",parent,new Vector3(corner.x*Tile,f*StoryHeight,corner.y*Tile),Quaternion.identity,new Vector3(1f,StoryHeight/3.82f,1f));
             }
             MarkStatic(parent);
         }
 
         private static void BuildRoof(Transform parent)
         {
-            Material roof = GetMaterial("Greybox_Roof", new Color(0.35f, 0.35f, 0.37f));
-            float y = Floors * StoryHeight, t = 0.3f;
-            float w = TilesX * Tile, d = TilesZ * Tile;
-            float ax0 = Atrium.xMin * Tile, ax1 = Atrium.xMax * Tile, az0 = Atrium.yMin * Tile, az1 = Atrium.yMax * Tile;
-            // Four slabs around the skylight opening.
-            Box("Roof_S", parent, new Vector3(w / 2f, y + t / 2f, az0 / 2f), new Vector3(w, t, az0), roof);
-            Box("Roof_N", parent, new Vector3(w / 2f, y + t / 2f, (az1 + d) / 2f), new Vector3(w, t, d - az1), roof);
-            Box("Roof_W", parent, new Vector3(ax0 / 2f, y + t / 2f, (az0 + az1) / 2f), new Vector3(ax0, t, az1 - az0), roof);
-            Box("Roof_E", parent, new Vector3((ax1 + w) / 2f, y + t / 2f, (az0 + az1) / 2f), new Vector3(w - ax1, t, az1 - az0), roof);
-            // The glass skylight: cosmetic for now (a later collapse showcase, GDD 8).
-            var glass = GetMaterial("Greybox_Glass", new Color(0.6f, 0.8f, 0.9f, 0.25f));
-            MakeTransparent(glass);
-            Box("Skylight", parent, new Vector3((ax0 + ax1) / 2f, y + 0.05f, (az0 + az1) / 2f), new Vector3(ax1 - ax0, 0.1f, az1 - az0), glass, withCollider: false)
-                .GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+            float y = Floors * StoryHeight, width = TilesX * Tile, depth = TilesZ * Tile;
+            // One opaque deck backs every ceiling, including the dirty skylight. Colliders alone do not occlude the sky.
+            Box("RoofDeck", parent, new Vector3(width * .5f, y + .15f, depth * .5f),
+                new Vector3(width + ThicknessOverlap, .3f, depth + ThicknessOverlap), CustomMallArt.Material("Concrete"));
+            float atriumWidth = Atrium.width * Tile, atriumDepth = Atrium.height * Tile;
+            Vector3 middle = new(Atrium.center.x * Tile, y - .025f, Atrium.center.y * Tile);
+            Box("SealedSkylight", parent, middle, new Vector3(atriumWidth, .08f, atriumDepth), CustomMallArt.Material("Glass"), false);
+            for (int i = 0; i <= Atrium.width; i++)
+                Box("SkylightRibX", parent, new Vector3(Atrium.xMin * Tile + i * Tile, y - .12f, middle.z),
+                    new Vector3(.08f, .2f, atriumDepth), CustomMallArt.Material("Metal"), false);
+            for (int i = 0; i <= Atrium.height; i++)
+                Box("SkylightRibZ", parent, new Vector3(middle.x, y - .12f, Atrium.yMin * Tile + i * Tile),
+                    new Vector3(atriumWidth, .2f, .08f), CustomMallArt.Material("Metal"), false);
             MarkStatic(parent);
         }
 
-        private static void MakeTransparent(Material m)
+        private const float ThicknessOverlap = .22f;
+
+        private static void BuildCeilings(Transform mall)
         {
-            m.SetFloat("_Surface", 1f);
-            m.SetFloat("_Blend", 0f);
-            m.SetOverrideTag("RenderType", "Transparent");
-            m.renderQueue = (int)RenderQueue.Transparent;
-            m.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
-            m.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
-            m.SetInt("_ZWrite", 0);
-            m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            Transform ceilings = Group("Ceilings", mall);
+            Transform tiles = mall.Find(TilesGroup);
+            for (int floor = -1; floor < Floors; floor++)
+            for (int x = 0; x < TilesX; x++)
+            for (int z = 0; z < TilesZ; z++)
+            {
+                var cell = new Vector2Int(x, z);
+                bool basement = floor == -1;
+                if (basement && (x < 10 || z < 6)) continue;
+                StructuralSection support = null;
+                if (floor + 1 < Floors)
+                {
+                    if (IsVoid(cell, floor + 1)) continue;
+                    support = tiles.Find($"Floor_{floor + 1}/{TileName(cell, floor + 1)}")?.GetComponent<StructuralSection>();
+                    if (support == null) continue;
+                }
+                else if (Atrium.Contains(cell)) continue;
+                float level = FloorY(floor + 1) - TestMapBuilder.SlabThickness - .025f;
+                Transform ceiling = Group($"Ceiling_{floor}_{x}_{z}", ceilings);
+                ceiling.localPosition = new Vector3((x + .5f) * Tile, level, (z + .5f) * Tile);
+                // Broken mineral panels reveal an opaque concrete underside, never open sky or an unrelated store.
+                Box("SlabUnderside", ceiling, Vector3.up * .055f, new Vector3(Tile, .06f, Tile), CustomMallArt.Material("Concrete"), false);
+                bool damaged = (x * 17 + z * 31 + floor * 7) % 23 == 0;
+                CustomMallArt.Place(damaged ? "CeilingSagging" : "CeilingGrid", ceiling, Vector3.zero);
+                if (support != null) ceiling.gameObject.AddComponent<SectionProp>().EditorSetup(support);
+            }
         }
 
         private static void BuildExterior(Transform parent)
@@ -193,7 +214,6 @@ namespace Abandoned.EditorTools
             LevelAtmosphere.Apply("Mall", LevelAtmosphere.Mall, lights);
             int fixtures = MallFixtures.Place(lights, mall.Find(TilesGroup));
             MallFixtures.AddDust(lights);
-            MallFixtures.AddSkylightShaft(lights, RenderSettings.sun != null ? RenderSettings.sun.transform.forward : Vector3.down);
             AmbienceBuilder.Mall(mall);
             return fixtures;
         }

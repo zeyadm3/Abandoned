@@ -58,7 +58,6 @@ namespace Abandoned.EditorTools
                     GameObject decay=CustomMallArt.Place(hash%3==0?"BrokenGlass":hash%3==1?"debris":"Overgrowth",dressing,TileTopCenter(cell,floor)+new Vector3(1.3f,0.02f,1.3f),Quaternion.Euler(0,hash%360,0));
                     decay.AddComponent<SectionProp>().EditorSetup(support);
                 }
-                if(hash%13==0)CustomMallArt.Place("CeilingSagging",dressing,TileTopCenter(cell,floor)+Vector3.up*3.7f,Quaternion.identity);
 
                 foreach (Vector2Int side in new[] { Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down })
                 {

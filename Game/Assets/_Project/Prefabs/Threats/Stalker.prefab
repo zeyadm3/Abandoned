@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1790269615149219517
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7725275886932019186}
+  m_Layer: 0
+  m_Name: Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7725275886932019186
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790269615149219517}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8926904968803852978}
+  m_Father: {fileID: 1888014197047015813}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1938779033625192190
 GameObject:
   m_ObjectHideFlags: 0
@@ -14,8 +46,8 @@ GameObject:
   - component: {fileID: 1329931773152840751}
   - component: {fileID: 504471906661161857}
   - component: {fileID: 1088950803353713028}
-  - component: {fileID: 3688419890521439610}
-  - component: {fileID: 453311613759525104}
+  - component: {fileID: 5587233437738812938}
+  - component: {fileID: 6840786722115751053}
   m_Layer: 0
   m_Name: Stalker
   m_TagString: Untagged
@@ -36,7 +68,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7299397230315602567}
+  - {fileID: 7725275886932019186}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2038404425636403431
@@ -172,7 +204,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   definition: {fileID: 11400000, guid: 88a7199dea91f438d9f7bc303b905038, type: 2}
   config: {fileID: 11400000, guid: dc5a2c9f992ad448b81f6b2c5508c2b7, type: 2}
---- !u!114 &3688419890521439610
+--- !u!114 &5587233437738812938
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,8 +217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 3723500319050782973}
---- !u!114 &453311613759525104
+  animator: {fileID: 3243313085360175304}
+--- !u!114 &6840786722115751053
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,13 +230,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5284b08e2ae44303a72982ce7e1e546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatHorrorAudio
---- !u!1001 &7117396490767820140
+--- !u!1001 &8964421349460428121
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1888014197047015813}
+    m_TransformParent: {fileID: 7725275886932019186}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
       propertyPath: m_LocalPosition.x
@@ -246,25 +278,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -5183163462789023560, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: dd165a14772544efcb8213ef3b55622c, type: 2}
-    - target: {fileID: -5183163462789023560, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: d60de243d6ab94eb8806df7272b9edba, type: 2}
-    - target: {fileID: -5183163462789023560, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-      propertyPath: 'm_Materials.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 1ac19f23208304a36b495e19f1e0f0a9, type: 2}
-    - target: {fileID: -5183163462789023560, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-      propertyPath: 'm_Materials.Array.data[3]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 9c18c0ddf03e64747b7ae35513ae76d2, type: 2}
     - target: {fileID: 919132149155446097, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
       propertyPath: m_Name
-      value: Visual
+      value: Stalker
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
       propertyPath: m_Controller
@@ -275,13 +291,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
---- !u!95 &3723500319050782973 stripped
+--- !u!95 &3243313085360175304 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-  m_PrefabInstance: {fileID: 7117396490767820140}
+  m_PrefabInstance: {fileID: 8964421349460428121}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &7299397230315602567 stripped
+--- !u!4 &8926904968803852978 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-  m_PrefabInstance: {fileID: 7117396490767820140}
+  m_PrefabInstance: {fileID: 8964421349460428121}
   m_PrefabAsset: {fileID: 0}

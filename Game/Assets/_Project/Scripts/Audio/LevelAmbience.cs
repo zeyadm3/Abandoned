@@ -49,10 +49,12 @@ namespace Abandoned.Audio
             float level = AudioLevels.Ambience * AudioLevels.Sfx * AudioLevels.BackgroundDuck;
             // A storm job (M9.2) howls through the building.
             bool storm = Extraction.RunState.Current != null && Extraction.RunState.Current.IsSpawned && Extraction.RunState.Current.State.Storm;
-            wind.volume = Mathf.Min(1f, windVolume * (storm ? 2.6f : 1f)) * level;
+            float shelter = Mathf.Lerp(1f, storm ? 0.6f : 0.3f, BuildingInteriorAtmosphere.InsideBlend);
+            wind.volume = Mathf.Min(1f, windVolume * (storm ? 2.6f : 1f)) * level * shelter;
             wind.pitch = storm ? 1.25f : 1f;
             HumLevel = Mathf.MoveTowards(HumLevel, LitShare(), Time.deltaTime * 2f);
-            hum.volume = humVolume * HumLevel * level;
+            float interiorHum = BuildingInteriorAtmosphere.Present ? Mathf.Lerp(0.55f, 1f, BuildingInteriorAtmosphere.InsideBlend) : 1f;
+            hum.volume = humVolume * HumLevel * level * interiorHum;
 
             if (settleInterval.y <= 0f || Time.time < nextSettle) return;
             ScheduleSettle();

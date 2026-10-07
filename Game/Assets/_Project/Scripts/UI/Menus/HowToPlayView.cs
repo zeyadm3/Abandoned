@@ -17,9 +17,7 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             MenuKit.Text(panel, "HOW TO PLAY", "heading");
-            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            panel.Add(scroll);
+            var scroll = MenuKit.Scroll(panel);
             MenuKit.Text(scroll, "THE JOB", "section");
             MenuKit.Text(scroll, "Your salvage company takes jobs in abandoned buildings. Carry loot out to the truck, pull the lever, " +
                                  "and the haul is appraised. Make the quota or the company pays a penalty; three misses in a row and it goes bankrupt.");

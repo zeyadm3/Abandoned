@@ -73,8 +73,9 @@ namespace Abandoned.EditorTools
             GameObject slab = Box("Floor", shell, new Vector3(12f, -.15f, 8f), new Vector3(Width, .3f, Depth), concrete);
             slab.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
             CustomMallArt.HidePrimitive(slab);
-            GameObject roof = Box("Roof", shell, new Vector3(12f, Height + .15f, 8f), new Vector3(Width, .3f, Depth), CustomMallArt.Material("Metal"));
-            CustomMallArt.HidePrimitive(roof);
+            GameObject roof = Box("Roof", shell, new Vector3(12f, Height + .15f, 8f), new Vector3(Width + .22f, .3f, Depth + .22f), CustomMallArt.Material("Metal"));
+            // The visible opaque roof closes the garage above its exposed trusses.
+            roof.GetComponent<Renderer>().enabled = true;
             Box("Yard", shell, new Vector3(12f, -.4f, -10f), new Vector3(64f, .3f, 20f), CustomMallArt.Material("Dirt"))
                 .AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Dirt);
 
@@ -104,6 +105,9 @@ namespace Abandoned.EditorTools
             Solid("OfficeShopEast", new Vector3(21f, 0f, 10f), 4f);
             Solid("OfficeShopEastJamb", new Vector3(23.5f, 0f, 10f), 1f);
             Solid("OfficeShopHeader", new Vector3(18f, 2.4f, 10f), 2f, 1.6f);
+            foreach (Vector3 corner in new[] { new Vector3(-.1f, 0f, -.1f), new Vector3(Width + .1f, 0f, -.1f),
+                         new Vector3(-.1f, 0f, Depth + .1f), new Vector3(Width + .1f, 0f, Depth + .1f) })
+                Box("CornerClosure", shell, corner + Vector3.up * (Height * .5f), new Vector3(.2f, Height, .2f), CustomMallArt.Material("Plaster"));
             MarkStatic(shell);
 
             void Solid(string name, Vector3 floor, float length, float height = Height, float yaw = 0f)

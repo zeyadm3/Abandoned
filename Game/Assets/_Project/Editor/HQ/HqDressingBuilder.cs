@@ -16,7 +16,7 @@ namespace Abandoned.EditorTools
             for (int z = 0; z < 4; z++)
             {
                 Vector3 centre = new(x * 4f + 2f, 0f, z * 4f + 2f);
-                CustomMallArt.Place((x + z * 3) % 7 == 0 ? "FloorDamaged" : "FloorConcrete", decor, centre);
+                CustomMallArt.Place((x + z * 3) % 7 == 0 ? "FloorDamaged" : "FloorConcrete", decor, centre, Quaternion.identity, new Vector3(1f, .3f / .18f, 1f));
                 if (x >= 3)
                     CustomMallArt.Place(x == 5 && z == 3 ? "CeilingSagging" : "CeilingGrid", decor, centre + Vector3.up * 3.94f);
                 if ((x * 11 + z * 7) % 9 == 0)
@@ -65,9 +65,10 @@ namespace Abandoned.EditorTools
             void Prop(string model, Vector3 floor, float yaw, Vector3 scale, Vector3 collisionSize)
             {
                 GameObject instance = CustomMallArt.Place(model, decor, floor, yaw, scale);
+                Bounds bounds = ModelFit.LocalBounds(instance, instance.transform);
                 var collider = instance.AddComponent<BoxCollider>();
-                collider.center = Vector3.up * (collisionSize.y / Mathf.Max(.001f, scale.y)) * .5f;
-                collider.size = new Vector3(collisionSize.x / Mathf.Max(.001f, scale.x), collisionSize.y / Mathf.Max(.001f, scale.y), collisionSize.z / Mathf.Max(.001f, scale.z));
+                collider.center = bounds.center;
+                collider.size = bounds.size;
             }
         }
 

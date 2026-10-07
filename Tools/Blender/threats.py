@@ -160,7 +160,10 @@ def finish(name):
     for p in rig.pose.bones:p.rotation_mode='XYZ'
     for anim,length in [('Idle',72),('Walk',36),('Chase',24),('Attack',30),('Special',60)]:
         action=bpy.data.actions.new(anim);action.use_fake_user=True;rig.animation_data_create();rig.animation_data.action=action
-        for f in range(1,length+1,3):
+        # Include the exact final pose so loops close and an attack returns fully to rest.
+        frames = list(range(1, length + 1, 3))
+        if frames[-1] != length: frames.append(length)
+        for f in frames:
             u=(f-1)/(length-1);phase=u*math.pi*2
             for p in rig.pose.bones:p.rotation_euler=(0,0,0);p.location=(0,0,0)
             sway=math.sin(phase)

@@ -12,7 +12,13 @@ namespace Abandoned.EditorTools
             CustomMallArt.Prepare();
             var config=SerializedWiring.LoadOrCreateAsset<HorrorConfig>(Path);
             var data=new SerializedObject(config);
-            data.FindProperty("<ScareModel>k__BackingField").objectReferenceValue=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Art/Custom/Environment/MannequinWrong.fbx");
+            const string effects="Assets/_Project/Prefabs/Effects";
+            if(!AssetDatabase.IsValidFolder(effects)) AssetDatabase.CreateFolder("Assets/_Project/Prefabs","Effects");
+            GameObject shape=CustomMallArt.Place("MannequinWrong",null,Vector3.zero,Quaternion.identity);
+            data.FindProperty("<ScareModel>k__BackingField").objectReferenceValue=PrefabUtility.SaveAsPrefabAsset(shape,effects+"/HorrorScareModel.prefab");
+            Object.DestroyImmediate(shape);
+            data.FindProperty("<ScareInterval>k__BackingField").floatValue=80f;
+            data.FindProperty("<PressureInterval>k__BackingField").floatValue=18f;
             data.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(config);
             var danger=SerializedWiring.LoadOrCreateAsset<DangerConfig>(NetworkContentBuilder.DangerConfigPath);
             var d=new SerializedObject(danger);

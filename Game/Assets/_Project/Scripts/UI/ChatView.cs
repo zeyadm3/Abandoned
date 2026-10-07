@@ -59,9 +59,9 @@ namespace Abandoned.UI
             root = new VisualElement { pickingMode = PickingMode.Ignore };
             root.AddToClassList("chat");
             hud.parent.Add(root); // beside the HUD, so it stays while typing
-            log = new VisualElement { pickingMode = PickingMode.Ignore };
-            log.AddToClassList("chat__log");
-            root.Add(log);
+            log = MenuKit.Scroll(root, "chat__log");
+            log.style.maxHeight = 260f;
+            log.style.flexGrow = 0;
             field = new TextField { maxLength = NetworkChat.MaxLength };
             field.AddToClassList("field");
             field.AddToClassList("chat__field");
@@ -118,6 +118,7 @@ namespace Abandoned.UI
             string name = $"PLAYER {sender + 1}" + (ghost ? " (GHOST)" : "");
             label.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.Lerp(color, Color.white, 0.25f))}><b>{name}</b></color>  <noparse>{text}</noparse>";
             log.Add(label);
+            if (log is ScrollView scroll) scroll.schedule.Execute(() => scroll.ScrollTo(label)).StartingIn(16);
             lines.Add(new Line { Label = label, Time = Time.unscaledTime });
             while (lines.Count > MaxLines * 3)
             {

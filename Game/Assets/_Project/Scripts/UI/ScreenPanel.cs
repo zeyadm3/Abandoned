@@ -28,6 +28,11 @@ namespace Abandoned.UI
             // Beside the HUD layer, not in it: clip mode (F10) hides the HUD, but an open board must stay
             // visible. Still under the menus, which come later in the document.
             var root = new VisualElement();
+            UiKit.FillScreen(root);
+            root.style.flexDirection = FlexDirection.Column;
+            root.style.alignItems = Align.Center;
+            root.style.justifyContent = Justify.Center;
+            root.style.display = DisplayStyle.None;
             foreach (string c in new[] { "backdrop", "backdrop--dim", "backdrop--center" }) root.AddToClassList(c);
             hud.parent.Insert(hud.parent.IndexOf(hud) + 1, root);
             root.pickingMode = PickingMode.Position; // the panel's buttons take the clicks
@@ -46,7 +51,10 @@ namespace Abandoned.UI
             if (key == builtFor) return;
             builtFor = key;
             Panel.Clear();
-            build(Panel);
+            ScrollView scroll = MenuKit.Scroll(Panel, "screen-panel__scroll");
+            scroll.contentContainer.style.width = Length.Percent(100f);
+            build(scroll.contentContainer);
+            foreach (VisualElement sheet in scroll.Query<VisualElement>(className: "sheet").ToList()) sheet.style.rotate = new Rotate(0f);
         }
 
         public void Remove() => Root.RemoveFromHierarchy();

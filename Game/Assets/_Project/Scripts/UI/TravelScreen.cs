@@ -100,6 +100,8 @@ namespace Abandoned.UI
             VisualElement top = HudLayer.Root?.parent;
             if (top == null) return false;
             root = new VisualElement { pickingMode = PickingMode.Ignore };
+            UiKit.FillScreen(root);
+            root.style.flexDirection = FlexDirection.Column;
             root.AddToClassList("travel");
             top.Add(root);
             UiKit.Hazard(root).AddToClassList("travel__tape");
@@ -108,7 +110,7 @@ namespace Abandoned.UI
             root.Add(middle);
             var van = new VisualElement { pickingMode = PickingMode.Ignore };
             van.AddToClassList("travel__van");
-            UiKit.Icon(van, "icon/home", "large");
+            UiKit.Icon(van, "item/transport_van", "large");
             middle.Add(van);
             where = Text(middle, "travel__where");
             terms = Text(middle, "travel__terms");
@@ -125,6 +127,9 @@ namespace Abandoned.UI
         private static Label Text(VisualElement parent, string cls)
         {
             var l = new Label { pickingMode = PickingMode.Ignore };
+            l.style.whiteSpace = WhiteSpace.Normal;
+            l.style.maxWidth = Length.Percent(88f);
+            l.style.flexShrink = 0;
             l.AddToClassList(cls);
             parent.Add(l);
             return l;

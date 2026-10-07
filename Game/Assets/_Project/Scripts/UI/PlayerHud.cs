@@ -124,6 +124,10 @@ namespace Abandoned.UI
             slot.AddToClassList("slot");
             if (hand) slot.AddToClassList("slot--hand");
             var icon = new VisualElement { pickingMode = PickingMode.Ignore, name = "icon" };
+            icon.style.width = hand ? 48f : 40f;
+            icon.style.height = hand ? 48f : 40f;
+            icon.style.flexShrink = 0;
+            icon.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
             icon.AddToClassList("slot__icon");
             slot.Add(icon);
             if (keyText != null) Text(slot, keyText, "slot__key");
@@ -180,7 +184,6 @@ namespace Abandoned.UI
         {
             VisualElement icon = slot.Q("icon");
             Texture2D t = iconId != null ? UiIcons.Get(iconId) : null;
-            if (t == null && iconId != null && iconId.StartsWith("item/")) t = UiIcons.Get("icon/wrench"); // gear without art yet
             icon.style.backgroundImage = t != null ? new StyleBackground(t) : new StyleBackground(StyleKeyword.None);
             slot.EnableInClassList("slot--empty", iconId == null);
             Set(slot.Q<Label>("value"), value ?? "");

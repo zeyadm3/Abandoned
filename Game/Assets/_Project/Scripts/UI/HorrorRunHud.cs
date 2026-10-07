@@ -65,6 +65,8 @@ namespace Abandoned.UI
             bool showRadio = active && !string.IsNullOrEmpty(shownRadio) && Time.time < readUntil &&
                              (MenuUi.Current == null || !MenuUi.Current.ClipMode);
             MenuKit.Show(radio, showRadio);
+            bool menuOpen = MenuUi.Current != null && MenuUi.Current.Showing != MenuScreen.None;
+            radio.style.bottom = menuOpen ? 12f : 56f;
             radio.EnableInClassList("horror-radio--urgent", urgent);
         }
 
@@ -94,11 +96,19 @@ namespace Abandoned.UI
             }
             progress = UiKit.Bar(clock, "horror-danger__progress");
             radio = new VisualElement { pickingMode = PickingMode.Ignore };
+            radio.style.position = Position.Absolute;
+            radio.style.left = Length.Percent(23f);
+            radio.style.right = Length.Percent(23f);
+            radio.style.minWidth = 0;
+            radio.style.flexDirection = FlexDirection.Column;
             radio.AddToClassList("horror-radio");
             var caption = new Label("DISPATCH / CH. 04") { pickingMode = PickingMode.Ignore };
             caption.AddToClassList("horror-radio__caption");
             radio.Add(caption);
             line = new Label() { pickingMode = PickingMode.Ignore };
+            line.style.whiteSpace = WhiteSpace.Normal;
+            line.style.flexShrink = 0;
+            line.style.minWidth = 0;
             line.AddToClassList("horror-radio__line");
             radio.Add(line);
             // It is also a caption, so menus must not hide an arrival or evacuation warning.

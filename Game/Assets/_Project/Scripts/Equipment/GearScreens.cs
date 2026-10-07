@@ -198,9 +198,10 @@ namespace Abandoned.Equipment
                     if (company.OwnedCount(i) <= 0) continue;
                     int free = mine.Available(i, mine) - (mine.State[1 - slot] == i ? 1 : 0);
                     int index = i;
-                    Button b = MenuKit.Button(row, $"{catalog.Items[i].DisplayName} ({Mathf.Max(0, free)})", () => mine.RequestEquip(s, index), SoundId.UiConfirm, small: true);
+                    Button b = MenuKit.Button(row, "", () => mine.RequestEquip(s, index), SoundId.UiConfirm, small: true);
                     b.AddToClassList("rack__item");
                     Prepend(b, UiKit.Icon(null, "item/" + catalog.Items[i].Id, "small"));
+                    MenuKit.Text(b, $"{catalog.Items[i].DisplayName} ({Mathf.Max(0, free)})", "rack__name").pickingMode = PickingMode.Ignore;
                     b.SetEnabled(free > 0 || mine.State[slot] == i);
                     b.EnableInClassList("menu-button--on", mine.State[slot] == i);
                 }

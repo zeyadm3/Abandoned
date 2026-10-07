@@ -3,12 +3,7 @@ using UnityEngine;
 
 namespace Abandoned.Structure
 {
-    /// <summary>
-    /// A ceiling light: a glowing panel and its light. It's lit only while the building has power
-    /// (PowerController) and its ceiling is still up (SectionProp). Faulty fixtures flicker on their
-    /// own; every fixture stutters together while the building is disturbed (danger rising).
-    /// Cosmetic and local: every machine runs its own copy from replicated power/collapse state.
-    /// </summary>
+    /// <summary>Power and collapse control both the lamp and every emissive diffuser on its model.</summary>
     public class LightFixture : MonoBehaviour
     {
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
@@ -17,106 +12,131 @@ namespace Abandoned.Structure
 
         [SerializeField] private Light lamp;
         [SerializeField] private Renderer panel;
-        [Tooltip("Panel glow when lit (HDR, so bloom picks it up).")]
         [SerializeField, ColorUsage(false, true)] private Color glow = new(2.2f, 2.1f, 1.9f);
-        [Tooltip("Flickers on its own: a failing tube.")]
         [SerializeField] private bool faulty;
-        [Tooltip("Never lights: a dead tube (the panel stays dark).")]
         [SerializeField] private bool dead;
         [SerializeField] private int seed;
 
+        private readonly List<GlowSurface> surfaces = new();
         private MaterialPropertyBlock block;
+        private bool surfacesReady;
         private float baseIntensity = -1f;
         private bool powered = true, attached = true, horrorPower = true, alarm;
         private Color originalColor;
         private float level = -1f;
+
+        private readonly struct GlowSurface
+        {
+            public readonly Renderer Renderer;
+            public readonly int Index;
+            public readonly Color Color;
+            public GlowSurface(Renderer renderer, int index, Color color)
+            { Renderer = renderer; Index = index; Color = color; }
+        }
 
         public static IReadOnlyList<LightFixture> All => all;
         public bool Lit => attached && (alarm || (powered && horrorPower && !dead));
         public bool Faulty => faulty;
         public bool Dead => dead;
         public Light Lamp => lamp;
-        /// <summary>The light's intensity when steadily lit.</summary>
         public float FullIntensity => baseIntensity >= 0f ? baseIntensity : lamp != null ? lamp.intensity : 0f;
-
         public static bool IsDisturbed => Time.time < disturbedUntil;
-
-        /// <summary>Every fixture stutters for a while (the building groans: danger went up).</summary>
         public static void Disturb(float seconds) => disturbedUntil = Mathf.Max(disturbedUntil, Time.time + seconds);
 
-        private void Awake(){if(lamp!=null)originalColor=lamp.color;Apply(Lit ? 1f : 0f);}
+        private void Awake()
+        {
+            if (lamp != null) originalColor = lamp.color;
+            Apply(Lit ? 1f : 0f);
+        }
 
-        public void SetHorrorPower(bool on){if(horrorPower==on)return;horrorPower=on;Apply(Lit?1:0);}
-        public void SetAlarm(bool on){if(alarm==on)return;alarm=on;if(lamp!=null)lamp.color=on?new Color(1,0.025f,0.01f):originalColor;level=-1;Apply(Lit?1:0);}
-
-        private void OnEnable() => all.Add(this);
-
+        private void OnEnable() { if (!all.Contains(this)) all.Add(this); }
         private void OnDisable() => all.Remove(this);
 
-        public void SetPowered(bool on)
+        public void SetHorrorPower(bool on)
         {
-            powered = on;
+            if (horrorPower == on) return;
+            horrorPower = on;
             Apply(Lit ? 1f : 0f);
         }
 
-        public void SetAttached(bool on)
+        public void SetAlarm(bool on)
         {
-            attached = on;
+            if (alarm == on) return;
+            alarm = on;
+            if (lamp != null) lamp.color = on ? new Color(1f, 0.025f, 0.01f) : originalColor;
+            level = -1f;
             Apply(Lit ? 1f : 0f);
         }
+
+        public void SetPowered(bool on) { powered = on; Apply(Lit ? 1f : 0f); }
+        public void SetAttached(bool on) { attached = on; Apply(Lit ? 1f : 0f); }
 
         private void Update()
         {
             if (!Lit) return;
-            bool disturbed = Time.time < disturbedUntil;
-            if (!faulty && !disturbed)
-            {
-                if (level != 1f) Apply(1f);
-                return;
-            }
-            // Coarse steps read as a failing tube; smooth noise reads as a dimmer.
-            float t = Time.time * (disturbed ? 14f : 6f) + seed * 7.31f;
-            float n = Mathf.PerlinNoise(t, seed * 0.37f);
-            float step = n < 0.32f ? 0.05f : n < 0.45f ? 0.55f : 1f;
-            if (faulty && !disturbed && Mathf.PerlinNoise(Time.time * 0.2f, seed) > 0.45f) step = 1f; // long steady spells
-            Apply(step);
+            bool disturbed = IsDisturbed;
+            if (!faulty && !disturbed) { Apply(1f); return; }
+
+            float clock = Time.time + seed * 0.137f;
+            float period = 7f + seed % 9;
+            float phase = Mathf.Repeat(clock, period);
+            // Failing ballasts sputter in bursts, with a short complete blackout between strikes.
+            if (!disturbed && phase > 1.35f) { Apply(1f); return; }
+            if (!disturbed && phase > 0.72f && phase < 1.02f) { Apply(0f); return; }
+            float n = Mathf.PerlinNoise(clock * (disturbed ? 22f : 17f), seed * 0.37f);
+            Apply(n < 0.37f ? 0f : n < 0.52f ? 0.3f : 1f);
         }
 
-        private void Apply(float l)
+        private void GatherSurfaces()
         {
-            if (Mathf.Approximately(level, l)) return;
-            level = l;
+            if (surfacesReady) return;
+            surfacesReady = true;
+            var renderers = new List<Renderer>(GetComponentsInChildren<Renderer>(true));
+            if (panel != null && !renderers.Contains(panel)) renderers.Add(panel);
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    Material material = materials[i];
+                    if (material == null || !material.HasProperty(EmissionColor)) continue;
+                    Color emission = material.GetColor(EmissionColor);
+                    if (!material.IsKeywordEnabled("_EMISSION") || emission.maxColorComponent <= 0.001f) continue;
+                    surfaces.Add(new GlowSurface(renderer, i, renderer == panel && materials.Length == 1 ? glow : emission));
+                }
+            }
+        }
+
+        private void Apply(float brightness)
+        {
+            if (Mathf.Approximately(level, brightness)) return;
+            level = brightness;
             if (lamp != null)
             {
-                // Read lazily: the SectionProp beside it may switch it before this Awake runs.
                 if (baseIntensity < 0f) baseIntensity = lamp.intensity;
-                lamp.enabled = l > 0f;
-                lamp.intensity = baseIntensity * l;
+                lamp.enabled = brightness > 0f;
+                lamp.intensity = baseIntensity * brightness;
             }
-            if (panel == null) return;
+            GatherSurfaces();
             block ??= new MaterialPropertyBlock();
-            panel.GetPropertyBlock(block);
-            block.SetColor(EmissionColor, (alarm ? new Color(3,0.03f,0.01f) : glow) * l);
-            panel.SetPropertyBlock(block);
+            foreach (GlowSurface surface in surfaces)
+            {
+                if (surface.Renderer == null) continue;
+                block.Clear();
+                surface.Renderer.GetPropertyBlock(block, surface.Index);
+                block.SetColor(EmissionColor, (alarm ? new Color(3f, 0.03f, 0.01f) : surface.Color) * brightness);
+                surface.Renderer.SetPropertyBlock(block, surface.Index);
+            }
         }
 
 #if UNITY_EDITOR
         public void EditorSetup(Light light, Renderer glowPanel, bool isFaulty, bool isDead, int fixtureSeed)
         {
-            lamp = light;
-            panel = glowPanel;
-            faulty = isFaulty;
-            dead = isDead;
-            seed = fixtureSeed;
+            lamp = light; panel = glowPanel; faulty = isFaulty; dead = isDead; seed = fixtureSeed;
         }
 #endif
 
-        // Statics survive Play mode when domain reload is disabled.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics()
-        {
-            all.Clear();
-            disturbedUntil = 0f;
-        }
+        private static void ResetStatics() { all.Clear(); disturbedUntil = 0f; }
     }
 }

@@ -64,7 +64,7 @@ namespace Abandoned.EditorTools
             Vector3 start = east ? new Vector3(b.x * Tile, y, a.y * Tile) : new Vector3(a.x * Tile, y, b.y * Tile);
             Vector3 dir = east ? Vector3.forward : Vector3.right;
             GreyboxWall.Panel(parent, name, start, dir, Tile, WallHeight, Thickness, hole, wall, frame);
-            DressPanel(parent.Find(name), hole);
+            DressPanel(parent.Find(name), hole, WallHeight);
         }
 
         private static void Railing(Transform parent, string name, Vector2Int a, Vector2Int b, float y, Material material)
@@ -120,16 +120,21 @@ namespace Abandoned.EditorTools
             void Panel(string name, Vector3 start, Vector3 dir, WallOpening? hole)
             {
                 GreyboxWall.Panel(walls, name, start, dir, Tile, StoryHeight, Thickness, hole, wall, frame);
-                DressPanel(walls.Find(name), hole);
+                DressPanel(walls.Find(name), hole, StoryHeight);
                 count++;
             }
         }
 
-        private static void DressPanel(Transform panel, WallOpening? hole)
+        private static void DressPanel(Transform panel, WallOpening? hole, float height)
         {
-            string model = !hole.HasValue ? "wall" : hole.Value.Bottom > 0 ? "window_wall" : hole.Value.Width > 2 ? "storefront" : "door_wall";
-            foreach(Renderer r in panel.GetComponentsInChildren<Renderer>()) r.enabled=false;
-            CustomMallArt.Place(model,panel,Vector3.zero,Quaternion.identity);
+            // A storefront is a trim frame, not an enclosing wall. Wide entrances need their solid header/jambs.
+            string model = !hole.HasValue ? "WallSolid" : hole.Value.Bottom > 0 ? "WallWindow" : hole.Value.Width > 2 ? "WallWide" : "WallDoor";
+            foreach (Renderer renderer in panel.GetComponentsInChildren<Renderer>()) renderer.enabled = false;
+            CustomMallArt.Place(model, panel, Vector3.zero, Quaternion.identity);
+            const float authoredHeight = 3.82f;
+            if (height > authoredHeight)
+                Box("WallClosure", panel, Vector3.up * ((height + authoredHeight) * .5f),
+                    new Vector3(Tile, height - authoredHeight + .01f, Thickness), CustomMallArt.Material("Plaster"), false);
         }
 
         private static WallOpening? Opening(int floor, char side, int column)

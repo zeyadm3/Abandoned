@@ -48,6 +48,7 @@ namespace Abandoned.EditorTools
             TestMapBuilder.Build();
             MallBuilder.Build();
             HqBuilder.Build();
+            GeneratedMaterialRepair.Rebuild();
             // Last: it opens its own empty scene to render in. Then the icon registry picks the new ones up.
             if (LootIconRenderer.Render(force: OriginalLootModels.AssignedAny) > 0)
             {
@@ -73,7 +74,7 @@ namespace Abandoned.EditorTools
             NewThreatContentBuilder.Create();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing();
-            MallBuilder.Build(); HqBuilder.Build(); BuildScenes.ApplyToEditorSettings();
+            MallBuilder.Build(); HqBuilder.Build(); GeneratedMaterialRepair.Rebuild(); BuildScenes.ApplyToEditorSettings();
             AssetDatabase.SaveAssets(); return true;
         });
 

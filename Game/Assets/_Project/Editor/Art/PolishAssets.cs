@@ -42,6 +42,7 @@ namespace Abandoned.EditorTools
                 material.DisableKeyword("_EMISSION");
                 material.SetColor("_EmissionColor", Color.black);
             }
+            GeneratedMaterialRepair.Apply(material);
             EditorUtility.SetDirty(material);
             return material;
         }

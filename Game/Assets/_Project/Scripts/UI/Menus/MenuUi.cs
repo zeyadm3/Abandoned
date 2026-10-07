@@ -74,11 +74,23 @@ namespace Abandoned.UI
             GameSettings.Changed += ApplyUiScale;
             VisualElement root = document.rootVisualElement;
             root.Clear();
+            UiKit.FillScreen(root);
+            root.style.flexDirection = FlexDirection.Column;
+            root.style.overflow = Overflow.Hidden;
             root.AddToClassList("menu-root");
             root.pickingMode = PickingMode.Ignore;
+            UiThemeAssets theme = Resources.Load<UiThemeAssets>(UiThemeAssets.ResourcePath);
+            if (theme != null)
+            {
+                if (theme.Styles != null && !root.styleSheets.Contains(theme.Styles)) root.styleSheets.Add(theme.Styles);
+                if (theme.BodyFont != null) font = theme.BodyFont;
+                if (theme.TitleFont != null) titleFont = theme.TitleFont;
+            }
             if (font != null) root.style.unityFontDefinition = FontDefinition.FromFont(font);
+            root.RegisterCallback<GeometryChangedEvent>(OnRootGeometry);
             // The HUD sits under every menu; HUD components fill it (HudLayer).
             hud = new VisualElement { pickingMode = PickingMode.Ignore };
+            UiKit.FillScreen(hud);
             hud.AddToClassList("hud-layer");
             root.Add(hud);
             HudLayer.Attach(hud);
@@ -99,8 +111,17 @@ namespace Abandoned.UI
             views[MenuScreen.DemoEnd] = demoEnd.Root;
             achievements = new AchievementsView(this);
             views[MenuScreen.Achievements] = achievements.Root;
-            foreach (VisualElement v in views.Values) root.Add(v);
+            foreach (VisualElement v in views.Values)
+            {
+                UiKit.FillScreen(v);
+                v.style.flexDirection = FlexDirection.Column;
+                v.style.justifyContent = Justify.Center;
+                v.style.alignItems = v == main.Root ? Align.FlexStart : Align.Center;
+                v.style.display = DisplayStyle.None;
+                root.Add(v);
+            }
             wear = new VisualElement { pickingMode = PickingMode.Ignore };
+            UiKit.FillScreen(wear);
             wear.AddToClassList("horror-grime");
             root.Add(wear);
             subtitles = new SubtitleView();
@@ -113,10 +134,18 @@ namespace Abandoned.UI
 
         private void OnDisable()
         {
+            if (document != null) document.rootVisualElement.UnregisterCallback<GeometryChangedEvent>(OnRootGeometry);
             GameSettings.Changed -= ApplyUiScale;
             CursorOwner.Set(this, false);
             if (subtitles != null) SubtitleFeed.Heard -= subtitles.Add;
             if (Current == this) Current = null;
+        }
+
+        private void OnRootGeometry(GeometryChangedEvent changed)
+        {
+            VisualElement root = document.rootVisualElement;
+            root.EnableInClassList("menu-compact", changed.newRect.width < 1350f);
+            root.EnableInClassList("menu-short", changed.newRect.height < 850f);
         }
 
         private void Update()

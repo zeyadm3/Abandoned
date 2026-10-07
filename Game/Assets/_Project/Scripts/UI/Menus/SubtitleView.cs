@@ -34,6 +34,9 @@ namespace Abandoned.UI
                 lines.RemoveAt(0);
             }
             var label = new Label(text) { pickingMode = PickingMode.Ignore };
+            label.style.whiteSpace = WhiteSpace.Normal;
+            label.style.maxWidth = Length.Percent(86f);
+            label.style.flexShrink = 0;
             label.AddToClassList("subtitle-line");
             Root.Add(label);
             lines.Add((label, Time.time + Seconds));

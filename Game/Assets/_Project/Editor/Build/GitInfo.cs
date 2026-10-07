@@ -23,6 +23,7 @@ namespace Abandoned.EditorTools
             "\":(top,exclude)Game/Assets/Settings/DefaultVolumeProfile.asset\" " +
             "\":(top,exclude)Game/ProjectSettings/Packages\" " +
             "\":(top,exclude)Game/ProjectSettings/SceneTemplateSettings.json\" " +
+            "\":(top,exclude)Game/ProjectSettings/UnityConnectSettings.asset\" " +
             "\":(top,exclude)" + BuildInfoAssetPathFromRoot + "\" " +
             "\":(top,exclude)" + BuildInfoAssetPathFromRoot + ".meta\"";
 

@@ -6,6 +6,7 @@ namespace Abandoned.EditorTools
     /// <summary>Import original environment FBX as visual geometry; builders author gameplay collisions.</summary>
     public sealed class CustomArtImport : AssetPostprocessor
     {
+        public override uint GetVersion() => 2;
         private bool IsEnvironment => assetPath.StartsWith(CustomMallArt.Folder + "/");
 
         private void OnPreprocessModel()

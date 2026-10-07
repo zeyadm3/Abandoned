@@ -33,8 +33,13 @@ namespace Abandoned.Threats
             animator.speed = playback.Value;
             if (shown == motion.Value) return;
             shown = motion.Value;
-            float phase = (float)(NetworkManager.ServerTime.Time - beganAt.Value);
-            animator.CrossFade(shown.ToString(), 0.12f, 0, Mathf.Repeat(phase, 1f));
+            string stateName = shown.ToString();
+            float clipLength = 1f;
+            foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+                if (clip.name == stateName) { clipLength = Mathf.Max(0.01f, clip.length); break; }
+            float phase = (float)(NetworkManager.ServerTime.Time - beganAt.Value) * playback.Value / clipLength;
+            float normalizedTime = shown == ThreatMotion.Attack ? Mathf.Clamp(phase, 0f, 0.99f) : Mathf.Repeat(phase, 1f);
+            animator.CrossFade(stateName, 0.12f, 0, normalizedTime);
         }
 #if UNITY_EDITOR
         public void EditorSetup(Animator rig) => animator = rig;

@@ -29,16 +29,21 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             panel.AddToClassList("panel--xwide");
             MenuKit.Text(panel, "PLAY", "heading");
+            ScrollView body = MenuKit.Scroll(panel, "play__body");
 
-            VisualElement over = MenuKit.Row(panel);
+            VisualElement over = MenuKit.Row(body);
             MenuKit.Text(over, "Play over", "setting__label");
             steam = MenuKit.Button(over, "Steam", () => b.SelectTransport(TransportMode.Steam), SoundId.UiClick, small: true);
             directIp = MenuKit.Button(over, "Direct IP", () => b.SelectTransport(TransportMode.UnityTransport), SoundId.UiClick, small: true);
 
             var cards = new VisualElement();
+            cards.style.flexDirection = FlexDirection.Row;
+            cards.style.flexWrap = Wrap.Wrap;
+            cards.style.flexShrink = 0;
+            cards.style.minWidth = 0;
             cards.AddToClassList("hud-cards");
             cards.AddToClassList("play__cards");
-            panel.Add(cards);
+            body.Add(cards);
 
             VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "Just you and the building. Hard, not impossible: the trolley helps. Friends can still join you at the HQ.");
             MenuKit.Button(solo, "Start", () => b.StartHost(), SoundId.UiConfirm);
@@ -56,9 +61,9 @@ namespace Abandoned.UI
             join.Add(address);
             MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm);
 
-            status = MenuKit.Text(panel, "", "text");
+            status = MenuKit.Text(body, "", "text");
             status.AddToClassList("text--small");
-            error = MenuKit.Text(panel, "", "text");
+            error = MenuKit.Text(body, "", "text");
             error.AddToClassList("text--error");
             MenuKit.Button(panel, "Back", menu.Back, SoundId.UiBack);
         }
@@ -66,6 +71,11 @@ namespace Abandoned.UI
         private static VisualElement Card(VisualElement parent, string title, string icon, string text)
         {
             var card = new VisualElement();
+            card.style.flexDirection = FlexDirection.Column;
+            card.style.flexGrow = 1;
+            card.style.flexBasis = 260f;
+            card.style.minWidth = 0;
+            card.style.flexShrink = 0;
             card.AddToClassList("hud-card");
             card.AddToClassList("play__card");
             parent.Add(card);

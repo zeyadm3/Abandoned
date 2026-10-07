@@ -18,6 +18,8 @@ namespace Abandoned.EditorTools
         public const string PanelPath = Folder + "/MenuPanel.asset";
         public const string CreditsPath = Folder + "/Credits.txt";
         public const string ThemePath = "Assets/_Project/Art/UI/MenuTheme.tss";
+        public const string StylePath = "Assets/_Project/Art/UI/Menu.uss";
+        public const string ThemeAssetsPath = Folder + "/Resources/UiThemeAssets.asset";
         // UI overhaul: Barlow for everything small (readable), Saira Stencil One only for big titles (OFL).
         public const string FontPath = ThirdPartyModelImport.Root + "Fonts/Barlow/Barlow-Medium.ttf";
         public const string TitleFontPath = ThirdPartyModelImport.Root + "Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf";
@@ -26,7 +28,17 @@ namespace Abandoned.EditorTools
         [MenuItem("Tools/Abandoned/UI/Build Menu Assets")]
         public static void CreateMissing()
         {
+            UiHorrorTextureBuilder.Create();
+            UiGearIconBuilder.Create();
             if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/_Project/Data", "UI");
+            if (!AssetDatabase.IsValidFolder(Folder + "/Resources")) AssetDatabase.CreateFolder(Folder, "Resources");
+            // Re-import after image generation so the USS stores real texture references on a clean checkout.
+            AssetDatabase.ImportAsset(StylePath, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.ImportAsset(ThemePath, ImportAssetOptions.ForceUpdate);
+            var themeAssets = SerializedWiring.LoadOrCreateAsset<Abandoned.UI.UiThemeAssets>(ThemeAssetsPath);
+            themeAssets.EditorSetup(AssetDatabase.LoadAssetAtPath<StyleSheet>(StylePath),
+                AssetDatabase.LoadAssetAtPath<Font>(FontPath), AssetDatabase.LoadAssetAtPath<Font>(TitleFontPath));
+            EditorUtility.SetDirty(themeAssets);
             var panel = AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelPath);
             if (panel == null)
             {
@@ -53,6 +65,7 @@ namespace Abandoned.EditorTools
             (ThirdPartyModelImport.Root + "Kenney/GenericItems", "item"), (ThirdPartyModelImport.Root + "Kenney/GameIcons", "icon"),
             (ThirdPartyModelImport.Root + "Kenney/BoardGameIcons", "board"), (ThirdPartyModelImport.Root + "Kenney/InputPrompts", "mouse"),
             (LootIconRenderer.Folder, "loot"),
+            (UiGearIconBuilder.Folder, "item"),
         };
 
         /// <summary>Data/UI/Resources/UiIcons: every icon PNG in the packs by "prefix/name".</summary>
@@ -60,7 +73,7 @@ namespace Abandoned.EditorTools
         {
             if (!AssetDatabase.IsValidFolder(Folder + "/Resources")) AssetDatabase.CreateFolder(Folder, "Resources");
             var icons = SerializedWiring.LoadOrCreateAsset<Abandoned.UI.UiIcons>(IconsPath);
-            var list = new List<Abandoned.UI.UiIcons.Entry>();
+            var byId = new Dictionary<string, Abandoned.UI.UiIcons.Entry>(System.StringComparer.Ordinal);
             foreach ((string folder, string prefix) in IconPacks)
             {
                 string path = folder;
@@ -69,10 +82,11 @@ namespace Abandoned.EditorTools
                 {
                     string file = AssetDatabase.GUIDToAssetPath(guid);
                     if (!file.EndsWith(".png")) continue;
-                    list.Add(new Abandoned.UI.UiIcons.Entry { Id = $"{prefix}/{Path.GetFileNameWithoutExtension(file)}", Texture = AssetDatabase.LoadAssetAtPath<Texture2D>(file) });
+                    string id = $"{prefix}/{Path.GetFileNameWithoutExtension(file)}";
+                    byId[id] = new Abandoned.UI.UiIcons.Entry { Id = id, Texture = AssetDatabase.LoadAssetAtPath<Texture2D>(file) };
                 }
             }
-            list.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
+            var list = byId.Values.OrderBy(e => e.Id, System.StringComparer.Ordinal).ToList();
             icons.EditorSet(list);
             EditorUtility.SetDirty(icons);
             return icons;

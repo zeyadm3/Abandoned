@@ -16,9 +16,7 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             MenuKit.Text(panel, "CREDITS", "heading");
             MenuKit.Text(panel, "A game by Zeyad Games.", "subtitle");
-            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            panel.Add(scroll);
+            var scroll = MenuKit.Scroll(panel);
             string text = credits != null ? credits.text : "";
             foreach (string line in text.Split('\n'))
             {

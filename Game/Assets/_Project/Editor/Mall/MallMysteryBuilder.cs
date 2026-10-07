@@ -17,11 +17,11 @@ namespace Abandoned.EditorTools
             Sign(root,new Vector3(15.85f,6.4f,18),Vector3.right,"DON'T GO UP",2.4f,0.55f);
             Sign(root,new Vector3(24,10.7f,11.85f),Vector3.back,"QUARANTINE / NO ENTRY",3.5f,0.45f);
             Sign(root,new Vector3(44.15f,2.2f,22),Vector3.left,"NIGHT GUARD MISSING / 17 NOVEMBER",2.2f,0.42f);
-            CustomMallArt.Place("StrangeSymbol",root,new Vector3(16.12f,1.8f,31),Quaternion.Euler(0,90,0));
+            CustomMallArt.Place("StrangeSymbol",root,new Vector3(16.12f,1.8f,31),Quaternion.Euler(0,0,-90));
             CustomMallArt.Place("barricade",root,new Vector3(20,8,6),Quaternion.Euler(0,12,0));
             CustomMallArt.Place("AbandonedBag",root,new Vector3(44.8f,0,28),Quaternion.identity);
             CustomMallArt.Place("SalvageGear",root,new Vector3(46,0,29),Quaternion.Euler(0,22,0));
-            Note(root,new Vector3(49,1.15f,21),"Security log","03:17 — All cameras show the same corridor.\n03:19 — Knocking in the walls.\n03:20 — The corridor has no end.\nDo not send anyone upstairs.");
+            Note(root,new Vector3(49,1.15f,16.14f),"Security log","03:17 — All cameras show the same corridor.\n03:19 — Knocking in the walls.\n03:20 — The corridor has no end.\nDo not send anyone upstairs.");
             Note(root,new Vector3(3,0.15f,37),"Crew manifest","CREW 06 / four signed in.\nSomeone keeps adding a fifth name.\nIf the radio asks for your name, switch it off.\nWe left the good gear downstairs.");
             Note(root,new Vector3(24,8.2f,7),"Quarantine notice","Temporary closure.\nDo not move the display figures.\nDo not enter after the emergency tone.\nThe inspection date has been scratched away.");
             for(int f=0;f<Floors;f++)foreach(Zone zone in ZonesByFloor[f])
@@ -53,8 +53,12 @@ namespace Abandoned.EditorTools
         }
         private static void Note(Transform root,Vector3 at,string title,string text)
         {
-            GameObject note=CustomMallArt.Place("NoticeBoard",root,at,Quaternion.Euler(80,0,0),new Vector3(0.22f,0.22f,0.22f));
-            var collider=note.AddComponent<BoxCollider>();collider.size=new Vector3(0.5f,0.65f,0.04f);
+            Quaternion rotation = title == "Security log" ? Quaternion.identity : Quaternion.Euler(90f, 0f, 0f);
+            GameObject note = CustomMallArt.Place("MissingPoster", root, at, rotation, new Vector3(.65f, .65f, .65f));
+            Bounds bounds = ModelFit.LocalBounds(note, note.transform);
+            var collider = note.AddComponent<BoxCollider>();
+            collider.center = bounds.center;
+            collider.size = new Vector3(Mathf.Max(bounds.size.x, .15f), Mathf.Max(bounds.size.y, .03f), Mathf.Max(bounds.size.z, .025f));
             note.AddComponent<MysteryNote>().EditorSetup(title,text);
         }
         public static void Sign(Transform root,Vector3 at,Vector3 front,string text,float width,float height)

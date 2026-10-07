@@ -11,6 +11,17 @@ namespace Abandoned.UI
     /// </summary>
     public static class UiKit
     {
+        public static void FillScreen(VisualElement element)
+        {
+            element.style.position = Position.Absolute;
+            element.style.left = 0;
+            element.style.right = 0;
+            element.style.top = 0;
+            element.style.bottom = 0;
+            element.style.minWidth = 0;
+            element.style.minHeight = 0;
+            element.style.flexShrink = 0;
+        }
         /// <summary>A key cap for an input action (the player's own binding; mouse buttons as a glyph).</summary>
         public static VisualElement KeyCap(VisualElement parent, string action) => Key(parent, InputBindings.Display(action));
 
@@ -86,6 +97,13 @@ namespace Abandoned.UI
             var icon = new VisualElement { pickingMode = PickingMode.Ignore };
             icon.AddToClassList("icon");
             if (size != null) icon.AddToClassList("icon--" + size);
+            float pixels = size == "small" ? 22f : size == "large" ? 56f : 32f;
+            icon.style.width = pixels;
+            icon.style.height = pixels;
+            icon.style.minWidth = pixels;
+            icon.style.minHeight = pixels;
+            icon.style.flexShrink = 0;
+            icon.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
             Texture2D t = UiIcons.Get(id);
             if (t != null) icon.style.backgroundImage = t;
             parent?.Add(icon);
@@ -96,6 +114,7 @@ namespace Abandoned.UI
         {
             Texture2D t = UiIcons.Get(id);
             icon.style.backgroundImage = t != null ? new StyleBackground(t) : new StyleBackground(StyleKeyword.None);
+            icon.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
         }
 
         /// <summary>A progress bar; set it with <see cref="SetBar"/>.</summary>
@@ -147,6 +166,11 @@ namespace Abandoned.UI
         public static VisualElement Hazard(VisualElement parent)
         {
             var tape = new VisualElement { pickingMode = PickingMode.Ignore };
+            tape.style.height = 6f;
+            tape.style.minHeight = 6f;
+            tape.style.flexShrink = 0;
+            tape.style.flexDirection = FlexDirection.Row;
+            tape.style.overflow = Overflow.Hidden;
             tape.AddToClassList("hazard");
             for (int i = 0; i < 160; i++) // enough for an ultrawide screen
             {

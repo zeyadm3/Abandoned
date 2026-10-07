@@ -41,9 +41,12 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             Root.AddToClassList("pause");
+            ScrollView content = MenuKit.Scroll(Root, "pause__scroll");
+            content.style.width = Length.Percent(100f);
+            content.style.height = Length.Percent(100f);
             var columns = new VisualElement();
             columns.AddToClassList("pause__columns");
-            Root.Add(columns);
+            content.Add(columns);
 
             VisualElement left = new();
             left.AddToClassList("pause__left");
@@ -64,11 +67,13 @@ namespace Abandoned.UI
             }, small: true).tooltip = "Opens your log folder (attach Player.log) and the feedback page.";
 
             VisualElement right = MenuKit.Panel(columns);
+            right.style.height = 540f;
+            right.style.minHeight = 300f;
+            right.style.maxHeight = 620f;
             right.AddToClassList("pause__crew");
             crewTitle = MenuKit.Text(right, "CREW", "heading");
             MenuKit.Text(right, "Voice volume and mute only change what you hear.", "text").AddToClassList("text--small");
-            crewList = new VisualElement();
-            right.Add(crewList);
+            crewList = MenuKit.Scroll(right, "pause__crew-list");
             joinHint = MenuKit.Text(right, "", "text");
             joinHint.AddToClassList("text--small");
         }

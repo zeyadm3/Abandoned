@@ -19,9 +19,7 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             MenuKit.Text(panel, "ACHIEVEMENTS", "heading");
             summary = MenuKit.Text(panel, "", "subtitle");
-            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            panel.Add(scroll);
+            var scroll = MenuKit.Scroll(panel);
             list = scroll;
             MenuKit.Button(panel, "Back", menu.Back, Audio.SoundId.UiBack);
         }

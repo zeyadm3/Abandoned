@@ -35,10 +35,7 @@ namespace Abandoned.UI
             preview = new VisualElement { pickingMode = PickingMode.Ignore };
             preview.AddToClassList("wardrobe__preview");
             columns.Add(preview);
-            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            scroll.AddToClassList("wardrobe__choices");
-            columns.Add(scroll);
+            var scroll = MenuKit.Scroll(columns, "wardrobe__choices");
             MenuKit.Text(scroll, "COVERALLS", "section");
             suits = new VisualElement();
             suits.AddToClassList("wrap");

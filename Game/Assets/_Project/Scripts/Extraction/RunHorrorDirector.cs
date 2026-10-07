@@ -6,6 +6,7 @@ using Abandoned.Structure;
 using Abandoned.Threats;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Abandoned.Extraction
 {
@@ -32,7 +33,7 @@ namespace Abandoned.Extraction
             Current=this;run=GetComponent<RunState>();random=new System.Random(run.State.Seed^713);
             fixtures=FindObjectsByType<LightFixture>(FindObjectsSortMode.None);
             alarms=GameObject.FindGameObjectsWithTag("Untagged").Where(g=>g.name.StartsWith("HorrorAlarm")).Select(g=>g.GetComponent<Light>()).Where(l=>l!=null).ToArray();
-            nextPressure=Time.time+25;nextScare=Time.time+100;
+            nextPressure=Time.time+25;nextScare=Time.time+(config!=null?config.ScareInterval:80f);
         }
         public override void OnNetworkDespawn()
         {
@@ -94,15 +95,18 @@ namespace Abandoned.Extraction
                 var p=inside[random.Next(inside.Length)];
                 float distance=Mathf.Lerp(18,3,danger/6f);
                 Vector3 at=p.transform.position+new Vector3((float)random.NextDouble()*2-1,0,(float)random.NextDouble()*2-1).normalized*distance;
+                at.x=Mathf.Clamp(at.x,config.Building.min.x+1f,config.Building.max.x-1f);
+                at.z=Mathf.Clamp(at.z,config.Building.min.z+1f,config.Building.max.z-1f);
                 EventRpc(5+random.Next(3),at+Vector3.up*(2+random.Next(2)),random.Next());
             }
             if(Time.time>=nextScare)
             {
                 nextScare=Time.time+config.ScareInterval+random.Next(45);
                 var p=inside[random.Next(inside.Length)];
-                Vector3 at=p.transform.position+p.transform.forward*9+Vector3.up;
+                Vector3 at=p.transform.position+p.transform.forward*9;
                 at.x=Mathf.Clamp(at.x,2,54);at.z=Mathf.Clamp(at.z,2,46);
-                EventRpc(8+random.Next(3),at,random.Next());
+                if(NavMesh.SamplePosition(at,out NavMeshHit floor,2.5f,NavMesh.AllAreas))
+                    EventRpc(8+random.Next(3),floor.position+Vector3.up*0.04f,random.Next());
                 if(danger>=2&&RunShutters.Current!=null)
                 {
                     RollerShutter[] stores=RollerShutter.All.Where(s=>s!=null&&!s.Entrance&&!s.IsDown).ToArray();
@@ -120,7 +124,7 @@ namespace Abandoned.Extraction
                 Vector3 at=f.transform.position;
                 int sector=Mathf.Abs(Mathf.FloorToInt(at.x/12)+3*Mathf.FloorToInt(at.z/12)+Mathf.FloorToInt(at.y/4))%6;
                 bool power=danger<=sector;
-                if(arrival>=5&&arrival<16)power &= Mathf.Abs((float)arrival-5-at.z/5)<1.2f;
+                if(arrival>=5&&arrival<16)power &= Mathf.Abs((float)arrival-5-at.z/5)>=1.2f;
                 f.SetHorrorPower(power);f.SetAlarm(final.Value);
             }
             foreach(Light l in alarms)if(l!=null)l.enabled=final.Value;
@@ -152,6 +156,6 @@ namespace Abandoned.Extraction
         private static void Say(string text,float seconds){RadioLine=text;RadioUntil=Time.time+seconds;}
         private void OnGUI(){if(DebugView.Visible)GUI.Label(new Rect(15,190,650,25),$"HORROR arrival {arrivalBeat}/5 final {final.Value} next scare {nextScare-Time.time:0}s");}
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Reset(){Current=null;RadioLine=null;RadioUntil=0;}
+        private static void ResetStatics(){Current=null;RadioLine=null;RadioUntil=0;}
     }
 }

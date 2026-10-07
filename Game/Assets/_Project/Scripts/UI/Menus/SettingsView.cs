@@ -44,10 +44,7 @@ namespace Abandoned.UI
                 b.AddToClassList("tab");
                 tabButtons.Add(b);
             }
-            var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
-            scroll.AddToClassList("scroll");
-            scroll.AddToClassList("settings__body");
-            panel.Add(scroll);
+            var scroll = MenuKit.Scroll(panel, "settings__body");
             body = scroll;
             MenuKit.Button(panel, "Back", () =>
             {

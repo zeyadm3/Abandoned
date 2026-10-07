@@ -8,21 +8,19 @@ using static Abandoned.EditorTools.MallLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// The mall's lighting (M7.2): ceiling fixtures spread over every zone (a glowing panel and a
-    /// point light each, hanging from the slab above so they fall with it), a few faulty or dead ones,
-    /// drifting dust in every zone, and a sunlight shaft down from the atrium skylight.
+    /// Ceiling fixtures cast downward pools, sputter with their diffusers, and fall with their slab.
+    /// Drifting dust catches the remaining light. Placement is deterministic per tile.
     /// Seeded by tile, so rebuilding gives the same mall.
     /// </summary>
     public static class MallFixtures
     {
-        private const float Range = 4.8f, Intensity = 0.48f;
-        private const int FaultyPercent = 28, DeadPercent = 52;
+        private const float Range = 7.2f, Intensity = 1.15f;
+        private const int FaultyPercent = 55, DeadPercent = 22;
         private static readonly Color Fluorescent = new(0.9f, 0.96f, 1f), Warm = new(1f, 0.9f, 0.75f);
 
         public static int Place(Transform root, Transform tiles)
         {
             Transform parent = GreyboxFactory.Group("Fixtures", root);
-            Material panel = PolishAssets.Material("Mall_FixturePanel", new Color(0.73f, 0.74f, 0.69f), emission: 1.2f);
             int count = 0;
             for (int f = 0; f < Floors; f++)
                 foreach (Zone zone in ZonesByFloor[f])
@@ -34,13 +32,13 @@ namespace Abandoned.EditorTools
                     StructuralSection ceiling = null;
                     if (f + 1 < Floors)
                     {
-                        // No slab above (the atrium): the skylight lights it instead.
+                        // The atrium has no intermediate slab to support a fixture.
                         if (IsVoid(c, f + 1)) continue;
                         ceiling = tiles.Find($"Floor_{f + 1}/{MallBuilder.TileName(c, f + 1)}")?.GetComponent<StructuralSection>();
                         if (ceiling == null) continue;
                     }
                     else if (Atrium.Contains(c)) continue;
-                    Build(parent, c, f, zone, ceiling, panel);
+                    Build(parent, c, f, zone, ceiling);
                     count++;
                 }
             return count;
@@ -53,7 +51,7 @@ namespace Abandoned.EditorTools
             for (int k = 0; k < n; k++) yield return Mathf.FloorToInt((k + 0.5f) * tiles / n);
         }
 
-        private static void Build(Transform parent, Vector2Int c, int floor, Zone zone, StructuralSection ceiling, Material panelMaterial)
+        private static void Build(Transform parent, Vector2Int c, int floor, Zone zone, StructuralSection ceiling)
         {
             int hash = Hash(c, floor);
             float ceilingY = FloorY(floor) + StoryHeight - (floor + 1 < Floors ? TestMapBuilder.SlabThickness : 0f);
@@ -62,23 +60,26 @@ namespace Abandoned.EditorTools
             holder.transform.position = new Vector3((c.x + 0.5f) * Tile, ceilingY, (c.y + 0.5f) * Tile);
             holder.transform.rotation = Quaternion.Euler(0f, hash % 2 == 0 ? 0f : 90f, 0f);
 
-            GameObject panel = GreyboxFactory.Box("Panel", holder.transform, new Vector3(0f, -0.04f, 0f), new Vector3(1.4f, 0.08f, 0.35f), panelMaterial, withCollider: false);
-            panel.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-
-            CustomMallArt.Place("light_fixture",holder.transform,new Vector3(0,-0.08f,0),Quaternion.identity);
+            GameObject fixture = CustomMallArt.Place("light_fixture",holder.transform,new Vector3(0,-0.08f,0),Quaternion.identity);
             var lampObject = new GameObject("Light");
             lampObject.transform.SetParent(holder.transform, false);
             lampObject.transform.localPosition = new Vector3(0f, -0.3f, 0f);
+            lampObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             var lamp = lampObject.AddComponent<Light>();
-            lamp.type = LightType.Point;
+            lamp.type = LightType.Spot;
             lamp.range = Range;
+            lamp.spotAngle = 112f;
+            lamp.innerSpotAngle = 76f;
             // Stores have warm display lighting; concourses and back rooms buzzing tubes.
             lamp.color = zone.Kind == Kind.Store && zone.Tag != "stock" && zone.Tag != "office" ? Warm : Fluorescent;
             lamp.intensity = Intensity;
-            lamp.shadows = LightShadows.None;
+            lamp.shadows = hash % 11 == 0 ? LightShadows.Hard : LightShadows.None;
+            lamp.shadowResolution = UnityEngine.Rendering.LightShadowResolution.Low;
+            lamp.shadowBias = 0.03f;
+            lamp.shadowNormalBias = 0.2f;
 
             int roll = hash / 7 % 100;
-            holder.AddComponent<LightFixture>().EditorSetup(lamp, panel.GetComponent<Renderer>(),
+            holder.AddComponent<LightFixture>().EditorSetup(lamp, fixture.GetComponentInChildren<Renderer>(),
                 isFaulty: roll < FaultyPercent, isDead: roll >= 100 - DeadPercent, fixtureSeed: hash % 997);
             if (ceiling != null) holder.AddComponent<SectionProp>().EditorSetup(ceiling);
         }
@@ -188,6 +189,6 @@ namespace Abandoned.EditorTools
             renderer.receiveShadows = false;
         }
 
-        private static int Hash(Vector2Int c, int floor) => Mathf.Abs((c.x * 92837111) ^ (c.y * 689287499) ^ (floor * 283923481));
+        private static int Hash(Vector2Int c, int floor) => ((c.x * 92837111) ^ (c.y * 689287499) ^ (floor * 283923481)) & int.MaxValue;
     }
 }

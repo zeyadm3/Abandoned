@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// A level's mood (M7.2): gradient ambient, fog, the sun (soft shadows), and a global
-    /// post-processing volume (ACES and restrained bloom, without grain or vignette), with
+    /// post-processing volume (ACES, restrained bloom, grain and vignette), with
     /// post-processing switched on for the scene's cameras. Realtime only: no lightmaps (power-off
     /// runs switch lights and floors collapse, which baked light can't follow).
     /// </summary>
@@ -30,7 +30,7 @@ namespace Abandoned.EditorTools
             }
         }
 
-        /// <summary>A dim, dusty, cold mall; warm late-afternoon sun outside and through the skylight.</summary>
+        /// <summary>A dim, dusty mall; the sealed roof keeps its corridors lit by failing fixtures.</summary>
         public static readonly Mood Mall = new(
             sky: new Color(0.09f, 0.105f, 0.12f), equator: new Color(0.055f, 0.064f, 0.07f), ground: new Color(0.026f, 0.025f, 0.022f),
             fog: new Color(0.19f, 0.205f, 0.21f), fogDensity: 0.024f, bloom: 0.22f, vignette: 0.25f, grain: 0.18f,

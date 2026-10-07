@@ -23,7 +23,7 @@ namespace Abandoned.EditorTools
             m.SetColor("_BaseColor", new Color(0.85f, 0.86f, 0.88f));
             m.SetColor("_EmissionColor", new Color(2.2f, 2.1f, 1.9f));
             m.EnableKeyword("_EMISSION");
-            m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+            m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             return Save(m);
         }
 

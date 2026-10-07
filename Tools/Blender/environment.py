@@ -9,6 +9,7 @@ from mathutils import Vector
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 ROOT = args[0] if args else os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 OUT = os.path.join(ROOT, 'Game/Assets/_Project/Art/Custom/Environment')
+ONLY = set(args[1].split(',')) if len(args) > 1 else set()
 os.makedirs(os.path.join(OUT, 'Textures'), exist_ok=True)
 random.seed(1200)
 PALETTE = {
@@ -96,6 +97,7 @@ def begin():
     global OBJECTS
     bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False);OBJECTS=[]
 def export(name):
+    if ONLY and name not in ONLY: return
     bpy.ops.object.select_all(action='DESELECT')
     for o in OBJECTS:o.select_set(True)
     bpy.context.view_layer.objects.active=OBJECTS[0]
@@ -118,7 +120,7 @@ for name,hole in [('WallSolid',None),('WallDoor',(1.4,0,2.3)),('WallWide',(3.5,0
         box('Lintel',(0,b+hh+.03,0),(w+.12,.07,.27),'Trim')
     else:box('PlasterCore',(0,h*.5,0),(4,h,.20),'Plaster')
     for sign in (-1,1):
-        for x,ww in ([(-1.5,1),(1.5,1)] if hole and hole[1]==0 else [(0,4)]):
+        for x,ww in ([(sign_x * (hole[0] * .5 + (4 - hole[0]) * .25), (4 - hole[0]) * .5) for sign_x in (-1,1)] if hole and hole[1]==0 else [(0,4)]):
             box('Skirting',(x,.08,sign*.115),(ww,.14,.04),'Trim')
             box('Dado',(x,.96,sign*.115),(ww,.05,.045),'Trim')
     export(name)
