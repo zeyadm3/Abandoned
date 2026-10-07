@@ -6,106 +6,110 @@ using UnityEngine;
 
 namespace Abandoned.Threats
 {
-    /// <summary>
-    /// Host: the run's threats. Each run opens with one threat picked by the run seed from the roster
-    /// (Blind One, Stalker, Collector, by weight; GDD 9: runs start with 0-1 threats), appearing at a
-    /// seeded spawn point after a head start; a new run clears the old ones. Danger adds another
-    /// (<see cref="SpawnExtra"/>) and sharpens them all.
-    /// </summary>
+    /// <summary>Seeded host roster with a head start, danger tier arrivals and a separately gated final creature.</summary>
     public class ThreatDirector : MonoBehaviour
     {
         [SerializeField] private NetworkBootstrap bootstrap;
         [SerializeField] private NetworkObject blindOnePrefab;
-        [Tooltip("Every threat that can appear here, and how likely each is to open a run (0 = never first).")]
         [SerializeField] private NetworkObject[] roster = System.Array.Empty<NetworkObject>();
         [SerializeField] private float[] openingWeights = System.Array.Empty<float>();
-
+        [SerializeField] private ThreatCatalog catalog;
         private float spawnAt = -1f;
-        private int runSeed;
-
+        private int runSeed, spawnedTier;
+        private bool finalSpawned;
         public static ThreatDirector Current { get; private set; }
-
         public void Setup(NetworkBootstrap networkBootstrap, NetworkObject prefab, NetworkObject[] threats = null, float[] weights = null)
         {
-            bootstrap = networkBootstrap;
-            blindOnePrefab = prefab;
-            roster = threats ?? new[] { prefab };
-            openingWeights = weights ?? new[] { 1f };
+            bootstrap = networkBootstrap; blindOnePrefab = prefab;
+            roster = threats ?? new[] { prefab }; openingWeights = weights ?? new[] { 1f };
         }
-
-        private void OnEnable()
+        public void SetupCatalog(ThreatCatalog definitions)
         {
-            Current = this;
-            RunDirector.RunStarted += OnRunStarted;
+            catalog = definitions;
+            if (catalog == null) return;
+            roster = catalog.Definitions.Select(d => d != null ? d.Prefab : null).ToArray();
+            openingWeights = catalog.Definitions.Select(d => d != null && !d.FinalOnly && d.MinimumDanger == 0 ? d.OpeningWeight : 0f).ToArray();
         }
-
-        private void OnDisable()
-        {
-            if (Current == this) Current = null;
-            RunDirector.RunStarted -= OnRunStarted;
-        }
-
+        private void OnEnable() { Current = this; RunDirector.RunStarted += OnRunStarted; }
+        private void OnDisable() { if (Current == this) Current = null; RunDirector.RunStarted -= OnRunStarted; }
         private NetworkManager Manager => NetworkBootstrap.Resolve(bootstrap) is NetworkBootstrap b ? b.Manager : null;
         private bool IsHost => Manager != null && Manager.IsServer && Manager.IsListening;
-
         private void Update()
         {
             if (!IsHost) return;
-            // First run of a session: the run state exists once hosting starts.
-            if (spawnAt < 0f && RunState.Current != null && RunState.Current.IsSpawned) Schedule(RunState.Current.State.Seed);
-            if (spawnAt > 0f && Time.time >= spawnAt && RunState.Current != null && RunState.Current.State.Phase == RunPhase.Running)
+            RunState run = RunState.Current;
+            if (spawnAt < 0f && run != null && run.IsSpawned) Schedule(run.State.Seed);
+            if (run == null || run.State.Phase != RunPhase.Running) return;
+            if (spawnAt > 0f && Time.time >= spawnAt)
             {
-                spawnAt = 0f;
-                Spawn(Opening(runSeed));
-                // A night job (M9.2) wakes more than one thing.
-                for (int i = 0; i < RunState.Current.Terms.ExtraThreats; i++) SpawnExtra();
+                spawnAt = 0f; Spawn(Opening(runSeed));
+                for (int i = 0; i < run.Terms.ExtraThreats; i++) SpawnExtra();
+            }
+            if (spawnAt != 0f) return;
+            while (spawnedTier < run.State.Danger)
+            {
+                spawnedTier++;
+                SpawnExtra();
             }
         }
-
         private void OnRunStarted(int seed)
         {
             if (!IsHost) return;
             foreach (Threat t in Threat.All.ToList()) if (t != null && t.IsSpawned) t.NetworkObject.Despawn(true);
             Schedule(seed);
         }
-
         private void Schedule(int seed)
         {
-            runSeed = seed;
-            spawnAt = Time.time + Mathf.Max(0.01f, blindOnePrefab.GetComponent<BlindOne>().Config.SpawnDelay);
+            runSeed = seed; spawnedTier = 0; finalSpawned = false;
+            BlindOne listener = blindOnePrefab != null ? blindOnePrefab.GetComponent<BlindOne>() : null;
+            spawnAt = Time.time + (listener != null ? Mathf.Max(0.01f, listener.Config.SpawnDelay) : 45f);
         }
-
-        /// <summary>The roster index that opens a run with this seed (weighted).</summary>
         public int Opening(int seed)
         {
             if (roster.Length == 0) return -1;
-            float total = 0f;
-            for (int i = 0; i < roster.Length; i++) total += i < openingWeights.Length ? openingWeights[i] : 0f;
-            if (total <= 0f) return 0;
+            float total = openingWeights.Sum();
+            if (total <= 0f) return -1;
             double roll = new System.Random(seed).NextDouble() * total;
             for (int i = 0; i < roster.Length; i++)
             {
-                roll -= i < openingWeights.Length ? openingWeights[i] : 0f;
+                float weight = i < openingWeights.Length ? openingWeights[i] : 0f;
+                if (weight <= 0f) continue;
+                roll -= weight;
                 if (roll <= 0) return i;
             }
-            return 0;
+            return -1;
         }
-
-        /// <summary>Host, danger: another threat, any kind.</summary>
-        public Threat SpawnExtra() => Spawn(new System.Random(runSeed + Threat.All.Count * 7919).Next(roster.Length));
-
-        /// <summary>Host: one more Blind One now (tests, and the old single-threat behaviour).</summary>
+        public Threat SpawnExtra()
+        {
+            if (!IsHost || Threat.All.Count(t => !(t is LastHunter)) >= 8) return null;
+            int danger = RunState.Current != null ? RunState.Current.State.Danger : 0;
+            int[] candidates = Enumerable.Range(0, roster.Length).Where(i => roster[i] != null && Eligible(i, danger)).ToArray();
+            if (candidates.Length == 0) return null;
+            // Newly unlocked silhouettes arrive first, so danger introduces different rules before duplicates.
+            int[] newKinds = candidates.Where(i => !Threat.All.Any(t => t != null && t.GetType() == roster[i].GetComponent<Threat>().GetType())).ToArray();
+            int[] pool = newKinds.Length > 0 ? newKinds : candidates;
+            return Spawn(pool[new System.Random(runSeed + Threat.All.Count * 7919 + spawnedTier).Next(pool.Length)]);
+        }
+        private bool Eligible(int index, int danger)
+        {
+            if (catalog == null || index >= catalog.Definitions.Length) return !(roster[index].GetComponent<Threat>() is LastHunter);
+            ThreatDefinition definition = catalog.Definitions[index];
+            return definition != null && !definition.FinalOnly && definition.MinimumDanger <= danger;
+        }
+        public LastHunter SpawnFinalHunter()
+        {
+            if (!IsHost || finalSpawned) return null;
+            LastHunter result = SpawnOf<LastHunter>() as LastHunter;
+            if (result != null) finalSpawned = true;
+            return result;
+        }
         public BlindOne Spawn() => Spawn(blindOnePrefab) as BlindOne;
-
-        /// <summary>Host: the roster's threat at <paramref name="index"/>, now.</summary>
         public Threat Spawn(int index) => index >= 0 && index < roster.Length ? Spawn(roster[index]) : null;
-
         public Threat SpawnOf<T>() where T : Threat
         {
-            foreach (NetworkObject p in roster) if (p != null && p.GetComponent<T>() != null) return Spawn(p);
+            foreach (NetworkObject prefab in roster) if (prefab != null && prefab.GetComponent<T>() != null) return Spawn(prefab);
             return null;
         }
-
         private Threat Spawn(NetworkObject prefab)
         {
             if (!IsHost || prefab == null) return null;
@@ -114,8 +118,21 @@ namespace Abandoned.Threats
             Transform at = points[(int)((uint)(runSeed + Threat.All.Count) % (uint)points.Length)].transform;
             NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at.position, rotation: at.rotation);
             Threat threat = spawned.GetComponent<Threat>();
+            if (threat is LastHunter final) final.SetHuntBounds(HuntBounds());
             Debug.Log($"[Threat] The {threat.DisplayName} appears at {at.name}.");
             return threat;
+        }
+        private static Bounds HuntBounds()
+        {
+            var bounds = new Bounds(Vector3.zero, Vector3.zero);
+            bool first = true;
+            foreach (Abandoned.Structure.StructuralSection section in FindObjectsByType<Abandoned.Structure.StructuralSection>(FindObjectsSortMode.None))
+            {
+                if (first) { bounds = new Bounds(section.transform.position, Vector3.one * 4f); first = false; }
+                else bounds.Encapsulate(section.transform.position);
+            }
+            bounds.Expand(new Vector3(3f, 12f, 3f));
+            return bounds;
         }
     }
 }

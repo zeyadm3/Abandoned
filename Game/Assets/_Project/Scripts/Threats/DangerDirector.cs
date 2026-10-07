@@ -23,7 +23,7 @@ namespace Abandoned.Threats
 
         private readonly List<(Light light, float intensity)> lights = new();
         private System.Random random = new(1);
-        private int shownLevel, extraThreatsForRun = -1;
+        private int shownLevel;
         private float nextAging, flickerUntil;
         private RunState lastRun;
 
@@ -39,7 +39,7 @@ namespace Abandoned.Threats
         private void Start()
         {
             foreach (Light l in FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if (l.type != LightType.Directional && l.GetComponentInParent<LightFixture>() == null) lights.Add((l, l.intensity));
+                if (l.type != LightType.Directional && l.gameObject.scene == gameObject.scene && l.GetComponentInParent<LightFixture>() == null && l.GetComponentInParent<Abandoned.Networking.NetworkPlayer>() == null && l.GetComponentInParent<TruckCargo>() == null && l.GetComponentInParent<TruckFloodlights>() == null) lights.Add((l, l.intensity));
         }
 
         private void Update()
@@ -52,7 +52,6 @@ namespace Abandoned.Threats
                 lastRun = run;
                 shownLevel = run.State.Danger;
                 random = new System.Random(run.State.Seed);
-                extraThreatsForRun = -1;
                 RestoreLights();
             }
             if (run.IsServer && run.State.Phase == RunPhase.Running) Escalate(run);
@@ -79,12 +78,7 @@ namespace Abandoned.Threats
                 nextAging = Time.time + config.AgingInterval;
                 structure.AgeRandomSections(level, config.AgingDamage, config.AgingFloor, random);
             }
-            // Only once the first one is out (the head start stays a head start).
-            if (level >= config.ExtraThreatLevel && extraThreatsForRun < 0 && Threat.All.Count > 0 && ThreatDirector.Current != null)
-            {
-                extraThreatsForRun = 1;
-                ThreatDirector.Current.SpawnExtra();
-            }
+
         }
 
         // ---- Everyone ----
