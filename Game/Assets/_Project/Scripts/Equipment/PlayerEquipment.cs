@@ -127,6 +127,7 @@ namespace Abandoned.Equipment
                 flashlight.enabled = on;
             }
             if (carrier != null) carrier.SoloDragAllowed = !CompanyService.RulesApply || Has(EquipmentKind.HandTrolley);
+            if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
             if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = Has(EquipmentKind.Backpack) ? backpackSlots : 0;
         }
 
@@ -135,6 +136,7 @@ namespace Abandoned.Equipment
             if (!IsSpawned) return;
             // The company can appear or change after we spawned (HQ load): keep the effects current.
             if (carrier != null) carrier.SoloDragAllowed = !CompanyService.RulesApply || Has(EquipmentKind.HandTrolley);
+            if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
             // Ghosts can't help (GDD 11): a light left on goes out with its holder.
             if (IsServer && IsDead && state.Value.LightOn) { EquipState s = state.Value; s.LightOn = false; state.Value = s; }
             if (flashlight != null && flashlight.enabled && IsDead) Apply();

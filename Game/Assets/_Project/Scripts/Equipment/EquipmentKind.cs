@@ -14,5 +14,7 @@ namespace Abandoned.Equipment
         Backpack,
         SupportJack,
         Crowbar,
+        // M10 (append only)
+        Flatbed,
     }
 }

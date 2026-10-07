@@ -176,13 +176,13 @@ namespace Abandoned.Interaction
             }
         }
 
-        /// <summary>True when one player may drag it alone (Heavy with solo drag on, standing in for the trolley).</summary>
+        /// <summary>True when a short crew may drag it: anyone holding it has a trolley for it (hand trolley: Heavy; flatbed: Huge too).</summary>
         public bool CanBeDraggedUnderCrewed
         {
             get
             {
                 for (int i = 0; i < localPoints.Length; i++)
-                    if (carriers[i] != null) return carriers[i].CanSoloDrag(grabbable.CarryClass);
+                    if (carriers[i] != null && carriers[i].CanSoloDrag(grabbable.CarryClass)) return true;
                 return false;
             }
         }
@@ -199,7 +199,7 @@ namespace Abandoned.Interaction
             {
                 float slowest = float.PositiveInfinity;
                 for (int i = 0; i < localPoints.Length; i++)
-                    if (carriers[i] != null) slowest = Mathf.Min(slowest, carriers[i].DragSpeedCapability());
+                    if (carriers[i] != null) slowest = Mathf.Min(slowest, carriers[i].DragSpeedCapability(grabbable.CarryClass));
                 return slowest;
             }
         }

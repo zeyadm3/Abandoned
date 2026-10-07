@@ -54,7 +54,10 @@ namespace Abandoned.Interaction
         /// </summary>
         public bool SoloDragAllowed { get; set; } = true;
 
-        public bool CanSoloDrag(CarryClass carryClass) => SoloDragAllowed && config.CanSoloDrag(carryClass);
+        /// <summary>A flatbed trolley in hand (M10.2): Heavy and Huge items can be dragged short-handed, Huge ones slowly.</summary>
+        public bool FlatbedDrag { get; set; }
+        public bool CanSoloDrag(CarryClass carryClass) =>
+            (SoloDragAllowed || FlatbedDrag) && config.CanSoloDrag(carryClass) || FlatbedDrag && carryClass == CarryClass.Huge;
 
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;
@@ -153,12 +156,12 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>Top speed (m/s) dragging something heavy alone: gait times the drag slowdown.</summary>
-        public float DragSpeedCapability()
+        public float DragSpeedCapability(CarryClass carryClass = CarryClass.Heavy)
         {
             if (motor == null) return float.PositiveInfinity;
             PlayerMovementConfig m = motor.Config;
             float gait = motor.IsCrouching ? m.CrouchSpeed : motor.IsSprinting ? m.SprintSpeed : m.WalkSpeed;
-            return gait * config.DragSpeedMultiplier;
+            return gait * config.DragSpeedMultiplier * (carryClass == CarryClass.Huge ? config.HugeDragSpeedScale : 1f);
         }
 
         private void FixedUpdate()

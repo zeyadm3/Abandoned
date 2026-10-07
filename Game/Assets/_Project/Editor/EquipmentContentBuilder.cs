@@ -28,6 +28,9 @@ namespace Abandoned.EditorTools
                 Item("crowbar", "Crowbar", "Strike the floor in front of you (use): weak floors break, sound ones crack first. Loud.", EquipmentKind.Crowbar, 350, 1, false, new Color(0.7f, 0.15f, 0.1f)),
                 Item("backpack", "Backpack", "Two more pocket slots while you carry it.", EquipmentKind.Backpack, 600, 2, false, new Color(0.3f, 0.4f, 0.25f)),
                 Item("support_jack", "Support Jack", "Brace the floor you stand on from below: it holds 60 % more until the next job (single use).", EquipmentKind.SupportJack, 500, 3, true, new Color(0.95f, 0.75f, 0.1f)),
+                // M10 (append only)
+                Item("flatbed", "Flatbed Trolley", "A flatbed and a fold-out ramp: a short crew, or one stubborn person, can drag Huge items (slowly). Works as a hand trolley too.",
+                    EquipmentKind.Flatbed, 2000, 3, false, new Color(0.25f, 0.45f, 0.75f)),
             };
             CreateNoiseMaker();
             CreateSupportJack();
