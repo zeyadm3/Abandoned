@@ -34,6 +34,7 @@ namespace Abandoned.EditorTools
             NetworkContentBuilder.CreateSessionTravelPrefab();
             CompanyContentBuilder.CreateMissing();
             ThreatContentBuilder.CreateBlindOne();
+            ThreatContentBuilder.CreateOthers();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestBuildingBuilder.Build();
             MallBuilder.Build();

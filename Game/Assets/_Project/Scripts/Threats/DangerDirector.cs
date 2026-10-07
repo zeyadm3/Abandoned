@@ -68,10 +68,10 @@ namespace Abandoned.Threats
             int level = config.LevelAt(run.Elapsed, run.State.Window > 0f ? run.State.Window : run.Config.WindowSeconds);
             run.SetDanger(level);
             if (structure != null) structure.DangerDecay = 1f + level * config.DecayPerLevel;
-            foreach (BlindOne b in BlindOne.All)
+            foreach (Threat t in Threat.All)
             {
-                b.HearingScale = 1f + level * config.HearingPerLevel;
-                b.SpeedScale = 1f + level * config.SpeedPerLevel;
+                t.HearingScale = 1f + level * config.HearingPerLevel;
+                t.SpeedScale = 1f + level * config.SpeedPerLevel;
             }
             if (structure != null && level > 0 && Time.time >= nextAging)
             {
@@ -79,10 +79,10 @@ namespace Abandoned.Threats
                 structure.AgeRandomSections(level, config.AgingDamage, config.AgingFloor, random);
             }
             // Only once the first one is out (the head start stays a head start).
-            if (level >= config.ExtraThreatLevel && extraThreatsForRun < 0 && BlindOne.All.Count > 0 && ThreatDirector.Current != null)
+            if (level >= config.ExtraThreatLevel && extraThreatsForRun < 0 && Threat.All.Count > 0 && ThreatDirector.Current != null)
             {
                 extraThreatsForRun = 1;
-                ThreatDirector.Current.Spawn();
+                ThreatDirector.Current.SpawnExtra();
             }
         }
 

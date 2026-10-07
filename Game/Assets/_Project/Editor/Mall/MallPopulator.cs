@@ -80,8 +80,11 @@ namespace Abandoned.EditorTools
                 point.AddComponent<Abandoned.Threats.ThreatSpawnPoint>();
             }
             var threats = new GameObject("Threats");
-            threats.AddComponent<Abandoned.Threats.ThreatDirector>().Setup(bootstrap,
-                UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.BlindOnePrefabPath).GetComponent<Unity.Netcode.NetworkObject>());
+            Unity.Netcode.NetworkObject Threat(string path) => UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<Unity.Netcode.NetworkObject>();
+            // GDD 9: one threat opens each run (the Blind One most often); danger brings another.
+            threats.AddComponent<Abandoned.Threats.ThreatDirector>().Setup(bootstrap, Threat(ThreatContentBuilder.BlindOnePrefabPath),
+                new[] { Threat(ThreatContentBuilder.BlindOnePrefabPath), Threat(ThreatContentBuilder.StalkerPrefabPath), Threat(ThreatContentBuilder.CollectorPrefabPath) },
+                new[] { 0.5f, 0.25f, 0.25f });
             threats.AddComponent<Abandoned.Threats.DangerDirector>().Setup(
                 UnityEditor.AssetDatabase.LoadAssetAtPath<Abandoned.Extraction.DangerConfig>(NetworkContentBuilder.DangerConfigPath),
                 Object.FindAnyObjectByType<StructureSimulation>());

@@ -85,11 +85,11 @@ namespace Abandoned.Networking
             Camera cam = Camera.main;
             if (cam == null) return;
             // Ghosts see threats (GDD 11).
-            foreach (BlindOne b in BlindOne.All)
+            foreach (Threat t in Threat.All)
             {
-                if (b == null) continue;
-                Vector3 s = cam.WorldToScreenPoint(b.transform.position + Vector3.up * 2.6f);
-                if (s.z > 0f) GUI.Label(new Rect(s.x - 60f, Screen.height - s.y - 12f, 120f, 24f), "<color=#ff4444>▼ BLIND ONE</color>", mark);
+                if (t == null) continue;
+                Vector3 s = cam.WorldToScreenPoint(t.transform.position + Vector3.up * 2.6f);
+                if (s.z > 0f) GUI.Label(new Rect(s.x - 70f, Screen.height - s.y - 12f, 140f, 24f), $"<color=#ff4444>▼ {t.DisplayName.ToUpperInvariant()}</color>", mark);
             }
         }
     }

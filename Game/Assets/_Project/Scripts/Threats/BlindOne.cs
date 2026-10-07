@@ -15,7 +15,7 @@ namespace Abandoned.Threats
     /// faster when it hunts. Counterplay: move slowly, crouch, don't drop things, whisper.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
-    public class BlindOne : NetworkBehaviour
+    public class BlindOne : Threat
     {
         private const float ArrivedDistance = 1.2f, RepathInterval = 0.25f;
         // Walls between its head and a noise: anything solid except players, loot and debris.
@@ -33,18 +33,19 @@ namespace Abandoned.Threats
         private Vector3 wanderTarget, lastGoal;
         private bool hasWanderTarget, hasGoal;
 
-        public static readonly List<BlindOne> All = new();
+        /// <summary>Just the Blind Ones (Threat.All has every threat).</summary>
+        public static new readonly List<BlindOne> All = new();
+
+        public override string DisplayName => "Blind One";
 
         public BlindOneState State => state.Value;
         public BlindOneConfig Config => config;
-        public float HearingScale { get; set; } = 1f;
-        public float SpeedScale { get; set; } = 1f;
         public IReadOnlyList<(Vector3 position, float strength, float time)> Heard => heard;
         public BlindOneBrain Brain => brain;
-        public int Kills { get; private set; }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             agent = GetComponent<NavMeshAgent>();
             agent.enabled = false;
             wallMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast");
@@ -52,6 +53,7 @@ namespace Abandoned.Threats
 
         public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
             All.Add(this);
             if (!IsServer) return;
             brain = new BlindOneBrain(config);
@@ -62,6 +64,7 @@ namespace Abandoned.Threats
 
         public override void OnNetworkDespawn()
         {
+            base.OnNetworkDespawn();
             All.Remove(this);
             NoiseSystem.Emitted -= OnNoise;
         }

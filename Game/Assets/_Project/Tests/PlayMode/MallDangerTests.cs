@@ -61,7 +61,7 @@ namespace Abandoned.Tests
             Assert.IsTrue(startedAbove.Where(s => !s.IsCollapsed).All(s => s.HealthFraction >= fast.AgingFloor - 0.01f || s.Load > 0f),
                 "ageing alone never pushes a floor below its floor (pre-damage may start some lower)");
             Assert.IsTrue(flickered, "the lights flickered when the level rose");
-            if (level >= fast.ExtraThreatLevel) Assert.GreaterOrEqual(BlindOne.All.Count, 2, "a second Blind One");
+            if (level >= fast.ExtraThreatLevel) Assert.GreaterOrEqual(Threat.All.Count, 2, "danger brought another threat");
         }
 
         [UnityTest]
