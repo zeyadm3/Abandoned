@@ -41,7 +41,8 @@ namespace Abandoned.EditorTools
         public static Material Shaft()
         {
             Material m = Load("LightShaft", ParticleUnlitShader);
-            m.SetTexture("_BaseMap", Texture2D.whiteTexture);
+            // A saved soft-grain map (Texture2D.whiteTexture is runtime-only and saves as "no texture").
+            m.SetTexture("_BaseMap", PolishAssets.Texture("ShaftGrain"));
             m.SetColor("_BaseColor", new Color(1f, 0.95f, 0.82f, 1f));
             Transparent(m, BlendMode.SrcAlpha, BlendMode.One, additive: true);
             m.SetFloat("_Cull", (float)CullMode.Off);

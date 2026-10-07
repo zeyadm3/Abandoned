@@ -60,7 +60,7 @@ namespace Abandoned.EditorTools
         });
 
         // The horror content pass intentionally never opens or rebuilds the developer TestMap,
-        // captures screenshots/icons, or runs validators/tests.
+        // captures screenshots/icons, or runs tests. Its level validators and material audit only log.
         public static void RebuildHorrorContent() => RunAndExit(() =>
         {
             ProjectLayersSetup.Apply(); BuildScript.ApplyPlayerSettings(); RenderPipelineSetup.Apply();
@@ -74,7 +74,9 @@ namespace Abandoned.EditorTools
             NewThreatContentBuilder.Create();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing();
+            MaterialAudit.RemapThirdPartyMaterials(); // before the scenes so their models already use URP copies
             MallBuilder.Build(); HqBuilder.Build(); GeneratedMaterialRepair.Rebuild(); BuildScenes.ApplyToEditorSettings();
+            MaterialAudit.Run(); // last: reads both saved scenes and every prefab, fixes, then reports what's left
             AssetDatabase.SaveAssets(); return true;
         });
 
