@@ -58,6 +58,7 @@ namespace Abandoned.EditorTools
             ui.AddComponent<Abandoned.Equipment.GearScreens>();
             LevelAtmosphere.Apply("HQ", LevelAtmosphere.Hq, root);
             AmbienceBuilder.Hq(root);
+            InvisibleColliderAudit.Run(root, "HQ");
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             List<EditorBuildSettingsScene> scenes = EditorBuildSettings.scenes.ToList();

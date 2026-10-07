@@ -72,6 +72,8 @@ namespace Abandoned.EditorTools
             MallMysteryBuilder.Place(root);
             BakeNavMesh(root);
             int shutters = MallShutters.Place(root); // after the bake: runtime obstacles, not walls
+            // The rebuild log is the report: invisible walls.
+            InvisibleColliderAudit.Run(root, "Mall");
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildSettings();
