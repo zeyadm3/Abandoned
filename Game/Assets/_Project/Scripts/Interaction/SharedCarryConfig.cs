@@ -28,16 +28,16 @@ namespace Abandoned.Interaction
         [field: Header("Item motion when lifted (host physics, acceleration-based)")]
         [field: SerializeField, Min(0f)] public float Spring { get; private set; } = 40f;
         [field: Tooltip("Below critical damping on purpose: the load sways a little after a stop.")]
-        [field: SerializeField, Min(0f)] public float Damping { get; private set; } = 9f;
+        [field: SerializeField, Min(0f)] public float Damping { get; private set; } = 12f;
         [field: SerializeField, Min(1f)] public float MaxAcceleration { get; private set; } = 30f;
         [field: Tooltip("How strongly disagreeing carriers turn the item (yaw from walking around, tilt from height).")]
-        [field: SerializeField, Min(0f)] public float TurnGain { get; private set; } = 3f;
+        [field: SerializeField, Min(0f)] public float TurnGain { get; private set; } = 2.5f;
         [field: Tooltip("Pull back to upright so it tilts and sways but doesn't roll over.")]
         [field: SerializeField, Min(0f)] public float UprightGain { get; private set; } = 4f;
         [field: Tooltip("Rate (1/s) the angular velocity approaches what the carriers ask for; lower = more lag and sway.")]
-        [field: SerializeField, Min(0.1f)] public float AngularResponse { get; private set; } = 8f;
+        [field: SerializeField, Min(0.1f)] public float AngularResponse { get; private set; } = 10f;
         [field: Tooltip("Rocking (rad/s per metre of disagreement) when carriers pull in different directions.")]
-        [field: SerializeField, Min(0f)] public float WobbleGain { get; private set; } = 2.5f;
+        [field: SerializeField, Min(0f)] public float WobbleGain { get; private set; } = 1.4f;
         [field: SerializeField, Min(0.1f)] public float WobbleFrequency { get; private set; } = 1.6f;
         [field: Tooltip("The item may outrun the slowest carrier's speed by this factor while springs catch up.")]
         [field: SerializeField, Range(1f, 2f)] public float SpeedSlack { get; private set; } = 1.15f;

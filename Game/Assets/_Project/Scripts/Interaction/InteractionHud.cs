@@ -72,15 +72,21 @@ namespace Abandoned.Interaction
         private string BuildPrompt(out bool hint)
         {
             hint = false;
-            string interact = InputBindings.Display("Interact"), use = InputBindings.Display("Use"), drop = InputBindings.Display("Drop");
+            string interact = InputBindings.Display("Interact"), use = InputBindings.Display("Use"), drop = InputBindings.Display("Drop"), rotate = InputBindings.Display("Rotate");
             if (carrier.HintVisible) { hint = true; return carrier.Hint; }
+            if (interactor.IsPlacing)
+            {
+                hint = interactor.PlacementBlocked;
+                return interactor.PlacementBlocked ? $"No clear support - release [{drop}] to reposition" : $"[{drop}] hold to set down gently / release to cancel";
+            }
+            if (interactor.IsRotating) return $"[{rotate}] hold + mouse to rotate   release to look";
             if (interactor.Target != null && interactor.Target.Shared != null)
                 return $"[{interact}] Grab {Describe(interactor.Target)} - {SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers)}";
             if (interactor.Target != null) return $"[{interact}] Pick up {Describe(interactor.Target)}";
             if (carrier.Held == null && interactor.UseTarget?.UsePrompt(interactor.gameObject) is string usable) return $"[{interact}] {usable}";
             if (carrier.IsSharing) return $"{carrier.Held.DisplayName}: {SharedCarryText.Of(carrier.Held.Shared)}   [{drop}] let go";
             if (carrier.IsDragging) return $"Dragging {Describe(carrier.Held)}   [{drop}] let go";
-            if (carrier.Held != null) return $"Holding {Describe(carrier.Held)}   [{use}] throw   [{drop}] drop";
+            if (carrier.Held != null) return $"[{use}] hold to throw   [{drop}] tap: drop / hold: set down   [{rotate}] rotate";
             return null;
         }
 

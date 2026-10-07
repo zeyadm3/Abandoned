@@ -25,6 +25,7 @@ namespace Abandoned.Voice
         {
             source = GetComponent<AudioSource>();
             source.spatialBlend = 0f;
+            source.priority = 16;
             source.volume = 0f;
             GetComponent<AudioHighPassFilter>().cutoffFrequency = config.RadioLowCut;
             GetComponent<AudioLowPassFilter>().cutoffFrequency = config.RadioHighCut;

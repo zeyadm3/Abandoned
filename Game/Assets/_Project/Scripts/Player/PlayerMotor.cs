@@ -1,5 +1,6 @@
 using System;
 using Abandoned.Core;
+using Abandoned.Interaction;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -24,6 +25,7 @@ namespace Abandoned.Player
 
         private readonly Collider[] standBlockers = new Collider[8];
         private CharacterController controller;
+        private PlayerCarrier carrier;
         private Vector3 horizontalVelocity;
         private float verticalVelocity;
         private float lastGroundedTime = float.NegativeInfinity;
@@ -86,6 +88,7 @@ namespace Abandoned.Player
         private void Awake()
         {
             controller = GetComponent<CharacterController>();
+            carrier = GetComponent<PlayerCarrier>();
             controller.radius = config.Radius;
             controller.slopeLimit = config.SlopeLimit;
             controller.stepOffset = config.StepOffset;
@@ -179,7 +182,9 @@ namespace Abandoned.Player
             wish = Vector3.ClampMagnitude(wish, 1f);
             bool hasInput = wish.sqrMagnitude > SprintMinInput * SprintMinInput;
 
-            IsSprinting = input.SprintHeld && hasInput && !IsCrouching && stamina.CanSprint;
+            IsSprinting = input.SprintHeld && hasInput && !IsCrouching && stamina.CanSprint
+                && (carrier == null || carrier.CanSprint)
+                && MaxSpeed > config.WalkSpeed * speedMultiplier + SprintPaceMargin;
             float speed = IsCrouching ? config.CrouchSpeed : IsSprinting ? config.SprintSpeed : config.WalkSpeed;
             Vector3 target = wish * Mathf.Min(speed * speedMultiplier, MaxSpeed);
 

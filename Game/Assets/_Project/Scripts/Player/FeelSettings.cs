@@ -13,8 +13,8 @@ namespace Abandoned.Player
     {
         [field: Header("Head bob")]
         [field: SerializeField] public bool HeadBobEnabled { get; private set; } = true;
-        [field: SerializeField, Min(0f)] public float BobVertical { get; private set; } = 0.035f;
-        [field: SerializeField, Min(0f)] public float BobHorizontal { get; private set; } = 0.02f;
+        [field: SerializeField, Min(0f)] public float BobVertical { get; private set; } = 0.018f;
+        [field: SerializeField, Min(0f)] public float BobHorizontal { get; private set; } = 0.009f;
         [field: Tooltip("Metres travelled per full bob cycle (two steps).")]
         [field: SerializeField, Min(0.1f)] public float BobCycleLength { get; private set; } = 1.6f;
         [field: SerializeField, Min(0f)] public float SprintBobScale { get; private set; } = 1.4f;
@@ -25,8 +25,8 @@ namespace Abandoned.Player
         [field: Header("Landing dip")]
         [field: SerializeField] public bool LandingDipEnabled { get; private set; } = true;
         [field: Tooltip("Dip depth per m/s of landing speed.")]
-        [field: SerializeField, Min(0f)] public float DipPerSpeed { get; private set; } = 0.02f;
-        [field: SerializeField, Min(0f)] public float MaxDip { get; private set; } = 0.25f;
+        [field: SerializeField, Min(0f)] public float DipPerSpeed { get; private set; } = 0.008f;
+        [field: SerializeField, Min(0f)] public float MaxDip { get; private set; } = 0.08f;
         [field: SerializeField, Min(0.1f)] public float DipRecoverySpeed { get; private set; } = 10f;
         [field: Tooltip("Landings slower than this don't dip (stepping off a kerb).")]
         [field: SerializeField, Min(0f)] public float MinDipSpeed { get; private set; } = 3f;
@@ -51,6 +51,10 @@ namespace Abandoned.Player
         [field: SerializeField, Min(0f)] public float ShakeFrequency { get; private set; } = 18f;
         [field: Tooltip("Trauma lost per second.")]
         [field: SerializeField, Min(0.01f)] public float ShakeDecay { get; private set; } = 1.6f;
+        [field: Tooltip("Ordinary loot impacts stay subtle, even when several arrive together.")]
+        [field: SerializeField, Range(0f, 1f)] public float ImpactShakeLimit { get; private set; } = 0.25f;
+        [field: Tooltip("Only a collapse within this radius gets the stronger shake.")]
+        [field: SerializeField, Min(0.5f)] public float CollapseShakeRadius { get; private set; } = 7f;
 
         public void Validate(List<string> errors)
         {

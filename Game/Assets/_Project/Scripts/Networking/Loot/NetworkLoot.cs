@@ -215,6 +215,22 @@ namespace Abandoned.Networking
             return true;
         }
 
+        public bool ClientRequestPlace()
+        {
+            // Careful placement must not consume the emergency drop/ragdoll release budget.
+            if (!requestGuard.TryBegin(LootRequest.Place, Time.time, config.RequestRepeatGuard)) return false;
+            RequestPlaceRpc(transform.position, transform.rotation, grabbable.Body.linearVelocity, grabbable.Body.angularVelocity);
+            return true;
+        }
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void RequestPlaceRpc(Vector3 position, Quaternion rotation, Vector3 velocity, Vector3 spin, RpcParams rpcParams = default)
+        {
+            ulong sender = rpcParams.Receive.SenderClientId;
+            if (!LootServerActions.TryPlace(this, SenderCarrier(sender), velocity, spin, new Pose(position, rotation)))
+                HintRpc("No clear place to set it down", RpcTarget.Single(sender, RpcTargetUse.Temp));
+        }
+
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
         private void RequestPickupRpc(RpcParams rpcParams = default)
         {

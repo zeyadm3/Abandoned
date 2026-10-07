@@ -4,7 +4,7 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// A fixed set of reusable one-shot sources (no object per sound, unlike PlayClipAtPoint). When all
-    /// are busy the one that started longest ago is cut: the newest sound matters most.
+    /// are busy the oldest sound of equal or lower importance is cut, preserving structural warnings.
     /// </summary>
     public class AudioPool : MonoBehaviour
     {
@@ -43,10 +43,11 @@ namespace Abandoned.Audio
         }
 
         /// <summary>Plays a clip at a point (spatial) or flat in the listener's ears (UI, 2D).</summary>
-        public static AudioSource Play(AudioClip clip, Vector3 position, float volume, float pitch, float minDistance, float maxDistance, bool spatial)
+        public static AudioSource Play(AudioClip clip, Vector3 position, float volume, float pitch, float minDistance, float maxDistance, bool spatial, int priority = 128)
         {
             if (clip == null || volume <= 0f) return null;
-            AudioSource s = Instance.Next();
+            AudioSource s = Instance.Next(priority);
+            if (s == null) return null;
             s.transform.position = position;
             s.clip = clip;
             s.volume = volume;
@@ -54,18 +55,20 @@ namespace Abandoned.Audio
             s.spatialBlend = spatial ? 1f : 0f;
             s.minDistance = minDistance;
             s.maxDistance = Mathf.Max(minDistance + 0.1f, maxDistance);
+            s.priority = priority;
             s.Play();
             return s;
         }
 
-        private AudioSource Next()
+        private AudioSource Next(int priority)
         {
-            int oldest = 0;
+            int oldest = -1;
             for (int i = 0; i < Size; i++)
             {
                 if (!sources[i].isPlaying) { oldest = i; break; }
-                if (started[i] < started[oldest]) oldest = i;
+                if (sources[i].priority >= priority && (oldest < 0 || started[i] < started[oldest])) oldest = i;
             }
+            if (oldest < 0) return null;
             started[oldest] = Time.unscaledTime;
             return sources[oldest];
         }

@@ -49,5 +49,16 @@ namespace Abandoned.Interaction
             }
             carrier.ApplyUnpocketLast();
         }
+
+        public bool RequestPlace(PlayerCarrier carrier)
+        {
+            if (carrier == null || !carrier.PlacementReady) return false;
+            Grabbable item = carrier.Held;
+            Vector3 velocity = item.Body.linearVelocity;
+            Vector3 spin = item.Body.angularVelocity;
+            carrier.ApplyRelease(velocity);
+            item.Body.angularVelocity = spin;
+            return true;
+        }
     }
 }

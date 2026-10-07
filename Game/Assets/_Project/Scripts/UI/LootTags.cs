@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Loot;
 using Abandoned.Networking;
@@ -10,10 +11,8 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// What loot is worth, where it is (UI step 2, the overhaul's key feature): a value tag over the loot you
-    /// look at or hold (name, $ value, how it's carried, FRAGILE), and the loot scan (the Scan key, Q): a
-    /// sonar ping that tags everything within range on screen with its value for a few seconds, R.E.P.O. /
-    /// Lethal Company style. Owner only, local, reads the values the host already replicates.
+    /// The local scan reveals loot prices for a few seconds. Focused and held tags, pockets and the run
+    /// tally share that reveal window, keeping exploration clear until the player asks for information.
     /// </summary>
     public class LootTags : MonoBehaviour
     {
@@ -45,6 +44,14 @@ namespace Abandoned.UI
         private InputAction scanAction;
         private float nextScan;
         private int sightMask;
+        private static float revealUntil;
+        private static NetworkPlayer revealPlayer;
+        private static int revealTravel = -1;
+
+        /// <summary>Local Q-scan reveal, shared by exploration HUDs; financial screens stay contextual.</summary>
+        public static bool ValuesVisible => revealPlayer != null && revealPlayer == NetworkPlayer.Local &&
+                                            revealPlayer.IsSpawned && !revealPlayer.IsDead && Time.time < revealUntil &&
+                                            revealTravel == (SessionTravel.Current != null ? SessionTravel.Current.TravelId : -1);
 
         private void Awake() =>
             sightMask = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
@@ -62,14 +69,15 @@ namespace Abandoned.UI
             Camera camera = Camera.main;
             bool alive = !player.IsDead;
             scanAction ??= inputReader.Actions?.FindAction("Gameplay/Scan");
-            if (alive && scanAction != null && scanAction.WasPressedThisFrame() && inputReader.enabled) Scan();
-            UpdateFocus(camera, alive);
+            if (alive && scanAction != null && scanAction.WasPressedThisFrame() && inputReader.enabled && !Core.CursorOwner.UiActive) Scan();
+            UpdateFocus(camera, alive && ValuesVisible);
             UpdateScan(camera);
             UpdateReady(alive);
         }
 
         // A quiet reminder that the scan exists, when it's ready.
-        private VisualElement ready;
+        private VisualElement ready, scanCap;
+        private string scanBinding;
 
         private void UpdateReady(bool alive)
         {
@@ -77,12 +85,19 @@ namespace Abandoned.UI
             {
                 ready = HudLayer.Add(new VisualElement(), "scan-ready");
                 if (ready == null) return;
-                UiKit.KeyCap(ready, "Scan");
                 var text = new Label("SCAN FOR LOOT") { pickingMode = PickingMode.Ignore };
                 text.AddToClassList("scan-ready__text");
                 ready.Add(text);
             }
-            MenuKit.Show(ready, alive && Time.time >= nextScan);
+            string binding = InputBindings.Display("Scan");
+            if (binding != scanBinding)
+            {
+                scanBinding = binding;
+                scanCap?.RemoveFromHierarchy();
+                scanCap = UiKit.Key(null, binding);
+                ready.Insert(0, scanCap);
+            }
+            MenuKit.Show(ready, alive && !ValuesVisible && Time.time >= nextScan && (carrier.Held != null || interactor.Target != null));
         }
 
         // ---- The tag on what you look at or hold ----
@@ -117,12 +132,15 @@ namespace Abandoned.UI
         /// <summary>Ping: tag the loot around you (the Scan key; tests call it directly).</summary>
         public void Scan()
         {
-            if (Time.time < nextScan || !Mine) return;
+            if (Time.time < nextScan || !Mine || player.IsDead) return;
             nextScan = Time.time + scanCooldown;
+            revealUntil = Time.time + scanSeconds + 0.45f;
+            revealPlayer = player;
+            revealTravel = SessionTravel.Current != null ? SessionTravel.Current.TravelId : -1;
             Camera camera = Camera.main;
             Audio.GameAudio.PlayUi(Audio.SoundId.ScanPing, 0.7f);
             Ring();
-            foreach (Tag t in scanTags) Hide(t);
+            foreach (Tag t in scanTags) { Hide(t); t.Item = null; }
             if (camera == null) return;
 
             var found = new List<(LootItem item, float distance)>();
@@ -158,7 +176,8 @@ namespace Abandoned.UI
             int live = 0;
             foreach (Tag t in scanTags)
             {
-                if (t.Item == null || camera == null || Time.time >= t.HideAt || t.Item.IsShattered || t.Item == Focus)
+                Grabbable g = t.Item != null ? t.Item.GetComponent<Grabbable>() : null;
+                if (!ValuesVisible || t.Item == null || camera == null || Time.time >= t.HideAt || t.Item.IsShattered || t.Item == Focus || (g != null && g.IsPocketed))
                 {
                     Hide(t);
                     if (t.Item != null && Time.time >= t.HideAt) t.Item = null;
@@ -166,7 +185,7 @@ namespace Abandoned.UI
                 }
                 if (Time.time < t.ShowAt) continue;
                 live++;
-                if (t.Item.TryGetComponent(out Grabbable g)) Place(t, g.GetBounds(), camera);
+                if (g != null) Place(t, g.GetBounds(), camera);
                 // In on the first shown frame's next frame (so it pops), out over the last moments.
                 bool wasHidden = t.Root.ClassListContains("loot-tag--hidden");
                 bool fading = t.HideAt - Time.time < 0.4f;
@@ -255,9 +274,11 @@ namespace Abandoned.UI
 
         private void OnDisable()
         {
+            if (revealPlayer == player) { revealUntil = 0f; revealPlayer = null; }
             Hide(focusTag);
             foreach (Tag t in scanTags) Hide(t);
             if (ready != null) MenuKit.Show(ready, false);
+            if (ring != null) MenuKit.Show(ring, false);
         }
 
         private void OnDestroy()
@@ -267,6 +288,9 @@ namespace Abandoned.UI
             HudLayer.Remove(ready);
             foreach (Tag t in scanTags) HudLayer.Remove(t.Root);
         }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() { revealUntil = 0f; revealPlayer = null; revealTravel = -1; }
 
 #if UNITY_EDITOR
         public void EditorSetup(NetworkPlayer owner, PlayerInteractor playerInteractor, PlayerCarrier playerCarrier, PlayerInputReader reader)

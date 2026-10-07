@@ -46,7 +46,7 @@ namespace Abandoned.Audio
 
         private void Update()
         {
-            float level = AudioLevels.Ambience * AudioLevels.Sfx;
+            float level = AudioLevels.Ambience * AudioLevels.Sfx * AudioLevels.BackgroundDuck;
             // A storm job (M9.2) howls through the building.
             bool storm = Extraction.RunState.Current != null && Extraction.RunState.Current.IsSpawned && Extraction.RunState.Current.State.Storm;
             wind.volume = Mathf.Min(1f, windVolume * (storm ? 2.6f : 1f)) * level;

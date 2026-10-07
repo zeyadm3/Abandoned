@@ -4,6 +4,21 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Feel and presentation pass (2026-10-07)
+
+Version 0.11.0, implemented and built 2026-10-08 (local time). Direction and user playtest checklist: Docs/POLISH.md.
+The user explicitly requested: "build eveything and ill test after". Build the agreed pass now;
+compile/content regeneration/builds only, no EditMode/PlayMode/nettests/gameplay/QA screenshots.
+Existing/free resources and original code-built low-poly art; no new packages or paid art budget.
+Scope: crew/monster visuals and restrained animation, mall decay/lighting, rotation/gentle placement,
+carry sprint/flashlight rules, camera comfort, scan-only exploration values, Failing-only HUD cue,
+quiet run audio and travel/departure music, plus original art for 22 previously placeholder collectibles.
+Compile and full content regeneration passed. Mac/Windows full and demo builds passed; zips are in
+~/Documents/Abandoned-builds/dev/ as Abandoned-0.11.0-400ff52-dirty-{Mac,Windows,MacDemo,WindowsDemo}.zip.
+No runtime/gameplay/tests/QA screenshots were run. Five pre-existing material edits were restored
+exactly after regeneration; user settings/untracked files are preserved. User plays the finished
+builds and sets tuning priorities. Suggested commit: `Polish salvage handling and abandoned mall presentation`.
+
 ## Current state (2026-10-06, autonomous build M3–M10 on branch `autobuild-2`)
 - M0–M2 done and hand-tested. M3–M10 built autonomously on `autobuild-2`
   (merged into `main` 2026-10-07; one folder again, no worktree). Don't wait for plan approval; record decisions,

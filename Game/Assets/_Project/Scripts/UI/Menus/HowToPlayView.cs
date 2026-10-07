@@ -29,10 +29,14 @@ namespace Abandoned.UI
                                  "the whole crew stands on the bridge with the piano.");
             MenuKit.Text(scroll, "THE LOOT", "section");
             MenuKit.Text(scroll, "Heavy things slow you down; big things need a crew on the handles (or a slow drag). Fragile things lose value " +
-                                 "every time they hit something. Small things go in your pockets, but you lose those if you don't make it out.");
+                                 "every time they hit something. Scan to reveal prices, pocket values and the haul for a few seconds. " +
+                                 "Hold Rotate and move the mouse to turn a held object. Tap Drop to release it, or hold Drop to lower it " +
+                                 "gently onto clear support; keep holding until it settles, or release early to cancel. Small things " +
+                                 "go in your pockets, but you lose those if you don't make it out.");
             MenuKit.Text(scroll, "THE DARK", "section");
             MenuKit.Text(scroll, "You're not alone in there. Noise draws attention: running, dropping things, and shouting. Talk with your crew " +
-                                 "(proximity voice) and use the radio when you split up. The dead watch as ghosts until the next job.");
+                                 "(proximity voice) and use the radio when you split up. The dead watch as ghosts; a crewmate nearby can " +
+                                 "bring them back with a single-use medkit.");
             MenuKit.Text(scroll, "THE COMPANY", "section");
             MenuKit.Text(scroll, "Every job costs running costs, whatever you bring back. Spend the rest at the HQ: gear from the shop (two hand " +
                                  "slots each; single-use gear is used with your hands empty), truck upgrades, better jobs as the company levels up. " +
@@ -48,7 +52,8 @@ namespace Abandoned.UI
         {
             string K(string action) => InputBindings.Display(action);
             keys.text = $"Move {K("Move")}   Sprint {K("Sprint")}   Crouch {K("Crouch")}   Jump {K("Jump")}\n" +
-                        $"Pick up / use {K("Interact")}   Throw (hold) {K("Use")}   Drop {K("Drop")}   Pockets {K("Inventory")}\n" +
+                        $"Pick up / use {K("Interact")}   Throw (hold) {K("Use")}   Drop (tap) / set down (hold) {K("Drop")}\n" +
+                        $"Rotate (hold + mouse) {K("Rotate")}   Pockets {K("Inventory")}\n" +
                         $"Flashlight {K("Flashlight")}   Hand slots {K("HandSlot1")} / {K("HandSlot2")}   Scan {K("Scan")}\n" +
                         $"Talk {K("PushToTalk")}   Radio {K("Radio")}   Menu Esc";
         }

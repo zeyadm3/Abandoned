@@ -55,6 +55,28 @@ namespace Abandoned.Audio
             });
         }
 
+        /// <summary>A muted pulse over the drive, leaving room for the engine and crew's voices.</summary>
+        public static AudioClip TravelTheme() => Make("Music_Drive", 16f, true, t =>
+        {
+            float[] chord = Chords[Mathf.FloorToInt(t / 4f) % Chords.Length];
+            float step = t % 0.75f;
+            float bass = Mathf.Sin(Tau * chord[0] * 0.5f * t) * Mathf.Exp(-step * 5f) * 0.2f;
+            float pad = Chord(chord, t) * 0.09f;
+            float note = Pluck(chord[Mathf.FloorToInt(t / 0.75f) % 3], step, 5f) * 0.12f;
+            return Soft(bass + pad + note);
+        });
+
+        /// <summary>A short repeating clock pulse only while the truck is preparing to leave.</summary>
+        public static AudioClip DepartureTheme() => Make("Music_Departure", 8f, true, t =>
+        {
+            float step = t % 0.5f;
+            int beat = Mathf.FloorToInt(t * 2f);
+            float bass = Mathf.Sin(Tau * 55f * t) * Mathf.Exp(-step * 7f) * 0.22f;
+            float note = Pluck(beat % 4 == 3 ? 329.63f : 220f, step, 9f) * 0.15f;
+            float tick = Mathf.Sin(Tau * 1600f * step) * Mathf.Exp(-step * 90f) * 0.055f;
+            return Soft(bass + note + tick);
+        });
+
         public static AudioClip Sting(MusicSting sting) => sting switch
         {
             MusicSting.Payday => Arpeggio("Sting_Payday", new[] { 523.25f, 659.25f, 783.99f, 1046.5f }, 0.11f, 1.8f),

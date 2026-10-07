@@ -40,6 +40,7 @@ namespace Abandoned.UI
 
         public void Add(Vector3 position, string text, Color color)
         {
+            if (Financial(text) && InRun && !LootTags.ValuesVisible) return;
             Label label = HudLayer.Label("hud-float");
             if (label != null)
             {
@@ -56,7 +57,7 @@ namespace Abandoned.UI
             {
                 Entry e = entries[i];
                 float t = (Time.time - e.Start) / Lifetime;
-                if (t > 1f)
+                if (t > 1f || (e.Label != null && Financial(e.Label.text) && InRun && !LootTags.ValuesVisible))
                 {
                     HudLayer.Remove(e.Label);
                     entries.RemoveAt(i);
@@ -67,5 +68,8 @@ namespace Abandoned.UI
                 HudLayer.Place(e.Label, e.Position + Vector3.up * (RiseMetres * t), camera);
             }
         }
+
+        private static bool Financial(string text) => text != null && text.Contains("$");
+        private static bool InRun => Extraction.RunState.Current != null && Extraction.RunState.Current.IsSpawned;
     }
 }

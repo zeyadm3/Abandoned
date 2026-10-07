@@ -104,7 +104,7 @@ zip_build() {
   zip="$BUILD_ZIP_DIR/Abandoned-$version-$commit-$folder.zip"
   rm -f "$zip"
   # ditto keeps the .app bundle's symlinks and permissions intact; plain zip is fine for Windows.
-  if [ "$folder" = "Mac" ]; then
+  if [[ "$folder" = Mac* ]]; then
     (cd "$PROJECT/Builds" && ditto -c -k --norsrc --keepParent "$folder" "$zip") || return 1
   else
     (cd "$PROJECT/Builds" && zip -qr "$zip" "$folder") || return 1

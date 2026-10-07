@@ -97,5 +97,15 @@ namespace Abandoned.Networking
             if (!LootServerActions.TryUnpocket(loot, carrier, carrier.EyeForward, carrier.DropVelocity, out reason))
                 carrier.ShowHint(reason);
         }
+
+        public bool RequestPlace(PlayerCarrier carrier)
+        {
+            if (carrier == null || !carrier.PlacementReady) return false;
+            NetworkLoot loot = NetworkLoot.Of(carrier.Held);
+            if (loot == null) return local.RequestPlace(carrier);
+            if (!loot.IsServer) return loot.ClientRequestPlace();
+            return LootServerActions.TryPlace(loot, carrier, carrier.Held.Body.linearVelocity,
+                carrier.Held.Body.angularVelocity, null);
+        }
     }
 }

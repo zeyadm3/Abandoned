@@ -84,6 +84,24 @@ namespace Abandoned.Networking
             return true;
         }
 
+        /// <summary>Gentle is an actual supported, low-energy release, never a damage immunity window.</summary>
+        public static bool TryPlace(NetworkLoot loot, PlayerCarrier carrier, Vector3 velocity, Vector3 spin, Pose? reported)
+        {
+            Grabbable item = loot.Grabbable;
+            if (carrier == null || item.Holder != carrier || carrier.IsSharing || carrier.IsDragging || carrier.IsRagdolled) return false;
+            CarryConfig carry = carrier.Config;
+            if (!PlacementRules.Finite(velocity) || !PlacementRules.Finite(spin)
+                || velocity.magnitude > carry.PlaceReleaseSpeed || spin.magnitude > carry.PlaceReleaseAngularSpeed) return false;
+            Pose pose = reported ?? new Pose(item.Body.position, item.Body.rotation);
+            if (!PlacementRules.PlausibleRelease(item, carrier.EyePosition, carry, pose)) return false;
+            // Keep the rotation already replicated by physics: the checked handoff only corrects position,
+            // rather than applying an unswept angular teleport near a wall or shelf.
+            Pose? safeReport = reported.HasValue ? new Pose(pose.position, item.Body.rotation) : (Pose?)null;
+            if (!TryRelease(loot, carrier, velocity, false, safeReport)) return false;
+            item.Body.angularVelocity = spin;
+            return true;
+        }
+
         /// <summary>Full-charge throw plus what the player's movement may add (host's own player: its real velocity).</summary>
         public static float MaxReleaseSpeed(LootNetConfig config, PlayerCarrier carrier, Grabbable item, bool isThrow, bool remote)
         {

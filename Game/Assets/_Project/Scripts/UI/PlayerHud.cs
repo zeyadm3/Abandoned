@@ -26,7 +26,7 @@ namespace Abandoned.UI
         [SerializeField] private PlayerInputReader inputReader;
 
         private VisualElement staminaBlock, staminaBar, slots, pocketsRow;
-        private Label load, pocketsDetail;
+        private Label staminaLabel, load, pocketsDetail;
         private readonly VisualElement[] hands = new VisualElement[2];
         private readonly List<VisualElement> pockets = new();
         private readonly StringBuilder key = new();
@@ -50,6 +50,9 @@ namespace Abandoned.UI
                 return;
             }
 
+            bool depleted = stamina.Max > 0f && stamina.Current < stamina.Max - 0.01f;
+            MenuKit.Show(staminaLabel, depleted);
+            MenuKit.Show(staminaBar, depleted);
             UiKit.SetBar(staminaBar, stamina.Max > 0f ? stamina.Current / stamina.Max : 1f, stamina.IsExhausted ? "bad" : null);
             Load();
             Slots();
@@ -61,7 +64,7 @@ namespace Abandoned.UI
         private void Build()
         {
             staminaBlock = HudLayer.Add(new VisualElement(), "player-stamina");
-            Text(staminaBlock, "STAMINA", "player-stamina__label");
+            staminaLabel = Text(staminaBlock, "STAMINA", "player-stamina__label");
             staminaBar = UiKit.Bar(staminaBlock);
             load = Text(staminaBlock, "", "player-load");
             slots = HudLayer.Add(new VisualElement(), "player-slots");
@@ -108,7 +111,7 @@ namespace Abandoned.UI
         {
             // Rebuilt only when something changes: gear in hand, the active slot, pocket contents and values.
             key.Clear().Append(equipment.State.Slot0).Append(',').Append(equipment.State.Slot1).Append(',').Append(equipment.State.Active)
-                .Append('|').Append(carrier.Inventory.Capacity);
+                .Append('|').Append(carrier.Inventory.Capacity).Append('|').Append(LootTags.ValuesVisible);
             foreach (Grabbable g in carrier.Inventory.Items)
                 key.Append('|').Append(g != null ? g.GetInstanceID() : 0).Append(':').Append(g != null && g.TryGetComponent(out IValuable v) ? v.CurrentValue : 0);
             string now = key.ToString();
@@ -130,7 +133,7 @@ namespace Abandoned.UI
                 Grabbable g = i < carrier.Inventory.Count ? carrier.Inventory.Items[i] : null;
                 LootItem item = g != null ? g.GetComponent<LootItem>() : null;
                 Fill(pockets[i], item != null ? "loot/" + item.Definition.Id : g != null ? "board/pouch" : null,
-                    item != null ? Money.Short(item.CurrentValue) : null);
+                    item != null && LootTags.ValuesVisible ? Money.Short(item.CurrentValue) : null);
             }
         }
 
@@ -153,9 +156,9 @@ namespace Abandoned.UI
             {
                 int value = item.TryGetComponent(out IValuable v) ? v.CurrentValue : 0;
                 total += value;
-                text.AppendLine($"{item.DisplayName}   <color=#96e86e>${value:N0}</color>");
+                text.AppendLine(LootTags.ValuesVisible ? $"{item.DisplayName}   <color=#96e86e>${value:N0}</color>" : item.DisplayName);
             }
-            text.AppendLine($"<b>TOTAL</b>  <color=#96e86e>${total:N0}</color>");
+            if (LootTags.ValuesVisible) text.AppendLine($"<b>TOTAL</b>  <color=#96e86e>${total:N0}</color>");
             text.Append($"<color=#a5a196>{InputBindings.Display("Drop")} while holding {InputBindings.Display("Inventory")}: drop the last one</color>");
             return text.ToString();
         }

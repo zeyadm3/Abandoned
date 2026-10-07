@@ -12,5 +12,6 @@ namespace Abandoned.Interaction
         void RequestDrop(PlayerCarrier carrier);
         void RequestThrow(PlayerCarrier carrier, Vector3 velocity);
         void RequestDropFromPocket(PlayerCarrier carrier);
+        bool RequestPlace(PlayerCarrier carrier);
     }
 }

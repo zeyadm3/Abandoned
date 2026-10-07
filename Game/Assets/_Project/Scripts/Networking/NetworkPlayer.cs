@@ -33,6 +33,10 @@ namespace Abandoned.Networking
         // Host-written: death is the host's call (a monster's contact, left behind), never the owner's.
         private readonly NetworkVariable<bool> dead = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+        // Seats are reused when a crew member leaves HQ; client ids keep increasing and would repeat colours.
+        private readonly NetworkVariable<int> crewSeat = new(-1,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
         private static readonly List<NetworkPlayer> Spawned = new();
 
         public static IReadOnlyList<NetworkPlayer> All => Spawned;
@@ -44,6 +48,7 @@ namespace Abandoned.Networking
 
         public PlayerNetState State => state.Value;
         public bool IsDead => dead.Value;
+        public int CrewSeat => crewSeat.Value;
 
         // What killed this player, for their death screen (UI step 3); written with the death.
         private readonly NetworkVariable<Unity.Collections.FixedString64Bytes> deathCause = new(default,
@@ -60,6 +65,18 @@ namespace Abandoned.Networking
         public override void OnNetworkSpawn()
         {
             Spawned.Add(this);
+            if (IsServer)
+            {
+                SpawnSlots seats = NetworkBootstrap.Resolve(null)?.Slots;
+                if (seats != null && seats.TryGetSlot(OwnerClientId, out int seat)) crewSeat.Value = seat;
+                else
+                {
+                    // Directly constructed local sessions also get unique cosmetic seats.
+                    int firstFree = 0;
+                    while (Spawned.Exists(p => p != this && p != null && p.CrewSeat == firstFree)) firstFree++;
+                    crewSeat.Value = firstFree;
+                }
+            }
             look = GetComponent<PlayerLook>();
             name = $"Player {OwnerClientId}{(IsOwner ? " (local)" : "")}";
             // Players travel with the session from level to level (6.0).

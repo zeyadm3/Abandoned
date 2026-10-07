@@ -1,4 +1,5 @@
 using Abandoned.Core;
+using Abandoned.Interaction;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -16,10 +17,13 @@ namespace Abandoned.Player
 
         private float yaw;
         private float pitch;
+        private PlayerCarrier carrier;
         // Only the look that captured the cursor may free it: a remote player leaving mustn't unlock ours.
         private bool ownsCursor;
 
         public float Pitch => pitch;
+
+        private void Awake() => carrier = GetComponent<PlayerCarrier>();
 
         // Batch mode (tests, nettests) has no cursor and lockState never sticks: go by what this look asked for.
         public bool CursorCaptured => Application.isBatchMode ? ownsCursor : Cursor.lockState == CursorLockMode.Locked;
@@ -63,7 +67,9 @@ namespace Abandoned.Player
             if (input.PausePressed) SetCaptured(false);
             else if (!CursorCaptured && (input.UsePressed || CursorOwner.ConsumeCaptureRequest())) SetCaptured(true);
 
-            if (CursorCaptured) ApplyLook(input.Look);
+            // The rotation modifier gives the mouse to the held object without turning the camera too.
+            bool rotatesItem = input.RotateHeld && carrier != null && carrier.CanRotate && !carrier.IsPlacing;
+            if (CursorCaptured && !rotatesItem) ApplyLook(input.Look);
         }
 
         /// <summary>Applies a mouse delta (already a per-frame distance, so no deltaTime).</summary>

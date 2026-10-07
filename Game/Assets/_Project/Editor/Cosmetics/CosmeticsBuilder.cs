@@ -35,6 +35,7 @@ namespace Abandoned.EditorTools
             ("white", "Cleanroom White", new Color(0.92f, 0.92f, 0.9f), 3, 0, 0),
             ("purple", "Royal Purple", new Color(0.4f, 0.18f, 0.55f), 0, 6, 0),
             ("teal", "Teal", new Color(0.1f, 0.55f, 0.55f), 12, 0, 0),
+            ("blue", "Crew Blue", new Color(0.24f, 0.55f, 0.72f), 0, 0, 0),
         };
 
         // id, name, runs, escapes, haul (models built below)
@@ -129,9 +130,11 @@ namespace Abandoned.EditorTools
             {
                 case "hardhat":
                 {
-                    Material yellow = GetMaterial("Hat_HardHat", new Color(0.98f, 0.78f, 0.1f));
-                    Primitive(PrimitiveType.Sphere, "Dome", root.transform, new Vector3(0f, 0.02f, 0f), new Vector3(0.36f, 0.26f, 0.38f), yellow, false);
-                    Primitive(PrimitiveType.Cylinder, "Brim", root.transform, new Vector3(0f, 0.01f, 0.03f), new Vector3(0.44f, 0.012f, 0.48f), yellow, false);
+                    Material yellow = PolishAssets.Material("Crew_HardHat", new Color(0.94f, 0.72f, 0.12f), 0.6f);
+                    PolishAssets.Shape("Dome", root.transform, new Vector3(0f, 0.04f, 0f), new Vector3(0.34f, 0.22f, 0.36f), yellow, true);
+                    PolishAssets.Shape("Brim", root.transform, new Vector3(0f, 0f, 0.02f), new Vector3(0.43f, 0.027f, 0.45f), yellow);
+                    Box("Ridge", root.transform, new Vector3(0f, 0.14f, 0f), new Vector3(0.055f, 0.025f, 0.26f), yellow, false);
+                    Box("Badge", root.transform, new Vector3(0f, 0.065f, 0.172f), new Vector3(0.1f, 0.055f, 0.01f), WorkerVisualBuilder.Dark, false);
                     break;
                 }
                 case "beanie":

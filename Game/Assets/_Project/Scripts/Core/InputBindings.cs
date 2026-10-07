@@ -16,7 +16,7 @@ namespace Abandoned.Core
         public static readonly string[] Rebindable =
         {
             "Move", "Sprint", "Crouch", "Jump", "Interact", "Use", "Drop", "Scan", "Flashlight",
-            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio",
+            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio", "Rotate",
         };
 
         public static event Action Changed;

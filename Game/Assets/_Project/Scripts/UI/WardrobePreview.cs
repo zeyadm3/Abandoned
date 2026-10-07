@@ -10,12 +10,11 @@ namespace Abandoned.UI
     /// </summary>
     public class WardrobePreview : MonoBehaviour
     {
-        private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
         private static WardrobePreview instance;
 
         private Camera cam;
         private Transform turntable, crown;
-        private Renderer body;
+        private WorkerRig worker;
         private GameObject hat, accessory;
         private RenderTexture texture;
         private CosmeticChoice shown;
@@ -49,28 +48,21 @@ namespace Abandoned.UI
             turntable = new GameObject("Turntable").transform;
             turntable.SetParent(transform, false);
 
-            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
-            var bodyGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            Destroy(bodyGo.GetComponent<Collider>());
-            bodyGo.transform.SetParent(turntable, false);
-            bodyGo.transform.localPosition = new Vector3(0f, 0.9f, 0f);
-            bodyGo.transform.localScale = new Vector3(0.6f, 0.9f, 0.6f);
-            body = bodyGo.GetComponent<Renderer>();
-            if (lit != null) body.material = new Material(lit);
-            // A visor, so you can tell which way it's facing.
-            var visor = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Destroy(visor.GetComponent<Collider>());
-            visor.transform.SetParent(turntable, false);
-            visor.transform.localPosition = new Vector3(0f, 1.58f, 0.25f);
-            visor.transform.localScale = new Vector3(0.34f, 0.09f, 0.12f);
-            if (lit != null)
+            GameObject prefab = Resources.Load<GameObject>("WorkerVisual");
+            if (prefab != null)
             {
-                visor.GetComponent<Renderer>().material = new Material(lit);
-                visor.GetComponent<Renderer>().material.SetColor(BaseColor, new Color(0.08f, 0.09f, 0.1f));
+                GameObject mannequin = Instantiate(prefab, turntable, false);
+                mannequin.transform.localPosition = Vector3.up * 0.95f;
+                worker = mannequin.GetComponent<WorkerRig>();
+                crown = worker != null ? worker.HeadAnchor : mannequin.transform;
+                foreach (TextMesh mark in mannequin.GetComponentsInChildren<TextMesh>()) mark.text = "";
             }
-            crown = new GameObject("Crown").transform;
-            crown.SetParent(turntable, false);
-            crown.localPosition = new Vector3(0f, 1.76f, 0f);
+            else
+            {
+                crown = new GameObject("Crown").transform;
+                crown.SetParent(turntable, false);
+                crown.localPosition = Vector3.up * 1.76f;
+            }
 
             var lightGo = new GameObject("PreviewLight");
             lightGo.transform.SetParent(transform, false);
@@ -103,7 +95,7 @@ namespace Abandoned.UI
             dressed = true;
             shown = choice;
             CosmeticDefinition suit = catalog.Coverall(choice.Coverall);
-            if (body.material != null) body.material.SetColor(BaseColor, suit != null ? suit.Color : Color.white);
+            worker?.Tint(suit != null ? suit.Color : Color.white);
             if (hat != null) Destroy(hat);
             if (accessory != null) Destroy(accessory);
             hat = Wear(catalog.Hat(choice.Hat));
@@ -120,7 +112,7 @@ namespace Abandoned.UI
 
         private void Update()
         {
-            if (cam != null && cam.enabled) turntable.Rotate(0f, 28f * Time.unscaledDeltaTime, 0f);
+            if (cam != null && cam.enabled) turntable.Rotate(0f, 16f * Time.unscaledDeltaTime, 0f);
         }
 
         private void OnDestroy()

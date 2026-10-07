@@ -34,7 +34,7 @@ namespace Abandoned.UI
                 cap.style.backgroundImage = icon;
                 cap.AddToClassList("keycap--mouse");
             }
-            else cap = new Label(key.Length > 6 ? key.Substring(0, 6) : key);
+            else cap = new Label(key);
             cap.AddToClassList("keycap");
             cap.pickingMode = PickingMode.Ignore;
             parent?.Add(cap);

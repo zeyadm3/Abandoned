@@ -25,6 +25,7 @@ namespace Abandoned.Interaction
         private float holdTime;
         private float dragNoiseTimer;
         private Vector3 lastDragPosition;
+        private Quaternion placementRotation;
 
         public CarryConfig Config => config;
         public PlayerInventory Inventory { get; private set; }
@@ -47,6 +48,34 @@ namespace Abandoned.Interaction
         public bool IsSharing => Held != null && Held.Shared != null;
 
         public bool IsRagdolled => ragdoll != null && ragdoll.IsRagdolled;
+        public bool IsPlacing { get; private set; }
+        public bool PlacementBlocked { get; private set; }
+        public bool PlacementReady => IsPlacing && Held != null && Held.HasPhysicsAuthority
+            && PlacementRules.Ready(Held, EyePosition, config);
+        public bool CanRotate => Held != null && !IsSharing && !IsDragging && !IsRagdolled;
+        public bool CanSprint => !IsPlacing && (Held == null || Held.CarryClass < CarryClass.TwoHand)
+            && !IsSharing && !IsDragging;
+
+        public void RotateHeld(Vector2 mouse)
+        {
+            if (!CanRotate || IsPlacing || !IsLocal) return;
+            Vector2 angles = Vector2.ClampMagnitude(mouse * config.RotateSensitivity, 10f);
+            holdRotationOffset = Quaternion.Euler(-angles.y, angles.x, 0f) * holdRotationOffset;
+        }
+
+        public void BeginPlacement()
+        {
+            if (!CanRotate || !IsLocal) return;
+            IsPlacing = true;
+            placementRotation = Held.Body.rotation;
+            PlacementBlocked = !PlacementRules.TryTarget(Held, EyePosition, config, out _);
+        }
+
+        public void CancelPlacement()
+        {
+            IsPlacing = false;
+            PlacementBlocked = false;
+        }
 
         /// <summary>
         /// May drag Heavy items alone (GDD 7.2: the hand trolley). Equipment sets it; true where there is
@@ -112,6 +141,7 @@ namespace Abandoned.Interaction
 
         private void OnRagdollStarted()
         {
+            CancelPlacement();
             // The owner's machine decides; a remote copy dropping too would race it.
             if (Held != null && IsLocal) InteractionService.Handler.RequestDrop(this);
         }
@@ -171,6 +201,15 @@ namespace Abandoned.Interaction
             if (Held.IsPocketed || !Held.IsHeldBy(this))
             {
                 Held = null;
+                CancelPlacement();
+                return;
+            }
+            // A release can be in flight when a knockdown interrupts input. Retry until the host has
+            // mirrored it, and never keep driving a held object from the fallen player's old eye pose.
+            if (IsLocal && IsRagdolled)
+            {
+                CancelPlacement();
+                InteractionService.Handler.RequestDrop(this);
                 return;
             }
             // Shared carries are simulated by the item itself (on the host) from every carrier's target.
@@ -179,6 +218,11 @@ namespace Abandoned.Interaction
             if (!IsLocal || !Held.HasPhysicsAuthority) return;
 
             Rigidbody body = Held.Body;
+            if (IsPlacing)
+            {
+                LowerForPlacement(body);
+                return;
+            }
             Vector3 toTarget = HoldPoint - body.worldCenterOfMass;
             holdTime += Time.fixedDeltaTime;
             if (holdTime > config.BreakGraceTime && toTarget.magnitude > config.BreakDistance)
@@ -200,7 +244,31 @@ namespace Abandoned.Interaction
             (target * Quaternion.Inverse(body.rotation)).ToAngleAxis(out float angle, out Vector3 axis);
             if (angle > 180f) angle -= 360f;
             if (float.IsFinite(axis.x))
-                body.angularVelocity = axis * (angle * Mathf.Deg2Rad * config.RotationSpring * springScale);
+                body.angularVelocity = Vector3.ClampMagnitude(axis * (angle * Mathf.Deg2Rad * config.RotationSpring * springScale), config.MaxRotationSpeed);
+        }
+
+        private void LowerForPlacement(Rigidbody body)
+        {
+            Vector3 fromFeet = body.worldCenterOfMass - transform.position;
+            fromFeet.y = 0f;
+            if (fromFeet.magnitude > config.BreakDistance
+                || Vector3.Distance(EyePosition, body.worldCenterOfMass) > config.Reach + config.ReachTolerance)
+            {
+                CancelPlacement();
+                ShowHint("Moved too far from the item");
+                InteractionService.Handler.RequestDrop(this);
+                return;
+            }
+            PlacementBlocked = !PlacementRules.TryTarget(Held, EyePosition, config, out Vector3 target);
+            // An invalid surface cancels the descent, rather than releasing into a hole or obstacle.
+            Vector3 desired = PlacementBlocked ? Vector3.zero
+                : Vector3.ClampMagnitude((target - body.worldCenterOfMass) * 5f, config.PlaceLowerSpeed);
+            body.AddForce((desired - body.linearVelocity) * 25f, ForceMode.Acceleration);
+            body.linearVelocity = Vector3.ClampMagnitude(body.linearVelocity, config.PlaceLowerSpeed);
+            (placementRotation * Quaternion.Inverse(body.rotation)).ToAngleAxis(out float angle, out Vector3 axis);
+            if (angle > 180f) angle -= 360f;
+            if (float.IsFinite(axis.x)) body.angularVelocity = Vector3.ClampMagnitude(
+                axis * (angle * Mathf.Deg2Rad * 4f), config.PlaceReleaseAngularSpeed);
         }
 
         private void EmitDragNoise()
@@ -231,6 +299,7 @@ namespace Abandoned.Interaction
             if (Held != null && Held != target) ApplyRelease(Vector3.zero);
             bool drag = target.CarryClass > config.HeaviestSoloClass && CanSoloDrag(target.CarryClass);
             Held = target;
+            CancelPlacement();
             holdTime = 0f;
             lastDragPosition = target.Body.worldCenterOfMass;
             // Keep the object's current facing relative to the player, so it doesn't snap-rotate.
@@ -240,6 +309,7 @@ namespace Abandoned.Interaction
 
         internal void ApplyRelease(Vector3 velocity)
         {
+            CancelPlacement();
             if (IsSharing)
             {
                 // Letting go of a handle: the item keeps whatever the remaining crew does with it.
@@ -297,6 +367,7 @@ namespace Abandoned.Interaction
         /// <summary>Called by <see cref="SharedCarryable"/> when this player takes or leaves one of its points.</summary>
         internal void AttachShared(Grabbable item)
         {
+            CancelPlacement();
             Held = item;
             holdTime = 0f;
             lastDragPosition = item.Body.worldCenterOfMass;
@@ -304,17 +375,18 @@ namespace Abandoned.Interaction
 
         internal void DetachShared(Grabbable item)
         {
-            if (Held == item) Held = null;
+            if (Held == item) { Held = null; CancelPlacement(); }
         }
 
         /// <summary>The held item was destroyed (shattered, despawned).</summary>
         internal void ForgetHeld(Grabbable item)
         {
-            if (Held == item) Held = null;
+            if (Held == item) { Held = null; CancelPlacement(); }
         }
 
         private void OnDisable()
         {
+            CancelPlacement();
             ragdoll.Started -= OnRagdollStarted;
             if (Held != null) ApplyRelease(DropVelocity);
         }

@@ -38,6 +38,7 @@ namespace Abandoned.Voice
             lowPass = GetComponent<AudioLowPassFilter>();
             source.spatialBlend = 1f;
             source.dopplerLevel = 0f;
+            source.priority = 16;
             source.rolloffMode = AudioRolloffMode.Custom;
             source.SetCustomCurve(AudioSourceCurveType.CustomRolloff, AnimationCurve.Constant(0f, 1f, 1f));
             source.maxDistance = config.MaxDistance;

@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
     public static class MallProps
     {
         private const float WallStrip = 0.85f; // deepest a prop may reach into the room (m)
-        private const int Chance = 55;         // % of eligible wall edges that get a prop
+        private const int Chance = 34;         // Most retail bays feel emptied, with a few abandoned fixtures along the walls.
 
         private readonly struct Prop
         {

@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
     /// <summary>
     /// Gives loot definitions their CC0 art models (M7.1) and sizes each Size box to hug its model
     /// (keeping the authored largest side). Only fills in definitions that have no model yet, so a
-    /// model picked or tuned in the inspector is kept. Items without a match keep their placeholder.
+    /// model picked or tuned in the inspector is kept. Original low-poly art fills the remaining collectibles.
     /// </summary>
     public static class LootModelBuilder
     {
@@ -32,7 +32,7 @@ namespace Abandoned.EditorTools
             ("designer_chair", "loungeDesignChair", 0f),
             ("designer_sofa", "loungeDesignSofa", 0f),
             ("bear_head", "bear", 0f),
-            // M9.3 (pocket items, the small painting, the lighter and the cash stay placeholders: no fitting model)
+            // M9.3 additions with matching CC0 models; the original-art builder supplies the others.
             ("computer_mouse", "computerMouse", 0f),
             ("table_lamp", "lampSquareTable", 0f),
             ("computer_keyboard", "computerKeyboard", 0f),
@@ -70,6 +70,7 @@ namespace Abandoned.EditorTools
                 definition.EditorSetModel(model, yaw, ModelFit.SizeFor(model, yaw, largest));
                 EditorUtility.SetDirty(definition);
             }
+            OriginalLootModels.AssignMissing();
             AssetDatabase.SaveAssets();
         }
     }

@@ -46,7 +46,7 @@ namespace Abandoned.EditorTools
             MallBuilder.Build();
             HqBuilder.Build();
             // Last: it opens its own empty scene to render in. Then the icon registry picks the new ones up.
-            if (LootIconRenderer.Render(force: false) > 0)
+            if (LootIconRenderer.Render(force: OriginalLootModels.AssignedAny) > 0)
             {
                 UiContentBuilder.BuildIcons();
                 AssetDatabase.SaveAssets();

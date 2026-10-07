@@ -1,3 +1,4 @@
+using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -15,6 +16,7 @@ namespace Abandoned.Player
 
         [SerializeField] private CosmeticCatalog catalog;
         [SerializeField] private Transform body;
+        [Abandoned.Core.OptionalReference, SerializeField] private Transform standingHead;
         [SerializeField] private Transform ragdollHead;
         [Tooltip("Renderers with this material are the coverall.")]
         [SerializeField] private Material coverallMaterial;
@@ -29,6 +31,8 @@ namespace Abandoned.Player
         private bool accessoryOnBody;
         private CosmeticChoice shown;
         private bool applied;
+        private NetworkPlayer player;
+        private int defaultSeat = -1;
 
         public CosmeticCatalog Catalog => catalog;
         public CosmeticChoice Choice => choice.Value;
@@ -36,6 +40,7 @@ namespace Abandoned.Player
 
         private void Awake()
         {
+            player = GetComponent<NetworkPlayer>();
             var found = new System.Collections.Generic.List<Renderer>();
             foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
                 if (r.sharedMaterial == coverallMaterial) found.Add(r);
@@ -46,7 +51,11 @@ namespace Abandoned.Player
 
         public override void OnNetworkSpawn()
         {
-            if (IsOwner && catalog != null) choice.Value = catalog.FromProfile();
+            if (IsOwner && catalog != null)
+            {
+                choice.Value = catalog.FromProfile();
+                ApplyCrewDefault();
+            }
             Apply();
         }
 
@@ -61,7 +70,18 @@ namespace Abandoned.Player
 
         private void Update()
         {
+            ApplyCrewDefault();
             if (!applied || !shown.Equals(choice.Value)) Apply();
+        }
+
+        private void ApplyCrewDefault()
+        {
+            if (!IsSpawned || !IsOwner || catalog == null || player == null || player.CrewSeat < 0
+                || player.CrewSeat == defaultSeat || !string.IsNullOrEmpty(PlayerProfile.Coverall)) return;
+            defaultSeat = player.CrewSeat;
+            string[] colors = { "orange", "yellow", "navy", "blue" };
+            int index = CosmeticCatalog.IndexOf(catalog.Coveralls, colors[Mathf.Clamp(defaultSeat, 0, colors.Length - 1)]);
+            if (index >= 0 && PlayerProfile.Unlocked(catalog.Coverall(index))) choice.Value = choice.Value.WithCoverall(index);
         }
 
         private void LateUpdate()
@@ -70,6 +90,8 @@ namespace Abandoned.Player
             bool down = ragdollHead != null && ragdollHead.gameObject.activeInHierarchy;
             if (down)
                 hatAnchor.SetPositionAndRotation(ragdollHead.position + ragdollHead.up * 0.11f, ragdollHead.rotation);
+            else if (standingHead != null)
+                hatAnchor.SetPositionAndRotation(standingHead.position, standingHead.rotation);
             else if (body != null)
                 hatAnchor.SetPositionAndRotation(body.TransformPoint(Vector3.up) - body.up * 0.04f, body.rotation);
             // A rucksack hung off a ragdoll's head would float: it stays out of sight until they're up.
@@ -113,10 +135,11 @@ namespace Abandoned.Player
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(CosmeticCatalog cosmetics, Transform bodyVisual, Transform head, Material suitMaterial)
+        public void EditorSetup(CosmeticCatalog cosmetics, Transform bodyVisual, Transform head, Material suitMaterial, Transform liveHead = null)
         {
             catalog = cosmetics;
             body = bodyVisual;
+            standingHead = liveHead;
             ragdollHead = head;
             coverallMaterial = suitMaterial;
         }

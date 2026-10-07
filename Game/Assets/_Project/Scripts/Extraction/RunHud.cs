@@ -5,9 +5,8 @@ using UnityEngine.UIElements;
 namespace Abandoned.Extraction
 {
     /// <summary>
-    /// The run HUD (M8.1, redesigned in UI step 2): haul vs quota big at the top with a fill bar so "one more
-    /// floor" always has a number (GDD 10), cargo space under it, the extraction window as a clock top right;
-    /// a hazard-taped countdown when the truck is leaving, saying whether you're on it (UI step 3).
+    /// A scan reveals haul and quota; the compact clock and departure countdown remain readable without
+    /// covering exploration. The truck's own haul board is always available at the loading bay.
     /// </summary>
     public class RunHud : MonoBehaviour
     {
@@ -28,7 +27,7 @@ namespace Abandoned.Extraction
                 if (!showing || HudLayer.Root == null) return;
                 Build();
             }
-            MenuKit.Show(top, showing);
+            MenuKit.Show(top, showing && LootTags.ValuesVisible);
             MenuKit.Show(clock, showing);
             if (!showing)
             {
@@ -46,7 +45,7 @@ namespace Abandoned.Extraction
             {
                 metShown = quotaMet;
                 met.EnableInClassList("run-haul__met--on", quotaMet);
-                if (quotaMet) UiKit.Jolt(met);
+                if (quotaMet && LootTags.ValuesVisible) UiKit.Jolt(met);
             }
             SetText(cargo, s.Overloaded ? $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3  -  OVERLOADED" : $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3");
             cargo.EnableInClassList("run-haul__cargo--bad", s.Overloaded);

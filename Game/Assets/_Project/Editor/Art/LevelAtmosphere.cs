@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// A level's mood (M7.2): gradient ambient, fog, the sun (soft shadows), and a global
-    /// post-processing volume (ACES, bloom for the glowing fixtures, vignette, grain), with
+    /// post-processing volume (ACES and restrained bloom, without grain or vignette), with
     /// post-processing switched on for the scene's cameras. Realtime only: no lightmaps (power-off
     /// runs switch lights and floors collapse, which baked light can't follow).
     /// </summary>
@@ -32,14 +32,14 @@ namespace Abandoned.EditorTools
 
         /// <summary>A dim, dusty, cold mall; warm late-afternoon sun outside and through the skylight.</summary>
         public static readonly Mood Mall = new(
-            sky: new Color(0.26f, 0.28f, 0.32f), equator: new Color(0.2f, 0.2f, 0.21f), ground: new Color(0.09f, 0.085f, 0.08f),
-            fog: new Color(0.24f, 0.25f, 0.27f), fogDensity: 0.022f, bloom: 0.7f, vignette: 0.32f, grain: 0.22f,
-            saturation: -18f, contrast: 12f, sunColor: new Color(1f, 0.9f, 0.75f), sunIntensity: 1.6f, sunEuler: new Vector3(66f, -32f, 0f));
+            sky: new Color(0.09f, 0.105f, 0.12f), equator: new Color(0.055f, 0.064f, 0.07f), ground: new Color(0.026f, 0.025f, 0.022f),
+            fog: new Color(0.19f, 0.205f, 0.21f), fogDensity: 0.014f, bloom: 0.2f, vignette: 0f, grain: 0f,
+            saturation: -8f, contrast: 6f, sunColor: new Color(1f, 0.91f, 0.77f), sunIntensity: 1.7f, sunEuler: new Vector3(66f, -32f, 0f));
 
         /// <summary>The company HQ: warmer and cleaner (a safe place), light haze.</summary>
         public static readonly Mood Hq = new(
             sky: new Color(0.46f, 0.44f, 0.42f), equator: new Color(0.36f, 0.33f, 0.3f), ground: new Color(0.16f, 0.15f, 0.13f),
-            fog: new Color(0.3f, 0.28f, 0.26f), fogDensity: 0.01f, bloom: 0.5f, vignette: 0.25f, grain: 0.15f,
+            fog: new Color(0.3f, 0.28f, 0.26f), fogDensity: 0.006f, bloom: 0.18f, vignette: 0f, grain: 0f,
             saturation: -5f, contrast: 8f, sunColor: new Color(1f, 0.92f, 0.8f), sunIntensity: 1.4f, sunEuler: new Vector3(50f, -30f, 0f));
 
         public static void Apply(string levelName, Mood mood, Transform parent)

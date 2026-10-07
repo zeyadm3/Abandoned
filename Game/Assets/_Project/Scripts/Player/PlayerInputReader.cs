@@ -78,7 +78,10 @@ namespace Abandoned.Player
                 g.Radio.IsPressed(),
                 g.HandSlot1.WasPressedThisFrame(),
                 g.HandSlot2.WasPressedThisFrame(),
-                g.Flashlight.WasPressedThisFrame());
+                g.Flashlight.WasPressedThisFrame(),
+                g.Rotate.IsPressed(),
+                g.Drop.IsPressed(),
+                g.Drop.WasReleasedThisFrame());
         }
     }
 }

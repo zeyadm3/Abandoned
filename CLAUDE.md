@@ -93,6 +93,11 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
+Feel/presentation pass: the user's 2026-10-07 answers are captured in Docs/POLISH.md.
+Latest instruction: **build everything first; the user will test afterward**. Compile, regenerate
+content and make builds; no gameplay, EditMode/PlayMode/nettest or QA screenshots during this pass.
+Use existing/free assets and original code-built low-poly art. New paid packs/packages are not authorized.
+
 Milestones 0–10 are built (autonomous build merged into main on 2026-10-07; the separate
 autobuild-2 worktree is gone, everything lives in this one folder). Next: the user's full test pass.
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.

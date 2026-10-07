@@ -244,7 +244,7 @@ namespace Abandoned.Structure
 
             Vector3 centre = s.SurfaceBounds.center;
             GameAudio.PlayStructure(StructureSound.Crash, centre, 1f);
-            CameraShake.Emit(centre, visuals.CollapseShake);
+            CameraShake.EmitCollapse(centre, visuals.CollapseShake);
             Achievements.Increment(Achievements.StatCollapses); // witnessed on this machine (M9.5)
             debris = DebrisSpawner.Spawn(section, fracturedPrefab, renderers.Length > 0 ? renderers[0].sharedMaterial : null,
                 visuals, s.CollapseSeed);

@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Builds Prefabs/Player.prefab: CharacterController, input reader, motor, stamina, look,
-    /// debug overlay, a capsule placeholder body and a Cinemachine camera locked to the eyes.
+    /// debug overlay, an original low-poly salvage worker and a Cinemachine camera locked to the eyes.
     /// It is NGO's player prefab: NetworkObject + owner-authoritative NetworkTransform + NetworkPlayer.
     /// </summary>
     public static class PlayerPrefabBuilder
@@ -53,13 +53,14 @@ namespace Abandoned.EditorTools
             Transform eye = new GameObject("Eye").transform;
             eye.SetParent(cameraRoot, false);
 
-            GameObject body = BuildBody(root.transform, config);
+            WorkerVisualBuilder.SavePreviewPrefab();
+            GameObject body = WorkerVisualBuilder.Build(root.transform);
             PlayerRagdollBuilder.Result ragdollParts = PlayerRagdollBuilder.Build(root.transform, ragdollConfig.TotalMass, PlayerMaterial());
             GameObject hitDetector = BuildHitDetector(root.transform, config);
             CinemachineCamera playerCamera = BuildCamera(root.transform, eye);
             SerializedWiring.Set(root.AddComponent<PlayerFieldOfView>(), "playerCamera", playerCamera);
             root.AddComponent<PlayerCosmetics>().EditorSetup(AssetDatabase.LoadAssetAtPath<CosmeticCatalog>(CosmeticsBuilder.CatalogPath),
-                body.transform, ragdollParts.Head, PlayerMaterial());
+                body.transform, ragdollParts.Head, PlayerMaterial(), body.GetComponent<WorkerRig>().HeadAnchor);
 
             var reader = root.AddComponent<PlayerInputReader>();
             var stamina = root.AddComponent<PlayerStamina>();
@@ -76,6 +77,7 @@ namespace Abandoned.EditorTools
             var footsteps = root.AddComponent<PlayerFootsteps>();
             NetworkTransform networkTransform = AddNetworkTransform(root);
             var networkPlayer = root.AddComponent<NetworkPlayer>();
+            root.AddComponent<WorkerPresentation>().EditorSetup(body.GetComponent<WorkerRig>(), motor, carrier, ragdoll, networkPlayer);
             PlayerVoiceBuilder.Result voice = PlayerVoiceBuilder.Add(root, cameraRoot, reader);
 
             Set(stamina, "config", config);
@@ -139,8 +141,7 @@ namespace Abandoned.EditorTools
             Debug.Log($"Player prefab saved to {PrefabPath}.");
         }
 
-        private static Material PlayerMaterial() =>
-            GreyboxFactory.GetMaterial("Greybox_Player", new Color(0.95f, 0.45f, 0.1f));
+        private static Material PlayerMaterial() => WorkerVisualBuilder.Suit;
 
         private static GameObject BuildHitDetector(Transform root, PlayerMovementConfig config)
         {
@@ -155,17 +156,6 @@ namespace Abandoned.EditorTools
             capsule.center = Vector3.up * (config.StandingHeight / 2f);
             go.AddComponent<PlayerHitDetector>();
             return go;
-        }
-
-        private static GameObject BuildBody(Transform root, PlayerMovementConfig config)
-        {
-            // Placeholder until a humanoid model arrives; the camera sits inside it, and backface
-            // culling keeps it invisible to its own player while others (and shadows) still see it.
-            // A Unity capsule is 2 units tall at scale 1, so Y scale is half the height.
-            return GreyboxFactory.Primitive(PrimitiveType.Capsule, "Body", root,
-                Vector3.up * (config.StandingHeight / 2f),
-                new Vector3(config.Radius * 2f, config.StandingHeight / 2f, config.Radius * 2f),
-                PlayerMaterial(), withCollider: false);
         }
 
         private static NetworkTransform AddNetworkTransform(GameObject root)

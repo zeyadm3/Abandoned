@@ -5,8 +5,8 @@ using UnityEngine;
 namespace Abandoned.Interaction
 {
     /// <summary>
-    /// Turns player input into interaction requests: aims at grabbables, E to pick up, hold left
-    /// mouse to charge a throw, right mouse to drop, Tab + right mouse to drop the last pocket item.
+    /// Picks up loot, charges throws, rotates a single held item, and distinguishes tap-drop from
+    /// a physical hold-to-set-down. Team handles always release promptly.
     /// Runs only for the local player; requests go through <see cref="InteractionService"/>.
     /// </summary>
     public class PlayerInteractor : MonoBehaviour
@@ -18,6 +18,12 @@ namespace Abandoned.Interaction
         private readonly RaycastHit[] hits = new RaycastHit[8];
         private bool charging;
         private bool suppressUseUntilRelease;
+        private bool dropPending;
+        private float dropTime;
+        private Grabbable dropItem;
+        public bool IsRotating { get; private set; }
+        public bool IsPlacing => carrier != null && carrier.IsPlacing;
+        public bool PlacementBlocked => carrier != null && carrier.PlacementBlocked;
 
         public Grabbable Target { get; private set; }
 
@@ -37,6 +43,10 @@ namespace Abandoned.Interaction
             UseTarget = null;
             charging = false;
             Charge = 0f;
+            IsRotating = false;
+            dropPending = false;
+            dropItem = null;
+            if (carrier != null) carrier.CancelPlacement();
         }
 
         public void Tick(PlayerInputFrame input, float dt)
@@ -62,22 +72,58 @@ namespace Abandoned.Interaction
 
             if (carrier.Held == null)
             {
-                charging = false;
-                Charge = 0f;
+                ResetHandling();
                 if (input.InventoryHeld && input.DropPressed) handler.RequestDropFromPocket(carrier);
                 return;
             }
 
-            if (input.DropPressed)
+            // A shared/dragged load can trap a player beside a failing floor: never delay letting go.
+            if (carrier.IsDragging || carrier.IsSharing)
             {
-                charging = false;
-                Charge = 0f;
-                handler.RequestDrop(carrier);
+                ResetHandling();
+                if (input.DropPressed) handler.RequestDrop(carrier);
                 return;
             }
 
-            // Dragged and shared items are let go with RMB, never thrown.
-            if (carrier.IsDragging || carrier.IsSharing) return;
+            if (dropPending && dropItem != carrier.Held) ResetHandling();
+            if (input.DropPressed)
+            {
+                dropPending = true;
+                dropItem = carrier.Held;
+                dropTime = 0f;
+                charging = false;
+                Charge = 0f;
+            }
+            if (dropPending)
+            {
+                IsRotating = false;
+                if (input.DropHeld)
+                {
+                    dropTime += dt;
+                    if (dropTime >= carrier.Config.PlaceHoldTime)
+                    {
+                        if (!carrier.IsPlacing) carrier.BeginPlacement();
+                        // The network guard rate-limits retries; a rejected/stale host view must not strand the hold.
+                        if (carrier.PlacementReady) handler.RequestPlace(carrier);
+                    }
+                }
+                else if (input.DropReleased || !input.DropHeld)
+                {
+                    bool tapped = dropTime < carrier.Config.PlaceHoldTime;
+                    ResetHandling();
+                    if (tapped) handler.RequestDrop(carrier);
+                }
+                return;
+            }
+
+            IsRotating = input.RotateHeld && carrier.CanRotate;
+            if (IsRotating)
+            {
+                charging = false;
+                Charge = 0f;
+                carrier.RotateHeld(input.Look);
+                return;
+            }
 
             if (useHeld)
             {
@@ -91,6 +137,16 @@ namespace Abandoned.Interaction
                 charging = false;
                 Charge = 0f;
             }
+        }
+
+        private void ResetHandling()
+        {
+            charging = false;
+            Charge = 0f;
+            IsRotating = false;
+            dropPending = false;
+            dropItem = null;
+            carrier.CancelPlacement();
         }
 
         private Grabbable FindTarget()

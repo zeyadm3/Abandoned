@@ -15,14 +15,14 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class MallFixtures
     {
-        private const float Range = 8.5f, Intensity = 2.4f;
-        private const int FaultyPercent = 12, DeadPercent = 5;
+        private const float Range = 5.5f, Intensity = 0.95f;
+        private const int FaultyPercent = 8, DeadPercent = 28;
         private static readonly Color Fluorescent = new(0.9f, 0.96f, 1f), Warm = new(1f, 0.9f, 0.75f);
 
         public static int Place(Transform root, Transform tiles)
         {
             Transform parent = GreyboxFactory.Group("Fixtures", root);
-            Material panel = LightingAssets.FixturePanel();
+            Material panel = PolishAssets.Material("Mall_FixturePanel", new Color(0.73f, 0.74f, 0.69f), emission: 1.2f);
             int count = 0;
             for (int f = 0; f < Floors; f++)
                 foreach (Zone zone in ZonesByFloor[f])

@@ -54,6 +54,10 @@ namespace Abandoned.Equipment
         public EquipmentDefinition InSlot(int slot) => catalog.At(state.Value[slot]);
         public EquipmentDefinition InHand => InSlot(state.Value.Active);
 
+        /// <summary>One-hand loot leaves a hand for the light; larger carries need both hands.</summary>
+        public bool HandsFreeForLight => carrier == null || carrier.Held == null ||
+            (carrier.Held.CarryClass < CarryClass.TwoHand && !carrier.IsSharing && !carrier.IsDragging);
+
         public bool Has(EquipmentKind kind) =>
             (InSlot(0) is EquipmentDefinition a && a.Kind == kind) || (InSlot(1) is EquipmentDefinition b && b.Kind == kind);
 
@@ -123,7 +127,7 @@ namespace Abandoned.Equipment
         {
             if (flashlight != null)
             {
-                bool on = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead;
+                bool on = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead && HandsFreeForLight;
                 if (on != flashlight.enabled && !IsDead) Audio.GameAudio.Play(Audio.SoundId.FlashlightClick, flashlight.transform.position, 0.6f);
                 flashlight.enabled = on;
             }
@@ -140,13 +144,20 @@ namespace Abandoned.Equipment
             if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
             // Ghosts can't help (GDD 11): a light left on goes out with its holder.
             if (IsServer && IsDead && state.Value.LightOn) { EquipState s = state.Value; s.LightOn = false; state.Value = s; }
-            if (flashlight != null && flashlight.enabled && IsDead) Apply();
+            // Preserve the switch position while hands are occupied: setting down restores the beam.
+            // Automatic hand changes are silent; the click belongs to deliberately using the switch.
+            if (flashlight != null)
+                flashlight.enabled = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead && HandsFreeForLight;
             if (!IsOwner || inputReader == null || IsDead) return;
             PlayerInputFrame input = inputReader.Current;
             if (!GameplayInputAllowed(input)) return;
             if (input.Slot1Pressed) SelectRpc(0);
             if (input.Slot2Pressed) SelectRpc(1);
-            if (input.FlashlightPressed && Has(EquipmentKind.Flashlight)) LightRpc(!state.Value.LightOn);
+            if (input.FlashlightPressed && Has(EquipmentKind.Flashlight))
+            {
+                if (HandsFreeForLight) LightRpc(!state.Value.LightOn);
+                else carrier.ShowHint("Your hands are full. Set the loot down to use your flashlight.");
+            }
             // Single-use gear: the left mouse button with empty hands.
             if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar)) UseRpc(state.Value.Active);
         }

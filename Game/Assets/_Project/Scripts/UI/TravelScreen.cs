@@ -16,7 +16,7 @@ namespace Abandoned.UI
 
         private static readonly string[] Tips =
         {
-            "Scan (Q) as soon as you're inside: prices first, plans second.",
+            "Scan as soon as you're inside: prices first, plans second.",
             "Weak floors creak before they crack and crack before they go. Listen.",
             "The truck's board shows the haul. Load it, read it, argue about it.",
             "A rope and pulley over a hole beats carrying a piano down the stairs.",
@@ -35,6 +35,19 @@ namespace Abandoned.UI
         /// <summary>Tests: the drive is on screen.</summary>
         public bool Showing { get; private set; }
 
+        private void OnEnable() => SessionTravel.Arrived += OnArrived;
+
+        private void OnArrived(string level)
+        {
+            SessionTravel travel = SessionTravel.Current;
+            if (travel == null || !travel.IsSpawned) return;
+            int id = travel.TravelId;
+            if (seenTravel < 0) { seenTravel = id; return; }
+            if (id == seenTravel) return;
+            seenTravel = id;
+            Begin(level);
+        }
+
         private void Update()
         {
             SessionTravel travel = SessionTravel.Current;
@@ -51,6 +64,7 @@ namespace Abandoned.UI
                 seenTravel = id;
                 Begin(travel.Level);
             }
+            if (Showing && root == null) Refresh(travel.Level);
             Set(Showing && (Time.unscaledTime < until || !SessionTravel.LevelReady || !Loaded(travel.Level)));
         }
 
@@ -59,6 +73,12 @@ namespace Abandoned.UI
         private void Begin(string level)
         {
             until = Time.unscaledTime + MinSeconds;
+            Set(true);
+            Refresh(level);
+        }
+
+        private void Refresh(string level)
+        {
             if (root == null && !Build()) return;
             bool home = level == CompanyService.HomeLevel;
             where.text = home ? "HEADING BACK TO THE HQ" : $"DRIVING TO: {Location(level)}";
@@ -113,6 +133,7 @@ namespace Abandoned.UI
         private void Set(bool on)
         {
             Showing = on;
+            Audio.MusicPlayer.SetTravel(on);
             if (root != null)
             {
                 MenuKit.Show(root, on);
@@ -134,7 +155,7 @@ namespace Abandoned.UI
                 rumble.playOnAwake = false;
                 rumble.clip = Engine();
             }
-            float target = on ? 0.35f * Audio.AudioLevels.Sfx : 0f;
+            float target = on ? 0.25f * Audio.AudioLevels.Sfx * Audio.AudioLevels.BackgroundDuck : 0f;
             rumble.volume = Mathf.MoveTowards(rumble.volume, target, Time.unscaledDeltaTime * 0.6f);
             if (rumble.volume > 0f && !rumble.isPlaying) rumble.Play();
             else if (rumble.volume <= 0f && rumble.isPlaying) rumble.Stop();
@@ -160,6 +181,19 @@ namespace Abandoned.UI
             return clip;
         }
 
-        private void OnDestroy() => root?.RemoveFromHierarchy();
+        private void OnDisable()
+        {
+            SessionTravel.Arrived -= OnArrived;
+            Set(false);
+            if (rumble == null) return;
+            rumble.Stop();
+            rumble.volume = 0f;
+        }
+
+        private void OnDestroy()
+        {
+            Audio.MusicPlayer.SetTravel(false);
+            root?.RemoveFromHierarchy();
+        }
     }
 }

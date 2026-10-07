@@ -78,19 +78,19 @@ namespace Abandoned.Audio
                 _ => SoundId.Crash,
             };
             SoundCue cue = Bank != null ? Bank.Get(id) : null;
-            Emit(cue, PlaceholderAudio.GetStructureClip(sound), position, volume01, spatial: true);
+            Emit(cue, PlaceholderAudio.GetStructureClip(sound), position, volume01, spatial: true, priority: 48);
             SubtitleFeed.Report(id, position, cue?.MaxDistance ?? 40f);
             if (sound == StructureSound.Crash && Bank != null && Bank.Get(SoundId.CrashDebris) is { HasClips: true } debris)
-                Emit(debris, null, position, volume01, spatial: true);
+                Emit(debris, null, position, volume01 * 0.75f, spatial: true, priority: 64);
         }
 
-        private static void Emit(SoundCue cue, AudioClip fallback, Vector3 position, float volume01, bool spatial)
+        private static void Emit(SoundCue cue, AudioClip fallback, Vector3 position, float volume01, bool spatial, int priority = 128)
         {
             float volume = Mathf.Clamp01(volume01) * AudioLevels.Sfx;
             if (cue != null && cue.HasClips)
-                AudioPool.Play(cue.Pick(), position, volume * cue.Volume, cue.PickPitch(), cue.MinDistance, cue.MaxDistance, spatial);
+                AudioPool.Play(cue.Pick(), position, volume * cue.Volume, cue.PickPitch(), cue.MinDistance, cue.MaxDistance, spatial, priority);
             else if (fallback != null)
-                AudioPool.Play(fallback, position, volume, 1f, cue?.MinDistance ?? 2f, cue?.MaxDistance ?? 40f, spatial);
+                AudioPool.Play(fallback, position, volume, 1f, cue?.MinDistance ?? 2f, cue?.MaxDistance ?? 40f, spatial, priority);
         }
 
         private static AudioClip Fallback(SoundId id) => id switch

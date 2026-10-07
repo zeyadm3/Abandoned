@@ -29,12 +29,14 @@ namespace Abandoned.Player
         {
             motor.Landed += OnLanded;
             CameraShake.Impact += OnImpact;
+            CameraShake.Collapse += OnCollapse;
         }
 
         private void OnDisable()
         {
             motor.Landed -= OnLanded;
             CameraShake.Impact -= OnImpact;
+            CameraShake.Collapse -= OnCollapse;
             eye.localPosition = Vector3.zero;
             eye.localRotation = Quaternion.identity;
         }
@@ -44,7 +46,8 @@ namespace Abandoned.Player
         public void Tick(float dt)
         {
             UpdateBob(dt);
-            Dip = Mathf.Lerp(Dip, 0f, 1f - Mathf.Exp(-settings.DipRecoverySpeed * dt));
+            Dip = GameSettings.HeadBob ? Mathf.Lerp(Dip, 0f, 1f - Mathf.Exp(-settings.DipRecoverySpeed * dt)) : 0f;
+            if (!GameSettings.CameraShake) Trauma = 0f;
             Trauma = Mathf.Max(0f, Trauma - settings.ShakeDecay * dt);
 
             eye.localPosition = BobOffset + Vector3.down * Dip;
@@ -60,6 +63,7 @@ namespace Abandoned.Player
                 ? Mathf.Clamp01(speed / motor.Config.WalkSpeed) * scale
                 : 0f;
             bobWeight = Mathf.MoveTowards(bobWeight, target, settings.BobBlendSpeed * dt);
+            if (!settings.HeadBobEnabled || !GameSettings.HeadBob) bobWeight = 0f;
             bobPhase = (bobPhase + speed * dt / settings.BobCycleLength * TwoPi) % TwoPi;
 
             // Side-to-side once per cycle, up-and-down twice (once per step).
@@ -80,7 +84,7 @@ namespace Abandoned.Player
 
         private void OnLanded(float fallHeight, float impactSpeed)
         {
-            if (!settings.LandingDipEnabled || impactSpeed < settings.MinDipSpeed) return;
+            if (!settings.LandingDipEnabled || !GameSettings.HeadBob || impactSpeed < settings.MinDipSpeed) return;
             Dip = Mathf.Min(settings.MaxDip, Dip + impactSpeed * settings.DipPerSpeed);
         }
 
@@ -91,7 +95,16 @@ namespace Abandoned.Player
             if (distance >= settings.ShakeRadius) return;
             float strength = Mathf.Clamp01((momentum - settings.ShakeMomentumThreshold) /
                                            (settings.ShakeFullMomentum - settings.ShakeMomentumThreshold));
-            Trauma = Mathf.Min(1f, Trauma + strength * (1f - distance / settings.ShakeRadius));
+            Trauma = Mathf.Max(Trauma, Mathf.Min(settings.ImpactShakeLimit,
+                strength * settings.ImpactShakeLimit * (1f - distance / settings.ShakeRadius)));
+        }
+
+        private void OnCollapse(Vector3 position, float momentum)
+        {
+            if (!settings.CameraShakeEnabled || !GameSettings.CameraShake) return;
+            float distance = Vector3.Distance(eye.position, position);
+            if (distance >= settings.CollapseShakeRadius) return;
+            Trauma = Mathf.Max(Trauma, 0.95f * (1f - distance / settings.CollapseShakeRadius));
         }
     }
 }

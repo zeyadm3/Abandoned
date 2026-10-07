@@ -160,7 +160,7 @@ namespace Abandoned.Networking
                 deathCause = new UnityEngine.UIElements.Label { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
                 deathCause.AddToClassList("death-card__cause");
                 deathCard.Add(deathCause);
-                var note = new UnityEngine.UIElements.Label("Your pockets dropped where you fell. You'll watch the rest as a ghost.") { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
+                var note = new UnityEngine.UIElements.Label("Your pockets dropped where you fell. Watch your crew, or wait for a medkit.") { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
                 note.AddToClassList("death-card__note");
                 deathCard.Add(note);
             }

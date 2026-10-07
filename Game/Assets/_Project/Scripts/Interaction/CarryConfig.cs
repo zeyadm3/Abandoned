@@ -67,6 +67,16 @@ namespace Abandoned.Interaction
         [field: Header("Inventory")]
         [field: SerializeField, Range(1, 8)] public int PocketSlots { get; private set; } = 4;
 
+        [field: Header("Careful handling")]
+        [field: SerializeField, Min(0f)] public float RotateSensitivity { get; private set; } = 0.18f;
+        [field: SerializeField, Min(0.1f)] public float MaxRotationSpeed { get; private set; } = 4f;
+        [field: SerializeField, Min(0.1f)] public float PlaceHoldTime { get; private set; } = 0.22f;
+        [field: SerializeField, Min(0.1f)] public float PlaceLowerSpeed { get; private set; } = 0.45f;
+        [field: SerializeField, Min(0.01f)] public float PlaceReleaseSpeed { get; private set; } = 0.18f;
+        [field: SerializeField, Min(0.01f)] public float PlaceReleaseAngularSpeed { get; private set; } = 0.3f;
+        [field: SerializeField, Min(0.01f)] public float PlaceClearance { get; private set; } = 0.015f;
+        [field: SerializeField, Min(0.01f)] public float PlaceTolerance { get; private set; } = 0.06f;
+
         public void Validate(List<string> errors)
         {
             if (ThrowMaxSpeed < ThrowMinSpeed) errors.Add($"{name}: ThrowMaxSpeed is below ThrowMinSpeed.");

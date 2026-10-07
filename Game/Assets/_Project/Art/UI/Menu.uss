@@ -600,14 +600,18 @@
 .hud-floor {
     -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
     position: absolute;
-    left: 0; right: 0; bottom: 160px;
-    font-size: 28px;
+    left: 50%; bottom: 160px;
+    translate: -50% 0;
+    padding: 5px 12px;
+    background-color: rgba(10, 11, 12, 0.78);
+    border-left-width: 2px;
+    border-left-color: var(--c-accent);
+    border-radius: 2px;
+    font-size: 18px;
     letter-spacing: 1px;
-    color: rgb(255, 160, 70);
+    color: var(--c-accent);
     -unity-text-align: middle-center;
 }
-
-.hud-floor--failing { color: var(--c-bad); font-size: 36px; }
 
 .hud-toast {
     right: 24px; top: 84px;
@@ -636,7 +640,7 @@
 
 .run-haul__amount {
     -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
-    font-size: 46px;
+    font-size: 34px;
     color: var(--c-money);
     text-shadow: 0 3px 0 rgba(0, 0, 0, 0.65);
 }
@@ -650,7 +654,7 @@
     text-shadow: 0 2px 0 rgba(0, 0, 0, 0.65);
 }
 
-.run-haul__bar { width: 380px; height: 8px; margin-top: 1px; }
+.run-haul__bar { width: 300px; height: 5px; margin-top: 1px; }
 
 .run-haul__cargo {
     font-size: 15px;
@@ -683,7 +687,7 @@
 
 .run-clock__time {
     -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
-    font-size: 30px;
+    font-size: 24px;
     margin-left: 6px;
     color: var(--c-text);
 }
@@ -732,7 +736,7 @@
 .player-stamina {
     position: absolute;
     left: 28px; bottom: 26px;
-    width: 300px;
+    width: 220px;
 }
 
 .player-stamina__label {
@@ -744,7 +748,7 @@
     text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
 }
 
-.player-stamina .bar { height: 9px; }
+.player-stamina .bar { height: 5px; }
 
 .player-load {
     font-size: 15px;
@@ -761,7 +765,7 @@
 }
 
 .slot {
-    width: 62px; height: 62px;
+    width: 54px; height: 54px;
     margin-left: 6px;
     background-color: rgba(10, 11, 12, 0.72);
     border-width: 2px;
@@ -773,7 +777,7 @@
     transition-duration: 0.1s;
 }
 
-.slot--hand { width: 76px; height: 76px; }
+.slot--hand { width: 64px; height: 64px; }
 .slot--active { border-color: var(--c-accent); translate: 0 -8px; }
 
 .slot__icon { width: 44px; height: 44px; -unity-background-scale-mode: scale-to-fit; }

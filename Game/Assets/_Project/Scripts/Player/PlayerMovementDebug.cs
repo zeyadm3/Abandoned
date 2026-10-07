@@ -1,4 +1,5 @@
 using Abandoned.Core;
+using Abandoned.Interaction;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -24,6 +25,7 @@ namespace Abandoned.Player
             style ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = fontSize, richText = true };
 
             string state = !motor.IsGrounded ? "Air" : motor.IsCrouching ? "Crouch" : motor.IsSprinting ? "Sprint" : "Walk";
+            PlayerCarrier carry = GetComponent<PlayerCarrier>();
             string text =
                 "<b>MOVEMENT</b>\n" +
                 $"State      {state}\n" +
@@ -36,7 +38,8 @@ namespace Abandoned.Player
                 $"Drain x    {motor.StaminaDrainMultiplier:F2}\n" +
                 $"Bob        {cameraFeel.BobOffset.y:F3}  Dip {cameraFeel.Dip:F2}  Shake {cameraFeel.Trauma:F2}\n" +
                 $"Steps      {footsteps.StepCount} ({footsteps.LastSurface}, vol {footsteps.LastVolume:F2})\n" +
-                $"Ragdoll    {(ragdoll.IsRagdolled ? "<color=#FF6060>YES</color>" : "no")}  (K to toggle)";
+                $"Ragdoll    {(ragdoll.IsRagdolled ? "<color=#FF6060>YES</color>" : "no")}  (K to toggle)\n" +
+                $"Set down   {(carry != null && carry.IsPlacing ? carry.PlacementBlocked ? "BLOCKED" : carry.PlacementReady ? "READY" : "lowering" : "no")}";
 
             var content = new GUIContent(text);
             Vector2 size = style.CalcSize(content);

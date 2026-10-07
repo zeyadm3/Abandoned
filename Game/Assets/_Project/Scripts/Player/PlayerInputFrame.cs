@@ -26,11 +26,15 @@ namespace Abandoned.Player
         public readonly bool Slot1Pressed;
         public readonly bool Slot2Pressed;
         public readonly bool FlashlightPressed;
+        public readonly bool RotateHeld;
+        public readonly bool DropHeld;
+        public readonly bool DropReleased;
 
         public PlayerInputFrame(Vector2 move, Vector2 look, bool sprintHeld, bool crouchHeld, bool crouchPressed,
             bool jumpPressed, bool usePressed, bool useHeld, bool interactPressed, bool dropPressed,
             bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false, bool talkHeld = false, bool radioHeld = false,
-            bool slot1Pressed = false, bool slot2Pressed = false, bool flashlightPressed = false)
+            bool slot1Pressed = false, bool slot2Pressed = false, bool flashlightPressed = false,
+            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false)
         {
             Move = move;
             Look = look;
@@ -50,6 +54,9 @@ namespace Abandoned.Player
             Slot1Pressed = slot1Pressed;
             Slot2Pressed = slot2Pressed;
             FlashlightPressed = flashlightPressed;
+            RotateHeld = rotateHeld;
+            DropHeld = dropHeld;
+            DropReleased = dropReleased;
         }
     }
 }

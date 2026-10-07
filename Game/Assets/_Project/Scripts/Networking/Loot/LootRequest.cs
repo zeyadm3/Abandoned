@@ -6,5 +6,6 @@ namespace Abandoned.Networking
         Pickup = 0,
         Release = 1,
         Unpocket = 2,
+        Place = 3,
     }
 }

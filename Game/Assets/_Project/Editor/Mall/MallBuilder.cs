@@ -44,13 +44,13 @@ namespace Abandoned.EditorTools
             Transform root = new GameObject("Mall").transform;
 
             int tiles = BuildTiles(Group(TilesGroup, root));
-            Material steps = GetMaterial("Greybox_Stairs", new Color(0.92f, 0.55f, 0.2f));
-            Material sides = GetMaterial("Greybox_Railing", new Color(0.3f, 0.3f, 0.32f));
+            Material steps = PolishAssets.Material("Mall_Stairs", new Color(0.43f, 0.4f, 0.32f));
+            Material sides = PolishAssets.Material("Mall_Railing", new Color(0.25f, 0.29f, 0.29f), 0.65f);
             Transform flights = Group(FlightsGroup, root);
             foreach (Flight f in Flights) MallFlights.Build(f, flights, steps, sides);
 
-            Material wall = GetMaterial("Greybox_Wall", new Color(0.82f, 0.81f, 0.78f));
-            Material frame = GetMaterial("Greybox_DoorFrame", new Color(0.95f, 0.8f, 0.1f));
+            Material wall = PolishAssets.Material("Mall_PaintedPlaster", new Color(0.67f, 0.66f, 0.58f), texture: PolishAssets.Texture("PlasterAge"));
+            Material frame = PolishAssets.Material("Mall_DoorTrim", new Color(0.35f, 0.4f, 0.39f));
             int walls = 0;
             Transform wallRoot = Group("Walls", root);
             for (int f = 0; f < Floors; f++) walls += MallWalls.Build(wallRoot, f, wall, frame, sides);
@@ -61,6 +61,7 @@ namespace Abandoned.EditorTools
             PlaceCamera();
             MallPopulator.Populate(root);
             int props = MallProps.Place(root, root.Find(TilesGroup));
+            MallDecayBuilder.Place(root);
             int fixtures = BuildLights(root); // after Populate: fixtures hang from the tiles' sections
             MallProps.ParkVehicles(root.Find("Exterior"));
             BakeNavMesh(root);
@@ -93,7 +94,10 @@ namespace Abandoned.EditorTools
                     string tag = IsWalkwayTile(c, f) ? "walkway" : zone.Value.Tag;
                     Color color = ZoneColors.TryGetValue(tag, out Color zc) ? zc : Color.gray;
                     if ((x + z) % 2 == 0) color *= 0.9f;
-                    Material material = GetMaterial($"Greybox_Mall_{tag}_{(x + z) % 2}", new Color(color.r, color.g, color.b, 1f));
+                    // Neutral laminate/stone keeps structural tint/cracks readable; zone colour remains a quiet undertone.
+                    color = Color.Lerp(new Color(0.49f, 0.48f, 0.43f), color, 0.24f);
+                    Material material = PolishAssets.Material($"Mall_Floor_{tag}_{(x + z) % 2}", new Color(color.r, color.g, color.b, 1f),
+                        texture: PolishAssets.Texture("MallTile", tiles: true));
                     CreateTile(TileName(c, f), floorGroup, TileTopCenter(c, f), material);
                     count++;
                 }

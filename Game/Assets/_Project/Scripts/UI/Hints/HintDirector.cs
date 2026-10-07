@@ -79,7 +79,8 @@ namespace Abandoned.UI
             }
 
             if (run.State.Phase == RunPhase.Honking && Unseen(HintId.TruckLeaving) is HintId leaving) return leaving;
-            if (OnCrackingFloor(me.transform.position) && Unseen(HintId.FloorCracking) is HintId cracking) return cracking;
+            // The building's warning sounds and the final failing-floor cue already teach this moment.
+            // A nine-second tutorial card would obscure the route while the player needs to move.
             if (ThreatNear<BlindOne>(me) && Unseen(HintId.BlindOne) is HintId blind) return blind;
             if (ThreatNear<Stalker>(me) && Unseen(HintId.Stalker) is HintId stalker) return stalker;
             if (ThreatNear<Collector>(me) && Unseen(HintId.Collector) is HintId collector) return collector;
@@ -117,12 +118,6 @@ namespace Abandoned.UI
                 machine = FindAnyObjectByType<AnsweringMachine>();
             }
             return board != null;
-        }
-
-        private static bool OnCrackingFloor(Vector3 feet)
-        {
-            StructuralSection s = SectionQuery.Under(feet);
-            return s != null && s.Stage >= StructuralStage.Cracking;
         }
 
         private static bool ThreatNear<T>(NetworkPlayer me) where T : Threat
