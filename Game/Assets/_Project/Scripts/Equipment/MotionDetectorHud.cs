@@ -46,6 +46,8 @@ namespace Abandoned.Equipment
 
         private void Sample(float dt)
         {
+            // Despawned monsters leave dead keys behind; start over now and then.
+            if (last.Count > 64) last.Clear();
             nextSample = Time.time + sampleInterval;
             dt = Mathf.Max(dt, 0.05f);
             contacts.Clear();

@@ -89,6 +89,8 @@ namespace Abandoned.Equipment
             for (float d = 0.8f; d <= reach; d += 0.4f)
             {
                 Vector3 probe = feet + forward * d + Vector3.up * 0.6f;
+                // Not through a wall (chest height clears railings, which you can rig over).
+                if (Physics.Linecast(feet + Vector3.up * 1.3f, probe + Vector3.up * 0.7f, floorMask, QueryTriggerInteraction.Ignore)) return false;
                 // Solid floor within a step below: not the hole yet.
                 if (Physics.Raycast(probe, Vector3.down, 1.6f, floorMask, QueryTriggerInteraction.Ignore)) continue;
                 if (!Physics.Raycast(probe, Vector3.down, out RaycastHit below, 30f, floorMask, QueryTriggerInteraction.Ignore)) return false;

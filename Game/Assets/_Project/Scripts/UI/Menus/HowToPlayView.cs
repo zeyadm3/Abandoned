@@ -33,6 +33,11 @@ namespace Abandoned.UI
             MenuKit.Text(scroll, "THE DARK", "section");
             MenuKit.Text(scroll, "You're not alone in there. Noise draws attention: running, dropping things, and shouting. Talk with your crew " +
                                  "(proximity voice) and use the radio when you split up. The dead watch as ghosts until the next job.");
+            MenuKit.Text(scroll, "THE COMPANY", "section");
+            MenuKit.Text(scroll, "Every job costs running costs, whatever you bring back. Spend the rest at the HQ: gear from the shop (two hand " +
+                                 "slots each; single-use gear is used with your hands empty), truck upgrades, better jobs as the company levels up. " +
+                                 "Locked stores hold the good stock: bolt cutters or a crowbar get you in. A rope and pulley over a hole lowers " +
+                                 "loot gently; a flatbed trolley lets a short crew drag even a piano. Check the answering machine.");
             MenuKit.Text(scroll, "KEYS", "section");
             keys = MenuKit.Text(scroll, "");
             MenuKit.Button(panel, "Back", menu.Back, Audio.SoundId.UiBack);

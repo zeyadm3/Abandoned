@@ -41,8 +41,9 @@ namespace Abandoned.Extraction
 
         private void Update()
         {
+            // No run yet, or a new run still rolling its locks: hold still (as built: down) rather than flap open.
             RunShutters run = RunShutters.Current;
-            if (run != null && !run.Ready) return; // a new run is rolling its locks: hold still
+            if (run == null || !run.Ready) return;
             float target = IsDown ? 0f : 1f;
             if (Mathf.Approximately(shown, target)) return;
             // Snap on the first frame (a level loading mid-run), roll after that.

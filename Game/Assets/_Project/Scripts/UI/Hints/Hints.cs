@@ -49,6 +49,8 @@ namespace Abandoned.UI
                 HintId.Ghost => "You died. As a ghost you can watch your crew and see the threats, but the living can't hear you.",
                 HintId.Hunter => $"Something big is patrolling. If it sees you it charges: break line of sight, crouch ({crouch}) to hide, or sprint. It's heavy, and weak floors don't hold it.",
                 HintId.TruckLeaving => "The truck is leaving! Get in the bay before the honking stops, or you're left behind.",
+                HintId.LockedShutter => "A locked store. What's behind a shutter is worth more. Bolt cutters open it quietly; a crowbar opens it loudly (both from the HQ shop).",
+                HintId.Voicemail => "The answering machine is blinking: the boss left you a message.",
                 _ => "",
             };
         }

@@ -74,6 +74,7 @@ namespace Abandoned.UI
                 // HQ tips only where there's a board to read (the company lives on in every level).
                 CompanyService company = CompanyService.Current;
                 if (company == null || !company.IsSpawned || !AtHq()) return null;
+                if (Hints.Seen(HintId.HqBoard) && machine != null && machine.HasNew && Unseen(HintId.Voicemail) is HintId mail) return mail;
                 return company.Selected < 0 ? Unseen(HintId.HqBoard) : Unseen(HintId.HqVan);
             }
 
@@ -90,6 +91,7 @@ namespace Abandoned.UI
             var interactor = me.GetComponent<PlayerInteractor>();
             if (carrier != null && carrier.Inventory.Count > 0 && Unseen(HintId.Pockets) is HintId pockets) return pockets;
             if (carrier != null && carrier.Held != null && carrier.Held.Shared == null && !carrier.IsDragging && Unseen(HintId.Throw) is HintId toss) return toss;
+            if (interactor != null && interactor.UseTarget is RollerShutter shutter && shutter.IsDown && Unseen(HintId.LockedShutter) is HintId locked) return locked;
             if (interactor != null && interactor.Target != null)
             {
                 bool heavy = interactor.Target.Shared != null || interactor.Target.CarryClass >= CarryClass.Heavy;
@@ -102,6 +104,7 @@ namespace Abandoned.UI
         private static HintId? Unseen(HintId id) => Hints.Seen(id) ? null : id;
 
         private ContractBoard board;
+        private AnsweringMachine machine;
         private int boardScene = -1;
 
         private bool AtHq()
@@ -111,6 +114,7 @@ namespace Abandoned.UI
             {
                 boardScene = scene;
                 board = FindAnyObjectByType<ContractBoard>();
+                machine = FindAnyObjectByType<AnsweringMachine>();
             }
             return board != null;
         }
