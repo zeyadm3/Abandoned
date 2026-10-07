@@ -1138,3 +1138,21 @@
 }
 
 .crew-row__volume.unity-base-slider--horizontal .unity-base-slider__dragger-border { display: none; }
+
+/* ---- Settings tabs (UI step 5) ---- */
+
+.settings { height: 86%; }
+.tabs { margin-bottom: 8px; }
+.tab { margin-left: 0; margin-right: 6px; min-width: 120px; }
+.settings__body { flex-grow: 1; }
+
+.choice__value {
+    width: 240px;
+    font-size: 19px;
+    color: var(--c-text);
+    -unity-text-align: middle-center;
+}
+
+.choice__arrow { min-width: 40px; margin-left: 0; padding-left: 0; padding-right: 0; }
+
+.mic-meter { flex-grow: 1; height: 12px; margin-right: 80px; }

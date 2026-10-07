@@ -8,7 +8,7 @@ namespace Abandoned.Voice
     /// </summary>
     public static class VoiceSettings
     {
-        private const string ModeKey = "voice.mode", VolumeKey = "voice.volume", MuteKey = "voice.mute";
+        private const string ModeKey = "voice.mode", VolumeKey = "voice.volume", MuteKey = "voice.mute", DeviceKey = "voice.device";
 
         private static bool loaded;
         private static VoiceMode mode;
@@ -47,6 +47,16 @@ namespace Abandoned.Voice
 
         /// <summary>What a crewmate's voice is multiplied by on this machine (0 when muted).</summary>
         public static float PlayerGain(ulong clientId) => PlayerMuted(clientId) ? 0f : PlayerVolume(clientId);
+
+        /// <summary>
+        /// The microphone to use with the built-in voice (UI step 5); "" = the system default. Steam voice
+        /// always uses the system's default device. Applies the next time a game starts.
+        /// </summary>
+        public static string MicDevice
+        {
+            get => Application.isBatchMode ? "" : PlayerPrefs.GetString(DeviceKey, "");
+            set { if (!Application.isBatchMode) PlayerPrefs.SetString(DeviceKey, value ?? ""); }
+        }
 
         /// <summary>Never send our microphone.</summary>
         public static bool MicMuted

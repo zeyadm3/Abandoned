@@ -12,7 +12,16 @@ namespace Abandoned.Voice
         private const int BufferSeconds = 1;
         // A permission-denied or dead input delivers exact zeros; real rooms never do.
         private const float SilentInputSeconds = 2f;
-        private const string Default = null; // Unity: null = the system's default input device
+        // The chosen device if it's still plugged in, else null (Unity: the system's default input device).
+        private readonly string device = PickDevice();
+
+        private static string PickDevice()
+        {
+            string wanted = VoiceSettings.MicDevice;
+            if (string.IsNullOrEmpty(wanted)) return null;
+            foreach (string d in Microphone.devices) if (d == wanted) return d;
+            return null;
+        }
 
         private readonly AudioClip clip;
         private readonly int deviceRate;
@@ -34,11 +43,11 @@ namespace Abandoned.Voice
                 Problem = "No microphone found.";
                 return;
             }
-            Microphone.GetDeviceCaps(Default, out int min, out int max);
+            Microphone.GetDeviceCaps(device, out int min, out int max);
             // 0/0 means "any rate".
             deviceRate = max == 0 ? MuLawCodec.Rate : Mathf.Clamp(MuLawCodec.Rate, min, max);
             resampler = new MicResampler((double)deviceRate / MuLawCodec.Rate);
-            clip = Microphone.Start(Default, true, BufferSeconds, deviceRate);
+            clip = Microphone.Start(device, true, BufferSeconds, deviceRate);
             if (clip == null) Problem = "Couldn't open the microphone.";
         }
 
@@ -47,7 +56,7 @@ namespace Abandoned.Voice
             get => recording;
             set
             {
-                if (value && !recording && clip != null) readPosition = Microphone.GetPosition(Default);
+                if (value && !recording && clip != null) readPosition = Microphone.GetPosition(device);
                 recording = value;
             }
         }
@@ -55,7 +64,7 @@ namespace Abandoned.Voice
         public int ReadPacket(byte[] packet)
         {
             if (clip == null) return 0;
-            int position = Microphone.GetPosition(Default);
+            int position = Microphone.GetPosition(device);
             int available = (position - readPosition + clip.samples) % clip.samples;
             if (!recording)
             {
@@ -87,7 +96,7 @@ namespace Abandoned.Voice
 
         public void Dispose()
         {
-            if (clip != null) Microphone.End(Default);
+            if (clip != null) Microphone.End(device);
         }
     }
 }

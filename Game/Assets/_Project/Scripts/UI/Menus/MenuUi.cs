@@ -45,9 +45,29 @@ namespace Abandoned.UI
         public Font TitleFont => titleFont;
         public SubtitleView Subtitles => subtitles;
 
+        private PanelSettings scaledPanel;
+
+        // UI Scale (UI step 5): a runtime copy of the panel settings whose reference size shrinks as the UI grows,
+        // so the project's asset is never edited. Everything on this document (menus, HUD, screens) follows.
+        private void ApplyUiScale()
+        {
+            if (document == null || document.panelSettings == null) return;
+            if (scaledPanel == null)
+            {
+                scaledPanel = Instantiate(document.panelSettings);
+                scaledPanel.name = document.panelSettings.name + " (scaled)";
+                document.panelSettings = scaledPanel;
+            }
+            float s = GameSettings.UiScale;
+            var wanted = new Vector2Int(Mathf.RoundToInt(1920f / s), Mathf.RoundToInt(1080f / s));
+            if (scaledPanel.referenceResolution != wanted) scaledPanel.referenceResolution = wanted;
+        }
+
         private void OnEnable()
         {
             Current = this;
+            ApplyUiScale();
+            GameSettings.Changed += ApplyUiScale;
             VisualElement root = document.rootVisualElement;
             root.Clear();
             root.AddToClassList("menu-root");
@@ -82,6 +102,7 @@ namespace Abandoned.UI
 
         private void OnDisable()
         {
+            GameSettings.Changed -= ApplyUiScale;
             CursorOwner.Set(this, false);
             if (subtitles != null) SubtitleFeed.Heard -= subtitles.Add;
             if (Current == this) Current = null;

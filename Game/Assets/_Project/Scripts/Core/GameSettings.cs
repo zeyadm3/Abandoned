@@ -14,9 +14,10 @@ namespace Abandoned.Core
         public const float MinFov = 60f, MaxFov = 100f, DefaultFov = 75f;
 
         private const string SensitivityKey = "settings.sensitivity", FovKey = "settings.fov", BobKey = "settings.headbob",
-            ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind";
+            ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale";
+        public const float MinUiScale = 0.75f, MaxUiScale = 1.5f;
 
-        private static float? sensitivity, fov;
+        private static float? sensitivity, fov, uiScale;
         private static bool? headBob, shake, subtitles, colorblind;
 
         public static event Action Changed;
@@ -60,12 +61,19 @@ namespace Abandoned.Core
             set => Set(ref colorblind, ColorblindKey, value);
         }
 
+        /// <summary>How big the menus and HUD are (UI step 5): 1 = designed size at 1080p, scaled with the screen.</summary>
+        public static float UiScale
+        {
+            get => uiScale ??= Prefs.GetFloat(UiScaleKey, 1f);
+            set => Set(ref uiScale, UiScaleKey, Mathf.Clamp(value, MinUiScale, MaxUiScale));
+        }
+
         /// <summary>Back to defaults (tests; a "reset" button later).</summary>
         public static void ResetAll()
         {
-            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey }) Prefs.Delete(key);
+            foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey, UiScaleKey }) Prefs.Delete(key);
             Prefs.Save(); // a delete that isn't flushed can come back next launch
-            sensitivity = fov = null;
+            sensitivity = fov = uiScale = null;
             headBob = shake = subtitles = colorblind = null;
             Changed?.Invoke();
         }

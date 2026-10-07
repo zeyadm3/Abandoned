@@ -107,6 +107,26 @@ namespace Abandoned.UI
             Show(value);
         }
 
+        /// <summary>A labelled choice cycled with arrows (◀ value ▶), R.E.P.O.-style; <paramref name="commit"/> gets the new index.</summary>
+        public static void Choice(VisualElement parent, string label, string[] options, int index, Action<int> commit)
+        {
+            VisualElement row = Setting(parent, label, out Label shown);
+            shown.RemoveFromHierarchy();
+            if (options == null || options.Length == 0) return;
+            int current = Mathf.Clamp(index, 0, options.Length - 1);
+            var value = new Label(options[current]);
+            value.AddToClassList("choice__value");
+            void Step(int by)
+            {
+                current = (current + by + options.Length) % options.Length;
+                value.text = options[current];
+                commit(current);
+            }
+            Button(row, "\u25C0", () => Step(-1), SoundId.UiClick, small: true).AddToClassList("choice__arrow");
+            row.Add(value);
+            Button(row, "\u25B6", () => Step(1), SoundId.UiClick, small: true).AddToClassList("choice__arrow");
+        }
+
         public static void Toggle(VisualElement parent, string label, bool value, Action<bool> commit) =>
             Switch(parent, label, value, "On", "Off", commit);
 
