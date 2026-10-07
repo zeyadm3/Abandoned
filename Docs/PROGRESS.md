@@ -4,6 +4,12 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.12.3b (2026-10-08)
+
+Same content as 0.12.3 (the user's HQ edits + the garage door), rebuilt with the editor closed. Builds stamped
+**0.12.3b**, commit **49e090e** (clean): `~/Documents/Abandoned-builds/dev/Abandoned-0.12.3b-49e090e-Mac.zip` (53 MB)
+and `Abandoned-0.12.3b-49e090e-Windows.zip` (44 MB). Not tested (user tests).
+
 ## 0.12.3 (2026-10-08)
 
 Version bump over 0.12.2 plus the HQ garage door (4a730c5) and the user's own HQ scene edits, committed
