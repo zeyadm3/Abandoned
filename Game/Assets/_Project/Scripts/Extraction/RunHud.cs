@@ -11,8 +11,12 @@ namespace Abandoned.Extraction
     /// </summary>
     public class RunHud : MonoBehaviour
     {
+        private static readonly Color GainColor = new(0.5f, 1f, 0.5f);
+
         private VisualElement top;
         private Label haul, cargo, window, leaving, died;
+        private RunState shownRun;
+        private int shownHaul;
 
         private void Update()
         {
@@ -32,6 +36,7 @@ namespace Abandoned.Extraction
             }
 
             RunNetState s = run.State;
+            HaulGain(run, s.Haul);
             SetText(haul, $"HAUL ${s.Haul:N0} / ${s.Quota:N0}");
             haul.EnableInClassList("hud-chip--good", s.Haul >= s.Quota);
             SetText(cargo, s.Overloaded ? $"CARGO {s.CargoVolume:0.0}/{s.CargoCapacity:0} M3 - OVERLOADED" : $"CARGO {s.CargoVolume:0.0}/{s.CargoCapacity:0} M3");
@@ -45,6 +50,24 @@ namespace Abandoned.Extraction
             if (honking) SetText(leaving, $"TRUCK LEAVES IN {Mathf.CeilToInt(run.HonkRemaining)} - GET IN!");
             Networking.NetworkPlayer me = Networking.NetworkPlayer.Local;
             MenuKit.Show(died, me != null && me.IsDead);
+        }
+
+        // Loot landing in the truck: "+$X" over the cargo bay and the till (every machine).
+        private void HaulGain(RunState run, int haulNow)
+        {
+            if (run != shownRun)
+            {
+                shownRun = run;
+                shownHaul = haulNow;
+                return;
+            }
+            if (haulNow > shownHaul && TruckCargo.Current != null)
+            {
+                Vector3 at = TruckCargo.Current.transform.position + Vector3.up * 2.6f;
+                FloatingText.Show(at, $"+${haulNow - shownHaul:N0}", GainColor);
+                Audio.GameAudio.Play(Audio.SoundId.Coins, at, 0.6f);
+            }
+            shownHaul = haulNow;
         }
 
         private void Build()

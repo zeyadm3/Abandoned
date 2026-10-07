@@ -20,7 +20,6 @@ namespace Abandoned.UI
 
         private HintView view;
         private float nextCheck;
-        private readonly RaycastHit[] hits = new RaycastHit[4];
 
         /// <summary>Tests: the tip on screen now.</summary>
         public HintId? Showing => view?.Showing;
@@ -115,16 +114,10 @@ namespace Abandoned.UI
             return board != null;
         }
 
-        private bool OnCrackingFloor(Vector3 feet)
+        private static bool OnCrackingFloor(Vector3 feet)
         {
-            int mask = 1 << Mathf.Max(0, GameLayers.StructureLayer);
-            int count = Physics.RaycastNonAlloc(feet + Vector3.up * 0.3f, Vector3.down, hits, 1.5f, mask, QueryTriggerInteraction.Ignore);
-            for (int i = 0; i < count; i++)
-            {
-                StructuralSection s = hits[i].collider.GetComponentInParent<StructuralSection>();
-                if (s != null && s.Stage >= StructuralStage.Cracking && s.Stage != StructuralStage.Collapsed) return true;
-            }
-            return false;
+            StructuralSection s = SectionQuery.Under(feet);
+            return s != null && s.Stage >= StructuralStage.Cracking;
         }
 
         private static bool ThreatNear<T>(NetworkPlayer me) where T : Threat
