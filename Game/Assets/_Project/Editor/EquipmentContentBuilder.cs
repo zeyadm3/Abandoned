@@ -31,6 +31,8 @@ namespace Abandoned.EditorTools
                 // M10 (append only)
                 Item("flatbed", "Flatbed Trolley", "A flatbed and a fold-out ramp: a short crew, or one stubborn person, can drag Huge items (slowly). Works as a hand trolley too.",
                     EquipmentKind.Flatbed, 2000, 3, false, new Color(0.25f, 0.45f, 0.75f)),
+                Item("rope_pulley", "Rope & Pulley", "Rig it over a hole in the floor (use, facing the hole): loot dropped down it and crewmates climbing down come down gently. Lasts the job.",
+                    EquipmentKind.RopePulley, 600, 2, true, new Color(0.75f, 0.6f, 0.35f)),
             };
             CreateNoiseMaker();
             CreateSupportJack();
@@ -42,6 +44,39 @@ namespace Abandoned.EditorTools
         }
 
         public const string SupportJackPrefabPath = "Assets/_Project/Prefabs/Equipment/SupportJack.prefab";
+        public const string PulleyPrefabPath = "Assets/_Project/Prefabs/Equipment/Pulley.prefab";
+
+        /// <summary>The rope and pulley (M10.3): a tripod over the hole and a rope that stretches to the floor below. Created when missing.</summary>
+        public static GameObject CreatePulley()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(PulleyPrefabPath);
+            if (existing != null && existing.GetComponent<Pulley>() != null) return existing;
+            if (!AssetDatabase.IsValidFolder("Assets/_Project/Prefabs/Equipment")) AssetDatabase.CreateFolder("Assets/_Project/Prefabs", "Equipment");
+            var root = new GameObject("Pulley");
+            root.AddComponent<Unity.Netcode.NetworkObject>().DontDestroyWithOwner = true;
+            Material wood = GreyboxFactory.GetMaterial("Greybox_PulleyFrame", new Color(0.55f, 0.4f, 0.22f));
+            Material hemp = GreyboxFactory.GetMaterial("Greybox_Rope", new Color(0.78f, 0.68f, 0.45f));
+            Material steel = GreyboxFactory.GetMaterial("Greybox_PulleyWheel", new Color(0.35f, 0.36f, 0.4f));
+            // Tripod legs: three poles leaning in to an apex 1.8 m up over the hole.
+            for (int i = 0; i < 3; i++)
+            {
+                float a = i * 120f * Mathf.Deg2Rad;
+                Vector3 foot = new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * 1.3f;
+                Vector3 apex = Vector3.up * 1.8f;
+                GameObject leg = GreyboxFactory.Primitive(PrimitiveType.Cylinder, "Leg", root.transform, (foot + apex) / 2f,
+                    new Vector3(0.07f, Vector3.Distance(foot, apex) / 2f, 0.07f), wood, withCollider: false);
+                leg.transform.localRotation = Quaternion.FromToRotation(Vector3.up, apex - foot);
+            }
+            GreyboxFactory.Primitive(PrimitiveType.Cylinder, "Wheel", root.transform, Vector3.up * 1.75f, new Vector3(0.3f, 0.04f, 0.3f), steel, withCollider: false)
+                .transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            GameObject rope = GreyboxFactory.Primitive(PrimitiveType.Cylinder, "Rope", root.transform, Vector3.zero, new Vector3(0.04f, 1f, 0.04f), hemp, withCollider: false);
+            var pulley = root.AddComponent<Pulley>();
+            pulley.EditorSetup(rope.transform);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PulleyPrefabPath);
+            Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
+            return prefab;
+        }
 
         /// <summary>The support jack post (M9.4): host-placed, static; the post stretches to fit. Created when missing.</summary>
         public static GameObject CreateSupportJack()

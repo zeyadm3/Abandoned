@@ -16,5 +16,6 @@ namespace Abandoned.Equipment
         Crowbar,
         // M10 (append only)
         Flatbed,
+        RopePulley,
     }
 }

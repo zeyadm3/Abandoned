@@ -28,6 +28,7 @@ namespace Abandoned.Equipment
         [SerializeField] private NetworkObject plankPrefab;
         [SerializeField] private NetworkObject noiseMakerPrefab;
         [SerializeField] private NetworkObject supportJackPrefab;
+        [SerializeField] private NetworkObject pulleyPrefab;
         [Tooltip("Pocket slots a backpack adds.")]
         [SerializeField, Range(0, 6)] private int backpackSlots = 2;
         [Tooltip("Crowbar: reach (m), strike momentum (kg·m/s, before the structure's threshold) and seconds between strikes.")]
@@ -211,6 +212,7 @@ namespace Abandoned.Equipment
                 EquipmentKind.Planks => LayPlanks(),
                 EquipmentKind.NoiseMaker => Throw(),
                 EquipmentKind.SupportJack => PlaceJack(),
+                EquipmentKind.RopePulley => RigPulley(),
                 _ => false,
             };
             if (used) ServerConsume(slot);
@@ -234,6 +236,23 @@ namespace Abandoned.Equipment
                 return false;
             }
             return Spawn(plankPrefab, at, rotation) != null;
+        }
+
+        // Host (M10.3): rig a rope and pulley over the hole in front of you.
+        private bool RigPulley()
+        {
+            Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+            if (pulleyPrefab == null || !Pulley.FindHole(transform.position, forward, 3.2f, wallMask, out Vector3 at, out float drop))
+            {
+                HintRpc("Face a hole in the floor (a drop of 2 m or more) to rig the pulley");
+                return false;
+            }
+            NetworkObject rig = Spawn(pulleyPrefab, at, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
+            if (rig == null) return false;
+            rig.GetComponent<Pulley>().Rig(drop);
+            SoundRpc(Audio.SoundId.JackPlaced, at + Vector3.up);
+            Debug.Log($"[Gear] Player {OwnerClientId} rigged a pulley over a {drop:0.0} m drop.");
+            return true;
         }
 
         // Host (M9.4): brace the floor you're standing on from below: the post runs down to whatever is under it.

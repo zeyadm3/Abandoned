@@ -1,4 +1,5 @@
 using System;
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -116,9 +117,14 @@ namespace Abandoned.Player
             stamina.Tick(dt);
 
             Vector3 before = transform.position;
+            // A rope rigged over a hole (M10.3): you slide down it, and the drop doesn't count as a fall.
+            float rope = SafeDescent.SpeedAt(before);
+            bool onRope = rope > 0f && !IsGrounded && verticalVelocity < -rope;
+            if (onRope) verticalVelocity = -rope;
             float fallSpeed = -verticalVelocity;
             CollisionFlags flags = controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
             TrackFall(before.y, fallSpeed);
+            if (onRope && airborne) airPeakY = transform.position.y;
 
             // Feed back what actually happened so speed doesn't build up against walls or ceilings.
             // Computed from our own dt rather than controller.velocity, which uses Time.deltaTime.
