@@ -214,4 +214,17 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     Heavy drags, radios) apply only in games started at the HQ. Gear = EquipmentDefinition assets in an
     ordered catalog; 2 hand slots per player. Ghosts orbit living teammates and aren't heard by the living.
     Threat roster per level (Blind One, Stalker, Collector), weighted by run seed.
+  - M7.1-7.3: art/audio are Kenney CC0 packs (furniture, car, impact/interface/RPG sounds, fonts) under
+    Art/ThirdParty/Kenney/<Pack>/, listed in Docs/ASSET_CREDITS.md (the credits screen is generated from it).
+    Loot models live on LootDefinition.Model (the Size box stays the collider). Lighting is realtime only
+    (no bake: power-off runs and collapses): ceiling LightFixtures hang from the slab above (SectionProp) and
+    follow power; fog + a global volume per level (LevelAtmosphere). All sound goes through GameAudio +
+    SoundBank (data); cues without clips play the synthesised signatures.
+  - M7.4: menus are UI Toolkit built in C# (MenuUi on the session object; no package). Player settings,
+    bindings and the cosmetic profile go through Core.Prefs (PlayerPrefs, memory in batch mode).
+  - M7.5: cosmetics are CosmeticDefinition data in an append-only catalog (byte index on the wire), the
+    owner writes its outfit; unlocks are local (PlayerProfile), not the host's company save.
+  - M7.6: occlusion baked for the mall, but only never-breaking geometry occludes (floors carry no static
+    flags). Sun shadows 2 cascades / 35 m (RenderPipelineSetup in the rebuild). `nettest perf` and the F1 perf
+    line are the performance probes.
 

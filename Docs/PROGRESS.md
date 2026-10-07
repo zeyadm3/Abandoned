@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7.6): compile clean; verify ALL PASS; EditMode 214/214; PlayMode 236/236;
-  nettest perf 4/4 (M7.5 basic/company; M7.4a robust; M7.3 loot/run; M6 review: all nine 4/4).
+- Last verified (M7 review): compile clean; verify ALL PASS; EditMode 214/214; PlayMode 237/237;
+  all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -20,18 +20,16 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M5 done** (tag `milestone-5`, review fixed): greybox mall, seeded loot, runs + truck + appraisal, Blind One, danger (Docs/progress/M5.md).
 - **M6 done** (tag `milestone-6`, review fixed): persistent session + travel, HQ, save, contracts, payday/debt/bankruptcy, shop + gear, Stalker + Collector, ghosts (Docs/progress/M6.md).
 
-- **M7 in progress** (version 0.7.0; Docs/progress/M7.md): 7.1 art pass done (Kenney CC0 loot models,
-  mall set dressing, vehicles; credits in Docs/ASSET_CREDITS.md). 7.2 lighting done (realtime fixtures that
-  fall with their ceiling and go dark with the power, fog, post-processing, dust, skylight shaft,
-  flashlight shadows). 7.3 audio done (Kenney CC0 sound bank, pooled playback, synthesised ambience). 7.4a menus done (UI Toolkit:
-  main menu, pause menu with crew/invites, sound+voice settings, credits). 7.4b settings done (sensitivity,
-  FOV, bob/shake, subtitles, colourblind scanner). 7.4c key rebinding done. 7.5 cosmetics done
-  (coveralls + hats, HQ lockers, unlocked by playing). 7.6 performance done (F1 perf line, nettest perf,
-  occlusion bake, shadow budget).
+- **M7 done** (tag `milestone-7`, review fixed; Docs/progress/M7.md): 7.1 Kenney CC0 art (loot models, store
+  props, vehicles), 7.2 realtime lighting (fixtures that fall with their ceiling and follow power, fog,
+  post, dust, skylight shaft, flashlight shadows), 7.3 audio (CC0 sound bank, pooled playback, ambience,
+  subtitles feed), 7.4 menus (main/pause/crew/settings/keys/credits), 7.5 cosmetics (coveralls + hats,
+  HQ wardrobe), 7.6 performance (F1 perf line, nettest perf, occlusion, shadow budget).
 
 ## Next
--> M7 review (read the whole M7 diff for bugs, fix), then tag milestone-7 and the Mac + Windows builds.
-Then M8 demo.
+M7 done (tag `milestone-7`; builds in ~/Documents/Abandoned-builds/dev/).
+-> M8 demo (PLAYBOOK): mall-only, polished, 30-60 min of content for Steam Next Fest. Start by bumping
+the version to 0.8.0 and planning the M8 tasks in Docs/progress/M8.md.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
