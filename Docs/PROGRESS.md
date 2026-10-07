@@ -4,6 +4,17 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.12.3 (2026-10-08)
+
+Version bump over 0.12.2 plus the HQ garage door (4a730c5) and the user's own HQ scene edits, committed
+as made in the editor: all seven ceiling tubes brightened (intensity 30-50, was 1.4-6.5), the
+"ASHLINE / DISPATCH", "TAKE ONLY WHAT YOU CAN CARRY" and "ASHLINE SUPPLY" labels moved, four pillars
+moved, and the "NO CREW LEFT BEHIND" label, the yard door lamp and the EXIT sign removed. The garage door
+stays at its default (closing the garage opening). **These hand edits live only in Scenes/HQ.unity:
+`Tools/unity.sh rebuild-horror` (or Create HQ) regenerates the HQ and would drop them.** Port them into
+HqDressingBuilder/HqBuilder before the next HQ rebuild. No builds yet (the editor was open): close Unity,
+then `Tools/unity.sh build`.
+
 ## Fix pass — 0.12.2 (2026-10-08)
 
 Fixes the five problems from the 0.12.1 play test. Per the user: no gameplay, EditMode/PlayMode/nettests
