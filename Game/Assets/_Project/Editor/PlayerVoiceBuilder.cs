@@ -97,6 +97,15 @@ namespace Abandoned.EditorTools
             var scanner = root.AddComponent<Abandoned.Equipment.StressScannerHud>();
             Set(scanner, "equipment", equipment);
             Set(scanner, "eye", cameraRoot);
+            // Detection gear (M10.5): owner-only readouts and effects.
+            var motion = root.AddComponent<Abandoned.Equipment.MotionDetectorHud>();
+            Set(motion, "equipment", equipment);
+            Set(motion, "eye", cameraRoot);
+            var goggles = root.AddComponent<Abandoned.Equipment.NightVisionGoggles>();
+            Set(goggles, "equipment", equipment);
+            Set(goggles, "inputReader", reader);
+            Set(goggles, "carrier", root.GetComponent<Abandoned.Interaction.PlayerCarrier>());
+            Set(goggles, "eye", cameraRoot);
             return new Result(transmitter, hud);
         }
     }

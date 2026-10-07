@@ -18,5 +18,7 @@ namespace Abandoned.Equipment
         Flatbed,
         RopePulley,
         BoltCutters,
+        MotionDetector,
+        NightVision,
     }
 }

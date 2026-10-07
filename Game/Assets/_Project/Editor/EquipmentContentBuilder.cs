@@ -35,6 +35,10 @@ namespace Abandoned.EditorTools
                     EquipmentKind.RopePulley, 600, 2, true, new Color(0.75f, 0.6f, 0.35f)),
                 Item("bolt_cutters", "Bolt Cutters", "Cuts the padlock on a store's shutter (E on the shutter), quietly. A crowbar gets you in too, loudly.",
                     EquipmentKind.BoltCutters, 1500, 2, false, new Color(0.8f, 0.2f, 0.2f)),
+                Item("motion_detector", "Motion Detector", "In hand: pings anything moving within 22 m, and which way it is. The Stalker hates it.",
+                    EquipmentKind.MotionDetector, 3500, 4, false, new Color(0.3f, 0.85f, 0.4f)),
+                Item("night_vision", "Night Vision", "In hand, use to switch on: see in the dark for two minutes of battery (it recharges while off).",
+                    EquipmentKind.NightVision, 6000, 6, false, new Color(0.35f, 0.75f, 0.3f)),
             };
             CreateNoiseMaker();
             CreateSupportJack();
