@@ -85,6 +85,15 @@ namespace Abandoned.EditorTools
             new("Stairs_12", 1, 12, 9, Vector2Int.up, false),
         };
 
+        /// <summary>
+        /// The flooded level's own service flight. It surfaces in the loading bay one column west of
+        /// Stairs_G1 so neither flight's head or foot sits under the other.
+        /// </summary>
+        public static readonly Flight BasementFlight = new("BasementServiceStairs", -1, 12, 7, Vector2Int.up, false);
+
+        /// <summary>Every flight, the basement's included, for checks that don't care which floor group built it.</summary>
+        public static IEnumerable<Flight> AllFlights => Flights.Append(BasementFlight);
+
         public static readonly Zone[][] ZonesByFloor =
         {
             new[]
@@ -147,8 +156,7 @@ namespace Abandoned.EditorTools
         /// </summary>
         public static bool IsFlightOpening(Vector2Int a, Vector2Int b, int floor)
         {
-            if (floor == 0 && ((a == new Vector2Int(13,9) && b == new Vector2Int(13,10)) || (b == new Vector2Int(13,9) && a == new Vector2Int(13,10)))) return true;
-            foreach (Flight f in Flights)
+            foreach (Flight f in AllFlights)
             {
                 Vector2Int foot = f.Start - f.Dir, head = f.Start + f.Dir * 2, top = f.Start + f.Dir;
                 if (f.Floor == floor && Matches(a, b, foot, f.Start)) return true;
@@ -168,7 +176,7 @@ namespace Abandoned.EditorTools
         /// <summary>No floor here: the atrium above the ground, and where a flight climbs through.</summary>
         public static bool IsVoid(Vector2Int c, int floor)
         {
-            if (floor == 0) return c.x == 13 && (c.y == 8 || c.y == 9);
+            if (floor == 0) return BasementFlight.Tiles.Contains(c);
             // The ruined gallery leaves a visible wound while its south carry lane survives.
             if (floor == 2 && c.y >= 10 && c.x >= 7 && c.x <= 9) return true;
             if (Atrium.Contains(c) && !IsBridge(c, floor)) return true;

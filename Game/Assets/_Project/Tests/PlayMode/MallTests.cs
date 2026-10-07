@@ -71,14 +71,15 @@ namespace Abandoned.Tests
         [Test]
         public void ClimbsBothServiceFlights()
         {
-            rig.Teleport(new Vector3(46f, 0.05f, 38f));
+            // Stairs_G1 climbs south from the loading bay (x 54, z 44 -> 36); Stairs_12 north beside it (x 50, z 36 -> 44).
+            rig.Teleport(new Vector3(54f, 0.05f, 46f));
             rig.Settle();
-            float t = rig.RunUntil(Frame(Vector2.down), () => rig.Player.transform.position.y > 3.8f && rig.Player.transform.position.z < 28f, 8f);
+            float t = rig.RunUntil(Frame(Vector2.down), () => rig.Player.transform.position.y > 3.8f && rig.Player.transform.position.z < 36f, 8f);
             Assert.GreaterOrEqual(t, 0f, $"first flight: stuck at {rig.Player.transform.position}");
 
-            rig.Teleport(new Vector3(42f, 4.05f, 26f));
+            rig.Teleport(new Vector3(50f, 4.05f, 34f));
             rig.Settle();
-            t = rig.RunUntil(Frame(Vector2.up), () => rig.Player.transform.position.y > 7.8f && rig.Player.transform.position.z > 36f, 8f);
+            t = rig.RunUntil(Frame(Vector2.up), () => rig.Player.transform.position.y > 7.8f && rig.Player.transform.position.z > 44f, 8f);
             Assert.GreaterOrEqual(t, 0f, $"second flight: stuck at {rig.Player.transform.position}");
         }
 

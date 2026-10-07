@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3845084524441201186
+--- !u!1 &3698137555737497366
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 401509220934784130}
+  - component: {fileID: 6618813405292927080}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -16,20 +16,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &401509220934784130
+--- !u!4 &6618813405292927080
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3845084524441201186}
+  m_GameObject: {fileID: 3698137555737497366}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 511915067853912336}
+  - {fileID: 5851062028007948456}
   m_Father: {fileID: 4531252985599309574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6363861277603253015
@@ -46,8 +46,8 @@ GameObject:
   - component: {fileID: 4344126812984709020}
   - component: {fileID: 6855541990892065754}
   - component: {fileID: 2475126909542517239}
-  - component: {fileID: 105406073036042353}
-  - component: {fileID: 8091255476367043288}
+  - component: {fileID: 2956558325498923796}
+  - component: {fileID: 4337375410706958578}
   m_Layer: 0
   m_Name: BlindOne
   m_TagString: Untagged
@@ -68,7 +68,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 401509220934784130}
+  - {fileID: 6618813405292927080}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7875849393837896326
@@ -204,7 +204,7 @@ CapsuleCollider:
   m_Height: 2.4
   m_Direction: 1
   m_Center: {x: 0, y: 1.2, z: 0}
---- !u!114 &105406073036042353
+--- !u!114 &2956558325498923796
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -217,8 +217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 5907206339551552362}
---- !u!114 &8091255476367043288
+  animator: {fileID: 563804542648261330}
+--- !u!114 &4337375410706958578
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,13 +230,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5284b08e2ae44303a72982ce7e1e546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatHorrorAudio
---- !u!1001 &40542806575898363
+--- !u!1001 &6249198132262709059
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 401509220934784130}
+    m_TransformParent: {fileID: 6618813405292927080}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -291,13 +291,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
---- !u!4 &511915067853912336 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
-  m_PrefabInstance: {fileID: 40542806575898363}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &5907206339551552362 stripped
+--- !u!95 &563804542648261330 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
-  m_PrefabInstance: {fileID: 40542806575898363}
+  m_PrefabInstance: {fileID: 6249198132262709059}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5851062028007948456 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7d1909634449e4c569adf7d4cbd2a33a, type: 3}
+  m_PrefabInstance: {fileID: 6249198132262709059}
   m_PrefabAsset: {fileID: 0}

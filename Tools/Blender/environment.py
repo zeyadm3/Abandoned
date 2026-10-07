@@ -48,7 +48,9 @@ for key, color in PALETTE.items():
     MATS[key] = mat
 
 OBJECTS = []
-def xyz(p): return (p[0], -p[2], p[1])
+# Unity (x, y, z) -> Blender (x, z, y). The FBX export (forward -Z, up Y) plus Unity's import bring Blender +Y
+# back as Unity +Z, so authored Unity coordinates survive the round trip unmirrored (flights climb +Z).
+def xyz(p): return (p[0], p[2], p[1])
 def material(obj, key): obj.data.materials.append(MATS[key]); OBJECTS.append(obj); return obj
 def box(name, p, s, key='Concrete', bevel=.012, rot=0):
     bpy.ops.mesh.primitive_cube_add(size=1, location=xyz(p))
@@ -90,8 +92,8 @@ def irregular(name,p,s,key,seed):
     return mesh(name,verts,[(0,i+1,(i+1)%18+1) for i in range(18)],key)
 def letters(text,p,size,key='Chalk'):
     bpy.ops.object.text_add(location=xyz(p)); obj=bpy.context.object;obj.name='Inscription'
-    # Blender text lies in XY; turn its front toward Unity +Z.
-    obj.rotation_euler=(math.pi/2,0,0);obj.data.body=text;obj.data.size=size;obj.data.align_x='CENTER';obj.data.align_y='CENTER';obj.data.extrude=.001
+    # Blender text lies in XY, read from +Z: stand it up (X 90), then face Blender +Y = Unity +Z (Z 180).
+    obj.rotation_euler=(math.pi/2,0,math.pi);obj.data.body=text;obj.data.size=size;obj.data.align_x='CENTER';obj.data.align_y='CENTER';obj.data.extrude=.001
     bpy.ops.object.convert(target='MESH');return material(bpy.context.object,key)
 def begin():
     global OBJECTS
@@ -104,7 +106,8 @@ def export(name):
     bpy.ops.object.join();obj=bpy.context.object;obj.name=name
     bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
     bpy.context.scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-    bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(angle_limit=1.15,island_margin=.02);bpy.ops.object.mode_set(mode='OBJECT')
+    # Hand-built meshes (rings, fans, lettering) must face outward like the primitives do.
+    bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.uv.smart_project(angle_limit=1.15,island_margin=.02);bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.export_scene.fbx(filepath=os.path.join(OUT,name+'.fbx'),use_selection=True,object_types={'MESH'},axis_forward='-Z',axis_up='Y',apply_unit_scale=True,bake_space_transform=True,use_mesh_modifiers=True,mesh_smooth_type='FACE',add_leaf_bones=False,path_mode='RELATIVE',bake_anim=False)
     print('EXPORTED '+name)
 

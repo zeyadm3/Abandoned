@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
                 CustomMallArt.Place("FloorConcrete", tile, Vector3.zero, Quaternion.identity, new Vector3(1f, .3f / .18f, 1f));
                 tile.GetChild(0).name = "Visual";
                 tile.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-                if ((x+z)%3==0 && !(x==13 && z>=8 && z<=10))
+                if ((x+z)%3==0 && !OnFlightLane(new Vector2Int(x,z)))
                 {
                     var point = new GameObject("FloodedLootPoint");
                     point.transform.SetParent(basement,false);
@@ -51,7 +51,7 @@ namespace Abandoned.EditorTools
                 CustomMallArt.Place("WallSolid", basement, new Vector3(x * 4f + 2f, -4f, 24f), Quaternion.identity, new Vector3(1f, 4f / 3.82f, 1.5f));
                 CustomMallArt.Place("WallSolid", basement, new Vector3(x * 4f + 2f, -4f, 48f), Quaternion.identity, new Vector3(1f, 4f / 3.82f, 1.5f));
             }
-            MallFlights.Build(new MallLayout.Flight("BasementServiceStairs",-1,13,8,Vector2Int.up,false),basement,concrete,concrete);
+            MallFlights.Build(MallLayout.BasementFlight,basement);
             for (int z=7;z<=11;z+=2)
             {
                 CustomMallArt.Place("pillar",basement,new Vector3(46,-4,z*4),Quaternion.identity);
@@ -69,10 +69,17 @@ namespace Abandoned.EditorTools
             spawn.transform.position=new Vector3(43,-4,45); spawn.AddComponent<Abandoned.Threats.ThreatSpawnPoint>();
         }
 
+        // Loot never spawns on the flight or the tile you step off it onto.
+        private static bool OnFlightLane(Vector2Int c)
+        {
+            MallLayout.Flight f = MallLayout.BasementFlight;
+            return c == f.Start - f.Dir || System.Linq.Enumerable.Contains(f.Tiles, c);
+        }
+
         public static void AddStructure(Transform mall,StructureSceneSetup setup)
         {
             foreach(Transform tile in mall.Find("Basement/Tiles")) setup.AddSection(tile,SectionType.Floor,false);
-            setup.AddSection(mall.Find("Basement/BasementServiceStairs"),SectionType.Stair,false,fractured:false);
+            setup.AddSection(mall.Find($"Basement/{MallLayout.BasementFlight.Name}"),SectionType.Stair,false,fractured:false);
         }
     }
 }

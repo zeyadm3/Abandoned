@@ -47,10 +47,9 @@ namespace Abandoned.EditorTools
             root.gameObject.AddComponent<BuildingInteriorAtmosphere>().EditorSetup(new Bounds(new Vector3(28f, 4f, 24f), new Vector3(56f, 16f, 48f)));
 
             int tiles = BuildTiles(Group(TilesGroup, root));
-            Material steps = PolishAssets.Material("Mall_Stairs", new Color(0.43f, 0.4f, 0.32f));
             Material sides = PolishAssets.Material("Mall_Railing", new Color(0.25f, 0.29f, 0.29f), 0.65f);
             Transform flights = Group(FlightsGroup, root);
-            foreach (Flight f in Flights) MallFlights.Build(f, flights, steps, sides);
+            foreach (Flight f in Flights) MallFlights.Build(f, flights);
 
             Material wall = PolishAssets.Material("Mall_PaintedPlaster", new Color(0.32f, 0.34f, 0.30f), texture: PolishAssets.Texture("PlasterAge"));
             Material frame = PolishAssets.Material("Mall_DoorTrim", new Color(0.35f, 0.4f, 0.39f));
@@ -72,7 +71,8 @@ namespace Abandoned.EditorTools
             MallMysteryBuilder.Place(root);
             BakeNavMesh(root);
             int shutters = MallShutters.Place(root); // after the bake: runtime obstacles, not walls
-            // The rebuild log is the report: invisible walls.
+            // The rebuild log is the report: stairs a player or monster can't take, invisible walls.
+            MallFlightValidator.Run(root);
             InvisibleColliderAudit.Run(root, "Mall");
 
             EditorSceneManager.SaveScene(scene, ScenePath);

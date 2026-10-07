@@ -81,7 +81,7 @@ namespace Abandoned.EditorTools
         // A flight is narrower than the 4 m edge it opens onto: rail off what's left on either side.
         private static int FlightSideRails(Transform parent, Vector2Int a, Vector2Int b, int floor, float y, Material material)
         {
-            float width = Flights.Where(f => f.Tiles.Contains(a) || f.Tiles.Contains(b) || f.Start - f.Dir == a || f.Start - f.Dir == b)
+            float width = AllFlights.Where(f => f.Tiles.Contains(a) || f.Tiles.Contains(b) || f.Start - f.Dir == a || f.Start - f.Dir == b)
                 .Select(MallFlights.WidthOf).DefaultIfEmpty(Tile).Max();
             float side = (Tile - width) / 2f;
             if (side <= 0.05f) return 0;
