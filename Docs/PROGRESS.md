@@ -30,6 +30,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   first-time tips + How to play, Demo build flavour (`Tools/unity.sh build-demo`: 5 jobs, own save, end
   screen with wishlist), floor warnings + truck pop-ups, the bridge piano jackpot, `nettest soak`, F10 clip mode.
 
+- **M10 done** (tag `milestone-10`; Docs/progress/M10.md): Early Access content + launch kit (see Next). UNTESTED.
 - **M9 done** (tag `milestone-9`, review fixed; Docs/progress/M9.md): the Hunter, 8 modifiers, 57 loot items,
   crowbar/backpack/support jack, 12 achievements, Steam Cloud (Auto-Cloud). Review fixes untested (user brief).
 
@@ -43,7 +44,11 @@ M8 done (tag `milestone-8`; `build` + `build-demo` zips in ~/Documents/Abandoned
 9.2 modifiers (8) done, 9.3 loot table (57 items) done, 9.4 gear (crowbar, backpack, support jack) done, 9.5 achievements (12, local + Steam hand-off) done,
 9.6 Steam Cloud (Auto-Cloud; Docs/STEAM_SETUP.md) done. M9 review fixed (compile clean; per the user's 2026-10-07
 brief no tests/nettests were run from here on), tag `milestone-9`, `build` + `build-demo`.
--> M10 Early Access (Docs/progress/M10.md; version 0.10.0). **User brief 2026-10-07: finish every milestone,
+-> M10 Early Access (Docs/progress/M10.md; version 0.10.0): 10.1 truck upgrades, 10.2 flatbed trolley, 10.3 rope & pulley,
+10.4 locked stores + Sealed/Hot Property/Condemned, 10.5 motion detector + night vision, 10.6 cosmetics (15 hats, accessories),
+10.7 the boss's voicemails, 10.8 music, 10.9 balance (Docs/BALANCE.md), 10.10 bug sweep, 10.11 launch kit (F9 free camera,
+links, build-release, Docs/STORE_PAGE.md, TRAILER.md, LAUNCH.md). All done (compile clean, untested); tag `milestone-10`,
+`build` + `build-demo`. **All milestones (M0-M10) are built.** Next: the user's full test pass, then Docs/LAUNCH.md. **User brief 2026-10-07: finish every milestone,
 do NOT test (no EditMode/PlayMode/nettest/screenshots); the user tests everything once the game is complete.**
 Compile + rebuild + builds only; everything from M9-review onward is untested.
 
@@ -110,6 +115,17 @@ Compile + rebuild + builds only; everything from M9-review onward is untested.
 - [ ] Trailer capture (M8.7): F10 hides the HUD (tips and captions too) for clean shots; F10 again brings it
       back. Tell me if you want a free-flying camera for the host as well.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
+- [ ] **Full test pass of M9 review + M10 (nothing since M9.6 has been run)**: first `Tools/unity.sh all` (some tests were
+      updated to the new economy without running them) and the nettests; then play: the shop's THE TRUCK section (bay,
+      floodlights, engine, armor), flatbed with the piano, rope & pulley over a collapsed hole (loot and people come down
+      slowly), locked stores (E with bolt cutters / crowbar; Sealed job), motion detector + night vision, wardrobe
+      accessories, the HQ answering machine, music + Music slider, payday running costs, crew-size quota on the board,
+      F9 free camera, menu links (Open logs).
+- [ ] Clean-up I wasn't allowed to do: delete `Game/Assets/InitTestScene84712879-...unity(.meta)` (an aborted test run's
+      scene) and `Game/Assets/Resources/PerformanceTestRunInfo.json`/`Settings.json` (+ the Resources folder): leftovers
+      that mark every build "-dirty". Then rebuild the zips (`Tools/unity.sh build` and `build-demo`).
+- [ ] Early Access launch: Docs/LAUNCH.md (App ID, store page from Docs/STORE_PAGE.md, trailer per Docs/TRAILER.md,
+      Discord + feedback links in Data/Core/Resources/LaunchConfig, `build-release`, launch discount).
 
 ## Committing
 Stage `Docs`, `Tools`, `CLAUDE.md`, `Game/Assets/_Project` AND `Game/Assets/DefaultNetworkPrefabs.asset`

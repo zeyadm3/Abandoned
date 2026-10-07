@@ -231,3 +231,13 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     menus and in F10 clip mode), world-opened screens as ScreenPanels beside it. Tips via HintDirector
     (once per player, Prefs). The demo is a build flavour (BuildFlavor.Demo stamped in BuildInfo; Core.Demo,
     DemoConfig in Data/Core/Resources, its own company_demo.json). Failed nettest logs: Game/Logs/nettest-failed/.
+  - M9: the mall carries Early Access (no Hospital/Hotel). The Hunter (4th threat, a 450 kg load source), 8 modifiers,
+    57 loot items, crowbar/backpack/support jack, 12 achievements (local stats, Steam hand-off), Steam Cloud = Auto-Cloud.
+- 2026-10-07 (user brief): finish every milestone WITHOUT testing (no EditMode/PlayMode/nettest/screenshots); the user
+  tests the finished game. Compile + rebuild + builds only; everything from the M9 review on is untested.
+  - M10: truck upgrades (TruckUpgradeCatalog bits in CompanyNetState; owned ids in CompanySave.unlocks), flatbed
+    trolley (short crews drag Huge), rope & pulley (Core.SafeDescent columns), locked stores (RollerShutter in the
+    level + RunShutters on the RunState prefab; Sealed modifier), motion detector + night vision (owner-local), an
+    accessory cosmetic slot, the boss's voicemails (CompanyMessages), synthesised music (MusicPlayer, never in batch),
+    balance (running costs per job, gear x5-8, GDD 13 unlock levels, crew-size quota scale; Docs/BALANCE.md), F9 free
+    camera, LaunchConfig links, `Tools/unity.sh build-release` (refuses App ID 480). Version 0.10.0.
