@@ -57,7 +57,8 @@ namespace Abandoned.Tests
             PlayerOf(net.Host, clientId).ServerKill();
             NetworkPlayer ghostPlayer = OwnPlayer(client);
             GhostSpectator ghost = ghostPlayer.GetComponent<GhostSpectator>();
-            yield return WaitFor(() => ghost.Spectating, "a ghost after the delay", 5f);
+            yield return WaitFor(() => ghost.ShowingDeathCard || ghost.Spectating, "the death card after the death camera", 5f);
+            yield return WaitFor(() => ghost.Spectating, "a ghost after the death card", 6f);
             Assert.AreEqual(net.Host.Manager.LocalClientId, ghost.Following.OwnerClientId, "watching the living host");
 
             float since = Time.time;

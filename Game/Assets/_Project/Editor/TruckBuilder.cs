@@ -54,11 +54,37 @@ namespace Abandoned.EditorTools
             trigger.size = new Vector3(BayWidth, WallHeight, BayLength);
 
             AddFloodlights(root, half);
+            AddDisplay(root, half);
 
             var cargo = root.gameObject.AddComponent<TruckCargo>();
             cargo.EditorSetup(trigger, new Bounds(new Vector3(0f, 1.5f, 1f), new Vector3(BayWidth + 0.6f, 3.5f, BayLength + 3f)), ignition.transform);
             foreach (Transform piece in root) piece.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             return cargo;
+        }
+
+        // UI step 3: the haul board on the bay's front wall, facing the ramp (a quad shows its front to -z viewers).
+        private static void AddDisplay(Transform root, float half)
+        {
+            Material housing = GetMaterial("Greybox_TruckLightBar", new Color(0.15f, 0.15f, 0.16f));
+            Box("DisplayFrame", root, new Vector3(0f, FloorHeight + 1.55f, half - 0.03f), new Vector3(2.45f, 1.27f, 0.04f), housing, withCollider: false);
+            GameObject quad = Primitive(PrimitiveType.Quad, "Display", root, new Vector3(0f, FloorHeight + 1.55f, half - 0.06f), new Vector3(2.3f, 1.15f, 1f),
+                TruckDisplayMaterial(), withCollider: false);
+            quad.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            root.gameObject.AddComponent<TruckDisplay>().EditorSetup(quad.GetComponent<MeshRenderer>(),
+                UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.UIElements.ThemeStyleSheet>(UiContentBuilder.ThemePath),
+                UnityEditor.AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath));
+        }
+
+        // Unlit, so the board reads in a dark lot; the texture is set at runtime.
+        private static Material TruckDisplayMaterial()
+        {
+            const string path = "Assets/_Project/Art/Greybox/TruckDisplay.mat";
+            var m = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m != null) return m;
+            m = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            m.SetColor("_BaseColor", new Color(0.05f, 0.05f, 0.06f));
+            UnityEditor.AssetDatabase.CreateAsset(m, path);
+            return m;
         }
 
         // M10.1 truck upgrade: a light bar on the cab roof aimed back over the bay and the lot; off until bought.

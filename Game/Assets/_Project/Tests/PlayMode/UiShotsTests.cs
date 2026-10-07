@@ -77,6 +77,43 @@ namespace Abandoned.Tests
             yield return Shots("hud_holding");
         }
 
+        /// <summary>Step 3: toasts, the truck leaving (banner + the haul board from the ramp), the death camera and card.</summary>
+        [UnityTest]
+        public IEnumerator EventsAtEveryAspect()
+        {
+            yield return TestMapScene.Load("Mall");
+            for (int i = 0; i < 20; i++) yield return null;
+            GameObject me = TestMapScene.Player;
+            var rig = PlayerTestRig.ForExisting(me);
+            ToastFeed.Show("PLAYER 2 JOINED", "Another pair of hands.", "icon/multiplayer", ToastFeed.Kind.Good);
+            ToastFeed.Show("ACHIEVEMENT UNLOCKED", "Occupational Hazard: die on the job.", "icon/trophy", ToastFeed.Kind.Good);
+            yield return new WaitForSeconds(0.5f);
+            Assert.AreEqual(2, Object.FindAnyObjectByType<ToastFeed>().Titles.Count(), "two toasts up");
+
+            // Start the truck from the lever, then stand on the ramp looking at the board.
+            var truck = Extraction.TruckCargo.Current;
+            rig.Teleport(truck.Ignition.position - truck.transform.right * 0.8f + Vector3.down * 1.0f, truck.transform.eulerAngles.y);
+            Extraction.RunState.Current.RequestDepart();
+            yield return null;
+            Assert.AreEqual(Extraction.RunPhase.Honking, Extraction.RunState.Current.State.Phase, "the truck is leaving");
+            // On the ramp, looking into the bay at the board on its front wall.
+            rig.Teleport(truck.transform.position - truck.transform.forward * 3f + Vector3.up * 0.2f, truck.transform.eulerAngles.y);
+            me.GetComponent<Player.PlayerLook>().SyncYawFromTransform();
+            me.GetComponent<Player.PlayerLook>().ApplyLook(Vector2.zero);
+            for (int i = 0; i < 10; i++) yield return null;
+            yield return Shots("truck");
+
+            // Die: the camera circles the body, then the card.
+            me.GetComponent<NetworkPlayer>().ServerKill("The Hunter ran you down.");
+            yield return new WaitForSeconds(1.2f);
+            yield return Shots("death_cam");
+            var ghost = me.GetComponent<GhostSpectator>();
+            float until = Time.time + 4f;
+            while (!ghost.ShowingDeathCard && Time.time < until) yield return null;
+            Assert.IsTrue(ghost.ShowingDeathCard, "YOU DIED after the death camera");
+            yield return Shots("death_card");
+        }
+
         private static void Place(NetworkLoot l, Vector3 at)
         {
             l.Grabbable.Body.isKinematic = true;

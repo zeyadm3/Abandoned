@@ -148,7 +148,7 @@ namespace Abandoned.UI
         {
             var tape = new VisualElement { pickingMode = PickingMode.Ignore };
             tape.AddToClassList("hazard");
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 160; i++) // enough for an ultrawide screen
             {
                 var bar = new VisualElement { pickingMode = PickingMode.Ignore };
                 bar.AddToClassList("hazard__bar");

@@ -18,6 +18,8 @@ namespace Abandoned.Threats
         public static IReadOnlyList<Threat> All => Spawned;
 
         public abstract string DisplayName { get; }
+        /// <summary>The death screen's cause line when this kills you (UI step 3).</summary>
+        public virtual string DeathLine => $"The {DisplayName} got you.";
         public float SpeedScale { get; set; } = 1f;
         public float HearingScale { get; set; } = 1f;
         public int Kills { get; protected set; }
@@ -45,7 +47,7 @@ namespace Abandoned.Threats
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;
                 if (Sheltered(at)) continue;
                 if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, WallMask, QueryTriggerInteraction.Ignore)) continue;
-                p.ServerKill();
+                p.ServerKill(DeathLine);
                 Kills++;
                 Debug.Log($"[Threat] {DisplayName} killed player {p.OwnerClientId}.");
                 return p;

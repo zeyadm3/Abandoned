@@ -7,14 +7,14 @@ namespace Abandoned.Extraction
     /// <summary>
     /// The run HUD (M8.1, redesigned in UI step 2): haul vs quota big at the top with a fill bar so "one more
     /// floor" always has a number (GDD 10), cargo space under it, the extraction window as a clock top right;
-    /// banners for the truck's departure countdown and for your own death.
+    /// a hazard-taped countdown when the truck is leaving, saying whether you're on it (UI step 3).
     /// </summary>
     public class RunHud : MonoBehaviour
     {
         private static readonly Color GainColor = new(0.5f, 1f, 0.5f);
 
-        private VisualElement top, haulBar, clock;
-        private Label amount, quota, cargo, met, time, leaving, died;
+        private VisualElement top, haulBar, clock, leaving;
+        private Label amount, quota, cargo, met, time, leavingCount, leavingStatus;
         private RunState shownRun;
         private int shownHaul;
         private bool metShown;
@@ -33,7 +33,6 @@ namespace Abandoned.Extraction
             if (!showing)
             {
                 MenuKit.Show(leaving, false);
-                MenuKit.Show(died, false);
                 return;
             }
 
@@ -55,11 +54,24 @@ namespace Abandoned.Extraction
             SetText(time, run.WindowClosed ? "WINDOW CLOSED" : $"{(int)w / 60}:{(int)w % 60:00}");
             clock.EnableInClassList("run-clock--late", run.WindowClosed);
 
-            bool honking = s.Phase == RunPhase.Honking;
+            // The dead don't need the countdown (their death card and ghost bar have the screen).
+            Networking.NetworkPlayer local = Networking.NetworkPlayer.Local;
+            bool honking = s.Phase == RunPhase.Honking && (local == null || !local.IsDead);
             MenuKit.Show(leaving, honking);
-            if (honking) SetText(leaving, $"TRUCK LEAVES IN {Mathf.CeilToInt(run.HonkRemaining)} - GET IN!");
+            if (honking) Leaving(run);
+        }
+
+        // The truck is going: how long, and whether you're on it (the death card covers the dead).
+        private void Leaving(RunState run)
+        {
+            SetText(leavingCount, Mathf.CeilToInt(run.HonkRemaining).ToString());
             Networking.NetworkPlayer me = Networking.NetworkPlayer.Local;
-            MenuKit.Show(died, me != null && me.IsDead);
+            bool aboard = me != null && TruckCargo.Current != null &&
+                          TruckCargo.Current.Carries(me.Ragdoll.IsRagdolled ? me.Ragdoll.BodyPosition : me.transform.position);
+            bool dead = me == null || me.IsDead;
+            SetText(leavingStatus, dead ? "" : aboard ? "YOU'RE ON BOARD" : "GET IN THE TRUCK!");
+            leavingStatus.EnableInClassList("truck-banner__status--good", aboard);
+            MenuKit.Show(leavingStatus, !dead);
         }
 
         // Loot landing in the truck: "+$X" over the cargo bay and the till (every machine).
@@ -96,9 +108,12 @@ namespace Abandoned.Extraction
             clock = HudLayer.Add(new VisualElement(), "run-clock");
             UiKit.Icon(clock, "board/hourglass", "small");
             time = Text(clock, "", "run-clock__time");
-            leaving = HudLayer.Label("hud-banner");
-            died = HudLayer.Label("hud-banner", "hud-banner--dead");
-            died.text = "YOU DIED";
+            leaving = HudLayer.Add(new VisualElement(), "truck-banner");
+            UiKit.Hazard(leaving);
+            Text(leaving, "THE TRUCK IS LEAVING", "truck-banner__title");
+            leavingCount = Text(leaving, "", "truck-banner__count");
+            leavingStatus = Text(leaving, "", "truck-banner__status");
+            UiKit.Hazard(leaving);
         }
 
         private static Label Text(VisualElement parent, string text, string cls)
@@ -120,7 +135,6 @@ namespace Abandoned.Extraction
             HudLayer.Remove(top);
             HudLayer.Remove(clock);
             HudLayer.Remove(leaving);
-            HudLayer.Remove(died);
         }
 
         /// <summary>Tests: what the top bar says.</summary>

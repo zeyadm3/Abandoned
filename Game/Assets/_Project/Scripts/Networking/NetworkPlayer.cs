@@ -45,6 +45,12 @@ namespace Abandoned.Networking
         public PlayerNetState State => state.Value;
         public bool IsDead => dead.Value;
 
+        // What killed this player, for their death screen (UI step 3); written with the death.
+        private readonly NetworkVariable<Unity.Collections.FixedString64Bytes> deathCause = new(default,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public string DeathCause => deathCause.Value.ToString();
+
         /// <summary>Every machine: a player died (this one, now dead) or came back (next run).</summary>
         public static event Action<NetworkPlayer, bool> DeathChanged;
         public PlayerMotor Motor => motor;
@@ -164,14 +170,18 @@ namespace Abandoned.Networking
         }
 
         /// <summary>Host: this player dies (monster contact). Their body falls where they stood.</summary>
-        public void ServerKill()
+        public void ServerKill(string cause = null)
         {
             if (!IsServer || dead.Value) return;
+            // The cause first: it reaches the owner before (or with) the death itself.
+            deathCause.Value = new Unity.Collections.FixedString64Bytes(Truncate(cause ?? "Something got you.", 60));
             dead.Value = true;
             // GDD 11: a dead player's pocket loot drops where they died, for the others to recover.
             foreach (Grabbable item in new List<Grabbable>(carrier.Inventory.Items))
                 if (NetworkLoot.Of(item) is NetworkLoot loot) LootServerActions.FreeOrphan(loot);
         }
+
+        private static string Truncate(string s, int max) => s.Length <= max ? s : s.Substring(0, max);
 
         // Dead: the body goes down for good (local ragdoll, GDD 11) and the controls stop. Alive again: back up.
         private void OnDeadChanged(bool was, bool now)

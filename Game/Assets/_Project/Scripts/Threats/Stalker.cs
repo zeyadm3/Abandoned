@@ -24,6 +24,7 @@ namespace Abandoned.Threats
         private float nextRetarget, nextBreath;
 
         public override string DisplayName => "Stalker";
+        public override string DeathLine => "You looked away from the Stalker.";
         public StalkerState State => state.Value;
         public NetworkPlayer Target => target;
         public StalkerBrain Brain => brain;

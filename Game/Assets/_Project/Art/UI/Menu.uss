@@ -129,6 +129,7 @@
 }
 
 .hazard__bar {
+    flex-shrink: 0;
     width: 14px;
     height: 30px;
     margin-left: 14px;
@@ -871,3 +872,193 @@
 }
 
 .scan-ready__text { font-size: 15px; color: var(--c-dim); text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7); }
+
+/* ---- Death, ghost, truck, toasts, speakers (UI step 3) ---- */
+
+.death-card {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background-color: rgba(40, 4, 2, 0.45);
+    align-items: center;
+    justify-content: center;
+}
+
+.death-card__title {
+    -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 132px;
+    color: var(--c-bad);
+    letter-spacing: 6px;
+    text-shadow: 0 8px 0 rgba(0, 0, 0, 0.7);
+}
+
+.death-card__cause {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 36px;
+    color: var(--c-text);
+    margin-top: 4px;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.7);
+}
+
+.death-card__note {
+    font-size: 19px;
+    color: var(--c-dim);
+    margin-top: 14px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+.ghost-bar {
+    position: absolute;
+    left: 0; right: 0; bottom: 90px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.ghost-bar .hud-prompt__text { color: rgb(200, 205, 255); }
+
+.threat-mark {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    color: var(--c-bad);
+    font-size: 22px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+.truck-banner {
+    position: absolute;
+    left: 0; right: 0; top: 20%;
+    align-items: center;
+    background-color: rgba(10, 11, 12, 0.72);
+    padding-bottom: 0;
+}
+
+.truck-banner .hazard { align-self: stretch; }
+
+.truck-banner__title {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 40px;
+    letter-spacing: 4px;
+    color: var(--c-accent);
+    margin-top: 10px;
+}
+
+.truck-banner__count {
+    -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 96px;
+    color: var(--c-text);
+    margin-top: -10px;
+    margin-bottom: -14px;
+}
+
+.truck-banner__status {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--c-bad);
+    margin-bottom: 10px;
+}
+
+.truck-banner__status--good { color: var(--c-good); }
+
+.toast-stack {
+    position: absolute;
+    right: 28px; top: 84px;
+    width: 400px;
+}
+
+.toast {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(10, 11, 12, 0.86);
+    border-left-width: 5px;
+    border-left-color: var(--c-accent);
+    padding: 10px 14px 10px 12px;
+    margin-bottom: 8px;
+    translate: 0 0;
+    opacity: 1;
+    transition-property: translate, opacity;
+    transition-duration: 0.22s;
+}
+
+.toast--in { translate: 420px 0; opacity: 0; }
+.toast--out { translate: 420px 0; opacity: 0; }
+.toast--good { border-left-color: var(--c-good); }
+.toast--warn { border-left-color: var(--c-bad); }
+.toast__icon { width: 40px; height: 40px; margin-right: 12px; -unity-background-image-tint-color: var(--c-text); }
+.toast__text { flex-shrink: 1; }
+
+.toast__title {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--c-text);
+}
+
+.toast__body { font-size: 16px; color: var(--c-dim); white-space: normal; }
+
+.speaker-mark {
+    position: absolute;
+    translate: -50% -100%;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(10, 11, 12, 0.7);
+    padding: 3px 9px 3px 6px;
+    border-radius: 12px;
+    border-width: 2px;
+    border-color: var(--c-good);
+}
+
+.speaker-mark .icon { -unity-background-image-tint-color: var(--c-good); margin-right: 5px; }
+
+.speaker-mark__name {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 17px;
+    color: var(--c-text);
+}
+
+.speaker-mark--radio { border-color: var(--c-accent); }
+.speaker-mark--radio .icon { -unity-background-image-tint-color: var(--c-accent); }
+
+/* The truck's haul board (a texture on a quad in the world). */
+.truck-display {
+    flex-grow: 1;
+    align-items: center;
+    background-color: rgb(10, 11, 12);
+    color: var(--c-text);
+}
+
+.truck-display .hazard { align-self: stretch; height: 16px; }
+
+.truck-display__label {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 34px;
+    letter-spacing: 6px;
+    color: var(--c-accent);
+    margin-top: 10px;
+}
+
+.truck-display__amount {
+    -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 104px;
+    color: var(--c-money);
+    margin-top: -16px;
+    margin-bottom: -10px;
+}
+
+.truck-display__quota {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 30px;
+    color: var(--c-text);
+}
+
+.truck-display__quota--met { color: var(--c-good); }
+.truck-display__bar { width: 520px; height: 16px; margin-top: 8px; }
+
+.truck-display__cargo {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 24px;
+    color: var(--c-dim);
+    margin-top: 8px;
+}
+
+.truck-display__cargo--bad { color: var(--c-bad); }

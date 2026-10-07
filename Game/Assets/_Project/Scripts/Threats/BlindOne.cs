@@ -37,6 +37,7 @@ namespace Abandoned.Threats
         public static new readonly List<BlindOne> All = new();
 
         public override string DisplayName => "Blind One";
+        public override string DeathLine => "The Blind One heard you.";
 
         public BlindOneState State => state.Value;
         public BlindOneConfig Config => config;
@@ -153,7 +154,7 @@ namespace Abandoned.Threats
                 if (Sheltered(at)) continue;
                 // Touch, not through a wall: a player pressed against the far side of a partition is safe.
                 if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, wallMask, QueryTriggerInteraction.Ignore)) continue;
-                p.ServerKill();
+                p.ServerKill(DeathLine);
                 Kills++;
                 brain.Attacked(Time.time);
                 Debug.Log($"[Threat] The Blind One killed player {p.OwnerClientId}.");

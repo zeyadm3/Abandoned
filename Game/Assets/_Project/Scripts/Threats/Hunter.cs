@@ -30,6 +30,7 @@ namespace Abandoned.Threats
         private StructuralSection standingOn;
 
         public override string DisplayName => "Hunter";
+        public override string DeathLine => "The Hunter ran you down.";
         public HunterState State => state.Value;
         public NetworkPlayer Target => target;
         public HunterConfig Config => config;
