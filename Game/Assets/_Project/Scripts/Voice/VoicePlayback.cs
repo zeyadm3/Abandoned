@@ -25,6 +25,10 @@ namespace Abandoned.Voice
         public VoiceJitterBuffer Buffer => stream?.Buffer;
         public int SamplesReceived => stream?.SamplesReceived ?? 0;
         public float Gain { get; private set; }
+
+        private Unity.Netcode.NetworkObject owner;
+        /// <summary>Whose voice this plays (per-player volume and mute, UI step 4).</summary>
+        private ulong Speaker => (owner ??= GetComponentInParent<Unity.Netcode.NetworkObject>()) != null ? owner.OwnerClientId : ulong.MaxValue;
         public int Walls { get; private set; }
         public float Cutoff => cutoff;
 
@@ -57,7 +61,7 @@ namespace Abandoned.Voice
             lowPass.cutoffFrequency = cutoff;
 
             Gain = VoiceMath.DistanceGain(distance, config.MinDistance, config.MaxDistance) * occlusion;
-            source.volume = Gain * VoiceSettings.Volume;
+            source.volume = Gain * VoiceSettings.Volume * VoiceSettings.PlayerGain(Speaker);
             stream.Tick();
         }
 

@@ -1062,3 +1062,79 @@
 }
 
 .truck-display__cargo--bad { color: var(--c-bad); }
+
+/* ---- Pause menu (UI step 4): big buttons left, the crew right ---- */
+
+.pause { padding-left: 0; justify-content: center; align-items: center; }
+
+.pause__columns {
+    flex-direction: row;
+    align-items: center;
+    width: 92%;
+    max-width: 1500px;
+}
+
+.pause__left { width: 520px; flex-shrink: 0; margin-right: 60px; }
+.pause__left .title { font-size: 96px; }
+
+.pause__crew { width: auto; flex-grow: 1; max-width: 780px; }
+
+.crew-row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 58px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--c-line);
+}
+
+.crew-row__swatch {
+    width: 14px; height: 40px;
+    margin-right: 14px;
+    border-radius: 2px;
+    background-color: var(--c-panel-3);
+}
+
+.crew-row__who { flex-grow: 1; flex-shrink: 1; min-width: 160px; }
+
+.crew-row__name {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 26px;
+    color: var(--c-text);
+}
+
+.crew-row__tags {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--c-accent);
+}
+
+.crew-row__talking {
+    width: 12px; height: 12px;
+    border-radius: 6px;
+    margin: 0 10px 0 10px;
+    background-color: var(--c-panel-3);
+}
+
+.crew-row__talking--on { background-color: var(--c-good); }
+
+.crew-row__ping { width: 70px; font-size: 15px; color: var(--c-dim); -unity-text-align: middle-right; margin-right: 12px; }
+
+.crew-row__volume { width: 170px; }
+
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__tracker {
+    background-color: var(--c-panel-3);
+    border-width: 0;
+    height: 6px;
+    margin-top: -3px;
+}
+
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__dragger {
+    background-color: var(--c-accent);
+    border-width: 0;
+    width: 12px; height: 20px;
+    margin-top: -10px;
+    border-radius: 2px;
+}
+
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__dragger-border { display: none; }

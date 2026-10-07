@@ -16,6 +16,7 @@ namespace Abandoned.Voice
         private VoiceStream stream;
         private System.Random noise;
         private float staticLevel;
+        private Unity.Netcode.NetworkObject owner;
 
         public VoiceJitterBuffer Buffer => stream?.Buffer;
         public int SamplesReceived => stream?.SamplesReceived ?? 0;
@@ -36,7 +37,8 @@ namespace Abandoned.Voice
 
         private void Update()
         {
-            source.volume = config.RadioVolume * VoiceSettings.Volume;
+            owner ??= GetComponentInParent<Unity.Netcode.NetworkObject>();
+            source.volume = config.RadioVolume * VoiceSettings.Volume * (owner != null ? VoiceSettings.PlayerGain(owner.OwnerClientId) : 1f);
             stream.Tick();
         }
 

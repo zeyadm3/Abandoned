@@ -28,6 +28,26 @@ namespace Abandoned.Voice
             set { Load(); volume = Mathf.Clamp01(value); Save(); }
         }
 
+        // Per crewmate (UI step 4, the pause menu's crew list): for this session only, by client id.
+        private static readonly System.Collections.Generic.Dictionary<ulong, float> playerVolume = new();
+        private static readonly System.Collections.Generic.HashSet<ulong> playerMuted = new();
+
+        /// <summary>One crewmate's voice, 0..2 (on top of <see cref="Volume"/>); 1 by default.</summary>
+        public static float PlayerVolume(ulong clientId) => playerVolume.TryGetValue(clientId, out float v) ? v : 1f;
+
+        public static void SetPlayerVolume(ulong clientId, float value) => playerVolume[clientId] = Mathf.Clamp(value, 0f, 2f);
+
+        public static bool PlayerMuted(ulong clientId) => playerMuted.Contains(clientId);
+
+        public static void SetPlayerMuted(ulong clientId, bool mute)
+        {
+            if (mute) playerMuted.Add(clientId);
+            else playerMuted.Remove(clientId);
+        }
+
+        /// <summary>What a crewmate's voice is multiplied by on this machine (0 when muted).</summary>
+        public static float PlayerGain(ulong clientId) => PlayerMuted(clientId) ? 0f : PlayerVolume(clientId);
+
         /// <summary>Never send our microphone.</summary>
         public static bool MicMuted
         {
