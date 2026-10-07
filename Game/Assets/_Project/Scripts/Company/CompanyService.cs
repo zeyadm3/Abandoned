@@ -25,6 +25,8 @@ namespace Abandoned.Company
         [SerializeField] private ContractConfig contracts;
         [SerializeField] private EquipmentCatalog equipment;
         [SerializeField] private TruckUpgradeCatalog truckUpgrades;
+        [Tooltip("The boss's voicemails and the board's one-liners (M10.7).")]
+        [SerializeField] private CompanyMessages messages;
 
         private readonly NetworkVariable<CompanyNetState> state = new();
         private readonly NetworkVariable<int> boardSeed = new();
@@ -268,6 +270,7 @@ namespace Abandoned.Company
         // ---- Truck upgrades (M10.1, GDD 13) ----
 
         public TruckUpgradeCatalog TruckUpgrades => truckUpgrades;
+        public CompanyMessages Messages => messages;
 
         /// <summary>Every machine: the company owns this catalog entry.</summary>
         public bool OwnsUpgrade(int index) => index >= 0 && index < TruckUpgradeCatalog.MaxUpgrades && (State.TruckUpgrades & (1 << index)) != 0;

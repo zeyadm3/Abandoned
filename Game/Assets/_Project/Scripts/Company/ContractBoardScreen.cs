@@ -58,6 +58,8 @@ namespace Abandoned.Company
                 cards.Add(card);
                 MenuKit.Text(card, c.Location.ToUpperInvariant() + (taken ? "  (TAKEN)" : ""), "section");
                 MenuKit.Text(card, $"<b>{c.ModifierName}</b>  +{c.PayoutBonus:P0} payout");
+                if (company.Messages != null && company.Messages.Quip(c.Seed) is string quip && quip.Length > 0)
+                    MenuKit.Text(card, $"<i>\"{quip}\"</i>").AddToClassList("text--small");
                 if (company.ModifierOf(c) is Contracts.ContractModifier m && !string.IsNullOrEmpty(m.Description))
                     MenuKit.Text(card, m.Description).AddToClassList("text--small");
                 MenuKit.Text(card, $"Quota <b>${c.Quota:N0}</b>");

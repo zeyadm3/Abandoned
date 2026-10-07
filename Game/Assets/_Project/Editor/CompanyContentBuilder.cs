@@ -55,6 +55,7 @@ namespace Abandoned.EditorTools
 
             var equipment = EquipmentContentBuilder.CreateMissing();
             var upgrades = CreateTruckUpgrades();
+            var messages = CreateMessages();
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(CompanyServicePrefabPath);
             if (existing != null && existing.GetComponent<CompanyService>() != null)
             {
@@ -64,6 +65,7 @@ namespace Abandoned.EditorTools
                 Set(existingService, "contracts", contracts);
                 Set(existingService, "equipment", equipment);
                 Set(existingService, "truckUpgrades", upgrades);
+                Set(existingService, "messages", messages);
                 PrefabUtility.SavePrefabAsset(existing);
                 return existing;
             }
@@ -76,11 +78,82 @@ namespace Abandoned.EditorTools
             Set(service, "contracts", contracts);
             Set(service, "equipment", equipment);
             Set(service, "truckUpgrades", upgrades);
+            Set(service, "messages", messages);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, CompanyServicePrefabPath);
             Object.DestroyImmediate(root);
             NetworkObjectIds.StampPrefab(prefab);
             AssetDatabase.SaveAssets();
             return prefab;
+        }
+
+        public const string MessagesPath = "Assets/_Project/Data/Company/CompanyMessages.asset";
+
+        /// <summary>The boss's voicemails and the board's one-liners (M10.7). Created when missing; edits in the inspector stay.</summary>
+        public static CompanyMessages CreateMessages()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<CompanyMessages>(MessagesPath);
+            if (existing != null) return existing;
+            var m = ScriptableObject.CreateInstance<CompanyMessages>();
+            m.EditorSetup(
+                welcome: new[]
+                {
+                    "Morning. This is your boss. You're the new salvage crew. The last crew were also the new salvage crew. The board has jobs. The van has fuel. Mostly. Bring things back.",
+                    "Welcome aboard. Company policy: if it's worth money, it's ours. If it's on fire, it's yours. Contract board's by the office. Don't touch my mug.",
+                },
+                met: new[]
+                {
+                    "Quota made. Good. That means I don't have to learn your names yet. Same again tomorrow.",
+                    "The buyer called. He said the stuff was 'mostly intact'. That's the nicest thing he's ever said. Keep it up.",
+                    "You made quota. I've told accounting not to celebrate. They weren't going to.",
+                    "Decent haul. Somebody scraped the van though. I'm not saying it was you. I'm saying the van says it was you.",
+                    "Quota met. The building you were in fell down an hour after you left. Great timing. Do that every time.",
+                },
+                big: new[]
+                {
+                    "Double quota. I had to sit down. I don't have a chair. I sat on a filing cabinet. It broke. Worth it.",
+                    "That's the biggest haul this company's ever had. I'm putting it on the wall. The money, not you.",
+                    "The buyer asked if we robbed a museum. I said 'not yet'. Lovely work.",
+                },
+                missed: new[]
+                {
+                    "You missed quota. I'm not angry. I'm writing it down, which is worse.",
+                    "Short on quota. The difference is coming out of the company account, which is also where your pay comes from. Think about that.",
+                    "So. Quota. Not met. The buyer laughed at me on the phone. I don't like being laughed at on the phone.",
+                    "Missed it. Look, the floors are falling down, I get it. But the floors falling down is the job.",
+                },
+                warning: new[]
+                {
+                    "That's two in a row. One more and the bank owns this company, the van, and probably my shoes. Please. Bring. Things. Back.",
+                    "Two missed quotas. I've started looking at other careers. You should too, if the next one goes like the last.",
+                },
+                bankrupt: new[]
+                {
+                    "Well. The bank took the company. I've started a new one. Same building, new name, same crew, because nobody else answered the ad. Fresh start. Don't make it stale.",
+                    "We went under. I've signed the papers for a new company. The bank said 'again?'. Let's not hear them say it a third time.",
+                },
+                level: new[]
+                {
+                    "The buyers are taking us seriously now. Bigger jobs on the board. Bigger quotas too. That's how serious works.",
+                    "We've moved up. There's new gear in the shop and worse buildings on the board. Congratulations, I suppose.",
+                    "Promotion. For the company, not you. The shop's got more stock. The board's got more ways to die. Enjoy.",
+                },
+                quips: new[]
+                {
+                    "Client says the floors are 'mostly fine'.",
+                    "Previous crew left in a hurry. Their van's still there.",
+                    "Owner wants the piano. Owner doesn't say how.",
+                    "Insurance says no. We say yes.",
+                    "Some of it's glass. Most of it's glass.",
+                    "Watch the third floor. Actually watch all the floors.",
+                    "The power company says the lights might work. The power company also went bankrupt.",
+                    "Locals say it makes noises at night. Locals say that about everything.",
+                    "The roof is optional, apparently.",
+                    "Bring back the statue and I'll stop shouting for a week.",
+                    "Easy money. Famous last words, but easy money.",
+                    "Structural survey attached. It's a drawing of a sad face.",
+                });
+            AssetDatabase.CreateAsset(m, MessagesPath);
+            return m;
         }
 
         public const string TruckUpgradeFolder = "Assets/_Project/Data/Company/TruckUpgrades";

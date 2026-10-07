@@ -72,6 +72,15 @@ namespace Abandoned.EditorTools
             // M7.5: the crew's lockers (wardrobe) on the garage's west wall.
             GameObject lockers = Box("Lockers", root, new Vector3(0.35f, 1f, 6.5f), new Vector3(0.5f, 2f, 2.4f), GetMaterial("Greybox_Lockers", new Color(0.32f, 0.42f, 0.5f)));
             lockers.AddComponent<Abandoned.UI.WardrobeLocker>();
+            // M10.7: the boss's answering machine on the office desk, by the contract board.
+            Box("OfficeDesk", root, new Vector3(21.5f, 0.4f, 2.2f), new Vector3(2f, 0.8f, 1f), GetMaterial("Greybox_Prop", new Color(0.55f, 0.42f, 0.3f)));
+            GameObject machine = Box("AnsweringMachine", root, new Vector3(21.5f, 0.88f, 2.2f), new Vector3(0.4f, 0.15f, 0.3f),
+                GetMaterial("Greybox_AnsweringMachine", new Color(0.12f, 0.12f, 0.13f)));
+            Material blink = GetMaterial("Greybox_MessageLight", new Color(1f, 0.15f, 0.1f));
+            blink.SetColor("_EmissionColor", new Color(3f, 0.3f, 0.2f));
+            blink.EnableKeyword("_EMISSION");
+            GameObject lamp = Box("MessageLight", machine.transform, new Vector3(0.3f, 0.6f, 0f), new Vector3(0.12f, 0.4f, 0.15f), blink, withCollider: false);
+            machine.AddComponent<AnsweringMachine>().EditorSetup(lamp.GetComponent<Renderer>());
 
             Transform spawns = Group("Spawns", root);
             for (int i = 0; i < 4; i++)
