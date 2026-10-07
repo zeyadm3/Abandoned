@@ -179,9 +179,17 @@ namespace Abandoned.EditorTools
 
             GameObject desk = Box("OfficeDesk", root, new Vector3(21.5f, .4f, 2.2f), new Vector3(2f, .8f, 1f), wood);
             CustomMallArt.Fit(desk, "Counter", Vector3.one);
-            GameObject machine = Box("AnsweringMachine", root, new Vector3(21.5f, .88f, 2.2f), new Vector3(.4f, .15f, .3f), metal);
-            Material blink = PolishAssets.Material("HQ_MessageLamp", new Color(.62f, .23f, .075f), emission: 1.6f);
-            GameObject lamp = Box("MessageLight", machine.transform, new Vector3(.3f, .6f, 0f), new Vector3(.12f, .4f, .15f), blink, false);
+            // 0.12.5: the kit's answering machine on the desk top, facing into the office. The collider is what E
+            // targets; the message lamp is its own small emissive piece in the model's bezel so it can blink.
+            var machine = new GameObject("AnsweringMachine");
+            machine.transform.SetParent(root, false);
+            machine.transform.localPosition = new Vector3(21.3f, .8f, 2.25f);
+            var hit = machine.AddComponent<BoxCollider>();
+            hit.center = new Vector3(.02f, .05f, 0f);
+            hit.size = new Vector3(.42f, .1f, .28f);
+            CustomMallArt.Place("AnsweringMachine", machine.transform, Vector3.zero, Quaternion.identity);
+            Material blink = PolishAssets.Material("HQ_MessageLamp", new Color(.62f, .23f, .075f), emission: 2.4f);
+            GameObject lamp = Primitive(PrimitiveType.Cylinder, "MessageLight", machine.transform, new Vector3(.105f, .064f, .07f), new Vector3(.016f, .003f, .016f), blink, false);
             machine.AddComponent<AnsweringMachine>().EditorSetup(lamp.GetComponent<Renderer>());
         }
 

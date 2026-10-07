@@ -23,8 +23,10 @@ namespace Abandoned.EditorTools
                     CustomMallArt.Place("FloorCrack", decor, centre + new Vector3(.5f, .007f, -.6f), 33f * z, new Vector3(.55f, 1f, .55f));
             }
             ExposedServices(decor);
-            for (int z = 0; z < 4; z++)
-                CustomMallArt.Place("Pillar", decor, new Vector3(11.4f, 0f, z * 4f + 1f), Quaternion.identity, new Vector3(.62f, 1.046f, .62f));
+            // 0.12.3: the user placed these by hand along the garage/office line; kept here so rebuilds don't move them.
+            float[] pillarZ = { 3.466f, 6.551f, 11.419f, 14.455f };
+            foreach (float z in pillarZ)
+                CustomMallArt.Place("Pillar", decor, new Vector3(11.4f, 0f, z), Quaternion.identity, new Vector3(.62f, 1.046f, .62f));
 
             // Heavy furniture stays along walls, leaving the crew's spawn, departure and gear lanes open.
             Prop("Bench", new Vector3(8.8f, 0f, 15.2f), 180f, new Vector3(1.2f, 1f, 1f), new Vector3(2.4f, .95f, .55f));
@@ -47,7 +49,6 @@ namespace Abandoned.EditorTools
 
             WallGrime(decor);
             CustomMallArt.Place("SignDepot", decor, new Vector3(6f, 3.46f, -.26f), 180f, new Vector3(2.15f, .72f, 1f));
-            CustomMallArt.Place("SignExit", decor, new Vector3(6f, 3.05f, .13f), 0f, new Vector3(.65f, .7f, 1f));
             CustomMallArt.Place("SignDontGoUp", decor, new Vector3(10.1f, 2.15f, 15.86f), 180f, new Vector3(.8f, .8f, 1f));
             CustomMallArt.Place("SignQuarantine", decor, new Vector3(23.87f, 1.5f, 13.8f), 270f, new Vector3(.6f, .8f, 1f));
             CustomMallArt.Place("MissingPoster", decor, new Vector3(.14f, 1.4f, 2.25f), 90f);
@@ -55,7 +56,6 @@ namespace Abandoned.EditorTools
             Caption(decor, "DEPARTURE BAY", new Vector3(8.9f, 2.8f, 15.85f), 180f, .14f);
             Caption(decor, "CONTRACTS / CREW OFFICE", new Vector3(12.18f, 2.64f, 5f), 90f, .095f);
             Caption(decor, "EQUIPMENT / REPAIRS", new Vector3(18f, 2.74f, 10.16f), 180f, .11f);
-            Caption(decor, "NO CREW LEFT BEHIND", new Vector3(3.2f, 2.12f, .16f), 180f, .10f);
 
             Lighting(root);
             Area(root, "DepotVentilation", new Vector3(6f, 2f, 8f), new Vector3(12f, 4f, 16f), 0);
@@ -76,7 +76,7 @@ namespace Abandoned.EditorTools
         {
             Transform face = Group("ContractFace", board.parent);
             face.localPosition = board.localPosition + Vector3.forward * .086f;
-            Caption(face, "ASHLINE / DISPATCH", new Vector3(0f, .7f, .01f), 180f, .14f);
+            Caption(face, "ASHLINE / DISPATCH", new Vector3(0f, 1.364f, .01f), 180f, .14f);
             for (int i = 0; i < 4; i++)
             {
                 float x = -.94f + i * .63f;
@@ -86,7 +86,7 @@ namespace Abandoned.EditorTools
                     Box("TypeLine", face, new Vector3(x, .10f - line * .08f, .017f), new Vector3(line == 0 ? .30f : .38f, .008f, .002f), CustomMallArt.Material("Stain"), false);
                 Box("Pin", face, new Vector3(x, .22f, .019f), new Vector3(.03f, .03f, .013f), CustomMallArt.Material("Rust"), false);
             }
-            Caption(face, "TAKE ONLY WHAT YOU CAN CARRY", new Vector3(0f, -.70f, .02f), 180f, .065f);
+            Caption(face, "TAKE ONLY WHAT YOU CAN CARRY", new Vector3(0f, -1.091f, .02f), 180f, .065f);
         }
 
         public static void TerminalFace(Transform terminal)
@@ -95,7 +95,7 @@ namespace Abandoned.EditorTools
             face.localPosition = terminal.localPosition;
             Box("CRTBezel", face, new Vector3(-.04f, .025f, -.16f), new Vector3(.66f, .37f, .035f), CustomMallArt.Material("Rubber"), false);
             Box("AmberCRT", face, new Vector3(-.04f, .025f, -.18f), new Vector3(.57f, .28f, .014f), PolishAssets.Material("HQ_CRTGlow", new Color(.19f, .12f, .045f), emission: .9f), false);
-            Caption(face, "ASHLINE SUPPLY\nGEAR / BATTERIES\nPRESS E", new Vector3(-.04f, .022f, -.19f), 0f, .035f);
+            Caption(face, "ASHLINE SUPPLY\nGEAR / BATTERIES\nPRESS E", new Vector3(-.04f, -.677f, -.464f), 0f, .035f);
             for (int i = 0; i < 3; i++)
                 Box("Switch", face, new Vector3(.33f, .075f - i * .07f, -.17f), new Vector3(.032f, .025f, .023f), CustomMallArt.Material("Metal"), false);
         }
@@ -133,15 +133,15 @@ namespace Abandoned.EditorTools
         private static void Lighting(Transform root)
         {
             Transform lights = Group("DepotLights", root);
-            Fixture(new Vector3(6f, 3.15f, 9f), new Color(1f, .71f, .42f), 6.5f, 9f, false, false, 1);
-            Fixture(new Vector3(5.2f, 3.30f, 3.4f), new Color(1f, .72f, .46f), 3.6f, 8f, false, false, 2);
-            Fixture(new Vector3(18f, 3.25f, 13.1f), new Color(1f, .68f, .40f), 5f, 7.5f, false, false, 3);
-            Fixture(new Vector3(18.1f, 3.20f, 2.1f), new Color(.65f, .72f, .74f), 2.8f, 8f, false, false, 4);
-            Fixture(new Vector3(20.8f, 3.65f, 7.4f), new Color(.61f, .70f, .74f), 1.7f, 7f, true, false, 5);
-            Fixture(new Vector3(8.8f, 3.5f, 14.5f), new Color(.63f, .70f, .72f), 1.4f, 6.5f, true, false, 6);
-            Fixture(new Vector3(15f, 3.72f, 7.6f), new Color(.62f, .7f, .74f), 1.5f, 7f, false, true, 7);
+            // Intensities as the user tuned them in 0.12.3.
+            Fixture(new Vector3(6f, 3.15f, 9f), new Color(1f, .71f, .42f), 30f, 9f, false, false, 1);
+            Fixture(new Vector3(5.2f, 3.30f, 3.4f), new Color(1f, .72f, .46f), 50f, 8f, false, false, 2);
+            Fixture(new Vector3(18f, 3.25f, 13.1f), new Color(1f, .68f, .40f), 30f, 7.5f, false, false, 3);
+            Fixture(new Vector3(18.1f, 3.20f, 2.1f), new Color(.65f, .72f, .74f), 30f, 8f, false, false, 4);
+            Fixture(new Vector3(20.8f, 3.65f, 7.4f), new Color(.61f, .70f, .74f), 30f, 7f, true, false, 5);
+            Fixture(new Vector3(8.8f, 3.5f, 14.5f), new Color(.63f, .70f, .72f), 30f, 6.5f, true, false, 6);
+            Fixture(new Vector3(15f, 3.72f, 7.6f), new Color(.62f, .7f, .74f), 30f, 7f, false, true, 7);
             Point("TerminalWarmth", new Vector3(18f, 1.7f, 13.15f), new Color(1f, .57f, .28f), .65f, 2.2f);
-            Point("DoorYardLamp", new Vector3(6f, 3.15f, -1.4f), new Color(.78f, .65f, .46f), 1.3f, 5f);
 
             void Fixture(Vector3 at, Color color, float intensity, float range, bool faulty, bool dead, int seed)
             {
