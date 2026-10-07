@@ -18,7 +18,7 @@ namespace Abandoned.Equipment
     /// the hand trolley (solo Heavy drags). Outside a company game (a level hosted directly: dev, tests)
     /// nothing is restricted (<see cref="CompanyService.RulesApply"/>).
     /// </summary>
-    public class PlayerEquipment : NetworkBehaviour
+    public partial class PlayerEquipment : NetworkBehaviour
     {
         [SerializeField] private EquipmentCatalog catalog;
         [SerializeField] private PlayerInputReader inputReader;
@@ -80,6 +80,7 @@ namespace Abandoned.Equipment
         public override void OnNetworkSpawn()
         {
             Spawned.Add(this);
+            InitializeFlashlight();
             state.OnValueChanged += OnChanged;
             // Walkie-talkies need a radio in hand slots once there's a company to buy them from.
             NetworkVoice.RadioHolder = id =>
@@ -127,7 +128,7 @@ namespace Abandoned.Equipment
         {
             if (flashlight != null)
             {
-                bool on = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead && HandsFreeForLight;
+                bool on = LightOn;
                 if (on != flashlight.enabled && !IsDead) Audio.GameAudio.Play(Audio.SoundId.FlashlightClick, flashlight.transform.position, 0.6f);
                 flashlight.enabled = on;
             }
@@ -142,12 +143,11 @@ namespace Abandoned.Equipment
             // The company can appear or change after we spawned (HQ load): keep the effects current.
             if (carrier != null) carrier.SoloDragAllowed = !CompanyService.RulesApply || Has(EquipmentKind.HandTrolley);
             if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
-            // Ghosts can't help (GDD 11): a light left on goes out with its holder.
-            if (IsServer && IsDead && state.Value.LightOn) { EquipState s = state.Value; s.LightOn = false; state.Value = s; }
+            TickFlashlight();
             // Preserve the switch position while hands are occupied: setting down restores the beam.
             // Automatic hand changes are silent; the click belongs to deliberately using the switch.
             if (flashlight != null)
-                flashlight.enabled = state.Value.LightOn && Has(EquipmentKind.Flashlight) && !IsDead && HandsFreeForLight;
+                flashlight.enabled = LightOn;
             if (!IsOwner || inputReader == null || IsDead) return;
             PlayerInputFrame input = inputReader.Current;
             if (!GameplayInputAllowed(input)) return;
@@ -203,7 +203,7 @@ namespace Abandoned.Equipment
         {
             if (rpcParams.Receive.SenderClientId != OwnerClientId || IsDead) return;
             EquipState s = state.Value;
-            s.LightOn = on && Has(EquipmentKind.Flashlight);
+            s.LightOn = on && Has(EquipmentKind.Flashlight) && BatterySeconds > 0f;
             state.Value = s;
         }
 
@@ -219,7 +219,8 @@ namespace Abandoned.Equipment
             if (!d.Consumable) return;
             bool used = d.Kind switch
             {
-                EquipmentKind.Medkit => Revive(),
+                EquipmentKind.Medkit => TreatInjury(),
+                EquipmentKind.Battery => RefillBattery(),
                 EquipmentKind.Planks => LayPlanks(),
                 EquipmentKind.NoiseMaker => Throw(),
                 EquipmentKind.SupportJack => PlaceJack(),
@@ -316,7 +317,7 @@ namespace Abandoned.Equipment
         private void SoundRpc(Audio.SoundId id, Vector3 at) => Audio.GameAudio.Play(id, at, 1f);
 
         // Host: the nearest downed crewmate within reach and in sight gets up.
-        private bool Revive()
+        private bool TreatInjury()
         {
             NetworkPlayer best = null;
             float bestDistance = reviveReach;
@@ -328,11 +329,29 @@ namespace Abandoned.Equipment
                 if (d > bestDistance || Physics.Linecast(Eye, body + Vector3.up * 0.3f, wallMask, QueryTriggerInteraction.Ignore)) continue;
                 (best, bestDistance) = (p, d);
             }
-            if (best == null) return false;
-            best.ServerRevive();
-            RevivedSomeoneRpc();
-            Debug.Log($"[Gear] Player {OwnerClientId} revived player {best.OwnerClientId} with a medkit.");
-            return true;
+            if (best != null)
+            {
+                best.ServerRevive();
+                RevivedSomeoneRpc();
+                return true;
+            }
+            // Aim at an injured teammate to help them; an empty sightline treats yourself.
+            bestDistance = reviveReach;
+            Vector3 aim = Quaternion.Euler(player.State.Pitch, transform.eulerAngles.y, 0f) * Vector3.forward;
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || p == player || p.NetworkManager != NetworkManager || p.IsDead || p.Health >= p.MaxHealth) continue;
+                Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position + Vector3.up;
+                Vector3 offset = at - Eye;
+                float distance = offset.magnitude;
+                if (distance > bestDistance || Vector3.Dot(offset.normalized, aim) < 0.7f ||
+                    Physics.Linecast(Eye, at, wallMask, QueryTriggerInteraction.Ignore)) continue;
+                (best, bestDistance) = (p, distance);
+            }
+            if (best != null) return best.ServerHeal(best.HealthConfig.MedkitHeal);
+            if (player.ServerHeal(player.HealthConfig.MedkitHeal)) return true;
+            HintRpc("No injury to treat. Aim at an injured crewmate, or use the medkit when hurt.");
+            return false;
         }
 
         private bool Throw()

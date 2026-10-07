@@ -65,10 +65,12 @@ namespace Abandoned.EditorTools
             lamp.transform.SetParent(cameraRoot, false);
             lamp.transform.localPosition = new Vector3(0.2f, -0.15f, 0.1f);
             var light = lamp.AddComponent<Light>();
+            var flashlightConfig = LoadOrCreateAsset<Abandoned.Equipment.FlashlightConfig>(HealthContentBuilder.FlashlightPath);
             light.type = LightType.Spot;
-            light.range = 22f;
-            light.spotAngle = 55f;
-            light.intensity = 8f;
+            light.range = flashlightConfig.Range;
+            light.spotAngle = flashlightConfig.SpotAngle;
+            light.intensity = flashlightConfig.Intensity;
+            light.color = flashlightConfig.Color;
             // Soft shadows make the beam read in a dark store; carried items don't cast any (Grabbable).
             light.shadows = LightShadows.Soft;
             light.shadowNearPlane = 0.3f;
@@ -78,6 +80,7 @@ namespace Abandoned.EditorTools
             Set(equipment, "inputReader", reader);
             Set(equipment, "carrier", root.GetComponent<Abandoned.Interaction.PlayerCarrier>());
             Set(equipment, "flashlight", light);
+            Set(equipment, "flashlightConfig", flashlightConfig);
             var plank = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"{LootPrefabGenerator.Folder}/Loot_plank.prefab");
             if (plank != null) Set(equipment, "plankPrefab", plank.GetComponent<Unity.Netcode.NetworkObject>());
             else Debug.LogError("Loot_plank prefab missing; run Rebuild Content.");

@@ -20,5 +20,6 @@ namespace Abandoned.Equipment
         BoltCutters,
         MotionDetector,
         NightVision,
+        Battery,
     }
 }

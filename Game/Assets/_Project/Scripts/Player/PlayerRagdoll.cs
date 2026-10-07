@@ -40,6 +40,8 @@ namespace Abandoned.Player
         // Whether the remote copy's controller was on when its owner went down, so getting up restores
         // exactly that (something else, e.g. a test world, may have switched it off on purpose).
         private bool remoteControllerWasEnabled;
+        private float fallPeak, fallImpact;
+        private bool awaitingLanding;
 
         public bool IsRagdolled { get; private set; }
 
@@ -57,6 +59,8 @@ namespace Abandoned.Player
             ? remoteResting
             : pelvis.linearVelocity.sqrMagnitude < config.RestingSpeed * config.RestingSpeed;
         public Transform Head => head;
+        public Transform RagdollRoot => ragdollRoot;
+        public GameObject NormalBody => body;
         public Rigidbody Pelvis => pelvis;
         public PlayerRagdollConfig Config => config;
 
@@ -147,7 +151,15 @@ namespace Abandoned.Player
                 if (IsRagdolled && !HoldDown) Recover();
                 else if (!IsRagdolled) Enter(motor.MovementVelocity);
             }
-            if (IsRagdolled) Tick(Time.deltaTime);
+            if (IsRagdolled)
+            {
+                if (awaitingLanding)
+                {
+                    fallPeak = Mathf.Max(fallPeak, pelvis.position.y);
+                    fallImpact = Mathf.Max(fallImpact, -pelvis.linearVelocity.y);
+                }
+                Tick(Time.deltaTime);
+            }
         }
 
         private void LateUpdate()
@@ -167,7 +179,26 @@ namespace Abandoned.Player
         private void OnLanded(float fallHeight, float impactSpeed)
         {
             if (IsRemote) return;
-            if (fallHeight > config.FallHeight) Enter(Vector3.down * impactSpeed);
+            if (fallHeight > config.FallHeight)
+            {
+                Enter(Vector3.down * impactSpeed);
+                // This motor landing is already reported; do not count its subsequent body bounce twice.
+                awaitingLanding = false;
+            }
+        }
+
+        public void ReportBodyLanding(Collision collision)
+        {
+            if (IsRemote || !IsRagdolled || !awaitingLanding || collision.transform.IsChildOf(ragdollRoot) ||
+                collision.gameObject.layer == GameLayers.DebrisLayer) return;
+            bool floorContact = false;
+            for (int i = 0; i < collision.contactCount; i++)
+                if (collision.GetContact(i).normal.y > 0.35f) { floorContact = true; break; }
+            if (!floorContact) return;
+            awaitingLanding = false;
+            float height = Mathf.Max(0f, fallPeak - pelvis.position.y);
+            float speed = Mathf.Max(fallImpact, Mathf.Abs(collision.relativeVelocity.y));
+            motor.RaiseRemoteLanding(height, speed);
         }
 
         /// <summary>Called by the hit detector when a moving rigidbody touches the player.</summary>
@@ -196,6 +227,9 @@ namespace Abandoned.Player
                 parts[i].transform.SetLocalPositionAndRotation(partPositions[i], partRotations[i]);
             ragdollRoot.gameObject.SetActive(true);
             Physics.SyncTransforms();
+            fallPeak = pelvis.position.y;
+            fallImpact = Mathf.Max(0f, -velocity.y);
+            awaitingLanding = true;
             foreach (Rigidbody part in parts)
             {
                 part.linearVelocity = velocity;
@@ -245,6 +279,7 @@ namespace Abandoned.Player
             motor.ResetFallTracking();
             foreach (Behaviour b in disableWhileRagdolled) if (b != null) b.enabled = true;
             IsRagdolled = false;
+            awaitingLanding = false;
             Ended?.Invoke();
         }
     }

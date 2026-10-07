@@ -34,6 +34,8 @@ namespace Abandoned.Player
                 $"Grounded   {motor.IsGrounded}\n" +
                 $"Height     {motor.CurrentHeight:F2} m\n" +
                 $"Stamina    {stamina.Current:F0}/{stamina.Max:F0}{(stamina.IsExhausted ? "  <color=#FF6060>EXHAUSTED</color>" : "")}\n" +
+                $"Health     {GetComponent<Networking.NetworkPlayer>()?.Health:F0} / {GetComponent<Networking.NetworkPlayer>()?.MaxHealth:F0}\n" +
+                $"Battery    {GetComponent<Equipment.PlayerEquipment>()?.BatterySeconds:F0} s\n" +
                 $"Speed x    {motor.SpeedMultiplier:F2}\n" +
                 $"Drain x    {motor.StaminaDrainMultiplier:F2}\n" +
                 $"Bob        {cameraFeel.BobOffset.y:F3}  Dip {cameraFeel.Dip:F2}  Shake {cameraFeel.Trauma:F2}\n" +

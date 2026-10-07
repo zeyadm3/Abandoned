@@ -29,6 +29,7 @@ namespace Abandoned.EditorTools
         [MenuItem("Tools/Abandoned/Create Player Prefab")]
         public static void Create()
         {
+            HealthContentBuilder.Create();
             var config = LoadOrCreateAsset<PlayerMovementConfig>(ConfigPath);
             var carryConfig = LoadOrCreateAsset<CarryConfig>(CarryConfigPath);
             var ragdollConfig = LoadOrCreateAsset<PlayerRagdollConfig>(RagdollConfigPath);
@@ -77,8 +78,19 @@ namespace Abandoned.EditorTools
             var footsteps = root.AddComponent<PlayerFootsteps>();
             NetworkTransform networkTransform = AddNetworkTransform(root);
             var networkPlayer = root.AddComponent<NetworkPlayer>();
+            var healthEffects = root.AddComponent<PlayerHealthEffects>();
+            var corpsePresentation = root.AddComponent<PlayerCorpsePresentation>();
+            var bodyLanding = ragdollParts.Pelvis.gameObject.AddComponent<RagdollLandingSensor>();
             root.AddComponent<WorkerPresentation>().EditorSetup(body.GetComponent<WorkerRig>(), motor, carrier, ragdoll, networkPlayer);
             PlayerVoiceBuilder.Result voice = PlayerVoiceBuilder.Add(root, cameraRoot, reader);
+            var equipment = root.GetComponent<Abandoned.Equipment.PlayerEquipment>();
+            Set(healthEffects, "player", networkPlayer);
+            Set(healthEffects, "equipment", equipment);
+            Set(corpsePresentation, "player", networkPlayer);
+            Set(corpsePresentation, "ragdoll", ragdoll);
+            Set(corpsePresentation, "equipment", equipment);
+            Set(bodyLanding, "ragdoll", ragdoll);
+            Set(networkPlayer, "healthConfig", AssetDatabase.LoadAssetAtPath<PlayerHealthConfig>(HealthContentBuilder.HealthPath));
 
             Set(stamina, "config", config);
             Set(look, "config", config);
@@ -129,7 +141,7 @@ namespace Abandoned.EditorTools
             Set(networkPlayer, "carrier", carrier);
             Set(networkPlayer, "networkTransform", networkTransform);
             SetArray(networkPlayer, "ownerOnlyBehaviours",
-                new Object[] { playerCamera, reader, look, motor, interactor, hud, cameraFeel, debug, voice.Transmitter, voice.Hud });
+                new Object[] { playerCamera, reader, look, motor, interactor, hud, cameraFeel, debug, healthEffects, voice.Transmitter, voice.Hud });
             SetArray(networkPlayer, "ownerOnlyObjects", new Object[] { hitDetector });
 
             SetLayerRecursively(root, Abandoned.Core.GameLayers.PlayerLayer);

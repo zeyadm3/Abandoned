@@ -20,7 +20,7 @@ namespace Abandoned.EditorTools
                 Item("flashlight", "Flashlight", "Lights the way (F). Essential when the power's off.", EquipmentKind.Flashlight, 400, 1, false, new Color(1f, 0.9f, 0.5f)),
                 Item("radio", "Walkie-talkie", "Hold R to talk to everyone with a radio, anywhere.", EquipmentKind.Radio, 600, 1, false, new Color(0.3f, 0.3f, 0.3f)),
                 Item("hand_trolley", "Hand Trolley", "Lets one person drag Heavy items alone.", EquipmentKind.HandTrolley, 2500, 1, false, new Color(0.9f, 0.4f, 0.1f)),
-                Item("medkit", "Medkit", "Gets a downed crewmate back on their feet (single use).", EquipmentKind.Medkit, 1500, 1, true, new Color(0.9f, 0.2f, 0.2f)),
+                Item("medkit", "Medkit", "Treat yourself or an injured crewmate for 65 HP. A nearby downed crewmate gets up with 50 HP (single use).", EquipmentKind.Medkit, 1500, 1, true, new Color(0.9f, 0.2f, 0.2f)),
                 Item("planks", "Planks", "A plank to bridge a hole in the floor (single use).", EquipmentKind.Planks, 800, 2, true, new Color(0.6f, 0.45f, 0.25f)),
                 Item("noise_maker", "Noise Maker", "Throw it: it shrieks a few seconds later and draws the Blind One (single use).", EquipmentKind.NoiseMaker, 1200, 2, true, new Color(0.9f, 0.9f, 0.2f)),
                 Item("stress_scanner", "Stress Scanner", "Shows how close the floor ahead is to giving way.", EquipmentKind.StressScanner, 8000, 3, false, new Color(0.2f, 0.8f, 0.9f)),
@@ -39,6 +39,8 @@ namespace Abandoned.EditorTools
                     EquipmentKind.MotionDetector, 9000, 4, false, new Color(0.3f, 0.85f, 0.4f)),
                 Item("night_vision", "Night Vision", "In hand, use to switch on: see in the dark for two minutes of battery (it recharges while off).",
                     EquipmentKind.NightVision, 14000, 6, false, new Color(0.35f, 0.75f, 0.3f)),
+                Item("battery", "Flashlight Battery", "Replaces a used flashlight cell. Keep your flashlight in the other slot and use (single use).",
+                    EquipmentKind.Battery, 500, 1, true, new Color(0.5f, 0.56f, 0.42f)),
             };
             CreateNoiseMaker();
             CreateSupportJack();
@@ -130,7 +132,15 @@ namespace Abandoned.EditorTools
         {
             string path = $"{Folder}/Equipment_{id}.asset";
             var d = AssetDatabase.LoadAssetAtPath<EquipmentDefinition>(path);
-            if (d != null) return d;
+            if (d != null)
+            {
+                if (id == "medkit")
+                {
+                    d.EditorSetup(id, name, description, kind, d.Price, d.UnlockLevel, consumable, d.Color);
+                    EditorUtility.SetDirty(d);
+                }
+                return d;
+            }
             d = ScriptableObject.CreateInstance<EquipmentDefinition>();
             d.EditorSetup(id, name, description, kind, price, level, consumable, color);
             AssetDatabase.CreateAsset(d, path);

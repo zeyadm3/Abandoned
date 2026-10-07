@@ -52,6 +52,12 @@ namespace Abandoned.Audio
             Emit(Bank != null ? Bank.Get(id) : null, Fallback(id), Vector3.zero, volume01, spatial: false);
         }
 
+        public static void PlayHeartbeat(float volume01) =>
+            Emit(null, PlayerVitalAudio.Heartbeat, Vector3.zero, volume01, spatial: false, priority: 72);
+
+        public static void PlayBreath(float volume01) =>
+            Emit(null, PlayerVitalAudio.Breath, Vector3.zero, volume01, spatial: false, priority: 96);
+
         public static void PlayImpact(SurfaceMaterial material, Vector3 position, float volume01)
         {
             LastImpactMaterial = material;
