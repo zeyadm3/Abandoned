@@ -195,6 +195,8 @@ namespace Abandoned.Threats
                     LandedRpc(hit.point);
                 }
                 else transform.position += Vector3.down * step;
+                // Nothing below at all (out of the world): it's gone, rather than falling forever.
+                if (transform.position.y < -30f) NetworkObject.Despawn(true);
                 return;
             }
             if (Time.time < stunnedUntil) return;

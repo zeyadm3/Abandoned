@@ -102,10 +102,10 @@ namespace Abandoned.Structure
             collapseSeedBase = seedBase;
         }
 
-        /// <summary>Back to authored health with colliders on; used at start and by the debug reroll.</summary>
         /// <summary>Host: braced from below (a support jack); a restore takes it away again.</summary>
         public void Reinforce(float multiplier) => Reinforcement = Mathf.Max(Reinforcement, multiplier);
 
+        /// <summary>Back to authored health with colliders on; used at start and by the debug reroll.</summary>
         public void ResetState()
         {
             Reinforcement = 1f;
