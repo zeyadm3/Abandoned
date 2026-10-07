@@ -147,12 +147,7 @@ namespace Abandoned.EditorTools
             label.fontSize = 64;
             label.color = new Color(0.63f, 0.65f, 0.58f);
             Font font = AssetDatabase.LoadAssetAtPath<Font>("Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
-            if (font != null)
-            {
-                label.font = font;
-                label.GetComponent<Renderer>().sharedMaterial = font.material;
-            }
-            label.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+            WorldTextMaterial.Apply(label, font);
         }
 
         private static void Decal(string name, Transform parent, Vector3 position, Quaternion rotation, Vector2 size, Material material)

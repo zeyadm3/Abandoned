@@ -184,9 +184,7 @@ namespace Abandoned.EditorTools
             caption.text = text; caption.anchor = TextAnchor.MiddleCenter; caption.alignment = TextAlignment.Center;
             caption.fontSize = 64; caption.characterSize = size; caption.color = new Color(.65f, .61f, .46f);
             Font font = AssetDatabase.LoadAssetAtPath<Font>("Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
-            if (font == null) return;
-            caption.font = font;
-            caption.GetComponent<Renderer>().sharedMaterial = font.material;
+            WorldTextMaterial.Apply(caption, font);
         }
     }
 }

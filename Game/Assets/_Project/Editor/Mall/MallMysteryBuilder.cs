@@ -70,7 +70,7 @@ namespace Abandoned.EditorTools
             words.text=text;words.anchor=TextAnchor.MiddleCenter;words.alignment=TextAlignment.Center;words.fontSize=64;
             words.characterSize=Mathf.Min(height*0.65f,width/Mathf.Max(1,text.Length)*1.4f);words.color=new Color(0.67f,0.62f,0.5f);
             var font=AssetDatabase.LoadAssetAtPath<Font>("Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
-            if(font!=null){words.font=font;words.GetComponent<Renderer>().sharedMaterial=font.material;}
+            WorldTextMaterial.Apply(words,font);
         }
     }
 }

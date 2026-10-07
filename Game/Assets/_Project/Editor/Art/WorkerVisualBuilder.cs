@@ -97,11 +97,7 @@ namespace Abandoned.EditorTools
             label.text = "1";
             label.color = new Color(0.95f, 0.94f, 0.85f);
             Font font = AssetDatabase.LoadAssetAtPath<Font>("Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
-            if (font != null)
-            {
-                label.font = font;
-                label.GetComponent<Renderer>().sharedMaterial = font.material;
-            }
+            WorldTextMaterial.Apply(label, font);
         }
     }
 }

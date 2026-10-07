@@ -60,8 +60,9 @@ namespace Abandoned.EditorTools
             material.SetColor("_BaseColor", texture != null ? Color.white : Palette.GetValueOrDefault(key, Color.gray));
             material.SetFloat("_Smoothness", key is "Water" or "Glass" ? .76f : key is "Metal" or "Brass" ? .45f : .11f);
             material.SetFloat("_Metallic", key is "Metal" or "Brass" or "Rust" ? .65f : 0f);
-            // Glass and thin grime surfaces have no thickness; both faces must remain readable by torchlight.
-            material.SetFloat("_Cull", key is "Glass" or "Mould" or "Water" or "Stain" or "Chalk" or "Paper" ? (float)CullMode.Off : (float)CullMode.Back);
+            // Glass and flat grime decals have no thickness, so both faces stay visible by torchlight. Lettering
+            // (Chalk) and notices (Paper) are closed meshes: single-sided, so no sign reads mirrored from behind.
+            material.SetFloat("_Cull", key is "Glass" or "Mould" or "Water" or "Stain" ? (float)CullMode.Off : (float)CullMode.Back);
             if (key is "LightAmber" or "LightRed")
             {
                 material.EnableKeyword("_EMISSION");
