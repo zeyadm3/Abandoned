@@ -53,10 +53,46 @@ namespace Abandoned.EditorTools
             trigger.center = new Vector3(0f, FloorHeight + WallHeight / 2f, 0f);
             trigger.size = new Vector3(BayWidth, WallHeight, BayLength);
 
+            AddFloodlights(root, half);
+
             var cargo = root.gameObject.AddComponent<TruckCargo>();
             cargo.EditorSetup(trigger, new Bounds(new Vector3(0f, 1.5f, 1f), new Vector3(BayWidth + 0.6f, 3.5f, BayLength + 3f)), ignition.transform);
             foreach (Transform piece in root) piece.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             return cargo;
+        }
+
+        // M10.1 truck upgrade: a light bar on the cab roof aimed back over the bay and the lot; off until bought.
+        private static void AddFloodlights(Transform root, float half)
+        {
+            Material glow = GetMaterial("Greybox_TruckFloodlight", new Color(1f, 0.95f, 0.8f));
+            glow.SetColor("_EmissionColor", new Color(3f, 2.8f, 2.3f));
+            glow.EnableKeyword("_EMISSION");
+            glow.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+            Material housing = GetMaterial("Greybox_TruckLightBar", new Color(0.15f, 0.15f, 0.16f));
+            float roof = 1.6f + 1.2f;
+            Box("LightBar", root, new Vector3(0f, roof + 0.08f, half + 0.6f), new Vector3(BayWidth * 0.8f, 0.16f, 0.25f), housing, withCollider: false);
+            var lights = new System.Collections.Generic.List<Light>();
+            var lamps = new System.Collections.Generic.List<Renderer>();
+            foreach (float side in new[] { -0.7f, 0.7f })
+            {
+                GameObject lamp = Box("Floodlamp", root, new Vector3(side, roof + 0.25f, half + 0.5f), new Vector3(0.45f, 0.3f, 0.12f), glow, withCollider: false);
+                lamps.Add(lamp.GetComponent<Renderer>());
+                var go = new GameObject("Floodlight");
+                go.transform.SetParent(root, false);
+                go.transform.localPosition = new Vector3(side, roof + 0.3f, half + 0.4f);
+                go.transform.localRotation = Quaternion.Euler(22f, 180f + side * 18f, 0f); // back over the bay, slightly outward
+                var light = go.AddComponent<Light>();
+                light.type = LightType.Spot;
+                light.range = 32f;
+                light.spotAngle = 75f;
+                light.intensity = 14f;
+                light.color = new Color(1f, 0.95f, 0.85f);
+                light.shadows = LightShadows.None; // the shadow budget belongs to flashlights (M7.6)
+                light.enabled = false;
+                lights.Add(light);
+            }
+            foreach (Renderer r in lamps) r.enabled = false;
+            root.gameObject.AddComponent<TruckFloodlights>().EditorSetup(lights.ToArray(), lamps.ToArray());
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Abandoned.Extraction
             RunNetState s = run.State;
             if (s.Phase != RunPhase.Running) return null;
             if (s.Overloaded) return $"Overloaded ({s.CargoVolume:0.0}/{s.CargoCapacity:0} m³) - unload something";
-            return $"Start the truck: it leaves in {run.Config.HonkSeconds:0} s (haul ${s.Haul:N0} / quota ${s.Quota:N0})";
+            return $"Start the truck: it leaves in {run.HonkSeconds:0} s (haul ${s.Haul:N0} / quota ${s.Quota:N0})";
         }
 
         public void Use(GameObject user) => RunState.Current?.RequestDepart();

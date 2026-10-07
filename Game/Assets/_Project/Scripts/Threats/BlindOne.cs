@@ -150,6 +150,7 @@ namespace Abandoned.Threats
                 Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > config.AttackRange * config.AttackRange) continue;
+                if (Sheltered(at)) continue;
                 // Touch, not through a wall: a player pressed against the far side of a partition is safe.
                 if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, wallMask, QueryTriggerInteraction.Ignore)) continue;
                 p.ServerKill();

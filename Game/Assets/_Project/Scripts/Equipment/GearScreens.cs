@@ -36,7 +36,8 @@ namespace Abandoned.Equipment
             if (!open || company == null) return;
 
             PlayerEquipment mine = Mine();
-            key.Clear().Append(ShopTerminal.Open ? "shop" : "rack").Append('|').Append(company.State.Money).Append('|').Append(company.State.Level);
+            key.Clear().Append(ShopTerminal.Open ? "shop" : "rack").Append('|').Append(company.State.Money).Append('|').Append(company.State.Level)
+                .Append('|').Append(company.State.TruckUpgrades);
             for (int i = 0; i < company.Equipment.Items.Count; i++) key.Append('|').Append(company.OwnedCount(i));
             if (mine != null) key.Append('|').Append(mine.State[0]).Append(',').Append(mine.State[1]);
             foreach (PlayerEquipment e in PlayerEquipment.All) if (e != null) key.Append(';').Append(e.State[0]).Append(',').Append(e.State[1]);
@@ -69,6 +70,34 @@ namespace Abandoned.Equipment
                 int index = i;
                 MenuKit.Button(row, locked ? $"Level {d.UnlockLevel}" : "Buy", () => company.RequestBuy(index), SoundId.Coins, small: true)
                     .SetEnabled(!locked && money >= d.Price);
+            }
+            TruckSection(scroll, company);
+        }
+
+        // M10.1: the truck's upgrades, bought once each, in tiers.
+        private static void TruckSection(VisualElement scroll, CompanyService company)
+        {
+            TruckUpgradeCatalog upgrades = company.TruckUpgrades;
+            if (upgrades == null || upgrades.Items.Count == 0) return;
+            MenuKit.Text(scroll, "THE TRUCK", "section");
+            int money = company.State.Money;
+            for (int i = 0; i < upgrades.Items.Count; i++)
+            {
+                TruckUpgradeDefinition d = upgrades.Items[i];
+                if (d == null) continue;
+                bool owned = company.OwnsUpgrade(i);
+                TruckUpgradeDefinition previous = upgrades.Previous(d);
+                // A tier shows once the one below it is bought (or always, for a first tier).
+                if (!owned && previous != null && !company.OwnsUpgrade(upgrades.IndexOf(previous))) continue;
+                VisualElement row = MenuKit.Row(scroll);
+                row.AddToClassList("hud-row");
+                Label about = MenuKit.Text(row, $"<b>{d.DisplayName}</b>\n{d.Description}");
+                about.AddToClassList("hud-cell--name");
+                MenuKit.Text(row, owned ? "fitted" : $"${d.Price:N0}", "hud-cell");
+                int index = i;
+                string label = owned ? "Owned" : d.UnlockLevel > company.State.Level ? $"Level {d.UnlockLevel}" : "Buy";
+                MenuKit.Button(row, label, () => company.RequestBuyUpgrade(index), SoundId.Coins, small: true)
+                    .SetEnabled(company.UpgradeAvailable(index) && money >= d.Price);
             }
         }
 

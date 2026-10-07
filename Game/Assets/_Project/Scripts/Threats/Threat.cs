@@ -43,6 +43,7 @@ namespace Abandoned.Threats
                 Vector3 at = PositionOf(p);
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;
+                if (Sheltered(at)) continue;
                 if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, WallMask, QueryTriggerInteraction.Ignore)) continue;
                 p.ServerKill();
                 Kills++;
@@ -51,6 +52,9 @@ namespace Abandoned.Threats
             }
             return null;
         }
+
+        /// <summary>Host: inside an armored truck (M10.1) nothing can touch you.</summary>
+        protected static bool Sheltered(Vector3 at) => Extraction.RunState.Current != null && Extraction.RunState.Current.Shelters(at);
 
         private readonly RaycastHit[] sightHits = new RaycastHit[8];
 

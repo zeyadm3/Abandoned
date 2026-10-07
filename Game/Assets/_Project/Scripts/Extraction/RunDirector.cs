@@ -109,9 +109,13 @@ namespace Abandoned.Extraction
                     lootFill = m != null ? m.LootMultiplier : 1f;
                     fragileRarity = m != null ? m.FragileRarity : 1f;
                     extraJackpots = m != null ? m.ExtraJackpots : 0;
+                    // The company's truck (M10.1) rides along on every job.
+                    float cargo = company.UpgradeAmount(Company.TruckUpgradeKind.Cargo, 1f);
+                    float honk = company.UpgradeAmount(Company.TruckUpgradeKind.Engine, 0f);
+                    bool armored = company.HasUpgrade(Company.TruckUpgradeKind.Armor);
                     RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff,
                         m != null && m.Night, m != null && m.Storm, m != null ? m.ExtraThreats : 0, m != null ? m.HearingMultiplier : 1f,
-                        m != null ? m.DecayMultiplier : 1f);
+                        m != null ? m.DecayMultiplier : 1f, cargo, honk, armored);
                 }
                 else RunState.TermsSource = null;
                 BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);

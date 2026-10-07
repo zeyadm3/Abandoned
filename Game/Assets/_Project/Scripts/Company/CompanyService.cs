@@ -24,6 +24,7 @@ namespace Abandoned.Company
         [SerializeField] private CompanyConfig config;
         [SerializeField] private ContractConfig contracts;
         [SerializeField] private EquipmentCatalog equipment;
+        [SerializeField] private TruckUpgradeCatalog truckUpgrades;
 
         private readonly NetworkVariable<CompanyNetState> state = new();
         private readonly NetworkVariable<int> boardSeed = new();
@@ -102,7 +103,7 @@ namespace Abandoned.Company
                 Debug.LogWarning($"[Company] The last job was never finished: settled as an empty haul (penalty ${abandoned.Penalty:N0}).");
                 store?.Save(save);
             }
-            state.Value = CompanyNetState.Of(save);
+            state.Value = CompanyNetState.Of(save, truckUpgrades);
             PublishGear();
             boardSeed.Value = NewSeed();
             companyGame.Value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == HomeLevel;
@@ -184,7 +185,7 @@ namespace Abandoned.Company
             CompanyLedger.GoBankrupt(save);
             save.bankruptcies = Mathf.Max(0, save.bankruptcies - 1); // starting over isn't going bankrupt
             store?.Save(save);
-            state.Value = CompanyNetState.Of(save);
+            state.Value = CompanyNetState.Of(save, truckUpgrades);
             selected.Value = -1;
             boardSeed.Value = NewSeed();
             PublishGear();
@@ -264,6 +265,65 @@ namespace Abandoned.Company
             if (TrySpend(d.Id, d.Price)) Debug.Log($"[Company] Bought {d.DisplayName} for ${d.Price:N0}; ${save.money:N0} left.");
         }
 
+        // ---- Truck upgrades (M10.1, GDD 13) ----
+
+        public TruckUpgradeCatalog TruckUpgrades => truckUpgrades;
+
+        /// <summary>Every machine: the company owns this catalog entry.</summary>
+        public bool OwnsUpgrade(int index) => index >= 0 && index < TruckUpgradeCatalog.MaxUpgrades && (State.TruckUpgrades & (1 << index)) != 0;
+
+        /// <summary>Every machine: the best owned tier's amount of a kind, or <paramref name="none"/> without one.</summary>
+        public float UpgradeAmount(TruckUpgradeKind kind, float none)
+        {
+            TruckUpgradeDefinition best = BestOwned(kind);
+            return best != null ? best.Amount : none;
+        }
+
+        public bool HasUpgrade(TruckUpgradeKind kind) => BestOwned(kind) != null;
+
+        private TruckUpgradeDefinition BestOwned(TruckUpgradeKind kind)
+        {
+            TruckUpgradeDefinition best = null;
+            if (truckUpgrades == null) return null;
+            for (int i = 0; i < truckUpgrades.Items.Count; i++)
+            {
+                TruckUpgradeDefinition d = truckUpgrades.Items[i];
+                if (d != null && d.Kind == kind && OwnsUpgrade(i) && (best == null || d.Tier > best.Tier)) best = d;
+            }
+            return best;
+        }
+
+        /// <summary>Every machine: can the company buy this upgrade now (level, the tier below, not owned yet)? Money aside.</summary>
+        public bool UpgradeAvailable(int index)
+        {
+            TruckUpgradeDefinition d = truckUpgrades != null ? truckUpgrades.At(index) : null;
+            if (d == null || OwnsUpgrade(index) || d.UnlockLevel > State.Level) return false;
+            TruckUpgradeDefinition previous = truckUpgrades.Previous(d);
+            return previous == null || OwnsUpgrade(truckUpgrades.IndexOf(previous));
+        }
+
+        /// <summary>Anyone at the shop: buy a truck upgrade (the host checks level, tier and money).</summary>
+        public void RequestBuyUpgrade(int index)
+        {
+            if (IsServer) BuyUpgrade(index);
+            else BuyUpgradeRpc(index);
+        }
+
+        [Rpc(SendTo.Server)]
+        private void BuyUpgradeRpc(int index) => BuyUpgrade(index);
+
+        private void BuyUpgrade(int index)
+        {
+            TruckUpgradeDefinition d = truckUpgrades != null ? truckUpgrades.At(index) : null;
+            if (d == null || save.Owns(d.Id) || d.UnlockLevel > save.level || d.Price < 0 || save.money < d.Price) return;
+            TruckUpgradeDefinition previous = truckUpgrades.Previous(d);
+            if (previous != null && !save.Owns(previous.Id)) return;
+            save.money -= d.Price;
+            save.Unlock(d.Id);
+            Saved();
+            Debug.Log($"[Company] Truck upgrade: {d.DisplayName} for ${d.Price:N0}; ${save.money:N0} left.");
+        }
+
         /// <summary>Host: a consumable was used up (medkit, planks, noise maker).</summary>
         public bool Consume(int index)
         {
@@ -278,7 +338,7 @@ namespace Abandoned.Company
             // A failed write (file locked, disk full) is logged by the store and retried with the next
             // save; what everyone sees must still update.
             store?.Save(save);
-            state.Value = CompanyNetState.Of(save);
+            state.Value = CompanyNetState.Of(save, truckUpgrades);
             PublishGear();
         }
 

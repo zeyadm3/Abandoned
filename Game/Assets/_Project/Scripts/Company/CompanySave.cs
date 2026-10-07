@@ -23,6 +23,7 @@ namespace Abandoned.Company
         public int bankruptcies;
         public int bestHaul;
         public List<OwnedItem> equipment = new();
+        /// <summary>One-off purchases the company keeps (truck upgrades, M10.1), by id.</summary>
         public List<string> unlocks = new();
         // A job taken but not yet settled (quota > 0): the host quit or crashed mid-run.
         public int pendingQuota;
@@ -63,6 +64,13 @@ namespace Abandoned.Company
                 return true;
             }
             return false;
+        }
+
+        public bool Owns(string unlockId) => unlocks.Contains(unlockId);
+
+        public void Unlock(string unlockId)
+        {
+            if (!Owns(unlockId)) unlocks.Add(unlockId);
         }
 
         /// <summary>A new company (also after bankruptcy): the GDD 12 basic kit, nothing else.</summary>

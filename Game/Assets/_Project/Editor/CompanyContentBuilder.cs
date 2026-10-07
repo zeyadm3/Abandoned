@@ -47,6 +47,7 @@ namespace Abandoned.EditorTools
             }
 
             var equipment = EquipmentContentBuilder.CreateMissing();
+            var upgrades = CreateTruckUpgrades();
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(CompanyServicePrefabPath);
             if (existing != null && existing.GetComponent<CompanyService>() != null)
             {
@@ -55,6 +56,7 @@ namespace Abandoned.EditorTools
                 Set(existingService, "config", company);
                 Set(existingService, "contracts", contracts);
                 Set(existingService, "equipment", equipment);
+                Set(existingService, "truckUpgrades", upgrades);
                 PrefabUtility.SavePrefabAsset(existing);
                 return existing;
             }
@@ -66,11 +68,57 @@ namespace Abandoned.EditorTools
             Set(service, "config", company);
             Set(service, "contracts", contracts);
             Set(service, "equipment", equipment);
+            Set(service, "truckUpgrades", upgrades);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, CompanyServicePrefabPath);
             Object.DestroyImmediate(root);
             NetworkObjectIds.StampPrefab(prefab);
             AssetDatabase.SaveAssets();
             return prefab;
+        }
+
+        public const string TruckUpgradeFolder = "Assets/_Project/Data/Company/TruckUpgrades";
+        public const string TruckUpgradeCatalogPath = "Assets/_Project/Data/Company/TruckUpgrades.asset";
+
+        /// <summary>
+        /// GDD 13 truck upgrades (M10.1), one asset per tier (created when missing, never overwritten) and the
+        /// catalog in a fixed order: append only, an entry's index is its bit on the network.
+        /// </summary>
+        public static TruckUpgradeCatalog CreateTruckUpgrades()
+        {
+            if (!AssetDatabase.IsValidFolder(TruckUpgradeFolder)) AssetDatabase.CreateFolder("Assets/_Project/Data/Company", "TruckUpgrades");
+            var items = new System.Collections.Generic.List<TruckUpgradeDefinition>
+            {
+                Upgrade("cargo_1", "Bigger Bay", "Side boards and a roof rack: 35 % more cargo space.", TruckUpgradeKind.Cargo, 1, 12000, 2, 1.35f),
+                Upgrade("floodlights", "Floodlights", "A light bar on the cab: the lot and the loading bay stay lit, power or no power.",
+                    TruckUpgradeKind.Floodlights, 1, 8000, 3, 1f),
+                Upgrade("engine_1", "Tuned Engine", "It starts first time: the truck leaves 7 s after the lever, not 10.", TruckUpgradeKind.Engine, 1, 10000, 4, 7f),
+                Upgrade("cargo_2", "Box Truck", "A proper box truck: 75 % more cargo space than the van.", TruckUpgradeKind.Cargo, 2, 30000, 5, 1.75f),
+                Upgrade("engine_2", "V8", "Leaves 4 s after the lever. Hold on to something.", TruckUpgradeKind.Engine, 2, 25000, 7, 4f),
+                Upgrade("armor", "Armored Bay", "Steel plates and a cage: nothing that lives in there can touch you inside the truck.",
+                    TruckUpgradeKind.Armor, 1, 40000, 9, 1f),
+            };
+            var catalog = LoadOrCreateAsset<TruckUpgradeCatalog>(TruckUpgradeCatalogPath);
+            // Keep the existing order (network bits); append what's new.
+            var current = new System.Collections.Generic.List<TruckUpgradeDefinition>(catalog.Items);
+            current.RemoveAll(d => d == null);
+            foreach (TruckUpgradeDefinition d in items)
+                if (!current.Contains(d)) current.Add(d);
+            catalog.EditorSet(current);
+            EditorUtility.SetDirty(catalog);
+            AssetDatabase.SaveAssets();
+            return catalog;
+        }
+
+        private static TruckUpgradeDefinition Upgrade(string id, string displayName, string description, TruckUpgradeKind kind, int tier,
+            int price, int level, float amount)
+        {
+            string path = $"{TruckUpgradeFolder}/TruckUpgrade_{id}.asset";
+            var d = AssetDatabase.LoadAssetAtPath<TruckUpgradeDefinition>(path);
+            if (d != null) return d;
+            d = ScriptableObject.CreateInstance<TruckUpgradeDefinition>();
+            d.EditorSetup(id, displayName, description, kind, tier, price, level, amount);
+            AssetDatabase.CreateAsset(d, path);
+            return d;
         }
 
         // Created when missing; never overwritten, so inspector tuning is kept.

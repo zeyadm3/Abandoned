@@ -16,6 +16,8 @@ namespace Abandoned.Extraction
         /// <summary>M9.2 modifiers every machine shows: after dark, a storm.</summary>
         public bool Night, Storm;
         public float CargoVolume, CargoCapacity;
+        /// <summary>The honk before departure this run (s); the engine upgrade shortens it (M10.1).</summary>
+        public float HonkSeconds;
         public double WindowEnd, HonkEnd;
 
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
@@ -32,6 +34,7 @@ namespace Abandoned.Extraction
             s.SerializeValue(ref Storm);
             s.SerializeValue(ref CargoVolume);
             s.SerializeValue(ref CargoCapacity);
+            s.SerializeValue(ref HonkSeconds);
             s.SerializeValue(ref WindowEnd);
             s.SerializeValue(ref HonkEnd);
         }
@@ -39,7 +42,7 @@ namespace Abandoned.Extraction
         public bool Overloaded => CargoVolume > CargoCapacity;
 
         public bool Equals(RunNetState o) => Phase == o.Phase && Quota == o.Quota && Haul == o.Haul && Seed == o.Seed && Danger == o.Danger && Window.Equals(o.Window) && Bonus.Equals(o.Bonus) && PowerOff == o.PowerOff && Night == o.Night && Storm == o.Storm &&
-                                             CargoVolume.Equals(o.CargoVolume) && CargoCapacity.Equals(o.CargoCapacity) &&
+                                             CargoVolume.Equals(o.CargoVolume) && CargoCapacity.Equals(o.CargoCapacity) && HonkSeconds.Equals(o.HonkSeconds) &&
                                              WindowEnd.Equals(o.WindowEnd) && HonkEnd.Equals(o.HonkEnd);
     }
 }

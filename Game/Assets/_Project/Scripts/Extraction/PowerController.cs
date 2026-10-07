@@ -35,7 +35,9 @@ namespace Abandoned.Extraction
             foreach (LightFixture f in FindObjectsByType<LightFixture>(FindObjectsSortMode.None))
                 if (f.gameObject.scene == gameObject.scene) fixtures.Add(f);
             foreach (Light l in FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if (l.type != LightType.Directional && l.gameObject.scene == gameObject.scene && l.GetComponentInParent<LightFixture>() == null)
+                // The truck's floodlights run off its own battery, not the building's power.
+                if (l.type != LightType.Directional && l.gameObject.scene == gameObject.scene && l.GetComponentInParent<LightFixture>() == null
+                    && l.GetComponentInParent<TruckFloodlights>() == null)
                     lights.Add(l);
         }
 

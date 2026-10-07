@@ -32,6 +32,10 @@ namespace Abandoned.Extraction
         public double Now => NetworkManager != null ? NetworkManager.ServerTime.Time : 0d;
         public float WindowRemaining => Mathf.Max(0f, (float)(State.WindowEnd - Now));
         public bool WindowClosed => IsSpawned && Now >= State.WindowEnd;
+        /// <summary>How long the truck honks before it leaves this run (the engine upgrade shortens it).</summary>
+        public float HonkSeconds => State.HonkSeconds > 0f ? State.HonkSeconds : config.HonkSeconds;
+        /// <summary>Host: armored truck (M10.1): nothing touches you inside it.</summary>
+        public bool Shelters(Vector3 at) => IsServer && Terms.Armored && TruckCargo.Current != null && TruckCargo.Current.Carries(at);
         public float HonkRemaining => State.Phase == RunPhase.Honking ? Mathf.Max(0f, (float)(State.HonkEnd - Now)) : 0f;
 
         /// <summary>Every machine: the truck left and the results arrived.</summary>
@@ -54,10 +58,17 @@ namespace Abandoned.Extraction
             /// <summary>Host-only modifier effects: extra opening threats, threat hearing, floor decay.</summary>
             public readonly int ExtraThreats;
             public readonly float Hearing, Decay;
+            /// <summary>Truck upgrades (M10.1): cargo capacity multiplier, honk seconds (0 = the config's), armor.</summary>
+            public readonly float CargoMultiplier, HonkSeconds;
+            public readonly bool Armored;
 
             public RunTerms(int quota, float window, float bonus, bool powerOff, bool night = false, bool storm = false,
-                int extraThreats = 0, float hearing = 1f, float decay = 1f)
+                int extraThreats = 0, float hearing = 1f, float decay = 1f, float cargoMultiplier = 1f, float honkSeconds = 0f,
+                bool armored = false)
             {
+                CargoMultiplier = cargoMultiplier;
+                HonkSeconds = honkSeconds;
+                Armored = armored;
                 Quota = quota;
                 Window = window;
                 Bonus = bonus;
@@ -82,7 +93,8 @@ namespace Abandoned.Extraction
                 Phase = RunPhase.Running,
                 Quota = terms.Quota,
                 Seed = SeedSource?.Invoke() ?? 0,
-                CargoCapacity = config.CargoCapacity,
+                CargoCapacity = config.CargoCapacity * Mathf.Max(1f, terms.CargoMultiplier),
+                HonkSeconds = terms.HonkSeconds > 0f ? terms.HonkSeconds : config.HonkSeconds,
                 Window = terms.Window,
                 Bonus = terms.Bonus,
                 PowerOff = terms.PowerOff,
@@ -158,9 +170,9 @@ namespace Abandoned.Extraction
             if (State.Overloaded) return;
             RunNetState s = State;
             s.Phase = RunPhase.Honking;
-            s.HonkEnd = Now + config.HonkSeconds;
+            s.HonkEnd = Now + HonkSeconds;
             state.Value = s;
-            Debug.Log($"[Run] Player {client} started the truck; leaving in {config.HonkSeconds:0} s.");
+            Debug.Log($"[Run] Player {client} started the truck; leaving in {HonkSeconds:0} s.");
         }
 
         private RunPhase shownPhase;
