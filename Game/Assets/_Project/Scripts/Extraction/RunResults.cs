@@ -16,6 +16,8 @@ namespace Abandoned.Extraction
             public int FinalValue;
             /// <summary>Carried out in a pocket rather than loaded in the cargo.</summary>
             public bool Pocketed;
+            /// <summary>One of the run's big prizes (M9.5 achievements).</summary>
+            public bool Jackpot;
 
             public int DamageLost => StartValue - FinalValue;
 
@@ -25,6 +27,7 @@ namespace Abandoned.Extraction
                 s.SerializeValue(ref StartValue);
                 s.SerializeValue(ref FinalValue);
                 s.SerializeValue(ref Pocketed);
+                s.SerializeValue(ref Jackpot);
             }
         }
 

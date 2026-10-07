@@ -206,7 +206,13 @@ namespace Abandoned.Threats
         }
 
         [Rpc(SendTo.Everyone)]
-        private void LandedRpc(Vector3 at) => Audio.GameAudio.Play(Audio.SoundId.HunterLanding, at, 1f);
+        private void LandedRpc(Vector3 at)
+        {
+            Audio.GameAudio.Play(Audio.SoundId.HunterLanding, at, 1f);
+            // Seen it happen (near enough): the "lure it onto a weak floor" achievement.
+            Camera ear = Camera.main;
+            if (ear != null && Vector3.Distance(ear.transform.position, at) < 25f) Achievements.Increment(Achievements.StatHunterFalls);
+        }
 
         // Every machine: heavy steps, quicker when it charges (its signature, GDD 9: one clear rule).
         private void Footsteps()

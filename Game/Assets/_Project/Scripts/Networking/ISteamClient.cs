@@ -17,5 +17,8 @@ namespace Abandoned.Networking
 
         /// <summary>The Steam overlay on a store page (the demo's wishlist button).</summary>
         void OpenStoreOverlay(uint appId);
+
+        /// <summary>Unlocks a Steam achievement by its API name (M9.5; needs the real App ID's setup).</summary>
+        void SetAchievement(string apiName);
     }
 }

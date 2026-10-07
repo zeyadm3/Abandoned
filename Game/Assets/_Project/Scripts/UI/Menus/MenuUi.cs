@@ -34,6 +34,7 @@ namespace Abandoned.UI
         private WardrobeView wardrobe;
         private HowToPlayView howToPlay;
         private DemoEndView demoEnd;
+        private AchievementsView achievements;
         private bool demoEndShown;
         private bool paused, pausedForScreen;
 
@@ -70,6 +71,8 @@ namespace Abandoned.UI
             views[MenuScreen.HowToPlay] = howToPlay.Root;
             demoEnd = new DemoEndView(this);
             views[MenuScreen.DemoEnd] = demoEnd.Root;
+            achievements = new AchievementsView(this);
+            views[MenuScreen.Achievements] = achievements.Root;
             foreach (VisualElement v in views.Values) root.Add(v);
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
@@ -162,6 +165,7 @@ namespace Abandoned.UI
         {
             pushed.Push(screen);
             if (screen == MenuScreen.HowToPlay) howToPlay.Refresh();
+            if (screen == MenuScreen.Achievements) achievements.Refresh();
         }
 
         /// <summary>A screen opened from the world (the HQ lockers): Back returns straight to the game.</summary>

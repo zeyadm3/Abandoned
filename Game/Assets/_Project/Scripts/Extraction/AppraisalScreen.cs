@@ -47,6 +47,10 @@ namespace Abandoned.Extraction
             bool escaped = false;
             foreach (RunResults.Player p in r.Players) if (p.ClientId == me) escaped = p.Extracted;
             Abandoned.Player.PlayerProfile.RecordRun(escaped, r.Haul);
+            int jackpots = 0;
+            foreach (RunResults.Item item in r.Items) if (item.Jackpot) jackpots++;
+            RunNetState s = RunState.Current.State;
+            Core.Achievements.RecordRun(escaped, r.Haul, r.QuotaMet, jackpots, s.PowerOff || s.Night);
         }
 
         private void LateUpdate()

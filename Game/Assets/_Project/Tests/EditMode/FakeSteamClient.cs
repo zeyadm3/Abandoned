@@ -34,6 +34,8 @@ namespace Abandoned.Tests
 
         public uint StoreOverlayOpened { get; private set; }
         public void OpenStoreOverlay(uint appId) => StoreOverlayOpened = appId;
+        public System.Collections.Generic.List<string> AchievementsSet { get; } = new();
+        public void SetAchievement(string apiName) => AchievementsSet.Add(apiName);
         public void Shutdown()
         {
             ShutdownCalls++;

@@ -276,6 +276,10 @@ namespace Abandoned.Equipment
             SoundRpc(Audio.SoundId.CrowbarHit, hit.point);
         }
 
+        // The reviver's own machine counts it (achievements are personal).
+        [Rpc(SendTo.Owner)]
+        private void RevivedSomeoneRpc() => Achievements.Increment(Achievements.StatRevives);
+
         [Rpc(SendTo.Everyone)]
         private void SoundRpc(Audio.SoundId id, Vector3 at) => Audio.GameAudio.Play(id, at, 1f);
 
@@ -294,6 +298,7 @@ namespace Abandoned.Equipment
             }
             if (best == null) return false;
             best.ServerRevive();
+            RevivedSomeoneRpc();
             Debug.Log($"[Gear] Player {OwnerClientId} revived player {best.OwnerClientId} with a medkit.");
             return true;
         }

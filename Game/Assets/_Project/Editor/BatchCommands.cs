@@ -25,6 +25,7 @@ namespace Abandoned.EditorTools
             RenderPipelineSetup.Apply();
             NetworkContentBuilder.CreateMissing();
             BuildInfoAsset.CreateMissing();
+            AchievementsBuilder.CreateMissing();
             LootCatalogBuilder.CreateMissing();
             LootModelBuilder.AssignMissing();
             LootPrefabGenerator.GenerateAll();

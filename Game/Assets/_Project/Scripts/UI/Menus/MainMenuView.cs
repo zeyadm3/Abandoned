@@ -53,6 +53,7 @@ namespace Abandoned.UI
             MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, small: true);
 
             MenuKit.Button(panel, "Settings", () => menu.Push(MenuScreen.Settings));
+            MenuKit.Button(panel, "Achievements", () => menu.Push(MenuScreen.Achievements));
             MenuKit.Button(panel, "Credits", () => menu.Push(MenuScreen.Credits));
             MenuKit.Button(panel, "Quit", menu.Quit, SoundId.UiBack);
 

@@ -21,5 +21,6 @@ namespace Abandoned.Networking
         public void RunCallbacks() => SteamClient.RunCallbacks();
         public void Shutdown() => SteamClient.Shutdown();
         public void OpenStoreOverlay(uint appId) => Steamworks.SteamFriends.OpenStoreOverlay(appId);
+        public void SetAchievement(string apiName) => new Steamworks.Data.Achievement(apiName).Trigger();
     }
 }

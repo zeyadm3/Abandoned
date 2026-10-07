@@ -183,6 +183,7 @@ namespace Abandoned.Networking
                 foreach (Behaviour b in ownerOnlyBehaviours)
                     if (b is PlayerMotor || b is PlayerInteractor) b.enabled = !now;
             }
+            if (now && IsOwner) Core.Achievements.Increment(Core.Achievements.StatDeaths);
             DeathChanged?.Invoke(this, now);
         }
 

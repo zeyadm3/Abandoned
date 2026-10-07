@@ -11,7 +11,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M9.4): compile clean; verify ALL PASS; EditMode 218/218; PlayMode 253/253; nettest basic 4/4
+- Last verified (M9.5): compile clean; verify ALL PASS; EditMode 221/221; PlayMode 254/254; nettest run 4/4
   (M8 tag: all eleven nettests 4/4, loot on a rerun);
   M7 tag: all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
@@ -37,8 +37,8 @@ screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour
 8.5 bridge piano jackpot, 8.6 `nettest soak`, 8.7 F10 clip mode, review fixed.
 M8 done (tag `milestone-8`; `build` + `build-demo` zips in ~/Documents/Abandoned-builds/dev/).
 -> M9 content (Docs/progress/M9.md; version 0.9.0; mall-only per the decisions log): 9.1 the Hunter done,
-9.2 modifiers (8) done, 9.3 loot table (57 items) done, 9.4 gear (crowbar, backpack, support jack) done; next 9.5 achievements,
-9.6 Steam Cloud.
+9.2 modifiers (8) done, 9.3 loot table (57 items) done, 9.4 gear (crowbar, backpack, support jack) done, 9.5 achievements (12, local + Steam hand-off) done;
+next 9.6 Steam Cloud.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
@@ -97,6 +97,9 @@ M8 done (tag `milestone-8`; `build` + `build-demo` zips in ~/Documents/Abandoned
       lower the limit for a quick check): back at the HQ after the 5th the end screen shows; Wishlist opens
       the Steam overlay (with Steam running) or the browser. When the real App ID exists, set
       Data/Core/Resources/DemoConfig StoreAppId.
+- [ ] Steam achievements (M9.5): once the real App ID exists, create the 12 achievements on the Steamworks
+      partner site with the API names ACH_FIRST_JOB, ACH_MADE_IT_OUT, ... (Data/Core/Achievements/*.asset
+      list them), then check one unlocks in the Steam overlay. They already work locally (menu -> Achievements).
 - [ ] Trailer capture (M8.7): F10 hides the HUD (tips and captions too) for clean shots; F10 again brings it
       back. Tell me if you want a free-flying camera for the host as well.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.

@@ -56,6 +56,7 @@ namespace Abandoned.EditorTools
             document.panelSettings = AssetDatabase.LoadAssetAtPath<UnityEngine.UIElements.PanelSettings>(UiContentBuilder.PanelPath);
             network.AddComponent<Abandoned.UI.HintDirector>();
             network.AddComponent<Abandoned.UI.FloorWarningHud>();
+            network.AddComponent<Abandoned.UI.AchievementToast>();
             network.AddComponent<Abandoned.UI.MenuUi>().EditorSetup(document, bootstrap, lobby,
                 AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath), AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.TitleFontPath),
                 AssetDatabase.LoadAssetAtPath<TextAsset>(UiContentBuilder.CreditsPath));

@@ -10,6 +10,7 @@ namespace Abandoned.UI
         Wardrobe,
         HowToPlay,
         DemoEnd,
+        Achievements,
         Credits
     }
 }

@@ -91,6 +91,11 @@ namespace Abandoned.Networking
             initialized = true;
             LastError = string.Empty;
             Debug.Log($"[Steam] Initialised (app {config.SteamAppId}) as {client.PlayerName} ({client.SteamId}).");
+            // Achievements (M9.5) reach Steam while it runs; unlocks before that stay local only.
+            Core.Achievements.Backend = a =>
+            {
+                if (IsAvailable && !string.IsNullOrEmpty(a.SteamName)) client.SetAchievement(a.SteamName);
+            };
             AvailabilityChanged?.Invoke(true);
             return true;
         }
