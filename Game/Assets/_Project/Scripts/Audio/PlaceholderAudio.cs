@@ -41,6 +41,21 @@ namespace Abandoned.Audio
             return clip;
         }
 
+        private static AudioClip shriek;
+
+        /// <summary>The noise maker's shriek: a harsh, warbling siren burst.</summary>
+        public static AudioClip Shriek()
+        {
+            if (shriek != null) return shriek;
+            shriek = Build("NoiseMaker_Shriek", 0.9f, t =>
+            {
+                float hz = 1400f + 600f * Mathf.Sin(2f * Mathf.PI * 9f * t);
+                float env = Mathf.Clamp01(t / 0.02f) * Mathf.Clamp01((0.9f - t) / 0.1f);
+                return Mathf.Sign(Mathf.Sin(2f * Mathf.PI * hz * t)) * 0.25f * env;
+            });
+            return shriek;
+        }
+
         private static AudioClip radioStatic;
 
         /// <summary>A burst of radio static (danger rising: every handset hisses).</summary>

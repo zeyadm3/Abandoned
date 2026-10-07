@@ -152,6 +152,13 @@ namespace Abandoned.Networking
             RespawnRpc(pose.position, pose.rotation);
         }
 
+        /// <summary>Host: a medkit got this downed player back up where their body lies.</summary>
+        public void ServerRevive()
+        {
+            if (!IsServer || !dead.Value) return;
+            ServerRespawn(new Pose(ragdoll.BodyPosition + Vector3.up * 0.1f, transform.rotation));
+        }
+
         /// <summary>Host: this player dies (monster contact). Their body falls where they stood.</summary>
         public void ServerKill()
         {

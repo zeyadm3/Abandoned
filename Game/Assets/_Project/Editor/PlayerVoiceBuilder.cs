@@ -75,6 +75,13 @@ namespace Abandoned.EditorTools
             Set(equipment, "inputReader", reader);
             Set(equipment, "carrier", root.GetComponent<Abandoned.Interaction.PlayerCarrier>());
             Set(equipment, "flashlight", light);
+            var plank = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>($"{LootPrefabGenerator.Folder}/Loot_plank.prefab");
+            if (plank != null) Set(equipment, "plankPrefab", plank.GetComponent<Unity.Netcode.NetworkObject>());
+            else Debug.LogError("Loot_plank prefab missing; run Rebuild Content.");
+            Set(equipment, "noiseMakerPrefab", EquipmentContentBuilder.CreateNoiseMaker().GetComponent<Unity.Netcode.NetworkObject>());
+            var scanner = root.AddComponent<Abandoned.Equipment.StressScannerHud>();
+            Set(scanner, "equipment", equipment);
+            Set(scanner, "eye", cameraRoot);
             return new Result(transmitter, hud);
         }
     }

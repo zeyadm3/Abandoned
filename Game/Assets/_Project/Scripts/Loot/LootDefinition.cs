@@ -52,6 +52,8 @@ namespace Abandoned.Loot
         [field: SerializeField] public string[] SpawnTags { get; private set; } = System.Array.Empty<string>();
         [field: Tooltip("A run's 1-2 big prizes (GDD 7.4): only spawns on jackpot points, never on ordinary ones.")]
         [field: SerializeField] public bool Jackpot { get; private set; }
+        [Tooltip("Gear that behaves like loot (a plank to carry and lay down): never spawned in a run, worth nothing.")]
+        [field: SerializeField] public bool Utility { get; private set; }
 
         [field: Header("Placeholder visual")]
         [field: SerializeField] public PlaceholderShape Shape { get; private set; } = PlaceholderShape.Cube;
@@ -73,7 +75,7 @@ namespace Abandoned.Loot
             if (authored > SharedCarryable.MaxPoints) errors.Add($"{n}: at most {SharedCarryable.MaxPoints} carry points.");
             if (authored > 0 && RequiredCarriers > authored) errors.Add($"{n}: RequiredCarriers is more than its carry points.");
             if (PhysicsMass < MinPhysicsMass || PhysicsMass > MaxPhysicsMass) errors.Add($"{n}: PhysicsMass outside the stable range.");
-            if (SpawnTags == null || SpawnTags.Length == 0) errors.Add($"{n}: no SpawnTags, so it never spawns in a run.");
+            if (!Utility && (SpawnTags == null || SpawnTags.Length == 0)) errors.Add($"{n}: no SpawnTags, so it never spawns in a run.");
         }
 
         public bool HasSpawnTag(string tag)
@@ -114,6 +116,8 @@ namespace Abandoned.Loot
             SpawnTags = tags;
             Jackpot = jackpot;
         }
+
+        public void EditorSetUtility(bool utility) => Utility = utility;
 #endif
     }
 }

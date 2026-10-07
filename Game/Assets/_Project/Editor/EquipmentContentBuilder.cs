@@ -10,6 +10,7 @@ namespace Abandoned.EditorTools
     {
         public const string Folder = "Assets/_Project/Data/Equipment";
         public const string CatalogPath = Folder + "/EquipmentCatalog.asset";
+        public const string NoiseMakerPrefabPath = "Assets/_Project/Prefabs/Equipment/NoiseMaker.prefab";
 
         [MenuItem("Tools/Abandoned/Create Equipment Content")]
         public static EquipmentCatalog CreateMissing()
@@ -24,11 +25,35 @@ namespace Abandoned.EditorTools
                 Item("noise_maker", "Noise Maker", "Throw it: it shrieks a few seconds later and draws the Blind One (single use).", EquipmentKind.NoiseMaker, 250, 2, true, new Color(0.9f, 0.9f, 0.2f)),
                 Item("stress_scanner", "Stress Scanner", "Shows how close the floor ahead is to giving way.", EquipmentKind.StressScanner, 1200, 3, false, new Color(0.2f, 0.8f, 0.9f)),
             };
+            CreateNoiseMaker();
             var catalog = SerializedWiring.LoadOrCreateAsset<EquipmentCatalog>(CatalogPath);
             catalog.EditorSet(items);
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
             return catalog;
+        }
+
+        /// <summary>The thrown noise maker: host-simulated, server-authoritative transform. Created when missing.</summary>
+        public static GameObject CreateNoiseMaker()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(NoiseMakerPrefabPath);
+            if (existing != null && existing.GetComponent<NoiseMakerDevice>() != null) return existing;
+            if (!AssetDatabase.IsValidFolder("Assets/_Project/Prefabs/Equipment")) AssetDatabase.CreateFolder("Assets/_Project/Prefabs", "Equipment");
+            var root = new GameObject("NoiseMaker");
+            root.AddComponent<Unity.Netcode.NetworkObject>().DontDestroyWithOwner = true;
+            root.AddComponent<Unity.Netcode.Components.NetworkTransform>();
+            var body = root.AddComponent<Rigidbody>();
+            body.mass = 0.8f;
+            body.interpolation = RigidbodyInterpolation.Interpolate;
+            body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            root.AddComponent<SphereCollider>().radius = 0.12f;
+            root.AddComponent<NoiseMakerDevice>();
+            GreyboxFactory.Primitive(PrimitiveType.Sphere, "Visual", root.transform, Vector3.zero, Vector3.one * 0.24f,
+                GreyboxFactory.GetMaterial("Greybox_NoiseMaker", new Color(0.95f, 0.85f, 0.15f)), withCollider: false);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, NoiseMakerPrefabPath);
+            Object.DestroyImmediate(root);
+            NetworkObjectIds.StampPrefab(prefab);
+            return prefab;
         }
 
         private static EquipmentDefinition Item(string id, string name, string description, EquipmentKind kind, int price, int level, bool consumable, Color color)

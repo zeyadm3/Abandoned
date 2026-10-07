@@ -116,6 +116,7 @@ namespace Abandoned.EditorTools
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(SessionTravelPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(CompanyContentBuilder.CompanyServicePrefabPath));
+            prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(EquipmentContentBuilder.NoiseMakerPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.BlindOnePrefabPath));
             foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { LootPrefabGenerator.Folder }))
                 prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));

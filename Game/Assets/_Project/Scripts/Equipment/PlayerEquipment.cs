@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Abandoned.Company;
 using Abandoned.Interaction;
+using Abandoned.Networking;
 using Abandoned.Player;
 using Abandoned.Voice;
 using Unity.Netcode;
@@ -21,6 +22,11 @@ namespace Abandoned.Equipment
         [SerializeField] private PlayerInputReader inputReader;
         [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private Light flashlight;
+        [Tooltip("Spawned by the Planks gear: a loot-like plank to carry and lay across a hole.")]
+        [SerializeField] private NetworkObject plankPrefab;
+        [SerializeField] private NetworkObject noiseMakerPrefab;
+        [SerializeField, Min(0.5f)] private float reviveReach = 2.5f;
+        [SerializeField] private Vector2 throwSpeed = new(9f, 3f);
 
         private readonly NetworkVariable<EquipState> state = new(EquipState.Empty);
         private static readonly List<PlayerEquipment> Spawned = new();
@@ -104,6 +110,8 @@ namespace Abandoned.Equipment
             if (input.Slot1Pressed) SelectRpc(0);
             if (input.Slot2Pressed) SelectRpc(1);
             if (input.FlashlightPressed && Has(EquipmentKind.Flashlight)) LightRpc(!state.Value.LightOn);
+            // Single-use gear: the left mouse button with empty hands.
+            if (input.UsePressed && carrier != null && carrier.Held == null && InHand is EquipmentDefinition d && d.Consumable) UseRpc(state.Value.Active);
         }
 
         /// <summary>This player asks to put a catalog item (-1 = nothing) into a slot (the HQ gear rack).</summary>
@@ -137,7 +145,56 @@ namespace Abandoned.Equipment
             state.Value = s;
         }
 
-        /// <summary>Host: a consumable in this slot was used up (6.4b).</summary>
+        [Rpc(SendTo.Server)]
+        private void UseRpc(int slot, RpcParams rpcParams = default)
+        {
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot > 1) return;
+            NetworkPlayer me = GetComponent<NetworkPlayer>();
+            if (me == null || me.IsDead || carrier.Held != null) return;
+            EquipmentDefinition d = InSlot(slot);
+            if (d == null || !d.Consumable) return;
+            Transform t = transform;
+            Vector3 front = t.position + t.forward * 1.2f + Vector3.up * 1f;
+            bool used = d.Kind switch
+            {
+                EquipmentKind.Medkit => Revive(),
+                EquipmentKind.Planks => Spawn(plankPrefab, front, t.rotation * Quaternion.Euler(0f, 90f, 0f)) != null,
+                EquipmentKind.NoiseMaker => Throw(),
+                _ => false,
+            };
+            if (used) ServerConsume(slot);
+        }
+
+        // Host: the nearest downed crewmate within reach gets up.
+        private bool Revive()
+        {
+            NetworkPlayer best = null;
+            float bestDistance = reviveReach;
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || p.NetworkManager != NetworkManager || !p.IsDead) continue;
+                float d = Vector3.Distance(p.Ragdoll.BodyPosition, transform.position);
+                if (d <= bestDistance) (best, bestDistance) = (p, d);
+            }
+            if (best == null) return false;
+            best.ServerRevive();
+            Debug.Log($"[Gear] Player {OwnerClientId} revived player {best.OwnerClientId} with a medkit.");
+            return true;
+        }
+
+        private bool Throw()
+        {
+            Transform t = transform;
+            NetworkObject device = Spawn(noiseMakerPrefab, t.position + t.forward * 0.6f + Vector3.up * 1.5f, t.rotation);
+            if (device == null) return false;
+            device.GetComponent<NoiseMakerDevice>().Launch(t.forward * throwSpeed.x + Vector3.up * throwSpeed.y);
+            return true;
+        }
+
+        private NetworkObject Spawn(NetworkObject prefab, Vector3 at, Quaternion rotation) =>
+            prefab == null ? null : NetworkManager.SpawnManager.InstantiateAndSpawn(prefab, position: at, rotation: rotation);
+
+        /// <summary>Host: a consumable in this slot was used up.</summary>
         public void ServerConsume(int slot)
         {
             if (!IsServer) return;

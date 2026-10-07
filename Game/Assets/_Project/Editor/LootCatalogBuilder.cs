@@ -49,6 +49,15 @@ namespace Abandoned.EditorTools
             Add("grandfather_clock", "Grandfather Clock", 4000, 8000, 70f, CarryClass.Heavy, new(0.6f, 2f, 0.4f), Fragility.High, SurfaceMaterial.Wood, 0.8f, 0.4f, PlaceholderShape.Cube, new(0.4f, 0.24f, 0.12f));
             Add("film_projector", "Film Projector", 5000, 12000, 90f, CarryClass.Heavy, new(0.7f, 0.8f, 1.1f), Fragility.Medium, SurfaceMaterial.Metal, 0.7f, 0.4f, PlaceholderShape.Cube, new(0.25f, 0.25f, 0.3f));
 
+            // Gear that behaves like loot (M6.4b): a plank from the Planks equipment. Worth nothing, never spawned.
+            Add("plank", "Plank", 0, 0, 12f, CarryClass.TwoHand, new(0.4f, 0.08f, 4.4f), Fragility.None, SurfaceMaterial.Wood, 0.3f, 0f, PlaceholderShape.Cube, new(0.62f, 0.47f, 0.28f));
+            LootDefinition plank = Load("plank");
+            if (plank != null && !plank.Utility)
+            {
+                plank.EditorSetUtility(true);
+                EditorUtility.SetDirty(plank);
+            }
+
             // Where each can turn up (store kinds = MallLayout zone tags). Only filled in when empty.
             Spawn("gold_watch", "jewelry", "office");
             Spawn("cash_bundle", "concourse", "office", "jewelry", "food", "stock", "cinema", "clothing", "toys", "walkway");
