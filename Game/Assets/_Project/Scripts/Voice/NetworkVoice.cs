@@ -105,7 +105,8 @@ namespace Abandoned.Voice
             radio = radio && HasRadio(OwnerClientId);
             if (!IsOwner) MarkSpoke(VoiceMath.FromByte(level), radio);
             HeardOnHost?.Invoke(this, VoiceMath.FromByte(level), radio);
-            EmitNoise(VoiceMath.FromByte(level), radio);
+            // Ghosts make no noise (GDD 11: they can't help, or hurt).
+            if (!SpeakerDead) EmitNoise(VoiceMath.FromByte(level), radio);
             ToListenersRpc(data, codec, level, radio, sequence);
         }
 
@@ -121,6 +122,8 @@ namespace Abandoned.Voice
             lastSequence = sequence;
             PacketsReceived++;
             MarkSpoke(VoiceMath.FromByte(level), radio);
+            // The dead are heard only by the dead (GDD 11: ghosts can watch, not help).
+            if (SpeakerDead && !LocalPlayerDead) return;
             IVoiceCodec decoder = VoiceBackends.Codec(codec);
             if (decoder == null || decoder.SampleRate <= 0) return;
             int n = decoder.Decode(data, data.Length, decoded);
@@ -128,6 +131,18 @@ namespace Abandoned.Voice
             if (playback != null && playback.enabled) playback.Push(decoded, n, decoder.SampleRate);
             if (radio && this.radio != null && this.radio.enabled && HasRadio(NetworkManager.LocalClientId))
                 this.radio.Push(decoded, n, decoder.SampleRate);
+        }
+
+        private bool SpeakerDead => TryGetComponent(out Networking.NetworkPlayer me) && me.IsDead;
+
+        private bool LocalPlayerDead
+        {
+            get
+            {
+                foreach (Networking.NetworkPlayer p in Networking.NetworkPlayer.All)
+                    if (p != null && p.IsOwner && p.NetworkManager == NetworkManager) return p.IsDead;
+                return false;
+            }
         }
 
         private bool OverRate()
