@@ -227,4 +227,7 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
   - M7.6: occlusion baked for the mall, but only never-breaking geometry occludes (floors carry no static
     flags). Sun shadows 2 cascades / 35 m (RenderPipelineSetup in the rebuild). `nettest perf` and the F1 perf
     line are the performance probes.
-
+  - M8: every player-facing screen is UI Toolkit on MenuUi's document: the HUD on HudLayer (hidden under
+    menus and in F10 clip mode), world-opened screens as ScreenPanels beside it. Tips via HintDirector
+    (once per player, Prefs). The demo is a build flavour (BuildFlavor.Demo stamped in BuildInfo; Core.Demo,
+    DemoConfig in Data/Core/Resources, its own company_demo.json). Failed nettest logs: Game/Logs/nettest-failed/.

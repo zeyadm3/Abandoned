@@ -11,7 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M8.7): compile clean; verify ALL PASS; EditMode 217/217; PlayMode 246/246; nettest soak 4/4;
+- Last verified (M8 review): compile clean; verify ALL PASS; EditMode 217/217; PlayMode 246/246; all eleven
+  nettests 4/4 (loot on a rerun, see Open problems);
   M7 tag: all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
@@ -25,14 +26,19 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   post, dust, skylight shaft, flashlight shadows), 7.3 audio (CC0 sound bank, pooled playback, ambience,
   subtitles feed), 7.4 menus (main/pause/crew/settings/keys/credits), 7.5 cosmetics (coveralls + hats,
   HQ wardrobe), 7.6 performance (F1 perf line, nettest perf, occlusion, shadow budget).
+- **M8 done** (tag `milestone-8`, review fixed; Docs/progress/M8.md): UI Toolkit HUD + HQ/appraisal screens,
+  first-time tips + How to play, Demo build flavour (`Tools/unity.sh build-demo`: 5 jobs, own save, end
+  screen with wishlist), floor warnings + truck pop-ups, the bridge piano jackpot, `nettest soak`, F10 clip mode.
 
 ## Next
 M7 done (tag `milestone-7`; builds in ~/Documents/Abandoned-builds/dev/).
 -> M8 demo (Docs/progress/M8.md; version 0.8.0): 8.1 HUD pass done (in-run HUD, HQ + appraisal
 screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour done (`Tools/unity.sh build-demo`), 8.4 floor warnings + truck pop-ups done.
-8.5 bridge piano jackpot, 8.6 `nettest soak` (3 runs, no growth in objects/managed memory), 8.7 F10 clip
-mode done. Next: the M8 review (read the M8 diff for bugs), all eleven nettests, tag milestone-8,
-`build` + `build-demo`. Then M9 content.
+8.5 bridge piano jackpot, 8.6 `nettest soak`, 8.7 F10 clip mode, review fixed.
+M8 done (tag `milestone-8`; `build` + `build-demo` zips in ~/Documents/Abandoned-builds/dev/).
+-> M9 content (PLAYBOOK): Hospital, Hotel, The Hunter, ~60-item loot table, all modifiers, support jacks
+and pulleys, achievements, Steam Cloud saves. Version 0.9.0; plan the order in Docs/progress/M9.md first
+(GDD 8 says Hospital/Hotel are post-Early-Access candidates: weigh that before building them).
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
@@ -120,7 +126,9 @@ The script fails on compile errors, warnings in our code, or any exception in a 
 ## Open problems
 - `nettest loot` right after `basic` failed twice (M3.8, M6.0): sessions ended while waiting; never
   reproduced on demand. Recurred M7.2 (`company` right after `run`): one client "Failed to connect to
-  server", no stale process left, passed on rerun. nettest.sh now keeps failed runs' logs (Logs/nettest/failed-*); look there next time. If it recurs, check host.log for the listen port
+  server", no stale process left, passed on rerun. Recurred M8 (`loot` 0/4 right after `basic`); basic+loot
+  passed on rerun. Its logs were lost because nettest.sh kept failed runs INSIDE Game/Logs/nettest, which
+  the next run wipes: failed runs now go to Game/Logs/nettest-failed/<scenario>-<time>/ (look there).  If it recurs, check host.log for the listen port
   and whether a previous run's process was still alive.
 - M3.5: one full PlayMode run failed `NetworkLootHitTests.HostThrownSafeKnocksDownTheClientPlayerOnTheClient`
   (client never ragdolled within 4 s); it passed alone 3x and in two further full runs. The safe now has

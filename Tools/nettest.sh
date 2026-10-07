@@ -129,8 +129,8 @@ sys.exit(1 if bad else 0)
 PY
 status=$?
 if [ $status -ne 0 ]; then
-  # The next run overwrites the logs; keep a failed run's for diagnosis (rare flakes especially).
-  keep="$OUT/failed-$scenario-$(date +%Y%m%d-%H%M%S)"
+  # The next run wipes $OUT, so a failed run's logs go beside it (rare flakes especially).
+  keep="$(dirname "$OUT")/nettest-failed/$scenario-$(date +%Y%m%d-%H%M%S)"
   mkdir -p "$keep" && cp "$OUT"/*.json "$OUT"/*.log "$keep"/ 2>/dev/null
   echo "failed run's logs kept in $keep"
 fi
