@@ -93,8 +93,9 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
-Autonomous build of Milestones 3–10 on branch autobuild-2 (git worktree ../Abandoned-autobuild2,
-so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the current task.
+Milestones 0–10 are built (autonomous build merged into main on 2026-10-07; the separate
+autobuild-2 worktree is gone, everything lives in this one folder). Next: the user's full test pass.
+Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).

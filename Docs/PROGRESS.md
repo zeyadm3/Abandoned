@@ -6,7 +6,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 
 ## Current state (2026-10-06, autonomous build M3–M10 on branch `autobuild-2`)
 - M0–M2 done and hand-tested. M3–M10 built autonomously on `autobuild-2`
-  (worktree `~/Documents/Abandoned-autobuild2`). Don't wait for plan approval; record decisions,
+  (merged into `main` 2026-10-07; one folder again, no worktree). Don't wait for plan approval; record decisions,
   put human-only items under "Needs you". Push `autobuild-2` and tags freely (user OK'd).
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
