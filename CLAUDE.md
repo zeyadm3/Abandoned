@@ -200,3 +200,18 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
     Unity Transport, tone in tests) relayed by NetworkVoice on the Player (owner -> host -> others,
     unreliable, sender-checked). Playback is our own distance gain (full <1.5 m, 0 at 25 m) on a jitter
     buffer; settings (PTT/open mic/volume/mute) in PlayerPrefs until the settings menu.
+  - M5: the mall is a data-driven greybox (MallLayout + builders); loot spawns from a seeded planner
+    (SpawnTags per zone, 1-2 jackpots); runs are host RunState (haul/quota/window/danger) with the truck's
+    cargo bay; the next run happens in place (re-roll + respawn, no reload); NavMesh baked once, collapses
+    carve it (SectionNavCarver), exterior/roof excluded; threats are host-only NetworkObjects.
+  - M6.0: one persistent session (the first scene's NetworkBootstrap + NetworkManager live in
+    DontDestroyOnLoad; later levels' copies remove themselves); SessionTravel loads levels on every
+    machine without NGO scene management and gates level spawns until all are in; players and session
+    objects are DDOL. Levels must spawn their network objects dynamically.
+  - M6.1-6.7: the HQ is the first build scene; CompanyService (session-long) saves company.json on the
+    host (never in tests/batch); contracts are data (ContractModifier assets) rolled from a board seed;
+    payday/debt/bankruptcy per GDD 13; joins only at the HQ. Company rules (gear stock, trolley for solo
+    Heavy drags, radios) apply only in games started at the HQ. Gear = EquipmentDefinition assets in an
+    ordered catalog; 2 hand slots per player. Ghosts orbit living teammates and aren't heard by the living.
+    Threat roster per level (Blind One, Stalker, Collector), weighted by run seed.
+
