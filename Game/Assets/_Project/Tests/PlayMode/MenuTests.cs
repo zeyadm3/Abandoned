@@ -65,11 +65,11 @@ namespace Abandoned.Tests
         }
 
         /// <summary>The scene camera plus the menu on top, into Game/Screenshots (for eyeballing the layout).</summary>
-        internal static IEnumerator Capture(MenuUi menu, string name)
+        internal static IEnumerator Capture(MenuUi menu, string name, int width = 1600, int height = 900)
         {
             PanelSettings panel = menu.GetComponent<UIDocument>().panelSettings;
             Camera camera = Camera.main;
-            var rt = new RenderTexture(1600, 900, 24);
+            var rt = new RenderTexture(width, height, 24);
             bool clear = panel.clearColor;
             // The scene first, by hand (batch mode never reaches end of frame), then the menu draws over it.
             if (camera != null)

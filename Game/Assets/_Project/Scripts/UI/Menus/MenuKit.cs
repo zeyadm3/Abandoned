@@ -34,6 +34,19 @@ namespace Abandoned.UI
             }) { text = text };
             button.AddToClassList("menu-button");
             if (small) button.AddToClassList("menu-button--small");
+            else
+            {
+                // Big buttons: an arrow that shows on hover, a tick and a little jolt as the pointer lands.
+                var arrow = new Label("\u25B6") { pickingMode = PickingMode.Ignore };
+                arrow.AddToClassList("menu-button__arrow");
+                button.Add(arrow);
+            }
+            button.RegisterCallback<PointerEnterEvent>(_ =>
+            {
+                if (!button.enabledSelf) return;
+                GameAudio.PlayUi(SoundId.UiClick, 0.25f);
+                if (!small) UiKit.Jolt(button);
+            });
             parent.Add(button);
             return button;
         }

@@ -1,7 +1,8 @@
 # Asset credits
 
 Every third-party asset in the game, with where it came from and its licence. Only free CC0 assets
-(Kenney, Quaternius, Poly Haven and similar) in one low-poly style; nothing else without asking.
+(Kenney, Quaternius, Poly Haven and similar) in one low-poly style, and SIL Open Font License fonts (user OK, UI
+overhaul); nothing else without asking.
 Imported files live under `Game/Assets/_Project/Art/ThirdParty/<Author>/<Pack>/` with the pack's
 own License.txt beside them.
 
@@ -12,7 +13,15 @@ own License.txt beside them.
 | Impact Sounds | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/impact-sounds | Loot impacts per material, footsteps, the plank snap and collapse debris | Art/ThirdParty/Kenney/ImpactSounds/ (126 of the pack's OGGs) |
 | Interface Sounds | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/interface-sounds | Menu clicks, confirm/back/error, open/close | Art/ThirdParty/Kenney/InterfaceSounds/ (37 OGGs) |
 | RPG Audio | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/rpg-audio | Structure creaks/groans, cloth (pickup), pocketing, coins (payday, the Collector), latch (truck lever), click (flashlight), distant settling | Art/ThirdParty/Kenney/RPGAudio/ (21 OGGs) |
-| Kenney Fonts | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/kenney-fonts | Menu text (Kenney Future, Kenney Future Narrow) | Art/ThirdParty/Kenney/Fonts/ (2 TTFs) |
+| Kenney Fonts | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/kenney-fonts | Menu text until the UI overhaul (now unused) | Art/ThirdParty/Kenney/Fonts/ (2 TTFs) |
+| Game Icons | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/game-icons | Menu icons (settings, audio, crew, trophy, warning, exit...) | Art/ThirdParty/Kenney/GameIcons/ (35 PNGs) |
+| Generic Items | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/generic-items | Gear icons (flashlight, walkie-talkie, medkit, bolt cutters...) | Art/ThirdParty/Kenney/GenericItems/ (21 PNGs, renamed by gear) |
+| Board Game Icons | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/board-game-icons | HUD symbols (skull, dollar, hourglass, lock, award...) | Art/ThirdParty/Kenney/BoardGameIcons/ (18 PNGs) |
+| Input Prompts | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/input-prompts | Mouse button glyphs in key prompts | Art/ThirdParty/Kenney/InputPrompts/ (8 PNGs) |
+| Barlow, Barlow Condensed | Jeremy Tribby (The Barlow Project Authors) | SIL OFL 1.1 | https://github.com/jpt/barlow (via Google Fonts) | Body text (Barlow), headings and buttons (Barlow Condensed) | Art/ThirdParty/Fonts/Barlow/, BarlowCondensed/ (4 TTFs + OFL.txt) |
+| Saira Stencil One | Omnibus-Type (The Saira Stencil Project Authors) | SIL OFL 1.1 | https://github.com/Omnibus-Type/Saira (via Google Fonts) | Big titles and stamps only | Art/ThirdParty/Fonts/SairaStencilOne/ (1 TTF + OFL.txt) |
+| IBM Plex Mono | IBM Corp. | SIL OFL 1.1 | https://github.com/IBM/plex (via Google Fonts) | The appraisal receipt | Art/ThirdParty/Fonts/IBMPlexMono/ (2 TTFs + OFL.txt) |
+| VT323 | Peter Hull (The VT323 Project Authors) | SIL OFL 1.1 | https://github.com/phoikoi/VT323 (via Google Fonts) | The HQ terminal | Art/ThirdParty/Fonts/VT323/ (1 TTF + OFL.txt) |
 
 Synthesised in our own code (no third party): the Blind One's click, the truck horn, the noise maker's shriek, radio static,
 the collapse rumble, the ambience (wind, light hum), and all the music (the HQ theme and the stings, M10.8).

@@ -1,100 +1,213 @@
-/* ABANDONED menus (M7.4): dark panels, hazard-yellow accents, Kenney Future (set from code). */
+/* ABANDONED UI theme (UI overhaul step 1): a cheap salvage company. Hazard yellow on near-black, condensed
+   display type for headings and buttons, a readable sans for everything small, the stencil only for big titles.
+   Fonts (OFL): Barlow (body, set on the root from code), Barlow Condensed (display), Saira Stencil One (titles),
+   IBM Plex Mono (receipts), VT323 (the HQ terminal). Sizes are at the 1920x1080 reference (scaled by height). */
+
+:root {
+    --c-ink: rgb(10, 11, 12);
+    --c-panel: rgba(14, 15, 17, 0.94);
+    --c-panel-2: rgb(28, 30, 33);
+    --c-panel-3: rgb(40, 43, 47);
+    --c-line: rgba(255, 255, 255, 0.09);
+    --c-accent: rgb(255, 194, 26);
+    --c-accent-hot: rgb(255, 220, 110);
+    --c-accent-ink: rgb(20, 17, 8);
+    --c-text: rgb(240, 236, 224);
+    --c-dim: rgb(165, 161, 150);
+    --c-faint: rgba(240, 236, 224, 0.45);
+    --c-good: rgb(126, 224, 126);
+    --c-bad: rgb(255, 92, 74);
+    --c-money: rgb(150, 232, 110);
+    --c-paper: rgb(238, 231, 212);
+    --c-paper-ink: rgb(42, 38, 32);
+    --c-crt: rgb(255, 176, 0);
+    --c-crt-bg: rgb(20, 12, 2);
+}
+
+/* ---- Type ---- */
+
+.font-display { -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf"); }
+.font-display-semi { -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); }
+.font-stencil { -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); }
+.font-body-bold { -unity-font-definition: url("../ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); }
+.font-mono { -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf"); }
+.font-mono-bold { -unity-font-definition: url("../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); }
+.font-crt { -unity-font-definition: url("../ThirdParty/Fonts/VT323/VT323-Regular.ttf"); }
 
 .menu-root {
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
+    color: var(--c-text);
 }
-
-.backdrop {
-    flex-grow: 1;
-    background-color: rgba(8, 9, 10, 0.55);
-    justify-content: center;
-    padding-left: 120px;
-}
-
-.backdrop--dim { background-color: rgba(8, 9, 10, 0.78); }
-
-.panel {
-    background-color: rgba(20, 22, 24, 0.95);
-    border-left-width: 6px;
-    border-left-color: rgb(232, 184, 40);
-    padding: 28px 36px 28px 36px;
-    width: 640px;
-    max-height: 92%;
-}
-
-.panel--wide { width: 900px; }
 
 .title {
-    font-size: 84px;
-    color: rgb(236, 232, 220);
-    letter-spacing: 6px;
-    margin-bottom: 0;
+    -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 88px;
+    color: var(--c-text);
+    letter-spacing: 2px;
+    margin-bottom: -8px;
+    text-shadow: 0 6px 0 rgba(0, 0, 0, 0.55);
 }
 
 .subtitle {
-    font-size: 20px;
-    color: rgb(232, 184, 40);
-    margin-bottom: 22px;
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: var(--c-accent);
+    margin-bottom: 26px;
+    white-space: normal;
 }
 
 .heading {
-    font-size: 30px;
-    color: rgb(236, 232, 220);
-    margin-top: 6px;
-    margin-bottom: 12px;
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 52px;
+    letter-spacing: 2px;
+    color: var(--c-text);
+    margin-top: 0;
+    margin-bottom: 4px;
 }
 
 .section {
-    font-size: 18px;
-    color: rgb(232, 184, 40);
-    margin-top: 16px;
-    margin-bottom: 6px;
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--c-accent);
+    margin-top: 18px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-line);
 }
 
 .text {
-    font-size: 18px;
-    color: rgb(190, 188, 180);
+    font-size: 19px;
+    color: var(--c-dim);
     white-space: normal;
     margin-bottom: 4px;
 }
 
-.text--error { color: rgb(255, 110, 95); }
-.text--small { font-size: 14px; }
+.text--error { color: var(--c-bad); }
+.text--small { font-size: 16px; }
+.text--good { color: var(--c-good); }
+.text--money { color: var(--c-money); }
 
+/* ---- Backdrops and panels ---- */
+
+.backdrop {
+    flex-grow: 1;
+    background-color: rgba(6, 7, 8, 0.5);
+    justify-content: center;
+    padding-left: 7%;
+}
+
+.backdrop--dim { background-color: rgba(6, 7, 8, 0.8); }
+
+.backdrop--center {
+    align-items: center;
+    padding-left: 0;
+}
+
+.panel {
+    background-color: var(--c-panel);
+    border-top-width: 6px;
+    border-top-color: var(--c-accent);
+    padding: 30px 40px 30px 40px;
+    width: 660px;
+    max-width: 92%;
+    max-height: 92%;
+}
+
+.panel--wide { width: 960px; }
+.panel--xwide { width: 1180px; }
+
+/* A strip of hazard tape: yellow with dark diagonal bars (drawn by UiKit.Hazard). */
+.hazard {
+    height: 10px;
+    background-color: var(--c-accent);
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.hazard__bar {
+    width: 14px;
+    height: 30px;
+    margin-left: 14px;
+    margin-top: -10px;
+    background-color: var(--c-ink);
+    rotate: 35deg;
+}
+
+/* ---- Buttons ---- */
+
+/* Big menu buttons, R.E.P.O.-style: just words; hover lights them up, nudges them right and shows the arrow. */
 .menu-button {
-    font-size: 24px;
-    height: 52px;
-    margin: 5px 0 5px 0;
-    padding-left: 18px;
-    background-color: rgb(40, 43, 46);
-    color: rgb(236, 232, 220);
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
+    font-size: 38px;
+    letter-spacing: 1px;
+    height: 54px;
+    margin: 2px 0 2px 0;
+    padding-left: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--c-text);
     border-width: 0;
-    border-radius: 2px;
     -unity-text-align: middle-left;
+    flex-direction: row;
+    align-items: center;
+    translate: 0 0;
+    transition-property: translate, color;
+    transition-duration: 0.07s;
 }
 
 .menu-button:hover, .menu-button:focus {
-    background-color: rgb(232, 184, 40);
-    color: rgb(18, 18, 18);
+    color: var(--c-accent);
+    translate: 18px 0;
+    background-color: rgba(0, 0, 0, 0);
 }
 
-.menu-button:active { background-color: rgb(255, 214, 90); }
-.menu-button:disabled { opacity: 0.4; }
+.menu-button:active { color: var(--c-accent-hot); }
+.menu-button:disabled { opacity: 0.35; }
 
+.menu-button__arrow {
+    position: absolute;
+    left: -30px;
+    font-size: 26px;
+    color: var(--c-accent);
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.07s;
+}
+
+.menu-button:hover > .menu-button__arrow, .menu-button:focus > .menu-button__arrow { opacity: 1; }
+
+/* Small buttons are chips: a dark slab that turns yellow. */
 .menu-button--small {
-    font-size: 18px;
-    height: 38px;
-    margin-left: 6px;
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 20px;
+    letter-spacing: 1px;
+    height: 40px;
+    margin: 3px 0 3px 8px;
+    padding-left: 14px;
+    padding-right: 14px;
+    background-color: var(--c-panel-3);
     -unity-text-align: middle-center;
-    padding-left: 10px;
-    padding-right: 10px;
+    border-radius: 2px;
+    align-self: flex-start;
+}
+
+.menu-button--small:hover, .menu-button--small:focus {
+    background-color: var(--c-accent);
+    color: var(--c-accent-ink);
+    translate: 0 0;
 }
 
 .menu-button--on {
-    background-color: rgb(232, 184, 40);
-    color: rgb(18, 18, 18);
+    background-color: var(--c-accent);
+    color: var(--c-accent-ink);
 }
+
+.menu-button--on:hover { color: var(--c-accent-ink); }
+
+/* ---- Layout helpers ---- */
 
 .row {
     flex-direction: row;
@@ -103,75 +216,114 @@
 
 .grow { flex-grow: 1; }
 
-.field {
-    font-size: 20px;
-    height: 40px;
-    margin: 4px 0 4px 0;
-}
-
-.field > .unity-text-field__input, .field > .unity-base-text-field__input {
-    background-color: rgb(12, 13, 14);
-    color: rgb(236, 232, 220);
-    border-color: rgb(70, 72, 74);
-}
-
-.setting {
-    flex-direction: row;
-    align-items: center;
-    min-height: 40px;
-}
-
-.setting__label {
-    width: 300px;
-    font-size: 18px;
-    color: rgb(210, 206, 196);
-}
-
-.setting__control { flex-grow: 1; }
-
-.setting__value {
-    width: 70px;
-    font-size: 16px;
-    color: rgb(232, 184, 40);
-    -unity-text-align: middle-right;
-}
-
-.footer {
-    position: absolute;
-    right: 24px;
-    bottom: 16px;
-    font-size: 14px;
-    color: rgba(236, 232, 220, 0.55);
-}
-
-.scroll { flex-shrink: 1; }
-
-.subtitle-line {
-    font-size: 20px;
-    color: rgb(240, 236, 226);
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 4px 12px 4px 12px;
-    margin-top: 4px;
-    -unity-text-align: middle-center;
-}
-
-.subtitles {
-    position: absolute;
-    left: 0; right: 0; bottom: 110px;
-    align-items: center;
-}
-
 .wrap {
     flex-direction: row;
     flex-wrap: wrap;
 }
 
+.scroll { flex-shrink: 1; }
+
+.footer {
+    position: absolute;
+    right: 28px;
+    bottom: 18px;
+    font-size: 15px;
+    color: var(--c-faint);
+}
+
+/* ---- Fields and settings ---- */
+
+.field {
+    font-size: 20px;
+    height: 42px;
+    margin: 4px 0 4px 0;
+}
+
+.field > .unity-text-field__input, .field > .unity-base-text-field__input {
+    background-color: var(--c-ink);
+    color: var(--c-text);
+    border-color: var(--c-panel-3);
+    border-width: 2px;
+    padding-left: 10px;
+}
+
+.setting {
+    flex-direction: row;
+    align-items: center;
+    min-height: 44px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--c-line);
+}
+
+.setting__label {
+    width: 320px;
+    font-size: 19px;
+    color: var(--c-text);
+}
+
+.setting__control { flex-grow: 1; }
+
+.setting__value {
+    width: 80px;
+    font-size: 18px;
+    color: var(--c-accent);
+    -unity-text-align: middle-right;
+}
+
+/* Sliders: a thin dark track and a chunky yellow handle (selectors as specific as the default theme's). */
+.setting__control.unity-base-slider--horizontal .unity-base-slider__tracker {
+    background-color: var(--c-panel-3);
+    border-width: 0;
+    height: 6px;
+    margin-top: -3px;
+}
+
+.setting__control.unity-base-slider--horizontal .unity-base-slider__dragger {
+    background-color: var(--c-accent);
+    border-width: 0;
+    width: 14px;
+    height: 24px;
+    margin-top: -12px;
+    border-radius: 2px;
+}
+
+.setting__control.unity-base-slider--horizontal .unity-base-slider__dragger-border { display: none; }
+
+/* Scrollbars: a thin dark rail with a yellow thumb, no arrow buttons. */
+.unity-scroller--vertical {
+    width: 8px;
+    margin-left: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.unity-scroller--vertical > .unity-scroller__low-button, .unity-scroller--vertical > .unity-scroller__high-button { display: none; }
+
+.unity-scroller--vertical > .unity-scroller__slider { margin: 0; }
+
+.unity-scroller--vertical .unity-base-slider__tracker {
+    background-color: var(--c-panel-3);
+    border-width: 0;
+    width: 8px;
+    left: 0;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger {
+    background-color: var(--c-accent);
+    border-width: 0;
+    width: 8px;
+    left: 0;
+    border-radius: 2px;
+}
+
+/* ---- Tiles (wardrobe, achievements) ---- */
+
 .tile {
-    width: 250px;
-    height: 64px;
+    width: 260px;
+    height: 66px;
     margin: 4px 8px 4px 0;
     white-space: normal;
-    font-size: 16px;
+    font-size: 17px;
     -unity-text-align: middle-left;
     padding-left: 12px;
     flex-direction: row;
@@ -179,8 +331,8 @@
 }
 
 .swatch {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     margin-right: 10px;
     border-width: 2px;
     border-color: rgba(0, 0, 0, 0.6);
@@ -189,48 +341,150 @@
 .tile__text {
     flex-shrink: 1;
     white-space: normal;
-    font-size: 15px;
+    font-size: 16px;
     -unity-text-align: middle-left;
 }
 
-/* ---- In-game HUD (M8.1) ---- */
+/* ---- Kit widgets (UiKit) ---- */
+
+/* A keyboard key cap: the player's own binding, boxed. */
+.keycap {
+    -unity-font-definition: url("../ThirdParty/Fonts/Barlow/Barlow-Bold.ttf");
+    min-width: 30px;
+    height: 30px;
+    padding: 0 7px 0 7px;
+    margin: 0 6px 0 0;
+    font-size: 17px;
+    color: var(--c-ink);
+    background-color: var(--c-text);
+    border-radius: 4px;
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(150, 146, 136);
+    -unity-text-align: middle-center;
+}
+
+.keycap--mouse {
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom-width: 0;
+    width: 30px;
+    padding: 0;
+    -unity-background-image-tint-color: var(--c-text);
+}
+
+.icon { width: 32px; height: 32px; flex-shrink: 0; }
+.icon--small { width: 22px; height: 22px; }
+.icon--large { width: 56px; height: 56px; }
+
+.bar {
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0.55);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.bar__fill {
+    height: 100%;
+    width: 0;
+    background-color: var(--c-accent);
+    transition-property: width, background-color;
+    transition-duration: 0.15s;
+}
+
+.bar__fill--good { background-color: var(--c-good); }
+.bar__fill--bad { background-color: var(--c-bad); }
+
+/* A rubber stamp: slams in big and rotated, settles. */
+.stamp {
+    -unity-font-definition: url("../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 46px;
+    padding: 2px 16px 2px 16px;
+    border-width: 5px;
+    border-radius: 6px;
+    color: var(--c-bad);
+    border-color: var(--c-bad);
+    rotate: -8deg;
+    scale: 1 1;
+    opacity: 1;
+    transition-property: scale, opacity;
+    transition-duration: 0.12s;
+    transition-timing-function: ease-out;
+    -unity-text-align: middle-center;
+}
+
+.stamp--good { color: var(--c-good); border-color: var(--c-good); }
+.stamp--hidden { scale: 2.2 2.2; opacity: 0; }
+
+.tag {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 1px 8px 1px 8px;
+    color: var(--c-accent-ink);
+    background-color: var(--c-accent);
+    border-radius: 2px;
+}
+
+/* ---- Subtitles ---- */
+
+.subtitle-line {
+    font-size: 21px;
+    color: var(--c-text);
+    background-color: rgba(0, 0, 0, 0.65);
+    padding: 4px 14px 4px 14px;
+    margin-top: 4px;
+    -unity-text-align: middle-center;
+}
+
+.subtitles {
+    position: absolute;
+    left: 0; right: 0; bottom: 130px;
+    align-items: center;
+}
+
+/* ---- In-game HUD (M8.1; restyled in UI step 2) ---- */
 
 .hud-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
 
 .hud-top {
     position: absolute;
-    top: 14px; left: 0; right: 0;
+    top: 16px; left: 0; right: 0;
     flex-direction: row;
     justify-content: center;
 }
 
 .hud-chip {
-    background-color: rgba(10, 11, 12, 0.62);
-    color: rgb(236, 232, 220);
-    font-size: 18px;
-    padding: 6px 14px 6px 14px;
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    background-color: rgba(10, 11, 12, 0.66);
+    color: var(--c-text);
+    font-size: 22px;
+    letter-spacing: 1px;
+    padding: 5px 14px 5px 14px;
     margin: 0 4px 0 4px;
     border-radius: 2px;
 }
 
-.hud-chip--good { color: rgb(125, 255, 125); }
-.hud-chip--bad { color: rgb(255, 110, 95); }
+.hud-chip--good { color: var(--c-good); }
+.hud-chip--bad { color: var(--c-bad); }
 
 .hud-banner {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
     position: absolute;
-    left: 0; right: 0; top: 26%;
-    font-size: 46px;
-    color: rgb(255, 210, 77);
+    left: 0; right: 0; top: 24%;
+    font-size: 58px;
+    letter-spacing: 2px;
+    color: var(--c-accent);
     -unity-text-align: middle-center;
+    text-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
 }
 
-.hud-banner--dead { color: rgb(255, 85, 68); top: 40%; }
+.hud-banner--dead { color: var(--c-bad); top: 38%; }
 
 .hud-crosshair {
     position: absolute;
     left: 50%; top: 50%;
-    width: 5px; height: 5px;
-    margin-left: -2px; margin-top: -2px;
+    width: 6px; height: 6px;
+    margin-left: -3px; margin-top: -3px;
     background-color: rgba(255, 255, 255, 0.85);
     border-radius: 3px;
 }
@@ -238,31 +492,32 @@
 .hud-prompt {
     position: absolute;
     left: 0; right: 0; top: 53%;
-    font-size: 20px;
-    color: rgb(236, 232, 220);
+    font-size: 21px;
+    color: var(--c-text);
     -unity-text-align: middle-center;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7);
 }
 
-.hud-prompt--hint { color: rgb(255, 128, 96); }
+.hud-prompt--hint { color: rgb(255, 140, 100); }
 
 .hud-charge {
     position: absolute;
     left: 50%; top: 57%;
-    width: 140px; height: 8px;
-    margin-left: -70px;
+    width: 150px; height: 8px;
+    margin-left: -75px;
     background-color: rgba(0, 0, 0, 0.55);
 }
 
-.hud-charge__fill { height: 100%; background-color: rgb(232, 184, 40); }
+.hud-charge__fill { height: 100%; background-color: var(--c-accent); }
 
 .hud-panel {
     position: absolute;
-    background-color: rgba(10, 11, 12, 0.78);
+    background-color: rgba(10, 11, 12, 0.8);
     padding: 10px 14px 10px 14px;
     border-left-width: 4px;
-    border-left-color: rgb(232, 184, 40);
-    font-size: 17px;
-    color: rgb(236, 232, 220);
+    border-left-color: var(--c-accent);
+    font-size: 18px;
+    color: var(--c-text);
     white-space: normal;
 }
 
@@ -273,39 +528,35 @@
 
 .hud-voice {
     position: absolute;
-    left: 16px; bottom: 52px;
-    font-size: 16px;
+    left: 18px; bottom: 54px;
+    font-size: 17px;
     color: rgb(187, 187, 187);
 }
 
 .hud-marker {
     position: absolute;
-    font-size: 18px;
+    font-size: 19px;
     translate: -50% -50%;
     -unity-text-align: middle-center;
 }
 
 .hud-ghost {
     position: absolute;
-    left: 0; right: 0; bottom: 84px;
-    font-size: 20px;
+    left: 0; right: 0; bottom: 90px;
+    font-size: 22px;
     color: rgb(187, 187, 255);
     -unity-text-align: middle-center;
 }
 
 .hud-float {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
     position: absolute;
-    font-size: 26px;
+    font-size: 32px;
     translate: -50% -50%;
-    -unity-font-style: bold;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.6);
 }
 
-/* ---- World screens: board, shop, rack, appraisal (M8.1b) ---- */
-
-.backdrop--center {
-    align-items: center;
-    padding-left: 0;
-}
+/* ---- World screens: board, shop, rack, appraisal (M8.1b; restyled in steps 7-8) ---- */
 
 .hud-cards { flex-direction: row; }
 
@@ -313,22 +564,24 @@
     flex-grow: 1;
     flex-basis: 0;
     margin: 0 6px 0 6px;
-    padding: 12px 12px 12px 12px;
-    background-color: rgb(30, 33, 36);
+    padding: 14px 14px 14px 14px;
+    background-color: var(--c-panel-2);
 }
 
 .hud-card--taken {
-    border-left-width: 4px;
-    border-left-color: rgb(125, 255, 125);
+    border-top-width: 4px;
+    border-top-color: var(--c-good);
 }
 
 .hud-row {
     flex-direction: row;
     align-items: center;
-    min-height: 30px;
+    min-height: 32px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--c-line);
 }
 
-.hud-cell { width: 140px; font-size: 16px; color: rgb(210, 206, 196); -unity-text-align: middle-right; }
+.hud-cell { width: 150px; font-size: 17px; color: var(--c-text); -unity-text-align: middle-right; }
 .hud-cell--name {
     flex-grow: 1;
     flex-shrink: 1;
@@ -338,25 +591,25 @@
     -unity-text-align: middle-left;
 }
 
-.panel--xwide { width: 1100px; }
-
 .hud-hint {
-    left: 24px; top: 80px;
-    width: 420px;
+    left: 24px; top: 84px;
+    width: 440px;
 }
 
 .hud-floor {
+    -unity-font-definition: url("../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf");
     position: absolute;
-    left: 0; right: 0; bottom: 150px;
-    font-size: 22px;
+    left: 0; right: 0; bottom: 160px;
+    font-size: 28px;
+    letter-spacing: 1px;
     color: rgb(255, 160, 70);
     -unity-text-align: middle-center;
 }
 
-.hud-floor--failing { color: rgb(255, 70, 55); font-size: 30px; }
+.hud-floor--failing { color: var(--c-bad); font-size: 36px; }
 
 .hud-toast {
-    right: 24px; top: 80px;
+    right: 24px; top: 84px;
     width: 380px;
-    border-left-color: rgb(125, 255, 125);
+    border-left-color: var(--c-good);
 }

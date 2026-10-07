@@ -244,3 +244,9 @@ so batch Unity runs don't fight the open editor). See Docs/PROGRESS.md for the c
 - 2026-10-07 (user): the old TestBuilding scene is renamed **TestMap** (Scenes/TestMap.unity, TestMapBuilder). It's a
   feature-testing map for us, not a level: it's never in a job and never in a shared build (BuildScenes.ForPlayer
   keeps it only in Dev builds, for nettests). The mall is the game's map.
+- 2026-10-07 (user-approved UI overhaul, R.E.P.O./Lethal Company style): work in autobuild-2; steps (1) theme+kit,
+  (2) HUD + loot scan + prompts, (3) death/ghost + truck banner + toasts, (4) pause + crew + per-player volume,
+  (5) settings tabs + Video + mic picker + UI Scale, (6) main menu + Play flow, (7) appraisal receipt, (8) HQ
+  terminal (clickable amber CRT) / board / wardrobe, (9) travel screen, (10) text chat (T). Commit + push each step;
+  render UI screenshots (UiShotsTests, 16:9 / 16:10 / ultrawide) and fix layout before moving on. Fonts/icons CC0 or
+  OFL only, in Docs/ASSET_CREDITS.md; never the stencil font for small text. Panel scales by height (match 1).

@@ -18,8 +18,10 @@ namespace Abandoned.EditorTools
         public const string PanelPath = Folder + "/MenuPanel.asset";
         public const string CreditsPath = Folder + "/Credits.txt";
         public const string ThemePath = "Assets/_Project/Art/UI/MenuTheme.tss";
-        public const string FontPath = ThirdPartyModelImport.Root + "Kenney/Fonts/Kenney Future.ttf";
-        public const string TitleFontPath = ThirdPartyModelImport.Root + "Kenney/Fonts/Kenney Future Narrow.ttf";
+        // UI overhaul: Barlow for everything small (readable), Saira Stencil One only for big titles (OFL).
+        public const string FontPath = ThirdPartyModelImport.Root + "Fonts/Barlow/Barlow-Medium.ttf";
+        public const string TitleFontPath = ThirdPartyModelImport.Root + "Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf";
+        public const string IconsPath = Folder + "/Resources/UiIcons.asset";
 
         [MenuItem("Tools/Abandoned/UI/Build Menu Assets")]
         public static void CreateMissing()
@@ -36,11 +38,42 @@ namespace Abandoned.EditorTools
             panel.scaleMode = PanelScaleMode.ScaleWithScreenSize;
             panel.referenceResolution = new Vector2Int(1920, 1080);
             panel.screenMatchMode = PanelScreenMatchMode.MatchWidthOrHeight;
-            panel.match = 0.5f;
+            // Scale by height: ultrawide gets more room at the sides, 16:10 a little more height, text stays the same size.
+            panel.match = 1f;
             panel.sortingOrder = 100;
             EditorUtility.SetDirty(panel);
             WriteCredits();
+            BuildIcons();
             AssetDatabase.SaveAssets();
+        }
+
+        // Icon packs and their id prefixes (UiIcons): colour item art, white menu icons, white HUD symbols, mouse glyphs.
+        private static readonly (string folder, string prefix)[] IconPacks =
+        {
+            ("Kenney/GenericItems", "item"), ("Kenney/GameIcons", "icon"), ("Kenney/BoardGameIcons", "board"), ("Kenney/InputPrompts", "mouse"),
+        };
+
+        /// <summary>Data/UI/Resources/UiIcons: every icon PNG in the packs by "prefix/name".</summary>
+        public static Abandoned.UI.UiIcons BuildIcons()
+        {
+            if (!AssetDatabase.IsValidFolder(Folder + "/Resources")) AssetDatabase.CreateFolder(Folder, "Resources");
+            var icons = SerializedWiring.LoadOrCreateAsset<Abandoned.UI.UiIcons>(IconsPath);
+            var list = new List<Abandoned.UI.UiIcons.Entry>();
+            foreach ((string folder, string prefix) in IconPacks)
+            {
+                string path = ThirdPartyModelImport.Root + folder;
+                if (!AssetDatabase.IsValidFolder(path)) continue;
+                foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { path }))
+                {
+                    string file = AssetDatabase.GUIDToAssetPath(guid);
+                    if (!file.EndsWith(".png")) continue;
+                    list.Add(new Abandoned.UI.UiIcons.Entry { Id = $"{prefix}/{Path.GetFileNameWithoutExtension(file)}", Texture = AssetDatabase.LoadAssetAtPath<Texture2D>(file) });
+                }
+            }
+            list.Sort((a, b) => string.CompareOrdinal(a.Id, b.Id));
+            icons.EditorSet(list);
+            EditorUtility.SetDirty(icons);
+            return icons;
         }
 
         private static void WriteCredits()
