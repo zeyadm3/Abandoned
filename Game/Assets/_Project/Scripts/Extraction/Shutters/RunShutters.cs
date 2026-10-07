@@ -93,6 +93,17 @@ namespace Abandoned.Extraction
             }
         }
 
+        public void ServerSlam(int index)
+        {
+            if(!IsServer||!Ready)return;
+            RollerShutter shutter=RollerShutter.All.FirstOrDefault(s=>s!=null&&s.Index==index&&!s.Entrance);
+            if(shutter==null)return;
+            // Do not crush a carrier in the doorway; fallback service stairs/rope windows never get shutters.
+            if(NetworkPlayer.All.Any(p=>p!=null&&!p.IsDead&&Vector3.Distance(p.transform.position,shutter.transform.position)<2f))return;
+            cuts.Remove(index);pries.Remove(index);down.Value|=1<<index;
+            SoundRpc(SoundId.ShutterOpen,shutter.transform.position+Vector3.up);
+        }
+
         /// <summary>This machine's player pressed E on a locked shutter.</summary>
         public void RequestOpen(int index) => RequestOpenRpc(index);
 

@@ -56,6 +56,8 @@ namespace Abandoned.EditorTools
             ramp.localPosition = mid - new Vector3(0f, Mathf.Cos(rad), -Mathf.Sin(rad)) * (RampThickness / 2f);
             ramp.localRotation = Quaternion.Euler(-rad * Mathf.Rad2Deg, 0f, 0f);
             ramp.gameObject.AddComponent<BoxCollider>().size = new Vector3(width, RampThickness, Mathf.Sqrt(length * length + rise * rise));
+            foreach(Renderer r in visual.GetComponentsInChildren<Renderer>()){var holder=r.gameObject;Object.DestroyImmediate(r);var mesh=holder.GetComponent<MeshFilter>();if(mesh!=null)Object.DestroyImmediate(mesh);}
+            CustomMallArt.Place(escalator ? "escalator" : "stairs",visual,Vector3.zero,Quaternion.identity);
             return root;
         }
     }

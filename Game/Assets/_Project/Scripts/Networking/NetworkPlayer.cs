@@ -15,7 +15,7 @@ namespace Abandoned.Networking
     /// driven from replicated state, so remote players render, weigh on floors (host) and make footsteps.
     /// Without a network session (single-player tests) nothing changes.
     /// </summary>
-    public class NetworkPlayer : NetworkBehaviour
+    public partial class NetworkPlayer : NetworkBehaviour
     {
         [SerializeField] private PlayerMotor motor;
         [SerializeField] private PlayerRagdoll ragdoll;
@@ -65,6 +65,7 @@ namespace Abandoned.Networking
         public override void OnNetworkSpawn()
         {
             Spawned.Add(this);
+            SpawnHealth();
             if (IsServer)
             {
                 SpawnSlots seats = NetworkBootstrap.Resolve(null)?.Slots;
@@ -107,6 +108,7 @@ namespace Abandoned.Networking
         public override void OnNetworkDespawn()
         {
             Spawned.Remove(this);
+            health.OnValueChanged -= OnHealthChanged;
             state.OnValueChanged -= OnStateChanged;
             dead.OnValueChanged -= OnDeadChanged;
             if (!IsOwner) return;
@@ -124,6 +126,7 @@ namespace Abandoned.Networking
 
         private void LateUpdate()
         {
+            if (IsSpawned) TrackServerFall();
             if (!IsSpawned || !IsOwner) return;
             // NetworkVariable only sends when the value actually changed.
             state.Value = PlayerNetState.From(motor.IsGrounded, motor.IsSprinting, motor.IsCrouching,
@@ -142,15 +145,24 @@ namespace Abandoned.Networking
         // The host owns structural damage; a client's landing only exists on the client, so report it.
         private void OnOwnerLanded(float fallHeight, float impactSpeed)
         {
-            if (!IsServer) ReportLandingRpc(fallHeight, impactSpeed);
+            Vector3 landingPosition = ragdoll.IsRagdolled ? ragdoll.BodyPosition : transform.position;
+            if (IsServer)
+            {
+                if (AcceptLanding(ref fallHeight, ref impactSpeed, landingPosition)) ApplyLandingDamage(fallHeight);
+            }
+            else ReportLandingRpc(fallHeight, impactSpeed, landingPosition);
         }
 
         // The owner is trusted with its movement anyway; the clamp only stops a bad value from flattening a building.
         private const float MaxReportedFall = 60f, MaxReportedImpactSpeed = 35f;
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-        private void ReportLandingRpc(float fallHeight, float impactSpeed) =>
-            motor.RaiseRemoteLanding(Mathf.Clamp(fallHeight, 0f, MaxReportedFall), Mathf.Clamp(impactSpeed, 0f, MaxReportedImpactSpeed));
+        private void ReportLandingRpc(float fallHeight, float impactSpeed, Vector3 landingPosition)
+        {
+            if (!AcceptLanding(ref fallHeight, ref impactSpeed, landingPosition)) return;
+            motor.RaiseRemoteLanding(fallHeight, impactSpeed);
+            ApplyLandingDamage(fallHeight);
+        }
 
         /// <summary>
         /// Owner: moves this player somewhere else at once (nettest staging, later respawns); every
@@ -174,6 +186,7 @@ namespace Abandoned.Networking
         public void ServerRespawn(Pose pose)
         {
             if (!IsServer) return;
+            ResetHealth();
             dead.Value = false;
             RespawnRpc(pose.position, pose.rotation, false);
         }
@@ -182,12 +195,21 @@ namespace Abandoned.Networking
         public void ServerRevive()
         {
             if (!IsServer || !dead.Value) return;
+            health.Value = Mathf.Min(MaxHealth, HealthConfig.ReviveHealth);
+            deathCause.Value = default;
+            trackingServerFall = false;
+            nextLandingReport = Time.time + HealthConfig.LandingReportInterval;
             dead.Value = false;
             RespawnRpc(ragdoll.BodyPosition + Vector3.up * 0.1f, transform.rotation, true);
         }
 
         /// <summary>Host: this player dies (monster contact). Their body falls where they stood.</summary>
         public void ServerKill(string cause = null)
+        {
+            DealDamage(MaxHealth, cause ?? "Something got you.");
+        }
+
+        private void Die(string cause)
         {
             if (!IsServer || dead.Value) return;
             // The cause first: it reaches the owner before (or with) the death itself.
@@ -251,6 +273,7 @@ namespace Abandoned.Networking
             Local = null;
             LocalPlayerSpawned = null;
             DeathChanged = null;
+            HealthChanged = null;
         }
     }
 }

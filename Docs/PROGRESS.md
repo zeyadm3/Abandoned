@@ -4,6 +4,53 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Full horror redesign — 0.12.0 (2026-10-08)
+
+User direction: fully autonomous authoring; no gameplay, EditMode/PlayMode/nettests, screenshots,
+QA passes or new tests. Only compilation, required content generation and final player builds.
+TestMap remains untouched. Six implementation commits follow the requested order; no push.
+
+1. **Mall / arrival / escalation.** Meridian is a new 56 × 48 m, three-storey layout with a tall
+   atrium, east service passage, dark fictional storefronts, food court, cinema, security office,
+   quarantine rooms and a ruined gallery. A flooded lower level and parking garage lie beneath the
+   east wing; ground slabs there can collapse. Fixed service stairs, loading exit and rope windows
+   remain escape routes. Custom Blender kit replaces modular visuals while logical structural load,
+   pre-fractured local debris, NavMesh bake/carving, seeded loot and shutters remain active.
+   The truck parks facing the front entrance. Arrival beats run after the first player enters: groan,
+   travelling light failure, distant scream, corridor silhouette and overhead footsteps within 46s.
+   Host-synced cosmetic scares cause no damage. Danger rises every 110s, ages structure faster,
+   progressively kills lighting sectors, brings audio closer and slams store shutters while preserving
+   authored escape routes. Final phase begins 90s after the extraction window: siren, red fixtures,
+   huge roar and an eight-second warning before the final hunter moves. Runs and departure have no
+   music. Warm truck lamps, nearby engine idle, closing doors and a receding rear-view image mark escape.
+2. **Existing monsters.** Eight Blender rigs include Idle/Walk/Chase/Attack/Special takes and original
+   grime. Blind One stays sound-only (65 base damage); Stalker punishes isolation and looking away
+   (85); Collector steals unattended loot without damaging players; Hunter retains its 450kg load
+   and contact kill. Host-written motion state drives replicated animation with signature sounds.
+3. **New monsters / final phase.** Crawlers unlock at danger 1, flee a usable flashlight and strike
+   for 8 damage while dislodging carried loot. Weight unlocks at 3: audible ceiling movement winds up
+   before damaging structural sections. Thing unlocks at 4: sustained flashlight inspection provokes
+   it; switching the beam off breaks fixation. Last Hunter is final-only, breaks routes and kills on
+   contact; truck occupants and players who have escaped the building are sheltered. New silhouettes
+   arrive before duplicates; regular threats cap at eight. Danger improves speed/hearing/sight/memory
+   and shortens attack cooldowns; damage increases up to 1.4×.
+4. **HQ.** Dim Ashline salvage depot rebuilt with original modular walls, concrete tiles, exposed
+   roof services, abandoned belongings, damp patches and missing notices. Stable warm light by the
+   van/terminal contrasts with cold faulty overheads. Board, van, terminal, rack, wardrobe, voicemail
+   and all four spawn positions remain connected to their existing flows.
+5. **Health / falls / lifeline.** 100 host-owned HP, one host damage API, death at zero, no regeneration,
+   reset on each run. Medkits restore 65HP or revive a downed teammate at 50HP. Fall curve is quadratic
+   from 4m to lethal at 12m; carried weight increases damage up to 2.5×. Owner landing reports are
+   bounded, ground-validated and rate-limited; collapse-body landings feed the same path. Damage vignette,
+   low-health depth blur, heartbeat/breathing and local persistent corpses with switched-on floor beams.
+   Flashlights reach 12m, flicker near threats, and have 180s of host-owned battery, with no automatic
+   recharge. A buyable 500-credit single-use replacement cell is appended to the gear catalog.
+6. **Interface.** Muted worn paperwork, grime and occasional restrained CRT flicker across existing
+   UI Toolkit screens. Health, stamina and flashlight battery display when relevant; carrying prompts
+   and inventory stay accessible. A subtle danger indicator and readable dispatch messages carry pressure.
+
+Compilation/content generation/final build outcome is recorded below when complete.
+
 ## Feel and presentation pass (2026-10-07)
 
 Version 0.11.0, implemented and built 2026-10-08 (local time). Direction and user playtest checklist: Docs/POLISH.md.

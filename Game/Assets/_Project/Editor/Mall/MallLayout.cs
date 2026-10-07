@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
     public static class MallLayout
     {
         public const float Tile = 4f;
-        public const int TilesX = 12, TilesZ = 10, Floors = 3;
+        public const int TilesX = 14, TilesZ = 12, Floors = 3;
         public const float StoryHeight = 4f;
 
         public enum Kind { Store, Walkway, Bridge, Concourse }
@@ -72,75 +72,71 @@ namespace Abandoned.EditorTools
             public IEnumerable<Vector2Int> Tiles => new[] { Start, Start + Dir };
         }
 
-        public static readonly RectInt Atrium = new(4, 3, 4, 4);
+        public static readonly RectInt Atrium = new(5, 4, 4, 4);
 
         /// <summary>The ring of walkway tiles around the atrium on the upper floors.</summary>
-        public static readonly RectInt Ring = new(3, 2, 6, 6);
+        public static readonly RectInt Ring = new(4, 3, 6, 6);
 
         public static readonly Flight[] Flights =
         {
-            // Escalators: collapse showcase (GDD 8). One up from the atrium floor onto the floor-1 bridge,
-            // one from the bridge's east end up to the floor-2 ring.
-            new("Escalator_G1", 0, 4, 3, Vector2Int.up, true),
-            new("Escalator_12", 1, 7, 4, Vector2Int.down, true),
-            // Service stairs in the stockroom corner: the way down that never falls.
-            // G->1 climbs south from the loading bay's back wall; 1->2 climbs north from the stockroom.
-            new("Stairs_G1", 0, 11, 8, Vector2Int.down, false),
-            new("Stairs_12", 1, 10, 7, Vector2Int.up, false),
+            new("Escalator_G1", 0, 5, 4, Vector2Int.up, true),
+            new("Escalator_12", 1, 8, 5, Vector2Int.down, true),
+            new("Stairs_G1", 0, 13, 10, Vector2Int.down, false),
+            new("Stairs_12", 1, 12, 9, Vector2Int.up, false),
         };
 
         public static readonly Zone[][] ZonesByFloor =
         {
-            new[] // Ground
+            new[]
             {
-                new Zone("Concourse", "concourse", Kind.Concourse, 3, 0, 6, 8),
-                new Zone("Electronics", "electronics", Kind.Store, 0, 0, 3, 5),
-                new Zone("Clothing", "clothing", Kind.Store, 0, 5, 3, 5),
-                new Zone("FoodCourt", "food", Kind.Concourse, 3, 8, 6, 2),
-                new Zone("Jewelry", "jewelry", Kind.Store, 9, 0, 3, 4),
-                new Zone("Security", "office", Kind.Store, 9, 4, 3, 2),
-                new Zone("LoadingBay", "stock", Kind.Store, 9, 6, 3, 4),
+                new Zone("GrandAtrium", "concourse", Kind.Concourse, 4, 0, 6, 10),
+                new Zone("DeadCircuit", "electronics", Kind.Store, 0, 0, 4, 5),
+                new Zone("Threadbare", "clothing", Kind.Store, 0, 5, 4, 5),
+                new Zone("FoodCourt", "food", Kind.Concourse, 0, 10, 10, 2),
+                new Zone("ServicePassage", "stock", Kind.Store, 10, 0, 1, 12),
+                new Zone("Jewelry", "jewelry", Kind.Store, 11, 0, 3, 4),
+                new Zone("Security", "office", Kind.Store, 11, 4, 3, 3),
+                new Zone("LoadingBay", "stock", Kind.Store, 11, 7, 3, 5),
             },
-            new[] // Floor 1
+            new[]
             {
-                new Zone("Walkway1", "walkway", Kind.Walkway, 3, 2, 6, 6),
-                new Zone("Furniture", "furniture", Kind.Store, 0, 0, 3, 10),
-                new Zone("Toys", "toys", Kind.Store, 3, 0, 6, 2),
-                new Zone("FoodTerrace", "food", Kind.Walkway, 3, 8, 6, 2),
-                new Zone("Electronics2", "electronics", Kind.Store, 9, 0, 3, 6),
-                new Zone("Stockroom", "stock", Kind.Store, 9, 6, 3, 4),
+                new Zone("Walkway1", "walkway", Kind.Walkway, 4, 3, 6, 6),
+                new Zone("Furniture", "furniture", Kind.Store, 0, 0, 4, 12),
+                new Zone("ToyArchive", "toys", Kind.Store, 4, 0, 6, 3),
+                new Zone("FoodTerrace", "food", Kind.Walkway, 4, 9, 6, 3),
+                new Zone("ServicePassage", "stock", Kind.Store, 10, 0, 1, 12),
+                new Zone("Electronics2", "electronics", Kind.Store, 11, 0, 3, 7),
+                new Zone("Stockroom", "stock", Kind.Store, 11, 7, 3, 5),
             },
-            new[] // Floor 2
+            new[]
             {
-                new Zone("Walkway2", "walkway", Kind.Walkway, 3, 2, 6, 6),
-                new Zone("Cinema", "cinema", Kind.Store, 0, 0, 3, 10),
-                new Zone("Boutique", "jewelry", Kind.Store, 3, 0, 6, 2),
-                new Zone("Gallery", "gallery", Kind.Store, 3, 8, 6, 2),
-                new Zone("Offices", "office", Kind.Store, 9, 0, 3, 6),
-                new Zone("StairTop", "stock", Kind.Store, 9, 6, 3, 4),
+                new Zone("Walkway2", "walkway", Kind.Walkway, 4, 3, 6, 6),
+                new Zone("Cinema", "cinema", Kind.Store, 0, 0, 4, 12),
+                new Zone("Quarantine", "jewelry", Kind.Store, 4, 0, 6, 3),
+                new Zone("CollapsedGallery", "gallery", Kind.Store, 4, 9, 6, 3),
+                new Zone("ServicePassage", "stock", Kind.Store, 10, 0, 1, 12),
+                new Zone("Offices", "office", Kind.Store, 11, 0, 3, 7),
+                new Zone("StairTop", "stock", Kind.Store, 11, 7, 3, 5),
             },
         };
 
         public static readonly Door[] Doors =
         {
-            new(0, 2, 2, 3, 2), new(0, 2, 6, 3, 6), new(0, 9, 1, 8, 1), new(0, 9, 4, 8, 4),
-            new(0, 9, 7, 8, 7, wide: true), // loading bay <-> concourse: big items come through here
-            new(1, 2, 3, 3, 3), new(1, 2, 6, 3, 6, wide: true), // furniture: the piano's way out
-            new(1, 5, 1, 5, 2), new(1, 9, 3, 8, 3),
-            new(1, 9, 7, 8, 7, wide: true),
-            new(2, 2, 5, 3, 5), new(2, 6, 1, 6, 2), new(2, 9, 2, 8, 2),
-            new(2, 9, 7, 8, 7, wide: true), // floor 2 -> service stairs: a route for jackpots that never collapses
-            new(2, 5, 8, 5, 7, wide: true), new(2, 6, 8, 6, 7, wide: true), // gallery: the statue's way out
+            new(0,3,2,4,2,true), new(0,3,7,4,7,true),
+            new(0,9,2,10,2), new(0,9,5,10,5), new(0,9,8,10,8,true),
+            new(0,10,1,11,1), new(0,10,5,11,5), new(0,10,8,11,8,true),
+            new(1,3,4,4,4), new(1,3,8,4,8,true), new(1,6,2,6,3),
+            new(1,9,4,10,4), new(1,9,8,10,8,true), new(1,10,3,11,3), new(1,10,8,11,8,true),
+            new(2,3,6,4,6), new(2,6,2,6,3), new(2,6,9,6,8,true),
+            new(2,9,4,10,4), new(2,9,8,10,8,true), new(2,10,2,11,2), new(2,10,8,11,8,true),
         };
 
-        /// <summary>Exterior openings: (floor, side 'S'/'N'/'W'/'E', column along that side, wide, window).</summary>
         public static readonly (int floor, char side, int column, bool wide, bool window)[] Exterior =
         {
-            (0, 'S', 5, true, false), (0, 'S', 6, true, false), // main entrance
-            (0, 'E', 6, true, false),                           // loading bay door to the truck (clear of the service stairs)
-            (0, 'W', 2, false, false),                          // electronics side exit
-            (1, 'W', 5, false, true), (1, 'E', 2, false, true), // fallback rope windows (GDD 6.4)
-            (2, 'S', 2, false, true), (2, 'N', 10, false, true),
+            (0,'S',6,true,false), (0,'S',7,true,false),
+            (0,'E',8,true,false), (0,'W',2,false,false),
+            (1,'W',6,false,true), (1,'E',3,false,true),
+            (2,'W',5,false,true), (2,'N',12,false,true),
         };
 
         public static float FloorY(int floor) => floor * StoryHeight;
@@ -151,6 +147,7 @@ namespace Abandoned.EditorTools
         /// </summary>
         public static bool IsFlightOpening(Vector2Int a, Vector2Int b, int floor)
         {
+            if (floor == 0 && ((a == new Vector2Int(13,9) && b == new Vector2Int(13,10)) || (b == new Vector2Int(13,9) && a == new Vector2Int(13,10)))) return true;
             foreach (Flight f in Flights)
             {
                 Vector2Int foot = f.Start - f.Dir, head = f.Start + f.Dir * 2, top = f.Start + f.Dir;
@@ -166,12 +163,14 @@ namespace Abandoned.EditorTools
 
         public static bool InGrid(Vector2Int c) => c.x >= 0 && c.x < TilesX && c.y >= 0 && c.y < TilesZ;
 
-        public static bool IsBridge(Vector2Int c, int floor) => floor == 1 && c.y == 5 && c.x >= Atrium.xMin && c.x < Atrium.xMax;
+        public static bool IsBridge(Vector2Int c, int floor) => floor == 1 && c.y == 6 && c.x >= Atrium.xMin && c.x < Atrium.xMax;
 
         /// <summary>No floor here: the atrium above the ground, and where a flight climbs through.</summary>
         public static bool IsVoid(Vector2Int c, int floor)
         {
-            if (floor == 0) return false;
+            if (floor == 0) return c.x == 13 && (c.y == 8 || c.y == 9);
+            // The ruined gallery leaves a visible wound while its south carry lane survives.
+            if (floor == 2 && c.y >= 10 && c.x >= 7 && c.x <= 9) return true;
             if (Atrium.Contains(c) && !IsBridge(c, floor)) return true;
             // A flight from floor f-1 passes up through floor f's slab.
             return Flights.Any(f => f.Floor == floor - 1 && f.Tiles.Contains(c));

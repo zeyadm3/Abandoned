@@ -33,14 +33,14 @@ namespace Abandoned.EditorTools
         /// <summary>A dim, dusty, cold mall; warm late-afternoon sun outside and through the skylight.</summary>
         public static readonly Mood Mall = new(
             sky: new Color(0.09f, 0.105f, 0.12f), equator: new Color(0.055f, 0.064f, 0.07f), ground: new Color(0.026f, 0.025f, 0.022f),
-            fog: new Color(0.19f, 0.205f, 0.21f), fogDensity: 0.014f, bloom: 0.2f, vignette: 0f, grain: 0f,
-            saturation: -8f, contrast: 6f, sunColor: new Color(1f, 0.91f, 0.77f), sunIntensity: 1.7f, sunEuler: new Vector3(66f, -32f, 0f));
+            fog: new Color(0.19f, 0.205f, 0.21f), fogDensity: 0.024f, bloom: 0.22f, vignette: 0.25f, grain: 0.18f,
+            saturation: -38f, contrast: 12f, sunColor: new Color(1f, 0.91f, 0.77f), sunIntensity: 0.13f, sunEuler: new Vector3(66f, -32f, 0f));
 
         /// <summary>The company HQ: warmer and cleaner (a safe place), light haze.</summary>
         public static readonly Mood Hq = new(
-            sky: new Color(0.46f, 0.44f, 0.42f), equator: new Color(0.36f, 0.33f, 0.3f), ground: new Color(0.16f, 0.15f, 0.13f),
-            fog: new Color(0.3f, 0.28f, 0.26f), fogDensity: 0.006f, bloom: 0.18f, vignette: 0f, grain: 0f,
-            saturation: -5f, contrast: 8f, sunColor: new Color(1f, 0.92f, 0.8f), sunIntensity: 1.4f, sunEuler: new Vector3(50f, -30f, 0f));
+            sky: new Color(0.11f, 0.12f, 0.12f), equator: new Color(0.08f, 0.085f, 0.08f), ground: new Color(0.04f, 0.038f, 0.03f),
+            fog: new Color(0.3f, 0.28f, 0.26f), fogDensity: 0.009f, bloom: 0.18f, vignette: 0.16f, grain: 0.1f,
+            saturation: -5f, contrast: 8f, sunColor: new Color(1f, 0.92f, 0.8f), sunIntensity: 0.35f, sunEuler: new Vector3(50f, -30f, 0f));
 
         public static void Apply(string levelName, Mood mood, Transform parent)
         {

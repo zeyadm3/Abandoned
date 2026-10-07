@@ -53,6 +53,13 @@ namespace Abandoned.EditorTools
                 StructuralSection support = tiles.Find($"Floor_{floor}/{MallBuilder.TileName(cell, floor)}")?.GetComponent<StructuralSection>();
                 if (support == null) continue;
                 int hash = Hash(cell, floor);
+                if(hash%7==0)
+                {
+                    GameObject decay=CustomMallArt.Place(hash%3==0?"BrokenGlass":hash%3==1?"debris":"Overgrowth",dressing,TileTopCenter(cell,floor)+new Vector3(1.3f,0.02f,1.3f),Quaternion.Euler(0,hash%360,0));
+                    decay.AddComponent<SectionProp>().EditorSetup(support);
+                }
+                if(hash%13==0)CustomMallArt.Place("CeilingSagging",dressing,TileTopCenter(cell,floor)+Vector3.up*3.7f,Quaternion.identity);
+
                 foreach (Vector2Int side in new[] { Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down })
                 {
                     Vector2Int next = cell + side;
@@ -95,7 +102,7 @@ namespace Abandoned.EditorTools
             }
 
             // The entrance identity and a shuttered lease notice reinforce a mall, without a new gameplay obstacle.
-            Sign(dressing, new Vector3(24f, 3.72f, -0.25f), Vector3.back, "ABANDONED MALL", sign, 6.5f, 0.42f, 0.18f);
+            Sign(dressing, new Vector3(28f, 3.72f, -0.25f), Vector3.back, "MERIDIAN", sign, 6.5f, 0.42f, 0.18f);
             foreach (Renderer renderer in dressing.GetComponentsInChildren<Renderer>())
             {
                 if (renderer.GetComponentInParent<SectionProp>() != null) continue;

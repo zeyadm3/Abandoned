@@ -64,6 +64,7 @@ namespace Abandoned.EditorTools
             Vector3 start = east ? new Vector3(b.x * Tile, y, a.y * Tile) : new Vector3(a.x * Tile, y, b.y * Tile);
             Vector3 dir = east ? Vector3.forward : Vector3.right;
             GreyboxWall.Panel(parent, name, start, dir, Tile, WallHeight, Thickness, hole, wall, frame);
+            DressPanel(parent.Find(name), hole);
         }
 
         private static void Railing(Transform parent, string name, Vector2Int a, Vector2Int b, float y, Material material)
@@ -73,7 +74,8 @@ namespace Abandoned.EditorTools
                 ? new Vector3(b.x * Tile, y + RailingHeight / 2f, (a.y + 0.5f) * Tile)
                 : new Vector3((a.x + 0.5f) * Tile, y + RailingHeight / 2f, b.y * Tile);
             Vector3 size = east ? new Vector3(0.1f, RailingHeight, Tile) : new Vector3(Tile, RailingHeight, 0.1f);
-            Box(name, parent, center, size, material);
+            Box(name, parent, center, size, material).GetComponent<Renderer>().enabled=false;
+            CustomMallArt.Place("railing",parent,center-Vector3.up*(RailingHeight/2),east?Quaternion.Euler(0,90,0):Quaternion.identity);
         }
 
         // A flight is narrower than the 4 m edge it opens onto: rail off what's left on either side.
@@ -118,8 +120,16 @@ namespace Abandoned.EditorTools
             void Panel(string name, Vector3 start, Vector3 dir, WallOpening? hole)
             {
                 GreyboxWall.Panel(walls, name, start, dir, Tile, StoryHeight, Thickness, hole, wall, frame);
+                DressPanel(walls.Find(name), hole);
                 count++;
             }
+        }
+
+        private static void DressPanel(Transform panel, WallOpening? hole)
+        {
+            string model = !hole.HasValue ? "wall" : hole.Value.Bottom > 0 ? "window_wall" : hole.Value.Width > 2 ? "storefront" : "door_wall";
+            foreach(Renderer r in panel.GetComponentsInChildren<Renderer>()) r.enabled=false;
+            CustomMallArt.Place(model,panel,Vector3.zero,Quaternion.identity);
         }
 
         private static WallOpening? Opening(int floor, char side, int column)

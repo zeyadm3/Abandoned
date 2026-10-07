@@ -41,6 +41,9 @@ namespace Abandoned.EditorTools
             UiContentBuilder.CreateMissing();
             ThreatContentBuilder.CreateBlindOne();
             ThreatContentBuilder.CreateOthers();
+            NewThreatContentBuilder.Create();
+            HorrorContentBuilder.Create();
+            UiHorrorTextureBuilder.Create();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestMapBuilder.Build();
             MallBuilder.Build();
@@ -53,6 +56,25 @@ namespace Abandoned.EditorTools
             }
             BuildScenes.ApplyToEditorSettings();
             return true;
+        });
+
+        // The horror content pass intentionally never opens or rebuilds the developer TestMap,
+        // captures screenshots/icons, or runs validators/tests.
+        public static void RebuildHorrorContent() => RunAndExit(() =>
+        {
+            ProjectLayersSetup.Apply(); BuildScript.ApplyPlayerSettings(); RenderPipelineSetup.Apply();
+            CustomMallArt.Prepare();
+            HealthContentBuilder.Create();
+            EquipmentContentBuilder.CreateMissing();
+            PlayerPrefabBuilder.Create();
+            NetworkContentBuilder.CreateRunStatePrefab();
+            HorrorContentBuilder.Create();
+            ThreatContentBuilder.CreateBlindOne(); ThreatContentBuilder.CreateOthers();
+            NewThreatContentBuilder.Create();
+            NetworkContentBuilder.RegisterNetworkPrefabs();
+            UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing();
+            MallBuilder.Build(); HqBuilder.Build(); BuildScenes.ApplyToEditorSettings();
+            AssetDatabase.SaveAssets(); return true;
         });
 
         public static void BuildMac() => RunAndExit(() => BuildScript.Build(BuildPlatform.Mac, BuildFlavor.Shareable));

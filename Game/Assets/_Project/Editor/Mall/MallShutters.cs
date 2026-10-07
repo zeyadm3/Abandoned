@@ -19,12 +19,12 @@ namespace Abandoned.EditorTools
         // (floor, store side tile, outside tile, store zone name)
         private static readonly (int floor, int sx, int sz, int ox, int oz, string zone)[] Stores =
         {
-            (0, 2, 6, 3, 6, "Clothing"),
-            (0, 9, 1, 8, 1, "Jewelry"),
-            (0, 9, 4, 8, 4, "Security"),
-            (1, 5, 1, 5, 2, "Toys"),
-            (2, 6, 1, 6, 2, "Boutique"),
-            (2, 9, 2, 8, 2, "Offices"),
+            (0, 3, 7, 4, 7, "Threadbare"),
+            (0, 11, 1, 10, 1, "Jewelry"),
+            (0, 11, 5, 10, 5, "Security"),
+            (1, 6, 2, 6, 3, "ToyArchive"),
+            (2, 6, 2, 6, 3, "Quarantine"),
+            (2, 11, 2, 10, 2, "Offices"),
         };
 
         public static int Place(Transform root)
@@ -45,10 +45,11 @@ namespace Abandoned.EditorTools
                 var room = new Bounds();
                 room.SetMinMax(new Vector3(zone.Area.xMin * Tile, FloorY(s.floor), zone.Area.yMin * Tile),
                     new Vector3(zone.Area.xMax * Tile, FloorY(s.floor) + StoryHeight, zone.Area.yMax * Tile));
-                Shutter(group, $"Shutter_{s.zone}", index++, false, start + dir * (Tile / 2f), dir, DoorWidth, DoorHeight, room, slats, housing);
+                bool wide = DoorBetween(a,b,s.floor)?.Wide ?? false;
+                Shutter(group, $"Shutter_{s.zone}", index++, false, start + dir * (Tile / 2f), dir, wide ? WideWidth : DoorWidth, wide ? WideHeight : DoorHeight, room, slats, housing);
             }
             // The front entrance: two wide doors on the street side, locked only on a Sealed job.
-            foreach (int column in new[] { 5, 6 })
+            foreach (int column in new[] { 6, 7 })
                 Shutter(group, $"Shutter_Entrance_{column}", index++, true, new Vector3(column * Tile + Tile / 2f, 0f, -MallWalls.Thickness / 2f),
                     Vector3.right, WideWidth, WideHeight, default, slats, housing);
             return index;
@@ -70,7 +71,7 @@ namespace Abandoned.EditorTools
             var curtain = new GameObject("Curtain").transform;
             curtain.SetParent(root, false);
             curtain.localPosition = new Vector3(0f, height, 0f);
-            Box("Slats", curtain, new Vector3(0f, -height / 2f, 0f), new Vector3(width, height, 0.06f), slats, withCollider: false);
+            CustomMallArt.Place("shutter", curtain, new Vector3(0f, -height, 0f), Quaternion.identity, new Vector3(width / 3.5f, height / 3.4f, 1f));
             Box("Housing", root, new Vector3(0f, height + 0.15f, 0f), new Vector3(width + 0.1f, 0.3f, 0.3f), housing, withCollider: false);
             Box("Padlock", curtain, new Vector3(0f, -height + 0.2f, 0.06f), new Vector3(0.12f, 0.15f, 0.06f), housing, withCollider: false);
 

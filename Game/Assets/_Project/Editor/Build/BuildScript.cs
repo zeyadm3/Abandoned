@@ -20,7 +20,7 @@ namespace Abandoned.EditorTools
     {
         public const string ProductName = "Abandoned";
         /// <summary>0.&lt;milestone being built&gt;.&lt;patch&gt;; bump the middle number when a milestone starts.</summary>
-        public const string Version = "0.11.0";
+        public const string Version = "0.12.0";
         public const string CompanyName = "Zeyad Games";
         public const string BundleId = "com.zeyadgames.abandoned";
         public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";

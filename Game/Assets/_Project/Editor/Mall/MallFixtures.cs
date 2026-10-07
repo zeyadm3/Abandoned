@@ -15,8 +15,8 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class MallFixtures
     {
-        private const float Range = 5.5f, Intensity = 0.95f;
-        private const int FaultyPercent = 8, DeadPercent = 28;
+        private const float Range = 4.8f, Intensity = 0.48f;
+        private const int FaultyPercent = 28, DeadPercent = 52;
         private static readonly Color Fluorescent = new(0.9f, 0.96f, 1f), Warm = new(1f, 0.9f, 0.75f);
 
         public static int Place(Transform root, Transform tiles)
@@ -65,6 +65,7 @@ namespace Abandoned.EditorTools
             GameObject panel = GreyboxFactory.Box("Panel", holder.transform, new Vector3(0f, -0.04f, 0f), new Vector3(1.4f, 0.08f, 0.35f), panelMaterial, withCollider: false);
             panel.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
+            CustomMallArt.Place("light_fixture",holder.transform,new Vector3(0,-0.08f,0),Quaternion.identity);
             var lampObject = new GameObject("Light");
             lampObject.transform.SetParent(holder.transform, false);
             lampObject.transform.localPosition = new Vector3(0f, -0.3f, 0f);

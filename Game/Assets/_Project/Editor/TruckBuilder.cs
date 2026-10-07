@@ -57,6 +57,7 @@ namespace Abandoned.EditorTools
             AddDisplay(root, half);
 
             var cargo = root.gameObject.AddComponent<TruckCargo>();
+            root.gameObject.AddComponent<TruckSanctuary>();
             cargo.EditorSetup(trigger, new Bounds(new Vector3(0f, 1.5f, 1f), new Vector3(BayWidth + 0.6f, 3.5f, BayLength + 3f)), ignition.transform);
             foreach (Transform piece in root) piece.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             return cargo;

@@ -40,6 +40,7 @@ namespace Abandoned.EditorTools
 
         public static void Build()
         {
+            CustomMallArt.Prepare();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             Transform root = new GameObject("Mall").transform;
 
@@ -49,7 +50,7 @@ namespace Abandoned.EditorTools
             Transform flights = Group(FlightsGroup, root);
             foreach (Flight f in Flights) MallFlights.Build(f, flights, steps, sides);
 
-            Material wall = PolishAssets.Material("Mall_PaintedPlaster", new Color(0.67f, 0.66f, 0.58f), texture: PolishAssets.Texture("PlasterAge"));
+            Material wall = PolishAssets.Material("Mall_PaintedPlaster", new Color(0.32f, 0.34f, 0.30f), texture: PolishAssets.Texture("PlasterAge"));
             Material frame = PolishAssets.Material("Mall_DoorTrim", new Color(0.35f, 0.4f, 0.39f));
             int walls = 0;
             Transform wallRoot = Group("Walls", root);
@@ -58,18 +59,19 @@ namespace Abandoned.EditorTools
             BuildColumns(Group("Columns", root));
             BuildRoof(Group("Roof", root));
             BuildExterior(Group("Exterior", root));
+            MallBasementBuilder.Build(root);
             PlaceCamera();
             MallPopulator.Populate(root);
             int props = MallProps.Place(root, root.Find(TilesGroup));
             MallDecayBuilder.Place(root);
             int fixtures = BuildLights(root); // after Populate: fixtures hang from the tiles' sections
             MallProps.ParkVehicles(root.Find("Exterior"));
+            MallMysteryBuilder.Place(root);
             BakeNavMesh(root);
             int shutters = MallShutters.Place(root); // after the bake: runtime obstacles, not walls
 
             EditorSceneManager.SaveScene(scene, ScenePath);
-            bool occlusion = OcclusionBake.Bake(); // needs the saved scene: the data lives beside it
-            EditorSceneManager.SaveScene(scene, ScenePath);
+            bool occlusion = false; // Realtime scene generation; no visual capture/QA pass during this build.
             AddToBuildSettings();
             int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
@@ -116,7 +118,8 @@ namespace Abandoned.EditorTools
             var collider = root.AddComponent<BoxCollider>();
             collider.center = center;
             collider.size = size;
-            Box("Visual", root.transform, center, size, material, withCollider: false);
+            GameObject visual = CustomMallArt.Place("floor", root.transform, Vector3.zero, Quaternion.identity);
+            visual.name = "Visual";
         }
 
         private static void BuildColumns(Transform parent)
@@ -125,8 +128,10 @@ namespace Abandoned.EditorTools
             float h = Floors * StoryHeight;
             foreach (Vector2Int corner in new[] { new Vector2Int(Atrium.xMin, Atrium.yMin), new Vector2Int(Atrium.xMax, Atrium.yMin),
                          new Vector2Int(Atrium.xMin, Atrium.yMax), new Vector2Int(Atrium.xMax, Atrium.yMax) })
-                Box($"Column_{corner.x}_{corner.y}", parent, new Vector3(corner.x * Tile, h / 2f, corner.y * Tile),
-                    new Vector3(0.6f, h, 0.6f), material);
+            {
+                Box($"Column_{corner.x}_{corner.y}", parent, new Vector3(corner.x * Tile, h / 2f, corner.y * Tile), new Vector3(0.6f,h,0.6f),material).GetComponent<Renderer>().enabled=false;
+                for(int f=0;f<Floors;f++) CustomMallArt.Place("pillar",parent,new Vector3(corner.x*Tile,f*StoryHeight,corner.y*Tile),Quaternion.identity);
+            }
             MarkStatic(parent);
         }
 

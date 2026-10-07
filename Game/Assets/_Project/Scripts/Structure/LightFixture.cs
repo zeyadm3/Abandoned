@@ -27,11 +27,12 @@ namespace Abandoned.Structure
 
         private MaterialPropertyBlock block;
         private float baseIntensity = -1f;
-        private bool powered = true, attached = true;
+        private bool powered = true, attached = true, horrorPower = true, alarm;
+        private Color originalColor;
         private float level = -1f;
 
         public static IReadOnlyList<LightFixture> All => all;
-        public bool Lit => powered && attached && !dead;
+        public bool Lit => attached && (alarm || (powered && horrorPower && !dead));
         public bool Faulty => faulty;
         public bool Dead => dead;
         public Light Lamp => lamp;
@@ -43,7 +44,10 @@ namespace Abandoned.Structure
         /// <summary>Every fixture stutters for a while (the building groans: danger went up).</summary>
         public static void Disturb(float seconds) => disturbedUntil = Mathf.Max(disturbedUntil, Time.time + seconds);
 
-        private void Awake() => Apply(Lit ? 1f : 0f);
+        private void Awake(){if(lamp!=null)originalColor=lamp.color;Apply(Lit ? 1f : 0f);}
+
+        public void SetHorrorPower(bool on){if(horrorPower==on)return;horrorPower=on;Apply(Lit?1:0);}
+        public void SetAlarm(bool on){if(alarm==on)return;alarm=on;if(lamp!=null)lamp.color=on?new Color(1,0.025f,0.01f):originalColor;level=-1;Apply(Lit?1:0);}
 
         private void OnEnable() => all.Add(this);
 
@@ -92,7 +96,7 @@ namespace Abandoned.Structure
             if (panel == null) return;
             block ??= new MaterialPropertyBlock();
             panel.GetPropertyBlock(block);
-            block.SetColor(EmissionColor, glow * l);
+            block.SetColor(EmissionColor, (alarm ? new Color(3,0.03f,0.01f) : glow) * l);
             panel.SetPropertyBlock(block);
         }
 

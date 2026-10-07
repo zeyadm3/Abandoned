@@ -15,13 +15,13 @@ namespace Abandoned.EditorTools
     {
         private static readonly (int floor, int x, int z, string tag)[] Jackpots =
         {
-            (2, 5, 9, "gallery"),
-            (1, 1, 8, "furniture"),
-            (0, 10, 9, "stock"),
+            (2, 5, 11, "gallery"),
+            (1, 1, 10, "furniture"),
+            (-1, 12, 10, "stock"),
             // M8.5: the grand piano in the middle of the weak atrium bridge (GDD 28): it holds alone, but with
             // the crew on the handles it's at the limit; cross the cracking middle to the down escalator, or
             // take the long way round. "furniture" so only the piano lands here (a statue would break it).
-            (1, 6, 5, "furniture"),
+            (1, 7, 6, "furniture"),
         };
 
         public static int Place(Transform parent)

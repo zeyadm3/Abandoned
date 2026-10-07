@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
     {
         public const float DefaultStability = 0.75f;
         /// <summary>The loading bay's exterior door (east wall, column 6): the truck parks facing it.</summary>
-        public static float TruckDoorZ => 6.5f * Tile;
+        public static float TruckDoorZ => 8.5f * Tile;
         public const int DefaultSeed = 1;
 
         /// <summary>Parking lot, facing the main entrance (slot 0 is the host's).</summary>
@@ -30,8 +30,8 @@ namespace Abandoned.EditorTools
         // the gallery floor (the jackpot sits behind weak structure, GDD 7.4) and the atrium bridge.
         private static readonly Dictionary<string, (float health, float capacity)> WeakSpots = new()
         {
-            ["Floor_2_4_8"] = (0.8f, 0.55f), ["Floor_2_5_8"] = (0.75f, 0.5f), ["Floor_2_6_8"] = (0.75f, 0.5f),
-            ["Floor_2_7_8"] = (0.8f, 0.55f), ["Walk_1_5_5"] = (0.85f, 0.6f), ["Walk_1_6_5"] = (0.85f, 0.6f),
+            ["Floor_2_4_9"] = (0.65f, 0.55f), ["Floor_2_5_9"] = (0.60f, 0.5f), ["Floor_2_6_9"] = (0.65f, 0.5f),
+            ["Walk_1_6_6"] = (0.8f, 0.6f), ["Walk_1_7_6"] = (0.8f, 0.6f),
         };
 
         public static void Populate(Transform root)
@@ -60,7 +60,7 @@ namespace Abandoned.EditorTools
                 UnityEditor.AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath), autoSpawn: false);
 
             // The truck waits outside the loading bay door, ramp facing it (GDD 10).
-            TruckBuilder.Build(GreyboxFactory.Group("Truck", root), new Vector3(TilesX * Tile + 2f, 0f, TruckDoorZ), Vector3.right);
+            TruckBuilder.Build(GreyboxFactory.Group("Truck", root), new Vector3(TilesX * Tile / 2f, 0f, -5f), Vector3.back);
             var run = new GameObject("Run");
             var director = run.AddComponent<Abandoned.Extraction.RunDirector>();
             director.Setup(bootstrap,
@@ -72,7 +72,7 @@ namespace Abandoned.EditorTools
 
             // Threats appear out of sight of the entrance: cinema (floor 2), loading bay, food court.
             Transform threatSpawns = GreyboxFactory.Group("ThreatSpawns", root);
-            foreach ((int floor, int x, int z) in new[] { (2, 1, 5), (0, 9, 8), (0, 5, 9) })
+            foreach ((int floor, int x, int z) in new[] { (2, 1, 8), (0, 12, 10), (0, 5, 11), (1, 1, 10), (2, 12, 3), (0, 10, 2) })
             {
                 var point = new GameObject($"ThreatSpawn_{floor}_{x}_{z}");
                 point.transform.SetParent(threatSpawns, false);
@@ -86,6 +86,7 @@ namespace Abandoned.EditorTools
                 new[] { Threat(ThreatContentBuilder.BlindOnePrefabPath), Threat(ThreatContentBuilder.StalkerPrefabPath), Threat(ThreatContentBuilder.CollectorPrefabPath),
                     Threat(ThreatContentBuilder.HunterPrefabPath) },
                 new[] { 0.4f, 0.2f, 0.2f, 0.2f });
+            threats.GetComponent<Abandoned.Threats.ThreatDirector>().SetupCatalog(UnityEditor.AssetDatabase.LoadAssetAtPath<Abandoned.Threats.ThreatCatalog>(NewThreatContentBuilder.CatalogPath));
             threats.AddComponent<Abandoned.Threats.DangerDirector>().Setup(
                 UnityEditor.AssetDatabase.LoadAssetAtPath<Abandoned.Extraction.DangerConfig>(NetworkContentBuilder.DangerConfigPath),
                 Object.FindAnyObjectByType<StructureSimulation>());
@@ -114,8 +115,8 @@ namespace Abandoned.EditorTools
                         matched.Add(tile.name);
                     }
                     SectionType type = tile.name.StartsWith("Walk") ? SectionType.Balcony : SectionType.Floor;
-                    setup.AddSection(tile, type, collapsible: f > 0, health, capacity);
-                    if (f > 0) SectionNavCarver.EditorAdd(tile.gameObject, new Vector3(Tile, 0.3f, Tile));
+                    setup.AddSection(tile, type, collapsible: f > 0 || MallBasementBuilder.AboveBasement(tile.position), health, capacity);
+                    if (f > 0 || MallBasementBuilder.AboveBasement(tile.position)) SectionNavCarver.EditorAdd(tile.gameObject, new Vector3(Tile, 0.3f, Tile));
                 }
             }
             foreach (Flight flight in Flights)
@@ -132,6 +133,7 @@ namespace Abandoned.EditorTools
             }
             foreach (string weak in WeakSpots.Keys)
                 if (!matched.Contains(weak)) Debug.LogError($"Mall weak spot '{weak}' matches no tile (layout changed?).");
+            MallBasementBuilder.AddStructure(root, setup);
             setup.AddSimulation(DefaultStability, DefaultSeed);
         }
 

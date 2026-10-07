@@ -119,7 +119,7 @@ namespace Abandoned.Audio
             if (travelling) return Mood.Drive;
             Extraction.RunState run = Extraction.RunState.Current;
             if (run != null && run.IsSpawned)
-                return run.State.Phase == Extraction.RunPhase.Honking ? Mood.Departure : Mood.Quiet;
+                return Mood.Quiet;
             UI.MenuUi menu = UI.MenuUi.Current;
             bool offlineMenu = menu != null && (int)menu.Showing >= 0 && menu.Bootstrap != null &&
                                (menu.Bootstrap.Manager == null || !menu.Bootstrap.Manager.IsListening);

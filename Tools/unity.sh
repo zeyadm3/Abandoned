@@ -117,6 +117,7 @@ status=0
 case "$cmd" in
   compile)     run_unity compile -quit || status=1 ;;
   rebuild)     method rebuild RebuildContent || status=1 ;;
+  rebuild-horror) method rebuild-horror RebuildHorrorContent || status=1 ;;
   verify)      method verify VerifyAll || status=1 ;;
   screenshots) method screenshots Screenshots || status=1 ;;
   editmode)    tests EditMode "${2:-}" || status=1 ;;
