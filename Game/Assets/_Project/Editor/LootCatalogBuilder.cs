@@ -64,6 +64,31 @@ namespace Abandoned.EditorTools
             Add("designer_sofa", "Designer Sofa", 3000, 9000, 80f, CarryClass.Heavy, new(1.9f, 0.8f, 0.9f), Fragility.Medium, SurfaceMaterial.Fabric, 0.3f, 0.5f, PlaceholderShape.Cube, new(0.3f, 0.4f, 0.6f));
             Add("bear_head", "Mounted Bear Head", 300, 1200, 6f, CarryClass.TwoHand, new(0.5f, 0.6f, 0.4f), Fragility.Low, SurfaceMaterial.Fabric, 0.1f, 0.8f, PlaceholderShape.Capsule, new(0.6f, 0.4f, 0.25f));
 
+            // M9.3: toward GDD 7.3's ~60 items. Pocket money, small office/household things, big furniture.
+            Add("gold_watch", "Gold Watch", 6000, 9000, 0.1f, CarryClass.Pocket, new(0.05f, 0.02f, 0.05f), Fragility.Low, SurfaceMaterial.Metal, 0.03f, 0.25f, PlaceholderShape.Cylinder, new(0.95f, 0.78f, 0.3f));
+            Add("cash_bundle", "Cash Bundle", 500, 2000, 0.1f, CarryClass.Pocket, new(0.16f, 0.03f, 0.08f), Fragility.None, SurfaceMaterial.Paper, 0.02f, 1.2f, PlaceholderShape.Cube, new(0.45f, 0.7f, 0.4f));
+            Add("silver_lighter", "Silver Lighter", 150, 600, 0.1f, CarryClass.Pocket, new(0.04f, 0.06f, 0.015f), Fragility.Low, SurfaceMaterial.Metal, 0.03f, 1f, PlaceholderShape.Cube, new(0.8f, 0.82f, 0.86f));
+            Add("designer_sunglasses", "Designer Sunglasses", 200, 900, 0.1f, CarryClass.Pocket, new(0.15f, 0.05f, 0.05f), Fragility.Medium, SurfaceMaterial.Plastic, 0.02f, 1f, PlaceholderShape.Cube, new(0.1f, 0.1f, 0.12f));
+            Add("computer_mouse", "Computer Mouse", 20, 90, 0.15f, CarryClass.Pocket, new(0.07f, 0.04f, 0.12f), Fragility.Low, SurfaceMaterial.Plastic, 0.03f, 1.6f, PlaceholderShape.Cube, new(0.2f, 0.2f, 0.22f));
+            Add("small_painting", "Small Painting", 3000, 15000, 3f, CarryClass.OneHand, new(0.5f, 0.4f, 0.04f), Fragility.Medium, SurfaceMaterial.Wood, 0.15f, 0.5f, PlaceholderShape.Cube, new(0.55f, 0.35f, 0.5f));
+            Add("table_lamp", "Table Lamp", 120, 450, 2f, CarryClass.OneHand, new(0.25f, 0.5f, 0.25f), Fragility.High, SurfaceMaterial.Glass, 0.25f, 1.1f, PlaceholderShape.Cylinder, new(0.9f, 0.85f, 0.7f));
+            Add("computer_keyboard", "Mechanical Keyboard", 60, 250, 1f, CarryClass.OneHand, new(0.45f, 0.04f, 0.15f), Fragility.Low, SurfaceMaterial.Plastic, 0.2f, 1.3f, PlaceholderShape.Cube, new(0.15f, 0.15f, 0.17f));
+            Add("book_stack", "First Editions", 200, 2500, 4f, CarryClass.OneHand, new(0.25f, 0.2f, 0.2f), Fragility.Low, SurfaceMaterial.Paper, 0.15f, 0.9f, PlaceholderShape.Cube, new(0.5f, 0.3f, 0.25f));
+            Add("bonsai", "Bonsai", 300, 1500, 3f, CarryClass.OneHand, new(0.25f, 0.35f, 0.25f), Fragility.Medium, SurfaceMaterial.Dirt, 0.15f, 0.8f, PlaceholderShape.Cylinder, new(0.3f, 0.55f, 0.3f));
+            Add("silk_cushion", "Silk Cushion", 80, 300, 0.8f, CarryClass.OneHand, new(0.45f, 0.15f, 0.45f), Fragility.None, SurfaceMaterial.Fabric, 0.05f, 1.2f, PlaceholderShape.Cube, new(0.3f, 0.45f, 0.8f));
+            Add("bookshelf_speaker", "Bookshelf Speaker", 150, 600, 4f, CarryClass.OneHand, new(0.2f, 0.35f, 0.22f), Fragility.Low, SurfaceMaterial.Wood, 0.25f, 1f, PlaceholderShape.Cube, new(0.2f, 0.18f, 0.16f));
+            Add("antenna_tv", "Antenna TV", 300, 900, 16f, CarryClass.TwoHand, new(0.55f, 0.6f, 0.45f), Fragility.Medium, SurfaceMaterial.Glass, 0.4f, 0.9f, PlaceholderShape.Cube, new(0.4f, 0.32f, 0.25f));
+            Add("glass_coffee_table", "Glass Coffee Table", 400, 1400, 20f, CarryClass.TwoHand, new(1.1f, 0.45f, 0.6f), Fragility.High, SurfaceMaterial.Glass, 0.6f, 0.6f, PlaceholderShape.Cube, new(0.7f, 0.85f, 0.9f));
+            Add("relax_chair", "Recliner", 400, 1300, 18f, CarryClass.TwoHand, new(0.8f, 0.9f, 0.8f), Fragility.Low, SurfaceMaterial.Fabric, 0.2f, 0.8f, PlaceholderShape.Cube, new(0.5f, 0.3f, 0.2f));
+            Add("bedside_cabinet", "Bedside Cabinet", 100, 350, 12f, CarryClass.TwoHand, new(0.5f, 0.55f, 0.45f), Fragility.Low, SurfaceMaterial.Wood, 0.3f, 1f, PlaceholderShape.Cube, new(0.6f, 0.45f, 0.3f));
+            Add("ceiling_fan", "Ceiling Fan", 80, 300, 8f, CarryClass.TwoHand, new(1.2f, 0.4f, 1.2f), Fragility.Medium, SurfaceMaterial.Metal, 0.35f, 0.9f, PlaceholderShape.Cylinder, new(0.75f, 0.75f, 0.78f));
+            Add("floor_lamp", "Designer Floor Lamp", 300, 1100, 7f, CarryClass.TwoHand, new(0.45f, 1.6f, 0.45f), Fragility.High, SurfaceMaterial.Glass, 0.3f, 0.8f, PlaceholderShape.Cylinder, new(0.95f, 0.9f, 0.75f));
+            Add("bar_stool", "Bar Stool", 60, 220, 6f, CarryClass.TwoHand, new(0.45f, 0.8f, 0.45f), Fragility.Low, SurfaceMaterial.Metal, 0.35f, 1.1f, PlaceholderShape.Cylinder, new(0.3f, 0.3f, 0.32f));
+            Add("kitchen_stove", "Kitchen Stove", 300, 900, 80f, CarryClass.Heavy, new(0.75f, 0.9f, 0.65f), Fragility.Low, SurfaceMaterial.Metal, 0.7f, 0.6f, PlaceholderShape.Cube, new(0.85f, 0.85f, 0.88f));
+            Add("tumble_dryer", "Tumble Dryer", 250, 650, 65f, CarryClass.Heavy, new(0.65f, 0.9f, 0.65f), Fragility.Low, SurfaceMaterial.Metal, 0.6f, 0.6f, PlaceholderShape.Cube, new(0.9f, 0.9f, 0.92f));
+            Add("clawfoot_bathtub", "Clawfoot Bathtub", 900, 3000, 130f, CarryClass.Heavy, new(1.7f, 0.7f, 0.8f), Fragility.Medium, SurfaceMaterial.Stone, 0.9f, 0.35f, PlaceholderShape.Cube, new(0.95f, 0.95f, 0.95f));
+            Add("corner_sofa", "Corner Sofa", 1200, 3500, 95f, CarryClass.Heavy, new(2f, 0.85f, 2f), Fragility.Low, SurfaceMaterial.Fabric, 0.3f, 0.45f, PlaceholderShape.Cube, new(0.4f, 0.4f, 0.45f));
+
             // Gear that behaves like loot (M6.4b): a plank from the Planks equipment. Worth nothing, never spawned.
             Add("plank", "Plank", 0, 0, 12f, CarryClass.TwoHand, new(0.4f, 0.08f, 4.4f), Fragility.None, SurfaceMaterial.Wood, 0.3f, 0f, PlaceholderShape.Cube, new(0.62f, 0.47f, 0.28f));
             LootDefinition plank = Load("plank");
@@ -107,6 +132,29 @@ namespace Abandoned.EditorTools
             Spawn("designer_chair", "furniture", "gallery");
             Spawn("designer_sofa", "furniture");
             Spawn("bear_head", "furniture", "gallery", "toys");
+            Spawn("gold_watch", "jewelry", "clothing");
+            Spawn("cash_bundle", "office", "food", "stock", "clothing", "walkway");
+            Spawn("silver_lighter", "jewelry", "office", "cinema");
+            Spawn("designer_sunglasses", "clothing", "jewelry");
+            Spawn("computer_mouse", "electronics", "office");
+            Spawn("small_painting", "gallery", "furniture", "office");
+            Spawn("table_lamp", "furniture", "office");
+            Spawn("computer_keyboard", "electronics", "office");
+            Spawn("book_stack", "office", "gallery", "toys");
+            Spawn("bonsai", "furniture", "gallery", "food");
+            Spawn("silk_cushion", "furniture", "clothing", "cinema");
+            Spawn("bookshelf_speaker", "electronics", "cinema");
+            Spawn("antenna_tv", "electronics", "stock");
+            Spawn("glass_coffee_table", "furniture");
+            Spawn("relax_chair", "furniture", "cinema");
+            Spawn("bedside_cabinet", "furniture", "stock");
+            Spawn("ceiling_fan", "stock", "furniture");
+            Spawn("floor_lamp", "furniture", "gallery");
+            Spawn("bar_stool", "food", "furniture");
+            Spawn("kitchen_stove", "food", "stock");
+            Spawn("tumble_dryer", "stock");
+            Spawn("clawfoot_bathtub", "furniture", "stock");
+            Spawn("corner_sofa", "furniture");
             // Jackpots: only on jackpot points (gallery, furniture floor, loading bay).
             Spawn("marble_statue", true, "gallery");
             Spawn("grand_piano", true, "furniture", "gallery");

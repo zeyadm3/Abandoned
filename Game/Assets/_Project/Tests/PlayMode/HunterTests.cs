@@ -65,10 +65,12 @@ namespace Abandoned.Tests
             }
             Assert.AreNotEqual(HunterState.Chase, hunter.State, "it didn't see the approach");
             float end = Time.time + 2f;
+            var agent = hunter.GetComponent<NavMeshAgent>();
             while (Time.time < end)
             {
+                agent.Warp(at); // it patrols; keep the 13 m
                 Face(rig.Player.transform.position);
-                Assert.AreNotEqual(HunterState.Chase, hunter.State, "crouched 13 m away: unseen");
+                Assert.AreNotEqual(HunterState.Chase, hunter.State, "crouched 13 m away: unseen " + Why());
                 yield return null;
             }
             rig.Run(Frame(Vector2.zero), 0.5f); // stand up

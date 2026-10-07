@@ -11,7 +11,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M9.2): compile clean; verify ALL PASS; EditMode 218/218; PlayMode 250/250; nettest company/run 4/4
+- Last verified (M9.3): compile clean; verify ALL PASS; EditMode 218/218; PlayMode 250/250 (M9.2 nettest company/run 4/4)
   (M8 tag: all eleven nettests 4/4, loot on a rerun);
   M7 tag: all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
@@ -37,11 +37,8 @@ screens on UI Toolkit), 8.2 onboarding tips + How to play done, 8.3 demo flavour
 8.5 bridge piano jackpot, 8.6 `nettest soak`, 8.7 F10 clip mode, review fixed.
 M8 done (tag `milestone-8`; `build` + `build-demo` zips in ~/Documents/Abandoned-builds/dev/).
 -> M9 content (Docs/progress/M9.md; version 0.9.0; mall-only per the decisions log): 9.1 the Hunter done,
-9.2 modifiers (8) done; next 9.3 loot table toward ~60, 9.4 gear (backpack, support jack, crowbar),
+9.2 modifiers (8) done, 9.3 loot table (57 items) done; next 9.4 gear (backpack, support jack, crowbar),
 9.5 achievements, 9.6 Steam Cloud.
-PUSH BLOCKED since M9.1: GitHub answers the LFS lock check with an error ("Remote origin does not support
-the Git LFS locking API ... Unable to verify locks"); commits are local on autobuild-2. Retry `git push`;
-if it keeps failing, see Needs you.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
@@ -100,9 +97,6 @@ if it keeps failing, see Needs you.
       lower the limit for a quick check): back at the HQ after the 5th the end screen shows; Wishlist opens
       the Steam overlay (with Steam running) or the browser. When the real App ID exists, set
       Data/Core/Resources/DemoConfig StoreAppId.
-- [ ] Git push (M9): pushing autobuild-2 fails at GitHub's LFS lock check (worked until M8). If retries keep
-      failing, either check GitHub's status / your LFS settings, or allow me to run
-      `git config lfs.https://github.com/zeyadm3/Abandoned.git/info/lfs.locksverify false` (repo-local).
 - [ ] Trailer capture (M8.7): F10 hides the HUD (tips and captions too) for clean shots; F10 again brings it
       back. Tell me if you want a free-flying camera for the host as well.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
@@ -130,6 +124,8 @@ Nettest results + logs: `Game/Logs/nettest/<host|clientN>.{json,log}`; batch log
 The script fails on compile errors, warnings in our code, or any exception in a log.
 
 ## Open problems
+- M9.1: one `git push` failed at GitHub's LFS lock check ("does not support the Git LFS locking API");
+  it went through on a later retry. If it recurs and persists, ask before touching lfs.locksverify.
 - `nettest loot` right after `basic` failed twice (M3.8, M6.0): sessions ended while waiting; never
   reproduced on demand. Recurred M7.2 (`company` right after `run`): one client "Failed to connect to
   server", no stale process left, passed on rerun. Recurred M8 (`loot` 0/4 right after `basic`); basic+loot
