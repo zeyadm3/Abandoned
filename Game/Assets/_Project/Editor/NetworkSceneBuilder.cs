@@ -54,6 +54,7 @@ namespace Abandoned.EditorTools
             // M7.4: the menus (main, pause, settings, credits) on one UI Toolkit document.
             var document = network.AddComponent<UnityEngine.UIElements.UIDocument>();
             document.panelSettings = AssetDatabase.LoadAssetAtPath<UnityEngine.UIElements.PanelSettings>(UiContentBuilder.PanelPath);
+            network.AddComponent<Abandoned.UI.HintDirector>();
             network.AddComponent<Abandoned.UI.MenuUi>().EditorSetup(document, bootstrap, lobby,
                 AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath), AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.TitleFontPath),
                 AssetDatabase.LoadAssetAtPath<TextAsset>(UiContentBuilder.CreditsPath));

@@ -29,6 +29,7 @@ namespace Abandoned.UI
 
             MenuKit.Button(panel, "Resume", menu.Resume, SoundId.UiConfirm);
             MenuKit.Button(panel, "Settings", () => menu.Push(MenuScreen.Settings));
+            MenuKit.Button(panel, "How to play", () => menu.Push(MenuScreen.HowToPlay));
 
             MenuKit.Text(panel, "CREW", "section");
             crew = MenuKit.Text(panel, "", "text");

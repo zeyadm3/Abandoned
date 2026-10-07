@@ -8,6 +8,7 @@ namespace Abandoned.UI
         Settings,
         Controls,
         Wardrobe,
+        HowToPlay,
         Credits
     }
 }

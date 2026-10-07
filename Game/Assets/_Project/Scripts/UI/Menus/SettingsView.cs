@@ -48,6 +48,8 @@ namespace Abandoned.UI
             MenuKit.Text(scroll, "ACCESSIBILITY", "section");
             MenuKit.Toggle(scroll, "Subtitles (warnings and threats)", GameSettings.Subtitles, v => GameSettings.Subtitles = v);
             MenuKit.Toggle(scroll, "Colourblind-safe scanner", GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v);
+            MenuKit.Toggle(scroll, "Show tips", Hints.Enabled, v => Hints.Enabled = v);
+            MenuKit.Button(scroll, "Show all tips again", Hints.ResetSeen, small: true);
 
             MenuKit.Button(panel, "Back", () =>
             {

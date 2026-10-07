@@ -32,6 +32,7 @@ namespace Abandoned.UI
         private SubtitleView subtitles;
         private VisualElement hud;
         private WardrobeView wardrobe;
+        private HowToPlayView howToPlay;
         private bool paused, pausedForScreen;
 
         public static MenuUi Current { get; private set; }
@@ -63,6 +64,8 @@ namespace Abandoned.UI
             views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
             wardrobe = new WardrobeView(this);
             views[MenuScreen.Wardrobe] = wardrobe.Root;
+            howToPlay = new HowToPlayView(this);
+            views[MenuScreen.HowToPlay] = howToPlay.Root;
             foreach (VisualElement v in views.Values) root.Add(v);
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
@@ -122,7 +125,11 @@ namespace Abandoned.UI
             CursorOwner.RequestCapture();
         }
 
-        public void Push(MenuScreen screen) => pushed.Push(screen);
+        public void Push(MenuScreen screen)
+        {
+            pushed.Push(screen);
+            if (screen == MenuScreen.HowToPlay) howToPlay.Refresh();
+        }
 
         /// <summary>A screen opened from the world (the HQ lockers): Back returns straight to the game.</summary>
         public void OpenWardrobe()
