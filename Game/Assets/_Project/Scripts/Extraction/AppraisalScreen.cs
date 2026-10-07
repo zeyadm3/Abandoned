@@ -28,7 +28,9 @@ namespace Abandoned.Extraction
             if (showing && !shown)
             {
                 Audio.GameAudio.PlayUi(Audio.SoundId.Coins);
-                RecordProfile(RunState.Current.Results);
+                RunResults results = RunState.Current.Results;
+                if (results != null) Audio.MusicPlayer.Play(results.QuotaMet ? Audio.MusicSting.Payday : Audio.MusicSting.QuotaMissed);
+                RecordProfile(results);
             }
             shown = showing;
         }

@@ -97,6 +97,11 @@ namespace Abandoned.Company
         {
             Current = this;
             DontDestroyOnLoad(gameObject);
+            // Every machine: a level gained on payday gets its sting (M10.8).
+            lastOutcome.OnValueChanged += (before, now) =>
+            {
+                if (now.LevelledUp && now.Run != before.Run) Audio.MusicPlayer.Play(Audio.MusicSting.LevelUp);
+            };
             if (!IsServer) return;
             store = PersistsToDisk ? new SaveStore(SaveFolderOverride) : null;
             save = store != null ? store.Load() : CompanySave.New();

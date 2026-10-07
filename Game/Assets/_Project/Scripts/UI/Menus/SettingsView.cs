@@ -38,6 +38,7 @@ namespace Abandoned.UI
             MenuKit.Percent(scroll, "Master volume", AudioLevels.Master, v => AudioLevels.Master = v);
             MenuKit.Percent(scroll, "Effects", AudioLevels.Sfx, v => AudioLevels.Sfx = v);
             MenuKit.Percent(scroll, "Ambience", AudioLevels.Ambience, v => AudioLevels.Ambience = v);
+            MenuKit.Percent(scroll, "Music", AudioLevels.Music, v => AudioLevels.Music = v);
             MenuKit.Percent(scroll, "Voices", VoiceSettings.Volume, v => VoiceSettings.Volume = v);
 
             MenuKit.Text(scroll, "VOICE", "section");
