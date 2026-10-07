@@ -4,6 +4,31 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.12.5 (2026-10-08)
+
+From the user's screenshots (Desktop, file names = instructions). Not tested (user tests everything); compile,
+`rebuild-horror` (5 flights / 0 problems, Mall + HQ invisible colliders 0, 268 materials / 0 problems) and builds only.
+Builds **0.12.5**, commit **aec1223** (clean): `~/Documents/Abandoned-builds/dev/Abandoned-0.12.5-aec1223-Mac.zip` (53 MB)
+and `Abandoned-0.12.5-aec1223-Windows.zip` (44 MB).
+
+- **Vertical text in buttons** (Report a problem, Open logs, Play's Steam/Direct IP, gear rack Empty, settings tabs and
+  On/Off): 0.12.2's MenuTactile put child elements inside buttons, and a text element with children stops measuring its
+  text. Now no children: the marker is a stylesheet underline, the static a background swap.
+- **Contract board:** MenuKit.Panel's inline width beat `.panel--xwide`; the board is now 1320 px. Fact rows are a fixed
+  label column and one value column (warnings only recolour); the crew size is a note under the quota.
+- **Settings redone:** landscape, pages down the left (Gameplay, Controls, Video, Graphics, Audio, Voice, Accessibility),
+  an explanation under every option, per-page Restore defaults. New, working: invert vertical look, crouch hold/toggle,
+  crosshair on/off, render scale, MSAA, mute when in the background, subtitle size.
+- **Answering machine:** a modelled kit asset on the office desk (cassette, keys, handset, grille), blinking light kept.
+  The user's 0.12.3 HQ hand edits now live in HqDressingBuilder, so HQ rebuilds keep them.
+- **Wardrobe redone:** 25 new original hats/accessories (Blender kit, fitted to the worker) + 14 coveralls. Each is free,
+  bought once with company money (owner asks, host charges via `CompanyService.TryCharge`, owner keeps it in
+  PlayerProfile), or a reward for one of the 12 achievements. Landscape screen: preview (front-on, sway, drag to turn,
+  selection is tried on), cards per tab, detail panel with Wear / Buy / how to earn, company funds and purchase result.
+- **Test first:** every small button above; Settings (each page, Restore defaults, invert Y, crouch toggle, render
+  scale/AA in a build); contract board with crew of 1-3; the answering machine (E, blinking); wardrobe (buy with enough
+  and too little money, as host and as client; a reward item after its achievement; drag the preview).
+
 ## 0.12.3b (2026-10-08)
 
 Same content as 0.12.3 (the user's HQ edits + the garage door), rebuilt with the editor closed. Builds stamped
