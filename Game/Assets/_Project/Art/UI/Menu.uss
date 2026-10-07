@@ -1465,3 +1465,26 @@
     -unity-text-align: middle-center;
     margin-bottom: 30px;
 }
+
+/* ---- Text chat (UI step 10) ---- */
+
+.chat {
+    position: absolute;
+    left: 28px; bottom: 150px;
+    width: 520px;
+}
+
+.chat__line {
+    font-size: 18px;
+    color: var(--c-text);
+    white-space: normal;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+    margin-top: 2px;
+}
+
+.chat--open .chat__log {
+    background-color: rgba(10, 11, 12, 0.6);
+    padding: 6px 10px 6px 10px;
+}
+
+.chat__field { margin-top: 6px; }

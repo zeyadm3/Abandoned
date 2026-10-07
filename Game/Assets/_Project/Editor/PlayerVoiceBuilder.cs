@@ -47,6 +47,7 @@ namespace Abandoned.EditorTools
             Set(radio, "config", config);
 
             var voice = root.AddComponent<NetworkVoice>();
+            root.AddComponent<Abandoned.Networking.NetworkChat>(); // UI step 10: text chat
             Set(voice, "config", config);
             Set(voice, "playback", playback);
             Set(voice, "radio", radio);

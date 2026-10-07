@@ -118,7 +118,7 @@ namespace Abandoned.UI
             bool running = bootstrap.IsRunning;
             AutoOpenDemoEnd(running);
             if (!running) paused = pausedForScreen = false;
-            if (EscapePressed() && !ControlsView.Busy)
+            if (EscapePressed() && !ControlsView.Busy && !ChatView.Typing)
             {
                 if (pushed.Count > 0) Back();
                 else if (running && paused) Resume();

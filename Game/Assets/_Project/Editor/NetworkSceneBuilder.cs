@@ -59,6 +59,7 @@ namespace Abandoned.EditorTools
             network.AddComponent<Abandoned.UI.AchievementToast>();
             network.AddComponent<Abandoned.UI.ToastFeed>();
             network.AddComponent<Abandoned.UI.TravelScreen>();
+            network.AddComponent<Abandoned.UI.ChatView>();
             network.AddComponent<Abandoned.UI.MenuUi>().EditorSetup(document, bootstrap, lobby,
                 AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath), AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.TitleFontPath),
                 AssetDatabase.LoadAssetAtPath<TextAsset>(UiContentBuilder.CreditsPath));
