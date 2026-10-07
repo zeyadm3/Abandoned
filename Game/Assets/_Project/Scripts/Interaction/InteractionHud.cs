@@ -2,12 +2,14 @@ using System.Text;
 using Abandoned.Core;
 using Abandoned.Player;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Abandoned.Interaction
 {
     /// <summary>
-    /// Placeholder HUD until the UI milestone: crosshair, pickup prompt, rejection hints, throw
-    /// charge bar, and the Tab inventory with pocket total. F1 adds carry debug numbers.
+    /// The player's interaction HUD (M8.1): crosshair, what you can do with what you're looking at or
+    /// holding, rejection hints, the throw charge, and the pockets (Inventory key). Keys follow the
+    /// player's bindings. F1 adds carry debug numbers (OnGUI, debug only).
     /// </summary>
     public class InteractionHud : MonoBehaviour
     {
@@ -15,54 +17,91 @@ namespace Abandoned.Interaction
         [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private PlayerInputReader inputReader;
 
-        private GUIStyle centered;
         private GUIStyle box;
         private readonly StringBuilder text = new();
+        private VisualElement crosshair, charge, chargeFill;
+        private Label prompt, inventory;
+
+        /// <summary>Tests: the prompt under the crosshair (null when none).</summary>
+        public string Prompt { get; private set; }
+
+        private void Update()
+        {
+            Prompt = BuildPrompt(out bool hint);
+            if (crosshair == null)
+            {
+                if (UI.HudLayer.Root == null) return;
+                crosshair = UI.HudLayer.Add(new VisualElement(), "hud-crosshair");
+                prompt = UI.HudLayer.Label("hud-prompt");
+                charge = UI.HudLayer.Add(new VisualElement(), "hud-charge");
+                chargeFill = new VisualElement { pickingMode = PickingMode.Ignore };
+                chargeFill.AddToClassList("hud-charge__fill");
+                charge.Add(chargeFill);
+                inventory = UI.HudLayer.Label("hud-panel", "hud-inventory");
+            }
+            UI.MenuKit.Show(prompt, Prompt != null);
+            if (Prompt != null && prompt.text != Prompt) prompt.text = Prompt;
+            prompt.EnableInClassList("hud-prompt--hint", hint);
+            UI.MenuKit.Show(charge, interactor.Charge > 0f);
+            chargeFill.style.width = Length.Percent(interactor.Charge * 100f);
+            bool pockets = inputReader.Current.InventoryHeld;
+            UI.MenuKit.Show(inventory, pockets);
+            if (pockets) inventory.text = InventoryText();
+        }
+
+        private void OnDisable()
+        {
+            foreach (VisualElement e in new[] { crosshair, prompt, charge, inventory }) if (e != null) UI.MenuKit.Show(e, false);
+        }
+
+        private void OnEnable()
+        {
+            if (crosshair != null) UI.MenuKit.Show(crosshair, true);
+        }
+
+        private void OnDestroy()
+        {
+            UI.HudLayer.Remove(crosshair);
+            UI.HudLayer.Remove(prompt);
+            UI.HudLayer.Remove(charge);
+            UI.HudLayer.Remove(inventory);
+        }
+
+        private string BuildPrompt(out bool hint)
+        {
+            hint = false;
+            string interact = InputBindings.Display("Interact"), use = InputBindings.Display("Use"), drop = InputBindings.Display("Drop");
+            if (carrier.HintVisible) { hint = true; return carrier.Hint; }
+            if (interactor.Target != null && interactor.Target.Shared != null)
+                return $"[{interact}] Grab {Describe(interactor.Target)} - {SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers)}";
+            if (interactor.Target != null) return $"[{interact}] Pick up {Describe(interactor.Target)}";
+            if (carrier.Held == null && interactor.UseTarget?.UsePrompt(interactor.gameObject) is string usable) return $"[{interact}] {usable}";
+            if (carrier.IsSharing) return $"{carrier.Held.DisplayName}: {SharedCarryText.Of(carrier.Held.Shared)}   [{drop}] let go";
+            if (carrier.IsDragging) return $"Dragging {Describe(carrier.Held)}   [{drop}] let go";
+            if (carrier.Held != null) return $"Holding {Describe(carrier.Held)}   [{use}] throw   [{drop}] drop";
+            return null;
+        }
 
         private void OnGUI()
         {
-            centered ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 16, richText = true };
+            if (!DebugView.Visible) return;
             box ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
-
-            float cx = Screen.width / 2f, cy = Screen.height / 2f;
-            GUI.Label(new Rect(cx - 10, cy - 12, 20, 24), "+", centered);
-
-            string prompt = null;
-            if (carrier.HintVisible) prompt = $"<color=#FF8060>{carrier.Hint}</color>";
-            else if (interactor.Target != null && interactor.Target.Shared != null)
-                prompt = $"[{InputBindings.Display("Interact")}] Grab {Describe(interactor.Target)} - {SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers)}";
-            else if (interactor.Target != null) prompt = $"[{InputBindings.Display("Interact")}] Pick up {Describe(interactor.Target)}";
-            else if (carrier.Held == null && interactor.UseTarget?.UsePrompt(interactor.gameObject) is string use) prompt = $"[{InputBindings.Display("Interact")}] {use}";
-            else if (carrier.IsSharing) prompt = $"{carrier.Held.DisplayName}: {SharedCarryText.Of(carrier.Held.Shared)}   [RMB] let go";
-            else if (carrier.IsDragging) prompt = $"Dragging {Describe(carrier.Held)}   [RMB] let go";
-            else if (carrier.Held != null) prompt = $"Holding {Describe(carrier.Held)}   [LMB] throw   [RMB] drop";
-            if (prompt != null) GUI.Label(new Rect(cx - 300, cy + 30, 600, 26), prompt, centered);
-
-            if (interactor.Charge > 0f)
-            {
-                GUI.Box(new Rect(cx - 60, cy + 60, 120, 10), GUIContent.none);
-                GUI.Box(new Rect(cx - 60, cy + 60, 120 * interactor.Charge, 10), GUIContent.none);
-            }
-
-            if (inputReader.Current.InventoryHeld) DrawInventory();
-            if (DebugView.Visible) DrawDebug();
+            DrawDebug();
         }
 
-        private void DrawInventory()
+        private string InventoryText()
         {
             text.Clear();
-            text.AppendLine($"<b>POCKETS</b> {carrier.Inventory.Count}/{carrier.Inventory.Capacity}   (RMB drops last)");
+            text.AppendLine($"<b>POCKETS</b> {carrier.Inventory.Count}/{carrier.Inventory.Capacity}   ({InputBindings.Display("Drop")} drops the last)");
             int total = 0;
             foreach (Grabbable item in carrier.Inventory.Items)
             {
                 int value = item.TryGetComponent(out IValuable v) ? v.CurrentValue : 0;
                 total += value;
-                text.AppendLine($"  {item.DisplayName,-18} ${value:N0}");
+                text.AppendLine($"  {item.DisplayName}  ${value:N0}");
             }
-            text.Append($"<b>Total</b> ${total:N0}");
-            var content = new GUIContent(text.ToString());
-            Vector2 size = box.CalcSize(content);
-            GUI.Box(new Rect(Screen.width / 2f - size.x / 2f, Screen.height - size.y - 40, size.x, size.y), content, box);
+            text.Append($"<b>TOTAL</b> ${total:N0}");
+            return text.ToString();
         }
 
         private void DrawDebug()

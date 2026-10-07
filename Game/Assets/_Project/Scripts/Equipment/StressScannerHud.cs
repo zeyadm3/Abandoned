@@ -14,7 +14,7 @@ namespace Abandoned.Equipment
         [SerializeField] private Transform eye;
         [SerializeField] private float range = 8f;
 
-        private GUIStyle style;
+        private UnityEngine.UIElements.Label panel;
         private readonly RaycastHit[] hits = new RaycastHit[8];
 
         public StructuralSection Target { get; private set; }
@@ -31,18 +31,30 @@ namespace Abandoned.Equipment
                 Target = hit.collider.GetComponentInParent<StructuralSection>();
         }
 
-        private void OnGUI()
+        private void LateUpdate()
         {
-            if (Target == null) return;
-            style ??= new GUIStyle(GUI.skin.box) { fontSize = 16, richText = true, alignment = TextAnchor.MiddleCenter };
+            if (Target == null)
+            {
+                if (panel != null) UI.MenuKit.Show(panel, false);
+                return;
+            }
+            if (panel == null && (panel = UI.HudLayer.Label("hud-panel", "hud-scanner")) == null) return;
             float health = Target.HealthFraction;
             // Colourblind-safe: blue / orange / vermilion (Okabe-Ito) instead of green / yellow / red.
             string color = Core.GameSettings.ColorblindScanner
                 ? health > 0.6f ? "#56b4e9" : health > 0.3f ? "#e69f00" : "#d55e00"
                 : health > 0.6f ? "#7dff7d" : health > 0.3f ? "#ffd24d" : "#ff5544";
-            string load = Target.Capacity > 0f ? $"{Target.Load:0} / {Target.Capacity:0} kg" : "-";
-            GUI.Box(new Rect(Screen.width / 2f + 40f, Screen.height / 2f - 30f, 300f, 60f),
-                $"<color={color}>{Target.Stage}  {health:P0}</color>\nload {load}", style);
+            string load = Target.Capacity > 0f ? $"{Target.Load:0} / {Target.Capacity:0} KG" : "-";
+            string text = $"<color={color}>{Target.Stage.ToString().ToUpperInvariant()}  {health:P0}</color>\nLOAD {load}";
+            UI.MenuKit.Show(panel, true);
+            if (panel.text != text) panel.text = text;
         }
+
+        private void OnDisable()
+        {
+            if (panel != null) UI.MenuKit.Show(panel, false);
+        }
+
+        private void OnDestroy() => UI.HudLayer.Remove(panel);
     }
 }

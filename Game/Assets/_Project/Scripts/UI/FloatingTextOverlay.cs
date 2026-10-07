@@ -1,28 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Abandoned.UI
 {
     /// <summary>
-    /// Draws floating world texts with OnGUI (placeholder until the UI milestone). Created on
-    /// first use and kept across scene loads.
+    /// Floating world texts ("-$1,200") on the HUD layer (M8.1): each rises and fades over its lifetime.
+    /// Created on first use and kept across scene loads; with no HUD (bare test rigs) entries still
+    /// count, they just aren't drawn.
     /// </summary>
     public class FloatingTextOverlay : MonoBehaviour
     {
         private const float Lifetime = 1.4f;
         private const float RiseMetres = 0.8f;
 
-        private struct Entry
+        private sealed class Entry
         {
             public Vector3 Position;
-            public string Text;
-            public Color Color;
             public float Start;
+            public Label Label;
         }
 
         private static FloatingTextOverlay instance;
         private readonly List<Entry> entries = new();
-        private GUIStyle style;
 
         public static FloatingTextOverlay Instance
         {
@@ -38,26 +38,33 @@ namespace Abandoned.UI
 
         public int ActiveCount => entries.Count;
 
-        public void Add(Vector3 position, string text, Color color) =>
-            entries.Add(new Entry { Position = position, Text = text, Color = color, Start = Time.time });
+        public void Add(Vector3 position, string text, Color color)
+        {
+            Label label = HudLayer.Label("hud-float");
+            if (label != null)
+            {
+                label.text = text;
+                label.style.color = color;
+            }
+            entries.Add(new Entry { Position = position, Start = Time.time, Label = label });
+        }
 
-        private void Update() => entries.RemoveAll(e => Time.time - e.Start > Lifetime);
-
-        private void OnGUI()
+        private void LateUpdate()
         {
             Camera camera = Camera.main;
-            if (camera == null || entries.Count == 0) return;
-            style ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 20, fontStyle = FontStyle.Bold };
-
-            foreach (Entry e in entries)
+            for (int i = entries.Count - 1; i >= 0; i--)
             {
+                Entry e = entries[i];
                 float t = (Time.time - e.Start) / Lifetime;
-                Vector3 screen = camera.WorldToScreenPoint(e.Position + Vector3.up * (RiseMetres * t));
-                if (screen.z <= 0f) continue;
-                Color c = e.Color;
-                c.a = 1f - t * t;
-                style.normal.textColor = c;
-                GUI.Label(new Rect(screen.x - 100f, Screen.height - screen.y - 15f, 200f, 30f), e.Text, style);
+                if (t > 1f)
+                {
+                    HudLayer.Remove(e.Label);
+                    entries.RemoveAt(i);
+                    continue;
+                }
+                if (e.Label == null) continue;
+                e.Label.style.opacity = 1f - t * t;
+                HudLayer.Place(e.Label, e.Position + Vector3.up * (RiseMetres * t), camera);
             }
         }
     }

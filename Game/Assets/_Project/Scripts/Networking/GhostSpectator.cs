@@ -24,7 +24,8 @@ namespace Abandoned.Networking
 
         private float deadSince = -1f, orbit, pitch = 15f;
         private int followIndex;
-        private GUIStyle style, mark;
+        private UnityEngine.UIElements.Label ghostLine;
+        private readonly Dictionary<Threat, UnityEngine.UIElements.Label> threatMarks = new();
 
         public bool Spectating { get; private set; }
         public NetworkPlayer Following { get; private set; }
@@ -75,22 +76,46 @@ namespace Abandoned.Networking
             ghostCamera.Priority = on ? 100 : 0;
         }
 
-        private void OnGUI()
+        // The ghost's HUD (M8.1): who you're watching, and a mark over every threat (ghosts see them, GDD 11).
+        private void Update()
         {
-            if (!Spectating) return;
-            style ??= new GUIStyle(GUI.skin.label) { fontSize = 18, alignment = TextAnchor.UpperCenter, richText = true };
-            mark ??= new GUIStyle(GUI.skin.label) { fontSize = 16, alignment = TextAnchor.MiddleCenter, richText = true };
-            GUI.Label(new Rect(0f, Screen.height - 70f, Screen.width, 30f),
-                $"<color=#bbbbff>GHOST - watching Player {Following.OwnerClientId + 1}   (left/right mouse: switch)</color>", style);
+            bool on = Spectating;
+            if (on && ghostLine == null) ghostLine = UI.HudLayer.Label("hud-ghost");
+            if (ghostLine != null)
+            {
+                UI.MenuKit.Show(ghostLine, on);
+                if (on)
+                {
+                    string line = $"GHOST - WATCHING PLAYER {Following.OwnerClientId + 1}   ({InputBindings.Display("Use")} / {InputBindings.Display("Drop")}: SWITCH)";
+                    if (ghostLine.text != line) ghostLine.text = line;
+                }
+            }
             Camera cam = Camera.main;
-            if (cam == null) return;
-            // Ghosts see threats (GDD 11).
             foreach (Threat t in Threat.All)
             {
                 if (t == null) continue;
-                Vector3 s = cam.WorldToScreenPoint(t.transform.position + Vector3.up * 2.6f);
-                if (s.z > 0f) GUI.Label(new Rect(s.x - 70f, Screen.height - s.y - 12f, 140f, 24f), $"<color=#ff4444>▼ {t.DisplayName.ToUpperInvariant()}</color>", mark);
+                if (!threatMarks.TryGetValue(t, out UnityEngine.UIElements.Label mark))
+                {
+                    if (!on) continue;
+                    mark = UI.HudLayer.Label("hud-marker");
+                    if (mark == null) continue;
+                    mark.text = $"<color=#ff4444>▼ {t.DisplayName.ToUpperInvariant()}</color>";
+                    threatMarks[t] = mark;
+                }
+                UI.MenuKit.Show(mark, on && cam != null);
+                if (on && cam != null) UI.HudLayer.Place(mark, t.transform.position + Vector3.up * 2.6f, cam);
             }
+            foreach (Threat gone in threatMarks.Keys.Where(k => k == null).ToList())
+            {
+                UI.HudLayer.Remove(threatMarks[gone]);
+                threatMarks.Remove(gone);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            UI.HudLayer.Remove(ghostLine);
+            foreach (UnityEngine.UIElements.Label l in threatMarks.Values) UI.HudLayer.Remove(l);
         }
     }
 }

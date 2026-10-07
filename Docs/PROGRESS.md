@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7 review): compile clean; verify ALL PASS; EditMode 214/214; PlayMode 237/237;
-  all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
+- Last verified (M8.1a): compile clean; verify ALL PASS; EditMode 214/214; PlayMode 238/238;
+  M7 tag: all ten nettests 4/4 (basic/loot/sharedcarry/collapse/robust/voice/run/travel/company/perf).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -28,8 +28,9 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 
 ## Next
 M7 done (tag `milestone-7`; builds in ~/Documents/Abandoned-builds/dev/).
--> M8 demo (PLAYBOOK): mall-only, polished, 30-60 min of content for Steam Next Fest. Start by bumping
-the version to 0.8.0 and planning the M8 tasks in Docs/progress/M8.md.
+-> M8 demo (Docs/progress/M8.md; version 0.8.0): 8.1a in-run HUD done; next 8.1b HQ + appraisal
+screens on UI Toolkit, then 8.2 onboarding hints, 8.3 demo flavour, 8.4 juice, 8.5 set pieces, 8.6 soak,
+8.7 clip mode.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->

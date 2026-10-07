@@ -30,6 +30,7 @@ namespace Abandoned.UI
         private MainMenuView main;
         private PauseMenuView pause;
         private SubtitleView subtitles;
+        private VisualElement hud;
         private WardrobeView wardrobe;
         private bool paused, pausedForScreen;
 
@@ -48,6 +49,11 @@ namespace Abandoned.UI
             root.AddToClassList("menu-root");
             root.pickingMode = PickingMode.Ignore;
             if (font != null) root.style.unityFontDefinition = FontDefinition.FromFont(font);
+            // The HUD sits under every menu; HUD components fill it (HudLayer).
+            hud = new VisualElement { pickingMode = PickingMode.Ignore };
+            hud.AddToClassList("hud-layer");
+            root.Add(hud);
+            HudLayer.Attach(hud);
             main = new MainMenuView(this);
             pause = new PauseMenuView(this);
             views[MenuScreen.Main] = main.Root;
@@ -150,6 +156,7 @@ namespace Abandoned.UI
         {
             Showing = screen;
             foreach (KeyValuePair<MenuScreen, VisualElement> v in views) MenuKit.Show(v.Value, v.Key == screen);
+            MenuKit.Show(hud, screen == MenuScreen.None);
         }
 
         private static bool EscapePressed() => Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
