@@ -49,6 +49,9 @@ calls Steam while it runs, and re-sends every local unlock when Steam starts (of
 
 ## 4. Builds and depots
 - `Tools/unity.sh build` -> Mac (universal) + Windows (x64) Mono zips; `build-demo` the same for the demo.
+- `Tools/unity.sh build-release` -> the Steam depots (Game/Builds/MacRelease, WindowsRelease, zipped too): no
+  steam_appid.txt; it refuses to build while NetworkConfig's App ID is still 480. Upload with SteamPipe
+  (Docs/LAUNCH.md has the order of things).
 - One depot per OS. Launch options: Windows `Abandoned.exe`, macOS `Abandoned.app`.
 - Lobbies/invites: friends-only lobbies, max 4 (NetworkConfig.MaxPlayers); "Join game" from the friends
   list uses +connect_lobby (already handled).

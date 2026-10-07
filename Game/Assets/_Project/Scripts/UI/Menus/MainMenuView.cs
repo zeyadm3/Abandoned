@@ -55,6 +55,11 @@ namespace Abandoned.UI
             MenuKit.Button(panel, "Settings", () => menu.Push(MenuScreen.Settings));
             MenuKit.Button(panel, "Achievements", () => menu.Push(MenuScreen.Achievements));
             MenuKit.Button(panel, "Credits", () => menu.Push(MenuScreen.Credits));
+            // Early Access (M10.11): the community, feedback, and the log a bug report needs.
+            VisualElement links = MenuKit.Row(panel);
+            if (Launch.HasDiscord) MenuKit.Button(links, "Discord", Launch.OpenDiscord, small: true);
+            if (Launch.HasFeedback) MenuKit.Button(links, "Feedback", Launch.OpenFeedback, small: true);
+            MenuKit.Button(links, "Open logs", Launch.OpenLogFolder, small: true);
             MenuKit.Button(panel, "Quit", menu.Quit, SoundId.UiBack);
 
             status = MenuKit.Text(panel, "", "text");

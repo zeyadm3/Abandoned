@@ -17,6 +17,8 @@ namespace Abandoned.EditorTools
             var info = LoadOrCreateAsset<BuildInfo>(Path);
             // The demo's rules sit beside it (Resources: read before any scene exists).
             LoadOrCreateAsset<Abandoned.Core.DemoConfig>(Folder + "/" + Abandoned.Core.DemoConfig.ResourcePath + ".asset");
+            // ...and the Early Access links (M10.11; empty until the Discord and the form exist).
+            LoadOrCreateAsset<Abandoned.Core.LaunchConfig>(Folder + "/" + Abandoned.Core.LaunchConfig.ResourcePath + ".asset");
             AssetDatabase.SaveAssets();
             return info;
         }

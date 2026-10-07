@@ -20,7 +20,7 @@ namespace Abandoned.EditorTools
     {
         public const string ProductName = "Abandoned";
         /// <summary>0.&lt;milestone being built&gt;.&lt;patch&gt;; bump the middle number when a milestone starts.</summary>
-        public const string Version = "0.9.0";
+        public const string Version = "0.10.0";
         public const string CompanyName = "Zeyad Games";
         public const string BundleId = "com.zeyadgames.abandoned";
         public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";
@@ -39,6 +39,27 @@ namespace Abandoned.EditorTools
 
         [MenuItem(Menu + "Dev Mac (for tests)")]
         public static void BuildDevMacMenu() => Report(Build(BuildPlatform.Mac, BuildFlavor.Dev));
+
+        [MenuItem(Menu + "Release (Mac + Windows, real App ID)")]
+        public static void BuildReleaseMenu() => Report(BuildRelease());
+
+        /// <summary>
+        /// The Steam release (M10.11): both platforms, no steam_appid.txt, Game/Builds/MacRelease and
+        /// WindowsRelease, ready to upload as depots. Refuses while the App ID is still Spacewar (480).
+        /// </summary>
+        public static bool BuildRelease()
+        {
+            var network = AssetDatabase.LoadAssetAtPath<Abandoned.Networking.NetworkConfig>(NetworkContentBuilder.ConfigPath);
+            if (network == null || network.SteamAppId == Abandoned.Networking.NetworkConfig.DevelopmentAppId)
+            {
+                Debug.LogError("[Build] A release build needs the game's real Steam App ID in Data/Networking/NetworkConfig " +
+                               "(still 480, Spacewar). See Docs/STEAM_SETUP.md and Docs/LAUNCH.md.");
+                return false;
+            }
+            string builtAtUtc = BuildInfoAsset.Now();
+            return Build(BuildPlatform.Mac, BuildFlavor.Release, builtAtUtc) &&
+                   Build(BuildPlatform.Windows, BuildFlavor.Release, builtAtUtc);
+        }
 
         [MenuItem(Menu + "Demo (Mac + Windows)")]
         public static void BuildDemoMenu() => Report(BuildDemo());

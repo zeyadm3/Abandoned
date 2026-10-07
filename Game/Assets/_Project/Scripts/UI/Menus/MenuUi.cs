@@ -116,6 +116,9 @@ namespace Abandoned.UI
             if (top == MenuScreen.Main) main.Refresh();
             else if (top == MenuScreen.Pause) pause.Refresh();
             if (Keyboard.current != null && Keyboard.current.f10Key.wasPressedThisFrame) ClipMode = !ClipMode;
+            // M10.11: a free camera for trailer shots, only in a game (and gone when it ends).
+            if (running && Keyboard.current != null && Keyboard.current.f9Key.wasPressedThisFrame) Player.FreeCamera.Toggle();
+            else if (!running && Player.FreeCamera.Active) Player.FreeCamera.Toggle();
         }
 
         private bool clipMode;

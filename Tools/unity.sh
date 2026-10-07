@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Runs Unity 6000.3.25f1 in batch mode against Game/ and checks the log afterwards.
 # Usage: Tools/unity.sh <compile|rebuild|verify|editmode [filter]|playmode [filter]|screenshots|all
-#                        |build-mac|build-win|build|build-dev|build-demo|nettest [scenario]>
+#                        |build-mac|build-win|build|build-dev|build-demo|build-release|nettest [scenario]>
+# build-release makes the Steam depots (no steam_appid.txt); it refuses while the App ID is still 480.
 # build-mac/build-win/build make shareable Mono players in Game/Builds/<Mac|Windows>/ and zip each into
 # $BUILD_ZIP_DIR (default ~/Documents/Abandoned-builds/dev). build-dev makes Game/Builds/MacDev (tests).
 # nettest runs Tools/nettest.sh (multi-process localhost test; it builds MacDev when stale).
@@ -125,6 +126,7 @@ case "$cmd" in
   build)       { method build BuildBoth && zip_build Mac && zip_build Windows; } || status=1 ;;
   build-dev)   method build-dev BuildMacDev || status=1 ;;
   build-demo)  { method build-demo BuildDemo && zip_build MacDemo && zip_build WindowsDemo; } || status=1 ;;
+  build-release) { method build-release BuildRelease && zip_build MacRelease && zip_build WindowsRelease; } || status=1 ;;
   nettest)     shift; exec "$ROOT/Tools/nettest.sh" "$@" ;;
   all)
     run_unity compile -quit || exit 1

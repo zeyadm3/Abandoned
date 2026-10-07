@@ -15,6 +15,6 @@ own License.txt beside them.
 | Kenney Fonts | Kenney (www.kenney.nl) | CC0 1.0 | https://kenney.nl/assets/kenney-fonts | Menu text (Kenney Future, Kenney Future Narrow) | Art/ThirdParty/Kenney/Fonts/ (2 TTFs) |
 
 Synthesised in our own code (no third party): the Blind One's click, the truck horn, the noise maker's shriek, radio static,
-the collapse rumble, and the ambience (wind, light hum).
+the collapse rumble, the ambience (wind, light hum), and all the music (the HQ theme and the stings, M10.8).
 
 Crediting Kenney isn't required by CC0; we do it anyway (credits screen, M8).

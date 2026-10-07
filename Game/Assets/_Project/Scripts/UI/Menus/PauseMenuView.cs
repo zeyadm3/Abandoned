@@ -1,5 +1,6 @@
 using System.Text;
 using Abandoned.Audio;
+using Abandoned.Core;
 using Abandoned.Networking;
 using UnityEngine.UIElements;
 
@@ -31,6 +32,11 @@ namespace Abandoned.UI
             MenuKit.Button(panel, "Settings", () => menu.Push(MenuScreen.Settings));
             MenuKit.Button(panel, "How to play", () => menu.Push(MenuScreen.HowToPlay));
             MenuKit.Button(panel, "Achievements", () => menu.Push(MenuScreen.Achievements));
+            MenuKit.Button(panel, "Report a problem (opens your log folder)", () =>
+            {
+                Launch.OpenLogFolder();
+                Launch.OpenFeedback();
+            }, small: true);
 
             MenuKit.Text(panel, "CREW", "section");
             crew = MenuKit.Text(panel, "", "text");
