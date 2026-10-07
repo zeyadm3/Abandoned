@@ -13,6 +13,8 @@ namespace Abandoned.Extraction
         /// <summary>From the contract: the window's length (s), the payout bonus, lights off.</summary>
         public float Window, Bonus;
         public bool PowerOff;
+        /// <summary>M9.2 modifiers every machine shows: after dark, a storm.</summary>
+        public bool Night, Storm;
         public float CargoVolume, CargoCapacity;
         public double WindowEnd, HonkEnd;
 
@@ -26,6 +28,8 @@ namespace Abandoned.Extraction
             s.SerializeValue(ref Window);
             s.SerializeValue(ref Bonus);
             s.SerializeValue(ref PowerOff);
+            s.SerializeValue(ref Night);
+            s.SerializeValue(ref Storm);
             s.SerializeValue(ref CargoVolume);
             s.SerializeValue(ref CargoCapacity);
             s.SerializeValue(ref WindowEnd);
@@ -34,7 +38,7 @@ namespace Abandoned.Extraction
 
         public bool Overloaded => CargoVolume > CargoCapacity;
 
-        public bool Equals(RunNetState o) => Phase == o.Phase && Quota == o.Quota && Haul == o.Haul && Seed == o.Seed && Danger == o.Danger && Window.Equals(o.Window) && Bonus.Equals(o.Bonus) && PowerOff == o.PowerOff &&
+        public bool Equals(RunNetState o) => Phase == o.Phase && Quota == o.Quota && Haul == o.Haul && Seed == o.Seed && Danger == o.Danger && Window.Equals(o.Window) && Bonus.Equals(o.Bonus) && PowerOff == o.PowerOff && Night == o.Night && Storm == o.Storm &&
                                              CargoVolume.Equals(o.CargoVolume) && CargoCapacity.Equals(o.CargoCapacity) &&
                                              WindowEnd.Equals(o.WindowEnd) && HonkEnd.Equals(o.HonkEnd);
     }

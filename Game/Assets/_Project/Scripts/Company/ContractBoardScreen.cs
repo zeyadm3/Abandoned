@@ -58,6 +58,8 @@ namespace Abandoned.Company
                 cards.Add(card);
                 MenuKit.Text(card, c.Location.ToUpperInvariant() + (taken ? "  (TAKEN)" : ""), "section");
                 MenuKit.Text(card, $"<b>{c.ModifierName}</b>  +{c.PayoutBonus:P0} payout");
+                if (company.ModifierOf(c) is Contracts.ContractModifier m && !string.IsNullOrEmpty(m.Description))
+                    MenuKit.Text(card, m.Description).AddToClassList("text--small");
                 MenuKit.Text(card, $"Quota <b>${c.Quota:N0}</b>");
                 MenuKit.Text(card, $"Loot ${c.LootMin:N0} - ${c.LootMax:N0}", "text").AddToClassList("text--small");
                 MenuKit.Text(card, $"Threat {Contract.ThreatName(c.ThreatLevel)} (known threats: ???)").AddToClassList("text--small");

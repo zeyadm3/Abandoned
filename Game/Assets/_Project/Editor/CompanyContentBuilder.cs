@@ -25,10 +25,24 @@ namespace Abandoned.EditorTools
                 Modifier("unstable", "Unstable", "Structural stability -20 %. Watch every step.", stability: -0.2f, bonus: 0.15f),
                 Modifier("rush_job", "Rush Job", "A much shorter extraction window, a better bonus.", window: 0.6f, bonus: 0.25f),
                 Modifier("fragile_collection", "Fragile Collection", "Lots of glass and antiques. Don't drop anything.", fragile: 3f, bonus: 0.1f),
+                // M9.2 (GDD 14).
+                Modifier("night", "Night Job", "After dark: the building is darker, and something extra is awake in there.", bonus: 0.2f,
+                    night: true, extraThreats: 1, minLevel: 2),
+                Modifier("heavy_jackpot", "Heavy Jackpot", "Word is there's more than one big prize in there. Bring a crew and a trolley.",
+                    bonus: 0.1f, extraJackpots: 1),
+                Modifier("picked_over", "Already Picked Over", "Someone got here first: much less loot, a better bonus for what's left.",
+                    loot: 0.55f, bonus: 0.25f),
+                Modifier("storm", "Storm", "The storm covers your footsteps, but the wind and rain are working on the structure too.",
+                    bonus: 0.15f, hearing: 0.6f, decay: 1.4f, storm: true, minLevel: 2),
             };
-            if (contracts.Modifiers == null || contracts.Modifiers.Length == 0)
+            // Append any modifier the board doesn't have yet (kept order; inspector edits stay).
+            var current = new System.Collections.Generic.List<ContractModifier>(contracts.Modifiers ?? new ContractModifier[0]);
+            bool added = false;
+            foreach (ContractModifier m in modifiers)
+                if (!current.Exists(c => c != null && c.Id == m.Id)) { current.Add(m); added = true; }
+            if (added)
             {
-                contracts.EditorSetModifiers(modifiers);
+                contracts.EditorSetModifiers(current.ToArray());
                 EditorUtility.SetDirty(contracts);
             }
 
@@ -61,13 +75,15 @@ namespace Abandoned.EditorTools
 
         // Created when missing; never overwritten, so inspector tuning is kept.
         private static ContractModifier Modifier(string id, string displayName, string description, float stability = 0f,
-            float window = 1f, float bonus = 0f, bool powerOff = false, float fragile = 1f, float loot = 1f, int minLevel = 1)
+            float window = 1f, float bonus = 0f, bool powerOff = false, float fragile = 1f, float loot = 1f, int minLevel = 1,
+            int extraJackpots = 0, bool night = false, int extraThreats = 0, float hearing = 1f, float decay = 1f, bool storm = false)
         {
             string path = $"{ContractFolder}/Modifier_{id}.asset";
             var m = AssetDatabase.LoadAssetAtPath<ContractModifier>(path);
             if (m != null) return m;
             m = ScriptableObject.CreateInstance<ContractModifier>();
-            m.EditorSetup(id, displayName, description, stability, window, bonus, powerOff, fragile, loot, minLevel);
+            m.EditorSetup(id, displayName, description, stability, window, bonus, powerOff, fragile, loot, minLevel,
+                extraJackpots, night, extraThreats, hearing, decay, storm);
             AssetDatabase.CreateAsset(m, path);
             return m;
         }

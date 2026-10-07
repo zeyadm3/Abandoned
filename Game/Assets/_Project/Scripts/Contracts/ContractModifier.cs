@@ -27,6 +27,18 @@ namespace Abandoned.Contracts
         [field: SerializeField, Range(0.1f, 10f)] public float FragileRarity { get; private set; } = 1f;
         [Tooltip("Multiplies the share of loot points that get loot ('picked over' < 1).")]
         [field: SerializeField, Range(0.2f, 2f)] public float LootMultiplier { get; private set; } = 1f;
+        [Tooltip("Jackpots beyond the usual 1-2 ('heavy jackpot').")]
+        [field: SerializeField, Range(0, 2)] public int ExtraJackpots { get; private set; }
+        [Tooltip("Night: the sun is down outside and the building is darker even with power.")]
+        [field: SerializeField] public bool Night { get; private set; }
+        [Tooltip("Threats that open the run on top of the usual one.")]
+        [field: SerializeField, Range(0, 2)] public int ExtraThreats { get; private set; }
+        [Tooltip("Scales how well threats hear (storm < 1: the noise covers footsteps).")]
+        [field: SerializeField, Range(0.3f, 1.5f)] public float HearingMultiplier { get; private set; } = 1f;
+        [Tooltip("Scales how fast overloaded floors decay (storm > 1).")]
+        [field: SerializeField, Range(0.5f, 3f)] public float DecayMultiplier { get; private set; } = 1f;
+        [Tooltip("Storm: the wind howls through the building (cosmetic; pair with hearing/decay).")]
+        [field: SerializeField] public bool Storm { get; private set; }
         [Tooltip("Lowest company level this can roll at.")]
         [field: SerializeField, Range(1, 30)] public int MinLevel { get; private set; } = 1;
 
@@ -38,8 +50,15 @@ namespace Abandoned.Contracts
 #if UNITY_EDITOR
         public void EditorSetup(string id, string displayName, string description, float stabilityDelta = 0f,
             float windowMultiplier = 1f, float bonusDelta = 0f, bool powerOff = false, float fragileRarity = 1f,
-            float lootMultiplier = 1f, int minLevel = 1)
+            float lootMultiplier = 1f, int minLevel = 1, int extraJackpots = 0, bool night = false, int extraThreats = 0,
+            float hearingMultiplier = 1f, float decayMultiplier = 1f, bool storm = false)
         {
+            ExtraJackpots = extraJackpots;
+            Night = night;
+            ExtraThreats = extraThreats;
+            HearingMultiplier = hearingMultiplier;
+            DecayMultiplier = decayMultiplier;
+            Storm = storm;
             Id = id;
             DisplayName = displayName;
             Description = description;

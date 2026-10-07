@@ -103,6 +103,17 @@ namespace Abandoned.Tests
         }
 
         [Test]
+        public void AHeavyJackpotJobAddsAJackpot()
+        {
+            int jackpotPoints = points.Count(p => p.IsJackpot);
+            for (int seed = 1; seed < 60; seed++)
+            {
+                int jackpots = LootSpawnPlanner.Plan(points, defs, config, seed, extraJackpots: 1).Count(p => p.Definition.Jackpot);
+                Assert.That(jackpots, Is.InRange(System.Math.Min(jackpotPoints, config.JackpotsMin + 1), System.Math.Min(jackpotPoints, config.JackpotsMax + 1)));
+            }
+        }
+
+        [Test]
         public void AboutTheFillChanceOfOrdinaryPointsGetLoot()
         {
             int filled = 0, runs = 50;

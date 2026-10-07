@@ -27,7 +27,7 @@ namespace Abandoned.Loot
         /// <param name="fillMultiplier">Contract: share of ordinary points filled ("picked over" &lt; 1).</param>
         /// <param name="fragileRarity">Contract: weight for High/Extreme fragility items ("fragile collection").</param>
         public static List<Placement> Plan(IReadOnlyList<LootSpawnPoint> points, IReadOnlyList<LootDefinition> definitions,
-            LootSpawnConfig config, int seed, float fillMultiplier = 1f, float fragileRarity = 1f)
+            LootSpawnConfig config, int seed, float fillMultiplier = 1f, float fragileRarity = 1f, int extraJackpots = 0)
         {
             var random = new Random(seed);
             var plan = new List<Placement>();
@@ -35,7 +35,7 @@ namespace Abandoned.Loot
             var jackpotPoints = new List<int>();
             for (int i = 0; i < points.Count; i++) if (points[i].IsJackpot) jackpotPoints.Add(i);
             Shuffle(jackpotPoints, random);
-            int jackpots = Math.Min(jackpotPoints.Count, random.Next(config.JackpotsMin, config.JackpotsMax + 1));
+            int jackpots = Math.Min(jackpotPoints.Count, random.Next(config.JackpotsMin, config.JackpotsMax + 1) + Math.Max(0, extraJackpots));
 
             for (int i = 0; i < points.Count; i++)
             {

@@ -57,6 +57,8 @@ namespace Abandoned.Threats
             {
                 spawnAt = 0f;
                 Spawn(Opening(runSeed));
+                // A night job (M9.2) wakes more than one thing.
+                for (int i = 0; i < RunState.Current.Terms.ExtraThreats; i++) SpawnExtra();
             }
         }
 

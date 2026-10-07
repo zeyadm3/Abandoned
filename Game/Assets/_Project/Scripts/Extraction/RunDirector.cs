@@ -26,6 +26,7 @@ namespace Abandoned.Extraction
         private NetworkObject spawned;
         private bool started;
         private float stabilityOverride = -1f, lootFill = 1f, fragileRarity = 1f;
+        private int extraJackpots;
         private readonly RunStats stats = new();
 
         /// <summary>
@@ -76,7 +77,7 @@ namespace Abandoned.Extraction
             if (spawned != null && spawned.IsSpawned) spawned.Despawn(true);
             spawned = null;
             if (structure != null) structure.ApplyStability(stabilityOverride >= 0f ? stabilityOverride : structure.Stability, seed);
-            if (lootSpawner != null) lootSpawner.Respawn(seed, lootFill, fragileRarity);
+            if (lootSpawner != null) lootSpawner.Respawn(seed, lootFill, fragileRarity, extraJackpots);
             if (respawnPlayers)
                 foreach (NetworkPlayer p in NetworkPlayer.All)
                     if (p != null && p.NetworkManager == manager && Session.Slots.TryGetSlot(p.OwnerClientId, out int slot))
@@ -107,7 +108,10 @@ namespace Abandoned.Extraction
                     stabilityOverride = contract.Stability;
                     lootFill = m != null ? m.LootMultiplier : 1f;
                     fragileRarity = m != null ? m.FragileRarity : 1f;
-                    RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff);
+                    extraJackpots = m != null ? m.ExtraJackpots : 0;
+                    RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff,
+                        m != null && m.Night, m != null && m.Storm, m != null ? m.ExtraThreats : 0, m != null ? m.HearingMultiplier : 1f,
+                        m != null ? m.DecayMultiplier : 1f);
                 }
                 else RunState.TermsSource = null;
                 BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);

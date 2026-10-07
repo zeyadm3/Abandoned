@@ -14,13 +14,18 @@ namespace Abandoned.Extraction
     {
         [Tooltip("Ambient light with the power off, as a share of the lit ambient (the building is dark, not black).")]
         [SerializeField, Range(0f, 1f)] private float darkAmbientScale = 0.18f;
+        [Tooltip("Night jobs (M9.2): ambient and sun as a share of daylight, on top of the power.")]
+        [SerializeField, Range(0f, 1f)] private float nightAmbientScale = 0.35f;
+        [SerializeField, Range(0f, 1f)] private float nightSunScale = 0.06f;
 
         private readonly List<Light> lights = new();
         private readonly List<LightFixture> fixtures = new();
         private Color litSky, litEquator, litGround;
-        private bool? powered;
+        private float daySun = -1f;
+        private bool? powered, night;
 
         public bool Powered => powered ?? true;
+        public bool IsNight => night ?? false;
 
         private void Start()
         {
@@ -38,11 +43,19 @@ namespace Abandoned.Extraction
         {
             RunState run = RunState.Current;
             bool on = run == null || !run.IsSpawned || !run.State.PowerOff;
-            if (powered == on) return;
+            bool dark = run != null && run.IsSpawned && run.State.Night;
+            if (powered == on && night == dark) return;
             powered = on;
+            night = dark;
             foreach (Light l in lights) if (l != null) l.enabled = on;
             foreach (LightFixture f in fixtures) if (f != null) f.SetPowered(on);
-            float k = on ? 1f : darkAmbientScale;
+            Light sun = RenderSettings.sun;
+            if (sun != null)
+            {
+                if (daySun < 0f) daySun = sun.intensity;
+                sun.intensity = daySun * (dark ? nightSunScale : 1f);
+            }
+            float k = (on ? 1f : darkAmbientScale) * (dark ? nightAmbientScale : 1f);
             // ambientLight is the sky colour; set all three so a gradient ambient dims evenly.
             RenderSettings.ambientSkyColor = litSky * k;
             RenderSettings.ambientEquatorColor = litEquator * k;
@@ -56,7 +69,7 @@ namespace Abandoned.Extraction
             foreach (LightFixture f in fixtures)
                 if (f != null && f.Lit) { lit++; if (f.Faulty) faulty++; }
             GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
-                $"POWER {(Powered ? "on" : "OFF")}  fixtures lit {lit}/{fixtures.Count} ({faulty} faulty)  fog {(RenderSettings.fog ? RenderSettings.fogDensity.ToString("0.000") : "off")}");
+                $"POWER {(Powered ? "on" : "OFF")}{(IsNight ? "  NIGHT" : "")}  fixtures lit {lit}/{fixtures.Count} ({faulty} faulty)  fog {(RenderSettings.fog ? RenderSettings.fogDensity.ToString("0.000") : "off")}");
         }
     }
 }

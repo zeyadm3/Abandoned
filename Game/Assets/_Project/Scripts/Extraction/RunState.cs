@@ -43,18 +43,30 @@ namespace Abandoned.Extraction
         /// <summary>Host: the contract's terms for the run (quota, window, bonus, power); null = the config's defaults.</summary>
         public static Func<RunTerms?> TermsSource { get; set; }
 
+        /// <summary>Host: this run's terms (the modifier's host-only effects live here).</summary>
+        public RunTerms Terms { get; private set; } = new(0, 0f, 0f, false);
+
         public readonly struct RunTerms
         {
             public readonly int Quota;
             public readonly float Window, Bonus;
-            public readonly bool PowerOff;
+            public readonly bool PowerOff, Night, Storm;
+            /// <summary>Host-only modifier effects: extra opening threats, threat hearing, floor decay.</summary>
+            public readonly int ExtraThreats;
+            public readonly float Hearing, Decay;
 
-            public RunTerms(int quota, float window, float bonus, bool powerOff)
+            public RunTerms(int quota, float window, float bonus, bool powerOff, bool night = false, bool storm = false,
+                int extraThreats = 0, float hearing = 1f, float decay = 1f)
             {
                 Quota = quota;
                 Window = window;
                 Bonus = bonus;
                 PowerOff = powerOff;
+                Night = night;
+                Storm = storm;
+                ExtraThreats = extraThreats;
+                Hearing = hearing;
+                Decay = decay;
             }
         }
 
@@ -64,6 +76,7 @@ namespace Abandoned.Extraction
             if (!IsServer) return;
             startedAt = Time.time;
             RunTerms terms = TermsSource?.Invoke() ?? new RunTerms(config.Quota, config.WindowSeconds, 0f, false);
+            Terms = terms;
             state.Value = new RunNetState
             {
                 Phase = RunPhase.Running,
@@ -73,8 +86,22 @@ namespace Abandoned.Extraction
                 Window = terms.Window,
                 Bonus = terms.Bonus,
                 PowerOff = terms.PowerOff,
+                Night = terms.Night,
+                Storm = terms.Storm,
                 WindowEnd = Now + terms.Window,
             };
+        }
+
+        /// <summary>Host: change this run's terms mid-run (tests, and trying modifiers in dev).</summary>
+        public void ServerSetTerms(RunTerms terms)
+        {
+            if (!IsServer) return;
+            Terms = terms;
+            RunNetState s = state.Value;
+            s.PowerOff = terms.PowerOff;
+            s.Night = terms.Night;
+            s.Storm = terms.Storm;
+            state.Value = s;
         }
 
         public override void OnNetworkDespawn()

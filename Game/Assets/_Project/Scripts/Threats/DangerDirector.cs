@@ -67,10 +67,11 @@ namespace Abandoned.Threats
         {
             int level = config.LevelAt(run.Elapsed, run.State.Window > 0f ? run.State.Window : run.Config.WindowSeconds);
             run.SetDanger(level);
-            if (structure != null) structure.DangerDecay = 1f + level * config.DecayPerLevel;
+            // A storm (M9.2) speeds decay and dulls hearing on top of the danger level.
+            if (structure != null) structure.DangerDecay = (1f + level * config.DecayPerLevel) * run.Terms.Decay;
             foreach (Threat t in Threat.All)
             {
-                t.HearingScale = 1f + level * config.HearingPerLevel;
+                t.HearingScale = (1f + level * config.HearingPerLevel) * run.Terms.Hearing;
                 t.SpeedScale = 1f + level * config.SpeedPerLevel;
             }
             if (structure != null && level > 0 && Time.time >= nextAging)
