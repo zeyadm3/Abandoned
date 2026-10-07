@@ -173,6 +173,10 @@ namespace Abandoned.Interaction
             body.interpolation = !HasPhysicsAuthority ? RigidbodyInterpolation.None
                 : Holder != null || (Shared != null && Shared.CarrierCount > 0) ? RigidbodyInterpolation.Interpolate
                 : restingInterpolation;
+            // In hands it sits in front of the carrier's flashlight: a shadow would black out their view.
+            bool carried = Holder != null || (Shared != null && Shared.CarrierCount > 0);
+            foreach (Renderer r in renderers)
+                r.shadowCastingMode = carried ? UnityEngine.Rendering.ShadowCastingMode.Off : UnityEngine.Rendering.ShadowCastingMode.On;
         }
 
         private void SetVelocity(Vector3 velocity)

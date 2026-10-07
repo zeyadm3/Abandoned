@@ -58,10 +58,10 @@ namespace Abandoned.EditorTools
             BuildColumns(Group("Columns", root));
             BuildRoof(Group("Roof", root));
             BuildExterior(Group("Exterior", root));
-            BuildLights(Group("Lights", root));
             PlaceCamera();
             MallPopulator.Populate(root);
             int props = MallProps.Place(root, root.Find(TilesGroup));
+            int fixtures = BuildLights(root); // after Populate: fixtures hang from the tiles' sections
             MallProps.ParkVehicles(root.Find("Exterior"));
             BakeNavMesh(root);
 
@@ -69,7 +69,7 @@ namespace Abandoned.EditorTools
             AddToBuildSettings();
             int networkObjects = NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();
-            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {networkObjects} network objects.");
+            Debug.Log($"Mall saved to {ScenePath}: {tiles} floor tiles, {Flights.Length} flights, {walls} wall/railing panels, {props} props, {fixtures} light fixtures, {networkObjects} network objects.");
         }
 
         public static string TileName(Vector2Int c, int floor) =>
@@ -174,23 +174,15 @@ namespace Abandoned.EditorTools
             MarkStatic(parent);
         }
 
-        private static void BuildLights(Transform parent)
+        // M7.2: realtime lights only (power-off runs and collapses rule out baked light); see MallFixtures.
+        private static int BuildLights(Transform mall)
         {
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.32f, 0.32f, 0.34f);
-            for (int f = 0; f < Floors; f++)
-                foreach (Zone zone in ZonesByFloor[f])
-                {
-                    Vector2 center = zone.Area.center * Tile;
-                    var light = new GameObject($"Light_{f}_{zone.Name}").AddComponent<Light>();
-                    light.transform.SetParent(parent, false);
-                    light.transform.localPosition = new Vector3(center.x, FloorY(f) + StoryHeight - 0.8f, center.y);
-                    light.type = LightType.Point;
-                    light.range = Mathf.Max(zone.Area.width, zone.Area.height) * Tile * 0.75f + 4f;
-                    light.intensity = 6f;
-                    light.color = new Color(1f, 0.95f, 0.85f);
-                    light.shadows = LightShadows.None;
-                }
+            Transform lights = Group("Lights", mall);
+            LevelAtmosphere.Apply("Mall", LevelAtmosphere.Mall, lights);
+            int fixtures = MallFixtures.Place(lights, mall.Find(TilesGroup));
+            MallFixtures.AddDust(lights);
+            MallFixtures.AddSkylightShaft(lights, RenderSettings.sun != null ? RenderSettings.sun.transform.forward : Vector3.down);
+            return fixtures;
         }
 
         public const string NavMeshPath = "Assets/_Project/Scenes/Mall_NavMesh.asset";

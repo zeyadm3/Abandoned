@@ -3,8 +3,9 @@ using UnityEngine;
 namespace Abandoned.Structure
 {
     /// <summary>
-    /// Set dressing (a shelf, a sofa) standing on a structural section: it goes when its floor
-    /// collapses (the debris covers the moment) and comes back when the section is restored (next run).
+    /// Set dressing (a shelf, a sofa, a ceiling light) standing on or hanging from a structural section:
+    /// it goes when that section collapses (the debris covers the moment) and comes back when the
+    /// section is restored (next run).
     /// Props are cosmetic: no load, no network state; every machine hides its own copy from the
     /// replicated collapse.
     /// </summary>
@@ -14,6 +15,7 @@ namespace Abandoned.Structure
 
         private Renderer[] renderers;
         private Collider[] colliders;
+        private LightFixture[] fixtures;
 
         public StructuralSection Section => section;
 
@@ -21,6 +23,7 @@ namespace Abandoned.Structure
         {
             renderers = GetComponentsInChildren<Renderer>(true);
             colliders = GetComponentsInChildren<Collider>(true);
+            fixtures = GetComponentsInChildren<LightFixture>(true);
         }
 
         private void OnEnable()
@@ -46,6 +49,7 @@ namespace Abandoned.Structure
         {
             foreach (Renderer r in renderers) r.enabled = visible;
             foreach (Collider c in colliders) c.enabled = visible;
+            foreach (LightFixture f in fixtures) f.SetAttached(visible);
         }
 
 #if UNITY_EDITOR

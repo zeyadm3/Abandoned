@@ -39,7 +39,7 @@ namespace Abandoned.Threats
         private void Start()
         {
             foreach (Light l in FindObjectsByType<Light>(FindObjectsSortMode.None))
-                if (l.type != LightType.Directional) lights.Add((l, l.intensity));
+                if (l.type != LightType.Directional && l.GetComponentInParent<LightFixture>() == null) lights.Add((l, l.intensity));
         }
 
         private void Update()
@@ -95,6 +95,7 @@ namespace Abandoned.Threats
             AudioSource.PlayClipAtPoint(PlaceholderAudio.GetStructureClip(StructureSound.Groan), at + Vector3.up * 3f, 1f);
             AudioSource.PlayClipAtPoint(PlaceholderAudio.Static(), at, 0.6f);
             flickerUntil = Time.time + FlickerSeconds;
+            LightFixture.Disturb(FlickerSeconds); // fixtures run their own flicker
         }
 
         private void Flicker()

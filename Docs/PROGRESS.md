@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7.1): compile clean; verify ALL PASS; EditMode 208/208; PlayMode 223/223;
-  nettest loot 4/4 (M6 review: all nine nettests 4/4).
+- Last verified (M7.2): compile clean; verify ALL PASS; EditMode 208/208; PlayMode 226/226;
+  nettest run/company 4/4 (M7.1 loot 4/4; M6 review: all nine nettests 4/4).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -21,11 +21,13 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M6 done** (tag `milestone-6`, review fixed): persistent session + travel, HQ, save, contracts, payday/debt/bankruptcy, shop + gear, Stalker + Collector, ghosts (Docs/progress/M6.md).
 
 - **M7 in progress** (version 0.7.0; Docs/progress/M7.md): 7.1 art pass done (Kenney CC0 loot models,
-  mall set dressing, vehicles; credits in Docs/ASSET_CREDITS.md).
+  mall set dressing, vehicles; credits in Docs/ASSET_CREDITS.md). 7.2 lighting done (realtime fixtures that
+  fall with their ceiling and go dark with the power, fog, post-processing, dust, skylight shaft,
+  flashlight shadows).
 
 ## Next
--> M7.2 lighting pass (baked lighting, flashlight shadows, dust, fog, daylight shafts), then
-7.3 audio, 7.4 menus (main/lobby/settings/pause), 7.5 cosmetics, 7.6 performance.
+-> M7.3 audio pass (structure sounds, loot materials, threat signatures, ambience; CC0 only, credited),
+then 7.4 menus (main/lobby/settings/pause), 7.5 cosmetics, 7.6 performance.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
@@ -92,7 +94,8 @@ The script fails on compile errors, warnings in our code, or any exception in a 
 
 ## Open problems
 - `nettest loot` right after `basic` failed twice (M3.8, M6.0): sessions ended while waiting; never
-  reproduced on demand. nettest.sh now keeps failed runs' logs (Logs/nettest/failed-*); look there next time. If it recurs, check host.log for the listen port
+  reproduced on demand. Recurred M7.2 (`company` right after `run`): one client "Failed to connect to
+  server", no stale process left, passed on rerun. nettest.sh now keeps failed runs' logs (Logs/nettest/failed-*); look there next time. If it recurs, check host.log for the listen port
   and whether a previous run's process was still alive.
 - M3.5: one full PlayMode run failed `NetworkLootHitTests.HostThrownSafeKnocksDownTheClientPlayerOnTheClient`
   (client never ragdolled within 4 s); it passed alone 3x and in two further full runs. The safe now has

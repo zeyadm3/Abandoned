@@ -68,7 +68,9 @@ namespace Abandoned.EditorTools
             light.range = 22f;
             light.spotAngle = 55f;
             light.intensity = 8f;
-            light.shadows = LightShadows.None;
+            // Soft shadows make the beam read in a dark store; carried items don't cast any (Grabbable).
+            light.shadows = LightShadows.Soft;
+            light.shadowNearPlane = 0.3f;
             light.enabled = false;
             var equipment = root.AddComponent<Abandoned.Equipment.PlayerEquipment>();
             Set(equipment, "catalog", UnityEditor.AssetDatabase.LoadAssetAtPath<Abandoned.Equipment.EquipmentCatalog>(EquipmentContentBuilder.CatalogPath));

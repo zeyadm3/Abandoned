@@ -42,7 +42,7 @@ namespace Abandoned.Tests
             float healthBefore = sim.Sections.Where(s => s.CanCollapse).Sum(s => s.HealthFraction);
             var startedAbove = sim.Sections.Where(s => s.CanCollapse && s.HealthFraction >= fast.AgingFloor).ToList();
             BlindOne monster = ThreatDirector.Current.Spawn();
-            var light = Object.FindObjectsByType<Light>(FindObjectsSortMode.None).First(l => l.type == LightType.Point);
+            Light light = Object.FindObjectsByType<LightFixture>(FindObjectsSortMode.None).First(f => f.Lit && !f.Faulty).Lamp;
             float lit = light.intensity;
             bool flickered = false;
 
