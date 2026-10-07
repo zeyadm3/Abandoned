@@ -23,7 +23,7 @@ namespace Abandoned.EditorTools
         public const string RagdollConfigPath = "Assets/_Project/Data/Player/PlayerRagdollConfig.asset";
         public const string FeelSettingsPath = "Assets/_Project/Data/Player/FeelSettings.asset";
 
-        private const float FieldOfView = 75f;
+        private const float FieldOfView = Abandoned.Core.GameSettings.DefaultFov; // the player's setting replaces it at runtime
         private const float NearClip = 0.05f;
 
         [MenuItem("Tools/Abandoned/Create Player Prefab")]
@@ -57,6 +57,7 @@ namespace Abandoned.EditorTools
             PlayerRagdollBuilder.Result ragdollParts = PlayerRagdollBuilder.Build(root.transform, ragdollConfig.TotalMass, PlayerMaterial());
             GameObject hitDetector = BuildHitDetector(root.transform, config);
             CinemachineCamera playerCamera = BuildCamera(root.transform, eye);
+            SerializedWiring.Set(root.AddComponent<PlayerFieldOfView>(), "playerCamera", playerCamera);
 
             var reader = root.AddComponent<PlayerInputReader>();
             var stamina = root.AddComponent<PlayerStamina>();

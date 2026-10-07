@@ -69,8 +69,9 @@ namespace Abandoned.Player
         /// <summary>Applies a mouse delta (already a per-frame distance, so no deltaTime).</summary>
         public void ApplyLook(Vector2 delta)
         {
-            yaw += delta.x * config.MouseSensitivity;
-            pitch = Mathf.Clamp(pitch - delta.y * config.MouseSensitivity, -config.MaxPitch, config.MaxPitch);
+            float sensitivity = config.MouseSensitivity * GameSettings.Sensitivity;
+            yaw += delta.x * sensitivity;
+            pitch = Mathf.Clamp(pitch - delta.y * sensitivity, -config.MaxPitch, config.MaxPitch);
 
             transform.rotation = Quaternion.Euler(0f, yaw, 0f);
             cameraRoot.localRotation = Quaternion.Euler(pitch, 0f, 0f);

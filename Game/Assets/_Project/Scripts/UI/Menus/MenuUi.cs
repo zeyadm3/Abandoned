@@ -29,6 +29,7 @@ namespace Abandoned.UI
         private readonly Dictionary<MenuScreen, VisualElement> views = new();
         private MainMenuView main;
         private PauseMenuView pause;
+        private SubtitleView subtitles;
         private bool paused;
 
         public static MenuUi Current { get; private set; }
@@ -36,6 +37,7 @@ namespace Abandoned.UI
         public NetworkBootstrap Bootstrap => bootstrap;
         public SteamLobby Lobby => lobby;
         public Font TitleFont => titleFont;
+        public SubtitleView Subtitles => subtitles;
 
         private void OnEnable()
         {
@@ -52,17 +54,22 @@ namespace Abandoned.UI
             views[MenuScreen.Settings] = new SettingsView(this).Root;
             views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
             foreach (VisualElement v in views.Values) root.Add(v);
+            subtitles = new SubtitleView();
+            root.Add(subtitles.Root);
+            SubtitleFeed.Heard += subtitles.Add;
             Showing = (MenuScreen)(-1);
         }
 
         private void OnDisable()
         {
             CursorOwner.Set(this, false);
+            if (subtitles != null) SubtitleFeed.Heard -= subtitles.Add;
             if (Current == this) Current = null;
         }
 
         private void Update()
         {
+            subtitles?.Tick();
             if (bootstrap == null) return;
             bool running = bootstrap.IsRunning;
             if (!running) paused = false;

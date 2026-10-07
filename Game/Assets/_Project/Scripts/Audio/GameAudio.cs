@@ -39,7 +39,9 @@ namespace Abandoned.Audio
         {
             LastSound = id;
             SoundCount++;
-            Emit(Bank != null ? Bank.Get(id) : null, Fallback(id), position, volume01, spatial: true);
+            SoundCue cue = Bank != null ? Bank.Get(id) : null;
+            Emit(cue, Fallback(id), position, volume01, spatial: true);
+            SubtitleFeed.Report(id, position, cue?.MaxDistance ?? 40f);
         }
 
         /// <summary>A flat (non-positional) sound: menus and screens.</summary>
@@ -75,7 +77,9 @@ namespace Abandoned.Audio
                 StructureSound.Snap => SoundId.Snap,
                 _ => SoundId.Crash,
             };
-            Emit(Bank != null ? Bank.Get(id) : null, PlaceholderAudio.GetStructureClip(sound), position, volume01, spatial: true);
+            SoundCue cue = Bank != null ? Bank.Get(id) : null;
+            Emit(cue, PlaceholderAudio.GetStructureClip(sound), position, volume01, spatial: true);
+            SubtitleFeed.Report(id, position, cue?.MaxDistance ?? 40f);
             if (sound == StructureSound.Crash && Bank != null && Bank.Get(SoundId.CrashDebris) is { HasClips: true } debris)
                 Emit(debris, null, position, volume01, spatial: true);
         }

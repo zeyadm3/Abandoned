@@ -36,7 +36,10 @@ namespace Abandoned.Equipment
             if (Target == null) return;
             style ??= new GUIStyle(GUI.skin.box) { fontSize = 16, richText = true, alignment = TextAnchor.MiddleCenter };
             float health = Target.HealthFraction;
-            string color = health > 0.6f ? "#7dff7d" : health > 0.3f ? "#ffd24d" : "#ff5544";
+            // Colourblind-safe: blue / orange / vermilion (Okabe-Ito) instead of green / yellow / red.
+            string color = Core.GameSettings.ColorblindScanner
+                ? health > 0.6f ? "#56b4e9" : health > 0.3f ? "#e69f00" : "#d55e00"
+                : health > 0.6f ? "#7dff7d" : health > 0.3f ? "#ffd24d" : "#ff5544";
             string load = Target.Capacity > 0f ? $"{Target.Load:0} / {Target.Capacity:0} kg" : "-";
             GUI.Box(new Rect(Screen.width / 2f + 40f, Screen.height / 2f - 30f, 300f, 60f),
                 $"<color={color}>{Target.Stage}  {health:P0}</color>\nload {load}", style);

@@ -56,7 +56,7 @@ namespace Abandoned.Player
             // While ragdolled the motor is off and its state is stale; no bob.
             float speed = !ragdoll.IsRagdolled && motor.IsGrounded ? motor.HorizontalSpeed : 0f;
             float scale = motor.IsSprinting ? settings.SprintBobScale : motor.IsCrouching ? settings.CrouchBobScale : 1f;
-            float target = settings.HeadBobEnabled && speed > 0.1f
+            float target = settings.HeadBobEnabled && GameSettings.HeadBob && speed > 0.1f
                 ? Mathf.Clamp01(speed / motor.Config.WalkSpeed) * scale
                 : 0f;
             bobWeight = Mathf.MoveTowards(bobWeight, target, settings.BobBlendSpeed * dt);
@@ -86,7 +86,7 @@ namespace Abandoned.Player
 
         private void OnImpact(Vector3 position, float momentum)
         {
-            if (!settings.CameraShakeEnabled || momentum < settings.ShakeMomentumThreshold) return;
+            if (!settings.CameraShakeEnabled || !GameSettings.CameraShake || momentum < settings.ShakeMomentumThreshold) return;
             float distance = Vector3.Distance(eye.position, position);
             if (distance >= settings.ShakeRadius) return;
             float strength = Mathf.Clamp01((momentum - settings.ShakeMomentumThreshold) /

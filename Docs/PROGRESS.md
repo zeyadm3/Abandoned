@@ -11,7 +11,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7.4a): compile clean; verify ALL PASS; EditMode 210/210; PlayMode 229/229;
+- Last verified (M7.4b): compile clean; verify ALL PASS; EditMode 210/210; PlayMode 233/233;
   nettest robust/basic 4/4 (M7.3 loot/run; M7.2 run/company; M6 review: all nine 4/4).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
@@ -24,12 +24,12 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
   mall set dressing, vehicles; credits in Docs/ASSET_CREDITS.md). 7.2 lighting done (realtime fixtures that
   fall with their ceiling and go dark with the power, fog, post-processing, dust, skylight shaft,
   flashlight shadows). 7.3 audio done (Kenney CC0 sound bank, pooled playback, synthesised ambience). 7.4a menus done (UI Toolkit:
-  main menu, pause menu with crew/invites, sound+voice settings, credits).
+  main menu, pause menu with crew/invites, sound+voice settings, credits). 7.4b settings done (sensitivity,
+  FOV, bob/shake, subtitles, colourblind scanner).
 
 ## Next
--> M7.4b settings (GDD 20): mouse sensitivity, FOV, camera shake / head bob toggles, subtitles for
-structure + threat sounds, colourblind-safe scanner colours; then 7.4c key rebinding; then 7.5
-cosmetics, 7.6 performance.
+-> M7.4c key rebinding (Input System rebinding, overrides saved in PlayerPrefs, a Controls screen in
+Settings); then 7.5 cosmetics, 7.6 performance.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
