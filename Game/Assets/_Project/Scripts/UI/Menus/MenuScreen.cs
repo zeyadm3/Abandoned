@@ -9,6 +9,7 @@ namespace Abandoned.UI
         Controls,
         Wardrobe,
         HowToPlay,
+        DemoEnd,
         Credits
     }
 }

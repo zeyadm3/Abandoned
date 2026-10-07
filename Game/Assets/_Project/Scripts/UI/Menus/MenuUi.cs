@@ -33,6 +33,8 @@ namespace Abandoned.UI
         private VisualElement hud;
         private WardrobeView wardrobe;
         private HowToPlayView howToPlay;
+        private DemoEndView demoEnd;
+        private bool demoEndShown;
         private bool paused, pausedForScreen;
 
         public static MenuUi Current { get; private set; }
@@ -66,6 +68,8 @@ namespace Abandoned.UI
             views[MenuScreen.Wardrobe] = wardrobe.Root;
             howToPlay = new HowToPlayView(this);
             views[MenuScreen.HowToPlay] = howToPlay.Root;
+            demoEnd = new DemoEndView(this);
+            views[MenuScreen.DemoEnd] = demoEnd.Root;
             foreach (VisualElement v in views.Values) root.Add(v);
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
@@ -85,6 +89,7 @@ namespace Abandoned.UI
             subtitles?.Tick();
             if (bootstrap == null) return;
             bool running = bootstrap.IsRunning;
+            AutoOpenDemoEnd(running);
             if (!running) paused = pausedForScreen = false;
             if (EscapePressed() && !ControlsView.Busy)
             {
@@ -107,6 +112,16 @@ namespace Abandoned.UI
 
             if (top == MenuScreen.Main) main.Refresh();
             else if (top == MenuScreen.Pause) pause.Refresh();
+        }
+
+        // The demo's last job is done: once per arrival at the HQ, the crew gets the end screen.
+        private void AutoOpenDemoEnd(bool running)
+        {
+            Company.CompanyService company = Company.CompanyService.Current;
+            bool over = running && company != null && company.IsSpawned && company.DemoOver
+                        && FindAnyObjectByType<Company.ContractBoard>() != null;
+            if (!over) { demoEndShown = false; return; }
+            if (!demoEndShown && !paused && !CursorOwner.UiActive) OpenDemoEnd();
         }
 
         public void OpenPause()
@@ -134,12 +149,26 @@ namespace Abandoned.UI
         /// <summary>A screen opened from the world (the HQ lockers): Back returns straight to the game.</summary>
         public void OpenWardrobe()
         {
-            if (bootstrap == null || !bootstrap.IsRunning) return;
+            if (!OpenFromWorld(MenuScreen.Wardrobe)) return;
+            wardrobe.Refresh();
+        }
+
+        /// <summary>The demo's end screen (M8.3), shown on arriving at the HQ once the demo's jobs are done.</summary>
+        public void OpenDemoEnd()
+        {
+            if (!OpenFromWorld(MenuScreen.DemoEnd)) return;
+            demoEndShown = true;
+            demoEnd.Refresh();
+        }
+
+        private bool OpenFromWorld(MenuScreen screen)
+        {
+            if (bootstrap == null || !bootstrap.IsRunning) return false;
             paused = pausedForScreen = true;
             pushed.Clear();
-            pushed.Push(MenuScreen.Wardrobe);
-            wardrobe.Refresh();
+            pushed.Push(screen);
             GameAudio.PlayUi(SoundId.UiOpen);
+            return true;
         }
 
         public void Back()

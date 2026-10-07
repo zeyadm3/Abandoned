@@ -31,6 +31,14 @@ namespace Abandoned.Networking
         public string LocalPlayerName => IsAvailable ? client.PlayerName : string.Empty;
         public NetworkConfig Config => config;
 
+        /// <summary>Opens a store page in the Steam overlay; false when Steam isn't running here.</summary>
+        public bool OpenStorePage(uint appId)
+        {
+            if (!IsAvailable || appId == 0) return false;
+            client.OpenStoreOverlay(appId);
+            return true;
+        }
+
         public event Action<bool> AvailabilityChanged;
 
         /// <summary>Creates the persistent bootstrap object (or returns the existing one).</summary>

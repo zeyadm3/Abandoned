@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Abandoned.Contracts;
+using Abandoned.Core;
 using Abandoned.Equipment;
 using Abandoned.Extraction;
 using Abandoned.Networking;
@@ -169,7 +170,25 @@ namespace Abandoned.Company
         /// <summary>Host: choose a contract on the board (-1 = none).</summary>
         public void Select(int index)
         {
+            if (DemoOver && index >= 0) return; // the demo's jobs are done (M8.3)
             if (IsServer && index >= -1 && index < Board.Count) selected.Value = index;
+        }
+
+        /// <summary>The demo build's company has done every job the demo allows.</summary>
+        public bool DemoOver => Demo.IsOver(State.Runs);
+
+        /// <summary>Host, demo: a brand-new company to play the demo again (only the failure count carries over).</summary>
+        public void RestartDemo()
+        {
+            if (!IsServer || !Demo.IsDemo) return;
+            CompanyLedger.GoBankrupt(save);
+            save.bankruptcies = Mathf.Max(0, save.bankruptcies - 1); // starting over isn't going bankrupt
+            store?.Save(save);
+            state.Value = CompanyNetState.Of(save);
+            selected.Value = -1;
+            boardSeed.Value = NewSeed();
+            PublishGear();
+            Debug.Log("[Company] Demo restarted with a new company.");
         }
 
         /// <summary>Anyone at the van: drive to the selected contract.</summary>

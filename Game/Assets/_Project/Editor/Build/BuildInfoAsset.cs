@@ -15,6 +15,8 @@ namespace Abandoned.EditorTools
         {
             if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/_Project/Data/Core", "Resources");
             var info = LoadOrCreateAsset<BuildInfo>(Path);
+            // The demo's rules sit beside it (Resources: read before any scene exists).
+            LoadOrCreateAsset<Abandoned.Core.DemoConfig>(Folder + "/" + Abandoned.Core.DemoConfig.ResourcePath + ".asset");
             AssetDatabase.SaveAssets();
             return info;
         }

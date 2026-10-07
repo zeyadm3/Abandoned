@@ -40,6 +40,17 @@ namespace Abandoned.EditorTools
         [MenuItem(Menu + "Dev Mac (for tests)")]
         public static void BuildDevMacMenu() => Report(Build(BuildPlatform.Mac, BuildFlavor.Dev));
 
+        [MenuItem(Menu + "Demo (Mac + Windows)")]
+        public static void BuildDemoMenu() => Report(BuildDemo());
+
+        /// <summary>The demo (M8.3) for both platforms: Game/Builds/MacDemo and WindowsDemo.</summary>
+        public static bool BuildDemo()
+        {
+            string builtAtUtc = BuildInfoAsset.Now();
+            return Build(BuildPlatform.Mac, BuildFlavor.Demo, builtAtUtc) &&
+                   Build(BuildPlatform.Windows, BuildFlavor.Demo, builtAtUtc);
+        }
+
         public static bool BuildBoth()
         {
             string builtAtUtc = BuildInfoAsset.Now();

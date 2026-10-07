@@ -14,5 +14,8 @@ namespace Abandoned.Networking
         void Init(uint appId);
         void RunCallbacks();
         void Shutdown();
+
+        /// <summary>The Steam overlay on a store page (the demo's wishlist button).</summary>
+        void OpenStoreOverlay(uint appId);
     }
 }

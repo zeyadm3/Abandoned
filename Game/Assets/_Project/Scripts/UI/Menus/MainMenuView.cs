@@ -29,7 +29,7 @@ namespace Abandoned.UI
 
             Label title = MenuKit.Text(panel, "ABANDONED", "title");
             if (menu.TitleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(menu.TitleFont);
-            MenuKit.Text(panel, "Salvage crew wanted. Buildings unstable.", "subtitle");
+            MenuKit.Text(panel, Demo.IsDemo ? $"DEMO - {Demo.MaxJobs} jobs at the abandoned mall. Salvage crew wanted." : "Salvage crew wanted. Buildings unstable.", "subtitle");
 
             noticeBox = new VisualElement();
             panel.Add(noticeBox);

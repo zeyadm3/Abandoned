@@ -32,6 +32,8 @@ namespace Abandoned.Tests
             if (RunCallbacksException != null) throw RunCallbacksException;
         }
 
+        public uint StoreOverlayOpened { get; private set; }
+        public void OpenStoreOverlay(uint appId) => StoreOverlayOpened = appId;
         public void Shutdown()
         {
             ShutdownCalls++;

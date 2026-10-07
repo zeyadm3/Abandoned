@@ -51,6 +51,7 @@ namespace Abandoned.EditorTools
         public static void BuildMac() => RunAndExit(() => BuildScript.Build(BuildPlatform.Mac, BuildFlavor.Shareable));
         public static void BuildWindows() => RunAndExit(() => BuildScript.Build(BuildPlatform.Windows, BuildFlavor.Shareable));
         public static void BuildBoth() => RunAndExit(BuildScript.BuildBoth);
+        public static void BuildDemo() => RunAndExit(BuildScript.BuildDemo);
         public static void BuildMacDev() => RunAndExit(() => BuildScript.Build(BuildPlatform.Mac, BuildFlavor.Dev));
 
         public static void VerifyAll() => RunAndExit(() =>

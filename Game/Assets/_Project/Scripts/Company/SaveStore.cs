@@ -13,12 +13,14 @@ namespace Abandoned.Company
     public sealed class SaveStore
     {
         public const string FileName = "company.json";
+        /// <summary>The demo keeps its own company, so the full game never inherits a demo save (or the reverse).</summary>
+        public const string DemoFileName = "company_demo.json";
 
         private readonly string path;
 
         public SaveStore(string folder = null)
         {
-            path = System.IO.Path.Combine(folder ?? Application.persistentDataPath, FileName);
+            path = System.IO.Path.Combine(folder ?? Application.persistentDataPath, Core.Demo.IsDemo ? DemoFileName : FileName);
         }
 
         public string Path => path;
