@@ -18,6 +18,8 @@ namespace Abandoned.Threats
         [field: SerializeField, Range(5f, 60f)] public float HideDistance { get; private set; } = 18f;
         [Tooltip("Seconds between thefts.")]
         [field: SerializeField, Range(0f, 120f)] public float Cooldown { get; private set; } = 12f;
+        [Tooltip("Seconds it keeps walking to one item before it gives up on it for the run (unreachable).")]
+        [field: SerializeField, Range(5f, 120f)] public float SeekTimeout { get; private set; } = 25f;
 
         public void Validate(List<string> errors)
         {

@@ -63,7 +63,8 @@ namespace Abandoned.Threats
 
             Vector3 at = PositionOf(target);
             brain.Config = config;
-            brain.Tick(IsWatchedBy(target), IsIsolated(target), Time.deltaTime);
+            // Dread only builds while it has eyes on its prey: behind walls or a floor away it just follows.
+            brain.Tick(IsWatchedBy(target), IsIsolated(target) && Sees(target), Time.deltaTime);
             state.Value = brain.State;
             switch (brain.State)
             {
@@ -82,7 +83,9 @@ namespace Abandoned.Threats
                     agent.isStopped = false;
                     agent.speed = config.RushSpeed * SpeedScale;
                     agent.SetDestination(at);
-                    if (KillWithinReach(config.AttackRange) != null) brain.Reset();
+                    // Prey it can't reach (at the truck, off the NavMesh): give up rather than camp the doorway.
+                    if (!agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete) brain.Reset();
+                    else if (KillWithinReach(config.AttackRange) != null) brain.Reset();
                     break;
             }
             // Frozen, it keeps staring at its target (moving, the agent turns it).
@@ -95,9 +98,17 @@ namespace Abandoned.Threats
         {
             nextRetarget = Time.time + config.RetargetInterval;
             var alive = NetworkPlayer.All.Where(p => p != null && p.NetworkManager == NetworkManager && !p.IsDead).ToList();
-            target = alive.OrderByDescending(p => alive.Where(o => o != p).Select(o => Vector3.Distance(PositionOf(o), PositionOf(p))).DefaultIfEmpty(float.MaxValue).Min())
+            // Two players are always equally far from each other: then the nearer one to it.
+            NetworkPlayer picked = alive
+                .OrderByDescending(p => alive.Where(o => o != p).Select(o => Vector3.Distance(PositionOf(o), PositionOf(p))).DefaultIfEmpty(float.MaxValue).Min())
+                .ThenBy(p => Vector3.Distance(PositionOf(p), transform.position))
                 .FirstOrDefault();
+            // A new prey hasn't been stalked yet: the dread built on someone else doesn't carry over.
+            if (picked != target) brain.Reset();
+            target = picked;
         }
+
+        private bool Sees(NetworkPlayer p) => LineOfSight(transform.position + Vector3.up * 1.5f, PositionOf(p) + Vector3.up * 1.2f);
 
         private bool IsIsolated(NetworkPlayer p) =>
             !NetworkPlayer.All.Any(o => o != null && o != p && o.NetworkManager == NetworkManager && !o.IsDead

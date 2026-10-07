@@ -103,7 +103,8 @@ namespace Abandoned.Voice
             }
             // Only someone carrying a radio can transmit on it (the host's view of who does).
             radio = radio && HasRadio(OwnerClientId);
-            if (!IsOwner) MarkSpoke(VoiceMath.FromByte(level), radio);
+            // A ghost's speaking icon would let them signal the living.
+            if (!IsOwner && (!SpeakerDead || LocalPlayerDead)) MarkSpoke(VoiceMath.FromByte(level), radio);
             HeardOnHost?.Invoke(this, VoiceMath.FromByte(level), radio);
             // Ghosts make no noise (GDD 11: they can't help, or hurt).
             if (!SpeakerDead) EmitNoise(VoiceMath.FromByte(level), radio);
@@ -121,9 +122,9 @@ namespace Abandoned.Voice
             hasSequence = true;
             lastSequence = sequence;
             PacketsReceived++;
-            MarkSpoke(VoiceMath.FromByte(level), radio);
-            // The dead are heard only by the dead (GDD 11: ghosts can watch, not help).
+            // The dead are heard (and shown speaking) only by the dead (GDD 11: ghosts can watch, not help).
             if (SpeakerDead && !LocalPlayerDead) return;
+            MarkSpoke(VoiceMath.FromByte(level), radio);
             IVoiceCodec decoder = VoiceBackends.Codec(codec);
             if (decoder == null || decoder.SampleRate <= 0) return;
             int n = decoder.Decode(data, data.Length, decoded);

@@ -86,6 +86,21 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
+        public IEnumerator GearTheCompanyNoLongerOwnsLeavesYourHands()
+        {
+            PlayerEquipment me = Mine();
+            int trolley = me.Catalog.IndexOf("hand_trolley");
+            me.RequestEquip(1, trolley);
+            yield return Frames();
+            Assert.AreEqual(EquipmentKind.HandTrolley, me.InSlot(1).Kind);
+            // Bankruptcy resets the stock the same way: whatever the save stops owning.
+            Assert.IsTrue(CompanyService.Current.Consume(trolley));
+            yield return Frames();
+            Assert.IsNull(me.InSlot(1), "a trolley the company lost isn't still in hand");
+            Assert.AreEqual(EquipmentKind.Flashlight, me.InSlot(0).Kind, "what it still owns stays");
+        }
+
+        [UnityTest]
         public IEnumerator TheShopSellsWhatTheMoneyAndLevelAllow()
         {
             CompanyService company = CompanyService.Current;

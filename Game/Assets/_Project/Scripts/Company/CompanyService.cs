@@ -248,6 +248,8 @@ namespace Abandoned.Company
                 int count = save.CountOf(equipment.Items[i].Id);
                 if (count > 0) owned.Add(new OwnedGear { Index = (byte)i, Count = (short)count });
             }
+            // Bankruptcy can take back gear that is still in someone's hands.
+            PlayerEquipment.ServerTrimToStock(NetworkManager);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

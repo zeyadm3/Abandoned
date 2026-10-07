@@ -21,7 +21,8 @@ namespace Abandoned.Player
 
         public float Pitch => pitch;
 
-        public bool CursorCaptured => Cursor.lockState == CursorLockMode.Locked;
+        // Batch mode (tests, nettests) has no cursor and lockState never sticks: go by what this look asked for.
+        public bool CursorCaptured => Application.isBatchMode ? ownsCursor : Cursor.lockState == CursorLockMode.Locked;
 
         /// <summary>Frame the cursor was last captured on; that click shouldn't also act in the game.</summary>
         public int CaptureFrame { get; private set; } = -1;
@@ -31,6 +32,12 @@ namespace Abandoned.Player
             // NGO sets the spawn pose after Instantiate (so after OnEnable read yaw): pick it up here too.
             SyncYawFromTransform();
             SetCaptured(true);
+        }
+
+        /// <summary>Another machine's copy: tilt the camera root (and the flashlight on it) to the owner's pitch.</summary>
+        public void ApplyRemotePitch(float remotePitch)
+        {
+            if (cameraRoot != null) cameraRoot.localRotation = Quaternion.Euler(remotePitch, 0f, 0f);
         }
 
         /// <summary>Takes yaw from the body's current facing, e.g. after a network spawn placed it.</summary>

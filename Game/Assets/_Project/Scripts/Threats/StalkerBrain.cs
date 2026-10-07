@@ -25,7 +25,9 @@ namespace Abandoned.Threats
                 State = StalkerState.Frozen;
                 return;
             }
-            Dread = isolated ? Dread + dt : System.Math.Max(0f, Dread - dt * 0.5f);
+            // Capped at the rush point: dread banked while someone waits alone at the truck must not
+            // keep it rushing for minutes after company arrives.
+            Dread = isolated ? System.Math.Min(Config.RushAfter, Dread + dt) : System.Math.Max(0f, Dread - dt * 0.5f);
             State = Dread >= Config.RushAfter ? StalkerState.Rush : StalkerState.Follow;
         }
 

@@ -13,8 +13,14 @@ namespace Abandoned.Networking
         // Body position is snapped to this grid so a lying body doesn't resend every frame for millimetres.
         private const float BodyGrid = 0.02f;
 
+        // Look pitch in 2° steps: others see a flashlight beam where the owner points it.
+        private const float PitchStep = 2f;
+
         public byte Flags;
+        public sbyte PitchSteps;
         public Vector3 BodyPosition;
+
+        public float Pitch => PitchSteps * PitchStep;
 
         public bool Grounded => (Flags & GroundedBit) != 0;
         public bool Sprinting => (Flags & SprintingBit) != 0;
@@ -22,7 +28,7 @@ namespace Abandoned.Networking
         public bool Ragdolled => (Flags & RagdolledBit) != 0;
         public bool BodyResting => (Flags & RestingBit) != 0;
 
-        public static PlayerNetState From(bool grounded, bool sprinting, bool crouching, bool ragdolled, bool resting, Vector3 body)
+        public static PlayerNetState From(bool grounded, bool sprinting, bool crouching, bool ragdolled, bool resting, Vector3 body, float pitch = 0f)
         {
             byte flags = 0;
             if (grounded) flags |= GroundedBit;
@@ -34,7 +40,8 @@ namespace Abandoned.Networking
             Vector3 snapped = ragdolled
                 ? new Vector3(Snap(body.x), Snap(body.y), Snap(body.z))
                 : Vector3.zero;
-            return new PlayerNetState { Flags = flags, BodyPosition = snapped };
+            sbyte steps = (sbyte)Mathf.Clamp(Mathf.RoundToInt(pitch / PitchStep), sbyte.MinValue, sbyte.MaxValue);
+            return new PlayerNetState { Flags = flags, PitchSteps = steps, BodyPosition = snapped };
         }
 
         private static float Snap(float v) => Mathf.Round(v / BodyGrid) * BodyGrid;

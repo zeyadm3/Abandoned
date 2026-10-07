@@ -30,6 +30,11 @@ namespace Abandoned.Tests
                 brain.Tick(false, false, 4f);
                 Assert.Less(brain.Dread, c.RushAfter - 1f, "company makes it lose interest");
                 Assert.AreEqual(StalkerState.Follow, brain.State);
+
+                brain.Tick(false, true, 600f);
+                Assert.AreEqual(c.RushAfter, brain.Dread, "dread stops at the rush point");
+                brain.Tick(false, false, 2.5f);
+                Assert.AreEqual(StalkerState.Follow, brain.State, "so company calls it off within seconds");
             }
             finally
             {

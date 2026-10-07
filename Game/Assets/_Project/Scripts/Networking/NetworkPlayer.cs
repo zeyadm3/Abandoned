@@ -21,6 +21,7 @@ namespace Abandoned.Networking
         [SerializeField] private PlayerRagdoll ragdoll;
         [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private NetworkTransform networkTransform;
+        private PlayerLook look;
         [Tooltip("Run only for the local player: camera, input, look, motor, interactor, HUD, camera feel, overlays.")]
         [SerializeField] private Behaviour[] ownerOnlyBehaviours;
         [Tooltip("Objects only the local player needs (e.g. the hit trigger: hits are judged by the owner).")]
@@ -53,6 +54,7 @@ namespace Abandoned.Networking
         public override void OnNetworkSpawn()
         {
             Spawned.Add(this);
+            look = GetComponent<PlayerLook>();
             name = $"Player {OwnerClientId}{(IsOwner ? " (local)" : "")}";
             // Players travel with the session from level to level (6.0).
             if (transform.parent == null) DontDestroyOnLoad(gameObject);
@@ -61,7 +63,7 @@ namespace Abandoned.Networking
                 Local = this;
                 // The spawn pose was applied after PlayerLook.OnEnable cached yaw; without this the
                 // first mouse move would snap every player to face +Z.
-                if (TryGetComponent(out PlayerLook look)) look.SyncYawFromTransform();
+                if (look != null) look.SyncYawFromTransform();
                 motor.Landed += OnOwnerLanded;
                 ragdoll.Ended += OnOwnerGotUp;
                 dead.OnValueChanged += OnDeadChanged;
@@ -102,7 +104,7 @@ namespace Abandoned.Networking
             if (!IsSpawned || !IsOwner) return;
             // NetworkVariable only sends when the value actually changed.
             state.Value = PlayerNetState.From(motor.IsGrounded, motor.IsSprinting, motor.IsCrouching,
-                ragdoll.IsRagdolled, ragdoll.IsBodyResting, ragdoll.BodyPosition);
+                ragdoll.IsRagdolled, ragdoll.IsBodyResting, ragdoll.BodyPosition, look != null ? look.Pitch : 0f);
         }
 
         private void OnStateChanged(PlayerNetState previous, PlayerNetState current) => ApplyRemote(current);
@@ -111,6 +113,7 @@ namespace Abandoned.Networking
         {
             motor.ApplyRemoteState(s.Grounded, s.Sprinting, s.Crouching);
             ragdoll.ApplyRemoteState(s.Ragdolled, s.BodyPosition, s.BodyResting);
+            if (!IsOwner && look != null) look.ApplyRemotePitch(s.Pitch);
         }
 
         // The host owns structural damage; a client's landing only exists on the client, so report it.
@@ -149,14 +152,15 @@ namespace Abandoned.Networking
         {
             if (!IsServer) return;
             dead.Value = false;
-            RespawnRpc(pose.position, pose.rotation);
+            RespawnRpc(pose.position, pose.rotation, false);
         }
 
         /// <summary>Host: a medkit got this downed player back up where their body lies.</summary>
         public void ServerRevive()
         {
             if (!IsServer || !dead.Value) return;
-            ServerRespawn(new Pose(ragdoll.BodyPosition + Vector3.up * 0.1f, transform.rotation));
+            dead.Value = false;
+            RespawnRpc(ragdoll.BodyPosition + Vector3.up * 0.1f, transform.rotation, true);
         }
 
         /// <summary>Host: this player dies (monster contact). Their body falls where they stood.</summary>
@@ -183,12 +187,22 @@ namespace Abandoned.Networking
         }
 
         [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
-        private void RespawnRpc(Vector3 position, Quaternion rotation)
+        private void RespawnRpc(Vector3 position, Quaternion rotation, bool whereBodyLies)
         {
+            // A revive stands up on the ragdoll's own checked spot; the body's raw position can be
+            // against a wall or inside a prop.
+            if (whereBodyLies && ragdoll.IsRagdolled)
+            {
+                ragdoll.HoldDown = false;
+                ragdoll.Recover();
+                motor.ResetFallTracking();
+                if (look != null) look.SyncYawFromTransform();
+                return;
+            }
             if (ragdoll.IsRagdolled) ragdoll.Recover();
             transform.rotation = rotation;
             OwnerTeleport(position);
-            if (TryGetComponent(out PlayerLook look)) look.SyncYawFromTransform();
+            if (look != null) look.SyncYawFromTransform();
         }
 
         // Getting up moves the root to where the body lies; others should jump there, not slide.

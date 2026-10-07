@@ -39,6 +39,7 @@ namespace Abandoned.Interaction
         public float WeightOnHolder => Shared != null ? Shared.SharePerCarrier : IsDragged ? 0f : Weight;
         /// <summary>This machine simulates the body. True offline; networking hands it to the owner.</summary>
         public bool HasPhysicsAuthority { get; private set; } = true;
+        private bool externallyHeld;
         public string DisplayName => carryable?.DisplayName ?? name;
         public CarryClass CarryClass => carryable?.CarryClass ?? CarryClass.OneHand;
         public float Weight => carryable?.GameplayWeight ?? body.mass;
@@ -86,6 +87,16 @@ namespace Abandoned.Interaction
         {
             body.position = transform.position;
             body.rotation = transform.rotation;
+        }
+
+        /// <summary>
+        /// Something that isn't a player (the Collector) moves this body by hand: kinematic while it
+        /// does. Releasing restores whatever mode the item's hold and authority call for.
+        /// </summary>
+        public void SetExternallyHeld(bool held)
+        {
+            externallyHeld = held;
+            ApplyBodyMode();
         }
 
         public void SetPhysicsAuthority(bool authority)
@@ -152,7 +163,7 @@ namespace Abandoned.Interaction
 
         private void ApplyBodyMode()
         {
-            bool kinematic = IsPocketed || !HasPhysicsAuthority;
+            bool kinematic = IsPocketed || !HasPhysicsAuthority || externallyHeld;
             // Kinematic bodies only support discrete/speculative detection; switch before toggling.
             if (kinematic) body.collisionDetectionMode = CollisionDetectionMode.Discrete;
             body.isKinematic = kinematic;

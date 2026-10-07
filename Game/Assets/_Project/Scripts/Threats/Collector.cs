@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Extraction;
 using Abandoned.Interaction;
@@ -24,7 +25,9 @@ namespace Abandoned.Threats
         private NavMeshAgent agent;
         private NetworkLoot prey, carried;
         private Vector3 hideAt;
-        private float nextTheft;
+        private float nextTheft, seekUntil;
+        // Items it couldn't get to (a collapsed island, past the NavMesh): not tried again this run.
+        private readonly HashSet<NetworkLoot> unreachable = new();
 
         public override string DisplayName => "Collector";
         public CollectorState State => state.Value;
@@ -76,10 +79,20 @@ namespace Abandoned.Threats
                 case CollectorState.Seeking:
                     if (prey == null || !prey.IsSpawned || prey.Hold.Mode != LootHoldMode.Free) { Set(CollectorState.Idle); break; }
                     agent.SetDestination(prey.transform.position);
-                    if (Vector3.Distance(Flat(transform.position), Flat(prey.transform.position)) < 1.3f) PickUp();
+                    if (Time.time > seekUntil || (!agent.pathPending && agent.pathStatus == NavMeshPathStatus.PathInvalid))
+                    {
+                        unreachable.Add(prey);
+                        prey = null;
+                        nextTheft = Time.time + 1f;
+                        Set(CollectorState.Idle);
+                        break;
+                    }
+                    // Near it on the same floor: a path that runs under an item upstairs mustn't grab it through the ceiling.
+                    Vector3 offset = prey.transform.position - transform.position;
+                    if (Flat(offset).magnitude < 1.3f && Mathf.Abs(offset.y) < 1.5f) PickUp();
                     break;
                 case CollectorState.Carrying:
-                    if (carried == null || !carried.IsSpawned || carried.Hold.Mode != LootHoldMode.Free) { carried = null; Set(CollectorState.Idle); break; }
+                    if (carried == null || !carried.IsSpawned || carried.Hold.Mode != LootHoldMode.Free) { Drop(); Set(CollectorState.Idle); break; }
                     HoldCarried();
                     if (!agent.pathPending && agent.remainingDistance < 1f)
                     {
@@ -104,7 +117,7 @@ namespace Abandoned.Threats
             TruckCargo truck = TruckCargo.Current;
             prey = FindObjectsByType<NetworkLoot>(FindObjectsSortMode.None)
                 .Where(l => l.IsSpawned && l.NetworkManager == NetworkManager && l.Hold.Mode == LootHoldMode.Free && !l.Item.IsShattered
-                            && !l.Item.Definition.Utility && !l.Item.Definition.Jackpot && l.Item.Definition.CarryClass <= CarryClass.TwoHand
+                            && !unreachable.Contains(l) && !l.Item.Definition.Utility && !l.Item.Definition.Jackpot && l.Item.Definition.CarryClass <= CarryClass.TwoHand
                             && (truck == null || !truck.ItemsInside().Contains(l.Item)) && Unattended(l.transform.position))
                 .OrderBy(l => Vector3.Distance(l.transform.position, transform.position))
                 .FirstOrDefault();
@@ -114,6 +127,7 @@ namespace Abandoned.Threats
                 return;
             }
             agent.speed = config.Speed * SpeedScale;
+            seekUntil = Time.time + config.SeekTimeout;
             Set(CollectorState.Seeking);
         }
 
@@ -121,7 +135,7 @@ namespace Abandoned.Threats
         {
             carried = prey;
             prey = null;
-            carried.Grabbable.Body.isKinematic = true;
+            carried.Grabbable.SetExternallyHeld(true);
             // Somewhere far from where it took it (and from the truck), on the NavMesh.
             hideAt = transform.position;
             for (int i = 0; i < 12; i++)
@@ -144,11 +158,28 @@ namespace Abandoned.Threats
             carried.transform.position = hold;
         }
 
+        // Set down, not dropped from hand height: a fall of a metre shatters a glass sculpture (and the
+        // bang would call the Blind One). In front of it where that's clear, else at its feet (on the
+        // NavMesh, so never inside a wall).
         private void Drop()
         {
             if (carried == null) return;
-            if (carried.Grabbable != null && carried.Grabbable.Body != null) carried.Grabbable.Body.isKinematic = false;
+            NetworkLoot item = carried;
             carried = null;
+            if (item == null || item.Grabbable == null) return;
+            Grabbable g = item.Grabbable;
+            if (item.IsSpawned && item.Hold.Mode == LootHoldMode.Free && g.HasPhysicsAuthority)
+            {
+                Bounds bounds = g.GetBounds();
+                Vector3 feet = transform.position + Vector3.up * (bounds.extents.y + 0.03f);
+                Vector3 front = feet + Flat(transform.forward).normalized * (agent.radius + Mathf.Max(bounds.extents.x, bounds.extents.z) + 0.05f);
+                bool clear = LineOfSight(feet, front) &&
+                             !Physics.CheckBox(front, bounds.extents * 0.95f, Quaternion.identity, WallMask, QueryTriggerInteraction.Ignore);
+                g.transform.position = clear ? front : feet;
+                g.SnapBodyToTransform();
+            }
+            g.SetExternallyHeld(false);
+            if (!g.Body.isKinematic) g.Body.linearVelocity = Vector3.zero;
         }
 
         private void Flee()
