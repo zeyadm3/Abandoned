@@ -58,6 +58,11 @@ M6 (Docs/progress/M6.md plan): 6.0 session travel HQ<->run -> 6.1 HQ -> 6.2 save
       ("YOU DIED", body stays down); crouch-walking past it should be possible. F1 shows what it heard.
 - [ ] LAN: host on one machine, join with its LAN IP:7777.
 
+## Committing
+Stage `Docs`, `Tools`, `CLAUDE.md`, `Game/Assets/_Project` AND `Game/Assets/DefaultNetworkPrefabs.asset`
+(NGO's prefab list lives outside _Project; M5.2-5.5 missed it) and any `Game/ProjectSettings/*.asset`
+the rebuild changed on purpose (ProjectSettings, EditorBuildSettings). Leave the churn listed at the end.
+
 ## How to verify (batch mode, Unity must be closed)
 ```
 Tools/unity.sh compile      # zero errors, no warnings from Assets/_Project
