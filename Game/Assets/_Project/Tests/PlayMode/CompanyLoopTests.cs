@@ -83,6 +83,9 @@ namespace Abandoned.Tests
             Assert.Greater(haul, 0);
             RunState.Current.RequestDepart();
             yield return WaitUntil(() => RunState.Current.Results != null && company.LastOutcome.Run > 0, RunState.Current.Config.HonkSeconds + 4f, "payday");
+            yield return null;
+            yield return null;
+            yield return MenuTests.Capture(Abandoned.UI.MenuUi.Current, "M8_appraisal_payday");
 
             OutcomeNet o = company.LastOutcome;
             Assert.IsFalse(o.QuotaMet, "one item won't make quota");

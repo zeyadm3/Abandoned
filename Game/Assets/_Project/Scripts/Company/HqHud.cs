@@ -1,28 +1,69 @@
-using Abandoned.Contracts;
+using Abandoned.UI;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Abandoned.Company
 {
-    /// <summary>Placeholder HQ HUD: the company's money (red = debt), level and experience, the missed-quota streak, today's job.</summary>
+    /// <summary>
+    /// The HQ HUD (M8.1b): the company's money (red = debt), level and experience, the missed-quota
+    /// streak, and today's job (or what to do next).
+    /// </summary>
     public class HqHud : MonoBehaviour
     {
-        [SerializeField] private int fontSize = 17;
+        private VisualElement top;
+        private Label money, level, streak, job;
 
-        private GUIStyle style;
+        /// <summary>Tests: the job chip.</summary>
+        public string JobText => job != null ? job.text : null;
 
-        private void OnGUI()
+        private void Update()
         {
             CompanyService company = CompanyService.Current;
-            if (company == null || !company.IsSpawned) return;
-            style ??= new GUIStyle(GUI.skin.label) { fontSize = fontSize, alignment = TextAnchor.UpperCenter, richText = true };
+            bool showing = company != null && company.IsSpawned;
+            if (top == null)
+            {
+                if (!showing || HudLayer.Root == null) return;
+                top = HudLayer.Add(new VisualElement(), "hud-top");
+                money = Chip();
+                level = Chip();
+                streak = Chip();
+                job = Chip();
+            }
+            MenuKit.Show(top, showing);
+            if (!showing) return;
+
             CompanyNetState s = company.State;
             int next = s.Level - 1 < company.Config.LevelXp.Length ? company.Config.LevelXp[s.Level - 1] : s.Xp;
-            string money = s.Money < 0 ? $"<color=#ff7766>DEBT ${-s.Money:N0}</color>" : $"${s.Money:N0}";
-            string streak = s.MissedQuotas > 0
-                ? $"   <color=#ff7766>Missed quotas: {s.MissedQuotas}/{company.Config.MissesToBankruptcy}</color>" : "";
-            string job = company.Selected >= 0 ? $"   Job: {company.Board[company.Selected].ModifierName} at {company.Board[company.Selected].Location} - take the van"
-                : "   No job yet: read the contract board";
-            GUI.Label(new Rect(0f, 8f, Screen.width, 28f), $"{money}   Level {s.Level} ({s.Xp}/{next} xp){streak}{job}", style);
+            Set(money, s.Money < 0 ? $"DEBT ${-s.Money:N0}" : $"${s.Money:N0}");
+            money.EnableInClassList("hud-chip--bad", s.Money < 0);
+            Set(level, $"LEVEL {s.Level}  ({s.Xp}/{next} XP)");
+            MenuKit.Show(streak, s.MissedQuotas > 0);
+            Set(streak, $"MISSED QUOTAS {s.MissedQuotas}/{company.Config.MissesToBankruptcy}");
+            streak.AddToClassList("hud-chip--bad");
+            Set(job, company.Selected >= 0
+                ? $"JOB: {company.Board[company.Selected].ModifierName} AT {company.Board[company.Selected].Location} - TAKE THE VAN"
+                : "NO JOB YET: READ THE CONTRACT BOARD");
+            job.EnableInClassList("hud-chip--good", company.Selected >= 0);
         }
+
+        private Label Chip()
+        {
+            var chip = new Label { pickingMode = PickingMode.Ignore };
+            chip.AddToClassList("hud-chip");
+            top.Add(chip);
+            return chip;
+        }
+
+        private static void Set(Label label, string text)
+        {
+            if (label.text != text) label.text = text;
+        }
+
+        private void OnDisable()
+        {
+            if (top != null) MenuKit.Show(top, false);
+        }
+
+        private void OnDestroy() => HudLayer.Remove(top);
     }
 }
