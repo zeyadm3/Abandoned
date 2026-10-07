@@ -32,8 +32,18 @@ namespace Abandoned.EditorTools
                 EditorUtility.SetDirty(contracts);
             }
 
+            var equipment = EquipmentContentBuilder.CreateMissing();
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(CompanyServicePrefabPath);
-            if (existing != null && existing.GetComponent<CompanyService>() != null) return existing;
+            if (existing != null && existing.GetComponent<CompanyService>() != null)
+            {
+                // Keep the prefab (its network hash); just make sure every reference is wired.
+                var existingService = existing.GetComponent<CompanyService>();
+                Set(existingService, "config", company);
+                Set(existingService, "contracts", contracts);
+                Set(existingService, "equipment", equipment);
+                PrefabUtility.SavePrefabAsset(existing);
+                return existing;
+            }
             var root = new GameObject("CompanyService");
             var no = root.AddComponent<Unity.Netcode.NetworkObject>();
             no.DontDestroyWithOwner = true;
@@ -41,6 +51,7 @@ namespace Abandoned.EditorTools
             var service = root.AddComponent<CompanyService>();
             Set(service, "config", company);
             Set(service, "contracts", contracts);
+            Set(service, "equipment", equipment);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, CompanyServicePrefabPath);
             Object.DestroyImmediate(root);
             NetworkObjectIds.StampPrefab(prefab);

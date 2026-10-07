@@ -182,7 +182,7 @@ namespace Abandoned.Interaction
             get
             {
                 for (int i = 0; i < localPoints.Length; i++)
-                    if (carriers[i] != null) return carriers[i].Config.CanSoloDrag(grabbable.CarryClass);
+                    if (carriers[i] != null) return carriers[i].CanSoloDrag(grabbable.CarryClass);
                 return false;
             }
         }

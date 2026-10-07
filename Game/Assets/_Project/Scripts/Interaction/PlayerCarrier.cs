@@ -48,6 +48,14 @@ namespace Abandoned.Interaction
 
         public bool IsRagdolled => ragdoll != null && ragdoll.IsRagdolled;
 
+        /// <summary>
+        /// May drag Heavy items alone (GDD 7.2: the hand trolley). Equipment sets it; true where there is
+        /// no company (dev levels, tests).
+        /// </summary>
+        public bool SoloDragAllowed { get; set; } = true;
+
+        public bool CanSoloDrag(CarryClass carryClass) => SoloDragAllowed && config.CanSoloDrag(carryClass);
+
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;
 
@@ -218,7 +226,7 @@ namespace Abandoned.Interaction
         {
             // Mirrored holds can arrive out of order (the old item's release after the new pickup).
             if (Held != null && Held != target) ApplyRelease(Vector3.zero);
-            bool drag = target.CarryClass > config.HeaviestSoloClass && config.CanSoloDrag(target.CarryClass);
+            bool drag = target.CarryClass > config.HeaviestSoloClass && CanSoloDrag(target.CarryClass);
             Held = target;
             holdTime = 0f;
             lastDragPosition = target.Body.worldCenterOfMass;

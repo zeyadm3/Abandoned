@@ -58,6 +58,23 @@ namespace Abandoned.EditorTools
 
             var hud = root.AddComponent<VoiceHud>();
             Set(hud, "transmitter", transmitter);
+
+            // Gear (M6.4): hand slots, and a flashlight beam from the eyes that everyone sees.
+            var lamp = new GameObject("Flashlight");
+            lamp.transform.SetParent(cameraRoot, false);
+            lamp.transform.localPosition = new Vector3(0.2f, -0.15f, 0.1f);
+            var light = lamp.AddComponent<Light>();
+            light.type = LightType.Spot;
+            light.range = 22f;
+            light.spotAngle = 55f;
+            light.intensity = 8f;
+            light.shadows = LightShadows.None;
+            light.enabled = false;
+            var equipment = root.AddComponent<Abandoned.Equipment.PlayerEquipment>();
+            Set(equipment, "catalog", UnityEditor.AssetDatabase.LoadAssetAtPath<Abandoned.Equipment.EquipmentCatalog>(EquipmentContentBuilder.CatalogPath));
+            Set(equipment, "inputReader", reader);
+            Set(equipment, "carrier", root.GetComponent<Abandoned.Interaction.PlayerCarrier>());
+            Set(equipment, "flashlight", light);
             return new Result(transmitter, hud);
         }
     }

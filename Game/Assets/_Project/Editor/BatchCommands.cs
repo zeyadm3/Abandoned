@@ -27,6 +27,7 @@ namespace Abandoned.EditorTools
             LootCatalogBuilder.CreateMissing();
             LootPrefabGenerator.GenerateAll();
             StructureContentBuilder.CreateMissing();
+            EquipmentContentBuilder.CreateMissing();
             PlayerPrefabBuilder.Create();
             NetworkContentBuilder.CreateStructureNetPrefab();
             NetworkContentBuilder.CreateRunStatePrefab();

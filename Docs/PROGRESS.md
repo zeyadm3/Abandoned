@@ -11,7 +11,7 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M6.1-6.3): compile clean; verify ALL PASS; EditMode 205/205; PlayMode 212/212;
+- Last verified (M6.4a): compile clean; verify ALL PASS; EditMode 205/205; PlayMode 215/215;
   nettest basic/loot/sharedcarry/collapse/robust/voice/run/travel/company 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
@@ -19,8 +19,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
 
 ## Next
-M6 (Docs/progress/M6.md): 6.0 travel, 6.1 HQ, 6.2 save, 6.3 contracts, 6.5 payday/debt/bankruptcy done
--> 6.4a shop + gear rack + flashlight/radio/trolley -> 6.4b scanner/medkit/planks/noise maker -> 6.7 ghosts
+M6 (Docs/progress/M6.md): 6.0 travel, 6.1 HQ, 6.2 save, 6.3 contracts, 6.5 payday/debt/bankruptcy, 6.4a shop/gear rack/flashlight/radio/trolley done
+-> 6.4b scanner/medkit/planks/noise maker -> 6.7 ghosts
 -> 6.6 Stalker + Collector -> M6 review, tag, builds.
 
 ## Needs you (details per item in Docs/progress/M3.md)

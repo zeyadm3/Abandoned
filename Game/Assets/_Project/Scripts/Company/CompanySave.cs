@@ -66,11 +66,14 @@ namespace Abandoned.Company
         public static CompanySave New(int bankruptciesSoFar = 0)
         {
             var save = new CompanySave { bankruptcies = bankruptciesSoFar };
-            foreach (string id in StarterKit) save.Add(id);
+            foreach ((string id, int count) in StarterKit) save.Add(id, count);
             return save;
         }
 
-        /// <summary>GDD 12 "Basic (starting)": the solo player can move Heavy items from the first run.</summary>
-        public static readonly string[] StarterKit = { "flashlight", "radio", "medkit", "hand_trolley" };
+        /// <summary>
+        /// GDD 12 "Basic (starting)": a flashlight and radio for each of up to 4 players, one medkit, and a
+        /// hand trolley so a solo player can move Heavy items from the first run.
+        /// </summary>
+        public static readonly (string id, int count)[] StarterKit = { ("flashlight", 4), ("radio", 4), ("medkit", 1), ("hand_trolley", 1) };
     }
 }

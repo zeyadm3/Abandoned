@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Abandoned.Contracts;
+using Abandoned.Equipment;
 using Abandoned.Extraction;
 using Abandoned.Networking;
 using Unity.Netcode;
@@ -21,12 +22,33 @@ namespace Abandoned.Company
 
         [SerializeField] private CompanyConfig config;
         [SerializeField] private ContractConfig contracts;
+        [SerializeField] private EquipmentCatalog equipment;
 
         private readonly NetworkVariable<CompanyNetState> state = new();
         private readonly NetworkVariable<int> boardSeed = new();
         private readonly NetworkVariable<int> selected = new(-1);
         private readonly NetworkVariable<Contract> active = new();
         private readonly NetworkVariable<OutcomeNet> lastOutcome = new();
+        private NetworkList<OwnedGear> owned;
+        private readonly NetworkVariable<bool> companyGame = new();
+
+        /// <summary>
+        /// Company rules (gear stock, the trolley for solo drags, radios, gear only at the HQ) apply to a game
+        /// that started at the HQ; a level hosted directly (dev, tests) plays without them.
+        /// </summary>
+        public static bool RulesApply => Current != null && Current.IsSpawned && Current.companyGame.Value;
+
+        private void Awake() => owned = new NetworkList<OwnedGear>();
+
+        public EquipmentCatalog Equipment => equipment;
+
+        /// <summary>How many of a catalog item the company owns (every machine).</summary>
+        public int OwnedCount(int index)
+        {
+            if (owned == null) return 0;
+            foreach (OwnedGear g in owned) if (g.Index == index) return g.Count;
+            return 0;
+        }
 
         private CompanySave save;
         private SaveStore store;
@@ -70,7 +92,9 @@ namespace Abandoned.Company
             store = PersistsToDisk ? new SaveStore(SaveFolderOverride) : null;
             save = store != null ? store.Load() : CompanySave.New();
             state.Value = CompanyNetState.Of(save);
+            PublishGear();
             boardSeed.Value = NewSeed();
+            companyGame.Value = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == HomeLevel;
             // Players join only at the HQ, between runs (GDD 11, decision log).
             // Only for a game that started at the HQ; a session hosted straight in a level (dev, tests) stays open.
             NetworkBootstrap.JoinBlocker = () => SessionTravel.Current != null && SessionTravel.Current.StartLevel == HomeLevel
@@ -168,8 +192,7 @@ namespace Abandoned.Company
         {
             if (!IsServer || !active.Value.IsValid) return;
             RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, active.Value.PayoutBonus);
-            store?.Save(save);
-            state.Value = CompanyNetState.Of(save);
+            Saved();
             lastOutcome.Value = OutcomeNet.Of(o, save.runs + save.bankruptcies * 1000);
             Debug.Log($"[Company] Run {save.runs}: payout ${o.Payout:N0}, penalty ${o.Penalty:N0}, +{o.Xp} xp, money ${save.money:N0}" +
                       (o.Bankrupt ? " - BANKRUPT, a new company starts" : ""));
@@ -179,9 +202,52 @@ namespace Abandoned.Company
         public bool TrySpend(string itemId, int price)
         {
             if (!IsServer || !CompanyLedger.TryBuy(save, itemId, price)) return false;
+            Saved();
+            return true;
+        }
+
+        /// <summary>Anyone at the shop: buy one of a catalog item (the host checks level and money).</summary>
+        public void RequestBuy(int index)
+        {
+            if (IsServer) Buy(index);
+            else BuyRpc(index);
+        }
+
+        [Rpc(SendTo.Server)]
+        private void BuyRpc(int index) => Buy(index);
+
+        private void Buy(int index)
+        {
+            EquipmentDefinition d = equipment != null ? equipment.At(index) : null;
+            if (d == null || d.UnlockLevel > save.level) return;
+            if (TrySpend(d.Id, d.Price)) Debug.Log($"[Company] Bought {d.DisplayName} for ${d.Price:N0}; ${save.money:N0} left.");
+        }
+
+        /// <summary>Host: a consumable was used up (medkit, planks, noise maker).</summary>
+        public bool Consume(int index)
+        {
+            EquipmentDefinition d = equipment != null ? equipment.At(index) : null;
+            if (!IsServer || d == null || !save.Remove(d.Id)) return false;
+            Saved();
+            return true;
+        }
+
+        private void Saved()
+        {
             store?.Save(save);
             state.Value = CompanyNetState.Of(save);
-            return true;
+            PublishGear();
+        }
+
+        private void PublishGear()
+        {
+            if (equipment == null) return;
+            owned.Clear();
+            for (int i = 0; i < equipment.Items.Count; i++)
+            {
+                int count = save.CountOf(equipment.Items[i].Id);
+                if (count > 0) owned.Add(new OwnedGear { Index = (byte)i, Count = (short)count });
+            }
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

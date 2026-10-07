@@ -31,7 +31,8 @@ namespace Abandoned.Tests
             CompanySave save = CompanySave.New();
             Assert.AreEqual(0, save.money);
             Assert.AreEqual(1, save.level);
-            foreach (string id in CompanySave.StarterKit) Assert.AreEqual(1, save.CountOf(id), id);
+            foreach ((string id, int count) in CompanySave.StarterKit) Assert.AreEqual(count, save.CountOf(id), id);
+            Assert.AreEqual(4, save.CountOf("flashlight"), "one each for a full crew");
         }
 
         [Test]
@@ -89,7 +90,7 @@ namespace Abandoned.Tests
             Assert.IsTrue(third.Bankrupt);
             Assert.AreEqual(0, save.money, "a new company");
             Assert.AreEqual(0, save.CountOf("rope"));
-            Assert.AreEqual(1, save.CountOf("flashlight"), "with the starter kit");
+            Assert.AreEqual(4, save.CountOf("flashlight"), "with the starter kit");
             Assert.AreEqual(1, save.bankruptcies);
         }
 

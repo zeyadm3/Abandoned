@@ -64,6 +64,10 @@ namespace Abandoned.EditorTools
             GameObject van = Box("Van", root, new Vector3(6f, 1.25f, 9f), new Vector3(2.4f, 2.4f, 5f), GetMaterial("Greybox_Truck", new Color(0.7f, 0.22f, 0.2f)));
             van.AddComponent<HqVan>();
             Box("ShopCounter", root, new Vector3(18f, 0.55f, 13.5f), new Vector3(3f, 1.1f, 0.8f), GetMaterial("Greybox_Prop", new Color(0.55f, 0.42f, 0.3f)));
+            Box("ShopTerminal", root, new Vector3(18f, 1.35f, 13.6f), new Vector3(0.8f, 0.5f, 0.3f), GetMaterial("Greybox_Terminal", new Color(0.15f, 0.35f, 0.45f)))
+                .AddComponent<Abandoned.Equipment.ShopTerminal>();
+            Box("GearRack", root, new Vector3(0.5f, 1.2f, 12f), new Vector3(0.6f, 2.4f, 3f), GetMaterial("Greybox_Rack", new Color(0.3f, 0.32f, 0.35f)))
+                .AddComponent<Abandoned.Equipment.GearRack>();
 
             Transform spawns = Group("Spawns", root);
             for (int i = 0; i < 4; i++)
@@ -86,6 +90,7 @@ namespace Abandoned.EditorTools
             var ui = new GameObject("CompanyUI");
             ui.AddComponent<HqHud>();
             ui.AddComponent<ContractBoardScreen>();
+            ui.AddComponent<Abandoned.Equipment.GearScreens>();
 
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(0.35f, 0.35f, 0.37f);
