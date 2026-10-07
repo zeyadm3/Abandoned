@@ -1,0 +1,162 @@
+/* ABANDONED menus (M7.4): dark panels, hazard-yellow accents, Kenney Future (set from code). */
+
+.menu-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.backdrop {
+    flex-grow: 1;
+    background-color: rgba(8, 9, 10, 0.55);
+    justify-content: center;
+    padding-left: 120px;
+}
+
+.backdrop--dim { background-color: rgba(8, 9, 10, 0.78); }
+
+.panel {
+    background-color: rgba(20, 22, 24, 0.95);
+    border-left-width: 6px;
+    border-left-color: rgb(232, 184, 40);
+    padding: 28px 36px 28px 36px;
+    width: 640px;
+    max-height: 92%;
+}
+
+.panel--wide { width: 900px; }
+
+.title {
+    font-size: 84px;
+    color: rgb(236, 232, 220);
+    letter-spacing: 6px;
+    margin-bottom: 0;
+}
+
+.subtitle {
+    font-size: 20px;
+    color: rgb(232, 184, 40);
+    margin-bottom: 22px;
+}
+
+.heading {
+    font-size: 30px;
+    color: rgb(236, 232, 220);
+    margin-top: 6px;
+    margin-bottom: 12px;
+}
+
+.section {
+    font-size: 18px;
+    color: rgb(232, 184, 40);
+    margin-top: 16px;
+    margin-bottom: 6px;
+}
+
+.text {
+    font-size: 18px;
+    color: rgb(190, 188, 180);
+    white-space: normal;
+    margin-bottom: 4px;
+}
+
+.text--error { color: rgb(255, 110, 95); }
+.text--small { font-size: 14px; }
+
+.menu-button {
+    font-size: 24px;
+    height: 52px;
+    margin: 5px 0 5px 0;
+    padding-left: 18px;
+    background-color: rgb(40, 43, 46);
+    color: rgb(236, 232, 220);
+    border-width: 0;
+    border-radius: 2px;
+    -unity-text-align: middle-left;
+}
+
+.menu-button:hover, .menu-button:focus {
+    background-color: rgb(232, 184, 40);
+    color: rgb(18, 18, 18);
+}
+
+.menu-button:active { background-color: rgb(255, 214, 90); }
+.menu-button:disabled { opacity: 0.4; }
+
+.menu-button--small {
+    font-size: 18px;
+    height: 38px;
+    margin-left: 6px;
+    -unity-text-align: middle-center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.menu-button--on {
+    background-color: rgb(232, 184, 40);
+    color: rgb(18, 18, 18);
+}
+
+.row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.grow { flex-grow: 1; }
+
+.field {
+    font-size: 20px;
+    height: 40px;
+    margin: 4px 0 4px 0;
+}
+
+.field > .unity-text-field__input, .field > .unity-base-text-field__input {
+    background-color: rgb(12, 13, 14);
+    color: rgb(236, 232, 220);
+    border-color: rgb(70, 72, 74);
+}
+
+.setting {
+    flex-direction: row;
+    align-items: center;
+    min-height: 40px;
+}
+
+.setting__label {
+    width: 300px;
+    font-size: 18px;
+    color: rgb(210, 206, 196);
+}
+
+.setting__control { flex-grow: 1; }
+
+.setting__value {
+    width: 70px;
+    font-size: 16px;
+    color: rgb(232, 184, 40);
+    -unity-text-align: middle-right;
+}
+
+.footer {
+    position: absolute;
+    right: 24px;
+    bottom: 16px;
+    font-size: 14px;
+    color: rgba(236, 232, 220, 0.55);
+}
+
+.scroll { flex-shrink: 1; }
+
+.subtitle-line {
+    font-size: 20px;
+    color: rgb(240, 236, 226);
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 4px 12px 4px 12px;
+    margin-top: 4px;
+    -unity-text-align: middle-center;
+}
+
+.subtitles {
+    position: absolute;
+    left: 0; right: 0; bottom: 110px;
+    align-items: center;
+}

@@ -114,9 +114,16 @@ namespace Abandoned.EditorTools
             if (lobby == null) { errors.Add($"{path}: the NetworkBootstrap object needs a SteamLobby (rebuild)."); return; }
             if (new SerializedObject(lobby).FindProperty("bootstrap").objectReferenceValue != bootstrap)
                 errors.Add($"{path}: SteamLobby isn't wired to the NetworkBootstrap.");
-            var panel = bootstrap.GetComponent<NetworkPanel>();
-            if (panel != null && new SerializedObject(panel).FindProperty("lobby").objectReferenceValue != lobby)
-                errors.Add($"{path}: NetworkPanel isn't wired to the SteamLobby (no invite button / member list).");
+            var menu = bootstrap.GetComponent<Abandoned.UI.MenuUi>();
+            if (menu == null) { errors.Add($"{path}: the NetworkBootstrap object needs the menus (MenuUi; rebuild)."); return; }
+            var wiring = new SerializedObject(menu);
+            if (wiring.FindProperty("bootstrap").objectReferenceValue != bootstrap)
+                errors.Add($"{path}: MenuUi isn't wired to the NetworkBootstrap (no play/join buttons).");
+            if (wiring.FindProperty("lobby").objectReferenceValue != lobby)
+                errors.Add($"{path}: MenuUi isn't wired to the SteamLobby (no invite button / member list).");
+            var document = wiring.FindProperty("document").objectReferenceValue as UnityEngine.UIElements.UIDocument;
+            if (document == null || document.panelSettings == null)
+                errors.Add($"{path}: MenuUi's UIDocument has no panel settings (menus wouldn't draw).");
         }
 
         /// <summary>A session scene with a structure must spawn its sync, or clients would never see damage.</summary>

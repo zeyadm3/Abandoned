@@ -35,6 +35,7 @@ namespace Abandoned.EditorTools
             NetworkContentBuilder.CreateSessionTravelPrefab();
             CompanyContentBuilder.CreateMissing();
             SoundBankBuilder.CreateMissing();
+            UiContentBuilder.CreateMissing();
             ThreatContentBuilder.CreateBlindOne();
             ThreatContentBuilder.CreateOthers();
             NetworkContentBuilder.RegisterNetworkPrefabs();

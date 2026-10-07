@@ -12,6 +12,18 @@ namespace Abandoned.Core
 
         public static bool UiActive => Claims.Count > 0;
 
+        private static bool captureRequested;
+
+        /// <summary>A screen closed back into the game (Resume): the player's look takes the mouse again.</summary>
+        public static void RequestCapture() => captureRequested = true;
+
+        public static bool ConsumeCaptureRequest()
+        {
+            bool requested = captureRequested;
+            captureRequested = false;
+            return requested;
+        }
+
         public static void Set(object owner, bool claimed)
         {
             if (claimed) Claims.Add(owner);
@@ -19,6 +31,10 @@ namespace Abandoned.Core
         }
 
         [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => Claims.Clear();
+        private static void ResetStatics()
+        {
+            Claims.Clear();
+            captureRequested = false;
+        }
     }
 }

@@ -51,14 +51,16 @@ namespace Abandoned.EditorTools
             SerializedWiring.Set(network.AddComponent<ReturnToMenu>(), "bootstrap", bootstrap);
             var lobby = network.AddComponent<SteamLobby>();
             SerializedWiring.Set(lobby, "bootstrap", bootstrap);
-            var panel = network.AddComponent<NetworkPanel>();
-            SerializedWiring.Set(panel, "bootstrap", bootstrap);
-            SerializedWiring.Set(panel, "lobby", lobby);
+            // M7.4: the menus (main, pause, settings, credits) on one UI Toolkit document.
+            var document = network.AddComponent<UnityEngine.UIElements.UIDocument>();
+            document.panelSettings = AssetDatabase.LoadAssetAtPath<UnityEngine.UIElements.PanelSettings>(UiContentBuilder.PanelPath);
+            network.AddComponent<Abandoned.UI.MenuUi>().EditorSetup(document, bootstrap, lobby,
+                AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath), AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.TitleFontPath),
+                AssetDatabase.LoadAssetAtPath<TextAsset>(UiContentBuilder.CreditsPath));
             var debugView = network.AddComponent<NetworkDebugView>();
             SerializedWiring.Set(debugView, "bootstrap", bootstrap);
             SerializedWiring.Set(debugView, "lobby", lobby);
             network.AddComponent<NetworkLootDebugView>();
-            network.AddComponent<Abandoned.Voice.VoiceSettingsPanel>();
             EditorUtility.SetDirty(bootstrap);
             return bootstrap;
         }

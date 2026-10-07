@@ -102,7 +102,7 @@ namespace Abandoned.EditorTools
                 light.transform.position = at;
                 light.type = LightType.Point;
                 light.range = 12f;
-                light.intensity = 5f;
+                light.intensity = 7f;
                 light.shadows = LightShadows.None;
             }
 

@@ -61,7 +61,7 @@ namespace Abandoned.Player
                 return;
             }
             if (input.PausePressed) SetCaptured(false);
-            else if (!CursorCaptured && input.UsePressed) SetCaptured(true);
+            else if (!CursorCaptured && (input.UsePressed || CursorOwner.ConsumeCaptureRequest())) SetCaptured(true);
 
             if (CursorCaptured) ApplyLook(input.Look);
         }

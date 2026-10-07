@@ -38,7 +38,7 @@ namespace Abandoned.EditorTools
 
         /// <summary>The company HQ: warmer and cleaner (a safe place), light haze.</summary>
         public static readonly Mood Hq = new(
-            sky: new Color(0.34f, 0.33f, 0.32f), equator: new Color(0.27f, 0.25f, 0.23f), ground: new Color(0.12f, 0.11f, 0.1f),
+            sky: new Color(0.46f, 0.44f, 0.42f), equator: new Color(0.36f, 0.33f, 0.3f), ground: new Color(0.16f, 0.15f, 0.13f),
             fog: new Color(0.3f, 0.28f, 0.26f), fogDensity: 0.01f, bloom: 0.5f, vignette: 0.25f, grain: 0.15f,
             saturation: -5f, contrast: 8f, sunColor: new Color(1f, 0.92f, 0.8f), sunIntensity: 1.4f, sunEuler: new Vector3(50f, -30f, 0f));
 

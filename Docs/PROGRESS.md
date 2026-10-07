@@ -11,8 +11,8 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M7.3): compile clean; verify ALL PASS; EditMode 210/210; PlayMode 228/228;
-  nettest loot/run 4/4 (M7.2 run/company 4/4; M6 review: all nine nettests 4/4).
+- Last verified (M7.4a): compile clean; verify ALL PASS; EditMode 210/210; PlayMode 229/229;
+  nettest robust/basic 4/4 (M7.3 loot/run; M7.2 run/company; M6 review: all nine 4/4).
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
@@ -23,17 +23,19 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M7 in progress** (version 0.7.0; Docs/progress/M7.md): 7.1 art pass done (Kenney CC0 loot models,
   mall set dressing, vehicles; credits in Docs/ASSET_CREDITS.md). 7.2 lighting done (realtime fixtures that
   fall with their ceiling and go dark with the power, fog, post-processing, dust, skylight shaft,
-  flashlight shadows). 7.3 audio done (Kenney CC0 sound bank, pooled playback, synthesised ambience).
+  flashlight shadows). 7.3 audio done (Kenney CC0 sound bank, pooled playback, synthesised ambience). 7.4a menus done (UI Toolkit:
+  main menu, pause menu with crew/invites, sound+voice settings, credits).
 
 ## Next
--> M7.4 menus: main menu, lobby screen, settings (GDD section 20; audio levels are in AudioLevels),
-pause menu; UI sounds are in the SoundBank. Then 7.5 cosmetics, 7.6 performance.
+-> M7.4b settings (GDD 20): mouse sensitivity, FOV, camera shake / head bob toggles, subtitles for
+structure + threat sounds, colourblind-safe scanner colours; then 7.4c key rebinding; then 7.5
+cosmetics, 7.6 performance.
 
 ## Needs you (details per item in Docs/progress/M3.md)
-- [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->
-      Steam -> "Host (friends-only Steam lobby)" -> "Invite friends" opens the overlay; invite the Windows
-      friend. They accept (game running: joins at once; game closed: Steam launches it with
-      +connect_lobby and it joins). Both panels list both names; F1 shows the lobby id. Also try their
+- [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Main menu ->
+      Steam -> "Host a Steam lobby"; in the HQ press Esc -> "Invite friends" opens the overlay; invite the
+      Windows friend. They accept (game running: joins at once; game closed: Steam launches it with
+      +connect_lobby and it joins). Both Esc menus list both names under CREW; F1 shows the lobby id. Also try their
       "Join game" from your Steam friends list, a different build (clear version message), and a 5th
       person (full). With Steam quit, the menu says "Steam isn't running".
 - [ ] Multiplayer Play Mode (host + 1–3 virtual players, Join 127.0.0.1:7777): spawn points, smooth
@@ -48,12 +50,12 @@ pause menu; UI sounds are in the SoundBank. Then 7.5 cosmetics, 7.6 performance.
       the server rack; every screen shows the same cracks/sag, then it collapses for everyone at once and
       the players on it fall; F1 shows the same stage/health on host and clients. Re-roll (F2) restores it everywhere.
 - [ ] Leaving in MPPM: a virtual player picks up the laptop and closes/stops; the host sees it drop where
-      they stood. Then the host presses Disconnect (Esc): every virtual player's scene reloads and the
-      panel says "The host left the game." with an OK button, and nobody auto-hosts.
+      they stood. Then the host picks Esc -> "End game for everyone": every virtual player lands on the
+      main menu saying "The host left the game." with an OK button, and nobody auto-hosts.
 - [ ] Voice (M4.1) in MPPM or LAN (Direct IP uses the raw microphone): allow the mic when macOS asks.
       Hold V and talk: the other player hears you from your position, quieter with distance and silent
-      past ~25 m; ((•)) shows over your head on their screen, "● TALKING" on yours. Esc panel: Open mic,
-      volume slider, mute. Judge delay (~120 ms buffer) and quality (16 kHz mu-law). Over Steam (two
+      past ~25 m; ((•)) shows over your head on their screen, "● TALKING" on yours. Esc -> Settings: Open mic,
+      voices volume, mute. Judge delay (~120 ms buffer) and quality (16 kHz mu-law). Over Steam (two
       machines) the same with Steam voice. M4.2: talk from the next room (muffled + quieter); hold R
       anywhere in the building: the other player hears you band-limited with static wherever they are.
 - [ ] Mall run (M5.1-5.3): Mall scene (Build profile: open Scenes/Mall, Play). Walk the mall: entrance,
