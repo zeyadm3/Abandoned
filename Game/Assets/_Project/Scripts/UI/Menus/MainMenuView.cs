@@ -1,90 +1,105 @@
 using Abandoned.Audio;
 using Abandoned.Core;
 using Abandoned.Networking;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The title screen over the HQ while offline: play solo or host (Direct IP or a friends-only Steam
-    /// lobby), join by address or SteamID64, settings, credits, quit. Says why the last game ended.
+    /// The title screen over the HQ garage while offline (UI step 6, R.E.P.O.-style): the stencilled logo and
+    /// a short list of big words (Play, Settings, Achievements, Credits, Quit) on a shaded left side, the
+    /// garage drifting slowly behind, a company memo and the version at the bottom. Says why the last game
+    /// ended. Play opens <see cref="PlayView"/> (solo, host, join).
     /// </summary>
     public class MainMenuView
     {
+        private static readonly string[] Memos =
+        {
+            "COMPANY MEMO: Early Access. Report problems from the pause menu; the boss reads them. Eventually.",
+            "COMPANY MEMO: Hard hats are mandatory. They do nothing against a floor, but they're mandatory.",
+            "COMPANY MEMO: The truck leaves when it leaves. Be in it.",
+            "COMPANY MEMO: If it's worth money, it's ours. If it's on fire, it's yours.",
+            "COMPANY MEMO: Press the scan key in the building. Prices go up when you know them.",
+        };
+
         private readonly MenuUi menu;
-        private readonly Label status, error, notice, addressLabel;
+        private readonly Label notice, memo;
         private readonly VisualElement noticeBox;
-        private readonly Button host, directIp, steam;
-        private readonly TextField address;
+        private Camera driftCamera;
+        private Quaternion driftBase;
+        private int memoShown = -1;
 
         public VisualElement Root { get; }
 
         public MainMenuView(MenuUi menu)
         {
             this.menu = menu;
-            NetworkBootstrap b = menu.Bootstrap;
             Root = new VisualElement();
-            Root.AddToClassList("backdrop");
-            VisualElement panel = MenuKit.Panel(Root);
+            Root.AddToClassList("main");
+            var shade = new VisualElement { pickingMode = PickingMode.Ignore };
+            shade.AddToClassList("main__shade");
+            Root.Add(shade);
+            var column = new VisualElement();
+            column.AddToClassList("main__column");
+            Root.Add(column);
 
-            Label title = MenuKit.Text(panel, "ABANDONED", "title");
+            Label title = MenuKit.Text(column, "ABANDONED", "title");
+            title.AddToClassList("main__logo");
             if (menu.TitleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(menu.TitleFont);
-            MenuKit.Text(panel, Demo.IsDemo ? $"DEMO - {Demo.MaxJobs} jobs at the abandoned mall. Salvage crew wanted." : "Salvage crew wanted. Buildings unstable.", "subtitle");
+            MenuKit.Text(column, Demo.IsDemo ? $"DEMO - {Demo.MaxJobs} jobs at the abandoned mall" : "SALVAGE CREW WANTED. BUILDINGS UNSTABLE.", "subtitle");
+            UiKit.Hazard(column).AddToClassList("main__tape");
 
             noticeBox = new VisualElement();
-            panel.Add(noticeBox);
+            noticeBox.AddToClassList("main__notice");
+            column.Add(noticeBox);
             notice = MenuKit.Text(noticeBox, "", "text");
             notice.AddToClassList("text--error");
             MenuKit.Button(noticeBox, "OK", SessionEndNotice.Clear, SoundId.UiConfirm, small: true);
 
-            host = MenuKit.Button(panel, "Play", () => b.StartHost(), SoundId.UiConfirm);
+            MenuKit.Button(column, "Play", () => menu.Push(MenuScreen.Play), SoundId.UiConfirm).AddToClassList("main__button");
+            MenuKit.Button(column, "Settings", () => menu.Push(MenuScreen.Settings)).AddToClassList("main__button");
+            MenuKit.Button(column, "Achievements", () => menu.Push(MenuScreen.Achievements)).AddToClassList("main__button");
+            MenuKit.Button(column, "Credits", () => menu.Push(MenuScreen.Credits)).AddToClassList("main__button");
+            MenuKit.Button(column, "Quit", menu.Quit, SoundId.UiBack).AddToClassList("main__button");
 
-            VisualElement transport = MenuKit.Row(panel);
-            MenuKit.Text(transport, "Play over", "text").AddToClassList("grow");
-            directIp = MenuKit.Button(transport, "Direct IP", () => b.SelectTransport(TransportMode.UnityTransport), small: true);
-            steam = MenuKit.Button(transport, "Steam", () => b.SelectTransport(TransportMode.Steam), small: true);
-
-            addressLabel = MenuKit.Text(panel, "", "section");
-            VisualElement join = MenuKit.Row(panel);
-            address = new TextField { value = b.Config != null ? $"{b.Config.DefaultJoinAddress}:{b.Config.Port}" : "" };
-            address.AddToClassList("field");
-            address.AddToClassList("grow");
-            join.Add(address);
-            MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, small: true);
-
-            MenuKit.Button(panel, "Settings", () => menu.Push(MenuScreen.Settings));
-            MenuKit.Button(panel, "Achievements", () => menu.Push(MenuScreen.Achievements));
-            MenuKit.Button(panel, "Credits", () => menu.Push(MenuScreen.Credits));
-            // Early Access (M10.11): the community, feedback, and the log a bug report needs.
-            VisualElement links = MenuKit.Row(panel);
+            VisualElement links = MenuKit.Row(Root);
+            links.AddToClassList("main__links");
             if (Launch.HasDiscord) MenuKit.Button(links, "Discord", Launch.OpenDiscord, small: true);
             if (Launch.HasFeedback) MenuKit.Button(links, "Feedback", Launch.OpenFeedback, small: true);
             MenuKit.Button(links, "Open logs", Launch.OpenLogFolder, small: true);
-            MenuKit.Button(panel, "Quit", menu.Quit, SoundId.UiBack);
 
-            status = MenuKit.Text(panel, "", "text");
-            status.AddToClassList("text--small");
-            error = MenuKit.Text(panel, "", "text");
-            error.AddToClassList("text--error");
+            memo = MenuKit.Text(Root, "", "main__memo");
             MenuKit.Text(Root, $"v{VersionInfo.Display}", "footer");
         }
 
-        /// <summary>Every frame while showing: status, errors and the transport's wording.</summary>
+        /// <summary>Every frame while showing: the last game's notice, the memo, the drifting garage.</summary>
         public void Refresh()
         {
-            NetworkBootstrap b = menu.Bootstrap;
-            bool overSteam = b.Transport == TransportMode.Steam;
-            host.text = overSteam ? "Host a Steam lobby" : "Play (solo or host)";
-            directIp.EnableInClassList("menu-button--on", !overSteam);
-            steam.EnableInClassList("menu-button--on", overSteam);
-            addressLabel.text = overSteam ? "Join a friend by their SteamID64 (or accept their Steam invite)" : "Join a friend at address:port";
-            status.text = b.Status;
-
             string message = SessionEndNotice.Message;
             MenuKit.Show(noticeBox, message.Length > 0);
-            notice.text = message;
-            SteamLobbyFlow flow = menu.Lobby != null ? menu.Lobby.Flow : null;
-            error.text = !string.IsNullOrEmpty(b.LastError) ? b.LastError : flow != null ? flow.LastError : "";
+            if (notice.text != message) notice.text = message;
+            int m = (int)(Time.unscaledTime / 9f) % Memos.Length;
+            if (m != memoShown)
+            {
+                memoShown = m;
+                memo.text = Memos[m];
+            }
+            Drift();
+        }
+
+        // A slow look around the garage behind the menu (the HQ's scene camera; nobody is playing yet).
+        private void Drift()
+        {
+            Camera cam = Camera.main;
+            if (cam == null || menu.Bootstrap.IsRunning) { driftCamera = null; return; }
+            if (cam != driftCamera)
+            {
+                driftCamera = cam;
+                driftBase = cam.transform.rotation;
+            }
+            float t = Time.unscaledTime;
+            cam.transform.rotation = driftBase * Quaternion.Euler(Mathf.Sin(t * 0.11f) * 1.5f, Mathf.Sin(t * 0.07f) * 4f, 0f);
         }
     }
 }

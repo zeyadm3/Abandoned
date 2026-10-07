@@ -28,6 +28,7 @@ namespace Abandoned.UI
         private readonly Stack<MenuScreen> pushed = new();
         private readonly Dictionary<MenuScreen, VisualElement> views = new();
         private MainMenuView main;
+        private PlayView play;
         private PauseMenuView pause;
         private SubtitleView subtitles;
         private VisualElement hud;
@@ -82,6 +83,8 @@ namespace Abandoned.UI
             pause = new PauseMenuView(this);
             views[MenuScreen.Main] = main.Root;
             views[MenuScreen.Pause] = pause.Root;
+            play = new PlayView(this);
+            views[MenuScreen.Play] = play.Root;
             views[MenuScreen.Settings] = new SettingsView(this).Root;
             views[MenuScreen.Controls] = new ControlsView(this).Root;
             views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
@@ -135,6 +138,7 @@ namespace Abandoned.UI
             }
 
             if (top == MenuScreen.Main) main.Refresh();
+            else if (top == MenuScreen.Play) play.Refresh();
             else if (top == MenuScreen.Pause) pause.Refresh();
             if (Keyboard.current != null && Keyboard.current.f10Key.wasPressedThisFrame) ClipMode = !ClipMode;
             // M10.11: a free camera for trailer shots, only in a game (and gone when it ends).

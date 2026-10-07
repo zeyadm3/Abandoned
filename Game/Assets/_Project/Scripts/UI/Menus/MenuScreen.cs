@@ -11,6 +11,8 @@ namespace Abandoned.UI
         HowToPlay,
         DemoEnd,
         Achievements,
-        Credits
+        Credits,
+        // UI step 6
+        Play,
     }
 }
