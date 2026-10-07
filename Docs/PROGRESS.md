@@ -11,17 +11,19 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 - **M3 done** (tag `milestone-3`; review fixed, see Docs/progress/M3.md). 3.1–3.5 (+fixes) done: Facepunch fork + SteamBootstrap, NetworkBootstrap + networked player,
   builds + multi-process nettest, networked loot, shared carrying. M3.6 networked structure done (`nettest collapse`). M3.7 Steam lobby/invites done (fake-Steam tested; real Steam needs you). M3.8 robustness done (`nettest robust`).
 - Company "Zeyad Games", bundle id `com.zeyadgames.abandoned` (user decision 2026-10-06).
-- Last verified (M6.6): compile clean; verify ALL PASS; EditMode 206/206; PlayMode 222/222;
+- Last verified (M6 review): compile clean; verify ALL PASS; EditMode 208/208; PlayMode 223/223;
   nettest basic/loot/sharedcarry/collapse/robust/voice/run/travel/company 4/4.
 - Steam safety: Steam never initialises in batch mode or test runs unless Unity gets `-steam`. Never
   launch Steam from automation. `spike/facepunch-transport` is local only; never merge it.
 
 - **M4 done** (tag `milestone-4`, review fixed): 4.1 proximity voice, 4.2 wall muffling + radio, 4.3 voice as monster noise (`nettest voice`; see Docs/progress/M4.md).
+- **M5 done** (tag `milestone-5`, review fixed): greybox mall, seeded loot, runs + truck + appraisal, Blind One, danger (Docs/progress/M5.md).
+- **M6 done** (tag `milestone-6`, review fixed): persistent session + travel, HQ, save, contracts, payday/debt/bankruptcy, shop + gear, Stalker + Collector, ghosts (Docs/progress/M6.md).
 
 ## Next
-M6 (Docs/progress/M6.md): 6.0 travel, 6.1 HQ, 6.2 save, 6.3 contracts, 6.5 payday/debt/bankruptcy, 6.4 shop + all gear (flashlight, radio, trolley, medkit, planks, noise maker, scanner) done
-6.7 ghosts, 6.6 Stalker + Collector done
--> M6 review, tag `milestone-6`, builds -> M7.
+M6 done (tag `milestone-6`, review fixed; Docs/progress/M6.md).
+-> M7 vertical slice: 7.1 art pass (Kenney CC0 furniture/car kits, credits in Docs/ASSET_CREDITS.md),
+7.2 lighting, 7.3 audio, 7.4 menus (main/lobby/settings/pause), 7.5 cosmetics, 7.6 performance.
 
 ## Needs you (details per item in Docs/progress/M3.md)
 - [ ] Real Steam test (App ID 480, both machines, Steam running): F1 shows "Steam: on <name>". Esc ->

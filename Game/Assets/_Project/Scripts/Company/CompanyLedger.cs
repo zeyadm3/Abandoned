@@ -31,6 +31,20 @@ namespace Abandoned.Company
             return outcome;
         }
 
+        /// <summary>
+        /// A job left unfinished (the host quit mid-run) counts as an empty haul, so quitting can't dodge
+        /// a missed quota. Returns the outcome, or null when nothing was pending.
+        /// </summary>
+        public static RunOutcome? SettleAbandoned(CompanySave save, CompanyConfig c)
+        {
+            if (save.pendingQuota <= 0) return null;
+            int quota = save.pendingQuota;
+            float bonus = save.pendingBonus;
+            save.pendingQuota = 0;
+            save.pendingBonus = 0f;
+            return Apply(save, c, 0, quota, bonus);
+        }
+
         /// <summary>GDD 13: start a new company; only the count of past failures (and cosmetics, later) survive.</summary>
         public static void GoBankrupt(CompanySave save)
         {

@@ -24,6 +24,9 @@ namespace Abandoned.Company
         public int bestHaul;
         public List<OwnedItem> equipment = new();
         public List<string> unlocks = new();
+        // A job taken but not yet settled (quota > 0): the host quit or crashed mid-run.
+        public int pendingQuota;
+        public float pendingBonus;
 
         [Serializable]
         public struct OwnedItem

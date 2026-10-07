@@ -7,7 +7,8 @@ namespace Abandoned.Company
     /// <summary>
     /// Reads and writes the company file on the host's machine (Application.persistentDataPath, fixed
     /// by company name + bundle id). Writes are atomic (temp file + replace) so a crash mid-save never
-    /// leaves half a company; an unreadable file is kept as .corrupt and a new company starts.
+    /// leaves half a company; an unreadable file is kept as .corrupt and a new company starts. A file it
+    /// can't safely replace (locked, newer build) is never overwritten.
     /// </summary>
     public sealed class SaveStore
     {
@@ -23,32 +24,76 @@ namespace Abandoned.Company
         public string Path => path;
         public bool Exists => File.Exists(path);
 
+        /// <summary>
+        /// False after a load that couldn't safely be replaced: the file was locked or unreadable for a
+        /// reason other than bad contents, it came from a newer build, or its .corrupt backup failed.
+        /// The company then lives in memory only, and the file on disk is left alone.
+        /// </summary>
+        public bool Writable { get; private set; } = true;
+
         public CompanySave Load()
         {
+            Writable = true;
             if (!File.Exists(path)) return CompanySave.New();
+            string text;
             try
             {
-                var save = JsonUtility.FromJson<CompanySave>(File.ReadAllText(path));
-                if (save == null || save.version <= 0 || save.version > CompanySave.CurrentVersion) throw new InvalidDataException($"version {save?.version}");
-                if (save.level < 1) save.level = 1;
-                return save;
+                text = File.ReadAllText(path);
             }
-            catch (Exception e)
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
             {
-                Debug.LogWarning($"[Save] {path} is unreadable ({e.Message}); keeping it as .corrupt and starting a new company.");
-                try { File.Copy(path, path + ".corrupt", true); } catch { /* best effort */ }
+                // Locked for a moment (antivirus, indexer, cloud sync): not corrupt, and not ours to overwrite.
+                return ReadOnly($"couldn't be read ({e.Message})");
+            }
+
+            CompanySave save = null;
+            try { save = JsonUtility.FromJson<CompanySave>(text); }
+            catch (Exception) { /* bad JSON: handled as corrupt below */ }
+            if (save != null && save.version > CompanySave.CurrentVersion)
+                return ReadOnly($"was written by a newer build (version {save.version})");
+            if (save == null || save.version <= 0)
+            {
+                try
+                {
+                    File.Copy(path, path + ".corrupt", true);
+                    Debug.LogWarning($"[Save] {path} is unreadable; kept it as .corrupt and started a new company.");
+                }
+                catch (Exception e)
+                {
+                    return ReadOnly($"is unreadable and couldn't be backed up ({e.Message})");
+                }
                 return CompanySave.New();
             }
+            if (save.level < 1) save.level = 1;
+            return save;
         }
 
-        public void Save(CompanySave save)
+        private CompanySave ReadOnly(string why)
         {
-            string folder = System.IO.Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(folder)) Directory.CreateDirectory(folder);
+            Writable = false;
+            Debug.LogWarning($"[Save] {path} {why}: playing with a new company that WON'T be saved, so the file stays as it is.");
+            return CompanySave.New();
+        }
+
+        /// <summary>Writes the company; false (logged, never thrown) when it couldn't. The next save retries.</summary>
+        public bool Save(CompanySave save)
+        {
+            if (!Writable) return false;
             string temp = path + ".tmp";
-            File.WriteAllText(temp, JsonUtility.ToJson(save, true));
-            if (File.Exists(path)) File.Replace(temp, path, null);
-            else File.Move(temp, path);
+            try
+            {
+                string folder = System.IO.Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(folder)) Directory.CreateDirectory(folder);
+                File.WriteAllText(temp, JsonUtility.ToJson(save, true));
+                if (File.Exists(path)) File.Replace(temp, path, null);
+                else File.Move(temp, path);
+                return true;
+            }
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+            {
+                Debug.LogWarning($"[Save] Couldn't write {path} ({e.Message}); will try again at the next save.");
+                return false;
+            }
         }
 
         public void Delete()

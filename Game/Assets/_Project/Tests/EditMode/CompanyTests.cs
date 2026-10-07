@@ -74,6 +74,36 @@ namespace Abandoned.Tests
         }
 
         [Test]
+        public void ASaveFromANewerBuildIsNeverOverwritten()
+        {
+            var store = new SaveStore(folder);
+            Directory.CreateDirectory(folder);
+            string newer = "{\"version\": " + (CompanySave.CurrentVersion + 1) + ", \"money\": 777}";
+            File.WriteAllText(store.Path, newer);
+            LogAssert.Expect(LogType.Warning, new System.Text.RegularExpressions.Regex("newer build"));
+            CompanySave save = store.Load();
+            Assert.IsFalse(store.Writable);
+            save.money = 5;
+            Assert.IsFalse(store.Save(save), "an old zip mustn't wipe the newer company");
+            Assert.AreEqual(newer, File.ReadAllText(store.Path));
+        }
+
+        [Test]
+        public void AJobLeftUnfinishedIsSettledAsAnEmptyHaul()
+        {
+            CompanySave save = CompanySave.New();
+            Assert.IsNull(CompanyLedger.SettleAbandoned(save, config), "nothing pending");
+            save.pendingQuota = 20000;
+            save.pendingBonus = 0.5f;
+            RunOutcome? o = CompanyLedger.SettleAbandoned(save, config);
+            Assert.IsTrue(o.HasValue);
+            Assert.IsFalse(o.Value.QuotaMet);
+            Assert.AreEqual(1, save.missedQuotas, "quitting mid-job counts as a miss");
+            Assert.AreEqual(0, save.pendingQuota, "settled once");
+            Assert.IsNull(CompanyLedger.SettleAbandoned(save, config));
+        }
+
+        [Test]
         public void MissingTheQuotaCostsMoneyAndThreeInARowIsBankruptcy()
         {
             CompanySave save = CompanySave.New();

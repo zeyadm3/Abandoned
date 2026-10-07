@@ -53,7 +53,12 @@ namespace Abandoned.Company
         private CompanySave save;
         private SaveStore store;
         private RunState hookedRun;
-        private bool lobbyOpen = true;
+        // The joinable setting last applied, and to which lobby: a lobby re-created mid-run (Steam
+        // dropped and came back) starts joinable and must be closed again.
+        private ulong lobbyApplied;
+        private bool lobbyJoinable;
+        private SteamLobby lobby;
+        private float nextLobbyLookup;
         private int boardLevel = -1, boardForSeed;
         private List<Contract> board = new();
 
@@ -91,6 +96,11 @@ namespace Abandoned.Company
             if (!IsServer) return;
             store = PersistsToDisk ? new SaveStore(SaveFolderOverride) : null;
             save = store != null ? store.Load() : CompanySave.New();
+            if (CompanyLedger.SettleAbandoned(save, config) is RunOutcome abandoned)
+            {
+                Debug.LogWarning($"[Company] The last job was never finished: settled as an empty haul (penalty ${abandoned.Penalty:N0}).");
+                store?.Save(save);
+            }
             state.Value = CompanyNetState.Of(save);
             PublishGear();
             boardSeed.Value = NewSeed();
@@ -120,11 +130,17 @@ namespace Abandoned.Company
             if (!IsServer || !IsSpawned) return;
             // The Steam lobby takes joiners only while everyone is at the HQ.
             bool home = SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel;
-            if (home != lobbyOpen)
+            if (lobby == null && Time.unscaledTime >= nextLobbyLookup)
             {
-                lobbyOpen = home;
-                SteamLobby lobby = FindAnyObjectByType<SteamLobby>();
-                lobby?.Flow?.SetJoinable(home);
+                nextLobbyLookup = Time.unscaledTime + 1f;
+                lobby = FindAnyObjectByType<SteamLobby>();
+            }
+            SteamLobbyFlow flow = lobby != null ? lobby.Flow : null;
+            if (flow != null && flow.InLobby && (flow.LobbyId != lobbyApplied || home != lobbyJoinable))
+            {
+                lobbyApplied = flow.LobbyId;
+                lobbyJoinable = home;
+                flow.SetJoinable(home);
             }
             // Pay out when a run's truck leaves (the run state lives in the level).
             if (RunState.Current != hookedRun)
@@ -172,6 +188,10 @@ namespace Abandoned.Company
             if (SessionTravel.Current.Level != HomeLevel) return;
             Contract c = Board[selected.Value];
             active.Value = c;
+            // Written before leaving: quitting mid-job must not dodge the missed quota (settled on next load).
+            save.pendingQuota = c.Quota;
+            save.pendingBonus = c.PayoutBonus;
+            Saved();
             Debug.Log($"[Company] Taking the {c.ModifierName} contract at {c.Location}: quota ${c.Quota:N0}, stability {c.Stability:P0}.");
             SessionTravel.Current.Travel(c.Scene);
         }
@@ -192,6 +212,8 @@ namespace Abandoned.Company
         {
             if (!IsServer || !active.Value.IsValid) return;
             RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, active.Value.PayoutBonus);
+            save.pendingQuota = 0;
+            save.pendingBonus = 0f;
             Saved();
             lastOutcome.Value = OutcomeNet.Of(o, save.runs + save.bankruptcies * 1000);
             Debug.Log($"[Company] Run {save.runs}: payout ${o.Payout:N0}, penalty ${o.Penalty:N0}, +{o.Xp} xp, money ${save.money:N0}" +
@@ -234,6 +256,8 @@ namespace Abandoned.Company
 
         private void Saved()
         {
+            // A failed write (file locked, disk full) is logged by the store and retried with the next
+            // save; what everyone sees must still update.
             store?.Save(save);
             state.Value = CompanyNetState.Of(save);
             PublishGear();
