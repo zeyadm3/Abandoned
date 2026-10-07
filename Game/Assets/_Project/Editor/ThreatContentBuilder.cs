@@ -8,85 +8,73 @@ using static Abandoned.EditorTools.SerializedWiring;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>Threat configs and original low-poly silhouettes. Rebuilds preserve existing AI tuning and network objects.</summary>
+    /// <summary>Rebuilds the original four threats with custom Blender rigs; preserves their GDD navigation and behavior configs.</summary>
     public static class ThreatContentBuilder
     {
         public const string Folder = "Assets/_Project/Prefabs/Threats";
+        public const string DataFolder = "Assets/_Project/Data/Threats";
+        public const string CatalogPath = DataFolder + "/ThreatCatalog.asset";
         public const string BlindOnePrefabPath = Folder + "/BlindOne.prefab";
-        public const string BlindOneConfigPath = "Assets/_Project/Data/Threats/BlindOneConfig.asset";
+        public const string BlindOneConfigPath = DataFolder + "/BlindOneConfig.asset";
         public const string StalkerPrefabPath = Folder + "/Stalker.prefab";
         public const string CollectorPrefabPath = Folder + "/Collector.prefab";
-        public const string StalkerConfigPath = "Assets/_Project/Data/Threats/StalkerConfig.asset";
-        public const string CollectorConfigPath = "Assets/_Project/Data/Threats/CollectorConfig.asset";
+        public const string StalkerConfigPath = DataFolder + "/StalkerConfig.asset";
+        public const string CollectorConfigPath = DataFolder + "/CollectorConfig.asset";
         public const string HunterPrefabPath = Folder + "/Hunter.prefab";
-        public const string HunterConfigPath = "Assets/_Project/Data/Threats/HunterConfig.asset";
-
+        public const string HunterConfigPath = DataFolder + "/HunterConfig.asset";
         public static void CreateOthers()
         {
-            var stalkerConfig = LoadOrCreateAsset<StalkerConfig>(StalkerConfigPath);
-            var collectorConfig = LoadOrCreateAsset<CollectorConfig>(CollectorConfigPath);
-            var hunterConfig = LoadOrCreateAsset<HunterConfig>(HunterConfigPath);
-            Body(StalkerPrefabPath, "Stalker", 2.6f, 0.3f, ThreatPresentation.Silhouette.Stalker,
-                root => Set(root.AddComponent<Stalker>(), "config", stalkerConfig));
-            Body(CollectorPrefabPath, "Collector", 1.3f, 0.35f, ThreatPresentation.Silhouette.Collector,
-                root => Set(root.AddComponent<Collector>(), "config", collectorConfig));
-            Body(HunterPrefabPath, "Hunter", 2.5f, 0.55f, ThreatPresentation.Silhouette.Hunter,
-                root => root.AddComponent<Hunter>().EditorSetup(hunterConfig));
+            PolishAssets.EnsureFolder(DataFolder);
+            var stalker = LoadOrCreateAsset<StalkerConfig>(StalkerConfigPath);
+            var collector = LoadOrCreateAsset<CollectorConfig>(CollectorConfigPath);
+            var hunter = LoadOrCreateAsset<HunterConfig>(HunterConfigPath);
+            Build(StalkerPrefabPath, "Stalker", 3.1f, 0.3f, ThreatKind.Stalker, 1f, 85f, 2.4f, 6.5f,
+                root => Set(root.AddComponent<Stalker>(), "config", stalker));
+            Build(CollectorPrefabPath, "Collector", 1.5f, 0.35f, ThreatKind.Collector, 0.65f, 0f, 2.4f, 5.5f,
+                root => Set(root.AddComponent<Collector>(), "config", collector));
+            Build(HunterPrefabPath, "Hunter", 2.75f, 0.55f, ThreatKind.Hunter, 0.4f, 1000f, 1.8f, 5f,
+                root => root.AddComponent<Hunter>().EditorSetup(hunter), true);
             AssetDatabase.SaveAssets();
         }
-
-        private static GameObject Body(string path, string name, float height, float radius,
-            ThreatPresentation.Silhouette silhouette, System.Action<GameObject> add)
+        public static GameObject Build(string path, string name, float height, float radius, ThreatKind kind, float weight,
+            float damage, float walk, float chase, System.Action<GameObject> add, bool lethal = false, int minimumDanger = 0, bool final = false)
         {
-            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            PolishAssets.EnsureFolder(Folder); PolishAssets.EnsureFolder(DataFolder);
+            ThreatDefinition definition = LoadOrCreateAsset<ThreatDefinition>($"{DataFolder}/{name}Definition.asset");
+            GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            GameObject prefab;
             if (existing != null && existing.GetComponent<Threat>() != null)
-                return ThreatVisualBuilder.Upgrade(path, silhouette);
-
-            PolishAssets.EnsureFolder(Folder);
-            var root = new GameObject(name);
-            root.AddComponent<NetworkObject>().DontDestroyWithOwner = true;
-            var network = root.AddComponent<NetworkTransform>();
-            network.SyncRotAngleX = network.SyncRotAngleZ = false;
-            network.SyncScaleX = network.SyncScaleY = network.SyncScaleZ = false;
-            var agent = root.AddComponent<NavMeshAgent>();
-            agent.radius = Mathf.Max(0.3f, radius);
-            agent.height = height;
-            agent.acceleration = 14f;
-            agent.angularSpeed = 360f;
-            agent.stoppingDistance = 0.3f;
-            var collider = root.AddComponent<CapsuleCollider>();
-            collider.height = height;
-            collider.radius = radius;
-            collider.center = Vector3.up * height * 0.5f;
-            add(root);
-            ThreatVisualBuilder.Build(root, silhouette);
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
-            Object.DestroyImmediate(root);
+                prefab = ThreatRigBuilder.Upgrade(path, name, definition);
+            else
+            {
+                var root = new GameObject(name);
+                root.AddComponent<NetworkObject>().DontDestroyWithOwner = true;
+                var network = root.AddComponent<NetworkTransform>();
+                network.SyncRotAngleX = network.SyncRotAngleZ = false;
+                network.SyncScaleX = network.SyncScaleY = network.SyncScaleZ = false;
+                var agent = root.AddComponent<NavMeshAgent>();
+                agent.radius = Mathf.Max(0.3f, radius); agent.height = height;
+                agent.acceleration = 14f; agent.angularSpeed = 360f; agent.stoppingDistance = 0.3f;
+                var collider = root.AddComponent<CapsuleCollider>();
+                collider.height = height; collider.radius = radius; collider.center = Vector3.up * height * 0.5f;
+                add(root); root.GetComponent<Threat>().EditorSetupDefinition(definition);
+                ThreatRigBuilder.Install(root, name);
+                prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
+                Object.DestroyImmediate(root);
+            }
             NetworkObjectIds.StampPrefab(prefab);
+            definition.EditorSetup(kind, kind == ThreatKind.Weight ? "The Weight" : kind == ThreatKind.Thing ? "The Thing" : kind == ThreatKind.LastHunter ? "The Last Hunter" : name == "BlindOne" ? "Blind One" : name,
+                prefab.GetComponent<NetworkObject>(), weight, minimumDanger, damage, walk, chase, lethal, final);
+            EditorUtility.SetDirty(definition);
             return prefab;
         }
-
         [MenuItem("Tools/Abandoned/Create Threat Prefabs")]
         public static GameObject CreateBlindOne()
         {
+            PolishAssets.EnsureFolder(DataFolder);
             var config = LoadOrCreateAsset<BlindOneConfig>(BlindOneConfigPath);
-            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(BlindOnePrefabPath);
-            if (existing != null && existing.GetComponent<BlindOne>() != null)
-                return ThreatVisualBuilder.Upgrade(BlindOnePrefabPath, ThreatPresentation.Silhouette.BlindOne);
-            GameObject prefab = Body(BlindOnePrefabPath, "BlindOne", 2.4f, 0.35f, ThreatPresentation.Silhouette.BlindOne,
+            GameObject prefab = Build(BlindOnePrefabPath, "BlindOne", 2.65f, 0.35f, ThreatKind.BlindOne, 1.4f, 65f, 1.6f, 4.2f,
                 root => Set(root.AddComponent<BlindOne>(), "config", config));
-            // Keep the listener's established navigation pacing rather than using another threat's defaults.
-            GameObject contents = PrefabUtility.LoadPrefabContents(BlindOnePrefabPath);
-            try
-            {
-                var agent = contents.GetComponent<NavMeshAgent>();
-                agent.radius = 0.4f;
-                agent.acceleration = 12f;
-                agent.angularSpeed = 300f;
-                agent.autoBraking = true;
-                prefab = PrefabUtility.SaveAsPrefabAsset(contents, BlindOnePrefabPath);
-            }
-            finally { PrefabUtility.UnloadPrefabContents(contents); }
             AssetDatabase.SaveAssets();
             return prefab;
         }

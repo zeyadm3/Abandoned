@@ -32,6 +32,7 @@ namespace Abandoned.Threats
         public override string DisplayName => "Hunter";
         public override string DeathLine => "The Hunter ran you down.";
         public HunterState State => state.Value;
+        public override ThreatMotion DesiredMotion => State == HunterState.Chase ? ThreatMotion.Chase : State == HunterState.Stunned ? ThreatMotion.Special : ThreatMotion.Idle;
         public NetworkPlayer Target => target;
         public HunterConfig Config => config;
         /// <summary>Tests/F1: the section it last stood on.</summary>
@@ -92,7 +93,7 @@ namespace Abandoned.Threats
                     agent.speed = config.ChaseSpeed * SpeedScale;
                     agent.SetDestination(lastSeen);
                     if (KillWithinReach(config.AttackRange) != null) { target = null; Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
-                    else if (seen == null && Time.time - lostAt > config.LoseAfter) { Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
+                    else if (seen == null && Time.time - lostAt > config.LoseAfter * Mathf.Min(Aggression, 1.8f)) { Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
                     break;
                 case HunterState.Search:
                     agent.isStopped = false;
@@ -129,7 +130,7 @@ namespace Abandoned.Threats
                 Vector3 to = at - eye;
                 float distance = to.magnitude;
                 bool close = distance < config.CloseSense;
-                float range = p.State.Crouching ? config.CrouchSightRange : config.SightRange;
+                float range = (p.State.Crouching ? config.CrouchSightRange : config.SightRange) * Mathf.Min(Aggression, 1.4f);
                 if (!close && (distance > range || Vector3.Angle(transform.forward, new Vector3(to.x, 0f, to.z)) > config.SightAngle / 2f)) continue;
                 if (!LineOfSight(eye, at)) continue;
                 if (distance < bestDistance) { best = p; bestDistance = distance; }

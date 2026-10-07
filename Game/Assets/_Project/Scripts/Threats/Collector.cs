@@ -31,6 +31,7 @@ namespace Abandoned.Threats
 
         public override string DisplayName => "Collector";
         public CollectorState State => state.Value;
+        public override ThreatMotion DesiredMotion => State == CollectorState.Carrying ? ThreatMotion.Special : State == CollectorState.Fleeing ? ThreatMotion.Chase : ThreatMotion.Idle;
         public NetworkLoot Carried => carried;
         public int Stolen { get; private set; }
 
@@ -79,6 +80,7 @@ namespace Abandoned.Threats
                 Flee();
                 return;
             }
+            agent.speed = (state.Value == CollectorState.Fleeing ? config.FleeSpeed : config.Speed) * SpeedScale;
             switch (state.Value)
             {
                 case CollectorState.Idle:
@@ -106,14 +108,14 @@ namespace Abandoned.Threats
                     {
                         Drop();
                         Stolen++;
-                        nextTheft = Time.time + config.Cooldown;
+                        nextTheft = Time.time + config.Cooldown / Mathf.Min(Aggression, 1.7f);
                         Set(CollectorState.Idle);
                     }
                     break;
                 case CollectorState.Fleeing:
                     if (!agent.pathPending && agent.remainingDistance < 1f)
                     {
-                        nextTheft = Time.time + config.Cooldown;
+                        nextTheft = Time.time + config.Cooldown / Mathf.Min(Aggression, 1.7f);
                         Set(CollectorState.Idle);
                     }
                     break;

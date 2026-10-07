@@ -40,6 +40,7 @@ namespace Abandoned.Threats
         public override string DeathLine => "The Blind One heard you.";
 
         public BlindOneState State => state.Value;
+        public override ThreatMotion DesiredMotion => State == BlindOneState.Attack ? ThreatMotion.Attack : State == BlindOneState.Hunt ? ThreatMotion.Chase : State == BlindOneState.Investigate ? ThreatMotion.Special : ThreatMotion.Idle;
         public BlindOneConfig Config => config;
         public IReadOnlyList<(Vector3 position, float strength, float time)> Heard => heard;
         public BlindOneBrain Brain => brain;
@@ -145,21 +146,7 @@ namespace Abandoned.Threats
         private void KillOnContact()
         {
             if (brain.State == BlindOneState.Attack) return;
-            foreach (NetworkPlayer p in NetworkPlayer.All)
-            {
-                if (p == null || p.NetworkManager != NetworkManager || p.IsDead) continue;
-                Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
-                Vector3 d = at - transform.position;
-                if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > config.AttackRange * config.AttackRange) continue;
-                if (Sheltered(at)) continue;
-                // Touch, not through a wall: a player pressed against the far side of a partition is safe.
-                if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, wallMask, QueryTriggerInteraction.Ignore)) continue;
-                p.ServerKill(DeathLine);
-                Kills++;
-                brain.Attacked(Time.time);
-                Debug.Log($"[Threat] The Blind One killed player {p.OwnerClientId}.");
-                return;
-            }
+            if (DamageWithinReach(config.AttackRange, 65f) != null) brain.Attacked(Time.time);
         }
 
         // Every machine: its clicking is how players know it's near (faster = hunting).

@@ -26,6 +26,7 @@ namespace Abandoned.Threats
         public override string DisplayName => "Stalker";
         public override string DeathLine => "You looked away from the Stalker.";
         public StalkerState State => state.Value;
+        public override ThreatMotion DesiredMotion => State == StalkerState.Frozen ? ThreatMotion.Special : State == StalkerState.Rush ? ThreatMotion.Chase : ThreatMotion.Idle;
         public NetworkPlayer Target => target;
         public StalkerBrain Brain => brain;
 
@@ -65,7 +66,7 @@ namespace Abandoned.Threats
             Vector3 at = PositionOf(target);
             brain.Config = config;
             // Dread only builds while it has eyes on its prey: behind walls or a floor away it just follows.
-            brain.Tick(IsWatchedBy(target), IsIsolated(target) && Sees(target), Time.deltaTime);
+            brain.Tick(IsWatchedBy(target), IsIsolated(target) && Sees(target), Time.deltaTime * Aggression);
             state.Value = brain.State;
             switch (brain.State)
             {
@@ -86,7 +87,7 @@ namespace Abandoned.Threats
                     agent.SetDestination(at);
                     // Prey it can't reach (at the truck, off the NavMesh): give up rather than camp the doorway.
                     if (!agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete) brain.Reset();
-                    else if (KillWithinReach(config.AttackRange) != null) brain.Reset();
+                    else if (DamageWithinReach(config.AttackRange, 85f) != null) brain.Reset();
                     break;
             }
             // Frozen, it keeps staring at its target (moving, the agent turns it).
