@@ -27,7 +27,7 @@ namespace Abandoned.Extraction
         [Tooltip("The store behind it (world space): its loot is worth more while it's locked at the start of a run.")]
         [SerializeField] private Bounds room;
 
-        private float shown = -1f; // 0 = down, 1 = up
+        private float shown = 1f; // 0 = down, 1 = up
 
         public static IReadOnlyList<RollerShutter> All => Live;
         public int Index => index;
@@ -35,21 +35,28 @@ namespace Abandoned.Extraction
         public Bounds Room => room;
         public bool IsDown => RunShutters.Current != null && RunShutters.Current.IsDown(index);
 
+        // Open until a run says otherwise: a level with no run yet (or a test) must never be walled off.
+        private void Awake() => Show(1f);
+
         private void OnEnable() => Live.Add(this);
 
         private void OnDisable() => Live.Remove(this);
 
         private void Update()
         {
-            // No run yet, or a new run still rolling its locks: hold still (as built: down) rather than flap open.
+            // No run yet, or a new run still rolling its locks: hold still rather than flap.
             RunShutters run = RunShutters.Current;
             if (run == null || !run.Ready) return;
             float target = IsDown ? 0f : 1f;
             if (Mathf.Approximately(shown, target)) return;
-            // Snap on the first frame (a level loading mid-run), roll after that.
-            shown = shown < 0f ? target : Mathf.MoveTowards(shown, target, Time.deltaTime / 1.2f);
-            if (curtain != null) curtain.localScale = new Vector3(1f, Mathf.Lerp(1f, 0.05f, shown), 1f);
-            bool blocking = shown < 0.9f;
+            Show(Mathf.MoveTowards(shown, target, Time.deltaTime / 1.2f));
+        }
+
+        private void Show(float up)
+        {
+            shown = up;
+            if (curtain != null) curtain.localScale = new Vector3(1f, Mathf.Lerp(1f, 0.05f, up), 1f);
+            bool blocking = up < 0.9f;
             if (blocker != null) blocker.enabled = blocking;
             if (obstacle != null) obstacle.enabled = blocking;
         }
