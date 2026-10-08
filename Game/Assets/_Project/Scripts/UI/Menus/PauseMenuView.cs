@@ -25,7 +25,6 @@ namespace Abandoned.UI
         private readonly Dictionary<ulong, Row> rows = new();
         private readonly VisualElement hostRules;
         private Company.CompanyService rulesFor;
-        private VisualElement companyTools;
         private string shownCrew;
 
         private sealed class Row
@@ -77,56 +76,50 @@ namespace Abandoned.UI
                 Launch.OpenFeedback();
             }, small: true).tooltip = "Opens your log folder (attach Player.log) and the feedback page.";
 
+            // One scrolling body under the title: the crew rows get the room they need and the host's rules sit
+            // below them inside the panel, never spilling out of it.
             VisualElement right = MenuKit.Panel(columns);
-            right.style.height = 540f;
+            right.style.height = 600f;
             right.style.minHeight = 300f;
-            right.style.maxHeight = 620f;
+            right.style.maxHeight = 640f;
+            right.style.flexDirection = FlexDirection.Column;
             right.AddToClassList("pause__crew");
             crewTitle = MenuKit.Text(right, "CREW", "heading");
-            MenuKit.Text(right, "Voice volume and mute only change what you hear.", "text").AddToClassList("text--small");
-            crewList = MenuKit.Scroll(right, "pause__crew-list");
-            joinHint = MenuKit.Text(right, "", "text");
+            crewTitle.style.flexShrink = 0;
+            ScrollView body = MenuKit.Scroll(right, "pause__crew-body");
+            body.style.flexGrow = 1;
+            body.style.flexShrink = 1;
+            body.style.minHeight = 0;
+            Label note = MenuKit.Text(body, "Voice volume and mute only change what you hear.", "text");
+            note.AddToClassList("text--small");
+            crewList = new VisualElement();
+            crewList.AddToClassList("pause__crew-list");
+            crewList.style.flexShrink = 0;
+            crewList.style.marginTop = 8f;
+            crewList.style.marginBottom = 8f;
+            body.Add(crewList);
+            joinHint = MenuKit.Text(body, "", "text");
             joinHint.AddToClassList("text--small");
+            joinHint.style.flexShrink = 0;
             hostRules = new VisualElement();
-            right.Add(hostRules);
+            hostRules.style.flexShrink = 0;
+            hostRules.style.marginTop = 12f;
+            body.Add(hostRules);
         }
 
-        // QA B-08: the host decides what the rest of the crew may do with the company.
+        // QA B-08: the host decides what the rest of the crew may do with the boss's money and vehicles.
         private void BuildHostRules(bool isHost)
         {
             Company.CompanyService company = Company.CompanyService.Current;
             bool show = isHost && company != null && company.IsSpawned;
             MenuKit.Show(hostRules, show);
-            if (show && companyTools != null) MenuKit.Show(companyTools, !company.JobInProgress);
             if (!show || rulesFor == company) return;
             rulesFor = company;
             hostRules.Clear();
-            MenuKit.Text(hostRules, "CREW MAY", "section");
-            MenuKit.Toggle(hostRules, "Spend company money", company.CrewMay(Company.CrewRule.Spend), v => company.SetCrewRule(Company.CrewRule.Spend, v));
+            MenuKit.Text(hostRules, "HOST RULES: THE CREW MAY", "section");
+            MenuKit.Toggle(hostRules, "Buy gear on the company account", company.CrewMay(Company.CrewRule.Spend), v => company.SetCrewRule(Company.CrewRule.Spend, v));
             MenuKit.Toggle(hostRules, "Start the van", company.CrewMay(Company.CrewRule.Drive), v => company.SetCrewRule(Company.CrewRule.Drive, v));
             MenuKit.Toggle(hostRules, "Pull the truck lever", company.CrewMay(Company.CrewRule.Lever), v => company.SetCrewRule(Company.CrewRule.Lever, v));
-            // QA B-24: the company itself, between jobs only.
-            companyTools = new VisualElement();
-            hostRules.Add(companyTools);
-            MenuKit.Text(companyTools, "COMPANY", "section");
-            var rename = new TextField { value = company.State.Name.ToString(), maxLength = NetworkPlayer.MaxNameLength };
-            rename.AddToClassList("field");
-            rename.RegisterCallback<FocusOutEvent>(_ => company.RenameCompany(rename.value));
-            companyTools.Add(rename);
-            Button fresh = null;
-            float armedUntil = -1f;
-            fresh = MenuKit.Button(companyTools, "Start a new company", () =>
-            {
-                if (Time.unscaledTime > armedUntil)
-                {
-                    armedUntil = Time.unscaledTime + 3f;
-                    fresh.text = "Lose everything? Press again";
-                    return;
-                }
-                fresh.text = "Start a new company";
-                company.StartNewCompany();
-                rename.value = company.State.Name.ToString();
-            }, SoundId.UiBack, small: true);
         }
 
         public void Refresh()

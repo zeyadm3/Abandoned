@@ -4,6 +4,14 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.12.7 (2026-10-08)
+
+From the user's pause-menu screenshot: you work for a company you hate; it isn't yours. The pause menu's COMPANY
+section (rename, "Start a new company") is gone, as are those host methods; the Play screen's slot picker is "Save"
+(level, money, jobs); menu copy says crew, not company owner. The crew panel is one scrolling body under the title
+(note, crew rows, join hint, HOST RULES: THE CREW MAY), 600 px tall, so the rows have room and nothing spills out of
+the panel. Not tested (user tests); compile and builds only.
+
 ## 0.12.6 — QA fix pass (2026-10-08)
 
 Fixes everything Docs/QA_REPORT_2026-10-08.md asks for (bugs B-01..B-36, balance D-01..D-10, performance P-01..P-08,
@@ -29,8 +37,7 @@ Commits: 037b562 (bugs), 4bff364 (balance/perf/health), de86d60 (regenerated con
   there); a dead player's pockets spread in a ring; monsters spawn 14 m+ from and out of sight of players; the Stalker
   breathes (no creak); chat is byte-safe and markup-proof; Sealed jobs say TOOLS: bolt cutters or a crowbar; loot held
   by someone aboard counts; a wipe pays 50 % of the bay, no bonus; truck materials are assets (no Shader.Find); a throw
-  during a pending release is queued; rubble/players don't block aiming; company save slots (Play screen), rename and
-  "Start a new company" (pause, at the HQ); per-player voice volume remembered by Steam id; recovery falls back to the
+  during a pending release is queued; rubble/players don't block aiming; save slots (Play screen); per-player voice volume remembered by Steam id; recovery falls back to the
   last floor stood on; touching loot swung into you knocks you down; authored shadows kept; jumping blocked while
   hauling; video settings cached and flushed; Chat (T), Free camera (F9), Hide HUD (F10) and the new Give gear (G) are
   rebindable.
@@ -45,7 +52,7 @@ Commits: 037b562 (bugs), 4bff364 (balance/perf/health), de86d60 (regenerated con
 - **Not done (decisions/assets for you):** a font with Arabic/Cyrillic/CJK glyphs (names/chat may show boxes),
   D-05 money needs playtest numbers, and the report's feature ideas/assets/options lists (sections 7-10) beyond the above.
 - **Test first:** report section 11 is the checklist; new controls: G, Tab + wheel, lever double-pull and cancel, pause
-  menu CREW MAY toggles + Kick + COMPANY, Play screen Company slot, Settings > Accessibility.
+  menu host rules + Kick, Play screen Save slot, Settings > Accessibility.
 
 ## 0.12.5 (2026-10-08)
 

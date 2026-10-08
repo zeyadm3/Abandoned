@@ -89,31 +89,6 @@ namespace Abandoned.Company
             SessionTravel.Current.Travel(c.Scene);
         }
 
-        /// <summary>Host, at the HQ between jobs: rename the company (QA B-24).</summary>
-        public void RenameCompany(string newName)
-        {
-            if (!IsServer || save == null || JobInProgress) return;
-            string clean = NetworkPlayer.Clean(newName);
-            if (clean.Length == 0 || clean == save.companyName) return;
-            save.companyName = clean;
-            Saved();
-            Debug.Log($"[Company] Renamed to {clean}.");
-        }
-
-        /// <summary>Host, at the HQ between jobs: throw this company away and start a new one in its slot (QA B-24).</summary>
-        public void StartNewCompany()
-        {
-            if (!IsServer || save == null || JobInProgress) return;
-            int bankruptcies = save.bankruptcies;
-            CompanyLedger.GoBankrupt(save);
-            save.bankruptcies = bankruptcies; // starting over by choice isn't going bankrupt
-            save.companyName = CompanySave.New().companyName;
-            Saved();
-            selected.Value = -1;
-            boardSeed.Value = NewSeed();
-            Debug.Log("[Company] A new company was started in this slot.");
-        }
-
         /// <summary>Host is on a job that hasn't been settled yet (leaving now counts as a failed job).</summary>
         public bool JobInProgress => IsServer && save != null && save.pendingQuota > 0;
 

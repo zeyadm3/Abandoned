@@ -22,8 +22,9 @@ namespace Abandoned.Company
         private readonly string path;
 
         /// <summary>
-        /// Which company this machine hosts (1-<see cref="Slots"/>, QA B-24); slot 1 is the original
-        /// company.json, so older saves stay where they were. The demo always has its own single file.
+        /// Which save this machine hosts (1-<see cref="Slots"/>, QA B-24): your crew's record with the company
+        /// (you work for it; it isn't yours). Slot 1 is the original company.json, so older saves stay where they
+        /// were. The demo always has its own single file.
         /// </summary>
         public static int Slot
         {
@@ -45,15 +46,15 @@ namespace Abandoned.Company
         public static string FileFor(int slot) =>
             Core.Demo.IsDemo ? DemoFileName : slot <= 1 ? FileName : $"company_{Mathf.Clamp(slot, 1, Slots)}.json";
 
-        /// <summary>A one-line description of a slot for the menu ("Empty", or name, level and money).</summary>
+        /// <summary>A one-line description of a slot for the menu ("Empty", or level, money and jobs done).</summary>
         public static string Describe(int slot, string folder = null)
         {
             string file = System.IO.Path.Combine(folder ?? Application.persistentDataPath, FileFor(slot));
-            if (!File.Exists(file)) return "Empty: a new company";
+            if (!File.Exists(file)) return "Empty: a new hire";
             try
             {
                 CompanySave save = JsonUtility.FromJson<CompanySave>(File.ReadAllText(file));
-                return save == null ? "Unreadable" : $"{save.companyName} - level {save.level} - ${save.money:N0}";
+                return save == null ? "Unreadable" : $"Level {save.level} - ${save.money:N0} - {save.runs} jobs";
             }
             catch (Exception)
             {

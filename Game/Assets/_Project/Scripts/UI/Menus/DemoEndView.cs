@@ -39,12 +39,12 @@ namespace Abandoned.UI
             MenuKit.Text(panel, "The full game has more buildings, more threats, more loot and a lot more floors to fall through. " +
                                 "Wishlisting on Steam is the best way to help a solo developer.");
             MenuKit.Button(panel, "Wishlist on Steam", Wishlist, SoundId.UiConfirm);
-            restart = MenuKit.Button(panel, "Start a new company", () =>
+            restart = MenuKit.Button(panel, "Start over as a new hire", () =>
             {
                 CompanyService.Current?.RestartDemo();
                 menu.Back();
             });
-            waiting = MenuKit.Text(panel, "The host can start a new company to play again.");
+            waiting = MenuKit.Text(panel, "The host can start over to play again.");
             waiting.AddToClassList("text--small");
             MenuKit.Button(panel, "Back to the HQ", menu.Back, SoundId.UiBack);
             MenuKit.Button(panel, "Quit", menu.Quit, SoundId.UiBack);

@@ -45,20 +45,20 @@ namespace Abandoned.UI
             cards.AddToClassList("play__cards");
             body.Add(cards);
 
-            // QA B-24: up to three companies on this machine; hosting (or solo) plays the chosen one.
+            // QA B-24: up to three saves on this machine; hosting (or solo) plays the chosen one.
             var slots = new string[Company.SaveStore.Slots];
             for (int i = 0; i < slots.Length; i++) slots[i] = $"{i + 1}: {Company.SaveStore.Describe(i + 1)}";
-            MenuKit.Choice(body, "Company", slots, Company.SaveStore.Slot - 1, i => Company.SaveStore.Slot = i + 1);
+            MenuKit.Choice(body, "Save", slots, Company.SaveStore.Slot - 1, i => Company.SaveStore.Slot = i + 1);
 
             VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "Just you and the building. Hard, not impossible: the trolley helps. Friends can still join you at the HQ.");
             MenuKit.Button(solo, "Start", () => b.StartHost(), SoundId.UiConfirm, important: true);
 
-            VisualElement host = Card(cards, "HOST A CREW", "icon/multiplayer", "Run the company: up to four, friends join you at the HQ between jobs.");
+            VisualElement host = Card(cards, "HOST A CREW", "icon/multiplayer", "Lead a crew of up to four for the company. Friends join you at the HQ between jobs.");
             hostHow = MenuKit.Text(host, "", "text");
             hostHow.AddToClassList("text--small");
             hostButton = MenuKit.Button(host, "Host", () => b.StartHost(), SoundId.UiConfirm, important: true);
 
-            VisualElement join = Card(cards, "JOIN", "icon/exitRight", "Work for a friend's company.");
+            VisualElement join = Card(cards, "JOIN", "icon/exitRight", "Join a friend's crew.");
             joinHow = MenuKit.Text(join, "", "text");
             joinHow.AddToClassList("text--small");
             address = new TextField { value = b.Config != null ? $"{b.Config.DefaultJoinAddress}:{b.Config.Port}" : "" };
