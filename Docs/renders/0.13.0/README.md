@@ -27,3 +27,12 @@ ownership and generated section data. `PERFORMANCE.md` contains texture import/s
 scene counts and the available raw Editor counters. Actual four-player host FPS, visible batches,
 GC and loading time still require your Editor F1/profiler pass; zero batch-render counters are
 unavailable statistics, not zero rendering cost.
+
+Shareable builds passed from clean code commit **385f5f4** (Unity 6000.3.25f1, Mono):
+
+- Mac: `~/Documents/Abandoned-builds/dev/Abandoned-0.13.0-385f5f4-Mac.zip` — 91.8 MiB.
+- Windows: `~/Documents/Abandoned-builds/dev/Abandoned-0.13.0-385f5f4-Windows.zip` — 82.3 MiB.
+
+Both archives carry version 0.13.0 and the same commit/time in BUILD.txt. Archive stamps were
+inspected without launching players. This delivery-note commit changes documentation only;
+the generated level and built game code remain those of 385f5f4.

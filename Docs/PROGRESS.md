@@ -33,9 +33,11 @@ The fountain, escalators, piano bridge, food court, Final Reel cinema and pre-co
   inactive damage/LOD variants. Batch UnityStats returned all zero, so visible batches/SetPass/FPS are unavailable.
   Realtime reflection targets/transient buffers and four-player host simulation still require an in-game profile;
   the 60 FPS / ~2,500 batch target is **not yet verified**. See the render folder's `PERFORMANCE.md`.
-- **Builds:** version 0.13.0; clean-commit shareable Mac + Windows archives under
-  `~/Documents/Abandoned-builds/dev/Abandoned-0.13.0-<commit>-Mac.zip` and `...-Windows.zip`.
-  Each archive's BUILD.txt records the source commit. No push.
+- **Builds passed:** version 0.13.0 from clean commit **385f5f4**, both stamped with the same UTC time.
+  `~/Documents/Abandoned-builds/dev/Abandoned-0.13.0-385f5f4-Mac.zip` (**91.8 MiB**) and
+  `Abandoned-0.13.0-385f5f4-Windows.zip` (**82.3 MiB**). Build reports: Mac 290 MB / 143 s,
+  Windows 270 MB / 129 s. Archive BUILD.txt stamps confirmed; non-shipping debug folders excluded.
+  Unity's unrelated connect-settings churn was restored after the build. No push.
 - **Known review gaps:** original procedural materials still have visible repetition; existing low-poly loot,
   vehicle, characters and threats retain their prior style and need review in the new setting. Art stills do not
   spawn run loot/AI or reproduce flicker timing. Multiplayer carrying, fallback use, collapse pacing, sector changes,
