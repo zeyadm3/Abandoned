@@ -44,7 +44,12 @@ namespace Abandoned.EditorTools
         {
             int hash = Hash(cell, floor);
             Transform holder = Group($"Fixture_{floor}_{cell.x}_{cell.y}", group);
-            holder.localPosition = MallLayout.TileTopCenter(cell, floor + 1) + Vector3.down * (MallLayout.SlabThickness + 0.1f);
+            float drop = MallLayout.SlabThickness + 0.1f;
+            if (MeridianArt.Dress)
+                drop = MallLayout.SlabThickness + 0.04f
+                    - MeridianLightingCeilingBounds.MinimumY(MeridianDressingCeilings.KeyFor(cell, floor))
+                    + config.FixtureCeilingClearance;
+            holder.localPosition = MallLayout.TileTopCenter(cell, floor + 1) + Vector3.down * drop;
             holder.localRotation = Quaternion.Euler(0f, hash % 2 * 90f, 0f);
             GameObject visual = Prop("FluorescentFixture", holder, Vector3.zero, Quaternion.identity);
             Transform lampObject = Group("Light", holder);

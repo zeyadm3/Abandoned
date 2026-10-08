@@ -10,6 +10,7 @@ namespace Abandoned.Structure
         [SerializeField, Min(0.1f)] private float fixtureIntensity = 2.1f;
         [SerializeField, Min(1f)] private float fixtureRange = 8.5f;
         [SerializeField, Range(45f, 150f)] private float fixtureAngle = 112f;
+        [SerializeField, Range(0f, 0.15f)] private float fixtureCeilingClearance = 0.02f;
         [SerializeField, Range(0f, 1f)] private float basementIntensityScale = 0.6f;
         [SerializeField, Range(0, 100)] private int faultyPercent = 45;
         [SerializeField, Range(0, 100)] private int deadPercent = 22;
@@ -48,6 +49,7 @@ namespace Abandoned.Structure
         public float FixtureIntensity => fixtureIntensity;
         public float FixtureRange => fixtureRange;
         public float FixtureAngle => fixtureAngle;
+        public float FixtureCeilingClearance => fixtureCeilingClearance;
         public float BasementIntensityScale => basementIntensityScale;
         public int FaultyPercent => faultyPercent;
         public int DeadPercent => deadPercent;

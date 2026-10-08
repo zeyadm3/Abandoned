@@ -17,12 +17,17 @@ namespace Abandoned.EditorTools
                 StructuralSection support = floor + 1 < MallLayout.Floors ? Support(mall, cell, floor + 1) : null;
                 if (floor + 1 < MallLayout.Floors && support == null) continue;
                 if (floor == MallLayout.Floors - 1 && MallLayout.IsAtriumVoid(cell)) continue;
-                int hash = Hash(cell, floor);
-                bool leak = cell.x >= 4 && cell.x <= 9 && cell.y >= 3 && cell.y <= 8;
-                string key = floor < 0 || x == 10 ? "CeilingGrid" : leak && hash % 4 == 0 ? "CeilingSagging" : "CeilingCoffer";
+                string key = KeyFor(cell, floor);
                 Vector3 at = MallLayout.TileTopCenter(cell, floor + 1) - Vector3.up * (MallLayout.SlabThickness + 0.04f);
                 Prop(key, group, at, Quaternion.identity, support);
             }
+        }
+
+        public static string KeyFor(Vector2Int cell, int floor)
+        {
+            bool leak = cell.x >= 4 && cell.x <= 9 && cell.y >= 3 && cell.y <= 8;
+            return floor < 0 || cell.x == 10 ? "CeilingGrid"
+                : leak && Hash(cell, floor) % 4 == 0 ? "CeilingSagging" : "CeilingCoffer";
         }
     }
 }

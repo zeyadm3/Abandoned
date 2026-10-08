@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
         public const string Folder="Assets/_Project/Art/Custom/Environment/Meridian";
         public static bool UseKit=>true;
         public static bool Dress=>true;
-        public static bool Illuminate=>false;
+        public static bool Illuminate=>true;
         public static void Prepare() => MeridianMaterials.Prepare();
         public static Material Material(string key) => MeridianMaterials.Get(key);
         public static GameObject Model(string key) => AssetDatabase.LoadAssetAtPath<GameObject>($"{Folder}/{key}.fbx");
