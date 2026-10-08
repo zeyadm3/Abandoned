@@ -47,7 +47,8 @@ namespace Abandoned.EditorTools
                 Transform ledge=Group("Ledge",point);
                 Vector3 size=e.side=='W'||e.side=='E'?new Vector3(1.8f,.25f,4):new Vector3(4,.25f,1.8f);
                 var collider=ledge.gameObject.AddComponent<BoxCollider>();collider.center=Vector3.down*.125f;collider.size=size;
-                Box("Visual",ledge,collider.center,size,MeridianArt.Material("Concrete"),false);
+                if(MeridianArt.UseKit)MeridianArt.Place("FloorConcrete",Group("Visual",ledge),Vector3.zero,0,new Vector3(size.x/4,1,size.z/4));
+                else Box("Visual",ledge,collider.center,size,MeridianArt.Material("Concrete"),false);
                 point.gameObject.AddComponent<MallFallbackDescent>().EditorSetup(Vector3.up*.6f,at.y+.6f,1.45f);
                 Box("Rope",point,new Vector3(0,1.1f-at.y/2,0),new Vector3(.035f,at.y+2.2f,.035f),MeridianArt.Material("BoardWood"),false);
                 MallMysteryBuilder.Sign(point,outward*-.55f+Vector3.up*1.8f,-outward,"CREW DESCENT",2.8f,.25f);

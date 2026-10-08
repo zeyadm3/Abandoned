@@ -49,25 +49,27 @@ namespace Abandoned.EditorTools
         }
         private static void AddStructure(Transform mall)
         {
-            var setup=new StructureSceneSetup();if(!setup.IsValid)throw new System.InvalidOperationException("Missing structure data.");
+            MallDamageBuilder.Reset();var setup=new StructureSceneSetup();if(!setup.IsValid)throw new System.InvalidOperationException("Missing structure data.");
             var matched=new HashSet<string>();
             for(int f=-1;f<Floors;f++) foreach(Transform tile in mall.Find($"Tiles/Floor_{f}")) {
                 var c=new Vector2Int(Mathf.FloorToInt(tile.position.x/Tile),Mathf.FloorToInt(tile.position.z/Tile));
                 (float health,float capacity)=(1,1);
                 if(WeakSpots.TryGetValue(tile.name,out var weak)){(health,capacity)=weak;matched.Add(tile.name);}
                 bool collapse=!IsProtected(c,f)&&(f>0||f==0&&MallBasementBuilder.AboveBasement(tile.position));
-                setup.AddSection(tile,IsWalkwayTile(c,f)?SectionType.Balcony:SectionType.Floor,collapse,health,capacity);
+                if(MeridianArt.UseKit)MallDamageBuilder.Floor(setup,tile,IsWalkwayTile(c,f)?SectionType.Balcony:SectionType.Floor,collapse,MallFloorBuilder.Finish(c,f),health,capacity);
+                else setup.AddSection(tile,IsWalkwayTile(c,f)?SectionType.Balcony:SectionType.Floor,collapse,health,capacity);
                 if(collapse)SectionNavCarver.EditorAdd(tile.gameObject,new Vector3(Tile,.3f,Tile));
             }
             foreach(Flight f in AllFlights) {
-                Transform flight=mall.Find($"Flights/{f.Name}");setup.AddSection(flight,SectionType.Stair,f.CanCollapse,fractured:false);
+                Transform flight=mall.Find($"Flights/{f.Name}");
+                if(MeridianArt.UseKit)MallDamageBuilder.Flight(setup,flight,f);else setup.AddSection(flight,SectionType.Stair,f.CanCollapse,fractured:false);
                 flight.gameObject.AddComponent<SurfaceTag>().EditorSet(f.Kind==FlightKind.Stair?SurfaceMaterial.Concrete:SurfaceMaterial.Metal);
                 if(!f.CanCollapse)continue;
                 SectionNavCarver.EditorAdd(flight.gameObject,new Vector3(f.Width,f.Rise,f.Length));
                 var o=flight.GetComponent<UnityEngine.AI.NavMeshObstacle>();o.center=new Vector3(0,.4f+f.Rise/2,f.Length/2);
             }
             foreach(Transform turn in mall.Find("Landings")) {
-                setup.AddSection(turn,SectionType.Floor,false);turn.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
+                if(MeridianArt.UseKit)MallDamageBuilder.Floor(setup,turn,SectionType.Floor,false,"Concrete");else setup.AddSection(turn,SectionType.Floor,false);turn.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
             }
             foreach(string weak in WeakSpots.Keys)if(!matched.Contains(weak))throw new System.InvalidOperationException($"Weak spot not built: {weak}");
             setup.AddSimulation(DefaultStability,DefaultSeed);

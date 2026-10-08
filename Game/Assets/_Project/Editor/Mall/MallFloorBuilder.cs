@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
                     var collider=tile.gameObject.AddComponent<BoxCollider>();
                     collider.center=Vector3.down*SlabThickness/2;collider.size=new Vector3(Tile,SlabThickness,Tile);
                     string finish=Finish(c,f);
-                    if(MeridianArt.UseKit) MeridianArt.Place("Floor"+finish,tile,Vector3.zero).name="Visual";
+                    if(MeridianArt.UseKit) MeridianArt.Place("Floor"+finish,Group("Visual",tile),Vector3.zero);
                     else Box("Slab",Group("Visual",tile),collider.center,collider.size,MeridianArt.Material(finish),false);
                     Transform surface=tile.Find("Visual");
                     // Divider strips visibly identify the structural module without blocking a trolley.

@@ -56,7 +56,8 @@ namespace Abandoned.EditorTools
                 slab.localPosition=new Vector3(51.75f,MallLayout.FloorY(floor)+2,46);
                 var collider=slab.gameObject.AddComponent<BoxCollider>();
                 collider.center=Vector3.down*.125f;collider.size=new Vector3(8.4f,.25f,4);
-                Box("Visual",slab,collider.center,collider.size,MeridianArt.Material("Concrete"),false);
+                if(MeridianArt.UseKit)MeridianArt.Place("FloorConcrete",Group("Visual",slab),Vector3.zero,0,new Vector3(2.1f,1,1));
+                else Box("Visual",slab,collider.center,collider.size,MeridianArt.Material("Concrete"),false);
             }
         }
     }

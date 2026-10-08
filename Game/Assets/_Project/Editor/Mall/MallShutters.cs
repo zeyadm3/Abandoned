@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
             Transform group=Group("Shutters",mall);int index=0;
             for(int floor=0;floor<Floors;floor++)foreach(Zone zone in ZonesByFloor[floor]) {
                 if(zone.Kind!=Kind.Store||HasFallback(zone,floor))continue;
-                var doors=Doors.Where(d=>d.Floor==floor&&zone.Contains(d.A)!=zone.Contains(d.B)).ToArray();
+                var doors=Doors.Where(d=>d.Floor==floor&&(ZoneAt(d.A,floor)?.Name==zone.Name)!=(ZoneAt(d.B,floor)?.Name==zone.Name)).ToArray();
                 if(doors.Length!=1)continue;
                 Door d=doors[0];Vector3 at=(TileTopCenter(d.A,floor)+TileTopCenter(d.B,floor))/2;
                 Vector3 along=d.A.x!=d.B.x?Vector3.forward:Vector3.right;

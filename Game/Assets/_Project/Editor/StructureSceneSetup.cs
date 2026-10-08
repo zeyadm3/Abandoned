@@ -28,7 +28,8 @@ namespace Abandoned.EditorTools
 
         /// <param name="fractured">Tiles break into the pre-fractured tile; stairs pass false (no fracture prefab yet).</param>
         public StructuralSection AddSection(Transform piece, SectionType type, bool collapsible, float health = 1f,
-            float capacity = 1f, bool fractured = true)
+            float capacity = 1f, bool fractured = true, GameObject fracturedPrefab = null,
+            StructureStageVisuals stageVisuals = null, bool preserveFractureMaterials = false)
         {
             Transform visual = piece.Find("Visual");
             if (visual == null) Debug.LogError($"Section '{piece.name}' has no Visual child.");
@@ -38,7 +39,9 @@ namespace Abandoned.EditorTools
             foreach (Collider c in piece.GetComponentsInChildren<Collider>(true))
                 if (c.gameObject != piece.gameObject)
                     c.gameObject.AddComponent<SectionColliderRelay>().EditorSetup(section);
-            piece.gameObject.AddComponent<SectionPresentation>().EditorSetup(visuals, fractured ? fracturedTile : null);
+            piece.gameObject.AddComponent<SectionPresentation>().EditorSetup(visuals,
+                fracturedPrefab != null ? fracturedPrefab : fractured ? fracturedTile : null,
+                stageVisuals, preserveFractureMaterials);
             SerializedWiring.SetLayerRecursively(piece.gameObject, GameLayers.StructureLayer);
             return section;
         }

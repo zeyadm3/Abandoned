@@ -28,7 +28,10 @@ namespace Abandoned.EditorTools
             MallExteriorBuilder.Build(mall);MallExteriorBuilder.Exits(mall);
             MallPopulator.Populate(mall);
             var setup=new StructureSceneSetup();
-            foreach(Transform e in mall.Find("Exits"))setup.AddSection(e.Find("Ledge"),SectionType.Balcony,false);
+            foreach(Transform e in mall.Find("Exits")) {
+                if(MeridianArt.UseKit)MallDamageBuilder.Floor(setup,e.Find("Ledge"),SectionType.Balcony,false,"Concrete");
+                else setup.AddSection(e.Find("Ledge"),SectionType.Balcony,false);
+            }
             MallArchitectureBuilder.BindRails(mall);
             MeridianAtmosphere.Apply(mall);
             if(MeridianArt.UseKit)MeridianArchitectureDetails.Place(mall);
