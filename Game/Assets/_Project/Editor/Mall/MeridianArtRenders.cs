@@ -16,7 +16,7 @@ namespace Abandoned.EditorTools
     public static class MeridianArtRenders
     {
         private const int Width = 1920, Height = 1080;
-        public static string Folder => Path.GetFullPath(Path.Combine(Application.dataPath, "../../Docs/renders/0.13.0"));
+        public static string Folder => Path.GetFullPath(Path.Combine(Application.dataPath, "../../Docs/renders", BuildScript.Version));
 
         public static void RenderAndExit()
         {

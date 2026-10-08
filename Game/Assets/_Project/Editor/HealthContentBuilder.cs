@@ -13,8 +13,25 @@ namespace Abandoned.EditorTools
         public static void Create()
         {
             SerializedWiring.LoadOrCreateAsset<PlayerHealthConfig>(HealthPath);
-            SerializedWiring.LoadOrCreateAsset<FlashlightConfig>(FlashlightPath);
+            FlashlightConfig flashlight = SerializedWiring.LoadOrCreateAsset<FlashlightConfig>(FlashlightPath);
+            UpgradeVisibility(flashlight);
             AssetDatabase.SaveAssets();
+        }
+
+        private static void UpgradeVisibility(FlashlightConfig config)
+        {
+            var data = new SerializedObject(config);
+            var revision = data.FindProperty("visibilityRevision");
+            if (revision.intValue >= 1) return;
+            // Apply the requested readability upgrade once, preserving later inspector tuning and battery balance.
+            data.FindProperty("<Range>k__BackingField").floatValue = 26f;
+            data.FindProperty("<Intensity>k__BackingField").floatValue = 28f;
+            data.FindProperty("<SpotAngle>k__BackingField").floatValue = 68f;
+            data.FindProperty("<Color>k__BackingField").colorValue = new UnityEngine.Color(.95f, .98f, 1f);
+            data.FindProperty("innerConeRatio").floatValue = .6f;
+            revision.intValue = 1;
+            data.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(config);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Abandoned.EditorTools
             long reflectionBytes = probes.Where(probe => probe.realtimeTexture != null)
                 .Sum(probe => Profiler.GetRuntimeMemorySizeLong(probe.realtimeTexture));
             var text = new StringBuilder();
-            text.AppendLine("# Meridian 0.13.0 — asset and Editor render report");
+            text.AppendLine($"# Meridian {BuildScript.Version} — asset and Editor render report");
             text.AppendLine();
             text.AppendLine("Captured from the saved Mall in Edit mode at 1920 × 1080. No gameplay, network, EditMode/PlayMode or screenshot tests were run.");
             text.AppendLine("FPS and the 60 FPS four-player mid-range-PC-host target remain pending the user's in-game pass. These art captures do not measure host simulation or multiplayer cost.");

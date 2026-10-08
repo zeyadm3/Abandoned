@@ -38,6 +38,7 @@ namespace Abandoned.EditorTools
             spawner.Setup(bootstrap,AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath),
                 AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath),autoSpawn:false);
             TruckBuilder.Build(GreyboxFactory.Group("Truck",mall),TruckRear,Vector3.right);
+            MeridianCollectionBayBuilder.Build(mall);
             var run=new GameObject("Run");
             var director=run.AddComponent<Abandoned.Extraction.RunDirector>();
             director.Setup(bootstrap,AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.RunStatePrefabPath).GetComponent<Unity.Netcode.NetworkObject>(),

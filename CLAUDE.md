@@ -300,3 +300,9 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   and Kick. Player names: Steam > Settings name > "Player <seat+1>". Save slots 1-3 (slot 1 = company.json).
   0.12.7 (user): the players work for a company they hate; it isn't theirs. No renaming it, no "your company" wording.
   HorrorConfig is per level (scene list, positions, sectors). Runtime scripts stay under 300 lines via partial classes.
+- 2026-10-08 (0.13.1, user visibility/parking follow-up): stronger 26 m / intensity 28 / 68-degree flashlight,
+  brighter powered mall fixtures and reduced fog; keep existing battery duration/recharge and horror power sectors.
+  Author a marked parking lot, crew arrival van beside the player spawns, independent street lamps and a clear
+  collection approach. The existing truck remains the cargo-counting and extraction system: goods must be inside
+  its cargo bay, and payment occurs on departure. The mall-only ramp/apron are 4.4 m wide; cargo dimensions and
+  HQ remain unchanged. Visibility settings migrate once, then preserve future inspector tuning.

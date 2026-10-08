@@ -7,8 +7,8 @@ namespace Abandoned.Structure
     public sealed class MeridianPresentationConfig : ScriptableObject
     {
         [Header("Ceiling fixtures")]
-        [SerializeField, Min(0.1f)] private float fixtureIntensity = 2.1f;
-        [SerializeField, Min(1f)] private float fixtureRange = 8.5f;
+        [SerializeField, Min(0.1f)] private float fixtureIntensity = 8.4f;
+        [SerializeField, Min(1f)] private float fixtureRange = 9.5f;
         [SerializeField, Range(45f, 150f)] private float fixtureAngle = 112f;
         [SerializeField, Range(0f, 0.15f)] private float fixtureCeilingClearance = 0.02f;
         [SerializeField, Range(0f, 1f)] private float basementIntensityScale = 0.6f;
@@ -22,23 +22,30 @@ namespace Abandoned.Structure
         [SerializeField, Min(1f)] private float alarmRange = 7f;
         [SerializeField, Min(0.1f)] private float fixtureFallLifetime = 5f;
 
+        [Header("Parking utility lights")]
+        [SerializeField, Min(0f)] private float parkingLampIntensity = 10f;
+        [SerializeField, Min(1f)] private float parkingLampRange = 16f;
+        [SerializeField] private Color parkingLampColor = new(0.95f, 0.80f, 0.58f);
+
         [Header("Atmosphere")]
         [SerializeField, Min(0f)] private float skyExposure = 1f;
-        [SerializeField] private Color ambientSky = new(0.045f, 0.06f, 0.08f);
-        [SerializeField] private Color ambientEquator = new(0.025f, 0.036f, 0.038f);
-        [SerializeField] private Color ambientGround = new(0.012f, 0.014f, 0.011f);
+        [SerializeField] private Color ambientSky = new(0.065f, 0.080f, 0.100f);
+        [SerializeField] private Color ambientEquator = new(0.038f, 0.049f, 0.051f);
+        [SerializeField] private Color ambientGround = new(0.018f, 0.021f, 0.018f);
         [SerializeField] private Color exteriorFog = new(0.10f, 0.13f, 0.16f);
         [SerializeField] private Color interiorFog = new(0.045f, 0.056f, 0.055f);
-        [SerializeField, Range(0f, 0.1f)] private float exteriorFogDensity = 0.014f;
-        [SerializeField, Range(0f, 0.1f)] private float interiorFogDensity = 0.028f;
+        [SerializeField, Range(0f, 0.1f)] private float exteriorFogDensity = 0.010f;
+        [SerializeField, Range(0f, 0.1f)] private float interiorFogDensity = 0.018f;
         [SerializeField] private Color moonColor = new(0.55f, 0.68f, 0.82f);
-        [SerializeField, Min(0f)] private float moonIntensity = 0.09f;
+        [SerializeField, Min(0f)] private float moonIntensity = 0.22f;
         [SerializeField] private Vector3 moonEuler = new(58f, -28f, 0f);
         [SerializeField, Range(0f, 1f)] private float bloom = 0.18f;
-        [SerializeField, Range(0f, 1f)] private float vignette = 0.2f;
+        [SerializeField, Range(0f, 1f)] private float vignette = 0.14f;
         [SerializeField, Range(0f, 1f)] private float grain = 0.10f;
         [SerializeField, Range(-100f, 100f)] private float saturation = -24f;
         [SerializeField, Range(-100f, 100f)] private float contrast = 10f;
+        [SerializeField, Range(-2f, 2f)] private float postExposure = 0.2f;
+        [SerializeField, HideInInspector] private int readabilityRevision;
 
         [Header("Dust and reflections")]
         [SerializeField, Range(0f, 0.2f)] private float dustPerCubicMetre = 0.035f;
@@ -61,6 +68,9 @@ namespace Abandoned.Structure
         public float AlarmIntensity => alarmIntensity;
         public float AlarmRange => alarmRange;
         public float FixtureFallLifetime => fixtureFallLifetime;
+        public float ParkingLampIntensity => parkingLampIntensity;
+        public float ParkingLampRange => parkingLampRange;
+        public Color ParkingLampColor => parkingLampColor;
         public float SkyExposure => skyExposure;
         public Color AmbientSky => ambientSky;
         public Color AmbientEquator => ambientEquator;
@@ -77,6 +87,7 @@ namespace Abandoned.Structure
         public float Grain => grain;
         public float Saturation => saturation;
         public float Contrast => contrast;
+        public float PostExposure => postExposure;
         public float DustPerCubicMetre => dustPerCubicMetre;
         public int DustPerZoneLimit => dustPerZoneLimit;
         public int ReflectionResolution => reflectionResolution;

@@ -4,6 +4,39 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.1 — visibility, crew arrival and collection bay (2026-10-08)
+
+Responds to the user's dark-mall feedback and request for parking, an arrival vehicle and a clear place to haul
+and cash out salvage. The 0.13.0 shaped mall architecture and gameplay layout remain the basis of this update.
+
+- **Flashlight:** 26 m range (was 12), intensity 28 (was 6), 68-degree outer / 40.8-degree inner cone, neutral white.
+  Config, generated player prefab, runtime initialisation and art renders use the same settings. Battery stays
+  420 seconds with the existing 8 seconds/second truck recharge. One-time config migration preserves later tuning.
+- **Mall visibility:** powered fixtures 8.4 intensity (was 2.1), 9.5 m range, moon 0.22, brighter ambient fill,
+  reduced exterior/interior fog (0.010 / 0.018), reduced vignette and +0.2 EV exposure. Dead/faulty lamps,
+  collapse attachment, power-off runs and the existing horror-sector rules remain authored as before.
+- **Arrival:** 40 marked parking bays, a pedestrian crossing and entrance arrows, neglected islands, an original
+  branded crew van beside the four spawn positions, three earlier vehicles and five independent street lamps.
+  The existing credited CC0 Car Kit is reused. Ground has visible colliders; dressing stays non-blocking.
+- **Collection:** the actual extraction truck has a signed 4.4 m ramp/apron approach, painted cargo boundaries,
+  haul directions and clear lever/payment instructions. The existing 2.6 × 5 m cargo bay counts goods;
+  payment occurs on departure. Leaving items on the outside apron does not count as cargo. No economy changes.
+- **Review:** 24 Editor art stills and regenerated level maps in `Docs/renders/0.13.1/`, including dedicated arrival
+  and collection views with power on/off. FPS, visible batches and four-player host performance need the user's
+  in-game profile. See `PERFORMANCE.md` for the imported texture budget and scene census.
+- **Checks:** compile and final `rebuild-horror` passed: 11 flights / 0 problems, Mall + HQ invisible colliders
+  0 (0 intentional), 306 materials / 0 problems. Art capture confirmed saved scene bytes unchanged. Imported
+  texture GPU storage is 127.98 MiB (256.04 MiB Editor/native); five added parking lights cast no shadows.
+  No EditMode/PlayMode, gameplay, network or screenshot tests run. TestMap and HQ are unchanged; unrelated
+  regenerated assets were restored. Existing low-poly vehicles remain stylistically simple in this environment.
+
+Test first:
+
+1. Spawn by the crew van, follow the crossing into the mall and compare flashlight reach with power on/off.
+2. Follow the east-drive collection signs; drag/carry a large item up the ramp, place it fully inside the truck,
+   check the haul board and pull the lever to cash out after departure. Check the board ignores apron staging.
+3. Check full-danger/final-phase lighting and record atrium FPS/batches with four crew flashlights.
+
 ## 0.13.0 — Meridian Mall rebuild (2026-10-08)
 
 Built the approved realistic mall design with the user's shaped exterior requirement: recessed entry court,

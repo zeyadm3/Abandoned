@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
             Transform mall = GameObject.Find("Mall")?.transform;
             if (mall == null || mall.Find("Tiles") == null)
                 throw new InvalidOperationException("Open the generated Mall scene before exporting its floor plans.");
-            string directory = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Docs/renders/0.13.0/floorplans"));
+            string directory = Path.Combine(MeridianArtRenders.Folder, "floorplans");
             Directory.CreateDirectory(directory);
             for (int floor = -1; floor < Floors; floor++)
             {
@@ -171,7 +171,9 @@ namespace Abandoned.EditorTools
             Line(svg, LoadingDoor, TruckRear, "#7be8e8", 3);
             Marker(svg, TruckRear, "TRUCK REAR", "#ffffff");
             Marker(svg, LoadingDoor, "LOADING", "#7be8e8");
+            Marker(svg, ArrivalVehicle, "CREW VAN", "#e2f8ba");
             ascii.AppendLine($"\nTRUCK rear={Position(TruckRear)}; loading door={Position(LoadingDoor)}; dock route is +X.");
+            ascii.AppendLine($"CREW ARRIVAL VAN={Position(ArrivalVehicle)}; parking aisle connects to the east collection drive.");
             Transform spawns = mall.Find("Spawns");
             if (spawns == null) return;
             foreach (Transform spawn in spawns)

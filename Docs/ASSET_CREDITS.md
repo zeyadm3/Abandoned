@@ -64,3 +64,13 @@ No third-party files were downloaded for the 0.13.0 Meridian kit. Its texture pa
 geometry and graffiti are authored from the original scripts above. Existing third-party credits
 remain valid; no paid assets or new Unity packages were introduced. Import settings, map packing,
 pivots and measured FBX geometry are documented in the kit README/manifest and Tools/Blender/README.md.
+
+Original presentation for the 0.13.1 visibility and parking update (2026-10-08):
+
+| Pack | Author | Licence | Source | What we use | In the project |
+|------|--------|---------|--------|-------------|----------------|
+| Meridian parking and collection markings | ABANDONED original art and writing | Project-owned original work | Editor/Mall/MeridianParkingBuilder.cs and MeridianCollectionBayBuilder.cs | Parking bays, crosswalk, directional arrows, utility lamps, original crew-van lettering and collection/cash-out notices; material variants reuse the original Meridian PBR maps | Art/Generated/MeridianParking/ and Art/Generated/MeridianCollection/; generated Mall scene |
+
+The crew arrival van and three parked vehicles reuse the already credited Kenney Car Kit models and
+colour texture under `Art/ThirdParty/Kenney/CarKit/` (Kenney, CC0, https://kenney.nl/assets/car-kit).
+No additional third-party files were downloaded for 0.13.1.

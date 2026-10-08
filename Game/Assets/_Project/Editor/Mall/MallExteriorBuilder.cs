@@ -12,29 +12,24 @@ namespace Abandoned.EditorTools
         {
             Transform exterior=Group("Exterior",mall),slabs=Group("GroundSlabs",exterior),parking=Group("Parking",exterior);
             Material asphalt=MeridianArt.Material("Asphalt"),stone=MeridianArt.Material("FacadeStone");
-            Box("Lot",parking,new Vector3(28,-.2f,-16),new Vector3(100,.4f,40),asphalt);
-            Box("EastDrive",slabs,new Vector3(68,-.2f,24),new Vector3(24,.4f,48),asphalt);
+            MeridianParkingBuilder.Build(parking);
             Box("WestWalk",slabs,new Vector3(-6,-.2f,24),new Vector3(12,.4f,48),stone);
             Box("RearWalk",slabs,new Vector3(28,-.2f,54),new Vector3(80,.4f,12),asphalt);
-            Box("Forecourt",slabs,new Vector3(28,-.2f,2),new Vector3(16,.4f,4),stone);
-            Box("DockApron",slabs,new Vector3(58,-.125f,34),new Vector3(4,.25f,4),stone);
+            Box("Forecourt",slabs,new Vector3(28,-.197f,2),new Vector3(16,.4f,4),stone);
+            Box("DockApron",slabs,new Vector3(58,-.12f,34),new Vector3(4,.25f,4),stone);
             // Setback gaps need real walking ground; the mall mask owns exactly where slabs remain absent.
             for(int x=0;x<TilesX;x++)for(int z=0;z<TilesZ;z++)if(!InFootprint(new Vector2Int(x,z)))
                 Box("Setback",slabs,new Vector3(x*4+2,-.2f,z*4+2),new Vector3(4,.4f,4),stone);
-            foreach(int row in new[]{-26,-18})for(int n=0;n<9;n++) {
-                var stripe=Box("ParkingStripe",parking,new Vector3(5+n*5,.006f,row),new Vector3(.08f,.008f,4.5f),MeridianArt.Material("FixtureTrim"),false);
-                stripe.GetComponent<Renderer>().shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
-            }
             // The entry canopy and low island frame an oblique spawn view, not a featureless wall.
             if(!MeridianArt.UseKit) {
                 Box("EntranceCanopy",exterior,new Vector3(28,4.2f,.9f),new Vector3(15,.25f,5),MeridianArt.Material("Metal"),false);
                 foreach(float x in new[]{20.3f,35.7f})Box("CanopyPost",exterior,new Vector3(x,2,.4f),new Vector3(.28f,4,.28f),stone);
             }
-            Box("LandscapeIsland",exterior,new Vector3(13,.18f,-6),new Vector3(7,.36f,3),stone);
-
             MeridianDressingSigns.Sign(exterior,new Vector3(12,7.2f,-.65f),Vector3.back,"DEAD CIRCUIT",6,.4f);
             MeridianDressingSigns.Sign(exterior,new Vector3(56.15f,2.5f,34),Vector3.right,"GOODS IN / CREW OUT",3,.3f);
-            foreach(Transform t in exterior.GetComponentsInChildren<Transform>())if(t.GetComponent<Collider>()!=null)t.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
+            foreach(Transform t in exterior.GetComponentsInChildren<Transform>())
+                if(t.GetComponent<Collider>()!=null&&t.GetComponent<SurfaceTag>()==null)
+                    t.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
             MarkStatic(exterior);
         }
         public static void Exits(Transform mall)

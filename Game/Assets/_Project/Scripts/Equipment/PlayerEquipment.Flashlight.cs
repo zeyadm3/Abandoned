@@ -26,6 +26,7 @@ namespace Abandoned.Equipment
             flashlight.range = FlashlightConfig.Range;
             flashlight.intensity = FlashlightConfig.Intensity;
             flashlight.spotAngle = FlashlightConfig.SpotAngle;
+            flashlight.innerSpotAngle = FlashlightConfig.InnerSpotAngle;
             flashlight.color = FlashlightConfig.Color;
             // QA P-07: four shadowed beams plus the ceiling lights is the atrium's worst case. Your own beam
             // keeps its shadows (that's what makes a dark store read); crewmates' beams light without them.

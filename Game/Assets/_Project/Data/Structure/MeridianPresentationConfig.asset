@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b6296920ed44dd09f25f4366fa22f1, type: 3}
   m_Name: MeridianPresentationConfig
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Structure.MeridianPresentationConfig
-  fixtureIntensity: 2.1
-  fixtureRange: 8.5
+  fixtureIntensity: 8.4
+  fixtureRange: 9.5
   fixtureAngle: 112
   fixtureCeilingClearance: 0.02
   basementIntensityScale: 0.6
@@ -26,22 +26,27 @@ MonoBehaviour:
   alarmIntensity: 1.3
   alarmRange: 7
   fixtureFallLifetime: 5
+  parkingLampIntensity: 10
+  parkingLampRange: 16
+  parkingLampColor: {r: 0.95, g: 0.8, b: 0.58, a: 1}
   skyExposure: 1
-  ambientSky: {r: 0.045, g: 0.06, b: 0.08, a: 1}
-  ambientEquator: {r: 0.025, g: 0.036, b: 0.038, a: 1}
-  ambientGround: {r: 0.012, g: 0.014, b: 0.011, a: 1}
+  ambientSky: {r: 0.065, g: 0.08, b: 0.1, a: 1}
+  ambientEquator: {r: 0.038, g: 0.049, b: 0.051, a: 1}
+  ambientGround: {r: 0.018, g: 0.021, b: 0.018, a: 1}
   exteriorFog: {r: 0.1, g: 0.13, b: 0.16, a: 1}
   interiorFog: {r: 0.045, g: 0.056, b: 0.055, a: 1}
-  exteriorFogDensity: 0.014
-  interiorFogDensity: 0.028
+  exteriorFogDensity: 0.01
+  interiorFogDensity: 0.018
   moonColor: {r: 0.55, g: 0.68, b: 0.82, a: 1}
-  moonIntensity: 0.09
+  moonIntensity: 0.22
   moonEuler: {x: 58, y: -28, z: 0}
   bloom: 0.18
-  vignette: 0.2
+  vignette: 0.14
   grain: 0.1
   saturation: -24
   contrast: 10
+  postExposure: 0.2
+  readabilityRevision: 1
   dustPerCubicMetre: 0.035
   dustPerZoneLimit: 56
   reflectionResolution: 128

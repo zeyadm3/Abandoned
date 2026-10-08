@@ -53,6 +53,7 @@ namespace Abandoned.EditorTools
             ColorAdjustments color = Get<ColorAdjustments>(profile);
             color.saturation.Override(config.Saturation);
             color.contrast.Override(config.Contrast);
+            color.postExposure.Override(config.PostExposure);
             EditorUtility.SetDirty(profile);
             var volume = new GameObject("PostProcessing").AddComponent<Volume>();
             volume.transform.SetParent(parent, false);

@@ -60,7 +60,8 @@ namespace Abandoned.EditorTools
         public static Bounds BuildingBounds => new(new Vector3(28,4,24),new Vector3(56,16,48));
         public static Vector3 LoadingDoor => new(56,0,34);
         public static Vector3 TruckRear => LoadingDoor+Vector3.right*6;
-        public static Vector3 SpawnCentre => new(25,.05f,-12);
+        public static Vector3 ArrivalVehicle => new(18,0,-17);
+        public static Vector3 SpawnCentre => new(22,.05f,-12);
         public static Vector3 EntranceTarget => new(28,1.2f,5);
         public static float FloorY(int floor) => floor*StoryHeight;
         public static Vector3 TileTopCenter(Vector2Int c,int floor) => new((c.x+.5f)*Tile,FloorY(floor),(c.y+.5f)*Tile);

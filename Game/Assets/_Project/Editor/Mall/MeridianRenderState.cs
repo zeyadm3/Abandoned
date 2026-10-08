@@ -67,7 +67,7 @@ namespace Abandoned.EditorTools
                 torch.range = config != null ? config.Range : 12f;
                 torch.intensity = config != null ? config.Intensity : 6f;
                 torch.spotAngle = config != null ? config.SpotAngle : 52f;
-                torch.innerSpotAngle = torch.spotAngle * .65f;
+                torch.innerSpotAngle = config != null ? config.InnerSpotAngle : torch.spotAngle * .6f;
                 torch.color = config != null ? config.Color : new Color(.83f, .87f, .8f);
                 // Match the owner's shadow beam and the three non-shadowed remote beams.
                 torch.shadows = index == 0 ? LightShadows.Soft : LightShadows.None;

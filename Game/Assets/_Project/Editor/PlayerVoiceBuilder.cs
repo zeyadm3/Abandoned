@@ -69,6 +69,7 @@ namespace Abandoned.EditorTools
             light.type = LightType.Spot;
             light.range = flashlightConfig.Range;
             light.spotAngle = flashlightConfig.SpotAngle;
+            light.innerSpotAngle = flashlightConfig.InnerSpotAngle;
             light.intensity = flashlightConfig.Intensity;
             light.color = flashlightConfig.Color;
             // Soft shadows make the beam read in a dark store; carried items don't cast any (Grabbable).

@@ -19,6 +19,8 @@ namespace Abandoned.EditorTools
             new("service-corridor", new Vector3(42f, 1.7f, 25.5f), new Vector3(42f, 1.7f, 35f)),
             new("basement", new Vector3(42f, -2.3f, 29f), new Vector3(49f, -2.5f, 34f)),
             new("parking-night", MallLayout.SpawnCentre + Vector3.up * 1.65f, new Vector3(28f, 4f, 6f)),
+            new("parking-arrival", new Vector3(32f, 1.7f, -24f), new Vector3(18f, 1.2f, -13f)),
+            new("collection-bay", new Vector3(57f, 1.7f, 34f), new Vector3(65.5f, 1.55f, 34f)),
             new("gallery-wound", new Vector3(26f, 9.7f, 35.5f), new Vector3(34f, 8.6f, 43f)),
         };
     }
