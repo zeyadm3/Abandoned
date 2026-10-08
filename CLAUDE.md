@@ -103,6 +103,20 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-08 (user-approved 0.13.0 Meridian rebuild):
+  - Environment art becomes grounded and realistic, replacing the earlier one-low-poly-style rule
+    for the mall. Characters, threats and loot keep their current look; flag clashes for the user.
+  - Approved plan: Docs/MERIDIAN_MALL_0.13.0_PLAN.md. The user's follow-up requires a stepped,
+    recessed exterior and varied mall interior, not a large square/rectangular box; parking spawns
+    frame the entrance, anchor frontage and skylight as a recognisable shopping mall.
+  - Preserve the roughly 56 x 48 m envelope, but carve entry courts/corner setbacks and shape
+    the atrium/circulation; keep modular 4 m sections and 4 m stories for the runtime contracts.
+  - Separate Meridian Blender kit/materials preserve shared HQ, wardrobe and legacy art exactly.
+    Rebuild via compile/rebuild-horror/build only; user tests. Editor art still renders are approved.
+  - Protect service landing slabs, haul/escape connections and loading approach as well as stairs;
+    permanent authored descent exits reuse existing SafeDescent, with no new rope inventory system.
+  - No new packages, paid assets, TestMap changes or pushes. Commit each checked stage. Four-player
+    host performance stays pending the user's run; report Editor/asset figures honestly.
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).
 - Structure uses modular sections + pre-fractured mesh swaps, not real-time destruction.
 - Levels are hand-built layouts with randomized contents, not procedural generation.
