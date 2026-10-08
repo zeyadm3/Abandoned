@@ -4,6 +4,11 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.4b — monster songs only on your floor while it approaches; no Collector tip (2026-10-08)
+
+Written, not compiled or run. A monster's song now plays only while it is on the listener's floor (feet within
+2.5 m height) and the gap is shrinking; it stops 2 s after either ends. The one-time Collector tip card is removed.
+
 ## 0.13.4 — monster arrivals, monster songs, a decaying mall and lasting rubble (2026-10-08)
 
 The user's brief: monsters were too rare (30 min in the mall without meeting anything), each monster should have
@@ -36,9 +41,10 @@ they do all testing, running and verifying). Run `Tools/unity.sh compile`, then 
   (disabled colliders report empty bounds).
 - **Monster songs** (`ThreatMusic`, `ThreatMusicSynth`, `ThreatDefinition.MusicClip/HierarchyOverride`): eight
   original synthesised loops. Hierarchy = one-touch killers first, then damage / attack gap x chase speed:
-  Last Hunter > Hunter > Stalker > Blind One > Thing > Crawlers > Collector > Weight. A monster counts while it chases
-  or closes in; its song starts when it could reach the listener within 15 s at its top danger-scaled speed
-  (straight-line, so at least 15 s), swells to full at 2 s, and stops after 4 s of not approaching beyond 20 s.
+  Last Hunter > Hunter > Stalker > Blind One > Thing > Crawlers > Collector > Weight. A monster counts only while it
+  is on the listener's floor (feet within 2.5 m height) and actually closing in; its song starts when it could reach
+  the listener within 15 s at its top danger-scaled speed (straight-line, so at least 15 s), swells to full at 2 s,
+  and stops 2 s after it stops approaching or leaves the floor. The Collector tip card is gone (no theft hint).
   Only the highest-ranked counting monster plays (1.5 s crossfade). Local per machine, Music volume slider.
 - **F1**: threats alive/cap/next arrival/drifting, drift gizmos; decay interval/next/cracking/down or the total
   collapse countdown, gizmos on cracking sections; music leader, rank, ETA, volume.

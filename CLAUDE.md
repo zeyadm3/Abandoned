@@ -134,7 +134,7 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   leaves a SOLID mound that blocks players/loot/monsters (user: rubble must be big and block) - this replaces "debris never
   blocks" for mounds only; mounds are deterministic and local (not networked), never on stairs or SectionKeepClear route
   sections. Each monster has its own song; only the highest in the hierarchy (one-touch kill > damage rate x chase speed)
-  of the monsters approaching plays, starting at least 15 s before it can reach you. Never test/verify/run anything
+  of the monsters approaching on your floor plays, starting at least 15 s before it can reach you. No Collector tip. Never test/verify/run anything
   (no compile/rebuild/build either) unless the user asks.
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).
 - Structure uses modular sections + pre-fractured mesh swaps, not real-time destruction.

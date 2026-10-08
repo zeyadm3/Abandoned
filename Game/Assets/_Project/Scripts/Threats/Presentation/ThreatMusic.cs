@@ -9,9 +9,9 @@ namespace Abandoned.Threats
 {
     /// <summary>
     /// Every machine, for its own ears (2026-10-08): the song of the most dangerous monster coming for you.
-    /// A monster counts once it chases you or keeps closing in, and its song starts when it could reach you
-    /// within <see cref="StartSeconds"/> at its top speed (straight line: the real path is never shorter, so
-    /// that is at least 15 s of warning). Of all the monsters counting, only the highest in the hierarchy
+    /// A monster counts only while it is on your floor and moving toward you, and its song starts when it
+    /// could reach you within <see cref="StartSeconds"/> at its top speed (straight line: the real path is
+    /// never shorter, so that is at least 15 s of warning). It stops soon after it stops coming or changes floor. Of all the monsters counting, only the highest in the hierarchy
     /// (<see cref="ThreatDefinition.HierarchyScore"/>) plays, the nearer one breaking a tie; it gets louder
     /// as it gets closer and crossfades when another takes over. Reads only replicated position and state,
     /// so nothing new is networked. One per game, made on first scene load (never in batch mode).
@@ -19,8 +19,10 @@ namespace Abandoned.Threats
     public class ThreatMusic : MonoBehaviour
     {
         public const float StartSeconds = 15f;
-        private const float StopSeconds = 20f, FullSeconds = 2f, Linger = 4f, Crossfade = 1.5f, Tick = 0.1f;
+        private const float FullSeconds = 2f, Linger = 2f, Crossfade = 1.5f, Tick = 0.1f;
         private const float Level = 0.6f, QuietestShare = 0.15f, ChaseBoost = 0.15f, ClosingSpeed = 0.3f;
+        // Same floor: feet within this height of each other (stories are 4 m), and the ear sits ~1.6 m above the feet.
+        private const float SameFloor = 2.5f, EarHeight = 1.6f;
 
         private class Track
         {
@@ -106,6 +108,11 @@ namespace Abandoned.Threats
             AudioListener ear = VoiceListener.Current;
             if (ear == null) { leader = null; return; }
             Vector3 at = ear.transform.position;
+            // The listener's floor: your own feet while alive, otherwise below the (ghost) ear.
+            Networking.NetworkPlayer me = Networking.NetworkPlayer.Local;
+            float feetY = me != null && !me.IsDead
+                ? (me.Ragdoll.IsRagdolled ? me.Ragdoll.BodyPosition.y : me.transform.position.y)
+                : at.y - EarHeight;
             float speedScale = 1f + run.State.Danger * speedPerLevel;
 
             gone.Clear();
@@ -118,7 +125,7 @@ namespace Abandoned.Threats
             {
                 if (t == null || !t.IsSpawned || t.Definition == null) continue;
                 if (!tracks.TryGetValue(t, out Track track)) tracks[t] = track = new Track { lastPosition = t.transform.position };
-                Measure(t, track, at, speedScale);
+                Measure(t, track, at, feetY, speedScale);
                 if (!track.active) continue;
                 float score = t.Definition.HierarchyScore;
                 if (score > bestScore || Mathf.Approximately(score, bestScore) && track.eta < bestEta)
@@ -138,7 +145,7 @@ namespace Abandoned.Threats
         }
 
         // Closing speed and time-to-reach for one monster, and whether its song may play.
-        private void Measure(Threat t, Track track, Vector3 ear, float speedScale)
+        private void Measure(Threat t, Track track, Vector3 ear, float feetY, float speedScale)
         {
             Vector3 position = t.transform.position;
             float distance = Vector3.Distance(position, ear);
@@ -154,13 +161,14 @@ namespace Abandoned.Threats
             track.lastTime = Time.time;
             track.lastDistance = distance;
             track.lastPosition = position;
-            bool chasing = t.DesiredMotion == ThreatMotion.Chase || t.DesiredMotion == ThreatMotion.Attack;
-            if (chasing || track.closing > ClosingSpeed) track.lastApproach = Time.time;
+            // Coming toward you means the gap is actually shrinking; chasing someone else elsewhere doesn't count.
+            if (track.closing > ClosingSpeed) track.lastApproach = Time.time;
+            bool sameFloor = Mathf.Abs(position.y - feetY) <= SameFloor;
             // Its top speed (danger makes it faster); never slower than it has actually been seen moving.
             track.eta = distance / Mathf.Max(top, track.observedSpeed);
             bool approaching = Time.time - track.lastApproach <= (track.active ? Linger : Tick * 1.5f);
-            // On at 15 s away while it comes for you; off once it has stopped coming for a while and is over 20 s away.
-            track.active = track.active ? approaching || track.eta <= StopSeconds : approaching && track.eta <= StartSeconds;
+            // On at 15 s away while it comes for you on your floor; off a moment after it stops coming or leaves the floor.
+            track.active = sameFloor && approaching && (track.active || track.eta <= StartSeconds);
         }
 
         private void Switch(ThreatDefinition d)

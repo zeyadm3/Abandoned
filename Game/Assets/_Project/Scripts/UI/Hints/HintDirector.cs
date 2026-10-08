@@ -83,7 +83,7 @@ namespace Abandoned.UI
             // A nine-second tutorial card would obscure the route while the player needs to move.
             if (ThreatNear<BlindOne>(me) && Unseen(HintId.BlindOne) is HintId blind) return blind;
             if (ThreatNear<Stalker>(me) && Unseen(HintId.Stalker) is HintId stalker) return stalker;
-            if (ThreatNear<Collector>(me) && Unseen(HintId.Collector) is HintId collector) return collector;
+            // No Collector tip (user, 2026-10-08): finding out it steals loot is part of the dread.
             if (ThreatNear<Hunter>(me) && Unseen(HintId.Hunter) is HintId hunter) return hunter;
             if (run.Elapsed > RunGoalDelay && Unseen(HintId.RunGoal) is HintId goal) return goal;
             if (run.State.PowerOff && Unseen(HintId.PowerOff) is HintId power) return power;
