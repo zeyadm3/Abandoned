@@ -273,3 +273,8 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
 - 2026-10-08 (0.12.5): wardrobe items are free, bought once with company money (PlayerCosmetics.RequestBuy -> host
   CompanyService.TryCharge -> owner's PlayerProfile), or achievement rewards. Models: Environment/Cosmetics (Blender kit).
   MenuKit buttons must never get child elements (a text element with children stops measuring its text).
+- 2026-10-08 (0.12.6, QA fix pass from Docs/QA_REPORT_2026-10-08.md): dev keys only in editor/Development builds
+  (Core.DevTools). The truck shelters only while honking, or always with the Armored Bay. Crashed jobs are voided;
+  deliberate mid-job exits still count. Host crew rules (CompanyService.CrewRules, default: crew may pull the lever only)
+  and Kick. Player names: Steam > Settings name > "Player <seat+1>". Company save slots 1-3 (slot 1 = company.json).
+  HorrorConfig is per level (scene list, positions, sectors). Runtime scripts stay under 300 lines via partial classes.

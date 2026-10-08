@@ -4,6 +4,49 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.12.6 — QA fix pass (2026-10-08)
+
+Fixes everything Docs/QA_REPORT_2026-10-08.md asks for (bugs B-01..B-36, balance D-01..D-10, performance P-01..P-08,
+code health C-01..C-05, accessibility O-01). Not tested (user tests everything): compile, `rebuild-horror` (5 flights /
+0 problems, Mall + HQ invisible colliders 0, 270 materials / 0) and builds only. Builds **0.12.6**, commit **de86d60**
+(clean): `~/Documents/Abandoned-builds/dev/Abandoned-0.12.6-de86d60-Mac.zip` (53 MB) and `...-Windows.zip` (45 MB).
+Commits: 037b562 (bugs), 4bff364 (balance/perf/health), de86d60 (regenerated content).
+
+- **Critical:** a shutter never slams with a living player in the store or near its doorway, or loot in the doorway;
+  from inside, E heaves a locked shutter up by hand (6 s, loud); the slam has its own sound. F1 overlay, K ragdoll and
+  the structure keys work only in the editor and Development builds (`Core.DevTools`); F9 free camera in player
+  builds only at the HQ or as a ghost; debug overlays are switched off in player builds.
+- **High:** the truck shelters you only once it's honking to leave, or all job with the Armored Bay (was: always, so the
+  upgrade did nothing). Level travel loads async, shows LOADING % / WAITING FOR <names>, and drops a machine that hasn't
+  loaded after 90 s. A crash or lost connection voids the job (no penalty, no strike); quitting from the pause menu or
+  closing the window mid-job still counts as failed (the button says so). Real names: Steam name, else Settings >
+  Gameplay > Your name, else "Player 1-4" by crew seat. Host crew rules in the pause menu (crew may spend / start the
+  van / pull the lever; default: lever only), Kick (press twice). Lever below quota needs a second pull within 4 s;
+  pulling it while the truck honks (more than 2 s left) stops the departure. Settings > Accessibility: Reduce flashing
+  lights, Fewer jump scares, heartbeat volume; subtitles on by default.
+- **Medium/low:** ragdolling mid-fall keeps the fall height; E works with loot in hand (levers, shutters, notes, and
+  pocket-sized loot); Tab + wheel picks which pocket to drop; others see a corpse kept on the real body (medkit works
+  there); a dead player's pockets spread in a ring; monsters spawn 14 m+ from and out of sight of players; the Stalker
+  breathes (no creak); chat is byte-safe and markup-proof; Sealed jobs say TOOLS: bolt cutters or a crowbar; loot held
+  by someone aboard counts; a wipe pays 50 % of the bay, no bonus; truck materials are assets (no Shader.Find); a throw
+  during a pending release is queued; rubble/players don't block aiming; company save slots (Play screen), rename and
+  "Start a new company" (pause, at the HQ); per-player voice volume remembered by Steam id; recovery falls back to the
+  last floor stood on; touching loot swung into you knocks you down; authored shadows kept; jumping blocked while
+  hauling; video settings cached and flushed; Chat (T), Free camera (F9), Hide HUD (F10) and the new Give gear (G) are
+  rebindable.
+- **Balance:** flashlight 420 s, recharging 8 s/s in the truck; two of six light sectors keep power at max danger;
+  ageing every 15 s at 8 %; solo final phase 60 s later; one plain job on every board; the Blind One only strikes
+  someone it heard within 3 m in the last 2 s; the Collector keeps one nest per run that jingles; alone, the company's
+  hand trolley needs no hand slot; G hands your active gear to the crewmate in front of you or takes a fallen one's.
+- **Performance/code:** cached structural supports (SupportCache), re-paths at most 4/s, horror lights only on change,
+  cheap truck mirror, no shadows on others' and corpses' flashlights; RunHorrorDirector, TruckSanctuary, MysteryNote and
+  ServerSlam reformatted; HorrorConfig holds the level's scene list, positions and light sectors; every runtime script
+  is under 300 lines (partial classes); tunables moved to configs.
+- **Not done (decisions/assets for you):** a font with Arabic/Cyrillic/CJK glyphs (names/chat may show boxes),
+  D-05 money needs playtest numbers, and the report's feature ideas/assets/options lists (sections 7-10) beyond the above.
+- **Test first:** report section 11 is the checklist; new controls: G, Tab + wheel, lever double-pull and cancel, pause
+  menu CREW MAY toggles + Kick + COMPANY, Play screen Company slot, Settings > Accessibility.
+
 ## 0.12.5 (2026-10-08)
 
 From the user's screenshots (Desktop, file names = instructions). Not tested (user tests everything); compile,
