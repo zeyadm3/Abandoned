@@ -227,9 +227,22 @@
 .footer {
     position: absolute;
     right: 28px;
-    bottom: 18px;
+    bottom: 24px;
     font-size: 15px;
     color: var(--c-faint);
+}
+
+/* 0.13.4b.EEA: on every screen, tucked under the HUD's hand slots and the menu footer. */
+.ea-watermark {
+    position: absolute;
+    right: 10px;
+    bottom: 3px;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: rgba(218, 198, 147, 0.55);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
 }
 
 /* ---- Fields and settings ---- */

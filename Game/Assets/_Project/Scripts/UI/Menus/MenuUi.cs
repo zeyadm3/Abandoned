@@ -43,6 +43,7 @@ namespace Abandoned.UI
         private MenuScreenFx fx;
         private MenuPostEffects post;
         private MenuBackdrop backdrop;
+        private EarlyAccessWatermark watermark;
 
         public static MenuUi Current { get; private set; }
         public MenuScreen Showing { get; private set; } = (MenuScreen)(-1);
@@ -137,6 +138,7 @@ namespace Abandoned.UI
             subtitles = new SubtitleView();
             root.Add(subtitles.Root);
             SubtitleFeed.Heard += subtitles.Add;
+            watermark = EarlyAccessWatermark.Enabled ? new EarlyAccessWatermark(root) : null;
             Showing = (MenuScreen)(-1);
             nextCrtTwitch = Time.unscaledTime + 11f;
             if (GetComponent<HorrorRunHud>() == null) gameObject.AddComponent<HorrorRunHud>();
@@ -164,6 +166,7 @@ namespace Abandoned.UI
         private void Update()
         {
             subtitles?.Tick();
+            watermark?.KeepOnTop();
             if (bootstrap == null) return;
             bool running = bootstrap.IsRunning;
             AutoOpenDemoEnd(running);
