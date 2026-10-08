@@ -39,17 +39,17 @@ namespace Abandoned.UI
             MenuKit.Show(clock, active && me != null && !me.IsDead);
             if (active)
             {
-                bool final = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase;
+                bool final = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase || run.TotalCollapse;
                 int danger = Mathf.Clamp(run.State.Danger, 0, marks.Length);
                 for (int i = 0; i < marks.Length; i++) marks[i].EnableInClassList("horror-danger__mark--on", i < danger);
                 clock.EnableInClassList("horror-danger--final", final);
-                string text = final ? "LOCKDOWN" : run.WindowClosed ? "OVERSTAY" : "BUILDING SIGNAL";
+                string text = run.TotalCollapse ? $"COLLAPSE {Mathf.CeilToInt(run.CollapseRemaining)}s" : final ? "LOCKDOWN" : run.WindowClosed ? "OVERSTAY" : "BUILDING SIGNAL";
                 if (status.text != text) status.text = text;
                 float elapsed = run.State.Window > 0f ? 1f - run.WindowRemaining / run.State.Window : 1f;
                 UiKit.SetBar(progress, elapsed, run.WindowClosed || final ? "bad" : null);
             }
             string incoming = RunHorrorDirector.RadioLine;
-            bool urgent = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase;
+            bool urgent = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase || run != null && run.IsSpawned && run.TotalCollapse;
             if (active && !string.IsNullOrEmpty(incoming) && incoming != observedRadio && Time.time <= RunHorrorDirector.RadioUntil)
             {
                 observedRadio = incoming;

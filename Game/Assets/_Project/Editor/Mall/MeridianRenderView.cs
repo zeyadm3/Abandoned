@@ -16,6 +16,8 @@ namespace Abandoned.EditorTools
             new("food-court", new Vector3(18f, 1.7f, 41.5f), new Vector3(24f, 1.8f, 47.5f)),
             new("cinema", new Vector3(19f, 9.7f, 13.6f), new Vector3(15.95f, 10.6f, 14f)),
             new("dead-circuit", new Vector3(13f, 1.7f, 14f), new Vector3(8.5f, 1.2f, 10f)),
+            new("threadbare-interior", new Vector3(12f, 1.7f, 26f), new Vector3(7f, 1.3f, 27f)),
+            new("cinema-interior", new Vector3(10.7f, 9.7f, 27.5f), new Vector3(10f, 9.6f, 16.4f)),
             new("service-corridor", new Vector3(42f, 1.7f, 25.5f), new Vector3(42f, 1.7f, 35f)),
             new("basement", new Vector3(42f, -2.3f, 29f), new Vector3(49f, -2.5f, 34f)),
             new("parking-night", MallLayout.SpawnCentre + Vector3.up * 1.65f, new Vector3(28f, 4f, 6f)),

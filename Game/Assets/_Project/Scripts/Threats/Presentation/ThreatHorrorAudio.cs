@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Abandoned.Threats
 {
-    /// <summary>Original synthesised signatures routed through the effects source pool. No score plays during runs.</summary>
+    /// <summary>Original synthesised signatures routed through the effects source pool. Each monster's song is <see cref="ThreatMusic"/>.</summary>
     public class ThreatHorrorAudio : MonoBehaviour
     {
         private static readonly Dictionary<ThreatKind, AudioClip> Clips = new();

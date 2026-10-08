@@ -81,8 +81,13 @@ namespace Abandoned.EditorTools
         private static MeridianRenderSample Render(Camera camera, RenderTexture target, string name, int flashlights)
         {
             var request = new UniversalRenderPipeline.SingleCameraRequest { destination = target };
-            if (RenderPipeline.SupportsRenderRequest(camera, request)) RenderPipeline.SubmitRenderRequest(camera, request);
-            else camera.Render();
+            // Give newly assigned materials and probes a discarded submission before the readback.
+            bool supported = RenderPipeline.SupportsRenderRequest(camera, request);
+            for (int frame = 0; frame < 2; frame++)
+            {
+                if (supported) RenderPipeline.SubmitRenderRequest(camera, request);
+                else camera.Render();
+            }
             RenderTexture previous = RenderTexture.active;
             var pixels = new Texture2D(Width, Height, TextureFormat.RGB24, false);
             try

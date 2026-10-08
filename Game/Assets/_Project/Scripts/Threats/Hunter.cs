@@ -143,7 +143,7 @@ namespace Abandoned.Threats
             for (int i = 0; i < 8; i++)
             {
                 Vector2 r = Random.insideUnitCircle * config.PatrolRadius;
-                Vector3 guess = transform.position + new Vector3(r.x, Random.Range(-4f, 4f), r.y);
+                Vector3 guess = RoamCentre + new Vector3(r.x, Random.Range(-4f, 4f), r.y);
                 if (NavMesh.SamplePosition(guess, out NavMeshHit hit, 4f, NavMesh.AllAreas))
                 {
                     agent.SetDestination(hit.position);

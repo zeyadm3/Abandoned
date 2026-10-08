@@ -100,7 +100,9 @@ namespace Abandoned.Tests
 
             float wait = rig.Config.DebrisLifetime - 1.5f + 0.5f;
             for (float t = 0f; t < wait; t += Time.deltaTime) yield return null;
-            Assert.IsTrue(view.Debris == null, "debris removed after its lifetime");
+            // 2026-10-08: rubble stays. The chunks settle (no longer moving or budgeted) instead of vanishing.
+            Assert.IsTrue(view.Debris != null && view.Debris.GetComponent<DebrisLifetime>().Resting, "debris settles and stays as rubble");
+            Assert.IsTrue(view.Debris.GetComponentsInChildren<Rigidbody>().All(c => c.isKinematic), "settled chunks are frozen");
             Assert.AreEqual(before, DebrisSpawner.LiveChunks);
         }
 

@@ -49,6 +49,20 @@ namespace Abandoned.Structure
             foreach (Light light in fragment.GetComponentsInChildren<Light>(true)) Destroy(light);
             Renderer[] renderers = fragment.GetComponentsInChildren<Renderer>(true);
             for (int i = 0; i < renderers.Length; i++) renderers[i].enabled = i < visibleBeforeCollapse.Length && visibleBeforeCollapse[i];
+            var block = new MaterialPropertyBlock();
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.sharedMaterials;
+                for (int index = 0; index < materials.Length; index++)
+                {
+                    if (materials[index] == null || !materials[index].HasProperty("_EmissionColor")) continue;
+                    // A detached diffuser has lost its circuit; its clone has no power controller.
+                    block.Clear();
+                    renderer.GetPropertyBlock(block, index);
+                    block.SetColor("_EmissionColor", Color.black);
+                    renderer.SetPropertyBlock(block, index);
+                }
+            }
             foreach (LODGroup lod in fragment.GetComponentsInChildren<LODGroup>(true)) lod.ForceLOD(-1);
 
             var body = fragment.AddComponent<Rigidbody>();

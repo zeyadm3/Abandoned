@@ -15,41 +15,51 @@ namespace Abandoned.EditorTools
             MeridianPresentationConfig config = MeridianPresentationConfigBuilder.Load();
             Transform group = Group("MeridianFixtures", mall);
             int fixtures = 0, shadows = 0;
+            int atrium = MeridianAtriumLighting.Place(group, config, Mathf.Min(config.AtriumFixtures, config.MaximumFixtures));
+            int ceilingBudget = Mathf.Max(0, config.MaximumFixtures - atrium);
             for (int floor = -1; floor < MallLayout.Floors; floor++)
             for (int x = 0; x < MallLayout.TilesX; x++)
             for (int z = 0; z < MallLayout.TilesZ; z++)
             {
                 var cell = new Vector2Int(x, z);
-                bool serviceSpine = x == 0 || x == MallLayout.Basement.xMin;
-                bool coreLanding = x == MallLayout.Basement.xMin + 1 && (z == 8 || z == 11);
-                if (!Occupied(cell, floor) || (!coreLanding && ((!serviceSpine && (x + floor + 2) % 2 != 0) || z % 2 != 0))) continue;
+                if (!Occupied(cell, floor) || !Selected(cell, floor, config)) continue;
                 if (MallLayout.AllFlights.Any(f => (f.Floor == floor || f.Floor == floor - 1) && f.Tiles.Contains(cell))) continue;
                 StructuralSection support = floor + 1 < MallLayout.Floors ? Support(mall, cell, floor + 1) : null;
                 if (floor + 1 < MallLayout.Floors && support == null) continue;
                 if (floor == MallLayout.Floors - 1 && MallLayout.IsAtriumVoid(cell)) continue;
-                if (fixtures >= config.MaximumFixtures) continue;
+                if (fixtures >= ceilingBudget) continue;
                 int hash = Hash(cell, floor);
-                bool shadow = floor >= 0 && shadows < config.ShadowLights && hash % 13 == 0;
+                bool shadow = floor >= 0 && shadows < Mathf.Min(4, config.ShadowLights) && hash % 13 == 0;
                 if (shadow) shadows++;
                 Fixture(group, cell, floor, support, config, shadow);
                 fixtures++;
             }
             Alarms(group, config);
-            Debug.Log($"[MeridianLighting] {fixtures} realtime fixtures, {shadows} shadow lights; basement included.");
-            return fixtures;
+            Debug.Log($"[MeridianLighting] {fixtures} ceiling + {atrium} atrium = {fixtures + atrium} realtime fixtures, {shadows} shadow lights; basement included. Hard cap {config.MaximumFixtures}.");
+            return fixtures + atrium;
         }
 
-        private static void Fixture(Transform group, Vector2Int cell, int floor, StructuralSection support,
-            MeridianPresentationConfig config, bool shadow)
+        private static bool Selected(Vector2Int cell, int floor, MeridianPresentationConfig config)
+        {
+            MallLayout.Zone zone = MallLayout.ZoneAt(cell, floor).Value;
+            int stride = zone.Tag == "stock" ? config.ServiceFixtureStride
+                : zone.Kind == MallLayout.Kind.Store || zone.Tag == "food" ? config.StoreFixtureStride : config.ConcourseFixtureStride;
+            // Equal spacing follows actual ownership rather than overlapping store rectangles.
+            return (cell.x + cell.y + floor) % Mathf.Max(1, stride) == 0;
+        }
+
+        internal static Transform Fixture(Transform group, Vector2Int cell, int floor, StructuralSection support,
+            MeridianPresentationConfig config, bool shadow, Vector3? position = null)
         {
             int hash = Hash(cell, floor);
-            Transform holder = Group($"Fixture_{floor}_{cell.x}_{cell.y}", group);
+            bool atrium = position.HasValue;
+            Transform holder = Group($"{(atrium ? "AtriumPendant" : "Fixture")}_{floor}_{cell.x}_{cell.y}", group);
             float drop = MallLayout.SlabThickness + 0.1f;
-            if (MeridianArt.Dress)
+            if (MeridianArt.Dress && !atrium)
                 drop = MallLayout.SlabThickness + 0.04f
                     - MeridianLightingCeilingBounds.MinimumY(MeridianDressingCeilings.KeyFor(cell, floor))
                     + config.FixtureCeilingClearance;
-            holder.localPosition = MallLayout.TileTopCenter(cell, floor + 1) + Vector3.down * drop;
+            holder.localPosition = position ?? MallLayout.TileTopCenter(cell, floor + 1) + Vector3.down * drop;
             holder.localRotation = Quaternion.Euler(0f, hash % 2 * 90f, 0f);
             GameObject visual = Prop("FluorescentFixture", holder, Vector3.zero, Quaternion.identity);
             Transform lampObject = Group("Light", holder);
@@ -57,10 +67,10 @@ namespace Abandoned.EditorTools
             lampObject.localRotation = Quaternion.Euler(90f, 0f, 0f);
             var light = lampObject.gameObject.AddComponent<Light>();
             light.type = LightType.Spot;
-            light.range = config.FixtureRange;
+            light.range = atrium ? config.AtriumFixtureRange : config.FixtureRange;
             light.spotAngle = config.FixtureAngle;
             light.innerSpotAngle = config.FixtureAngle * 0.66f;
-            light.intensity = config.FixtureIntensity * (floor < 0 ? config.BasementIntensityScale : 1f);
+            light.intensity = atrium ? config.AtriumFixtureIntensity : config.FixtureIntensity * (floor < 0 ? config.BasementIntensityScale : 1f);
             string tag = floor < 0 ? "stock" : MallLayout.ZoneAt(cell, floor)?.Tag;
             light.color = tag == "food" || tag == "furniture" || tag == "gallery" ? config.Sodium : config.Fluorescent;
             light.shadows = shadow ? LightShadows.Hard : LightShadows.None;
@@ -69,10 +79,11 @@ namespace Abandoned.EditorTools
             light.shadowNormalBias = 0.2f;
             Renderer diffuser = visual != null ? visual.GetComponentsInChildren<Renderer>(true).FirstOrDefault(r => r.name.Contains("Diffuser")) : null;
             holder.gameObject.AddComponent<LightFixture>().EditorSetup(light, diffuser,
-                hash % 100 < config.FaultyPercent, hash / 7 % 100 < config.DeadPercent, hash % 997);
-            if (support == null) return;
+                hash % 100 < config.FaultyPercent, !atrium && hash / 7 % 100 < config.DeadPercent, hash % 997);
+            if (support == null) return holder;
             if (visual != null) holder.gameObject.AddComponent<MeridianFixtureFall>().EditorSetup(support, visual.transform, config);
             holder.gameObject.AddComponent<SectionProp>().EditorSetup(support);
+            return holder;
         }
 
         private static void Alarms(Transform group, MeridianPresentationConfig config)

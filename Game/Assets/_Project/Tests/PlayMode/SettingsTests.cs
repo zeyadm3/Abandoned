@@ -60,13 +60,13 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
-        public IEnumerator SubtitlesCaptionWarningsWithTheirDirection()
+        public IEnumerator SubtitlesAreAnOptInWithoutDirection()
         {
             Camera ear = Camera.main;
             Assert.IsNotNull(ear);
             MenuUi menu = MenuUi.Current;
             Vector3 behind = ear.transform.position - ear.transform.forward * 6f;
-            Assert.IsTrue(GameSettings.Subtitles, "subtitles are on by default (QA B-35)");
+            Assert.IsFalse(GameSettings.Subtitles, "subtitles are off by default (2026-10-08: keep players guessing)");
             GameSettings.Subtitles = false;
             GameAudio.Play(SoundId.Creak, behind);
             yield return null;
@@ -80,7 +80,7 @@ namespace Abandoned.Tests
             GameAudio.Play(SoundId.LootPickup, behind); // not a warning: no caption
             SubtitleFeed.Heard -= Listen;
             yield return null;
-            Assert.AreEqual("[floor creaks - behind]", heard);
+            Assert.AreEqual("[floor creaks]", heard);
             Assert.AreEqual(1, menu.Subtitles.Count);
             GameAudio.Play(SoundId.Creak, ear.transform.position + Vector3.right * 500f);
             yield return null;

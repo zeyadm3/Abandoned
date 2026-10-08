@@ -7,20 +7,30 @@ namespace Abandoned.Structure
     public sealed class MeridianPresentationConfig : ScriptableObject
     {
         [Header("Ceiling fixtures")]
-        [SerializeField, Min(0.1f)] private float fixtureIntensity = 8.4f;
-        [SerializeField, Min(1f)] private float fixtureRange = 9.5f;
-        [SerializeField, Range(45f, 150f)] private float fixtureAngle = 112f;
+        [SerializeField, Min(0.1f)] private float fixtureIntensity = 18f;
+        [SerializeField, Min(1f)] private float fixtureRange = 7.5f;
+        [SerializeField, Range(45f, 150f)] private float fixtureAngle = 116f;
         [SerializeField, Range(0f, 0.15f)] private float fixtureCeilingClearance = 0.02f;
-        [SerializeField, Range(0f, 1f)] private float basementIntensityScale = 0.6f;
-        [SerializeField, Range(0, 100)] private int faultyPercent = 45;
-        [SerializeField, Range(0, 100)] private int deadPercent = 22;
-        [SerializeField, Range(1, 256)] private int maximumFixtures = 128;
-        [SerializeField, Range(0, 12)] private int shadowLights = 4;
+        [SerializeField, Range(0f, 1f)] private float basementIntensityScale = 0.8f;
+        [SerializeField, Range(0, 100)] private int faultyPercent = 28;
+        [SerializeField, Range(0, 100)] private int deadPercent = 10;
+        [SerializeField, Range(1, 512)] private int maximumFixtures = 384;
+        [SerializeField, Range(0, 4)] private int shadowLights = 4;
+        [Tooltip("One fixture per tile at 1; larger values thin the diagonal grid deterministically.")]
+        [SerializeField, Range(1, 4)] private int storeFixtureStride = 1;
+        [SerializeField, Range(1, 4)] private int serviceFixtureStride = 1;
+        [SerializeField, Range(1, 4)] private int concourseFixtureStride = 2;
         [SerializeField] private Color fluorescent = new(0.72f, 0.88f, 0.92f);
         [SerializeField] private Color sodium = new(1f, 0.76f, 0.44f);
         [SerializeField, Min(0.1f)] private float alarmIntensity = 1.3f;
         [SerializeField, Min(1f)] private float alarmRange = 7f;
         [SerializeField, Min(0.1f)] private float fixtureFallLifetime = 5f;
+
+        [Header("Skylight-suspended atrium fixtures")]
+        [SerializeField, Range(0, 4)] private int atriumFixtures = 4;
+        [SerializeField, Range(6.2f, 10f)] private float atriumFixtureHeight = 6.4f;
+        [SerializeField, Min(0.1f)] private float atriumFixtureIntensity = 42f;
+        [SerializeField, Range(6f, 16f)] private float atriumFixtureRange = 12f;
 
         [Header("Parking utility lights")]
         [SerializeField, Min(0f)] private float parkingLampIntensity = 10f;
@@ -63,11 +73,18 @@ namespace Abandoned.Structure
         public int DeadPercent => deadPercent;
         public int MaximumFixtures => maximumFixtures;
         public int ShadowLights => shadowLights;
+        public int StoreFixtureStride => storeFixtureStride;
+        public int ServiceFixtureStride => serviceFixtureStride;
+        public int ConcourseFixtureStride => concourseFixtureStride;
         public Color Fluorescent => fluorescent;
         public Color Sodium => sodium;
         public float AlarmIntensity => alarmIntensity;
         public float AlarmRange => alarmRange;
         public float FixtureFallLifetime => fixtureFallLifetime;
+        public int AtriumFixtures => atriumFixtures;
+        public float AtriumFixtureHeight => atriumFixtureHeight;
+        public float AtriumFixtureIntensity => atriumFixtureIntensity;
+        public float AtriumFixtureRange => atriumFixtureRange;
         public float ParkingLampIntensity => parkingLampIntensity;
         public float ParkingLampRange => parkingLampRange;
         public Color ParkingLampColor => parkingLampColor;

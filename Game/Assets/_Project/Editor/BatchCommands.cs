@@ -73,6 +73,7 @@ namespace Abandoned.EditorTools
             HorrorContentBuilder.Create();
             ThreatContentBuilder.CreateBlindOne(); ThreatContentBuilder.CreateOthers();
             NewThreatContentBuilder.Create();
+            RunPressureContentBuilder.CreateMissing(); // monster pacing + building decay tunables (2026-10-08)
             NetworkContentBuilder.RegisterNetworkPrefabs();
             SoundBankBuilder.CreateMissing(); // only adds cues it doesn't have yet (QA: the shutter slam)
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing(); MenuEffectsBuilder.Create();

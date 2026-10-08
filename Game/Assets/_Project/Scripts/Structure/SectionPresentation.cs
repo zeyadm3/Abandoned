@@ -85,6 +85,9 @@ namespace Abandoned.Structure
                 if (cracks != null) cracks.localPosition = section.Visual.localPosition - visualRestPosition;
             }
 
+            // Only a failing section makes a sound now: stressed/cracked floors creaking and groaning on a loop
+            // became a constant drone across a decaying mall (user, 2026-10-08). Cracks, tint and dust still show it.
+            if (stage != StructuralStage.Failing) return;
             nextSoundIn -= Time.deltaTime;
             if (nextSoundIn > 0f) return;
             PlayStageSound(stage);
@@ -109,8 +112,6 @@ namespace Abandoned.Structure
             Vector3 at = section.SurfaceBounds.center;
             switch (stage)
             {
-                case StructuralStage.Stressed: GameAudio.PlayStructure(StructureSound.Creak, at, visuals.CreakVolume); break;
-                case StructuralStage.Cracking: GameAudio.PlayStructure(StructureSound.Groan, at, visuals.GroanVolume); break;
                 case StructuralStage.Failing: GameAudio.PlayStructure(StructureSound.Snap, at, visuals.SnapVolume); break;
             }
         }

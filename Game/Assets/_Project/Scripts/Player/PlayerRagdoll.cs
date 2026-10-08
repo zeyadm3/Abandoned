@@ -91,12 +91,14 @@ namespace Abandoned.Player
         {
             motor.Landed += OnLanded;
             StructureSignals.SectionCollapsed += OnSectionCollapsed;
+            StructureSignals.RubbleLanded += OnRubbleLanded;
         }
 
         private void OnDisable()
         {
             motor.Landed -= OnLanded;
             StructureSignals.SectionCollapsed -= OnSectionCollapsed;
+            StructureSignals.RubbleLanded -= OnRubbleLanded;
         }
 
         /// <summary>Turns this copy into another machine's player (network spawn, non-owner).</summary>
@@ -140,6 +142,22 @@ namespace Abandoned.Player
                          feet.z >= surface.min.z - m && feet.z <= surface.max.z + m &&
                          feet.y >= surface.max.y - 0.3f && feet.y <= surface.max.y + config.CollapseStandingBand;
             if (above) Enter(Vector3.down * config.CollapseDropSpeed + motor.MovementVelocity);
+        }
+
+        // A heap landed where this player stands: they end up on top of it, not inside it. Each owner moves itself.
+        private void OnRubbleLanded(Bounds solid)
+        {
+            if (IsRemote || IsRagdolled || !controller.enabled) return;
+            Vector3 feet = transform.position;
+            float r = controller.radius;
+            bool inside = feet.x > solid.min.x - r && feet.x < solid.max.x + r && feet.z > solid.min.z - r && feet.z < solid.max.z + r &&
+                          feet.y > solid.min.y - 0.5f && feet.y < solid.max.y - 0.05f;
+            if (!inside) return;
+            controller.enabled = false;
+            transform.position = new Vector3(feet.x, solid.max.y + 0.05f, feet.z);
+            Physics.SyncTransforms();
+            controller.enabled = true;
+            motor.ResetFallTracking();
         }
 
         private void Update()

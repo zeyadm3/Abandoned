@@ -42,7 +42,7 @@ namespace Abandoned.EditorTools
             Approach(group, amber, ivory);
             RampPaint(ramp, amber);
             CargoBoundary(floor, amber);
-            Signs(group, truck, ink, ivory);
+            Signs(group, ink, ivory);
         }
 
         private static void Approach(Transform group, Material amber, Material ivory)
@@ -83,7 +83,7 @@ namespace Abandoned.EditorTools
                 new Vector3(0.94f, 0.0125f, 0.015f), Quaternion.identity, amber);
         }
 
-        private static void Signs(Transform group, TruckCargo truck, Material ink, Material ivory)
+        private static void Signs(Transform group, Material ink, Material ivory)
         {
             Vector3 rear = MallLayout.TruckRear;
             Material steel = MeridianArt.Material("EscalatorSteel");
@@ -91,22 +91,9 @@ namespace Abandoned.EditorTools
             {
                 Box("TailgateSignBracket", group, rear + new Vector3(.12f, 2.94f, side * 1.26f),
                     new Vector3(.06f, .68f, .06f), Quaternion.identity, steel);
-                Box("LoadingNoticePost", group, new Vector3(58.45f + side * 1.4f, .77f, rear.z - ApproachWidth * .5f - .26f),
-                    new Vector3(.08f, 1.54f, .08f), Quaternion.identity, steel);
             }
             Sign(group, rear + new Vector3(0.08f, 3.05f, 0f), Vector3.left,
-                "COLLECTION", TruckBuilder.BayWidth, 0.48f, ink, ivory);
-            Sign(group, rear + new Vector3(0.08f, 2.73f, 0f), Vector3.left,
-                "LOAD HERE / INSIDE TRUCK", TruckBuilder.BayWidth, 0.22f, ink, ivory);
-            Sign(group, new Vector3(58.45f, 1.55f, rear.z - ApproachWidth * 0.5f - 0.26f), Vector3.forward,
-                "LOAD FULLY INSIDE THE TRUCK\nCHECK THE HAUL BOARD\nPULL THE LEVER TO LEAVE\nGET ABOARD BEFORE DEPARTURE\nPAID AFTER DEPARTURE",
-                3.9f, 1.65f, ink, ivory, 1.3f);
-            Sign(group, new Vector3(56.15f, 2.2f, rear.z - 2.65f), Vector3.right,
-                "COLLECTION / TRUCK >", 2.5f, 0.36f, ink, ivory);
-            Sign(group, truck.Ignition.position + new Vector3(0.10f, 0.38f, 0f), -truck.transform.forward,
-                "LEAVE / CASH OUT", 1.1f, 0.18f, ink, ivory);
-            Sign(group, truck.transform.TransformPoint(new Vector3(0f, TruckBuilder.FloorHeight + 0.47f, TruckBuilder.BayLength * 0.5f - 0.09f)),
-                -truck.transform.forward, "HAUL BOARD ABOVE / PAYMENT ON DEPARTURE", 2.25f, 0.24f, ink, ivory);
+                "COLLECTION", TruckBuilder.BayWidth, 0.32f, ink, ivory);
         }
 
         private static void Sign(Transform group, Vector3 position, Vector3 front, string text, float width, float height,

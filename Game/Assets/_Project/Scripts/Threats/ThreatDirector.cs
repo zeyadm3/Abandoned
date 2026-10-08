@@ -6,7 +6,10 @@ using UnityEngine;
 
 namespace Abandoned.Threats
 {
-    /// <summary>Seeded host roster with a head start, danger tier arrivals and a separately gated final creature.</summary>
+    /// <summary>
+    /// Seeded host roster: an opening arrival, danger tier arrivals, steady timed arrivals for the whole job
+    /// (<see cref="ThreatPacingConfig"/>) up to a crew-sized cap, and a separately gated final creature.
+    /// </summary>
     public class ThreatDirector : MonoBehaviour
     {
         [SerializeField] private NetworkBootstrap bootstrap;
@@ -16,8 +19,9 @@ namespace Abandoned.Threats
         [SerializeField] private ThreatCatalog catalog;
         [Tooltip("A monster never appears closer than this to a living player, nor where one can see the spot (QA B-13).")]
         [SerializeField, Min(0f)] private float minSpawnDistance = 14f;
-        private float spawnAt = -1f;
+        private float spawnAt = -1f, nextArrival;
         private int runSeed, spawnedTier;
+        private System.Random arrivals = new(1);
         private bool finalSpawned;
         public static ThreatDirector Current { get; private set; }
         public void Setup(NetworkBootstrap networkBootstrap, NetworkObject prefab, NetworkObject[] threats = null, float[] weights = null)
@@ -32,7 +36,19 @@ namespace Abandoned.Threats
             roster = catalog.Definitions.Select(d => d != null ? d.Prefab : null).ToArray();
             openingWeights = catalog.Definitions.Select(d => d != null && !d.FinalOnly && d.MinimumDanger == 0 ? d.OpeningWeight : 0f).ToArray();
         }
-        private void OnEnable() { Current = this; RunDirector.RunStarted += OnRunStarted; }
+        private void OnEnable()
+        {
+            Current = this;
+            RunDirector.RunStarted += OnRunStarted;
+            // Drift and relocation ride along with every director, so older scenes get them without a rebuild.
+            if (!TryGetComponent(out ThreatPacing _)) gameObject.AddComponent<ThreatPacing>();
+        }
+        private static ThreatPacingConfig Pacing => ThreatPacingConfig.Current;
+        /// <summary>Host: seconds until the next timed arrival (negative before the opening one).</summary>
+        public float NextArrivalIn => spawnAt != 0f ? -1f : Mathf.Max(0f, nextArrival - Time.time);
+        /// <summary>Host: monsters (not the final hunter) alive now, and how many the crew size allows.</summary>
+        public int Alive => Threat.All.Count(t => t != null && !(t is LastHunter));
+        public int AliveCap => Pacing.AliveCap(NetworkPlayer.All.Count(p => p != null && p.NetworkManager == Manager));
         private void OnDisable() { if (Current == this) Current = null; RunDirector.RunStarted -= OnRunStarted; }
         private NetworkManager Manager => NetworkBootstrap.Resolve(bootstrap) is NetworkBootstrap b ? b.Manager : null;
         private bool IsHost => Manager != null && Manager.IsServer && Manager.IsListening;
@@ -46,8 +62,15 @@ namespace Abandoned.Threats
             {
                 spawnAt = 0f; Spawn(Opening(runSeed));
                 for (int i = 0; i < run.Terms.ExtraThreats; i++) SpawnExtra();
+                nextArrival = Time.time + Pacing.NextGap(arrivals);
             }
             if (spawnAt != 0f) return;
+            // Steady arrivals all job long (the danger tiers stop at the max level; this doesn't).
+            if (Time.time >= nextArrival)
+            {
+                nextArrival = Time.time + Pacing.NextGap(arrivals);
+                SpawnExtra();
+            }
             while (spawnedTier < run.State.Danger)
             {
                 spawnedTier++;
@@ -63,8 +86,8 @@ namespace Abandoned.Threats
         private void Schedule(int seed)
         {
             runSeed = seed; spawnedTier = 0; finalSpawned = false;
-            BlindOne listener = blindOnePrefab != null ? blindOnePrefab.GetComponent<BlindOne>() : null;
-            spawnAt = Time.time + (listener != null ? Mathf.Max(0.01f, listener.Config.SpawnDelay) : 45f);
+            arrivals = new System.Random(seed ^ 0x51ED);
+            spawnAt = Time.time + Pacing.OpeningDelay;
         }
         public int Opening(int seed)
         {
@@ -83,7 +106,7 @@ namespace Abandoned.Threats
         }
         public Threat SpawnExtra()
         {
-            if (!IsHost || Threat.All.Count(t => !(t is LastHunter)) >= 8) return null;
+            if (!IsHost || Alive >= AliveCap) return null;
             int danger = RunState.Current != null ? RunState.Current.State.Danger : 0;
             int[] candidates = Enumerable.Range(0, roster.Length).Where(i => roster[i] != null && Eligible(i, danger)).ToArray();
             if (candidates.Length == 0) return null;
@@ -97,6 +120,33 @@ namespace Abandoned.Threats
             if (catalog == null || index >= catalog.Definitions.Length) return !(roster[index].GetComponent<Threat>() is LastHunter);
             ThreatDefinition definition = catalog.Definitions[index];
             return definition != null && !definition.FinalOnly && definition.MinimumDanger <= danger;
+        }
+        /// <summary>
+        /// Host: a monster that has been far from everyone for minutes is replaced by the same kind at the
+        /// spawn point nearest the crew that nobody can see and nobody is too close to. Returns the new one.
+        /// </summary>
+        public Threat Relocate(Threat threat)
+        {
+            if (!IsHost || threat == null || !threat.IsSpawned) return null;
+            NetworkObject prefab = PrefabOf(threat);
+            if (prefab == null) return null;
+            ThreatSpawnPoint[] points = FindObjectsByType<ThreatSpawnPoint>(FindObjectsSortMode.None).OrderBy(p => p.name).ToArray();
+            Transform at = ChooseNearCrew(points);
+            if (at == null) return null;
+            string from = threat.transform.position.ToString("F0");
+            threat.NetworkObject.Despawn(true);
+            NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at.position, rotation: at.rotation);
+            Debug.Log($"[Threat] The {threat.DisplayName} wandered off ({from}); it comes back at {at.name}.");
+            return spawned.GetComponent<Threat>();
+        }
+        private NetworkObject PrefabOf(Threat threat)
+        {
+            if (catalog != null && threat.Definition != null)
+                for (int i = 0; i < catalog.Definitions.Length && i < roster.Length; i++)
+                    if (catalog.Definitions[i] == threat.Definition) return roster[i];
+            foreach (NetworkObject prefab in roster)
+                if (prefab != null && prefab.GetComponent<Threat>() is Threat t && t.GetType() == threat.GetType()) return prefab;
+            return null;
         }
         public LastHunter SpawnFinalHunter()
         {
@@ -149,6 +199,35 @@ namespace Abandoned.Threats
             return farthest;
         }
 
+        // The nearest point to any living player that keeps the usual spawn rules (far enough, unseen).
+        private Transform ChooseNearCrew(ThreatSpawnPoint[] points)
+        {
+            Transform best = null;
+            float bestDistance = float.MaxValue;
+            foreach (ThreatSpawnPoint point in points)
+            {
+                Transform t = point.transform;
+                if (!FairSpot(t, out float nearest) || nearest >= bestDistance) continue;
+                best = t;
+                bestDistance = nearest;
+            }
+            return best;
+        }
+        private bool FairSpot(Transform t, out float nearest)
+        {
+            int walls = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
+            nearest = float.MaxValue;
+            bool any = false;
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || p.IsDead || p.NetworkManager != Manager) continue;
+                any = true;
+                Vector3 eye = p.transform.position + Vector3.up * 1.6f;
+                nearest = Mathf.Min(nearest, Vector3.Distance(eye, t.position));
+                if (!Physics.Linecast(eye, t.position + Vector3.up * 1.2f, walls, QueryTriggerInteraction.Ignore)) return false;
+            }
+            return any && nearest >= minSpawnDistance;
+        }
         private static Bounds HuntBounds()
         {
             var bounds = new Bounds(Vector3.zero, Vector3.zero);

@@ -7,13 +7,26 @@ namespace Abandoned.EditorTools
     public static class MeridianLightingCeilingBounds
     {
         private static readonly Dictionary<string, float> MinimumByModel = new();
+        private static readonly Dictionary<string, float> MaximumByModel = new();
 
         public static float MinimumY(string key)
         {
-            if (MinimumByModel.TryGetValue(key, out float minimum)) return minimum;
+            Measure(key);
+            return MinimumByModel[key];
+        }
+
+        public static float MaximumY(string key)
+        {
+            Measure(key);
+            return MaximumByModel[key];
+        }
+
+        private static void Measure(string key)
+        {
+            if (MinimumByModel.ContainsKey(key)) return;
             GameObject model = MeridianArt.Model(key);
             if (model == null) throw new System.InvalidOperationException($"Cannot measure Meridian ceiling {key}.");
-            minimum = float.PositiveInfinity;
+            float minimum = float.PositiveInfinity, maximum = float.NegativeInfinity;
             foreach (Renderer renderer in model.GetComponentsInChildren<Renderer>(true))
             {
                 Bounds bounds = renderer.localBounds;
@@ -25,12 +38,13 @@ namespace Abandoned.EditorTools
                             (corner & 4) == 0 ? -1f : 1f));
                     Vector3 inModel = model.transform.InverseTransformPoint(renderer.transform.TransformPoint(local));
                     minimum = Mathf.Min(minimum, inModel.y);
+                    maximum = Mathf.Max(maximum, inModel.y);
                 }
             }
             if (float.IsPositiveInfinity(minimum))
                 throw new System.InvalidOperationException($"Meridian ceiling {key} has no renderer bounds.");
             MinimumByModel[key] = minimum;
-            return minimum;
+            MaximumByModel[key] = maximum;
         }
     }
 }

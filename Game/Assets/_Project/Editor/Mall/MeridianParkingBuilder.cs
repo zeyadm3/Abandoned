@@ -90,17 +90,7 @@ namespace Abandoned.EditorTools
 
         private static void Arrival(Transform parent)
         {
-            Transform van = Vehicle(parent, "CrewArrivalVan", Vehicles.Van, ArrivalVanPosition, 0f, new Vector3(2.3f, 2.45f, 5.7f));
-            Bounds bounds = ModelFit.LocalBounds(van.gameObject, van);
-            foreach (float side in new[] { -1f, 1f })
-            {
-                Vector3 front = Vector3.right * side;
-                Sign(van, new Vector3(side * (bounds.extents.x + .022f), bounds.min.y + bounds.size.y * .58f, -.3f), front,
-                    "LAST RESORT / SALVAGE CREW", Mathf.Min(3.3f, bounds.size.z * .65f), .55f, crewPaint);
-            }
-            Sign(van, new Vector3(0f, bounds.min.y + bounds.size.y * .57f, bounds.min.z - .03f), Vector3.back,
-                "CREW SHUTTLE / RETURN OPTIONAL", Mathf.Min(1.9f, bounds.size.x * .90f), .45f, crewPaint);
-            Sign(parent, new Vector3(18f, 1.05f, -13.85f), Vector3.back, "CREW ARRIVAL / KEEP AISLE CLEAR", 3.6f, .36f, crewPaint);
+            Vehicle(parent, "CrewArrivalVan", Vehicles.Van, ArrivalVanPosition, 0f, new Vector3(2.3f, 2.45f, 5.7f));
             Paint("CrewWaitingLine", parent, new Vector3(21.5f, .008f, -16.4f), new Vector3(.10f, .007f, 3.5f));
         }
 
@@ -132,7 +122,7 @@ namespace Abandoned.EditorTools
             foreach (float z in new[] { 5f, 21f, 42f }) Arrow(parent, new Vector3(73f, .012f, z), Vector3.forward);
             foreach (float z in new[] { 0f, 8f, 16f, 24f })
                 Paint("ServiceLaneEdge", parent, new Vector3(76.2f, .008f, z + 2f), new Vector3(.11f, .007f, 2.8f));
-            Sign(parent, new Vector3(52f, 1.5f, -5.4f), Vector3.back, "COLLECTION / FOLLOW EAST DRIVE  >", 4.8f, .48f, crewPaint);
+            Sign(parent, new Vector3(52f, 1.5f, -5.4f), Vector3.back, "COLLECTION >", 2.2f, .30f, crewPaint);
             Box("DirectionsPost", parent, new Vector3(52f, .73f, -5.4f), new Vector3(.09f, 1.46f, .09f), MeridianArt.Material("FixtureTrim"), false);
         }
 

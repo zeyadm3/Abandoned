@@ -27,6 +27,8 @@ namespace Abandoned.Structure
         [SerializeField] private Transform visual;
 
         private Collider[] colliders;
+        private Bounds surfaceAtBreak;
+        private bool hasSurfaceAtBreak;
         private float creakTimer;
         private int collapseSeedBase;
 
@@ -68,12 +70,14 @@ namespace Abandoned.Structure
             ResetState();
         }
 
-        /// <summary>World bounds of the walking surface (top of the colliders).</summary>
+        /// <summary>World bounds of the walking surface (top of the colliders); after a collapse, where it was.</summary>
         public Bounds SurfaceBounds
         {
             get
             {
                 colliders ??= GetComponentsInChildren<Collider>(true);
+                // A disabled collider reports empty bounds; a fallen section still has to say where it fell from.
+                if (hasSurfaceAtBreak && !CollidersEnabled) return surfaceAtBreak;
                 if (colliders.Length == 0) return new Bounds(transform.position, Vector3.zero);
                 Bounds b = colliders[0].bounds;
                 for (int i = 1; i < colliders.Length; i++) b.Encapsulate(colliders[i].bounds);
@@ -208,6 +212,8 @@ namespace Abandoned.Structure
             Health = 0f;
             CollapseSeed = seed;
             CollapsedQuietly = quiet;
+            surfaceAtBreak = SurfaceBounds;
+            hasSurfaceAtBreak = true;
             SetColliders(false);
             Physics.SyncTransforms();
             StageChanged?.Invoke(this, previous);

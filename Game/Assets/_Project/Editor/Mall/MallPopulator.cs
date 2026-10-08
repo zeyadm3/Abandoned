@@ -60,6 +60,8 @@ namespace Abandoned.EditorTools
                 if(MeridianArt.UseKit)MallDamageBuilder.Floor(setup,tile,IsWalkwayTile(c,f)?SectionType.Balcony:SectionType.Floor,collapse,MallFloorBuilder.Finish(c,f),health,capacity);
                 else setup.AddSection(tile,IsWalkwayTile(c,f)?SectionType.Balcony:SectionType.Floor,collapse,health,capacity);
                 if(collapse)SectionNavCarver.EditorAdd(tile.gameObject,new Vector3(Tile,.3f,Tile));
+                // The permanent haul/escape route never gets walled off by a solid rubble heap.
+                if(IsProtected(c,f))tile.gameObject.AddComponent<SectionKeepClear>();
             }
             foreach(Flight f in AllFlights) {
                 Transform flight=mall.Find($"Flights/{f.Name}");
@@ -71,6 +73,7 @@ namespace Abandoned.EditorTools
             }
             foreach(Transform turn in mall.Find("Landings")) {
                 if(MeridianArt.UseKit)MallDamageBuilder.Floor(setup,turn,SectionType.Floor,false,"Concrete");else setup.AddSection(turn,SectionType.Floor,false);turn.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
+                turn.gameObject.AddComponent<SectionKeepClear>();
             }
             foreach(string weak in WeakSpots.Keys)if(!matched.Contains(weak))throw new System.InvalidOperationException($"Weak spot not built: {weak}");
             setup.AddSimulation(DefaultStability,DefaultSeed);

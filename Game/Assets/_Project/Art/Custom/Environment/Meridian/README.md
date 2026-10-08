@@ -1,4 +1,4 @@
-# Meridian 0.13.0 original environment kit
+# Meridian original environment kit — 0.13.2
 
 This folder is generated only by `Tools/Blender/meridian.py`. All meshes, texture patterns,
 graffiti and material sources are original ABANDONED work. No third-party inputs were used.
@@ -10,6 +10,14 @@ The legacy Environment kit, HQ and wardrobe exports are outside this generator's
 
 Use `textures` or `meshes` instead of `all` to regenerate one part. Add `--force-textures`
 to regenerate existing PNG contents. Preserve every existing `.meta` when regenerating.
+
+The kit now has 97 FBX models. `detail` regenerates only the fourteen fitted fixtures introduced
+in 0.13.2 by `Tools/Blender/meridian_detail.py`: ConcourseBench, MallBin, AdvertisingLightbox,
+ClothingRack, RetailGondola, CheckoutCounter, FoodBooth, FoodServiceStation, CinemaScreen,
+TicketCounter, ServiceCart, StockCage, CeilingDuct and ShutteredKiosk. Slats, empty hangers,
+drawer fronts, mesh cage wire, sink/drain parts, duct seams and grille hardware reduce at LOD1/2.
+All share the existing 25 PBR sets; no new textures or third-party inputs were added.
+These are fixed dressing modules without imported colliders, loose loot or text.
 
 `MeridianManifest.json` lists exact FBX keys and all PBR map names/resolutions.
 `MeridianGeometry.json` records measured metre-space bounds, material slots and renderer

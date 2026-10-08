@@ -1,0 +1,39 @@
+MERIDIAN MALL / floor 2 / y=8 m
+North (+Z) is up. Cells are 4 x 4 m.
+
+ z\x   0  1  2  3  4  5  6  7  8  9 10 11 12 13
+  11  -- -- A~ A~ I~ IP I~ -X -X -X CP HP -- --
+  10  DP A~ A~ A~ I~ I~ I~ -X -X -X CP -- -- --
+   9  DP A~ A~ A~ I! I! I! I~ I~ I~ CP -- -- --
+   8  DP GP GP GP GP GP GP GP GP GP GP HP HP HP
+   7  DP A~ A~ A~ F~ F~ -- -- F~ F~ CP E~ E~ E~
+   6  DP A~ A~ A~ F~ -- -- -- -- F~ CP E~ E~ E~
+   5  DP A~ A~ A~ F~ -- -- -- -- F~ CP E~ E~ E~
+   4  DP A~ A~ A~ F~ F~ -- -- -- F~ CP E~ E~ E~
+   3  DP AP AP AP FP FP FP FP FP FP CP EP EP --
+   2  DP A~ A~ A~ B~ B~ B~ B~ B~ B~ CP E~ E~ --
+   1  -- -- A~ A~ B~ B~ B~ B~ B~ B~ CP -- -- --
+   0  -- -- A~ A~ B~ -- -- -- -- B~ CP -- -- --
+
+Cell key: A.. = owned zone; P = permanent slab; ! = authored weak slab; ~ = collapsible slab; -- = void/outside; -X = pre-collapsed gallery wound.
+A = FINAL REEL [Cinema; cinema; Store]
+B = LAST CHANCE / CLEARANCE [Quarantine; jewelry; Store]
+C = SERVICE / EAST [ServicePassage; stock; Concourse]
+D = SERVICE / WEST [ServiceRear; stock; Concourse]
+E = MERIDIAN MANAGEMENT [Offices; office; Store]
+F = MERIDIAN COURT / 02 [Walkway2; walkway; Walkway]
+G = DELIVERY PASSAGE [NorthPassage; stock; Concourse]
+H = SERVICE CORE [StairTop; stock; Concourse]
+I = STILL LIFE GALLERY [CollapsedGallery; gallery; Store]
+
+FLIGHTS (world x,y,z; rise; clear width; collapse flag):
+E Escalator_12: descending head at (34,8,16) to floor 1.
+S Stairs_12: descending head at (45.55,8,44) to floor 1.
+R HaulRamp_1_B: descending head at (53.85,8,36) to floor 1.
+
+FEATURED CANDIDATES (not all appear in one run):
+J: marble_statue; tag=gallery; class=Huge..Huge; position=(22,8,46); Jackpot=True.
+
+EXTERIOR OPENINGS:
+W5: (0,8,22); permanent one-way rope descent to ground; wide=True.
+N5: (22,8,48); permanent one-way rope descent to ground; wide=True.

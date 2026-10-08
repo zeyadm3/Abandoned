@@ -19,11 +19,17 @@ namespace Abandoned.Core
 
         public static void RaiseImpact(Vector3 position, float momentum) => Impact?.Invoke(position, momentum);
 
+        /// <summary>A solid rubble mound appeared (world bounds of its solid part); anyone standing in it climbs out on top.</summary>
+        public static event Action<Bounds> RubbleLanded;
+
+        public static void RaiseRubbleLanded(Bounds solid) => RubbleLanded?.Invoke(solid);
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {
             SectionCollapsed = null;
             Impact = null;
+            RubbleLanded = null;
         }
     }
 }

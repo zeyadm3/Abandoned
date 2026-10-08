@@ -138,8 +138,6 @@ namespace Abandoned.EditorTools
                     Prop("DebrisPile", group, MallLayout.TileTopCenter(cell, 1) + Vector3.up * 0.01f,
                         Quaternion.Euler(0f, x * 23f, 0f), support);
             }
-            MeridianDressingSigns.Sign(group, new Vector3(27.75f, 10.1f, 38f), Vector3.left,
-                "NORTH GALLERY / LOAD REDUCED", 3.2f, 0.35f);
         }
 
         private static void Basement(Transform mall, Transform group)

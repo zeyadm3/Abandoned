@@ -73,7 +73,17 @@ namespace Abandoned.Structure
         [field: SerializeField, Range(0f, 1f)] public float CollapseLoudness { get; private set; } = 1f;
         [field: Tooltip("Seconds between creak noises while Stressed; halves at Cracking, quarters at Failing.")]
         [field: SerializeField, Min(0.1f)] public float CreakInterval { get; private set; } = 3f;
+        [field: Tooltip("Seconds collapse chunks tumble before they settle and stay as rubble (they used to vanish here).")]
         [field: SerializeField, Min(0.5f)] public float DebrisLifetime { get; private set; } = 5f;
+
+        [field: Header("Rubble mound (solid; the same on every machine)")]
+        [field: Tooltip("Height range (m) of the mound a fallen section leaves where it lands: too tall to step or walk over.")]
+        [field: SerializeField] public Vector2 RubbleHeight { get; private set; } = new(1.3f, 1.8f);
+        [field: Tooltip("Mound width as a share of the fallen section's smaller side, clamped to RubbleWidthLimits (m).")]
+        [field: SerializeField, Range(0.3f, 1f)] public float RubbleFootprint { get; private set; } = 0.8f;
+        [field: SerializeField] public Vector2 RubbleWidthLimits { get; private set; } = new(1.6f, 3.2f);
+        [field: Tooltip("A section landing further down than this (m) leaves no mound.")]
+        [field: SerializeField, Min(1f)] public float RubbleMaxDrop { get; private set; } = 30f;
 
         public SectionProfile Profile(SectionType type)
         {

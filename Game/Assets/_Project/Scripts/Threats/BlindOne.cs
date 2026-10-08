@@ -137,7 +137,7 @@ namespace Abandoned.Threats
 
         private void PickWanderTarget()
         {
-            Vector3 random = transform.position + Random.insideUnitSphere * config.WanderRadius;
+            Vector3 random = RoamCentre + Random.insideUnitSphere * config.WanderRadius;
             if (!NavMesh.SamplePosition(random, out NavMeshHit hit, config.WanderRadius, NavMesh.AllAreas)) return;
             wanderTarget = hit.position;
             hasWanderTarget = true;

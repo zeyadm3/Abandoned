@@ -21,22 +21,38 @@ namespace Abandoned.EditorTools
         {
             var data = new SerializedObject(config);
             SerializedProperty revision = data.FindProperty("readabilityRevision");
-            if (revision.intValue >= 1) return;
+            if (revision.intValue >= 2) return;
             // Migrate the saved asset once; subsequent rebuilds preserve the artist's inspector tuning.
-            data.FindProperty("fixtureIntensity").floatValue = 8.4f;
-            data.FindProperty("fixtureRange").floatValue = 9.5f;
-            data.FindProperty("ambientSky").colorValue = new Color(0.065f, 0.080f, 0.100f);
-            data.FindProperty("ambientEquator").colorValue = new Color(0.038f, 0.049f, 0.051f);
-            data.FindProperty("ambientGround").colorValue = new Color(0.018f, 0.021f, 0.018f);
-            data.FindProperty("exteriorFogDensity").floatValue = 0.010f;
-            data.FindProperty("interiorFogDensity").floatValue = 0.018f;
-            data.FindProperty("moonIntensity").floatValue = 0.22f;
-            data.FindProperty("vignette").floatValue = 0.14f;
-            data.FindProperty("postExposure").floatValue = 0.2f;
-            revision.intValue = 1;
+            if (revision.intValue < 1)
+            {
+                data.FindProperty("ambientSky").colorValue = new Color(0.065f, 0.080f, 0.100f);
+                data.FindProperty("ambientEquator").colorValue = new Color(0.038f, 0.049f, 0.051f);
+                data.FindProperty("ambientGround").colorValue = new Color(0.018f, 0.021f, 0.018f);
+                data.FindProperty("exteriorFogDensity").floatValue = 0.010f;
+                data.FindProperty("interiorFogDensity").floatValue = 0.018f;
+                data.FindProperty("moonIntensity").floatValue = 0.22f;
+                data.FindProperty("vignette").floatValue = 0.14f;
+                data.FindProperty("postExposure").floatValue = 0.2f;
+            }
+            data.FindProperty("fixtureIntensity").floatValue = 18f;
+            data.FindProperty("fixtureRange").floatValue = 7.5f;
+            data.FindProperty("fixtureAngle").floatValue = 116f;
+            data.FindProperty("basementIntensityScale").floatValue = 0.8f;
+            data.FindProperty("faultyPercent").intValue = 28;
+            data.FindProperty("deadPercent").intValue = 10;
+            data.FindProperty("maximumFixtures").intValue = 384;
+            data.FindProperty("shadowLights").intValue = Mathf.Min(4, data.FindProperty("shadowLights").intValue);
+            data.FindProperty("storeFixtureStride").intValue = 1;
+            data.FindProperty("serviceFixtureStride").intValue = 1;
+            data.FindProperty("concourseFixtureStride").intValue = 2;
+            data.FindProperty("atriumFixtures").intValue = 4;
+            data.FindProperty("atriumFixtureHeight").floatValue = 6.4f;
+            data.FindProperty("atriumFixtureIntensity").floatValue = 42f;
+            data.FindProperty("atriumFixtureRange").floatValue = 12f;
+            revision.intValue = 2;
             data.ApplyModifiedPropertiesWithoutUndo();
-            Debug.Log("[MeridianReadability] Migrated powered fixtures 2.1→8.4, range 8.5→9.5; "
-                + "moon 0.09→0.22; exterior/interior fog 0.014/0.028→0.010/0.018; exposure +0.2 EV.");
+            Debug.Log("[MeridianReadability] Revision2: fixture intensity18/range7.5; dense store/food/service grid; "
+                + "four skylight pendants; dead10%/faulty28%; global shadow fixtures capped4.");
         }
     }
 }

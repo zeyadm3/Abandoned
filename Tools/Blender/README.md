@@ -1,6 +1,6 @@
 # Original ABANDONED assets
 
-`meridian.py` generates the realistic Meridian Mall 0.13.0 kit: 83 FBX assets and 25 original
+`meridian.py` generates the realistic Meridian Mall kit: 97 FBX assets and 25 original
 PBR texture sets (75 PNG maps). `environment.py` retains the earlier modular kit, depot props,
 wardrobe and procedural palette textures. `threats.py` builds eight original skinned silhouettes
 and their Idle, Walk, Chase, Attack and Special animation takes.
@@ -25,6 +25,16 @@ The new kit is isolated under `Art/Custom/Environment/Meridian/`. Its original s
 `meridian_preview.py` optionally renders the kit for art review; it does not run the game.
 Exact export keys, sizes, map names and material slots are in `MeridianManifest.json` and the
 kit's own README. Preserve all `.meta` files when regenerating.
+
+`meridian_detail.py` adds the 14 fitted fixtures for 0.13.2: concourse furniture, empty retail
+fittings, food booths/service stations, cinema screen/counter and back-of-house equipment.
+Manufactured details such as slats, hangers, drawer fronts, mesh cage wires, duct seams and grille
+hardware reduce at LOD1/2. These models share the existing PBR maps and have no lettering or loose loot.
+Regenerate only these assets without rewriting the original architecture:
+
+```sh
+/Applications/Blender.app/Contents/MacOS/Blender --background --python Tools/Blender/meridian.py -- "$PWD" detail
+```
 
 Texture sizes are 2048 for hero terrazzo/plaster/storefront/escalator/ceiling sets, 1024 for
 standard finishes and 512 for small props/decals. Each set has `_BaseColor`, `_Normal` and `_Mask`

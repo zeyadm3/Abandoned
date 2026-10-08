@@ -209,7 +209,9 @@ namespace Abandoned.Extraction
             TruckCargo truck = TruckCargo.Current;
             bool wiped = EveryoneDead();
             // A wipe isn't a payday (QA B-20): the truck is towed home and only part of its load survives.
-            float kept = wiped ? config.WipeRecovery : 1f;
+            // Buried by the total collapse, nothing does: the job is lost (user, 2026-10-08).
+            bool jobLost = wiped && Crushed;
+            float kept = jobLost ? 0f : wiped ? config.WipeRecovery : 1f;
             var items = new List<RunResults.Item>();
             if (truck != null)
                 foreach (LootItem item in Cargo(truck))
@@ -239,7 +241,8 @@ namespace Abandoned.Extraction
             if (wiped)
             {
                 var stats = new List<string>(results.Stats ?? Array.Empty<string>());
-                stats.Insert(0, $"NOBODY MADE IT. The truck was towed home; {Mathf.RoundToInt((1f - kept) * 100f)}% of the load went missing on the way. No bonus.");
+                stats.Insert(0, jobLost ? "THE MALL CAME DOWN WITH THE CREW INSIDE. Job lost: nothing from this job counts."
+                    : $"NOBODY MADE IT. The truck was towed home; {Mathf.RoundToInt((1f - kept) * 100f)}% of the load went missing on the way. No bonus.");
                 results.Stats = stats.ToArray();
             }
             RunNetState s = State;

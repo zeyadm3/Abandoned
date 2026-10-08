@@ -25,7 +25,7 @@ namespace Abandoned.EditorTools
         private readonly Dictionary<Transform, Vector3> shutterScales = new();
         private readonly Dictionary<Collider, bool> shutterBlockers = new();
         private readonly Dictionary<Behaviour, bool> shutterObstacles = new();
-        private readonly List<Material> clones = new();
+        private readonly Dictionary<(Material, float), Material> emissionVariants = new();
         private readonly List<Light> torches = new();
         private readonly LightFixture[] fixtures;
         private readonly LODGroup[] lods;
@@ -94,17 +94,22 @@ namespace Abandoned.EditorTools
                 foreach (Renderer renderer in fixture.GetComponentsInChildren<Renderer>(true))
                 {
                     Material[] materials = renderer.sharedMaterials;
-                    // Runtime diffuser blocks override shared emission; use the transient clones for this art capture.
+                    // Runtime diffuser blocks override shared emission; shared variants avoid per-view material churn.
                     renderer.SetPropertyBlock(null);
                     for (int i = 0; i < materials.Length; i++)
                     {
                         renderer.SetPropertyBlock(null, i);
                         Material source = materials[i];
                         if (source == null || !source.HasProperty("_EmissionColor") || !source.IsKeywordEnabled("_EMISSION")) continue;
-                        var clone = new Material(source) { hideFlags = HideFlags.HideAndDontSave };
-                        clone.SetColor("_EmissionColor", source.GetColor("_EmissionColor") * brightness);
-                        if (brightness == 0) clone.DisableKeyword("_EMISSION");
-                        clones.Add(clone); materials[i] = clone;
+                        var key = (source, brightness);
+                        if (!emissionVariants.TryGetValue(key, out Material variant))
+                        {
+                            variant = new Material(source) { hideFlags = HideFlags.HideAndDontSave };
+                            variant.SetColor("_EmissionColor", source.GetColor("_EmissionColor") * brightness);
+                            if (brightness == 0) variant.DisableKeyword("_EMISSION");
+                            emissionVariants.Add(key, variant);
+                        }
+                        materials[i] = variant;
                     }
                     renderer.sharedMaterials = materials;
                 }
@@ -161,8 +166,6 @@ namespace Abandoned.EditorTools
                 for (int i = 0; i < blocks.Length; i++) entry.Key.SetPropertyBlock(blocks[i], i);
             }
             foreach (var entry in visible) if (entry.Key != null) entry.Key.enabled = entry.Value;
-            foreach (Material clone in clones) UnityEngine.Object.DestroyImmediate(clone);
-            clones.Clear();
         }
 
         private void OpenDefaultShutters()
@@ -184,6 +187,8 @@ namespace Abandoned.EditorTools
         public void Dispose()
         {
             RestoreMaterials();
+            foreach (Material variant in emissionVariants.Values) UnityEngine.Object.DestroyImmediate(variant);
+            emissionVariants.Clear();
             foreach (var entry in cameras) if (entry.Key != null) entry.Key.enabled = entry.Value;
             foreach (var entry in lamps) if (entry.Key != null) { entry.Key.enabled = entry.Value; entry.Key.intensity = intensities[entry.Key]; }
             foreach (var entry in shutterScales) if (entry.Key != null) entry.Key.localScale = entry.Value;

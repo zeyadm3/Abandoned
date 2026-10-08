@@ -33,6 +33,19 @@ namespace Abandoned.Threats
         [field: SerializeField, Range(1f, 90f)] public float LightRepelAngle { get; private set; } = 30f;
         [field: SerializeField, Min(0f)] public float ScatterSeconds { get; private set; } = 2.5f;
 
+        [Header("Music (2026-10-08)")]
+        [Tooltip("This monster's own song while it comes for you. Empty = its synthesised theme.")]
+        [field: SerializeField] public AudioClip MusicClip { get; private set; }
+        [Tooltip("Place in the threat hierarchy: of everything coming for you, only the highest scorer's song plays. 0 = worked out from lethality, damage, attack rate and chase speed.")]
+        [field: SerializeField, Min(0f)] public float HierarchyOverride { get; private set; }
+
+        /// <summary>
+        /// How dangerous this monster is when it reaches you. One-touch killers sit above everything; the rest
+        /// rank by damage per second times chase speed, and harmless ones by speed alone.
+        /// </summary>
+        public float HierarchyScore => HierarchyOverride > 0f ? HierarchyOverride
+            : (LethalContact ? 1000f : Damage / Mathf.Max(0.1f, AttackCooldown) * ChaseSpeed) + ChaseSpeed * 0.01f;
+
 #if UNITY_EDITOR
         public void EditorSetup(ThreatKind kind, string displayName, NetworkObject prefab, float weight, int minimumDanger,
             float damage, float walk, float chase, bool lethal = false, bool final = false)

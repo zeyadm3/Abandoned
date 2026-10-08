@@ -33,17 +33,8 @@ namespace Abandoned.EditorTools
                     marquee.AddComponent<LightFixture>().EditorSetup(null, marquee.GetComponentsInChildren<Renderer>(true).FirstOrDefault(),
                         isFaulty: true, isDead: false, fixtureSeed: 67);
                 MeridianDressingSigns.Sign(group, basePosition + front * 0.33f + Vector3.up * 0.165f,
-                    front, "FINAL REEL / THE LAST SCREENING", 3.6f, 0.20f);
+                    front, "CINEMA", 1.8f, 0.20f);
                 break;
-            }
-            for (int row = 0; row < 5; row++)
-            for (int seat = 0; seat < 3; seat++)
-            {
-                Vector3 at = new(6.5f + seat * 1.3f, MallLayout.FloorY(2), 18f + row * 3f);
-                var cell = new Vector2Int(Mathf.FloorToInt(at.x / MallLayout.Tile), Mathf.FloorToInt(at.z / MallLayout.Tile));
-                if (MallLayout.ZoneAt(cell, 2)?.Tag != "cinema" || MallLootPoints.IsJackpotTile(cell, 2)) continue;
-                StructuralSection support = Support(mall, cell, 2);
-                if (support != null) Prop("CinemaSeat", group, at, Quaternion.Euler(0f, 180f, 0f), support);
             }
         }
 
@@ -67,15 +58,12 @@ namespace Abandoned.EditorTools
                     if (x == zone.Area.xMin + zone.Area.width / 2)
                     {
                         MeridianDressingSigns.Sign(group, at + Vector3.back * 0.255f, Vector3.back,
-                            floor == 0 ? "FOOD COURT / FOOD FOR THOUGHT" : "FOOD FOR THOUGHT / TERRACE", 3.7f, 0.28f);
+                            "FOOD COURT", 2f, 0.20f);
                         Transform sign = group.GetChild(group.childCount - 1);
                         if (ceiling != null) sign.gameObject.AddComponent<SectionProp>().EditorSetup(ceiling);
                     }
                 }
             }
-            string[] stalls = { "LAST BITE", "NOODLE LIMIT", "SODIUM CLUB", "CRUST FUND" };
-            for (int i = 0; i < stalls.Length; i++)
-                MeridianDressingSigns.Sign(group, new Vector3(14f + i * 8f, 2.3f, 47.7f), Vector3.back, stalls[i], 3.3f, 0.32f);
         }
 
         private static GameObject Box(Transform group, Vector3 at, Vector3 size)

@@ -1,0 +1,44 @@
+MERIDIAN MALL / floor 1 / y=4 m
+North (+Z) is up. Cells are 4 x 4 m.
+
+ z\x   0  1  2  3  4  5  6  7  8  9 10 11 12 13
+  11  -- -- A~ A~ I~ I~ I~ I~ I~ I~ CP GP -- --
+  10  DP A~ A~ A~ I~ I~ I~ I~ I~ I~ CP -- -- --
+   9  DP HP HP HP HP HP HP HP HP HP HP -- -- --
+   8  DP A~ A~ A~ F~ F~ F~ F~ F~ F~ CP GP GP GP
+   7  DP A~ A~ A~ F~ F~ -- -- F~ F~ CP E~ E~ E~
+   6  DP A~ A~ A~ F~ F~ F! F! F~ F~ CP E~ E~ E~
+   5  DP A~ A~ A~ F~ -- -- -- -- F~ CP E~ E~ E~
+   4  DP A~ A~ A~ F~ -- -- -- F~ F~ CP E~ EP EP
+   3  DP AP AP AP FP FP FP FP FP FP CP EP EP --
+   2  DP A~ A~ A~ B~ B~ B~ B~ B~ B~ CP E~ E~ --
+   1  -- -- A~ A~ B~ B~ B~ B~ B~ B~ CP -- -- --
+   0  -- -- A~ A~ B~ -- -- -- -- B~ CP -- -- --
+
+Cell key: A.. = owned zone; P = permanent slab; ! = authored weak slab; ~ = collapsible slab; -- = void/outside; -X = pre-collapsed gallery wound.
+A = RECLINE & FALL [Furniture; furniture; Store]
+B = TOY ARCHIVE [ToyArchive; toys; Store]
+C = SERVICE / EAST [ServicePassage; stock; Concourse]
+D = SERVICE / WEST [ServiceRear; stock; Concourse]
+E = DEAD CIRCUIT / ANNEX [Electronics2; electronics; Store]
+F = MERIDIAN COURT / 01 [Walkway1; walkway; Walkway]
+G = RECEIVING [Stockroom; stock; Concourse]
+H = DELIVERY PASSAGE [NorthPassage; stock; Concourse]
+I = FOOD FOR THOUGHT / TERRACE [FoodTerrace; food; Walkway]
+
+FLIGHTS (world x,y,z; rise; clear width; collapse flag):
+E Escalator_G1: descending head at (22,4,24) to floor 0.
+E Escalator_12: (34,4,24) -> (34,8,16); rise 4m; width 2.4m; collapsible=True
+S Stairs_G1: descending head at (45.55,4,44) to floor 0.
+S Stairs_12: (45.55,4,36) -> (45.55,8,44); rise 4m; width 3m; collapsible=False
+R HaulRamp_0_B: descending head at (53.85,4,36) to floor 0.
+R HaulRamp_1_A: (49.65,4,36) -> (49.65,6,44); rise 2m; width 4m; collapsible=False
+R HaulRamp_1_B: (53.85,6,44) -> (53.85,8,36); rise 2m; width 4m; collapsible=False
+
+FEATURED CANDIDATES (not all appear in one run):
+H: designer_sofa; tag=furniture; class=Heavy..Heavy; position=(10,4,42); Jackpot=False.
+J: grand_piano; tag=furniture; class=Huge..Huge; position=(30,4,26); Jackpot=True.
+
+EXTERIOR OPENINGS:
+W6: (0,4,26); permanent one-way rope descent to ground; wide=True.
+E4: (56,4,18); permanent one-way rope descent to ground; wide=True.

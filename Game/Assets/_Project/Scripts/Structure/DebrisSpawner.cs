@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Abandoned.Core;
 using UnityEngine;
 
@@ -6,11 +7,18 @@ namespace Abandoned.Structure
     /// <summary>
     /// Turns a collapsed section into falling chunks: cosmetic, local only, on the Debris layer
     /// (never blocks players or loot, never deals damage), seeded so every machine starts the same
-    /// break, and removed after a few seconds. A global chunk budget keeps big cascades affordable.
+    /// break. They settle and stay as rubble until the building is restored (2026-10-08). A budget of
+    /// moving chunks keeps big cascades affordable, and a resting budget keeps long jobs drawable.
+    /// The solid part of the rubble is the deterministic <see cref="RubbleMound"/>, not these chunks.
     /// </summary>
     public static class DebrisSpawner
     {
+        /// <summary>Chunks still tumbling (physics running).</summary>
         public static int LiveChunks { get; private set; }
+        /// <summary>Chunks settled as rubble.</summary>
+        public static int RestingChunks { get; private set; }
+
+        private static readonly List<DebrisLifetime> Settled = new();
 
         public static GameObject Spawn(StructuralSection section, GameObject fracturedPrefab, Material material,
             StructureVisualConfig visuals, int seed, bool preserveMaterials = false)
@@ -57,15 +65,39 @@ namespace Abandoned.Structure
 
             LiveChunks += used;
             lifetime.Track(used);
-            Object.Destroy(root, section.Config.DebrisLifetime);
+            lifetime.Settle(section.Config.DebrisLifetime, visuals.MaxRestingChunks);
             return root;
         }
 
         internal static void Release(int chunks) => LiveChunks = Mathf.Max(0, LiveChunks - chunks);
 
+        internal static void Rest(DebrisLifetime debris, int chunks)
+        {
+            RestingChunks += chunks;
+            if (!Settled.Contains(debris)) Settled.Add(debris);
+        }
+
+        internal static void Unrest(DebrisLifetime debris, int chunks)
+        {
+            RestingChunks = Mathf.Max(0, RestingChunks - chunks);
+            Settled.Remove(debris);
+        }
+
+        /// <summary>A section fell: rubble lying on it (within <paramref name="region"/>) falls with it.</summary>
+        public static void Unsettle(Bounds region)
+        {
+            for (int i = Settled.Count - 1; i >= 0; i--)
+                if (i < Settled.Count && Settled[i] != null) Settled[i].Unsettle(region);
+        }
+
         private static float Next(System.Random random) => (float)random.NextDouble();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => LiveChunks = 0;
+        private static void ResetStatics()
+        {
+            LiveChunks = 0;
+            RestingChunks = 0;
+            Settled.Clear();
+        }
     }
 }

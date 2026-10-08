@@ -1,0 +1,51 @@
+MERIDIAN MALL / floor 0 / y=0 m
+North (+Z) is up. Cells are 4 x 4 m.
+
+ z\x   0  1  2  3  4  5  6  7  8  9 10 11 12 13
+  11  -- -- JP JP JP JP JP JP JP JP CP HP -- --
+  10  DP JP JP JP JP JP JP JP JP JP CP -- -- --
+   9  DP IP IP IP IP IP IP IP IP IP IP -- -- --
+   8  DP GP GP GP BP BP BP BP BP BP CP HP HP HP
+   7  DP GP GP GP BP BP BP BP BP BP CP F~ F~ F~
+   6  DP GP GP GP BP BP BP BP BP BP CP F~ F~ F~
+   5  DP GP GP GP BP BP BP BP BP BP CP FP FP FP
+   4  DP AP AP AP BP BP BP BP BP BP CP FP FP FP
+   3  DP AP AP AP BP BP BP BP BP BP CP EP EP --
+   2  DP AP AP AP BP BP BP BP BP BP CP EP EP --
+   1  -- -- AP AP BP BP BP BP BP BP CP -- -- --
+   0  -- -- AP AP BP -- -- -- -- BP CP -- -- --
+
+Cell key: A.. = owned zone; P = permanent slab; ! = authored weak slab; ~ = collapsible slab; -- = void/outside; -X = pre-collapsed gallery wound.
+A = DEAD CIRCUIT [DeadCircuit; electronics; Store]
+B = MERIDIAN COURT [GrandAtrium; concourse; Concourse]
+C = SERVICE / EAST [ServicePassage; stock; Concourse]
+D = SERVICE / WEST [ServiceRear; stock; Concourse]
+E = LAST CHANCE JEWELS [Jewelry; jewelry; Store]
+F = MALL SECURITY [Security; office; Store]
+G = THREADBARE [Threadbare; clothing; Store]
+H = GOODS IN / CREW OUT [LoadingBay; stock; Concourse]
+I = DELIVERY PASSAGE [NorthPassage; stock; Concourse]
+J = FOOD FOR THOUGHT [FoodCourt; food; Concourse]
+
+FLIGHTS (world x,y,z; rise; clear width; collapse flag):
+E Escalator_G1: (22,0,16) -> (22,4,24); rise 4m; width 2.4m; collapsible=True
+S Stairs_G1: (45.55,0,36) -> (45.55,4,44); rise 4m; width 3m; collapsible=False
+R HaulRamp_-1_B: descending head at (53.85,0,36) to floor -1.
+R HaulRamp_0_A: (49.65,0,36) -> (49.65,2,44); rise 2m; width 4m; collapsible=False
+R HaulRamp_0_B: (53.85,2,44) -> (53.85,4,36); rise 2m; width 4m; collapsible=False
+S BasementServiceStairs: descending head at (45.55,0,44) to floor -1.
+
+FEATURED CANDIDATES (not all appear in one run):
+
+EXTERIOR OPENINGS:
+S6: (26,0,4); exterior door; wide=True.
+S7: (30,0,4); exterior door; wide=True.
+E8: (56,0,34); exterior door; wide=True.
+W2: (0,0,10); exterior door; wide=True.
+
+TRUCK rear=(62,0,34); loading door=(56,0,34); dock route is +X.
+CREW ARRIVAL VAN=(18,0,-17); parking aisle connects to the east collection drive.
+PlayerSpawn_0: (22,0.05,-12); faces (0.33,0,0.94).
+PlayerSpawn_1: (23.5,0.05,-11.3); faces (0.27,0,0.96).
+PlayerSpawn_2: (20.5,0.05,-12); faces (0.4,0,0.91).
+PlayerSpawn_3: (25,0.05,-11.3); faces (0.18,0,0.98).

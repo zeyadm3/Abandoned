@@ -246,7 +246,8 @@ namespace Abandoned.Extraction
             shape.AddComponent<HorrorScare>().Setup(kind);
         }
 
-        private static void Say(string text, float seconds)
+        /// <summary>Every machine: show a line on the crew's radio for a while (also BuildingDecay's collapse alarm).</summary>
+        public static void Say(string text, float seconds)
         {
             RadioLine = text;
             RadioUntil = Time.time + seconds;

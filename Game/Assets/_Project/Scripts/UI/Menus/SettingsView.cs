@@ -215,7 +215,7 @@ namespace Abandoned.UI
             Add("Accessibility", "Captions, colours and calmer effects.", () =>
             {
                 Section("CAPTIONS");
-                Note(Toggle("Subtitles", GameSettings.Subtitles, v => GameSettings.Subtitles = v), "Captions for structural warnings and threat sounds.");
+                Note(Toggle("Subtitles", GameSettings.Subtitles, v => GameSettings.Subtitles = v), "Accessibility only: names warning and monster sounds. Off by default; the game is meant to keep you guessing.");
                 MenuKit.Choice(body, "Subtitle size", GameSettings.SubtitleSizeNames, GameSettings.SubtitleSize, i => GameSettings.SubtitleSize = i);
                 Section("COLOUR AND MOTION");
                 Note(Toggle("Colourblind-safe scanner", GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v), "Blue / orange / vermilion stress colours.");
@@ -228,7 +228,7 @@ namespace Abandoned.UI
                 Note(MenuKit.Percent(body, "Heartbeat and breathing", GameSettings.VitalsVolume, v => GameSettings.VitalsVolume = v), "Your own heartbeat and breath during a job. 0 turns them off.");
             }, () =>
             {
-                GameSettings.Subtitles = true;
+                GameSettings.Subtitles = false;
                 GameSettings.VitalsVolume = 1f;
                 GameSettings.ColorblindScanner = GameSettings.ReduceMenuEffects = GameSettings.ReduceFlashing = GameSettings.FewerJumpScares = false;
                 GameSettings.SubtitleSize = 1;

@@ -22,7 +22,7 @@ namespace Abandoned.EditorTools
             }
             for(int f=-1;f<Floors;f++)for(int x=0;x<TilesX;x++)for(int z=0;z<TilesZ;z++) {
                 var c=new Vector2Int(x,z);var zone=ZoneAt(c,f);
-                if(!zone.HasValue||IsJackpotTile(c,f)||IsProtected(c,f)||UnderFlight(c,f))continue;
+                if(!zone.HasValue||IsJackpotTile(c,f)||IsProtected(c,f)||UnderFlight(c,f)||LandmarkReserved(c,f))continue;
                 if((x+z+f)%3!=0)continue;
                 bool heavy=zone.Value.Kind==Kind.Store&&(x+z)%7==0;
                 // Stocking at wall edges preserves the middle of the carry aisle.
@@ -39,6 +39,9 @@ namespace Abandoned.EditorTools
             p.gameObject.AddComponent<LootSpawnPoint>().EditorSetup(tag,min,max,jackpot,ids,featured);
         }
         private static bool UnderFlight(Vector2Int c,int floor)=>AllFlights.Any(f=>f.Floor==floor&&f.Tiles.Contains(c));
+        // Loose floor loot would be hidden inside the fixed fountain basin or planter at these sites.
+        private static bool LandmarkReserved(Vector2Int c,int floor)=>floor==0&&
+            ((c.x==6&&c.y==6)||(c.x==8&&c.y==7));
         public static bool IsJackpotTile(Vector2Int c,int floor)=>Prizes.Any(p=>p.floor==floor&&p.x==c.x&&p.z==c.y);
     }
 }

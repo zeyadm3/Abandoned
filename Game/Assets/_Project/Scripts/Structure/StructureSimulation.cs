@@ -67,6 +67,7 @@ namespace Abandoned.Structure
                 sections[i].Id = i;
                 sections[i].Simulation = this;
                 sections[i].Collapsed += OnSectionCollapsed;
+                sections[i].Restored += OnSectionRestored;
             }
             StructureSignals.Impact += OnPointImpact;
         }
@@ -74,7 +75,12 @@ namespace Abandoned.Structure
         private void OnDestroy()
         {
             StructureSignals.Impact -= OnPointImpact;
-            foreach (StructuralSection s in sections) if (s != null) s.Collapsed -= OnSectionCollapsed;
+            foreach (StructuralSection s in sections)
+                if (s != null)
+                {
+                    s.Collapsed -= OnSectionCollapsed;
+                    s.Restored -= OnSectionRestored;
+                }
         }
 
         private void Start()
@@ -248,6 +254,8 @@ namespace Abandoned.Structure
         {
             CollapseCount++;
             supportCache.Invalidate();
+            // Every machine, quiet or not: the heap it leaves is part of the building now.
+            PlaceRubble(section);
             Bounds surface = section.SurfaceBounds;
             // Already down when this machine joined: nothing is falling, nobody is standing on it.
             if (section.CollapsedQuietly) return;

@@ -54,7 +54,7 @@ namespace Abandoned.Threats
         protected void Wander()
         {
             if (!Agent.pathPending && (!Agent.hasPath || Agent.remainingDistance < 1f))
-                Move(transform.position + Random.insideUnitSphere * 12f, WalkSpeed);
+                Move(RoamCentre + Random.insideUnitSphere * 12f, WalkSpeed);
         }
         protected NetworkPlayer Nearest(float range = float.MaxValue)
         {

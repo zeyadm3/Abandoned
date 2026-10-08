@@ -14,7 +14,7 @@ namespace Abandoned.Core
         public const float MinFov = 60f, MaxFov = 100f, DefaultFov = 75f;
 
         private const string SensitivityKey = "settings.sensitivity", FovKey = "settings.fov", BobKey = "settings.headbob",
-            ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale",
+            ShakeKey = "settings.shake", SubtitlesKey = "settings.captions", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale",
             ReduceMenuEffectsKey = "settings.reducemenufx", InvertYKey = "settings.inverty", CrouchToggleKey = "settings.crouchtoggle",
             CrosshairKey = "settings.crosshair", SubtitleSizeKey = "settings.subtitlesize", MuteUnfocusedKey = "settings.muteunfocused",
             ReduceFlashingKey = "settings.reduceflashing", FewerScaresKey = "settings.fewerscares", VitalsVolumeKey = "settings.vitalsvolume",
@@ -54,10 +54,13 @@ namespace Abandoned.Core
             set => Set(ref shake, ShakeKey, value);
         }
 
-        /// <summary>Captions for structural warnings and threat sounds. On by default: sound carries the game's warnings.</summary>
+        /// <summary>
+        /// Captions for structural warnings and threat sounds. Off by default (user, 2026-10-08): the player
+        /// shouldn't be told what a sound is; an accessibility opt-in only. A new key, so the old saved "on" is dropped.
+        /// </summary>
         public static bool Subtitles
         {
-            get => subtitles ??= Prefs.GetInt(SubtitlesKey, 1) == 1;
+            get => subtitles ??= Prefs.GetInt(SubtitlesKey, 0) == 1;
             set => Set(ref subtitles, SubtitlesKey, value);
         }
 

@@ -6,7 +6,8 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// Music belongs to the HQ/menu, the drive and the truck's departure countdown. Exploration is carried
-    /// by the building and crew; payday/level stings wait until the return to HQ, and deaths stay diegetic.
+    /// by the building and crew, plus the song of whichever monster is coming for you (Threats.ThreatMusic,
+    /// 2026-10-08); payday/level stings wait until the return to HQ, and deaths stay diegetic.
     /// One per game, made on first scene load (never in batch mode).
     /// </summary>
     public class MusicPlayer : MonoBehaviour

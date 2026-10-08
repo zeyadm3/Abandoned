@@ -45,6 +45,9 @@ namespace Abandoned.Structure
         [field: SerializeField, Min(0f)] public float BurstSpin { get; private set; } = 3f;
         [field: Tooltip("Upper limit on debris chunks alive at once; extra collapses spawn fewer chunks.")]
         [field: SerializeField, Min(1)] public int MaxLiveChunks { get; private set; } = 400;
+        [field: Tooltip("Settled chunks kept as rubble for the rest of the job (2026-10-08). Past this, newer breaks clear their chunks once they land; the solid mound always stays.")]
+        [field: SerializeField, Min(0)] public int MaxRestingChunks { get; private set; } = 2500;
+
         [field: Tooltip("Camera shake momentum emitted by a collapse.")]
         [field: SerializeField, Min(0f)] public float CollapseShake { get; private set; } = 3000f;
 

@@ -51,6 +51,8 @@ namespace Abandoned.EditorTools
             text.AppendLine($"LOD groups: {lods.Length}; realtime fixtures: {mall.GetComponentsInChildren<LightFixture>(true).Length}; mall plus global directional lights: {lights.Length}; global directionals: {sceneDirectional.Length}; shadow-capable lights: {lights.Count(l => l.shadows != LightShadows.None)}.");
             text.AppendLine($"Reflection probes: {probes.Length}; allocated realtime probe textures: {MiB(reflectionBytes)} MiB; sections: {sections.Length}; collapsible: {sections.Count(s => s.CanCollapse)}; permanent: {sections.Count(s => !s.CanCollapse)}.");
             text.AppendLine($"Static renderer flags — batching: {Flagged(renderers, StaticEditorFlags.BatchingStatic)}; occluder: {Flagged(renderers, StaticEditorFlags.OccluderStatic)}; occludee: {Flagged(renderers, StaticEditorFlags.OccludeeStatic)}.");
+            Transform dressing = mall.Find("MeridianDressing/FittedDensity");
+            text.AppendLine($"Authored world-text labels: {mall.GetComponentsInChildren<TextMesh>(true).Length}; fitted dressing modules with LODs: {(dressing != null ? dressing.GetComponentsInChildren<LODGroup>(true).Length : 0)}.");
             text.AppendLine();
             text.AppendLine("| Art view | Flashlights | Editor batches | SetPass | Triangles | Vertices |");
             text.AppendLine("|---|---:|---:|---:|---:|---:|");

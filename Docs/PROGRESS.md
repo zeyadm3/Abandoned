@@ -4,6 +4,88 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.4 — monster arrivals, monster songs, a decaying mall and lasting rubble (2026-10-08)
+
+The user's brief: monsters were too rare (30 min in the mall without meeting anything), each monster should have
+its own song that swells as it approaches (only the most dangerous one heard), the mall should fall apart the
+longer the crew stays, and rubble should stay. **Written only: nothing was compiled, run or verified** (user rule:
+they do all testing, running and verifying). Run `Tools/unity.sh compile`, then `rebuild-horror`, then `build`.
+
+- **Arrivals** (`ThreatPacingConfig`, `ThreatPacing`, `ThreatDirector`): opening monster at 25 s, then one every
+  90-150 s (seeded) for the whole job, alive cap 3 + 1 per player (max 8; the final hunter not counted). Behaviour
+  untouched. A monster nobody has been within 30 m of for 60 s wanders around a random living player's area
+  (Blind One, Hunter, Thing, Weight, Crawlers; `Threat.RoamHint`); one over 45 m from everyone for 120 s is replaced
+  at the spawn point nearest the crew that is unseen and 14 m+ away. Stalker, Collector, Last Hunter are left alone.
+- **Decay schedule** (`BuildingDecayConfig`, `BuildingDecay`, added beside `DangerDirector`): run clock from the
+  truck's arrival. 0-3 min nothing; 3-10 a section every 50 s; 10-17 every 30 s; 17-25 every 20 s; 25-40 every
+  10 s. Each pick cracks (5 s of groaning) then fails through the normal path (sag, sync, cascades, NavMesh carve);
+  70 % of picks come from within 30 m of the crew. Support-jacked sections are skipped. Protected route sections
+  (`canCollapse` off) never fall. 2 min before 40:00 a dispatch warning plays.
+- **Total collapse at 40:00**: alarm, rumble, shaking and a radio countdown; the HUD reads `COLLAPSE Ns`. Every
+  collapsible section comes down over 54 s, top floor first and far from the truck first. At 60 s anyone still
+  inside the building (HorrorConfig bounds, truck excluded) dies ("The mall came down on you."). If that leaves
+  nobody alive, the job is lost: haul 0, nothing recovered (`RunState.Crushed`); the company save is untouched.
+  Anyone outside lives and can drive off. `RunNetState.CollapseAt` carries the countdown to every machine.
+- **Rubble stays** (`DebrisLifetime`, `DebrisSpawner`, `RubbleMound`, `StructureSimulation.Rubble`): chunks
+  tumble, then settle kinematic and stay until the next run's restore (resting budget 2500 chunks, then newer
+  loose chunks clear; mounds always stay). Each fallen section also drops a **solid mound** (1.3-1.8 m tall,
+  80 % of its footprint, seeded, identical on every machine, not networked): it blocks players, loot and monsters
+  (NavMeshObstacle carve), lifts a player standing there onto it and sets buried resting loot on top. It never
+  lands on stairs or `SectionKeepClear` sections (protected tiles and turn landings, added by MallPopulator), and
+  drops again if the floor under it falls. `StructuralSection.SurfaceBounds` now remembers where a fallen section was
+  (disabled colliders report empty bounds).
+- **Monster songs** (`ThreatMusic`, `ThreatMusicSynth`, `ThreatDefinition.MusicClip/HierarchyOverride`): eight
+  original synthesised loops. Hierarchy = one-touch killers first, then damage / attack gap x chase speed:
+  Last Hunter > Hunter > Stalker > Blind One > Thing > Crawlers > Collector > Weight. A monster counts while it chases
+  or closes in; its song starts when it could reach the listener within 15 s at its top danger-scaled speed
+  (straight-line, so at least 15 s), swells to full at 2 s, and stops after 4 s of not approaching beyond 20 s.
+  Only the highest-ranked counting monster plays (1.5 s crossfade). Local per machine, Music volume slider.
+- **F1**: threats alive/cap/next arrival/drifting, drift gizmos; decay interval/next/cracking/down or the total
+  collapse countdown, gizmos on cracking sections; music leader, rank, ETA, volume.
+
+Test first (user):
+
+1. Stay 5-10 min in the mall: monsters keep arriving (F1 THREATS line) and find the crew; a song starts well before
+   one reaches you and only the top-ranked monster's song plays when two approach.
+2. From 3:00 watch sections crack then fall on the schedule; rubble chunks and solid mounds stay; walk into a mound
+   (blocked), stand where one lands (lifted on top), check the escape route never gets a mound.
+3. Temporarily set BuildingDecayConfig > Total Collapse Minute to 2 (Data/Extraction/Resources) to reach the end: countdown, everything falls, dying inside loses the job,
+   standing outside survives. Check frame rate late in a long job (many mounds and resting chunks).
+
+## 0.13.2 — fitted mall remnants, restrained signs and more working lights (2026-10-08)
+
+Responds to the user's feedback that the abandoned mall still feels too empty, the scattered text looks strange,
+and the map needs more lighting and detailed assets.
+
+- **Art:** fourteen original Blender fixture modules with manufactured detail and LOD0/1/2/cull, sharing the
+  existing Meridian PBR textures: benches, bins, blank ad lightboxes, clothes rails/hangers, retail gondolas,
+  checkout counters, food booths/service stations, cinema screen/ticket counter, service cart, stock cages,
+  ceiling ducts and shuttered kiosk. The kit now contains 97 FBX models; no new textures/downloads/packages.
+- **Dressing:** contextual wall runs and shop fixtures, more food-court seating/service fittings, cinema seating
+  and screen, concourse furniture and basement storage. Placements read actual layout/support/loot data and
+  measured model footprints. Decorative objects remain collider-free and follow their supporting section;
+  protected routes, doors, escalator/stair approaches, jackpot tiles and loot centres remain clear.
+- **Text cleanup:** removed automatic store-door labels, ambient slogans/notices, the gallery warning panel,
+  repeated food-stall labels, crew-van lettering and the large collection instruction billboard. A restrained
+  set of mounted mall/cinema/food/service/exit/collection identification remains; HUD and haul board still work.
+- **Lighting:** more actual working fixtures throughout stores, food areas and service spaces, plus roof-hung
+  atrium luminaires. Powered fixtures are brighter; dead/faulty fixtures remain as deliberate exceptions.
+  The existing battery flashlight, power-off runs, light sectors, final red phase and collapse hooks remain.
+- **Authoring census:** 298 added fitted modules (basement 9, ground 85, first 110, top 94), including all fourteen
+  new asset types. Sparse legacy store displays were replaced by the fitted runs. Ceiling lights increased
+  120 → 354 plus four roof-hung atrium fixtures; fixture intensity 8.4 → 18, local range 7.5 m, atrium 42 / 12 m,
+  dead/faulty defaults 10% / 28%. Four fixture shadow lights plus moon remain. TextMesh labels decreased 58 → 16.
+- **Checks:** compile and `rebuild-horror` passed: 11 flights / 0 problems, Mall + HQ invisible colliders 0
+  (0 intentional), 306 materials / 0 problems. Blender geometry inventory: 97 models / 0 problems.
+  No gameplay, EditMode/PlayMode, network or screenshot tests run.
+
+Test first:
+
+1. Walk the shops, food court and cinema with power on; check the added fitted assets and simpler signage.
+2. Carry/trolley heavy loot through shop doors, permanent haul ramps and the truck approach; check dressing
+   leaves carrying space and never catches a player or the load.
+3. Try power off and a collapse near new fixtures/dressing, then record atrium FPS/batches with four flashlights.
+
 ## 0.13.1 — visibility, crew arrival and collection bay (2026-10-08)
 
 Responds to the user's dark-mall feedback and request for parking, an arrival vehicle and a clear place to haul

@@ -48,7 +48,9 @@ How we work: Docs/PLAYBOOK.md.
   and every client plays the same pre-fractured break locally.
 - Debris is cosmetic only: its own physics layer, never collides with players or loot,
   never deals gameplay damage. The host calculates all structural damage, including
-  cascades onto sections below.
+  cascades onto sections below. Exception (2026-10-08): each fallen section's deterministic solid
+  rubble mound (RubbleMound, Default layer) blocks players, loot and monsters; it is built locally from
+  the collapse seed on every machine, never networked, and never deals damage.
 - Death ragdolls are local only (not networked).
 - Players join only at HQ between runs. No mid-run joining or reconnect.
 - Monsters run only on the host; clients see synced position/animation state.
@@ -124,6 +126,16 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
     a Development build/profiler, because shareable builds keep development controls disabled.
   - No new packages, paid assets, TestMap changes or pushes. Commit each checked stage. Four-player
     host performance stays pending the user's run; report Editor/asset figures honestly.
+- 2026-10-08 (user, pacing pass; written, untested): monsters keep arriving all job (ThreatPacingConfig: 25 s opening,
+  then every 90-150 s, cap 3 + crew, max 8) and idle ones drift toward / are relocated near the crew; behaviour unchanged.
+  The building decays on a fixed clock (BuildingDecayConfig: none to 3 min, then every 50/30/20/10 s from 3/10/17/25 min)
+  and at 40 min the whole building collapses over 60 s; anyone inside dies, and if nobody survives the job is lost (haul 0,
+  save untouched); outside = safe. Rubble stays until the next run: loose chunks settle (cosmetic) and each fallen section
+  leaves a SOLID mound that blocks players/loot/monsters (user: rubble must be big and block) - this replaces "debris never
+  blocks" for mounds only; mounds are deterministic and local (not networked), never on stairs or SectionKeepClear route
+  sections. Each monster has its own song; only the highest in the hierarchy (one-touch kill > damage rate x chase speed)
+  of the monsters approaching plays, starting at least 15 s before it can reach you. Never test/verify/run anything
+  (no compile/rebuild/build either) unless the user asks.
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).
 - Structure uses modular sections + pre-fractured mesh swaps, not real-time destruction.
 - Levels are hand-built layouts with randomized contents, not procedural generation.
@@ -306,3 +318,10 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   collection approach. The existing truck remains the cargo-counting and extraction system: goods must be inside
   its cargo bay, and payment occurs on departure. The mall-only ramp/apron are 4.4 m wide; cargo dimensions and
   HQ remain unchanged. Visibility settings migrate once, then preserve future inspector tuning.
+- 2026-10-08 (0.13.2, user density/signage/lighting follow-up): the mall needs substantially more fitted remnants
+  of its former use: contextual store displays, counters, seating, service equipment and concourse furniture.
+  Add original detailed LOD assets with existing Meridian PBR maps, collider-free and bound to their supporting
+  structural section. Keep doors, loot sites, flight approaches and the permanent haul route clear. Remove
+  scattered notice text, slogans, duplicate labels and the collection instruction billboard; retain a small set
+  of physically mounted identification/exit/collection signs. Increase visible working fixtures and powered
+  lighting while retaining power-off, collapse and horror-sector behaviour; no additional shadow lights.

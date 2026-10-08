@@ -28,6 +28,13 @@ namespace Abandoned.Threats
         public float SpeedScale { get; set; } = 1f;
         public float HearingScale { get; set; } = 1f;
         public int Kills { get; protected set; }
+        /// <summary>
+        /// Host, <see cref="ThreatPacing"/>: set while nobody has come near it for a while, so its idle wandering
+        /// heads for the crew's part of the building. Never a target: it still has to hear or see someone.
+        /// </summary>
+        public Vector3? RoamHint { get; set; }
+        /// <summary>Host: where idle wandering is centred (the drift point if there is one, else where it stands).</summary>
+        protected Vector3 RoamCentre => RoamHint ?? transform.position;
 
         protected int WallMask { get; private set; }
 

@@ -6,8 +6,8 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// Captions for the sounds that matter (GDD 20): the building's warnings and the threats'
-    /// signatures, with where they came from relative to the listener. Only sounds within hearing
-    /// range are captioned, and only with Subtitles on.
+    /// signatures. Only sounds within hearing range are captioned, and only with Subtitles on, which is an
+    /// off-by-default accessibility option. Never says where a sound came from (user, 2026-10-08: dread).
     /// </summary>
     public static class SubtitleFeed
     {
@@ -38,7 +38,7 @@ namespace Abandoned.Audio
             if (caption == null || ear == null) return;
             Vector3 to = position - ear.transform.position;
             if (to.magnitude > maxDistance) return;
-            Heard($"[{caption}{Direction(ear.transform, to)}]");
+            Heard($"[{caption}]");
         }
 
         /// <summary>" - left", " - behind" ... from the listener's facing; nothing when it's right here.</summary>

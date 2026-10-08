@@ -38,6 +38,8 @@ namespace Abandoned.Threats
 
         private void Start()
         {
+            // The building's own decay schedule (2026-10-08) lives beside the danger level in every level that has one.
+            if (!TryGetComponent(out BuildingDecay _)) gameObject.AddComponent<BuildingDecay>().Setup(structure);
             foreach (Light l in FindObjectsByType<Light>(FindObjectsSortMode.None))
                 if (l.type != LightType.Directional && l.gameObject.scene == gameObject.scene && l.GetComponentInParent<LightFixture>() == null && l.GetComponentInParent<Abandoned.Networking.NetworkPlayer>() == null && l.GetComponentInParent<TruckCargo>() == null && l.GetComponentInParent<TruckFloodlights>() == null) lights.Add((l, l.intensity));
         }

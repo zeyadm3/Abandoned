@@ -12,20 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b6296920ed44dd09f25f4366fa22f1, type: 3}
   m_Name: MeridianPresentationConfig
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Structure.MeridianPresentationConfig
-  fixtureIntensity: 8.4
-  fixtureRange: 9.5
-  fixtureAngle: 112
+  fixtureIntensity: 18
+  fixtureRange: 7.5
+  fixtureAngle: 116
   fixtureCeilingClearance: 0.02
-  basementIntensityScale: 0.6
-  faultyPercent: 45
-  deadPercent: 22
-  maximumFixtures: 128
+  basementIntensityScale: 0.8
+  faultyPercent: 28
+  deadPercent: 10
+  maximumFixtures: 384
   shadowLights: 4
+  storeFixtureStride: 1
+  serviceFixtureStride: 1
+  concourseFixtureStride: 2
   fluorescent: {r: 0.72, g: 0.88, b: 0.92, a: 1}
   sodium: {r: 1, g: 0.76, b: 0.44, a: 1}
   alarmIntensity: 1.3
   alarmRange: 7
   fixtureFallLifetime: 5
+  atriumFixtures: 4
+  atriumFixtureHeight: 6.4
+  atriumFixtureIntensity: 42
+  atriumFixtureRange: 12
   parkingLampIntensity: 10
   parkingLampRange: 16
   parkingLampColor: {r: 0.95, g: 0.8, b: 0.58, a: 1}
@@ -46,7 +53,7 @@ MonoBehaviour:
   saturation: -24
   contrast: 10
   postExposure: 0.2
-  readabilityRevision: 1
+  readabilityRevision: 2
   dustPerCubicMetre: 0.035
   dustPerZoneLimit: 56
   reflectionResolution: 128
