@@ -66,9 +66,11 @@ namespace Abandoned.Tests
             Assert.IsNotNull(ear);
             MenuUi menu = MenuUi.Current;
             Vector3 behind = ear.transform.position - ear.transform.forward * 6f;
+            Assert.IsTrue(GameSettings.Subtitles, "subtitles are on by default (QA B-35)");
+            GameSettings.Subtitles = false;
             GameAudio.Play(SoundId.Creak, behind);
             yield return null;
-            Assert.AreEqual(0, menu.Subtitles.Count, "subtitles are off by default");
+            Assert.AreEqual(0, menu.Subtitles.Count, "subtitles off: no captions");
 
             GameSettings.Subtitles = true;
             string heard = null;

@@ -92,12 +92,14 @@ namespace Abandoned.Interaction
             return null;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
             box ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
             DrawDebug();
         }
+#endif
 
         private void DrawDebug()
         {

@@ -28,6 +28,10 @@ namespace Abandoned.Threats
         [field: SerializeField, Min(0f)] public float AggressionPerDanger { get; private set; } = 0.09f;
         [field: SerializeField, Min(0f)] public float SignatureInterval { get; private set; } = 3f;
         [field: SerializeField, Min(1f)] public float AudibleRange { get; private set; } = 38f;
+        [Tooltip("Light-shy threats (the Crawlers): a beam within this range (m) and cone (degrees) scatters them for ScatterSeconds.")]
+        [field: SerializeField, Min(0f)] public float LightRepelRange { get; private set; } = 16f;
+        [field: SerializeField, Range(1f, 90f)] public float LightRepelAngle { get; private set; } = 30f;
+        [field: SerializeField, Min(0f)] public float ScatterSeconds { get; private set; } = 2.5f;
 
 #if UNITY_EDITOR
         public void EditorSetup(ThreatKind kind, string displayName, NetworkObject prefab, float weight, int minimumDanger,

@@ -184,6 +184,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GiveGear",
+                    "type": "Button",
+                    "id": "e9758e79-4320-4fa4-8d58-7548529ecd82",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -459,6 +468,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "HideHud",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2760047d-a315-4fb1-b312-774e43eeccc5",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "GiveGear",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

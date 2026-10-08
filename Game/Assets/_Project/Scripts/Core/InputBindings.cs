@@ -16,7 +16,7 @@ namespace Abandoned.Core
         public static readonly string[] Rebindable =
         {
             "Move", "Sprint", "Crouch", "Jump", "Interact", "Use", "Drop", "Scan", "Flashlight",
-            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio", "Rotate", "Chat", "PhotoCamera", "HideHud",
+            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio", "Rotate", "GiveGear", "Chat", "PhotoCamera", "HideHud",
         };
 
         // Menu-level keys read outside the player (chat, free camera, clip mode): one always-on copy of the

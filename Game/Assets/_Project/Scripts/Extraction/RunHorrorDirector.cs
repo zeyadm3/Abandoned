@@ -252,11 +252,13 @@ namespace Abandoned.Extraction
             RadioUntil = Time.time + seconds;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (DebugView.Visible)
                 GUI.Label(new Rect(15f, 190f, 650f, 25f), $"HORROR arrival {arrivalBeat}/{config.ArrivalBeats?.Length ?? 0} final {final.Value} next scare {nextScare - Time.time:0}s");
         }
+#endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()

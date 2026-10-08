@@ -68,6 +68,7 @@ namespace Abandoned.Threats
             return best;
         }
         protected bool Sees(NetworkPlayer p) => LineOfSight(transform.position + Vector3.up * 1.3f, PositionOf(p) + Vector3.up * 1.1f);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
@@ -76,6 +77,7 @@ namespace Abandoned.Threats
             Vector3 at = camera.WorldToScreenPoint(transform.position + Vector3.up * 2f);
             if (at.z > 0f) GUI.Label(new Rect(at.x - 110f, Screen.height - at.y, 240f, 22f), $"{DisplayName}: {DesiredMotion} x{Aggression:0.0}");
         }
+#endif
         private void OnDrawGizmosSelected()
         {
             if (!DebugView.Visible) return;

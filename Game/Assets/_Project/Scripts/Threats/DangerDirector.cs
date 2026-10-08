@@ -114,10 +114,12 @@ namespace Abandoned.Threats
             foreach ((Light l, float intensity) in lights) if (l != null) l.intensity = intensity;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (DebugView.Visible && RunState.Current != null)
                 GUI.Label(new Rect(Screen.width - 360f, 30f, 350f, 22f), $"DANGER {Level}  decay x{(structure != null ? structure.DangerDecay : 1f):0.00}");
         }
+#endif
     }
 }

@@ -67,16 +67,16 @@ namespace Abandoned.Player
                     threatPressure = Mathf.Max(threatPressure, 1f - Mathf.Clamp01(distance / config.ThreatHeartbeatRange));
                 }
             }
-            float darkness = equipment == null || !equipment.LightOn ? 0.28f : 0.05f;
-            float pressure = Mathf.Max(low, threatPressure, darkness, player.Motor.IsSprinting ? 0.4f : 0f);
+            float darkness = equipment == null || !equipment.LightOn ? config.DarknessFear.x : config.DarknessFear.y;
+            float pressure = Mathf.Max(low, threatPressure, darkness, player.Motor.IsSprinting ? config.SprintFear : 0f);
             if (Time.time >= nextHeartbeat)
             {
-                nextHeartbeat = Time.time + Mathf.Lerp(1.05f, 0.48f, pressure);
+                nextHeartbeat = Time.time + Mathf.Lerp(config.HeartbeatInterval.x, config.HeartbeatInterval.y, pressure);
                 GameAudio.PlayHeartbeat(vitals * config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
             }
             if (Time.time >= nextBreath)
             {
-                nextBreath = Time.time + Mathf.Lerp(4.2f, 2f, pressure);
+                nextBreath = Time.time + Mathf.Lerp(config.BreathInterval.x, config.BreathInterval.y, pressure);
                 GameAudio.PlayBreath(vitals * Mathf.Lerp(0.04f, 0.18f, pressure));
             }
         }

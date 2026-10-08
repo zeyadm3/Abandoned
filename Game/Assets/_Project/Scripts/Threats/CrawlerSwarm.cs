@@ -25,8 +25,12 @@ namespace Abandoned.Threats
                 PlayerEquipment e = p.GetComponent<PlayerEquipment>();
                 Vector3 to = transform.position + Vector3.up * 0.3f - (PositionOf(p) + Vector3.up * 1.5f);
                 Vector3 aim = Quaternion.Euler(p.State.Pitch, p.transform.eulerAngles.y, 0f) * Vector3.forward;
-                if (e != null && e.State.LightOn && e.Has(EquipmentKind.Flashlight) && e.HandsFreeForLight && to.magnitude < 16f && Vector3.Angle(to, aim) < 30f && Sees(p))
-                { scatterUntil = Time.time + 2.5f; fleeFrom = PositionOf(p); }
+                float range = Definition != null ? Definition.LightRepelRange : 16f, cone = Definition != null ? Definition.LightRepelAngle : 30f;
+                if (e != null && e.LightOn && to.magnitude < range && Vector3.Angle(to, aim) < cone && Sees(p))
+                {
+                    scatterUntil = Time.time + (Definition != null ? Definition.ScatterSeconds : 2.5f);
+                    fleeFrom = PositionOf(p);
+                }
             }
             if (Time.time < scatterUntil)
             {

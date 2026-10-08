@@ -53,7 +53,7 @@ namespace Abandoned.UI
                         $"Pick up / use {K("Interact")}   Throw (hold) {K("Use")}   Drop (tap) / set down (hold) {K("Drop")}\n" +
                         $"Rotate (hold + mouse) {K("Rotate")}   Pockets {K("Inventory")}\n" +
                         $"Flashlight {K("Flashlight")}   Hand slots {K("HandSlot1")} / {K("HandSlot2")}   Scan {K("Scan")}\n" +
-                        $"Talk {K("PushToTalk")}   Radio {K("Radio")}   Menu Esc";
+                        $"Give gear {K("GiveGear")}   Chat {K("Chat")}   Talk {K("PushToTalk")}   Radio {K("Radio")}   Menu Esc";
         }
     }
 }

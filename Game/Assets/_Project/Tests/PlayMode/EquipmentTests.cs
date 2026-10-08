@@ -68,11 +68,12 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
-        public IEnumerator SoloHeavyDragsNeedTheTrolleyAndThereIsOnlyOne()
+        public IEnumerator SoloHeavyDragsUseTheCompanyTrolleyAndThereIsOnlyOne()
         {
             PlayerEquipment me = Mine();
             PlayerCarrier carrier = me.GetComponent<PlayerCarrier>();
-            Assert.IsFalse(carrier.CanSoloDrag(CarryClass.Heavy), "no trolley in hand");
+            yield return Frames();
+            Assert.IsTrue(carrier.CanSoloDrag(CarryClass.Heavy), "alone, the company's trolley rides along without a hand slot (QA D-09)");
             int trolley = me.Catalog.IndexOf("hand_trolley");
             Assert.AreEqual(1, me.Available(trolley));
             me.RequestEquip(1, trolley);

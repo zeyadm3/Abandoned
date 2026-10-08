@@ -31,12 +31,14 @@ namespace Abandoned.Player
         public readonly bool DropReleased;
         /// <summary>Mouse wheel this frame (+ up, - down), in notches.</summary>
         public readonly float Scroll;
+        /// <summary>Hand your gear to the crewmate in front of you, or take a fallen one's (QA D-10).</summary>
+        public readonly bool GiveGearPressed;
 
         public PlayerInputFrame(Vector2 move, Vector2 look, bool sprintHeld, bool crouchHeld, bool crouchPressed,
             bool jumpPressed, bool usePressed, bool useHeld, bool interactPressed, bool dropPressed,
             bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false, bool talkHeld = false, bool radioHeld = false,
             bool slot1Pressed = false, bool slot2Pressed = false, bool flashlightPressed = false,
-            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false, float scroll = 0f)
+            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false, float scroll = 0f, bool giveGearPressed = false)
         {
             Move = move;
             Look = look;
@@ -60,6 +62,7 @@ namespace Abandoned.Player
             DropHeld = dropHeld;
             DropReleased = dropReleased;
             Scroll = scroll;
+            GiveGearPressed = giveGearPressed;
         }
     }
 }

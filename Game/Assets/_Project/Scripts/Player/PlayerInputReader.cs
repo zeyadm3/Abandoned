@@ -12,7 +12,7 @@ namespace Abandoned.Player
     public class PlayerInputReader : MonoBehaviour
     {
         private AbandonedInput input;
-        private InputAction ragdollDebugAction;
+        private InputAction ragdollDebugAction, giveGearAction;
 
         public PlayerInputFrame Current { get; private set; }
 
@@ -27,6 +27,7 @@ namespace Abandoned.Player
             input = new AbandonedInput();
             // Debug-only action; looked up by name so this doesn't depend on wrapper regeneration order.
             ragdollDebugAction = input.asset.FindAction("Debug/ToggleRagdoll", true);
+            giveGearAction = input.asset.FindAction("Gameplay/GiveGear", true);
             InputBindings.Apply(input.asset);
             InputBindings.Changed += Rebind;
         }
@@ -82,7 +83,8 @@ namespace Abandoned.Player
                 g.Rotate.IsPressed(),
                 g.Drop.IsPressed(),
                 g.Drop.WasReleasedThisFrame(),
-                Mouse.current != null ? Mathf.Sign(Mouse.current.scroll.ReadValue().y) * (Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0.01f ? 1f : 0f) : 0f);
+                Mouse.current != null ? Mathf.Sign(Mouse.current.scroll.ReadValue().y) * (Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0.01f ? 1f : 0f) : 0f,
+                giveGearAction.WasPressedThisFrame());
         }
     }
 }

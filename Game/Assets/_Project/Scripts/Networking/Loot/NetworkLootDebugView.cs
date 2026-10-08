@@ -32,6 +32,12 @@ namespace Abandoned.Networking
                 if (loot.IsSpawned) items.Add(loot);
         }
 
+        // QA P-08: a debug overlay only; in player builds it never draws, so it doesn't sit in the GUI loop either.
+        private void Start()
+        {
+            if (!Abandoned.Core.DevTools.Enabled) enabled = false;
+        }
+
         private void OnGUI()
         {
             Camera camera = Camera.main;

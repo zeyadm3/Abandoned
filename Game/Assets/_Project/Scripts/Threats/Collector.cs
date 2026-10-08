@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Extraction;
 using Abandoned.Interaction;
+using Abandoned.Loot;
 using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,8 +14,10 @@ namespace Abandoned.Threats
 
     /// <summary>
     /// The Collector (GDD 9): never hurts anyone. It picks up loot nobody is near (not in the truck, not
-    /// in anyone's hands) and hides it somewhere far away in the building; get close and it drops what
-    /// it has and flees. Counterplay: guard the loot pile, carry things straight to the truck. Host only.
+    /// in anyone's hands) and takes it to its nest, one place far from the truck for the whole run, where
+    /// the hoard tinkles now and then (QA D-08: stolen loot can be found again). Get close and it drops what
+    /// it has and flees. Counterplay: guard the loot pile, carry things straight to the truck, raid the nest.
+    /// Host only; the nest's place and size are replicated so everyone can hear it.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
     public class Collector : Threat
@@ -22,6 +25,10 @@ namespace Abandoned.Threats
         [SerializeField] private CollectorConfig config;
 
         private readonly NetworkVariable<CollectorState> state = new();
+        // Where the hoard is and how much it has taken there (0 = no nest yet).
+        private readonly NetworkVariable<Vector3> nest = new();
+        private readonly NetworkVariable<byte> hoard = new();
+        private float nextNestSound;
         private NavMeshAgent agent;
         private NetworkLoot prey, carried;
         private Vector3 hideAt;
@@ -66,6 +73,12 @@ namespace Abandoned.Threats
                 nextJingle = Time.time + 0.8f;
                 Audio.GameAudio.Play(Audio.SoundId.CollectorJingle, transform.position + Vector3.up, 0.8f);
             }
+            // Every machine: the hoard gives itself away with a quiet jingle every so often.
+            if (IsSpawned && hoard.Value > 0 && Time.time >= nextNestSound)
+            {
+                nextNestSound = Time.time + Random.Range(6f, 10f);
+                Audio.GameAudio.Play(Audio.SoundId.CollectorJingle, nest.Value + Vector3.up * 0.5f, 0.45f);
+            }
             if (!IsServer || !IsSpawned) return;
             if (!agent.isOnNavMesh)
             {
@@ -108,6 +121,7 @@ namespace Abandoned.Threats
                     {
                         Drop();
                         Stolen++;
+                        if (hoard.Value < byte.MaxValue) hoard.Value++;
                         nextTheft = Time.time + config.Cooldown / Mathf.Min(Aggression, 1.7f);
                         Set(CollectorState.Idle);
                     }
@@ -125,10 +139,14 @@ namespace Abandoned.Threats
         private void Seek()
         {
             TruckCargo truck = TruckCargo.Current;
+            // QA P-02: the bay is checked once per search, not once per item in the building.
+            var inTruck = truck != null ? new HashSet<LootItem>(truck.ItemsInside()) : null;
+            Vector3 home = HasNest ? nest.Value : Vector3.positiveInfinity;
             prey = FindObjectsByType<NetworkLoot>(FindObjectsSortMode.None)
                 .Where(l => l.IsSpawned && l.NetworkManager == NetworkManager && l.Hold.Mode == LootHoldMode.Free && !l.Item.IsShattered
                             && !unreachable.Contains(l) && !l.Item.Definition.Utility && !l.Item.Definition.Jackpot && l.Item.Definition.CarryClass <= CarryClass.TwoHand
-                            && (truck == null || !truck.ItemsInside().Contains(l.Item)) && Unattended(l.transform.position))
+                            && (inTruck == null || !inTruck.Contains(l.Item)) && Unattended(l.transform.position)
+                            && (l.transform.position - home).sqrMagnitude > NestRadius * NestRadius * 4f)
                 .OrderBy(l => Vector3.Distance(l.transform.position, transform.position))
                 .FirstOrDefault();
             if (prey == null)
@@ -146,19 +164,37 @@ namespace Abandoned.Threats
             carried = prey;
             prey = null;
             carried.Grabbable.SetExternallyHeld(true);
-            // Somewhere far from where it took it (and from the truck), on the NavMesh.
-            hideAt = transform.position;
-            for (int i = 0; i < 12; i++)
+            if (!HasNest) ChooseNest();
+            // Spread around the nest so the hoard isn't one stack.
+            hideAt = nest.Value;
+            Vector2 spread = Random.insideUnitCircle * NestRadius;
+            if (NavMesh.SamplePosition(nest.Value + new Vector3(spread.x, 0f, spread.y), out NavMeshHit spot, NestRadius, NavMesh.AllAreas))
+                hideAt = spot.position;
+            agent.SetDestination(hideAt);
+            Set(CollectorState.Carrying);
+            Debug.Log($"[Threat] The Collector took {carried.Item.Definition.DisplayName}.");
+        }
+
+        private const float NestRadius = 1.5f;
+
+        private bool HasNest => hoard.Value > 0 || nest.Value != Vector3.zero;
+
+        // Once per run: somewhere reachable, far from where it is and as far from the truck as it can find.
+        private void ChooseNest()
+        {
+            Vector3 truck = TruckCargo.Current != null ? TruckCargo.Current.transform.position : transform.position;
+            Vector3 best = transform.position;
+            float bestScore = float.MinValue;
+            for (int i = 0; i < 16; i++)
             {
                 Vector3 candidate = transform.position + Random.insideUnitSphere * config.HideDistance * 1.6f;
                 if (!NavMesh.SamplePosition(candidate, out NavMeshHit hit, 4f, NavMesh.AllAreas)) continue;
                 if (Vector3.Distance(hit.position, transform.position) < config.HideDistance) continue;
-                hideAt = hit.position;
-                break;
+                float score = Vector3.Distance(hit.position, truck);
+                if (score > bestScore) (best, bestScore) = (hit.position, score);
             }
-            agent.SetDestination(hideAt);
-            Set(CollectorState.Carrying);
-            Debug.Log($"[Threat] The Collector took {carried.Item.Definition.DisplayName}.");
+            nest.Value = best == Vector3.zero ? best + Vector3.up * 0.01f : best;
+            Debug.Log($"[Threat] The Collector's nest is at {nest.Value}.");
         }
 
         private void HoldCarried()

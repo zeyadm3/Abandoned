@@ -146,7 +146,19 @@ namespace Abandoned.Threats
         private void KillOnContact()
         {
             if (brain.State == BlindOneState.Attack) return;
-            if (DamageWithinReach(config.AttackRange, 65f) != null) brain.Attacked(Time.time);
+            if (DamageWithinReach(config.AttackRange, 65f, senses: HeardRecently) != null) brain.Attacked(Time.time);
+        }
+
+        // QA D-07: it's blind. Someone it hasn't heard near where they stand (crouch-walking, holding still,
+        // not talking) can slip past within arm's reach; one sound there and they're fair game.
+        private const float HeardNearRadius = 3f, HeardWithinSeconds = 2f;
+
+        private bool HeardRecently(NetworkPlayer p)
+        {
+            Vector3 at = PositionOf(p);
+            foreach ((Vector3 position, float _, float time) in heard)
+                if (Time.time - time <= HeardWithinSeconds && (position - at).sqrMagnitude <= HeardNearRadius * HeardNearRadius) return true;
+            return false;
         }
 
         // Every machine: its clicking is how players know it's near (faster = hunting).
@@ -158,6 +170,7 @@ namespace Abandoned.Threats
             if (s != BlindOneState.Attack) GameAudio.Play(SoundId.BlindOneClick, transform.position + Vector3.up * 2f, s == BlindOneState.Hunt ? 1f : 0.7f);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
@@ -168,6 +181,7 @@ namespace Abandoned.Threats
             string extra = brain != null ? $" pull {brain.CurrentPull(Time.time):0.00} heard {heard.Count}" : "";
             GUI.Label(new Rect(screen.x - 120f, Screen.height - screen.y - 12f, 240f, 24f), $"BLIND ONE {state.Value}{extra}");
         }
+#endif
 
         private void OnDrawGizmos()
         {

@@ -209,11 +209,13 @@ namespace Abandoned.Extraction
         [Rpc(SendTo.Everyone)]
         private void SoundRpc(SoundId id, Vector3 at) => GameAudio.Play(id, at, 1f);
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible || !IsSpawned) return;
             GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f), $"SHUTTERS down {System.Convert.ToString(down.Value, 2)} ({RollerShutter.All.Count} in level)");
         }
+#endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => Current = null;

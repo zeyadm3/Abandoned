@@ -9,6 +9,7 @@ namespace Abandoned.Threats
     /// <summary>It moves above the halls. The advance has an audible windup; weak sections crack under it.</summary>
     public class TheWeight : RoamingThreat
     {
+        private StructuralSection[] sections;
         private readonly NetworkVariable<bool> pressing = new();
         private float nextPress, strikeAt;
         private StructuralSection pressureSection;
@@ -35,8 +36,11 @@ namespace Abandoned.Threats
             if (Time.time < nextPress) return;
             pressureSection = null;
             float best = 7f;
-            foreach (StructuralSection section in FindObjectsByType<StructuralSection>(FindObjectsSortMode.None))
+            // QA P-05: the level's sections are found once per monster, not every few seconds.
+            sections ??= FindObjectsByType<StructuralSection>(FindObjectsSortMode.None);
+            foreach (StructuralSection section in sections)
             {
+                if (section == null) continue;
                 if (!section.CanCollapse || section.IsCollapsed) continue;
                 float d = Vector3.Distance(section.transform.position, transform.position + Vector3.up * 2f);
                 if (d < best) { pressureSection = section; best = d; }

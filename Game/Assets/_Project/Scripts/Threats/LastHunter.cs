@@ -9,6 +9,7 @@ namespace Abandoned.Threats
     /// <summary>Only the overstay phase spawns it. It knows where living crew are and breaks obstructions; the truck is sanctuary.</summary>
     public class LastHunter : RoamingThreat
     {
+        private StructuralSection[] sections;
         private readonly NetworkVariable<bool> hunting = new();
         private float nextRupture, wakesAt;
         public override void OnNetworkSpawn()
@@ -38,8 +39,10 @@ namespace Abandoned.Threats
             KillWithinReach(Reach);
             if (Time.time < nextRupture) return;
             nextRupture = Time.time + Interval;
-            foreach (StructuralSection section in FindObjectsByType<StructuralSection>(FindObjectsSortMode.None))
-                if (section.CanCollapse && !section.IsCollapsed && Vector3.Distance(section.transform.position, transform.position + transform.forward * 1.5f) < 3f)
+            // QA P-05: the level's sections are found once per monster, not every few seconds.
+            sections ??= FindObjectsByType<StructuralSection>(FindObjectsSortMode.None);
+            foreach (StructuralSection section in sections)
+                if (section != null && section.CanCollapse && !section.IsCollapsed && Vector3.Distance(section.transform.position, transform.position + transform.forward * 1.5f) < 3f)
                     section.ApplyImpact(Momentum);
             // A collapsed route cannot permanently imprison it: the host takes a nearby connected floor, never past the prey.
             if (!Agent.pathPending && Agent.pathStatus != NavMeshPathStatus.PathComplete && Agent.remainingDistance < 1.5f)

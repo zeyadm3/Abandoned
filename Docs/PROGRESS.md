@@ -312,9 +312,8 @@ screen, 10 text chat (T). Steps 1-3 were screenshot-checked at 16:9 / 16:10 / ul
       pockets, the truck board, dying (camera, card, ghost bar), Esc (crew rows, per-player volume), Settings tabs (Video:
       window/resolution in a build; UI Scale; mic picker), main menu -> Play, the appraisal receipt, the HQ terminal
       (GEAR/TRUCK pages), the job sheets, the wardrobe preview, the drive screen, T chat (incl. a ghost's line).
-- [ ] Clean-up I wasn't allowed to do: delete `Game/Assets/InitTestScene84712879-...unity(.meta)` (an aborted test run's
-      scene) and `Game/Assets/Resources/PerformanceTestRunInfo.json`/`Settings.json` (+ the Resources folder): leftovers
-      that mark every build "-dirty". Then rebuild the zips (`Tools/unity.sh build` and `build-demo`).
+- [x] Clean-up: the aborted test run's `InitTestScene...unity` and `Game/Assets/Resources/` leftovers are gone
+      (checked 2026-10-08, QA B-36).
 - [ ] Early Access launch: Docs/LAUNCH.md (App ID, store page from Docs/STORE_PAGE.md, trailer per Docs/TRAILER.md,
       Discord + feedback links in Data/Core/Resources/LaunchConfig, `build-release`, launch discount).
 

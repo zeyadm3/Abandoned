@@ -18,6 +18,10 @@ namespace Abandoned.Extraction
 
         [SerializeField] private Material doorMaterial;
         [SerializeField] private Material mirrorMaterial;
+        [Tooltip("The warm lamp over the bay (intensity, range) and the two headlights (intensity, range, cone).")]
+        [SerializeField] private Vector2 bayLamp = new(1.7f, 8f);
+        [SerializeField] private Vector3 headlights = new(4f, 17f, 55f);
+        [SerializeField, Range(0f, 1f)] private float idleVolume = 0.15f;
 
         private AudioSource idle;
         private TruckCargo truck;
@@ -39,12 +43,12 @@ namespace Abandoned.Extraction
             idle.minDistance = 2f;
             idle.maxDistance = 22f;
             idle.volume = 0f;
-            AddLight(new Vector3(0f, 2.5f, 0f), new Color(1f, 0.65f, 0.29f), 1.7f, 8f);
+            AddLight(new Vector3(0f, 2.5f, 0f), new Color(1f, 0.65f, 0.29f), bayLamp.x, bayLamp.y);
             foreach (float side in new[] { -0.9f, 0.9f })
             {
-                Light head = AddLight(new Vector3(side, 1.25f, 3.7f), new Color(1f, 0.78f, 0.43f), 4f, 17f);
+                Light head = AddLight(new Vector3(side, 1.25f, 3.7f), new Color(1f, 0.78f, 0.43f), headlights.x, headlights.y);
                 head.type = LightType.Spot;
-                head.spotAngle = 55f;
+                head.spotAngle = headlights.z;
             }
             BuildDoors();
             BuildMirror();
@@ -122,7 +126,7 @@ namespace Abandoned.Extraction
             bool near = eye != null && Vector3.Distance(eye.transform.position, transform.position) < NearDistance;
             if (run != null && run.IsSpawned && run.Elapsed < 7f) near = false;
             if (near && !idle.isPlaying) idle.Play();
-            idle.volume = near ? 0.15f * AudioLevels.Sfx : 0f;
+            idle.volume = near ? idleVolume * AudioLevels.Sfx : 0f;
             if (mirrorCamera != null)
             {
                 bool inBay = near && truck != null && eye != null && truck.Carries(eye.transform.position - Vector3.up);

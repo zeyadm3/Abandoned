@@ -293,6 +293,16 @@ namespace Abandoned.Core
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""GiveGear"",
+                    ""type"": ""Button"",
+                    ""id"": ""e9758e79-4320-4fa4-8d58-7548529ecd82"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -568,6 +578,17 @@ namespace Abandoned.Core
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""HideHud"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2760047d-a315-4fb1-b312-774e43eeccc5"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""GiveGear"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -959,6 +980,7 @@ namespace Abandoned.Core
             m_Gameplay_Chat = m_Gameplay.FindAction("Chat", throwIfNotFound: true);
             m_Gameplay_PhotoCamera = m_Gameplay.FindAction("PhotoCamera", throwIfNotFound: true);
             m_Gameplay_HideHud = m_Gameplay.FindAction("HideHud", throwIfNotFound: true);
+            m_Gameplay_GiveGear = m_Gameplay.FindAction("GiveGear", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1078,6 +1100,7 @@ namespace Abandoned.Core
         private readonly InputAction m_Gameplay_Chat;
         private readonly InputAction m_Gameplay_PhotoCamera;
         private readonly InputAction m_Gameplay_HideHud;
+        private readonly InputAction m_Gameplay_GiveGear;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -1170,6 +1193,10 @@ namespace Abandoned.Core
             /// </summary>
             public InputAction @HideHud => m_Wrapper.m_Gameplay_HideHud;
             /// <summary>
+            /// Provides access to the underlying input action "Gameplay/GiveGear".
+            /// </summary>
+            public InputAction @GiveGear => m_Wrapper.m_Gameplay_GiveGear;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -1255,6 +1282,9 @@ namespace Abandoned.Core
                 @HideHud.started += instance.OnHideHud;
                 @HideHud.performed += instance.OnHideHud;
                 @HideHud.canceled += instance.OnHideHud;
+                @GiveGear.started += instance.OnGiveGear;
+                @GiveGear.performed += instance.OnGiveGear;
+                @GiveGear.canceled += instance.OnGiveGear;
             }
 
             /// <summary>
@@ -1326,6 +1356,9 @@ namespace Abandoned.Core
                 @HideHud.started -= instance.OnHideHud;
                 @HideHud.performed -= instance.OnHideHud;
                 @HideHud.canceled -= instance.OnHideHud;
+                @GiveGear.started -= instance.OnGiveGear;
+                @GiveGear.performed -= instance.OnGiveGear;
+                @GiveGear.canceled -= instance.OnGiveGear;
             }
 
             /// <summary>
@@ -1832,6 +1865,13 @@ namespace Abandoned.Core
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnHideHud(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "GiveGear" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnGiveGear(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

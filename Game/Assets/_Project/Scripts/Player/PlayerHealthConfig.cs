@@ -26,6 +26,12 @@ namespace Abandoned.Player
         [field: SerializeField, Range(0f, 1f)] public float DamageVignette { get; private set; } = 0.7f;
         [field: SerializeField, Range(0f, 1f)] public float HeartbeatVolume { get; private set; } = 0.32f;
         [field: SerializeField, Min(1f)] public float ThreatHeartbeatRange { get; private set; } = 18f;
+        [Tooltip("Seconds between heartbeats, calm (x) to most afraid (y); and between breaths, calm to afraid.")]
+        [field: SerializeField] public Vector2 HeartbeatInterval { get; private set; } = new(1.05f, 0.48f);
+        [field: SerializeField] public Vector2 BreathInterval { get; private set; } = new(4.2f, 2f);
+        [Tooltip("Fear from darkness alone: flashlight off (x) and on (y). Sprinting counts as SprintFear.")]
+        [field: SerializeField] public Vector2 DarknessFear { get; private set; } = new(0.28f, 0.05f);
+        [field: SerializeField, Range(0f, 1f)] public float SprintFear { get; private set; } = 0.4f;
 
         private static PlayerHealthConfig fallback;
         public static PlayerHealthConfig Default => fallback != null ? fallback : fallback = CreateInstance<PlayerHealthConfig>();

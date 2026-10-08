@@ -76,11 +76,13 @@ namespace Abandoned.Audio
 
         private void ScheduleSettle() => nextSettle = Time.time + Random.Range(settleInterval.x, settleInterval.y);
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (DebugView.Visible)
                 GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f), $"AMBIENCE wind {wind.volume:0.00}  hum {hum.volume:0.00}  sounds {GameAudio.SoundCount}");
         }
+#endif
 
 #if UNITY_EDITOR
         public void EditorSetup(float windLevel, float humLevel, float plainHum, Vector2 settleEvery)

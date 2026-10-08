@@ -64,6 +64,7 @@ namespace Abandoned.Extraction
             RenderSettings.ambientGroundColor = litGround * k;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
@@ -73,5 +74,6 @@ namespace Abandoned.Extraction
             GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
                 $"POWER {(Powered ? "on" : "OFF")}{(IsNight ? "  NIGHT" : "")}  fixtures lit {lit}/{fixtures.Count} ({faulty} faulty)  fog {(RenderSettings.fog ? RenderSettings.fogDensity.ToString("0.000") : "off")}");
         }
+#endif
     }
 }

@@ -44,12 +44,14 @@ namespace Abandoned.Threats
         /// <summary>Host: kills the first living player within reach it can actually touch; returns them or null.</summary>
         protected NetworkPlayer KillWithinReach(float range) => DamageWithinReach(range, 1000f, true);
 
-        protected NetworkPlayer DamageWithinReach(float range, float fallbackDamage, bool lethal = false)
+        /// <param name="senses">Optional: only players this threat can perceive (the Blind One must have heard them).</param>
+        protected NetworkPlayer DamageWithinReach(float range, float fallbackDamage, bool lethal = false, System.Func<NetworkPlayer, bool> senses = null)
         {
             if (!IsServer || !IsSpawned || Time.time < nextAttack) return null;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || p.NetworkManager != NetworkManager || p.IsDead) continue;
+                if (senses != null && !senses(p)) continue;
                 Vector3 at = PositionOf(p);
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;

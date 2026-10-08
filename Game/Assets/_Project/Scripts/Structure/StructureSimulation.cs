@@ -12,7 +12,7 @@ namespace Abandoned.Structure
     /// On a client it is a mirror (<see cref="SetMirror"/>): sections take the host's state and only
     /// the local consequences of a collapse (wake bodies, drop local players) run here.
     /// </summary>
-    public class StructureSimulation : MonoBehaviour
+    public partial class StructureSimulation : MonoBehaviour
     {
         [SerializeField] private StructureConfig config;
         [Tooltip("Contract Structural Stability (GDD 6.2). Lower = weaker, faster decay, more pre-damage.")]
@@ -27,6 +27,7 @@ namespace Abandoned.Structure
         private readonly Dictionary<StructuralSection, float> loads = new();
         private readonly List<LoadPoint> points = new();
         private readonly List<StructuralSection> supports = new();
+        private readonly SupportCache supportCache = new();
         private readonly Collider[] overlap = new Collider[64];
         private readonly RaycastHit[] rayHits = new RaycastHit[16];
         // Impacts reported this physics step, per hitting body: one landing is split across every
@@ -156,6 +157,7 @@ namespace Abandoned.Structure
         {
             stability = Mathf.Clamp01(newStability);
             seed = newSeed;
+            supportCache.Invalidate();
             Generation = generation ?? Generation + 1;
             float capacityScale = config.CapacityScale(stability);
             float decayScale = config.DecayScale(stability);
@@ -188,6 +190,7 @@ namespace Abandoned.Structure
         public void SolveLoads()
         {
             loads.Clear();
+            supportCache.BeginStep();
             IReadOnlyList<ILoadSource> all = LoadSources.All;
             for (int i = 0; i < all.Count; i++)
             {
@@ -196,11 +199,15 @@ namespace Abandoned.Structure
 
                 points.Clear();
                 all[i].GetLoadPoints(points);
-                supports.Clear();
-                foreach (LoadPoint p in points)
+                if (!supportCache.TryGet(all[i], points, supports))
                 {
-                    StructuralSection support = SectionBelow(p.Position + Vector3.up * RayLift, config.MaxSupportDistance + RayLift);
-                    if (support != null) supports.Add(support);
+                    supports.Clear();
+                    foreach (LoadPoint p in points)
+                    {
+                        StructuralSection support = SectionBelow(p.Position + Vector3.up * RayLift, config.MaxSupportDistance + RayLift);
+                        if (support != null) supports.Add(support);
+                    }
+                    supportCache.Store(all[i], points, supports);
                 }
                 if (supports.Count == 0) continue;
 
@@ -208,37 +215,6 @@ namespace Abandoned.Structure
                 foreach (StructuralSection s in supports)
                     loads[s] = (loads.TryGetValue(s, out float kg) ? kg : 0f) + share;
             }
-        }
-
-        /// <summary>Host: a rigidbody hit a section this step; applied (shared) at the start of the next step.</summary>
-        public void ReportImpact(StructuralSection section, Rigidbody body, float momentum)
-        {
-            if (!pendingImpacts.TryGetValue(body, out var entry))
-            {
-                entry = (0f, new List<StructuralSection>());
-                pendingOrder.Add(body);
-            }
-            if (!entry.sections.Contains(section)) entry.sections.Add(section);
-            pendingImpacts[body] = (Mathf.Max(entry.momentum, momentum), entry.sections);
-        }
-
-        private void ApplyPendingImpacts()
-        {
-            foreach (Rigidbody body in pendingOrder)
-            {
-                (float momentum, List<StructuralSection> hit) = pendingImpacts[body];
-                foreach (StructuralSection s in hit) s.ApplyImpact(momentum / hit.Count);
-            }
-            pendingImpacts.Clear();
-            pendingOrder.Clear();
-        }
-
-        /// <summary>Host: a non-physics impact (a player landing) at a point; hits the section underneath.</summary>
-        private void OnPointImpact(Vector3 position, float momentum)
-        {
-            if (!HasAuthority) return;
-            StructuralSection below = SectionBelow(position + Vector3.up * RayLift, RayLift + 0.5f);
-            if (below != null) below.ApplyImpact(momentum);
         }
 
         public float LoadOn(StructuralSection section) => loads.TryGetValue(section, out float kg) ? kg : 0f;
@@ -271,6 +247,7 @@ namespace Abandoned.Structure
         private void OnSectionCollapsed(StructuralSection section)
         {
             CollapseCount++;
+            supportCache.Invalidate();
             Bounds surface = section.SurfaceBounds;
             // Already down when this machine joined: nothing is falling, nobody is standing on it.
             if (section.CollapsedQuietly) return;

@@ -189,12 +189,14 @@ namespace Abandoned.Networking
             if (Instance == this) Instance = null;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
             string text = IsAvailable ? $"Steam: on  {LocalPlayerName} ({LocalSteamId})" : $"Steam: off  {LastError}";
             GUI.Label(new Rect(10f, Screen.height - 30f, 900f, 24f), text);
         }
+#endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => Instance = null;

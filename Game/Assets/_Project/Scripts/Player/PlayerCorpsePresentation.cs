@@ -60,6 +60,8 @@ namespace Abandoned.Player
             Light beam = corpseLamp.GetComponent<Light>();
             beam.enabled = true;
             beam.intensity = equipment.FlashlightConfig.Intensity;
+            // QA P-06: a body's dropped light is scenery; a shadow-casting copy per corpse costs a full beam each.
+            beam.shadows = LightShadows.None;
         }
 
         // Move the whole copy so its pelvis is over the real body (owners replicate where it lies).

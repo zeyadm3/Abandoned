@@ -8,7 +8,7 @@ namespace Abandoned.Contracts
     /// <summary>
     /// Rolls the contract board (GDD 14), pure and seeded: same company level + board seed = same three
     /// offers on every machine. Early Access has one location, the mall (GDD 8), so variety comes from
-    /// stability, power, window, quota and one modifier each (no modifier repeats on a board).
+    /// stability, power, window, quota and a modifier (no modifier repeats on a board; one offer is always plain).
     /// </summary>
     public static class ContractGenerator
     {
@@ -20,10 +20,12 @@ namespace Abandoned.Contracts
             var random = new System.Random(boardSeed);
             var pool = c.Modifiers.Where(m => m != null && m.MinLevel <= companyLevel).ToList();
             var offers = new List<Contract>();
+            // QA D-06: one offer is always a plain job, so new crews learn the mall itself first.
+            int plainSlot = random.Next(Mathf.Max(1, c.Offers));
             for (int i = 0; i < c.Offers; i++)
             {
                 ContractModifier m = null;
-                if (pool.Count > 0)
+                if (pool.Count > 0 && i != plainSlot)
                 {
                     m = pool[random.Next(pool.Count)];
                     pool.Remove(m);

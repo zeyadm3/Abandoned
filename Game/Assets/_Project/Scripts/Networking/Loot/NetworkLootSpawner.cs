@@ -113,10 +113,12 @@ namespace Abandoned.Networking
             SpawnedRun?.Invoke(spawned);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible || !done) return;
             GUI.Label(new Rect(Screen.width - 360f, 10f, 350f, 22f), $"LOOT  seed {seed}  {spawned.Count(l => l != null)} items  ${TotalValue:N0}");
         }
+#endif
     }
 }
