@@ -174,6 +174,21 @@ namespace Abandoned.UI
             }
         }
 
+        /// <summary>As above, with the fill colour given outright (the vitals bar grades by HP and pulses).</summary>
+        public static void SetSegments(VisualElement meter, float fraction, Color color)
+        {
+            if (meter == null) return;
+            int count = meter.childCount;
+            float lit = Mathf.Clamp01(fraction) * count;
+            for (int i = 0; i < count; i++)
+            {
+                if (meter[i].childCount == 0) continue;
+                VisualElement fill = meter[i][0];
+                fill.style.width = Length.Percent(Mathf.Clamp01(lit - i) * 100f);
+                fill.style.backgroundColor = color;
+            }
+        }
+
         /// <summary>A rubber stamp ("QUOTA MET"); hidden until <see cref="Slam"/>.</summary>
         public static Label Stamp(VisualElement parent, string text, bool good)
         {

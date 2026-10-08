@@ -4,6 +4,14 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.5c.EEA — vitals and low-health feedback (2026-10-09; not compiled or played by Claude)
+
+Built to the user's written spec; the user tests it. Script-only: no scene, prefab or asset edited, no rebuild needed.
+- Vitals bar colour by HP (blue / lean to red / orange-red / crimson / pulsing blood red).
+- <=30 HP steady heartbeat ~75 BPM; <=20 HP ~105 BPM + world low-pass + vignette, chromatic aberration and corner
+  blood; <=10 HP ~145 BPM + labored breathing + closing, pulsing vignette + heavy dripping blood + slight blur/warp.
+- F1 shows a TRAUMA line (tier, HP, BPM, muffle cutoff, vision blend).
+
 ## 0.13.5b.EEA — guided first job, real THREAT level, Stalker tell (2026-10-09)
 
 Script-only, plus one hand-edited value in Data/Threats/StalkerConfig.asset. Nothing was compiled, rebuilt or

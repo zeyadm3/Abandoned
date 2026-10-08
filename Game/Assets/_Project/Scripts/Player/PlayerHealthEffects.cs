@@ -10,7 +10,7 @@ using UnityEngine.Rendering.Universal;
 namespace Abandoned.Player
 {
     /// <summary>Owner-only injury feedback and pressure audible only inside this salvager's head.</summary>
-    public class PlayerHealthEffects : MonoBehaviour
+    public partial class PlayerHealthEffects : MonoBehaviour
     {
         [SerializeField] private NetworkPlayer player;
         [SerializeField] private PlayerEquipment equipment;
@@ -35,26 +35,26 @@ namespace Abandoned.Player
             {
                 damageFlash = 0f;
                 if (volume != null) volume.weight = 0f;
+                StopTrauma();
                 return;
             }
             PlayerHealthConfig config = player.HealthConfig;
             float low = 1f - Mathf.Clamp01(player.Health01 / config.LowHealthThreshold);
             damageFlash = Mathf.MoveTowards(damageFlash, 0f, Time.deltaTime / config.DamageFadeSeconds);
-            if (damageFlash > 0f || low > 0f)
+            // QA B-30: the player sets how loud their own heartbeat and breath are (0 = off).
+            float vitals = Core.GameSettings.VitalsVolume;
+            // Low health by threshold (PlayerHealthEffects.Trauma): it runs wherever the player is, job or not.
+            int tier = TickTrauma(config, vitals);
+            if (damageFlash > 0f || severe > 0f)
             {
-                if (volume == null) BuildVolume();
-                volume.weight = Mathf.Clamp01(Mathf.Max(damageFlash, low));
-                vignette.intensity.value = Mathf.Max(damageFlash * config.DamageVignette, low * 0.48f);
-                blur.active = low > 0f;
-                blur.gaussianMaxRadius.value = low * 0.75f;
+                if (volume == null) BuildVolume(config);
+                ApplyVision(config);
             }
             else if (volume != null) volume.weight = 0f;
 
             RunState run = RunState.Current;
             bool insideJob = run != null && (run.State.Phase == RunPhase.Running || run.State.Phase == RunPhase.Honking);
             bool inTruck = TruckCargo.Current != null && TruckCargo.Current.Carries(player.transform.position);
-            // QA B-30: the player sets how loud their own heartbeat and breath are (0 = off).
-            float vitals = Core.GameSettings.VitalsVolume;
             if (!insideJob || inTruck || vitals <= 0f) return;
             if (Time.time >= nextThreatScan)
             {
@@ -72,19 +72,21 @@ namespace Abandoned.Player
             }
             float darkness = equipment == null || !equipment.LightOn ? config.DarknessFear.x : config.DarknessFear.y;
             float pressure = Mathf.Max(low, threatPressure, darkness, player.Motor.IsSprinting ? config.SprintFear : 0f);
-            if (Time.time >= nextHeartbeat)
+            // From critical down the trauma pulse owns the heartbeat (one steady tempo per threshold), and near
+            // death it owns the breathing too; fear only sets the pace while the player is still above 30 HP.
+            if (tier == 0 && Time.time >= nextHeartbeat)
             {
                 nextHeartbeat = Time.time + Mathf.Lerp(config.HeartbeatInterval.x, config.HeartbeatInterval.y, pressure);
                 GameAudio.PlayHeartbeat(vitals * config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
             }
-            if (Time.time >= nextBreath)
+            if (tier < 3 && Time.time >= nextBreath)
             {
                 nextBreath = Time.time + Mathf.Lerp(config.BreathInterval.x, config.BreathInterval.y, pressure);
                 GameAudio.PlayBreath(vitals * Mathf.Lerp(0.04f, 0.18f, pressure));
             }
         }
 
-        private void BuildVolume()
+        private void BuildVolume(PlayerHealthConfig config)
         {
             var go = new GameObject("Injury vision");
             go.transform.SetParent(transform, false);
@@ -93,9 +95,14 @@ namespace Abandoned.Player
             volume.priority = 80f;
             profile = ScriptableObject.CreateInstance<VolumeProfile>();
             vignette = profile.Add<Vignette>(true);
-            vignette.color.Override(new Color(0.45f, 0.012f, 0.006f));
-            vignette.smoothness.Override(0.75f);
+            vignette.color.Override(config.TraumaVignetteColor);
+            vignette.smoothness.Override(config.TraumaVignetteSmoothness.x);
             vignette.intensity.Override(0f);
+            fringe = profile.Add<ChromaticAberration>(true);
+            fringe.intensity.Override(0f);
+            warp = profile.Add<LensDistortion>(true);
+            warp.intensity.Override(0f);
+            warp.scale.Override(1.02f); // hides the stretched border the warp would show
             blur = profile.Add<DepthOfField>(true);
             blur.mode.Override(DepthOfFieldMode.Gaussian);
             blur.gaussianStart.Override(0f);
@@ -109,12 +116,14 @@ namespace Abandoned.Player
             NetworkPlayer.HealthChanged -= OnHealthChanged;
             damageFlash = 0f;
             if (volume != null) volume.weight = 0f;
+            StopTrauma();
         }
 
         private void OnDestroy()
         {
             if (profile != null) Destroy(profile);
             if (volume != null) Destroy(volume.gameObject);
+            DestroyTrauma();
         }
     }
 }

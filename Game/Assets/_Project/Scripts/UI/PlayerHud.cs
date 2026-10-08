@@ -58,7 +58,9 @@ namespace Abandoned.UI
             bool depleted = stamina.Max > 0f && stamina.Current < stamina.Max - 0.01f;
             // Always on screen (tester feedback, 2026-10-09): ten blocks, each a tenth of full health.
             Set(healthLabel, $"VITALS  {Mathf.CeilToInt(player.Health):0}");
-            UiKit.SetSegments(healthBar, player.Health01, player.Health01 <= player.HealthConfig.LowHealthThreshold ? "bad" : null);
+            // Blue, through orange-red and crimson, to blood red that swells with the heartbeat (PlayerHealthConfig).
+            float beat = GameSettings.ReduceFlashing ? 0f : PlayerPulse.Beat;
+            UiKit.SetSegments(healthBar, player.Health01, player.HealthConfig.HealthColor(player.Health, beat));
             MenuKit.Show(staminaLabel, depleted);
             MenuKit.Show(staminaBar, depleted);
             Set(staminaLabel, stamina.IsExhausted ? "BREATH  /  EXHAUSTED" : "BREATH");
@@ -96,7 +98,7 @@ namespace Abandoned.UI
             healthRow.AddToClassList("player-vital");
             staminaBlock.Add(healthRow);
             healthLabel = Text(healthRow, "VITALS", "player-stamina__label");
-            healthBar = UiKit.Segments(healthRow, HealthBlocks);
+            healthBar = UiKit.Segments(healthRow, HealthBlocks, "segments--graded");
             staminaLabel = Text(staminaBlock, "STAMINA", "player-stamina__label");
             staminaBar = UiKit.Bar(staminaBlock);
             batteryRow = new VisualElement { pickingMode = PickingMode.Ignore };

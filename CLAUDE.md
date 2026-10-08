@@ -105,6 +105,16 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user spec, vitals and low-health feedback; written, untested, user tests): every number is in
+  PlayerHealthConfig (new fields default on the existing asset). The vitals bar grades by whole HP: electric blue to 41
+  (leaning toward red from 50), into orange-red 40-31, crimson 30-21, dark blood red pulsing with the heartbeat at 20
+  and below (PlayerHealthConfig.HealthColor). Thresholds (TraumaTier): <=30 a steady ~75 BPM heartbeat; <=20 ~105 BPM
+  louder, a low-pass on the AudioListener (world only: 2D pool sounds, the player's own pulse/breath and crew voices
+  bypass listener effects), dark-red vignette + chromatic aberration creeping in, corner blood splatter; <=10 ~145 BPM
+  at full volume, a labored-breath clip, the vignette closing and swelling per beat, heavy layered dripping blood,
+  slight blur + lens warp. One envelope (PlayerPulse.Beat) drives everything that pulses; Reduce flashing stills the
+  visuals. Code: PlayerHealthEffects(.Trauma), UI/TraumaOverlay, UI/BloodSplatter (procedural textures, no art pack).
+  The old LowHealthThreshold vignette/blur (from 35 HP) is gone; it now only feeds the fear heartbeat above 30 HP.
 - 2026-10-09 (user, 0.13.5b; written, untested):
   - The board's THREAT level drives the job's monsters. Contract.ThreatLevel rides in RunTerms (ThreatShift, so a run
     with no contract is MEDIUM); per-level tunables live in ThreatPacingConfig (gap x1.5/1/0.7, opening delay

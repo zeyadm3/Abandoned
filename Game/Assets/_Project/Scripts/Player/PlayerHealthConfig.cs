@@ -33,6 +33,60 @@ namespace Abandoned.Player
         [field: SerializeField] public Vector2 DarknessFear { get; private set; } = new(0.28f, 0.05f);
         [field: SerializeField, Range(0f, 1f)] public float SprintFear { get; private set; } = 0.4f;
 
+        [field: Header("Vitals bar colour by health (user spec, 2026-10-09)")]
+        [field: Tooltip("100 down to 41 HP: solid electric blue.")]
+        [field: SerializeField] public Color SafeColor { get; private set; } = new(0.04f, 0.52f, 1f);
+        [field: Tooltip("From BlendStartHp down to 41 HP the blue leans toward this red...")]
+        [field: SerializeField] public Color BlendTowardColor { get; private set; } = new(1f, 0.12f, 0.1f);
+        [field: Tooltip("...by this much at 41 HP. Keep it small: the spec asks for a subtle lean.")]
+        [field: SerializeField, Range(0f, 1f)] public float SafeBlend { get; private set; } = 0.4f;
+        [field: Tooltip("40 down to 31 HP: the bar moves into this orange-red.")]
+        [field: SerializeField] public Color WarningColor { get; private set; } = new(1f, 0.27f, 0.03f);
+        [field: Tooltip("30 down to 21 HP: solid crimson.")]
+        [field: SerializeField] public Color CriticalColor { get; private set; } = new(0.86f, 0.08f, 0.16f);
+        [field: Tooltip("20 HP and below: dark blood red, pulsing up to LethalPulseColor on each heartbeat.")]
+        [field: SerializeField] public Color LethalColor { get; private set; } = new(0.36f, 0.01f, 0.02f);
+        [field: SerializeField] public Color LethalPulseColor { get; private set; } = new(0.7f, 0.03f, 0.05f);
+        [field: Tooltip("Whole HP, as the HUD shows it.")]
+        [field: SerializeField, Min(0f)] public float BlendStartHp { get; private set; } = 50f;
+        [field: SerializeField, Min(0f)] public float WarningHp { get; private set; } = 40f;
+        [field: SerializeField, Min(0f)] public float CriticalHp { get; private set; } = 30f;
+        [field: SerializeField, Min(0f)] public float SevereHp { get; private set; } = 20f;
+        [field: SerializeField, Min(0f)] public float NearDeathHp { get; private set; } = 10f;
+
+        [field: Header("Low-health heartbeat: critical (x), severe (y), near death (z)")]
+        [field: SerializeField] public Vector3 HeartbeatBpm { get; private set; } = new(75f, 105f, 145f);
+        [field: SerializeField] public Vector3 TraumaHeartbeatVolume { get; private set; } = new(0.42f, 0.72f, 1f);
+        [field: SerializeField] public Vector3 TraumaHeartbeatPitch { get; private set; } = new(0.88f, 1f, 1.12f);
+        [field: Tooltip("Low-pass (Hz) on the world's sound from severe down. The player's own pulse and breath, UI and crew voices stay clear.")]
+        [field: SerializeField, Range(500f, 22000f)] public float MuffleCutoff { get; private set; } = 2600f;
+        [field: Tooltip("Near death: seconds between heavy breaths, and how loud they are.")]
+        [field: SerializeField, Min(0.5f)] public float LaboredBreathInterval { get; private set; } = 2.15f;
+        [field: SerializeField, Range(0f, 1f)] public float LaboredBreathVolume { get; private set; } = 0.62f;
+
+        [field: Header("Low-health vision")]
+        [field: SerializeField] public Color TraumaVignetteColor { get; private set; } = new(0.36f, 0f, 0.012f);
+        [field: Tooltip("Severe: vignette at 20 HP (x) and at 11 HP (y); it creeps inward as health falls.")]
+        [field: SerializeField] public Vector2 SevereVignette { get; private set; } = new(0.3f, 0.43f);
+        [field: Tooltip("Near death: vignette at 10 HP (x) and at 0 HP (y).")]
+        [field: SerializeField] public Vector2 NearDeathVignette { get; private set; } = new(0.54f, 0.68f);
+        [field: Tooltip("How soft the vignette's inner edge is: severe (x), near death (y).")]
+        [field: SerializeField] public Vector2 TraumaVignetteSmoothness { get; private set; } = new(0.82f, 1f);
+        [field: Tooltip("Near death: how much each heartbeat swells the vignette, at 10 HP (x) and at 0 HP (y).")]
+        [field: SerializeField] public Vector2 VignettePulse { get; private set; } = new(0.05f, 0.12f);
+        [field: Tooltip("Chromatic aberration: severe (x), near death (y).")]
+        [field: SerializeField] public Vector2 TraumaChromaticAberration { get; private set; } = new(0.4f, 0.8f);
+        [field: Tooltip("Near death: a slight blur and lens warp over the whole view.")]
+        [field: SerializeField, Range(0f, 2f)] public float NearDeathBlur { get; private set; } = 0.55f;
+        [field: SerializeField, Range(-0.5f, 0.5f)] public float NearDeathDistortion { get; private set; } = -0.14f;
+        [field: Tooltip("Blood on the lens: the corner splatter from severe (x), the heavy layers near death (y).")]
+        [field: SerializeField] public Vector2 BloodOpacity { get; private set; } = new(0.85f, 0.92f);
+        [field: Tooltip("Near death the drips run this much further down the screen (fraction of its height) over DripSeconds.")]
+        [field: SerializeField, Range(0f, 0.5f)] public float DripStretch { get; private set; } = 0.14f;
+        [field: SerializeField, Min(1f)] public float DripSeconds { get; private set; } = 24f;
+        [field: Tooltip("Seconds the vision and blood take to fade in or out when a threshold is crossed.")]
+        [field: SerializeField, Min(0.05f)] public float TraumaFadeSeconds { get; private set; } = 0.9f;
+
         private static PlayerHealthConfig fallback;
         public static PlayerHealthConfig Default => fallback != null ? fallback : fallback = CreateInstance<PlayerHealthConfig>();
 
@@ -44,8 +98,34 @@ namespace Abandoned.Player
             return Mathf.Min(MaxHealth, fraction * fraction * MaxHealth * weight);
         }
 
+        /// <summary>0 = fine, 1 = critical, 2 = severe trauma, 3 = near death. Judged on whole HP, as the HUD shows it.</summary>
+        public int TraumaTier(float health)
+        {
+            int hp = Mathf.CeilToInt(health);
+            return hp <= NearDeathHp ? 3 : hp <= SevereHp ? 2 : hp <= CriticalHp ? 1 : 0;
+        }
+
+        /// <summary>The per-threshold value of a critical / severe / near-death triple.</summary>
+        public static float Pick(Vector3 perTier, int tier) => tier >= 3 ? perTier.z : tier == 2 ? perTier.y : perTier.x;
+
+        /// <summary>
+        /// The vitals bar's colour: blue, leaning toward red from 50 to 41 HP, into orange-red from 40 to 31,
+        /// crimson from 30 to 21, then dark blood red that swells with each heartbeat (<paramref name="beat"/> 0..1).
+        /// </summary>
+        public Color HealthColor(float health, float beat)
+        {
+            int hp = Mathf.CeilToInt(health);
+            Color leaned = Color.Lerp(SafeColor, BlendTowardColor, SafeBlend);
+            if (hp > WarningHp) return Color.Lerp(SafeColor, leaned, Mathf.InverseLerp(BlendStartHp, WarningHp + 1f, health));
+            if (hp > CriticalHp) return Color.Lerp(leaned, WarningColor, Mathf.InverseLerp(WarningHp, CriticalHp + 1f, health));
+            if (hp > SevereHp) return CriticalColor;
+            return Color.Lerp(LethalColor, LethalPulseColor, Mathf.Clamp01(beat));
+        }
+
         public void Validate(List<string> errors)
         {
+            if (!(BlendStartHp > WarningHp && WarningHp > CriticalHp && CriticalHp > SevereHp && SevereHp > NearDeathHp))
+                errors.Add($"{name}: the health thresholds must fall in order (blend start > warning > critical > severe > near death).");
             if (LethalFallHeight <= SafeFallHeight) errors.Add($"{name}: lethal fall must exceed safe fall height.");
             if (MaxHealth <= 0f) errors.Add($"{name}: maximum health must be positive.");
         }

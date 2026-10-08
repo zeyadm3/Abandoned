@@ -53,6 +53,8 @@ namespace Abandoned.Audio
             s.volume = volume;
             s.pitch = pitch;
             s.spatialBlend = spatial ? 1f : 0f;
+            // 2D sounds are in the player's head or the UI: the low-health muffle on the listener is for the world only.
+            s.bypassListenerEffects = !spatial;
             s.minDistance = minDistance;
             s.maxDistance = Mathf.Max(minDistance + 0.1f, maxDistance);
             s.priority = priority;

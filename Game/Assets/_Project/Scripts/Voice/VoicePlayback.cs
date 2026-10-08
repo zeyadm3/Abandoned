@@ -37,6 +37,7 @@ namespace Abandoned.Voice
             source = GetComponent<AudioSource>();
             lowPass = GetComponent<AudioLowPassFilter>();
             source.spatialBlend = 1f;
+            source.bypassListenerEffects = true; // the low-health muffle is for the world; the crew stays clear
             source.dopplerLevel = 0f;
             source.priority = 16;
             source.rolloffMode = AudioRolloffMode.Custom;

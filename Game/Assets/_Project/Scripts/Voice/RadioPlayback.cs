@@ -25,6 +25,7 @@ namespace Abandoned.Voice
         {
             source = GetComponent<AudioSource>();
             source.spatialBlend = 0f;
+            source.bypassListenerEffects = true; // the low-health muffle is for the world; the crew stays clear
             source.priority = 16;
             source.volume = 0f;
             GetComponent<AudioHighPassFilter>().cutoffFrequency = config.RadioLowCut;

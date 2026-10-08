@@ -1949,3 +1949,6 @@
 /* Under the tip box (same column), so a tip and the guide never cover each other. */
 .first-day { top: 300px; width: 340px; }
 .first-day .segments { height: 4px; margin-top: 8px; }
+
+/* The vitals bar's colour is set every frame (it grades by HP and pulses): only its width eases. */
+.segments--graded .segment__fill { transition-property: width; }
