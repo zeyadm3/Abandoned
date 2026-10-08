@@ -4,6 +4,54 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.0 — Meridian Mall rebuild (2026-10-08)
+
+Built the approved realistic mall design with the user's shaped exterior requirement: recessed entry court,
+stepped anchor wings, clipped skylit atrium, three shopping levels and a flooded service basement within the
+56 × 48 m envelope. Parking spawns face the entrance; the loading truck and dock align on the east side.
+The fountain, escalators, piano bridge, food court, Final Reel cinema and pre-collapsed gallery are landmarks.
+
+- **Original art:** 83 Blender FBX exports, 25 PBR sets / 75 maps, plus an original 512 px overcast sky.
+  Hero maps are 2048, standard maps 1024, small dressing 512; packed URP metallic/AO/smoothness masks,
+  normal-map imports, mipmaps and desktop compression. Credits, stable paths and export inventory are recorded.
+  Floor finishes have authored crack/sag stages and matching fracture siblings; large kit pieces have LOD0/1/2/cull.
+- **Gameplay authoring:** 432 structural sections, 11 flights, permanent 3 m service stairs and 4 m haul ramps,
+  protected turn landings and exit approaches, authored rope descents, 7 shutters, exact existing loot tags and
+  featured prizes, basement threat coverage, updated truck/spawns, horror sectors and atmosphere bounds.
+  NavMesh and never-breaking occlusion are baked by the builder. Floors carry no static flags.
+- **Presentation:** collider-free fixed fixtures/dressing, leaked skylight growth and puddles, scavenger corner,
+  rust/waterlines, exposed gallery rebar, fitted world-text signs, 120 ceiling lamps plus the marquee fixture,
+  4 fixture shadow lights plus the moon, 3 realtime reflection probes, area ambience and surface audio mappings.
+- **Validation:** compile and `rebuild-horror` passed: 11 flights / 0 problems, Mall + HQ invisible colliders
+  0 (0 intentional), 298 materials / 0 problems. No gameplay, EditMode/PlayMode, network or screenshot tests run.
+  TestMap and HQ content remain unchanged; unrelated regenerated assets were restored before committing.
+- **Review artifacts:** `Docs/renders/0.13.0/` contains 20 Editor art stills, including power on/off in eight spaces,
+  the atrium with four flashlight beams and three floor damage closeups. The renderer verifies the saved scene
+  bytes unchanged. `floorplans/` contains SVG/ASCII maps exported from actual ownership and section data.
+- **Performance evidence:** material/sky textures use **127.81 MiB** calculated imported GPU storage with mipmaps
+  (**255.70 MiB** Editor/native allocation), well below the 1.5 GB material-map budget. The asset census includes
+  inactive damage/LOD variants. Batch UnityStats returned all zero, so visible batches/SetPass/FPS are unavailable.
+  Realtime reflection targets/transient buffers and four-player host simulation still require an in-game profile;
+  the 60 FPS / ~2,500 batch target is **not yet verified**. See the render folder's `PERFORMANCE.md`.
+- **Builds:** version 0.13.0; clean-commit shareable Mac + Windows archives under
+  `~/Documents/Abandoned-builds/dev/Abandoned-0.13.0-<commit>-Mac.zip` and `...-Windows.zip`.
+  Each archive's BUILD.txt records the source commit. No push.
+- **Known review gaps:** original procedural materials still have visible repetition; existing low-poly loot,
+  vehicle, characters and threats retain their prior style and need review in the new setting. Art stills do not
+  spawn run loot/AI or reproduce flicker timing. Multiplayer carrying, fallback use, collapse pacing, sector changes,
+  darkness/readability and loading cost are left for the user's play pass.
+
+Test first:
+
+1. Spawn outside, enter the recessed court, navigate by the fountain/cinema/food court and reach the truck.
+2. Carry/trolley the piano and generator through all haul-ramp turns, wide doors, dock apron and truck ramp.
+3. Collapse bridge/escalators/gallery approaches; check crack/sag readability, matching debris, permanent service route
+   and every rope descent (especially the middle east connector), then return to extraction.
+4. Try power on/off, Sealed shutters and director slams near crew/loot; check fallback stores stay open, falling lamps
+   stop lighting, two sectors remain lit at maximum danger and the final phase turns red.
+5. Check loot/AI routes with 1–4 crew, then record **Editor F1 or Development build/profiler** FPS, batches, main-thread
+   time and GC in the atrium with four flashlights. Shareable builds intentionally disable development controls.
+
 ## 0.12.7 (2026-10-08)
 
 From the user's pause-menu screenshot: you work for a company you hate; it isn't yours. The pause menu's COMPANY

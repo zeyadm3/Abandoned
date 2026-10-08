@@ -447,7 +447,7 @@ Proposed first in-game checks for the user after delivery:
 3. Use every rope window without bringing rope equipment; check descent, safe exterior landings and return to the truck.
 4. Run power on/off, maximum danger and final red phase on every level, including basement; check fallen lamps stop lighting.
 5. Play Sealed and trigger shutter slams with crew/loot near thresholds; confirm fallback stores are never locked.
-6. Review loot eligibility/placement, monster routes and hidden spawn coverage, then record F1 performance in the atrium with four flashlights.
+6. Review loot eligibility/placement, monster routes and hidden spawn coverage, then record Editor F1 (or Development build/profiler) performance in the atrium with four flashlights.
 
 **Approval requested:** approve this design and the narrow map-supporting code/data changes above,
 or specify changes to the layout, art direction, service haul ramps or featured-prize treatment.

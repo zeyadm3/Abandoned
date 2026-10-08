@@ -116,6 +116,7 @@ cmd="${1:-all}"
 status=0
 case "$cmd" in
   compile)     run_unity compile -quit || status=1 ;;
+  render-meridian) run_unity render-meridian -executeMethod Abandoned.EditorTools.MeridianArtRenders.RenderAndExit || status=1 ;;
   rebuild)     method rebuild RebuildContent || status=1 ;;
   rebuild-horror) method rebuild-horror RebuildHorrorContent || status=1 ;;
   verify)      method verify VerifyAll || status=1 ;;

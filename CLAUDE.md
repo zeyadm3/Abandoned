@@ -115,6 +115,13 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
     Rebuild via compile/rebuild-horror/build only; user tests. Editor art still renders are approved.
   - Protect service landing slabs, haul/escape connections and loading approach as well as stairs;
     permanent authored descent exits reuse existing SafeDescent, with no new rope inventory system.
+  - Final authoring uses 3 m service stair clear width and 4 m switchback haul ramps, with permanent
+    half-story turn landings; middle east rope access includes the west connector slab.
+  - Original Meridian PBR maps, fractured mesh siblings, damage variants, realtime fixtures and overcast
+    sky are independent of legacy HQ art. Occlusion bakes only permanent geometry; floor slabs are never static.
+  - Editor art captures show ordinary open shutters and power variants without running gameplay or saving
+    the scene. Performance counters from batch art rendering are unavailable; user measures Editor F1 or
+    a Development build/profiler, because shareable builds keep development controls disabled.
   - No new packages, paid assets, TestMap changes or pushes. Commit each checked stage. Four-player
     host performance stays pending the user's run; report Editor/asset figures honestly.
 - Stack: NGO + Facepunch + Dissonance (same combination as Lethal Company).

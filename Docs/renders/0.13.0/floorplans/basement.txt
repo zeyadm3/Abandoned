@@ -1,0 +1,29 @@
+MERIDIAN MALL / floor -1 / y=-4 m
+North (+Z) is up. Cells are 4 x 4 m.
+
+ z\x   0  1  2  3  4  5  6  7  8  9 10 11 12 13
+  11  -- -- -- -- -- -- -- -- -- -- AP AP -- --
+  10  -- -- -- -- -- -- -- -- -- -- AP -- -- --
+   9  -- -- -- -- -- -- -- -- -- -- AP -- -- --
+   8  -- -- -- -- -- -- -- -- -- -- AP AP AP AP
+   7  -- -- -- -- -- -- -- -- -- -- AP AP AP AP
+   6  -- -- -- -- -- -- -- -- -- -- AP AP AP AP
+   5  -- -- -- -- -- -- -- -- -- -- -- -- -- --
+   4  -- -- -- -- -- -- -- -- -- -- -- -- -- --
+   3  -- -- -- -- -- -- -- -- -- -- -- -- -- --
+   2  -- -- -- -- -- -- -- -- -- -- -- -- -- --
+   1  -- -- -- -- -- -- -- -- -- -- -- -- -- --
+   0  -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+Cell key: A.. = owned zone; P = permanent slab; ! = authored weak slab; ~ = collapsible slab; -- = void/outside; -X = pre-collapsed gallery wound.
+A = SERVICE / LEVEL -1 [BasementStock; stock; Store]
+
+FLIGHTS (world x,y,z; rise; clear width; collapse flag):
+R HaulRamp_-1_A: (49.65,-4,36) -> (49.65,-2,44); rise 2m; width 4m; collapsible=False
+R HaulRamp_-1_B: (53.85,-2,44) -> (53.85,0,36); rise 2m; width 4m; collapsible=False
+S BasementServiceStairs: (45.55,-4,36) -> (45.55,0,44); rise 4m; width 3m; collapsible=False
+
+FEATURED CANDIDATES (not all appear in one run):
+J: military_generator; tag=stock; class=Huge..Huge; position=(50,-4,30); Jackpot=True.
+
+EXTERIOR OPENINGS:
