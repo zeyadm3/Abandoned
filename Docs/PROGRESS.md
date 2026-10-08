@@ -11,6 +11,9 @@ the title screen ("very early access - gameplay work in progress", feedback/feat
 zeyad.m.a.2005@gmail.com, with Email / Copy email / OK). The menu footer carries the same tag, one company memo
 names the address, and LaunchConfig's Feedback link is a mailto, so the menu's Feedback button appears.
 Pipeline: compile, rebuild-horror, commit, build (user-requested); zips copied to the Desktop.
+Follow-up (c40757c): an EXCLUSIVE EARLY ACCESS watermark sits bottom-right on every screen (EarlyAccessWatermark on
+MenuUi's document, kept on top, also in F10 clip mode; only when the version contains "EEA"). Rebuilt with compile +
+build; the Desktop zips were replaced and the 0ecc0af ones moved to Abandoned-builds/dev/superseded/. Not run in play.
 
 ## 0.13.4b — monster songs only on your floor while it approaches; no Collector tip (2026-10-08)
 
