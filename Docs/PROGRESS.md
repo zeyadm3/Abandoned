@@ -4,6 +4,12 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.5e.EEA — low-health feedback sooner, no breathing (2026-10-09; not compiled or played by Claude)
+
+User feedback from playing 0.13.5d. Thresholds raised to 80 / 60 / 50 / 35 / 20 (were 50 / 40 / 30 / 20 / 10), so
+one ordinary hit already brings the heartbeat and the corner blood. The labored-breath clip is removed and no breath
+plays from the critical threshold down: low health is the heartbeat alone.
+
 ## 0.13.5d.EEA — fall damage retune and the developer hurt key (2026-10-09; not compiled or played by Claude)
 
 Fall damage was already wired (motor landing -> host -> PlayerHealthConfig.FallDamage) but did nothing up to 4 m,

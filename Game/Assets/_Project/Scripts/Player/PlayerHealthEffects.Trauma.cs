@@ -8,11 +8,12 @@ using UnityEngine.Rendering.Universal;
 namespace Abandoned.Player
 {
     // Low-health feedback by threshold (user spec, 2026-10-09). Every number is in PlayerHealthConfig.
-    //   30 HP and below: a steady heartbeat, about 75 BPM, until healed above 30.
-    //   20 HP and below: about 105 BPM and louder; the world's sound is muffled; a soft dark-red vignette with
-    //                    chromatic aberration creeps in from the edges; blood splatter in the screen corners.
-    //   10 HP and below: about 145 BPM at full volume with heavy breathing; the vignette closes toward the
-    //                    centre and swells on every beat; heavy, layered, dripping blood and a slight blur and warp.
+    //   Critical (50 HP and below): a steady heartbeat, about 75 BPM, until healed above it.
+    //   Severe (35 and below): about 105 BPM and louder; the world's sound is muffled; a soft dark-red vignette
+    //                    with chromatic aberration creeps in from the edges; blood splatter in the screen corners.
+    //   Near death (20 and below): about 145 BPM at full volume; the vignette closes toward the centre and swells
+    //                    on every beat; heavy, layered, dripping blood and a slight blur and warp.
+    // The heartbeat is the only sound of it: no breathing at low health (user: the breath read as a horse snorting).
     // The beat itself is PlayerPulse, so the vitals bar, the vignette and the blood all move with the sound.
     public partial class PlayerHealthEffects
     {
@@ -20,10 +21,10 @@ namespace Abandoned.Player
 
         private ChromaticAberration fringe;
         private LensDistortion warp;
-        private AudioSource pulseSource, breathSource;
+        private AudioSource pulseSource;
         private AudioLowPassFilter muffle;
         private TraumaOverlay overlay;
-        private float severe, nearDeath, drip, nextBeat, nextLabored, cutoff = OpenCutoff;
+        private float severe, nearDeath, drip, nextBeat, cutoff = OpenCutoff;
         private int traumaTier;
 
         /// <summary>Runs the thresholds for this frame and returns the tier (0 = above critical).</summary>
@@ -55,12 +56,6 @@ namespace Abandoned.Player
             PlayerPulse.Beat = beat < 0.002f ? 0f : beat;
             PlayerPulse.Tier = traumaTier;
 
-            if (tier >= 3 && vitals > 0f && Time.time >= nextLabored)
-            {
-                nextLabored = Time.time + config.LaboredBreathInterval;
-                InnerSources();
-                breathSource.PlayOneShot(PlayerVitalAudio.LaboredBreath, Mathf.Clamp01(vitals * config.LaboredBreathVolume) * AudioLevels.Sfx);
-            }
             Muffle(tier >= 2 ? config.MuffleCutoff : OpenCutoff);
             Blood(config);
             return tier;
@@ -68,32 +63,25 @@ namespace Abandoned.Player
 
         private void Heartbeat(PlayerHealthConfig config, int tier, float vitals)
         {
-            InnerSources();
+            InnerSource();
             pulseSource.pitch = PlayerHealthConfig.Pick(config.TraumaHeartbeatPitch, tier);
             pulseSource.PlayOneShot(PlayerVitalAudio.Heartbeat,
                 Mathf.Clamp01(vitals * PlayerHealthConfig.Pick(config.TraumaHeartbeatVolume, tier)) * AudioLevels.Sfx);
         }
 
-        // The player's own pulse and breath: their own sources, so they never pass through the muffle or a reverb.
-        private void InnerSources()
+        // The player's own pulse: its own source, so it never passes through the muffle or a reverb.
+        private void InnerSource()
         {
             if (pulseSource != null) return;
             var go = new GameObject("Trauma audio");
             go.transform.SetParent(transform, false);
-            pulseSource = InnerSource(go, 40);
-            breathSource = InnerSource(go, 60);
-        }
-
-        private static AudioSource InnerSource(GameObject go, int priority)
-        {
-            AudioSource source = go.AddComponent<AudioSource>();
-            source.playOnAwake = false;
-            source.spatialBlend = 0f;
-            source.dopplerLevel = 0f;
-            source.priority = priority;
-            source.bypassListenerEffects = true;
-            source.bypassReverbZones = true;
-            return source;
+            pulseSource = go.AddComponent<AudioSource>();
+            pulseSource.playOnAwake = false;
+            pulseSource.spatialBlend = 0f;
+            pulseSource.dopplerLevel = 0f;
+            pulseSource.priority = 40;
+            pulseSource.bypassListenerEffects = true;
+            pulseSource.bypassReverbZones = true;
         }
 
         // A low-pass on the listener muffles everything in the world. It sits on whichever listener is live.
@@ -134,7 +122,7 @@ namespace Abandoned.Player
         {
             float health = player.Health;
             float beat = GameSettings.ReduceFlashing ? 0f : PlayerPulse.Beat;
-            // How deep into each band: 20 -> 11 HP creeps the vignette inward, 10 -> 0 closes it further.
+            // How deep into each band: through severe the vignette creeps inward, through near death it closes further.
             float sinkSevere = Mathf.InverseLerp(config.SevereHp, config.NearDeathHp + 1f, health);
             float sinkDeath = Mathf.InverseLerp(config.NearDeathHp, 0f, health);
             float severeRing = Mathf.Lerp(config.SevereVignette.x, config.SevereVignette.y, sinkSevere);

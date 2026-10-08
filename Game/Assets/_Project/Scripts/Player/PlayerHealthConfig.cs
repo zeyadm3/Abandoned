@@ -36,26 +36,32 @@ namespace Abandoned.Player
         [field: SerializeField] public Vector2 DarknessFear { get; private set; } = new(0.28f, 0.05f);
         [field: SerializeField, Range(0f, 1f)] public float SprintFear { get; private set; } = 0.4f;
 
-        [field: Header("Vitals bar colour by health (user spec, 2026-10-09)")]
-        [field: Tooltip("100 down to 41 HP: solid electric blue.")]
+        [field: Header("Vitals bar colour by health (user spec, 2026-10-09; thresholds raised the same day)")]
+        [field: Tooltip("Full health down to WarningHp: solid electric blue.")]
         [field: SerializeField] public Color SafeColor { get; private set; } = new(0.04f, 0.52f, 1f);
-        [field: Tooltip("From BlendStartHp down to 41 HP the blue leans toward this red...")]
+        [field: Tooltip("From BlendStartHp down to WarningHp the blue leans toward this red...")]
         [field: SerializeField] public Color BlendTowardColor { get; private set; } = new(1f, 0.12f, 0.1f);
-        [field: Tooltip("...by this much at 41 HP. Keep it small: the spec asks for a subtle lean.")]
+        [field: Tooltip("...by this much just above WarningHp. Keep it small: the spec asks for a subtle lean.")]
         [field: SerializeField, Range(0f, 1f)] public float SafeBlend { get; private set; } = 0.4f;
-        [field: Tooltip("40 down to 31 HP: the bar moves into this orange-red.")]
+        [field: Tooltip("WarningHp down to CriticalHp: the bar moves into this orange-red.")]
         [field: SerializeField] public Color WarningColor { get; private set; } = new(1f, 0.27f, 0.03f);
-        [field: Tooltip("30 down to 21 HP: solid crimson.")]
+        [field: Tooltip("CriticalHp down to SevereHp: solid crimson.")]
         [field: SerializeField] public Color CriticalColor { get; private set; } = new(0.86f, 0.08f, 0.16f);
-        [field: Tooltip("20 HP and below: dark blood red, pulsing up to LethalPulseColor on each heartbeat.")]
+        [field: Tooltip("SevereHp and below: dark blood red, pulsing up to LethalPulseColor on each heartbeat.")]
         [field: SerializeField] public Color LethalColor { get; private set; } = new(0.36f, 0.01f, 0.02f);
         [field: SerializeField] public Color LethalPulseColor { get; private set; } = new(0.7f, 0.03f, 0.05f);
-        [field: Tooltip("Whole HP, as the HUD shows it.")]
-        [field: SerializeField, Min(0f)] public float BlendStartHp { get; private set; } = 50f;
-        [field: SerializeField, Min(0f)] public float WarningHp { get; private set; } = 40f;
-        [field: SerializeField, Min(0f)] public float CriticalHp { get; private set; } = 30f;
-        [field: SerializeField, Min(0f)] public float SevereHp { get; private set; } = 20f;
-        [field: SerializeField, Min(0f)] public float NearDeathHp { get; private set; } = 10f;
+        // The spec's first numbers (50 / 40 / 30 / 20 / 10) came too late in play: the user wants urgency sooner,
+        // so one ordinary hit already brings the heartbeat and the blood.
+        [field: Tooltip("Whole HP, as the HUD shows it. The bar starts leaning toward red here.")]
+        [field: SerializeField, Min(0f)] public float BlendStartHp { get; private set; } = 80f;
+        [field: Tooltip("The bar turns toward orange-red from here.")]
+        [field: SerializeField, Min(0f)] public float WarningHp { get; private set; } = 60f;
+        [field: Tooltip("Critical: crimson bar, and the steady heartbeat starts.")]
+        [field: SerializeField, Min(0f)] public float CriticalHp { get; private set; } = 50f;
+        [field: Tooltip("Severe: pulsing blood-red bar, faster heartbeat, muffled world, vignette, blood in the corners.")]
+        [field: SerializeField, Min(0f)] public float SevereHp { get; private set; } = 35f;
+        [field: Tooltip("Near death: fastest heartbeat, closing vignette, heavy dripping blood.")]
+        [field: SerializeField, Min(0f)] public float NearDeathHp { get; private set; } = 20f;
 
         [field: Header("Low-health heartbeat: critical (x), severe (y), near death (z)")]
         [field: SerializeField] public Vector3 HeartbeatBpm { get; private set; } = new(75f, 105f, 145f);
@@ -63,19 +69,16 @@ namespace Abandoned.Player
         [field: SerializeField] public Vector3 TraumaHeartbeatPitch { get; private set; } = new(0.88f, 1f, 1.12f);
         [field: Tooltip("Low-pass (Hz) on the world's sound from severe down. The player's own pulse and breath, UI and crew voices stay clear.")]
         [field: SerializeField, Range(500f, 22000f)] public float MuffleCutoff { get; private set; } = 2600f;
-        [field: Tooltip("Near death: seconds between heavy breaths, and how loud they are.")]
-        [field: SerializeField, Min(0.5f)] public float LaboredBreathInterval { get; private set; } = 2.15f;
-        [field: SerializeField, Range(0f, 1f)] public float LaboredBreathVolume { get; private set; } = 0.62f;
 
         [field: Header("Low-health vision")]
         [field: SerializeField] public Color TraumaVignetteColor { get; private set; } = new(0.36f, 0f, 0.012f);
-        [field: Tooltip("Severe: vignette at 20 HP (x) and at 11 HP (y); it creeps inward as health falls.")]
+        [field: Tooltip("Severe: vignette at SevereHp (x) and just above NearDeathHp (y); it creeps inward as health falls.")]
         [field: SerializeField] public Vector2 SevereVignette { get; private set; } = new(0.3f, 0.43f);
-        [field: Tooltip("Near death: vignette at 10 HP (x) and at 0 HP (y).")]
+        [field: Tooltip("Near death: vignette at NearDeathHp (x) and at 0 HP (y).")]
         [field: SerializeField] public Vector2 NearDeathVignette { get; private set; } = new(0.54f, 0.68f);
         [field: Tooltip("How soft the vignette's inner edge is: severe (x), near death (y).")]
         [field: SerializeField] public Vector2 TraumaVignetteSmoothness { get; private set; } = new(0.82f, 1f);
-        [field: Tooltip("Near death: how much each heartbeat swells the vignette, at 10 HP (x) and at 0 HP (y).")]
+        [field: Tooltip("Near death: how much each heartbeat swells the vignette, at NearDeathHp (x) and at 0 HP (y).")]
         [field: SerializeField] public Vector2 VignettePulse { get; private set; } = new(0.05f, 0.12f);
         [field: Tooltip("Chromatic aberration: severe (x), near death (y).")]
         [field: SerializeField] public Vector2 TraumaChromaticAberration { get; private set; } = new(0.4f, 0.8f);
@@ -112,8 +115,8 @@ namespace Abandoned.Player
         public static float Pick(Vector3 perTier, int tier) => tier >= 3 ? perTier.z : tier == 2 ? perTier.y : perTier.x;
 
         /// <summary>
-        /// The vitals bar's colour: blue, leaning toward red from 50 to 41 HP, into orange-red from 40 to 31,
-        /// crimson from 30 to 21, then dark blood red that swells with each heartbeat (<paramref name="beat"/> 0..1).
+        /// The vitals bar's colour: blue, leaning toward red from BlendStartHp, into orange-red from WarningHp, crimson
+        /// from CriticalHp, then from SevereHp dark blood red that swells with each heartbeat (<paramref name="beat"/> 0..1).
         /// </summary>
         public Color HealthColor(float health, float beat)
         {

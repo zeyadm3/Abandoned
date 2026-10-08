@@ -72,14 +72,14 @@ namespace Abandoned.Player
             }
             float darkness = equipment == null || !equipment.LightOn ? config.DarknessFear.x : config.DarknessFear.y;
             float pressure = Mathf.Max(low, threatPressure, darkness, player.Motor.IsSprinting ? config.SprintFear : 0f);
-            // From critical down the trauma pulse owns the heartbeat (one steady tempo per threshold), and near
-            // death it owns the breathing too; fear only sets the pace while the player is still above 30 HP.
+            // From critical down the trauma pulse owns the heartbeat (one steady tempo per threshold) and nothing
+            // breathes: low health is the heartbeat alone. Fear only sets the pace above the critical threshold.
             if (tier == 0 && Time.time >= nextHeartbeat)
             {
                 nextHeartbeat = Time.time + Mathf.Lerp(config.HeartbeatInterval.x, config.HeartbeatInterval.y, pressure);
                 GameAudio.PlayHeartbeat(vitals * config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
             }
-            if (tier < 3 && Time.time >= nextBreath)
+            if (tier == 0 && Time.time >= nextBreath)
             {
                 nextBreath = Time.time + Mathf.Lerp(config.BreathInterval.x, config.BreathInterval.y, pressure);
                 GameAudio.PlayBreath(vitals * Mathf.Lerp(0.04f, 0.18f, pressure));

@@ -105,6 +105,12 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, after playing 0.13.5d; written, untested): low-health feedback comes sooner, for urgency. The
+  thresholds in PlayerHealthConfig are now: bar leans toward red from 80, orange-red from 60, crimson + steady heartbeat
+  at 50 and below, pulsing blood red + faster heartbeat + muffle + vignette + corner blood at 35 and below, fastest
+  heartbeat + closing vignette + heavy dripping blood at 20 and below (the spec's first numbers were 50/40/30/20/10).
+  Low health is the heartbeat ALONE: the labored-breath clip is deleted (it read as a horse snorting) and the ordinary
+  fear breath is silent from the critical threshold down. Do not add breathing back at low health.
 - 2026-10-09 (user, dev tool; written, untested): holding Shift + Control + Option/Alt + Command/Windows together hurts
   the local player 5 HP at once and every 0.5 s while held (NetworkPlayer.DevHurt; Core.DevTools only, so never in a
   shareable build; the host applies it and a shareable host ignores a dev client's request).
