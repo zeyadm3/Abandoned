@@ -68,7 +68,7 @@ namespace Abandoned.Equipment
             lines.style.backgroundImage = Scanlines();
 
             int money = company.State.Money;
-            Crt(screenArea, "ZEYAD SALVAGE CO. - SUPPLY TERMINAL v2.1", "crt__title");
+            Crt(screenArea, $"{CompanySave.DefaultName.ToUpperInvariant()} - SUPPLY TERMINAL v2.1", "crt__title");
             Crt(screenArea, $"FUNDS {(money < 0 ? $"-${-money:N0} (DEBT)" : $"${money:N0}")}     CLEARANCE LEVEL {company.State.Level}", "crt__line");
             Crt(screenArea, new string('=', 72), "crt__rule");
             VisualElement tabs = MenuKit.Row(screenArea);

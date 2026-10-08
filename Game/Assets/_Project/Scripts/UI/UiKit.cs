@@ -139,6 +139,41 @@ namespace Abandoned.UI
             fill.EnableInClassList("bar__fill--bad", state == "bad");
         }
 
+        /// <summary>A meter of equal blocks (health: ten blocks of ten); set it with <see cref="SetSegments"/>.</summary>
+        public static VisualElement Segments(VisualElement parent, int count, params string[] classes)
+        {
+            var meter = new VisualElement { pickingMode = PickingMode.Ignore };
+            meter.AddToClassList("segments");
+            foreach (string c in classes) meter.AddToClassList(c);
+            for (int i = 0; i < count; i++)
+            {
+                var block = new VisualElement { pickingMode = PickingMode.Ignore };
+                block.AddToClassList("segment");
+                if (i == count - 1) block.style.marginRight = 0f;
+                var fill = new VisualElement { pickingMode = PickingMode.Ignore };
+                fill.AddToClassList("segment__fill");
+                block.Add(fill);
+                meter.Add(block);
+            }
+            parent?.Add(meter);
+            return meter;
+        }
+
+        /// <summary>Lights the blocks left to right; the last lit block shows only the part of it that's left.</summary>
+        public static void SetSegments(VisualElement meter, float fraction, string state = null)
+        {
+            if (meter == null) return;
+            int count = meter.childCount;
+            float lit = Mathf.Clamp01(fraction) * count;
+            for (int i = 0; i < count; i++)
+            {
+                if (meter[i].childCount == 0) continue;
+                VisualElement fill = meter[i][0];
+                fill.style.width = Length.Percent(Mathf.Clamp01(lit - i) * 100f);
+                fill.EnableInClassList("segment__fill--bad", state == "bad");
+            }
+        }
+
         /// <summary>A rubber stamp ("QUOTA MET"); hidden until <see cref="Slam"/>.</summary>
         public static Label Stamp(VisualElement parent, string text, bool good)
         {

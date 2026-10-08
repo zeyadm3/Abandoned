@@ -108,6 +108,7 @@ namespace Abandoned.Company
             Application.quitting += MarkLeavingMidJob;
             store = PersistsToDisk ? new SaveStore(SaveFolderOverride) : null;
             save = store != null ? store.Load() : CompanySave.New();
+            save.UseCurrentName();
             if (CompanyLedger.SettleAbandoned(save, config, out bool voided) is RunOutcome abandoned)
             {
                 Debug.LogWarning($"[Company] The last job was abandoned: settled as an empty haul (penalty ${abandoned.Penalty:N0}).");

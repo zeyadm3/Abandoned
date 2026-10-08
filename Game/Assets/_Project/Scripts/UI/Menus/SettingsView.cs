@@ -116,7 +116,7 @@ namespace Abandoned.UI
             {
                 GameSettings.FieldOfView = GameSettings.DefaultFov;
                 GameSettings.HeadBob = GameSettings.CameraShake = GameSettings.ShowCrosshair = true;
-                GameSettings.UiScale = 1f;
+                GameSettings.UiScale = GameSettings.DefaultUiScale;
                 Hints.Enabled = true;
             });
 

@@ -105,6 +105,21 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user): the salvage company in the fiction is **Abandoned Salvaging** (CompanySave.DefaultName), named after
+  the game. Never name anything in the fiction after the user or any real person. Old saves carrying "Zeyad Salvage Co."
+  are renamed on load. The studio/publisher "Zeyad Games" (credits, Player Settings, save folder) is a separate thing
+  and is unchanged until the user says otherwise.
+- 2026-10-09 (user, tester feedback pass; written, untested): fitted mall furniture placed through
+  MeridianDressingClearance is SOLID (one box fitted to each floor-standing model, as MallProps), replacing 0.13.2's
+  "collider-free" for those pieces only; flat litter, decals, ceiling pieces and signs stay walk-through, and threat
+  spawn tiles (MallPopulator.ThreatSpawnCells) stay clear. Takes effect on the next rebuild-horror (the NavMesh bakes
+  around the boxes). HUD: health is ten always-visible blocks (UiKit.Segments); a compass tape (CompassHud, world
+  +Z = north) sits top centre during jobs, with the scan's haul read-out moved under it. Default UI scale is 1.25x (GameSettings.DefaultUiScale; the existing
+  slider, Settings > Gameplay > Interface, still runs 0.75x-1.5x and a saved value wins). Bestiary = the HQ office
+  desk computer (SecurityDesk in HqDressingBuilder carries ThreatFilesTerminal; E opens ThreatFilesScreen, a CRT
+  ScreenPanel on the session object). A file opens when a monster first comes within 16 m of the local player
+  (ThreatFilesTracker; local Prefs like tips, names-only toast); texts live in Threats/ThreatFiles.cs and must follow
+  behaviour changes. Still open from the same feedback: tutorial, THREAT label vs monsters, Stalker feedback.
 - 2026-10-08 (user-approved 0.13.0 Meridian rebuild):
   - Environment art becomes grounded and realistic, replacing the earlier one-low-poly-style rule
     for the mall. Characters, threats and loot keep their current look; flag clashes for the user.

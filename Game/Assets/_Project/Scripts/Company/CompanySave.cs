@@ -14,7 +14,17 @@ namespace Abandoned.Company
         public const int CurrentVersion = 1;
 
         public int version = CurrentVersion;
-        public string companyName = "Zeyad Salvage Co.";
+        /// <summary>The salvage company the crew works for: named after the game, never after a person (user, 2026-10-09).</summary>
+        public const string DefaultName = "Abandoned Salvaging";
+        private const string LegacyName = "Zeyad Salvage Co.";
+
+        public string companyName = DefaultName;
+
+        /// <summary>Saves written before the rename carry the old name; players can't rename the company, so it follows the game.</summary>
+        public void UseCurrentName()
+        {
+            if (string.IsNullOrEmpty(companyName) || companyName == LegacyName) companyName = DefaultName;
+        }
         public int money;
         public int xp;
         public int level = 1;

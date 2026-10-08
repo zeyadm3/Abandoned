@@ -4,6 +4,21 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.5.EEA — tester feedback pass (2026-10-09)
+
+From a friend's notes on 0.13.4b.EEA. Nothing here has been play-tested; the user tests it all.
+`rebuild-horror` ran clean after the threat files landed (flights 0, invisible colliders 0, materials 0,
+306 fitted modules). The company rename and the version bump came after that run and are uncompiled.
+- HUD: health is ten always-visible blocks; a compass tape sits top centre during jobs; default UI scale 1.25x.
+- Mall: floor-standing fitted furniture is solid (reverses 0.13.2's collider-free for those pieces); threat
+  spawn tiles are kept clear of it.
+- HQ: the office desk computer opens the threat files (bestiary). A file opens when its monster first comes
+  within 16 m of the local player.
+- The salvage company is "Abandoned Salvaging"; saves carrying the old name are renamed on load.
+- Still open from the feedback: tutorial, the board's THREAT label vs monsters, Stalker feedback, a HUD-only
+  size setting. No 0.13.5 build zips have been made.
+- Left uncommitted: ProjectSettings/UnityConnectSettings.asset (m_Enabled 0 -> 1 predates this pass; ask the user).
+
 ## 0.13.4b.EEA — exclusive early access build for friends (2026-10-08)
 
 A shareable Mac + Windows build for friends to pass around. Every launch shows an EXCLUSIVE EARLY ACCESS box over

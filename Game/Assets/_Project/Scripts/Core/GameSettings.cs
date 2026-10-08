@@ -20,7 +20,8 @@ namespace Abandoned.Core
             ReduceFlashingKey = "settings.reduceflashing", FewerScaresKey = "settings.fewerscares", VitalsVolumeKey = "settings.vitalsvolume",
             PlayerNameKey = "settings.playername";
         public static readonly string[] SubtitleSizeNames = { "Small", "Medium", "Large" };
-        public const float MinUiScale = 0.75f, MaxUiScale = 1.5f;
+        // Default raised from 1 (2026-10-09: testers found the HUD too small); a saved choice is kept as it is.
+        public const float MinUiScale = 0.75f, MaxUiScale = 1.5f, DefaultUiScale = 1.25f;
 
         private static float? sensitivity, fov, uiScale, vitalsVolume;
         private static bool? headBob, shake, subtitles, colorblind, reduceMenuEffects, invertY, crouchToggle, crosshair, muteUnfocused,
@@ -157,7 +158,7 @@ namespace Abandoned.Core
         /// <summary>How big the menus and HUD are (UI step 5): 1 = designed size at 1080p, scaled with the screen.</summary>
         public static float UiScale
         {
-            get => uiScale ??= Prefs.GetFloat(UiScaleKey, 1f);
+            get => uiScale ??= Prefs.GetFloat(UiScaleKey, DefaultUiScale);
             set => Set(ref uiScale, UiScaleKey, Mathf.Clamp(value, MinUiScale, MaxUiScale));
         }
 

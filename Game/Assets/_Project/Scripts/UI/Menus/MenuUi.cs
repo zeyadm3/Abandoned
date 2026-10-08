@@ -142,6 +142,9 @@ namespace Abandoned.UI
             Showing = (MenuScreen)(-1);
             nextCrtTwitch = Time.unscaledTime + 11f;
             if (GetComponent<HorrorRunHud>() == null) gameObject.AddComponent<HorrorRunHud>();
+            if (GetComponent<CompassHud>() == null) gameObject.AddComponent<CompassHud>();
+            if (GetComponent<ThreatFilesScreen>() == null) gameObject.AddComponent<ThreatFilesScreen>();
+            if (GetComponent<Threats.ThreatFilesTracker>() == null) gameObject.AddComponent<Threats.ThreatFilesTracker>();
         }
 
         private void OnDisable()

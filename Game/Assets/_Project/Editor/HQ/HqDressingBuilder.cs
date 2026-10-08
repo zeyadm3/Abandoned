@@ -32,7 +32,9 @@ namespace Abandoned.EditorTools
             Prop("Bench", new Vector3(8.8f, 0f, 15.2f), 180f, new Vector3(1.2f, 1f, 1f), new Vector3(2.4f, .95f, .55f));
             Prop("Counter", new Vector3(21.7f, 0f, 15.2f), 180f, new Vector3(1.35f, 1f, 1f), new Vector3(2.86f, 1.1f, .82f));
             Prop("RetailShelf", new Vector3(23.15f, 0f, 11.8f), 270f, Vector3.one, new Vector3(1.72f, 2.12f, .52f));
-            Prop("SecurityDesk", new Vector3(22.7f, 0f, 7.8f), 270f, Vector3.one, new Vector3(2f, 1.25f, 1f));
+            // 2026-10-09: the office computer is the bestiary. E on the desk opens the threat files.
+            Prop("SecurityDesk", new Vector3(22.7f, 0f, 7.8f), 270f, Vector3.one, new Vector3(2f, 1.25f, 1f))
+                .AddComponent<Abandoned.Threats.ThreatFilesTerminal>();
             Prop("Bench", new Vector3(13.3f, 0f, 7.8f), 90f, Vector3.one, new Vector3(2f, .95f, .55f));
             Prop("RetailShelf", new Vector3(10.3f, 0f, 15.6f), 180f, Vector3.one, new Vector3(1.72f, 2.12f, .52f));
             for (int i = 0; i < 5; i++)
@@ -62,13 +64,14 @@ namespace Abandoned.EditorTools
             Area(root, "OfficeElectricalHum", new Vector3(18f, 2f, 5f), new Vector3(12f, 4f, 10f), 1);
             Area(root, "WorkshopLeak", new Vector3(18f, 2f, 13f), new Vector3(12f, 4f, 6f), 2);
 
-            void Prop(string model, Vector3 floor, float yaw, Vector3 scale, Vector3 collisionSize)
+            GameObject Prop(string model, Vector3 floor, float yaw, Vector3 scale, Vector3 collisionSize)
             {
                 GameObject instance = CustomMallArt.Place(model, decor, floor, yaw, scale);
                 Bounds bounds = ModelFit.LocalBounds(instance, instance.transform);
                 var collider = instance.AddComponent<BoxCollider>();
                 collider.center = bounds.center;
                 collider.size = bounds.size;
+                return instance;
             }
         }
 

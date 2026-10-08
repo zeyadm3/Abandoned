@@ -25,15 +25,29 @@ namespace Abandoned.EditorTools
         }
 
         public static GameObject Prop(string key, Transform group, Vector3 position, Quaternion rotation,
-            StructuralSection support = null, Vector3? scale = null)
+            StructuralSection support = null, Vector3? scale = null, bool solid = false)
         {
             GameObject model = MeridianArt.Place(key, group, position, rotation, scale);
             if (model == null) return null;
             foreach (Collider collider in model.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(collider);
             foreach (Renderer renderer in model.GetComponentsInChildren<Renderer>(true))
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, 0);
+            if (solid) Solid(model);
             if (support != null) model.AddComponent<SectionProp>().EditorSetup(support);
             return model;
+        }
+
+        // 2026-10-09: testers walked through counters and benches mid-chase. Fitted furniture gets one box
+        // sized to the visible model (as MallProps does); flat litter below this height stays walk-through.
+        private const float SolidMinHeight = 0.3f;
+
+        private static void Solid(GameObject model)
+        {
+            Bounds bounds = ModelFit.LocalBounds(model, model.transform);
+            if (bounds.size.y < SolidMinHeight) return;
+            var box = model.AddComponent<BoxCollider>();
+            box.center = bounds.center;
+            box.size = bounds.size;
         }
 
         public static bool Occupied(Vector2Int cell, int floor) =>

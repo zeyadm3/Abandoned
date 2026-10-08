@@ -12,7 +12,8 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The player's own HUD (UI step 2), R.E.P.O.-style and out of the way: stamina bottom left (with what
+    /// The player's own HUD (UI step 2), R.E.P.O.-style and out of the way: health (ten blocks, always shown)
+    /// and stamina bottom left (with what
     /// you're carrying and whether it slows you), the two hand slots and the pocket slots bottom right (gear
     /// and loot pictures, values on the pockets), and the full pockets list while the Inventory key is held.
     /// Owner only; everything it reads is already on this machine.
@@ -24,6 +25,8 @@ namespace Abandoned.UI
         [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private PlayerEquipment equipment;
         [SerializeField] private PlayerInputReader inputReader;
+
+        private const int HealthBlocks = 10;
 
         private VisualElement staminaBlock, staminaBar, healthRow, healthBar, batteryRow, batteryBar, slots, pocketsRow;
         private Label staminaLabel, healthLabel, batteryLabel, load, pocketsDetail;
@@ -53,13 +56,9 @@ namespace Abandoned.UI
             }
 
             bool depleted = stamina.Max > 0f && stamina.Current < stamina.Max - 0.01f;
-            bool hurt = player.Health < player.MaxHealth - 0.01f;
-            MenuKit.Show(healthRow, hurt);
-            if (hurt)
-            {
-                Set(healthLabel, $"VITALS  {Mathf.CeilToInt(player.Health):0}");
-                UiKit.SetBar(healthBar, player.Health01, player.Health01 <= player.HealthConfig.LowHealthThreshold ? "bad" : null);
-            }
+            // Always on screen (tester feedback, 2026-10-09): ten blocks, each a tenth of full health.
+            Set(healthLabel, $"VITALS  {Mathf.CeilToInt(player.Health):0}");
+            UiKit.SetSegments(healthBar, player.Health01, player.Health01 <= player.HealthConfig.LowHealthThreshold ? "bad" : null);
             MenuKit.Show(staminaLabel, depleted);
             MenuKit.Show(staminaBar, depleted);
             Set(staminaLabel, stamina.IsExhausted ? "BREATH  /  EXHAUSTED" : "BREATH");
@@ -97,7 +96,7 @@ namespace Abandoned.UI
             healthRow.AddToClassList("player-vital");
             staminaBlock.Add(healthRow);
             healthLabel = Text(healthRow, "VITALS", "player-stamina__label");
-            healthBar = UiKit.Bar(healthRow, "player-vital__bar");
+            healthBar = UiKit.Segments(healthRow, HealthBlocks);
             staminaLabel = Text(staminaBlock, "STAMINA", "player-stamina__label");
             staminaBar = UiKit.Bar(staminaBlock);
             batteryRow = new VisualElement { pickingMode = PickingMode.Ignore };

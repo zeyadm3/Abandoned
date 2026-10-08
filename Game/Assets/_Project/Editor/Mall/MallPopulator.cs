@@ -78,11 +78,13 @@ namespace Abandoned.EditorTools
             foreach(string weak in WeakSpots.Keys)if(!matched.Contains(weak))throw new System.InvalidOperationException($"Weak spot not built: {weak}");
             setup.AddSimulation(DefaultStability,DefaultSeed);
         }
+        // Shared with the dressing pass (MeridianDressingClearance): solid furniture never stands on a spawn tile.
+        public static readonly (int floor,int x,int z)[] ThreatSpawnCells={(0,2,3),(0,2,7),(0,12,5),(0,7,10),(1,2,6),(1,7,1),(1,12,4),(1,10,10),
+            (2,2,6),(2,6,2),(2,5,10),(2,12,5),(-1,10,6),(-1,12,7)};
         private static void PlaceThreats(Transform mall,Abandoned.Networking.NetworkBootstrap bootstrap)
         {
             Transform points=GreyboxFactory.Group("ThreatSpawns",mall);
-            foreach(var (f,x,z) in new[]{(0,2,3),(0,2,7),(0,12,5),(0,7,10),(1,2,6),(1,7,1),(1,12,4),(1,10,10),
-                (2,2,6),(2,6,2),(2,5,10),(2,12,5),(-1,10,6),(-1,12,7)}) {
+            foreach(var (f,x,z) in ThreatSpawnCells) {
                 var c=new Vector2Int(x,z);if(ZoneAt(c,f)==null)throw new System.InvalidOperationException($"Threat point over void: {f}/{x}/{z}");
                 var p=GreyboxFactory.Group($"ThreatSpawn_{f}_{x}_{z}",points);p.position=TileTopCenter(c,f);p.gameObject.AddComponent<Abandoned.Threats.ThreatSpawnPoint>();
             }

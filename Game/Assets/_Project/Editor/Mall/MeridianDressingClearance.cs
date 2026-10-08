@@ -83,7 +83,7 @@ namespace Abandoned.EditorTools
             if (occupied.Any(b => b.Intersects(separation))) return false;
             StructuralSection support = Support(mall, cell, ceiling ? floor + 1 : floor);
             if (support == null) return false;
-            Prop(key, parent, position, rotation, support, actualScale);
+            Prop(key, parent, position, rotation, support, actualScale, solid: !ceiling);
             occupied.Add(bounds);
             counts[key] = counts.TryGetValue(key, out int count) ? count + 1 : 1;
             floorCounts[floor + 1]++;
@@ -106,6 +106,8 @@ namespace Abandoned.EditorTools
             // The balcony ring is exactly four metres wide; furniture belongs in its wider corner platforms.
             if (MallLayout.Ring.Contains(cell) && !MallLayout.Atrium.Contains(cell)) return false;
             if (MallLayout.Doors.Any(d => d.Floor == floor && (d.A == cell || d.B == cell))) return false;
+            // Fitted furniture is solid: on a spawn tile it would bury the monster and cut its NavMesh.
+            if (MallPopulator.ThreatSpawnCells.Any(s => s.floor == floor && s.x == cell.x && s.z == cell.y)) return false;
             return !MallLayout.AllFlights.Any(f => (f.Floor == floor || f.Floor + 1 == floor)
                 && (f.Tiles.Contains(cell) || cell == f.Start - f.Dir || cell == f.Start + f.Dir * 2));
         }
