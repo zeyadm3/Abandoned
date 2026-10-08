@@ -17,7 +17,7 @@ namespace Abandoned.UI
     {
         private static readonly string[] Memos =
         {
-            "COMPANY MEMO: Early Access. Report problems from the pause menu; the boss reads them. Eventually.",
+            "COMPANY MEMO: Very early access. Feedback and feature wishes: " + EarlyAccessNotice.FeedbackEmail,
             "COMPANY MEMO: Hard hats are mandatory. They do nothing against a floor, but they're mandatory.",
             "COMPANY MEMO: The truck leaves when it leaves. Be in it.",
             "COMPANY MEMO: If it's worth money, it's ours. If it's on fire, it's yours.",
@@ -73,7 +73,9 @@ namespace Abandoned.UI
             MenuKit.Button(links, "Open logs", Launch.OpenLogFolder, small: true);
 
             memo = MenuKit.Text(Root, "", "main__memo");
-            MenuKit.Text(Root, $"v{VersionInfo.Display}", "footer");
+            MenuKit.Text(Root, $"v{VersionInfo.Display}  -  {EarlyAccessNotice.Tag}", "footer");
+            // Last, so it sits over everything until OK (friends-and-family build, 2026-10-08).
+            new EarlyAccessNotice(Root, menu.TitleFont);
         }
 
         /// <summary>Every frame while showing: the last game's notice, the memo, the logo's signal.</summary>

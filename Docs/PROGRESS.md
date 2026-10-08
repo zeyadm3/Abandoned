@@ -4,6 +4,14 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.4b.EEA — exclusive early access build for friends (2026-10-08)
+
+A shareable Mac + Windows build for friends to pass around. Every launch shows an EXCLUSIVE EARLY ACCESS box over
+the title screen ("very early access - gameplay work in progress", feedback/feature requests to
+zeyad.m.a.2005@gmail.com, with Email / Copy email / OK). The menu footer carries the same tag, one company memo
+names the address, and LaunchConfig's Feedback link is a mailto, so the menu's Feedback button appears.
+Pipeline: compile, rebuild-horror, commit, build (user-requested); zips copied to the Desktop.
+
 ## 0.13.4b — monster songs only on your floor while it approaches; no Collector tip (2026-10-08)
 
 Written, not compiled or run. A monster's song now plays only while it is on the listener's floor (feet within

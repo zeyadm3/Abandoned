@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 7428792532660677225}
   - component: {fileID: 203183300510853369}
   - component: {fileID: 503154267516346807}
-  - component: {fileID: 7136322775372529206}
-  - component: {fileID: 675120366037675258}
+  - component: {fileID: 1502069878323228022}
+  - component: {fileID: 780350480777788148}
   m_Layer: 0
   m_Name: Crawlers
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5262821715188846800}
+  - {fileID: 8426364266252449495}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2247274664406556045
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.CrawlerSwarm
   ShowTopMostFoldoutHeaderGroup: 1
   definition: {fileID: 11400000, guid: f6e3ffe8b146044f0b95480e0f02e3fe, type: 2}
---- !u!114 &7136322775372529206
+--- !u!114 &1502069878323228022
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,8 +184,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 3662921689737327965}
---- !u!114 &675120366037675258
+  animator: {fileID: 7450510872568689934}
+--- !u!114 &780350480777788148
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5284b08e2ae44303a72982ce7e1e546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatHorrorAudio
---- !u!1 &8615552891680828735
+--- !u!1 &6952357307697660870
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,7 +205,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5262821715188846800}
+  - component: {fileID: 8426364266252449495}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -213,29 +213,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5262821715188846800
+--- !u!4 &8426364266252449495
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8615552891680828735}
+  m_GameObject: {fileID: 6952357307697660870}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7220786472857644839}
+  - {fileID: 3568439692868824948}
   m_Father: {fileID: 3465821480633852065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &7187703736404101324
+--- !u!1001 &3895364655360821407
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 5262821715188846800}
+    m_TransformParent: {fileID: 8426364266252449495}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 60dc08fce59d5412e88f1d5992f3dafb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -290,13 +290,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60dc08fce59d5412e88f1d5992f3dafb, type: 3}
---- !u!95 &3662921689737327965 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 60dc08fce59d5412e88f1d5992f3dafb, type: 3}
-  m_PrefabInstance: {fileID: 7187703736404101324}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &7220786472857644839 stripped
+--- !u!4 &3568439692868824948 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 60dc08fce59d5412e88f1d5992f3dafb, type: 3}
-  m_PrefabInstance: {fileID: 7187703736404101324}
+  m_PrefabInstance: {fileID: 3895364655360821407}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7450510872568689934 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 60dc08fce59d5412e88f1d5992f3dafb, type: 3}
+  m_PrefabInstance: {fileID: 3895364655360821407}
   m_PrefabAsset: {fileID: 0}
