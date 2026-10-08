@@ -66,6 +66,9 @@ namespace Abandoned.Player
                     float distance = Vector3.Distance(threat.transform.position, player.transform.position);
                     threatPressure = Mathf.Max(threatPressure, 1f - Mathf.Clamp01(distance / config.ThreatHeartbeatRange));
                 }
+                // A Stalker working up to a rush on this player is felt before it is seen (2026-10-09).
+                Stalker stalker = Stalker.PressingOn(player);
+                if (stalker != null) threatPressure = Mathf.Max(threatPressure, stalker.Dread01);
             }
             float darkness = equipment == null || !equipment.LightOn ? config.DarknessFear.x : config.DarknessFear.y;
             float pressure = Mathf.Max(low, threatPressure, darkness, player.Motor.IsSprinting ? config.SprintFear : 0f);

@@ -25,6 +25,8 @@ namespace Abandoned.Threats
         public abstract string DisplayName { get; }
         /// <summary>The death screen's cause line when this kills you (UI step 3).</summary>
         public virtual string DeathLine => $"The {DisplayName} got you.";
+        /// <summary>Host: the job's THREAT level scales every non-lethal hit (<see cref="ThreatPacingConfig.LevelDamageScale"/>).</summary>
+        public static float ContractDamageScale { get; set; } = 1f;
         public float SpeedScale { get; set; } = 1f;
         public float HearingScale { get; set; } = 1f;
         public int Kills { get; protected set; }
@@ -64,7 +66,7 @@ namespace Abandoned.Threats
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;
                 if (Sheltered(at)) continue;
                 if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, WallMask, QueryTriggerInteraction.Ignore)) continue;
-                float damage = lethal || definition != null && definition.LethalContact ? p.MaxHealth : (definition != null ? definition.Damage : fallbackDamage) * Mathf.Min(Aggression, 1.4f);
+                float damage = lethal || definition != null && definition.LethalContact ? p.MaxHealth : (definition != null ? definition.Damage : fallbackDamage) * Mathf.Min(Aggression, 1.4f) * ContractDamageScale;
                 p.DealDamage(damage, DeathLine);
                 if (p.IsDead) Kills++;
                 nextAttack = Time.time + (definition != null ? definition.AttackCooldown : 2.5f) / Mathf.Min(Aggression, 1.6f);
@@ -113,6 +115,10 @@ namespace Abandoned.Threats
 #endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetThreats() => Spawned.Clear();
+        private static void ResetThreats()
+        {
+            Spawned.Clear();
+            ContractDamageScale = 1f;
+        }
     }
 }

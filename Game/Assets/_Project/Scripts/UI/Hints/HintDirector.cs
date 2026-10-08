@@ -102,7 +102,7 @@ namespace Abandoned.UI
             return null;
         }
 
-        private static HintId? Unseen(HintId id) => Hints.Seen(id) ? null : id;
+        private static HintId? Unseen(HintId id) => Hints.Seen(id) || FirstDay.Covers(id) ? null : id;
 
         private ContractBoard board;
         private AnsweringMachine machine;

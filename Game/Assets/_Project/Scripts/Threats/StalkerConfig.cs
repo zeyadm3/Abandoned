@@ -10,7 +10,7 @@ namespace Abandoned.Threats
     {
         [Tooltip("It keeps about this far (m) from its target.")]
         [field: SerializeField, Range(3f, 30f)] public float FollowDistance { get; private set; } = 11f;
-        [field: SerializeField, Range(0.5f, 5f)] public float FollowSpeed { get; private set; } = 2.4f;
+        [field: SerializeField, Range(0.5f, 5f)] public float FollowSpeed { get; private set; } = 3.4f;
         [field: SerializeField, Range(2f, 12f)] public float RushSpeed { get; private set; } = 6.5f;
         [Tooltip("A target with no teammate within this (m) is isolated.")]
         [field: SerializeField, Range(2f, 30f)] public float IsolationRadius { get; private set; } = 9f;

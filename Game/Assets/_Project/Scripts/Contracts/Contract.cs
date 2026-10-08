@@ -14,7 +14,7 @@ namespace Abandoned.Contracts
         public int Seed, Quota, LootMin, LootMax;
         public float Stability, WindowSeconds, PayoutBonus;
         public bool PowerOff;
-        /// <summary>LOW / MEDIUM / HIGH from stability and modifiers, for the board.</summary>
+        /// <summary>LOW / MEDIUM / HIGH from stability, power, window and modifiers. It drives the job's monsters (ThreatDirector).</summary>
         public byte ThreatLevel;
 
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
@@ -47,5 +47,13 @@ namespace Abandoned.Contracts
         public bool Equals(Contract o) => Seed == o.Seed && Scene == o.Scene && ModifierId == o.ModifierId && Quota == o.Quota;
 
         public static string ThreatName(byte level) => level switch { 0 => "LOW", 1 => "MEDIUM", _ => "HIGH" };
+
+        /// <summary>What the level does to the job's monsters (ThreatPacingConfig), in the board's words.</summary>
+        public static string ThreatNote(byte level) => level switch
+        {
+            0 => "fewer monsters, slower to arrive, weaker hits",
+            1 => "monsters arrive steadily",
+            _ => "more monsters, sooner, harder hits",
+        };
     }
 }

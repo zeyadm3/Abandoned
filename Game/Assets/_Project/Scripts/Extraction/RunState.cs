@@ -68,11 +68,18 @@ namespace Abandoned.Extraction
             public readonly bool Armored;
             /// <summary>Sealed job (M10.4): every shutter starts down.</summary>
             public readonly bool Sealed;
+            /// <summary>The board's THREAT level minus one (-1 LOW, 0 MEDIUM, +1 HIGH), so a run with no contract is MEDIUM.</summary>
+            public readonly int ThreatShift;
+            /// <summary>The company's very first job: the first monster holds off while the crew learns the loop.</summary>
+            public readonly bool FirstJob;
+            public int ThreatLevel => Mathf.Clamp(ThreatShift + 1, 0, 2);
 
             public RunTerms(int quota, float window, float bonus, bool powerOff, bool night = false, bool storm = false,
                 int extraThreats = 0, float hearing = 1f, float decay = 1f, float cargoMultiplier = 1f, float honkSeconds = 0f,
-                bool armored = false, bool isSealed = false)
+                bool armored = false, bool isSealed = false, int threatLevel = 1, bool firstJob = false)
             {
+                ThreatShift = threatLevel - 1;
+                FirstJob = firstJob;
                 Sealed = isSealed;
                 CargoMultiplier = cargoMultiplier;
                 HonkSeconds = honkSeconds;

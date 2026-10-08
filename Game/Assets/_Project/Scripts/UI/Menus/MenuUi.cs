@@ -144,6 +144,7 @@ namespace Abandoned.UI
             if (GetComponent<HorrorRunHud>() == null) gameObject.AddComponent<HorrorRunHud>();
             if (GetComponent<CompassHud>() == null) gameObject.AddComponent<CompassHud>();
             if (GetComponent<ThreatFilesScreen>() == null) gameObject.AddComponent<ThreatFilesScreen>();
+            if (GetComponent<FirstDayGuide>() == null) gameObject.AddComponent<FirstDayGuide>();
             if (GetComponent<Threats.ThreatFilesTracker>() == null) gameObject.AddComponent<Threats.ThreatFilesTracker>();
         }
 

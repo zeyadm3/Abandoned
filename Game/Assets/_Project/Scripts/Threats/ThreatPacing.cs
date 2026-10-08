@@ -108,7 +108,7 @@ namespace Abandoned.Threats
             if (!DebugView.Visible || director == null || !GameAuthority.IsHost || RunState.Current == null) return;
             float next = director.NextArrivalIn;
             GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
-                $"THREATS {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drifting {drifting}");
+                $"THREATS {Contracts.Contract.ThreatName((byte)RunState.Current.Terms.ThreatLevel)} {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drifting {drifting}");
         }
 #endif
 

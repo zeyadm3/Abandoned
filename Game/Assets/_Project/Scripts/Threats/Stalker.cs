@@ -21,13 +21,31 @@ namespace Abandoned.Threats
         private NavMeshAgent agent;
         private StalkerBrain brain;
         private NetworkPlayer target;
-        private float nextRetarget, nextBreath;
+        private float nextRetarget, nextBreath, nextHalt;
+        // Replicated so the prey's own machine can warn them (2026-10-09: testers never understood it): who it
+        // is after, and how close to a rush it is in sixteenths (changes a couple of times a second, not every frame).
+        private const int DreadSteps = 16;
+        private readonly NetworkVariable<ulong> prey = new(ulong.MaxValue);
+        private readonly NetworkVariable<byte> dread = new();
+        private StalkerState heardState;
 
         public override string DisplayName => "Stalker";
         public override string DeathLine => "You looked away from the Stalker.";
         public StalkerState State => state.Value;
         public override ThreatMotion DesiredMotion => State == StalkerState.Frozen ? ThreatMotion.Special : State == StalkerState.Rush ? ThreatMotion.Chase : ThreatMotion.Idle;
         public NetworkPlayer Target => target;
+        /// <summary>Every machine: 0 = calm, 1 = about to rush (or rushing).</summary>
+        public float Dread01 => state.Value == StalkerState.Rush ? 1f : dread.Value / (float)DreadSteps;
+        public bool Hunts(NetworkPlayer p) => p != null && prey.Value == p.OwnerClientId;
+
+        /// <summary>Every machine: the Stalker working up to a rush on this player (the nearest to rushing), or null.</summary>
+        public static Stalker PressingOn(NetworkPlayer p)
+        {
+            Stalker worst = null;
+            foreach (Threat t in All)
+                if (t is Stalker s && s.IsSpawned && s.Hunts(p) && (worst == null || s.Dread01 > worst.Dread01)) worst = s;
+            return worst;
+        }
         public StalkerBrain Brain => brain;
 
         protected override void Awake()
@@ -60,6 +78,7 @@ namespace Abandoned.Threats
             if (target == null || !active)
             {
                 agent.isStopped = true;
+                if (prey.Value != ulong.MaxValue) prey.Value = ulong.MaxValue;
                 return;
             }
 
@@ -68,6 +87,9 @@ namespace Abandoned.Threats
             // Dread only builds while it has eyes on its prey: behind walls or a floor away it just follows.
             brain.Tick(IsWatchedBy(target), IsIsolated(target) && Sees(target), Time.deltaTime * Aggression);
             state.Value = brain.State;
+            byte build = (byte)Mathf.RoundToInt(Mathf.Clamp01(brain.Dread / config.RushAfter) * DreadSteps);
+            if (dread.Value != build) dread.Value = build;
+            if (prey.Value != target.OwnerClientId) prey.Value = target.OwnerClientId;
             switch (brain.State)
             {
                 case StalkerState.Frozen:
@@ -132,9 +154,24 @@ namespace Abandoned.Threats
         // a creak must only ever mean the floor (QA B-14).
         private void Breathe()
         {
+            StalkerState now = state.Value;
+            if (now != heardState)
+            {
+                // The two moments worth hearing: it breaks into a rush, and it stops dead because someone looked.
+                if (now == StalkerState.Rush)
+                    Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Scream, transform.position + Vector3.up * 1.8f, 0.85f, true, 40f);
+                else if (now == StalkerState.Frozen && Time.time >= nextHalt)
+                {
+                    nextHalt = Time.time + 3f;
+                    Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Knock, transform.position + Vector3.up * 1.2f, 0.5f, true, 30f);
+                }
+                heardState = now;
+            }
             if (Time.time < nextBreath) return;
-            nextBreath = Time.time + (state.Value == StalkerState.Rush ? 0.6f : 2.2f);
-            Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Breathing, transform.position + Vector3.up * 1.8f, 0.35f, true, 18f);
+            // The breathing quickens and swells as it works up to a rush.
+            float worked = Dread01;
+            nextBreath = Time.time + Mathf.Lerp(2.2f, 0.6f, worked);
+            Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Breathing, transform.position + Vector3.up * 1.8f, Mathf.Lerp(0.35f, 0.8f, worked), true, 18f);
         }
     }
 }

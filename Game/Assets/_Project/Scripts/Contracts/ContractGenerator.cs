@@ -45,7 +45,7 @@ namespace Abandoned.Contracts
             bool powerOff = (m != null && m.PowerOff) || random.NextDouble() < c.PowerOffChance;
             float bonus = Lerp(c.BonusMin, c.BonusMax, random) + (m != null ? m.BonusDelta : 0f);
             int seed = random.Next(1, int.MaxValue);
-            float risk = (1f - stability) * 2f + (powerOff ? 0.4f : 0f) + (window < 720f ? 0.3f : 0f);
+            float risk = (1f - stability) * 2f + (powerOff ? 0.4f : 0f) + (window < 720f ? 0.3f : 0f) + (m != null ? m.ExtraThreats * 0.35f : 0f);
             return new Contract
             {
                 Location = MallLocation,

@@ -54,7 +54,7 @@ namespace Abandoned.Threats
             ThreatKind.BlindOne => new Entry("Blind One",
                 "Tall and eyeless. It clicks as it walks, and the clicking speeds up when it is hunting.",
                 "It cannot see. It wanders until it hears something, walks to the sound and stands there listening. " +
-                "One loud noise, or several in a row, and it runs at the source. Two hits kill.",
+                "One loud noise, or several in a row, and it runs at the source. A couple of hits kill.",
                 "Crouch, don't sprint, and don't drop or throw things near it. If it is close, stop and stay quiet: " +
                 "it only strikes what it has just heard. A noise somewhere else gives it somewhere else to go."),
             ThreatKind.Stalker => new Entry("Stalker",
@@ -62,7 +62,7 @@ namespace Abandoned.Threats
                 "It picks whoever is furthest from the crew and follows about ten metres back. It cannot move while " +
                 "that person is looking at it. If they are alone, in its sight and facing away for a few seconds, it rushes.",
                 "Stay within a few steps of a teammate and it never works up to a rush. Alone, turn and look at it often: " +
-                "every look resets it, and even a rush stops dead if you turn round in time. Walls between you buy time."),
+                "every look resets it, and even a rush stops dead if you turn round in time. Your heartbeat and its breathing quicken as it works up to it, and the compass marks where it is."),
             ThreatKind.Collector => new Entry("Collector",
                 "Small, quick, and not interested in you.",
                 "It never attacks. It takes loot nobody is standing near and carries it to one nest, far from the truck, " +

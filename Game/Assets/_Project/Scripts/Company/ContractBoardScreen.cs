@@ -73,7 +73,7 @@ namespace Abandoned.Company
                 Fact(sheet, "QUOTA", $"${company.QuotaFor(c):N0}", true, crew < 4 ? $"scaled for a crew of {crew}" : null);
                 Fact(sheet, "BONUS", $"+{c.PayoutBonus:P0}", false);
                 Fact(sheet, "LOOT", $"${c.LootMin / 1000}k - ${c.LootMax / 1000}k", false);
-                Fact(sheet, "THREAT", Contract.ThreatName(c.ThreatLevel), c.ThreatLevel >= 2);
+                Fact(sheet, "THREAT", Contract.ThreatName(c.ThreatLevel), c.ThreatLevel >= 2, Contract.ThreatNote(c.ThreatLevel));
                 Fact(sheet, "STABILITY", $"{c.Stability:P0}", c.Stability < 0.6f);
                 Fact(sheet, "POWER", c.PowerOff ? "OFF" : "ON", c.PowerOff);
                 Fact(sheet, "WINDOW", $"{c.WindowSeconds / 60f:0} MIN", false);

@@ -109,7 +109,7 @@ namespace Abandoned.UI
                 Slider scale = MenuKit.Range(body, "UI scale", GameSettings.MinUiScale, GameSettings.MaxUiScale, GameSettings.UiScale, "0.00x", _ => { });
                 scale.RegisterCallback<PointerCaptureOutEvent>(_ => GameSettings.UiScale = Mathf.Round(scale.value * 20f) / 20f);
                 Note(scale, "Menus and HUD size. Applies when you let go of the slider.");
-                Note(Toggle("Tips", Hints.Enabled, v => Hints.Enabled = v), "Short first-time tips during play.");
+                Note(Toggle("Tips", Hints.Enabled, v => Hints.Enabled = v), "The guided first job and short first-time tips during play.");
                 VisualElement again = Row("Seen tips");
                 MenuKit.Button(again, "Show them again", Hints.ResetSeen, small: true);
             }, () =>

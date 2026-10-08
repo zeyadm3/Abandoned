@@ -36,6 +36,22 @@ namespace Abandoned.Threats
         [field: SerializeField, Min(10f)] public float RelocateDistance { get; private set; } = 45f;
         [field: SerializeField, Min(10f)] public float RelocateAfter { get; private set; } = 120f;
 
+        [Header("Contract threat level: LOW / MEDIUM / HIGH on the board (2026-10-09)")]
+        [Tooltip("Multiplies the seconds between arrivals, per level.")]
+        [field: SerializeField] public float[] LevelGapScale { get; private set; } = { 1.5f, 1f, 0.7f };
+        [Tooltip("Multiplies the opening delay, per level.")]
+        [field: SerializeField] public float[] LevelOpeningScale { get; private set; } = { 1.8f, 1f, 0.7f };
+        [Tooltip("Added to the alive cap, per level.")]
+        [field: SerializeField] public int[] LevelAliveBonus { get; private set; } = { -1, 0, 1 };
+        [Tooltip("Extra monsters that arrive with the first one, per level.")]
+        [field: SerializeField] public int[] LevelOpeningExtras { get; private set; } = { 0, 0, 1 };
+        [Tooltip("Multiplies non-lethal monster damage, per level.")]
+        [field: SerializeField] public float[] LevelDamageScale { get; private set; } = { 0.75f, 1f, 1.2f };
+        [Tooltip("On LOW the first monster is never a one-touch killer; it can still arrive later.")]
+        [field: SerializeField] public bool LowSparesLethalOpener { get; private set; } = true;
+        [Tooltip("A company's very first job: the first monster waits at least this long (s).")]
+        [field: SerializeField, Min(0f)] public float FirstJobOpeningDelay { get; private set; } = 150f;
+
         private static ThreatPacingConfig current;
 
         /// <summary>The project's asset, or code defaults when it hasn't been created yet.</summary>
@@ -51,6 +67,23 @@ namespace Abandoned.Threats
         }
 
         public int AliveCap(int crew) => Mathf.Clamp(BaseAlive + PerPlayer * Mathf.Max(1, crew), 1, MaxAlive);
+
+        public int AliveCap(int crew, int level) =>
+            Mathf.Clamp(BaseAlive + PerPlayer * Mathf.Max(1, crew) + At(LevelAliveBonus, level, 0), 1, MaxAlive);
+
+        public float GapScale(int level) => Mathf.Max(0.1f, At(LevelGapScale, level, 1f));
+        public float DamageScale(int level) => Mathf.Max(0.1f, At(LevelDamageScale, level, 1f));
+        public int OpeningExtras(int level) => Mathf.Max(0, At(LevelOpeningExtras, level, 0));
+
+        public float OpeningDelayFor(int level, bool firstJob)
+        {
+            float delay = OpeningDelay * Mathf.Max(0.1f, At(LevelOpeningScale, level, 1f));
+            return firstJob ? Mathf.Max(delay, FirstJobOpeningDelay) : delay;
+        }
+
+        // An asset saved before these lists existed, or one trimmed by hand, falls back to "no change".
+        private static T At<T>(T[] values, int level, T fallback) =>
+            values != null && level >= 0 && level < values.Length ? values[level] : fallback;
 
         public float NextGap(System.Random random)
         {

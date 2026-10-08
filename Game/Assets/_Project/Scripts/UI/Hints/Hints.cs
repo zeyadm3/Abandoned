@@ -25,6 +25,7 @@ namespace Abandoned.UI
         public static void ResetSeen()
         {
             foreach (HintId id in Enum.GetValues(typeof(HintId))) Prefs.Delete(SeenPrefix + id);
+            FirstDay.Reset(); // the guided first job replays too
             Prefs.Save();
         }
 

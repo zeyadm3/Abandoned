@@ -4,6 +4,19 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.5b.EEA — guided first job, real THREAT level, Stalker tell (2026-10-09)
+
+Script-only, plus one hand-edited value in Data/Threats/StalkerConfig.asset. Nothing was compiled, rebuilt or
+played after these edits; the user tests it. No scene or prefab changed, so no rebuild is needed.
+- Guided first job (UI/Hints/FirstDayGuide + FirstDay): ten steps from the contract board to the lever, each ending
+  when the player does it. Once per player; "Show them again" in Settings replays it. The first monster of a
+  company's first job waits 150 s.
+- THREAT on the board now sets how soon, how often, how many and how hard (ThreatPacingConfig per-level lists;
+  the board prints what the level means). F1 shows the level on the THREATS line.
+- Stalker: faster follow (3.4), replicated prey/dread, quickening breath, rush scream, freeze knock, the prey's
+  heartbeat, and a red compass mark at its bearing.
+- Still open: a HUD-only size setting; Stalker damage (85, not a kill on LOW/MEDIUM) left for the user to judge.
+
 ## 0.13.5.EEA — tester feedback pass (2026-10-09)
 
 From a friend's notes on 0.13.4b.EEA. Nothing here has been play-tested; the user tests it all.

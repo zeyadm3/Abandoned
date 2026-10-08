@@ -105,6 +105,17 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, 0.13.5b; written, untested):
+  - The board's THREAT level drives the job's monsters. Contract.ThreatLevel rides in RunTerms (ThreatShift, so a run
+    with no contract is MEDIUM); per-level tunables live in ThreatPacingConfig (gap x1.5/1/0.7, opening delay
+    x1.8/1/0.7, alive cap -1/0/+1, +1 opening monster on HIGH, non-lethal damage x0.75/1/1.2 via
+    Threat.ContractDamageScale; LOW never opens with a one-touch killer). Modifiers' ExtraThreats now count in the label.
+  - Guided first job: FirstDayGuide (session object, local, once per player, follows the Tips setting, off in batch
+    mode) walks board > van > flashlight > scan > pick up > truck > floors > noise > quota > lever. While it shows, the
+    HqBoard/HqVan/RunGoal/PickUp tips stay quiet. A company's first job (Runs == 0) delays the first monster to 150 s.
+  - Stalker: follow speed 2.4 -> 3.4 (StalkerConfig.asset edited by hand; damage unchanged). Its prey and dread are
+    replicated (sixteenths); breathing quickens with dread, a scream marks the rush and a knock marks the freeze, the
+    prey's own heartbeat rises with it, and the compass shows a red mark at its bearing from 35 % dread.
 - 2026-10-09 (user): the salvage company in the fiction is **Abandoned Salvaging** (CompanySave.DefaultName), named after
   the game. Never name anything in the fiction after the user or any real person. Old saves carrying "Zeyad Salvage Co."
   are renamed on load. The studio/publisher "Zeyad Games" (credits, Player Settings, save folder) is a separate thing

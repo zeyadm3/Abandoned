@@ -1935,3 +1935,17 @@
 }
 /* The scan's haul read-out sits under the compass instead of on it. */
 .run-haul { top: 44px; }
+
+/* ---- 0.13.5b: the Stalker's mark on the compass and the guided first job ---- */
+
+.compass__threat {
+    position: absolute;
+    left: 50%; top: 2px; bottom: 2px;
+    width: 4px;
+    margin-left: -2px;
+    background-color: var(--c-bad);
+}
+
+/* Under the tip box (same column), so a tip and the guide never cover each other. */
+.first-day { top: 300px; width: 340px; }
+.first-day .segments { height: 4px; margin-top: 8px; }

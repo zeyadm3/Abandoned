@@ -1,5 +1,6 @@
 using Abandoned.Extraction;
 using Abandoned.Networking;
+using Abandoned.Threats;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,9 +16,12 @@ namespace Abandoned.UI
         // The tape runs from -180 to 540 degrees, so any heading has its 90 degrees of marks on both sides.
         private const float PixelsPerDegree = 2f, Width = 360f;
         private const int TapeStart = -180, TapeEnd = 540, Step = 15;
+        // A Stalker past this much of its build-up shows as a red mark at its bearing; the strip shows 90 degrees
+        // either side, so a mark pinned at an edge means "behind you, turn this way".
+        private const float WarnFrom = 0.35f, EdgeDegrees = 86f;
         private static readonly string[] Points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
 
-        private VisualElement strip, tape;
+        private VisualElement strip, tape, threat;
 
         private void Update()
         {
@@ -36,6 +40,15 @@ namespace Abandoned.UI
             float heading = Mathf.Repeat(view.transform.eulerAngles.y, 360f);
             // Translate, not left: sliding the tape every frame must not re-run layout.
             tape.style.translate = new Translate(Width * 0.5f - (heading - TapeStart) * PixelsPerDegree, 0f);
+
+            // Looking at a Stalker is the counter, so tell its prey which way to look.
+            Stalker stalker = Stalker.PressingOn(me);
+            bool warn = stalker != null && stalker.Dread01 >= WarnFrom;
+            MenuKit.Show(threat, warn);
+            if (!warn) return;
+            Vector3 to = stalker.transform.position - view.transform.position;
+            float off = Mathf.Clamp(Mathf.DeltaAngle(heading, Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg), -EdgeDegrees, EdgeDegrees);
+            threat.style.translate = new Translate(off * PixelsPerDegree, 0f);
         }
 
         private void Build()
@@ -60,6 +73,10 @@ namespace Abandoned.UI
             var needle = new VisualElement { pickingMode = PickingMode.Ignore };
             needle.AddToClassList("compass__needle");
             strip.Add(needle);
+            threat = new VisualElement { pickingMode = PickingMode.Ignore };
+            threat.AddToClassList("compass__threat");
+            strip.Add(threat);
+            MenuKit.Show(threat, false);
         }
 
         private void OnDisable()

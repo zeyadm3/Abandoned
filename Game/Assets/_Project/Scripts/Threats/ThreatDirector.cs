@@ -48,7 +48,8 @@ namespace Abandoned.Threats
         public float NextArrivalIn => spawnAt != 0f ? -1f : Mathf.Max(0f, nextArrival - Time.time);
         /// <summary>Host: monsters (not the final hunter) alive now, and how many the crew size allows.</summary>
         public int Alive => Threat.All.Count(t => t != null && !(t is LastHunter));
-        public int AliveCap => Pacing.AliveCap(NetworkPlayer.All.Count(p => p != null && p.NetworkManager == Manager));
+        public int AliveCap => Pacing.AliveCap(NetworkPlayer.All.Count(p => p != null && p.NetworkManager == Manager), Level);
+        private static int Level => RunState.Current != null ? RunState.Current.Terms.ThreatLevel : 1;
         private void OnDisable() { if (Current == this) Current = null; RunDirector.RunStarted -= OnRunStarted; }
         private NetworkManager Manager => NetworkBootstrap.Resolve(bootstrap) is NetworkBootstrap b ? b.Manager : null;
         private bool IsHost => Manager != null && Manager.IsServer && Manager.IsListening;
@@ -58,17 +59,20 @@ namespace Abandoned.Threats
             RunState run = RunState.Current;
             if (spawnAt < 0f && run != null && run.IsSpawned) Schedule(run.State.Seed);
             if (run == null || run.State.Phase != RunPhase.Running) return;
-            if (spawnAt > 0f && Time.time >= spawnAt)
+            // The board's THREAT level is real (2026-10-09): how soon, how often, how many and how hard.
+            int level = run.Terms.ThreatLevel;
+            Threat.ContractDamageScale = Pacing.DamageScale(level);
+            if (spawnAt > 0f && Time.time >= spawnAt + Pacing.OpeningDelayFor(level, run.Terms.FirstJob) - Pacing.OpeningDelay)
             {
                 spawnAt = 0f; Spawn(Opening(runSeed));
-                for (int i = 0; i < run.Terms.ExtraThreats; i++) SpawnExtra();
-                nextArrival = Time.time + Pacing.NextGap(arrivals);
+                for (int i = 0; i < run.Terms.ExtraThreats + Pacing.OpeningExtras(level); i++) SpawnExtra();
+                nextArrival = Time.time + Pacing.NextGap(arrivals) * Pacing.GapScale(level);
             }
             if (spawnAt != 0f) return;
             // Steady arrivals all job long (the danger tiers stop at the max level; this doesn't).
             if (Time.time >= nextArrival)
             {
-                nextArrival = Time.time + Pacing.NextGap(arrivals);
+                nextArrival = Time.time + Pacing.NextGap(arrivals) * Pacing.GapScale(level);
                 SpawnExtra();
             }
             while (spawnedTier < run.State.Danger)
@@ -92,17 +96,25 @@ namespace Abandoned.Threats
         public int Opening(int seed)
         {
             if (roster.Length == 0) return -1;
-            float total = openingWeights.Sum();
+            float total = 0f;
+            for (int i = 0; i < roster.Length; i++) total += OpeningWeight(i);
             if (total <= 0f) return -1;
             double roll = new System.Random(seed).NextDouble() * total;
             for (int i = 0; i < roster.Length; i++)
             {
-                float weight = i < openingWeights.Length ? openingWeights[i] : 0f;
+                float weight = OpeningWeight(i);
                 if (weight <= 0f) continue;
                 roll -= weight;
                 if (roll <= 0) return i;
             }
             return -1;
+        }
+        // A LOW job never opens with a one-touch killer (the Hunter); it can still arrive later.
+        private float OpeningWeight(int index)
+        {
+            float weight = index < openingWeights.Length ? openingWeights[index] : 0f;
+            bool lethal = catalog != null && index < catalog.Definitions.Length && catalog.Definitions[index] != null && catalog.Definitions[index].LethalContact;
+            return lethal && Level == 0 && Pacing.LowSparesLethalOpener ? 0f : weight;
         }
         public Threat SpawnExtra()
         {
