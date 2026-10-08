@@ -117,7 +117,8 @@ namespace Abandoned.Audio
             {
                 SurfaceMaterial.Wood => Thud("Step_Wood", 0.12f, 160f, 0.45f, 45f),
                 SurfaceMaterial.Metal => Tones("Step_Metal", 0.2f, 22f, 0.3f, 880f, 1460f),
-                SurfaceMaterial.Dirt or SurfaceMaterial.Fabric => Thud("Step_Soft", 0.1f, 0f, 0.35f, 55f),
+                SurfaceMaterial.Dirt or SurfaceMaterial.Fabric or SurfaceMaterial.Carpet => Thud("Step_Soft", 0.1f, 0f, 0.35f, 55f),
+                SurfaceMaterial.Water => WaterSurfaceAudio.Step(),
                 SurfaceMaterial.Glass => Tones("Step_Glass", 0.15f, 30f, 0.4f, 3100f, 4400f),
                 _ => Thud("Step_Hard", 0.08f, 0f, 0.6f, 70f),
             };
@@ -133,8 +134,9 @@ namespace Abandoned.Audio
                 SurfaceMaterial.Glass => Tones("Impact_Glass", 0.7f, 9f, 0.05f, 2400f, 3710f, 5230f),
                 SurfaceMaterial.Metal => Tones("Impact_Metal", 0.9f, 5f, 0.15f, 420f, 1130f, 1870f, 2650f),
                 SurfaceMaterial.Wood => Thud("Impact_Wood", 0.18f, 180f, 0.6f, 25f),
-                SurfaceMaterial.Stone or SurfaceMaterial.Concrete => Thud("Impact_Stone", 0.25f, 90f, 0.8f, 18f),
-                SurfaceMaterial.Paper or SurfaceMaterial.Fabric => Thud("Impact_Soft", 0.1f, 0f, 0.4f, 40f),
+                SurfaceMaterial.Stone or SurfaceMaterial.Concrete or SurfaceMaterial.Terrazzo or SurfaceMaterial.Tile => Thud("Impact_Stone", 0.25f, 90f, 0.8f, 18f),
+                SurfaceMaterial.Paper or SurfaceMaterial.Fabric or SurfaceMaterial.Carpet => Thud("Impact_Soft", 0.1f, 0f, 0.4f, 40f),
+                SurfaceMaterial.Water => WaterSurfaceAudio.Impact(),
                 _ => Thud("Impact_Plastic", 0.12f, 600f, 0.5f, 35f),
             };
             ImpactClips[material] = clip;

@@ -35,6 +35,9 @@ namespace Abandoned.EditorTools
                 if (section.Type != SectionType.Stair) continue;
                 checkedFlights++;
                 Transform flight = section.transform;
+                var dimensions = flight.GetComponent<SectionFlightGeometry>();
+                float run = dimensions != null ? dimensions.Length : MallFlights.Length;
+                float rise = dimensions != null ? dimensions.Rise : MallFlights.Rise;
                 var found = new SortedSet<string>();
                 Collider ramp = flight.Find(MallFlights.RampName)?.GetComponent<Collider>();
                 if (ramp == null || !ramp.enabled || ramp.isTrigger || ramp.gameObject.layer == GameLayers.DebrisLayer)
@@ -42,8 +45,8 @@ namespace Abandoned.EditorTools
 
                 for (int i = 0; i <= Samples; i++)
                 {
-                    float d = Mathf.Lerp(-Approach, MallFlights.Length + Approach, i / (float)Samples);
-                    float expected = Mathf.Clamp01(d / MallFlights.Length) * MallFlights.Rise;
+                    float d = Mathf.Lerp(-Approach, run + Approach, i / (float)Samples);
+                    float expected = Mathf.Clamp01(d / run) * rise;
                     Vector3 at = flight.TransformPoint(new Vector3(0f, expected, d));
                     if (!Physics.Raycast(at + Vector3.up * 1.2f, Vector3.down, out RaycastHit hit, 2.4f, mask, QueryTriggerInteraction.Ignore))
                     {
@@ -60,7 +63,7 @@ namespace Abandoned.EditorTools
                             found.Add($"{Path(blocker)} blocks a standing player at {d:0.0} m");
                 }
 
-                string nav = CheckNavMesh(flight);
+                string nav = CheckNavMesh(flight, run, rise);
                 if (nav != null) found.Add(nav);
                 foreach (string problem in found) Debug.LogError($"[MallValidation] Flight {flight.name}: {problem}.");
                 problems += found.Count;
@@ -69,10 +72,10 @@ namespace Abandoned.EditorTools
             return problems;
         }
 
-        private static string CheckNavMesh(Transform flight)
+        private static string CheckNavMesh(Transform flight, float run, float rise)
         {
             Vector3 foot = flight.TransformPoint(new Vector3(0f, 0f, -Approach));
-            Vector3 head = flight.TransformPoint(new Vector3(0f, MallFlights.Rise, MallFlights.Length + Approach));
+            Vector3 head = flight.TransformPoint(new Vector3(0f, rise, run + Approach));
             if (!NavMesh.SamplePosition(foot, out NavMeshHit a, 1.5f, NavMesh.AllAreas)) return "no NavMesh at its foot";
             if (!NavMesh.SamplePosition(head, out NavMeshHit b, 1.5f, NavMesh.AllAreas)) return "no NavMesh at its head";
             var path = new NavMeshPath();
@@ -81,7 +84,7 @@ namespace Abandoned.EditorTools
             float length = 0f;
             for (int i = 1; i < path.corners.Length; i++) length += Vector3.Distance(path.corners[i - 1], path.corners[i]);
             // A complete path that's far longer than the flight means monsters route around it, not up it.
-            float direct = Mathf.Sqrt(MallFlights.Length * MallFlights.Length + MallFlights.Rise * MallFlights.Rise) + 2f * Approach;
+            float direct = Mathf.Sqrt(run * run + rise * rise) + 2f * Approach;
             return length > direct * 1.5f ? $"monsters walk {length:0} m around it instead of {direct:0} m up it (NavMesh gap on the flight)" : null;
         }
 

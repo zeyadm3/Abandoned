@@ -12,6 +12,10 @@ namespace Abandoned.Core
         Paper,
         Fabric,
         Dirt,
-        Asphalt
+        Asphalt,
+        Terrazzo,
+        Tile,
+        Carpet,
+        Water
     }
 }

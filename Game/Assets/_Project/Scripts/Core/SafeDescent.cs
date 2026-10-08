@@ -31,6 +31,22 @@ namespace Abandoned.Core
 
         public static void Unregister(Object owner) => Columns.Remove(owner);
 
+        /// <summary>Host-simulated loot uses the same rope descent as owner-local player motors.</summary>
+        public static void LowerLoot(Vector3 top, float depth, float radius, float speed, float sidewaysDamping, Collider[] hits)
+        {
+            int n = Physics.OverlapCapsuleNonAlloc(top, top + Vector3.down * depth, radius, hits,
+                LayerMask.GetMask(GameLayers.Loot), QueryTriggerInteraction.Ignore);
+            float keep = Mathf.Pow(sidewaysDamping, Time.fixedDeltaTime);
+            for (int i = 0; i < n; i++)
+            {
+                Rigidbody body = hits[i].attachedRigidbody;
+                if (body == null || body.isKinematic) continue;
+                Vector3 v = body.linearVelocity;
+                if (v.y >= -speed) continue;
+                body.linearVelocity = new Vector3(v.x * keep, -speed, v.z * keep);
+            }
+        }
+
         /// <summary>The slowest descent speed (m/s) of any column covering this point, or 0 when none does.</summary>
         public static float SpeedAt(Vector3 position)
         {

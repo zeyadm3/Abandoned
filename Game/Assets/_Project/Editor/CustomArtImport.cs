@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
     public sealed class CustomArtImport : AssetPostprocessor
     {
         public override uint GetVersion() => 2;
-        private bool IsEnvironment => assetPath.StartsWith(CustomMallArt.Folder + "/");
+        private bool IsEnvironment => assetPath.StartsWith(CustomMallArt.Folder + "/") && !assetPath.StartsWith(CustomMallArt.Folder + "/Meridian/");
 
         private void OnPreprocessModel()
         {

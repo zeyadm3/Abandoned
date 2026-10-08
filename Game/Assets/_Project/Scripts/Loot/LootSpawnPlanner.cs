@@ -34,8 +34,17 @@ namespace Abandoned.Loot
 
             var jackpotPoints = new List<int>();
             for (int i = 0; i < points.Count; i++) if (points[i].IsJackpot) jackpotPoints.Add(i);
-            Shuffle(jackpotPoints, random);
-            int jackpots = Math.Min(jackpotPoints.Count, random.Next(config.JackpotsMin, config.JackpotsMax + 1) + Math.Max(0, extraJackpots));
+            bool authoredFeatured = false;
+            for (int i = 0; i < points.Count; i++) authoredFeatured |= points[i].IsFeatured;
+            HashSet<int> featured = null;
+            int jackpots = 0;
+            if (authoredFeatured) featured = FeaturedLootSelection.Select(points, definitions, config, random, extraJackpots);
+            else
+            {
+                // Keep legacy levels' seeded outcomes when no featured-site authoring is present.
+                Shuffle(jackpotPoints, random);
+                jackpots = Math.Min(jackpotPoints.Count, random.Next(config.JackpotsMin, config.JackpotsMax + 1) + Math.Max(0, extraJackpots));
+            }
 
             for (int i = 0; i < points.Count; i++)
             {
@@ -44,7 +53,9 @@ namespace Abandoned.Loot
                 double fill = random.NextDouble();
                 double pick = random.NextDouble();
                 int valueSeed = random.Next(1, int.MaxValue);
-                bool use = p.IsJackpot ? jackpotPoints.IndexOf(i) < jackpots : fill < config.FillChance * fillMultiplier;
+                bool prizeSite = p.IsJackpot || p.IsFeatured;
+                bool use = prizeSite ? featured != null ? featured.Contains(i) : jackpotPoints.IndexOf(i) < jackpots
+                    : fill < config.FillChance * fillMultiplier;
                 if (!use) continue;
                 LootDefinition d = Pick(p, definitions, pick, fragileRarity);
                 if (d != null) plan.Add(new Placement(i, d, valueSeed));

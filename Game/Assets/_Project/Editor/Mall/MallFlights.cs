@@ -1,96 +1,63 @@
-using Abandoned.Player;
-using UnityEditor;
+using Abandoned.Structure;
 using UnityEngine;
+using static Abandoned.EditorTools.GreyboxFactory;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>
-    /// Escalators and stairs: one root per flight (one StructuralSection). The custom kit model is the
-    /// visible steps; one smooth sloped collider through the tread centres carries players and loot so
-    /// nobody snags on a step edge, and two side rails follow the model's handrails.
-    /// </summary>
     public static class MallFlights
     {
-        public const string RampName = "Ramp", VisualName = "Visual";
-        public const int Steps = 20;
-        private const float RampThickness = 0.25f, RailHeight = 1.05f, RailThickness = 0.15f;
-        private const float EscalatorWidth = 2.4f, StairWidth = 3f;
-        private const string MovementConfigPath = "Assets/_Project/Data/Player/PlayerMovementConfig.asset";
-
-        public static float WidthOf(MallLayout.Flight f) => f.CanCollapse ? EscalatorWidth : StairWidth;
-        public static float Length => 2f * MallLayout.Tile;
-        public static float Rise => MallLayout.StoryHeight;
-
-        public static Transform Build(MallLayout.Flight f, Transform parent)
+        public const string RampName="Ramp",VisualName="Visual";
+        public const int Steps=20;
+        public static float Length=>8;
+        public static float Rise=>4;
+        public static float WidthOf(MallLayout.Flight f)=>f.Width;
+        public static Transform Build(MallLayout.Flight f,Transform parent)
         {
-            bool escalator = f.CanCollapse;
-            float width = WidthOf(f), length = Length, rise = Rise;
-            CheckAgainstMovement(f.Name, rise, length);
-
-            // Pivot at the foot: the middle of the edge the flight starts from, on the lower floor.
-            Vector3 dir = new(f.Dir.x, 0f, f.Dir.y);
-            Vector3 startCenter = MallLayout.TileTopCenter(f.Start, f.Floor);
-            var root = new GameObject(f.Name).transform;
-            root.SetParent(parent, false);
-            root.localPosition = startCenter - dir * (MallLayout.Tile / 2f);
-            root.localRotation = Quaternion.LookRotation(dir, Vector3.up);
-
-            var visual = new GameObject(VisualName).transform;
-            visual.SetParent(root, false);
-            GameObject model = CustomMallArt.Place(escalator ? "escalator" : "stairs", visual, Vector3.zero, Quaternion.identity);
-            // The kit authors 20 treads over 8 m x 4 m; fit it to the layout's flight if that ever changes.
-            Bounds b = ModelFit.LocalBounds(model, root);
-            Debug.Log($"[Flights] {f.Name}: model bounds centre {b.center} size {b.size}, {model.GetComponentsInChildren<Renderer>(true).Length} renderer(s).");
-            if (b.size.z > 0.1f && Mathf.Abs(b.size.z - length) > 0.15f)
+            var root=Group(f.Name,parent);
+            root.localPosition=f.Foot;
+            root.localRotation=Quaternion.LookRotation(new Vector3(f.Dir.x,0,f.Dir.y));
+            root.gameObject.AddComponent<SectionFlightGeometry>().EditorSetup(f.Length,f.Rise,f.Width);
+            var visual=Group(VisualName,root);
+            float angle=Mathf.Atan2(f.Rise,f.Length),slope=Mathf.Sqrt(f.Length*f.Length+f.Rise*f.Rise);
+            float lift=f.Kind==MallLayout.FlightKind.HaulRamp?.04f:f.Rise/Steps/2;
+            Vector3 up=new(0,Mathf.Cos(angle),-Mathf.Sin(angle));
+            Vector3 mid=new(0,f.Rise/2+lift,f.Length/2);
+            Quaternion tilt=Quaternion.Euler(-angle*Mathf.Rad2Deg,0,0);
+            var ramp=Group(RampName,root);
+            ramp.localPosition=mid-up*.125f;ramp.localRotation=tilt;
+            ramp.gameObject.AddComponent<BoxCollider>().size=new Vector3(f.Width,.25f,slope);
+            if(MeridianArt.UseKit)
             {
-                model.transform.localScale = new Vector3(1f, rise / Mathf.Max(0.1f, b.max.y), length / b.size.z);
-                b = ModelFit.LocalBounds(model, root);
-                model.transform.localPosition += new Vector3(-b.center.x, 0f, -b.min.z);
+                string key=f.Kind==MallLayout.FlightKind.HaulRamp?"HaulRamp":f.Kind==MallLayout.FlightKind.Stair?"ServiceStair":"Escalator";
+                MeridianArt.Place(key,visual,Vector3.zero);
             }
-
-            float angle = Mathf.Atan2(rise, length);
-            float slope = Mathf.Sqrt(length * length + rise * rise);
-            Vector3 up = new(0f, Mathf.Cos(angle), -Mathf.Sin(angle));
-            // Top surface through every tread's centre (stepRise/2 above the nosing line): feet sink no
-            // more than half a step at a nosing, and both ends meet their floors within half a step.
-            float lift = rise / Steps / 2f;
-            Vector3 surfaceMid = new(0f, rise / 2f + lift, length / 2f);
-            Quaternion tilt = Quaternion.Euler(-angle * Mathf.Rad2Deg, 0f, 0f);
-
-            var ramp = new GameObject(RampName).transform;
-            ramp.SetParent(root, false);
-            ramp.localPosition = surfaceMid - up * (RampThickness / 2f);
-            ramp.localRotation = tilt;
-            ramp.gameObject.AddComponent<BoxCollider>().size = new Vector3(width, RampThickness, slope);
-
-            // Side rails stand on the ramp surface up to the model's handrail, so the edge over the atrium
-            // or the stairwell is closed but the flight's own width stays free.
-            foreach (float side in new[] { -1f, 1f })
+            else
             {
-                var rail = new GameObject(side < 0 ? "SideRail_L" : "SideRail_R").transform;
-                rail.SetParent(visual, false);
-                rail.localPosition = surfaceMid + up * (RailHeight / 2f) + Vector3.right * side * (width / 2f + RailThickness / 2f);
-                rail.localRotation = tilt;
-                rail.gameObject.AddComponent<BoxCollider>().size = new Vector3(RailThickness, RailHeight, slope);
+                var deck=Box("Deck",visual,ramp.localPosition,new Vector3(f.Width,.25f,slope),MeridianArt.Material(f.CanCollapse?"Metal":"Concrete"),false);
+                deck.transform.localRotation=tilt;
+                if(f.Kind!=MallLayout.FlightKind.HaulRamp)
+                    for(int i=0;i<Steps;i++) Box($"Tread_{i}",visual,new Vector3(0,(i+.5f)*f.Rise/Steps,(i+.5f)*f.Length/Steps),
+                        new Vector3(f.Width,.04f,f.Length/Steps),MeridianArt.Material("Metal"),false);
+            }
+            foreach(float side in new[]{-1f,1f})
+            {
+                var rail=Box(side<0?"SideRail_L":"SideRail_R",visual,mid+up*.525f+Vector3.right*side*(f.Width/2+.075f),
+                    new Vector3(.15f,1.05f,slope),MeridianArt.Material("Metal"));
+                rail.transform.localRotation=tilt;
+                if(MeridianArt.UseKit) rail.GetComponent<Renderer>().enabled=false;
             }
             return root;
         }
-
-        /// <summary>The flight must be walkable with the player's own controller limits, not just look like stairs.</summary>
-        private static void CheckAgainstMovement(string name, float rise, float length)
+        public static void Landings(Transform parent)
         {
-            var movement = AssetDatabase.LoadAssetAtPath<PlayerMovementConfig>(MovementConfigPath);
-            if (movement == null)
+            for(int floor=-1;floor<2;floor++)
             {
-                Debug.LogError($"[Flights] {MovementConfigPath} missing; can't check {name} against the player's limits.");
-                return;
+                var slab=Group($"RampTurn_{floor}",parent);
+                slab.localPosition=new Vector3(51.75f,MallLayout.FloorY(floor)+2,46);
+                var collider=slab.gameObject.AddComponent<BoxCollider>();
+                collider.center=Vector3.down*.125f;collider.size=new Vector3(8.4f,.25f,4);
+                Box("Visual",slab,collider.center,collider.size,MeridianArt.Material("Concrete"),false);
             }
-            float slope = Mathf.Atan2(rise, length) * Mathf.Rad2Deg;
-            if (slope > movement.SlopeLimit - 5f)
-                Debug.LogError($"[Flights] {name}: {slope:0.#}° is steeper than the player can walk (slope limit {movement.SlopeLimit}°).");
-            // The ramp's ends sit half a step above their floors; that lip must be a step the controller takes.
-            if (rise / Steps / 2f > movement.StepOffset)
-                Debug.LogError($"[Flights] {name}: the ramp lip ({rise / Steps / 2f:0.00} m) is higher than the step offset ({movement.StepOffset} m).");
         }
     }
 }

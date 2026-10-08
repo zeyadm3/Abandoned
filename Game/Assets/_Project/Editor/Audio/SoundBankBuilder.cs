@@ -103,6 +103,12 @@ namespace Abandoned.EditorTools
             Hit(SurfaceMaterial.Paper, "impactSoft_medium", "impactSoft_medium", 0.7f);
             Hit(SurfaceMaterial.Fabric, "impactSoft_medium", "impactSoft_heavy", 0.8f);
             Hit(SurfaceMaterial.Dirt, "impactSoft_medium", "impactSoft_heavy", 0.8f);
+            Hit(SurfaceMaterial.Terrazzo, "impactMining", "impactSoft_heavy");
+            Hit(SurfaceMaterial.Tile, "impactMining", "impactSoft_heavy");
+            Hit(SurfaceMaterial.Carpet, "impactSoft_medium", "impactSoft_heavy", 0.8f);
+            // No imported splash clip is available: an empty authored entry uses the original synthesis.
+            if (!impacts.Any(i => i.Material == SurfaceMaterial.Water))
+                impacts.Add(new SoundBank.ByMaterial { Material = SurfaceMaterial.Water });
 
             var steps = bank.Footsteps.ToList();
             void Step(SurfaceMaterial m, string clips, float volume, Vector2 pitch)
@@ -121,6 +127,11 @@ namespace Abandoned.EditorTools
             Step(SurfaceMaterial.Paper, "footstep_carpet", 0.6f, Normal);
             Step(SurfaceMaterial.Dirt, "footstep_grass", 0.6f, Normal);
             Step(SurfaceMaterial.Glass, "footstep_snow", 0.7f, new Vector2(1.1f, 1.25f)); // crunching on shards
+            Step(SurfaceMaterial.Terrazzo, "footstep_concrete", 0.7f, Normal);
+            Step(SurfaceMaterial.Tile, "footstep_concrete", 0.7f, new Vector2(1.05f, 1.15f));
+            Step(SurfaceMaterial.Carpet, "footstep_carpet", 0.6f, Normal);
+            if (!steps.Any(s => s.Material == SurfaceMaterial.Water))
+                steps.Add(new SoundBank.ByMaterial { Material = SurfaceMaterial.Water });
 
             bank.EditorSet(named.OrderBy(n => n.Id).ToList(), impacts.OrderBy(i => i.Material).ToList(), steps.OrderBy(s => s.Material).ToList());
             EditorUtility.SetDirty(bank);

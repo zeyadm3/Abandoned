@@ -57,17 +57,7 @@ namespace Abandoned.Equipment
         {
             if (!IsServer || !IsSpawned) return;
             Vector3 top = transform.position + Vector3.up * 0.6f;
-            Vector3 bottom = transform.position + Vector3.down * depth.Value;
-            int n = Physics.OverlapCapsuleNonAlloc(top, bottom, radius, hits, LayerMask.GetMask(GameLayers.Loot), QueryTriggerInteraction.Ignore);
-            for (int i = 0; i < n; i++)
-            {
-                Rigidbody body = hits[i].attachedRigidbody;
-                if (body == null || body.isKinematic) continue;
-                Vector3 v = body.linearVelocity;
-                if (v.y >= -lowerSpeed) continue;
-                float keep = Mathf.Pow(sidewaysDamping, Time.fixedDeltaTime);
-                body.linearVelocity = new Vector3(v.x * keep, -lowerSpeed, v.z * keep);
-            }
+            SafeDescent.LowerLoot(top, depth.Value + 0.6f, radius, lowerSpeed, sidewaysDamping, hits);
         }
 
         private void OnRunStarted(int seed)

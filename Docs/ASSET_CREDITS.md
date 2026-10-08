@@ -1,8 +1,9 @@
 # Asset credits
 
 Every third-party asset in the game, with where it came from and its licence. Only free CC0 assets
-(Kenney, Quaternius, Poly Haven and similar) in one low-poly style, and SIL Open Font License fonts (user OK, UI
-overhaul); nothing else without asking.
+(Kenney, Quaternius, Poly Haven and similar), plus the existing user-approved SIL Open Font License
+fonts. The approved 0.13.0 Meridian environment uses grounded realism; characters, threats and loot
+retain their established style. New original mall art is recorded below alongside the existing credits.
 Imported files live under `Game/Assets/_Project/Art/ThirdParty/<Author>/<Pack>/` with the pack's
 own License.txt beside them.
 
@@ -49,3 +50,16 @@ Original assets for the 0.12.0 horror redesign (2026-10-08):
 | World text shader | ABANDONED original code | Project-owned original work | Art/Shaders/WorldText.shader | Single-sided, depth-tested sign and label text | Art/Shaders/ |
 
 No paid packs or new Unity packages were added for this pass. Existing CC0 vehicle/loot/audio and OFL font credits above still apply.
+
+Original assets for the approved 0.13.0 Meridian Mall rebuild (2026-10-08):
+
+| Pack | Author | Licence | Source | What we use | In the project |
+|------|--------|---------|--------|-------------|----------------|
+| Meridian realistic architecture and structure kit | ABANDONED original art | Project-owned original work | Tools/Blender/meridian.py, meridian_core.py, meridian_surfaces.py, meridian_architecture.py, meridian_props.py, meridian_decay.py | 79 deterministic FBX exports: six floor finishes with crack/sag variants and nine-piece fracture siblings; walls, storefronts, columns, balustrades, escalators, stairs, haul ramp, ceilings, skylight, entrance canopy, facade, fixed retail fixtures, cinema, dock and decay props; major models carry LOD0/1/2 groups | Art/Custom/Environment/Meridian/ (exact file inventory: MeridianManifest.json) |
+| Meridian original PBR surfaces | ABANDONED original art | Project-owned original work | Tools/Blender/meridian_textures.py | 25 procedural PBR sets / 75 PNGs: original terrazzo aggregate, tile/mortar, carpet weave, concrete pores, plaster, brushed metal, brass trim, ceiling perforations, wood grain, rust, glass, water and small dressing surfaces; 2048 hero, 1024 standard, 512 small props/decals; base colour, normal and packed metallic/occlusion/smoothness mask | Art/Custom/Environment/Meridian/Textures/ (all MALL_* PNG files listed in MeridianManifest.json) |
+| Meridian fictional sign and graffiti designs | ABANDONED original art and writing | Project-owned original work | Tools/Blender/meridian_decay.py, meridian_textures.py and Editor/Mall/ builders | Original sign frames, worn notice silhouettes and non-offensive abstract graffiti; fictional store/wayfinding text uses the existing Abandoned/WorldText shader and credited fonts | Art/Custom/Environment/Meridian/SignFrame.fbx, MissingPoster.fbx, GraffitiTag.fbx and Textures/MALL_Graffiti_*.png; generated mall world text |
+
+No third-party files were downloaded for the 0.13.0 Meridian kit. Its texture patterns, mesh
+geometry and graffiti are authored from the original scripts above. Existing third-party credits
+remain valid; no paid assets or new Unity packages were introduced. Import settings, map packing,
+pivots and measured FBX geometry are documented in the kit README/manifest and Tools/Blender/README.md.

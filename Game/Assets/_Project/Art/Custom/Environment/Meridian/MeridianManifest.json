@@ -1,0 +1,322 @@
+{
+  "version": "0.13.0",
+  "author": "Original ABANDONED art",
+  "coordinateMapping": "Unity (x,y,z) = Blender (x,z,y); metres; +Z front/climb",
+  "pivot": "Floor walking-top centre; flight foot centre; other module base centre",
+  "lodHierarchy": "LOD0/1/2 children; <Model>_LOD0/1/2 renderers. Diffuser separate.",
+  "fractureHierarchy": "Floor*Fractured has nine sibling Chunk_00..08 meshes with local centroid pivots",
+  "maskPacking": {
+    "r": "metallic",
+    "g": "occlusion",
+    "b": "unused",
+    "a": "smoothness"
+  },
+  "textures": {
+    "Terrazzo": {
+      "size": 2048,
+      "slot": "MALL_Terrazzo",
+      "paths": [
+        "Textures/MALL_Terrazzo_BaseColor.png",
+        "Textures/MALL_Terrazzo_Normal.png",
+        "Textures/MALL_Terrazzo_Mask.png"
+      ]
+    },
+    "Plaster": {
+      "size": 2048,
+      "slot": "MALL_Plaster",
+      "paths": [
+        "Textures/MALL_Plaster_BaseColor.png",
+        "Textures/MALL_Plaster_Normal.png",
+        "Textures/MALL_Plaster_Mask.png"
+      ]
+    },
+    "StorefrontTrim": {
+      "size": 2048,
+      "slot": "MALL_StorefrontTrim",
+      "paths": [
+        "Textures/MALL_StorefrontTrim_BaseColor.png",
+        "Textures/MALL_StorefrontTrim_Normal.png",
+        "Textures/MALL_StorefrontTrim_Mask.png"
+      ]
+    },
+    "EscalatorSteel": {
+      "size": 2048,
+      "slot": "MALL_EscalatorSteel",
+      "paths": [
+        "Textures/MALL_EscalatorSteel_BaseColor.png",
+        "Textures/MALL_EscalatorSteel_Normal.png",
+        "Textures/MALL_EscalatorSteel_Mask.png"
+      ]
+    },
+    "Ceiling": {
+      "size": 2048,
+      "slot": "MALL_Ceiling",
+      "paths": [
+        "Textures/MALL_Ceiling_BaseColor.png",
+        "Textures/MALL_Ceiling_Normal.png",
+        "Textures/MALL_Ceiling_Mask.png"
+      ]
+    },
+    "Tile": {
+      "size": 1024,
+      "slot": "MALL_Tile",
+      "paths": [
+        "Textures/MALL_Tile_BaseColor.png",
+        "Textures/MALL_Tile_Normal.png",
+        "Textures/MALL_Tile_Mask.png"
+      ]
+    },
+    "Carpet": {
+      "size": 1024,
+      "slot": "MALL_Carpet",
+      "paths": [
+        "Textures/MALL_Carpet_BaseColor.png",
+        "Textures/MALL_Carpet_Normal.png",
+        "Textures/MALL_Carpet_Mask.png"
+      ]
+    },
+    "Concrete": {
+      "size": 1024,
+      "slot": "MALL_Concrete",
+      "paths": [
+        "Textures/MALL_Concrete_BaseColor.png",
+        "Textures/MALL_Concrete_Normal.png",
+        "Textures/MALL_Concrete_Mask.png"
+      ]
+    },
+    "Wood": {
+      "size": 1024,
+      "slot": "MALL_Wood",
+      "paths": [
+        "Textures/MALL_Wood_BaseColor.png",
+        "Textures/MALL_Wood_Normal.png",
+        "Textures/MALL_Wood_Mask.png"
+      ]
+    },
+    "BridgeMetal": {
+      "size": 1024,
+      "slot": "MALL_BridgeMetal",
+      "paths": [
+        "Textures/MALL_BridgeMetal_BaseColor.png",
+        "Textures/MALL_BridgeMetal_Normal.png",
+        "Textures/MALL_BridgeMetal_Mask.png"
+      ]
+    },
+    "Block": {
+      "size": 1024,
+      "slot": "MALL_Block",
+      "paths": [
+        "Textures/MALL_Block_BaseColor.png",
+        "Textures/MALL_Block_Normal.png",
+        "Textures/MALL_Block_Mask.png"
+      ]
+    },
+    "Asphalt": {
+      "size": 1024,
+      "slot": "MALL_Asphalt",
+      "paths": [
+        "Textures/MALL_Asphalt_BaseColor.png",
+        "Textures/MALL_Asphalt_Normal.png",
+        "Textures/MALL_Asphalt_Mask.png"
+      ]
+    },
+    "FacadeStone": {
+      "size": 1024,
+      "slot": "MALL_FacadeStone",
+      "paths": [
+        "Textures/MALL_FacadeStone_BaseColor.png",
+        "Textures/MALL_FacadeStone_Normal.png",
+        "Textures/MALL_FacadeStone_Mask.png"
+      ]
+    },
+    "Rust": {
+      "size": 1024,
+      "slot": "MALL_Rust",
+      "paths": [
+        "Textures/MALL_Rust_BaseColor.png",
+        "Textures/MALL_Rust_Normal.png",
+        "Textures/MALL_Rust_Mask.png"
+      ]
+    },
+    "FixtureTrim": {
+      "size": 512,
+      "slot": "MALL_FixtureTrim",
+      "paths": [
+        "Textures/MALL_FixtureTrim_BaseColor.png",
+        "Textures/MALL_FixtureTrim_Normal.png",
+        "Textures/MALL_FixtureTrim_Mask.png"
+      ]
+    },
+    "Upholstery": {
+      "size": 512,
+      "slot": "MALL_Upholstery",
+      "paths": [
+        "Textures/MALL_Upholstery_BaseColor.png",
+        "Textures/MALL_Upholstery_Normal.png",
+        "Textures/MALL_Upholstery_Mask.png"
+      ]
+    },
+    "BoardWood": {
+      "size": 512,
+      "slot": "MALL_BoardWood",
+      "paths": [
+        "Textures/MALL_BoardWood_BaseColor.png",
+        "Textures/MALL_BoardWood_Normal.png",
+        "Textures/MALL_BoardWood_Mask.png"
+      ]
+    },
+    "Moss": {
+      "size": 512,
+      "slot": "MALL_Moss",
+      "paths": [
+        "Textures/MALL_Moss_BaseColor.png",
+        "Textures/MALL_Moss_Normal.png",
+        "Textures/MALL_Moss_Mask.png"
+      ]
+    },
+    "Leaves": {
+      "size": 512,
+      "slot": "MALL_Leaves",
+      "paths": [
+        "Textures/MALL_Leaves_BaseColor.png",
+        "Textures/MALL_Leaves_Normal.png",
+        "Textures/MALL_Leaves_Mask.png"
+      ]
+    },
+    "Graffiti": {
+      "size": 512,
+      "slot": "MALL_Graffiti",
+      "paths": [
+        "Textures/MALL_Graffiti_BaseColor.png",
+        "Textures/MALL_Graffiti_Normal.png",
+        "Textures/MALL_Graffiti_Mask.png"
+      ]
+    },
+    "Water": {
+      "size": 512,
+      "slot": "MALL_Water",
+      "paths": [
+        "Textures/MALL_Water_BaseColor.png",
+        "Textures/MALL_Water_Normal.png",
+        "Textures/MALL_Water_Mask.png"
+      ]
+    },
+    "FixtureGlow": {
+      "size": 512,
+      "slot": "MALL_FixtureGlow",
+      "paths": [
+        "Textures/MALL_FixtureGlow_BaseColor.png",
+        "Textures/MALL_FixtureGlow_Normal.png",
+        "Textures/MALL_FixtureGlow_Mask.png"
+      ]
+    },
+    "Crack": {
+      "size": 512,
+      "slot": "MALL_Crack",
+      "paths": [
+        "Textures/MALL_Crack_BaseColor.png",
+        "Textures/MALL_Crack_Normal.png",
+        "Textures/MALL_Crack_Mask.png"
+      ]
+    },
+    "Glass": {
+      "size": 512,
+      "slot": "MALL_Glass",
+      "paths": [
+        "Textures/MALL_Glass_BaseColor.png",
+        "Textures/MALL_Glass_Normal.png",
+        "Textures/MALL_Glass_Mask.png"
+      ]
+    },
+    "Scorch": {
+      "size": 512,
+      "slot": "MALL_Scorch",
+      "paths": [
+        "Textures/MALL_Scorch_BaseColor.png",
+        "Textures/MALL_Scorch_Normal.png",
+        "Textures/MALL_Scorch_Mask.png"
+      ]
+    }
+  },
+  "models": [
+    "BoardedPanel",
+    "BrokenGlass",
+    "BrokenSlabEdge",
+    "CampMattress",
+    "CampScorch",
+    "CeilingCoffer",
+    "CeilingDamaged",
+    "CeilingGrid",
+    "CeilingSagging",
+    "CinemaDoors",
+    "CinemaMarquee",
+    "CinemaSeat",
+    "CinemaSeats",
+    "Column",
+    "DebrisPile",
+    "Directory",
+    "DockLeveller",
+    "EmptyDisplayCase",
+    "EntranceCanopy",
+    "Escalator",
+    "ExposedRebar",
+    "FacadeFins",
+    "FloorBridge",
+    "FloorBridgeCracked",
+    "FloorBridgeFractured",
+    "FloorBridgeSagged",
+    "FloorCarpet",
+    "FloorCarpetCracked",
+    "FloorCarpetFractured",
+    "FloorCarpetSagged",
+    "FloorConcrete",
+    "FloorConcreteCracked",
+    "FloorConcreteFractured",
+    "FloorConcreteSagged",
+    "FloorTerrazzo",
+    "FloorTerrazzoCracked",
+    "FloorTerrazzoFractured",
+    "FloorTerrazzoSagged",
+    "FloorTile",
+    "FloorTileCracked",
+    "FloorTileFractured",
+    "FloorTileSagged",
+    "FloorWood",
+    "FloorWoodCracked",
+    "FloorWoodFractured",
+    "FloorWoodSagged",
+    "FluorescentFixture",
+    "FoodCounter",
+    "FoodCourtCounter",
+    "FoodCourtTable",
+    "Fountain",
+    "GlassRail4m",
+    "GraffitiTag",
+    "HaulRamp",
+    "Kiosk",
+    "LeafScatter",
+    "MallDirectory",
+    "Mannequin",
+    "MissingPoster",
+    "MossPatch",
+    "Overgrowth",
+    "Planter",
+    "Puddle",
+    "RetailShelf",
+    "RollerShutter",
+    "Rubble",
+    "SecurityDesk",
+    "ServiceStair",
+    "SignFrame",
+    "SkylightFrame",
+    "StorefrontBoarded",
+    "StorefrontEntry",
+    "StorefrontGlazed",
+    "Vent",
+    "WallBlock",
+    "WallConduit",
+    "WallPipe",
+    "WallPlaster",
+    "WaterStain"
+  ]
+}
