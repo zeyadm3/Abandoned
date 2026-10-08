@@ -16,6 +16,11 @@ namespace Abandoned.EditorTools
             Transform visual=tile.Find("Visual"),stable=Group("Stable",visual);
             foreach(Transform child in new List<Transform>(Children(visual)))if(child!=stable)child.SetParent(stable,false);
             Vector3 size=tile.GetComponent<BoxCollider>().size,scale=new(size.x/4,1,size.z/4);
+            // The authored weak route advertises past damage before a player adds weight.
+            if(capacity<.9f) {
+                foreach(Transform child in new List<Transform>(Children(stable)))Object.DestroyImmediate(child.gameObject);
+                MeridianArt.Place("Floor"+finish+"Cracked",stable,Vector3.zero,0,scale);
+            }
             Transform cracking=MeridianArt.Place("Floor"+finish+"Cracked",visual,Vector3.zero,0,scale).transform;
             Transform failing=MeridianArt.Place("Floor"+finish+"Sagged",visual,Vector3.zero,0,scale).transform;
             var stages=tile.gameObject.AddComponent<StructureStageVisuals>();stages.EditorSetup(stable,cracking,failing);

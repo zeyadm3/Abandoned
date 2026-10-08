@@ -26,12 +26,14 @@ namespace Abandoned.EditorTools
                 stripe.GetComponent<Renderer>().shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             // The entry canopy and low island frame an oblique spawn view, not a featureless wall.
-            var canopy=Box("EntranceCanopy",exterior,new Vector3(28,4.2f,.9f),new Vector3(15,.25f,5),MeridianArt.Material("Metal"),false);
-            foreach(float x in new[]{20.3f,35.7f})Box("CanopyPost",exterior,new Vector3(x,2,.4f),new Vector3(.28f,4,.28f),stone);
+            if(!MeridianArt.UseKit) {
+                Box("EntranceCanopy",exterior,new Vector3(28,4.2f,.9f),new Vector3(15,.25f,5),MeridianArt.Material("Metal"),false);
+                foreach(float x in new[]{20.3f,35.7f})Box("CanopyPost",exterior,new Vector3(x,2,.4f),new Vector3(.28f,4,.28f),stone);
+            }
             Box("LandscapeIsland",exterior,new Vector3(13,.18f,-6),new Vector3(7,.36f,3),stone);
-            MallMysteryBuilder.Sign(exterior,new Vector3(28,5.4f,3.84f),Vector3.back,"M E R I D I A N",9,.6f);
-            MallMysteryBuilder.Sign(exterior,new Vector3(12,7.2f,-.13f),Vector3.back,"DEAD CIRCUIT",6,.4f);
-            MallMysteryBuilder.Sign(exterior,new Vector3(56.15f,2.5f,34),Vector3.right,"GOODS IN / CREW OUT",3,.3f);
+
+            MeridianDressingSigns.Sign(exterior,new Vector3(12,7.2f,-.65f),Vector3.back,"DEAD CIRCUIT",6,.4f);
+            MeridianDressingSigns.Sign(exterior,new Vector3(56.15f,2.5f,34),Vector3.right,"GOODS IN / CREW OUT",3,.3f);
             foreach(Transform t in exterior.GetComponentsInChildren<Transform>())if(t.GetComponent<Collider>()!=null)t.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
             MarkStatic(exterior);
         }
@@ -51,7 +53,7 @@ namespace Abandoned.EditorTools
                 else Box("Visual",ledge,collider.center,size,MeridianArt.Material("Concrete"),false);
                 point.gameObject.AddComponent<MallFallbackDescent>().EditorSetup(Vector3.up*.6f,at.y+.6f,1.45f);
                 Box("Rope",point,new Vector3(0,1.1f-at.y/2,0),new Vector3(.035f,at.y+2.2f,.035f),MeridianArt.Material("BoardWood"),false);
-                MallMysteryBuilder.Sign(point,outward*-.55f+Vector3.up*1.8f,-outward,"CREW DESCENT",2.8f,.25f);
+                MeridianDressingSigns.Sign(point,outward*-.55f+Vector3.up*1.8f,-outward,"CREW DESCENT",2.8f,.25f);
             }
         }
     }

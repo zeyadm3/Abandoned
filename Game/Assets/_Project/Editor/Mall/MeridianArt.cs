@@ -30,7 +30,7 @@ namespace Abandoned.EditorTools
             foreach(LODGroup imported in geometry.GetComponentsInChildren<LODGroup>(true))UnityEngine.Object.DestroyImmediate(imported);
             foreach(Collider c in geometry.GetComponentsInChildren<Collider>(true)) UnityEngine.Object.DestroyImmediate(c);
             foreach(Renderer r in geometry.GetComponentsInChildren<Renderer>(true))
-                r.sharedMaterials=r.sharedMaterials.Select(m=>m!=null?Material(m.name):throw new InvalidOperationException($"Unbound Meridian slot {key}")).ToArray();
+                r.sharedMaterials=r.sharedMaterials.Select(m=>m!=null?(key.StartsWith("Floor")&&m.name=="MALL_StorefrontTrim"?MeridianArchitectureTrim.Brass():Material(m.name)):throw new InvalidOperationException($"Unbound Meridian slot {key}")).ToArray();
             AddLods(holder);
             return holder;
         }

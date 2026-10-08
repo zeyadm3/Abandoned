@@ -39,7 +39,8 @@ namespace Abandoned.Structure
         public void RestoreLods()
         {
             // A collapsed group must return to distance-based selection, never display all exported LODs.
-            foreach (LODGroup lod in GetComponentsInChildren<LODGroup>(true)) lod.ForceLOD(-1);
+            foreach (LODGroup lod in GetComponentsInChildren<LODGroup>(true))
+                if(lod.enabled&&lod.gameObject.activeInHierarchy)lod.ForceLOD(-1);
         }
 
 #if UNITY_EDITOR

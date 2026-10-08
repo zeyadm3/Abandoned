@@ -1,3 +1,4 @@
+using System.Linq;
 using Abandoned.Structure;
 using UnityEngine;
 using static Abandoned.EditorTools.MeridianDressingUtility;
@@ -25,9 +26,17 @@ namespace Abandoned.EditorTools
 
         public static string KeyFor(Vector2Int cell, int floor)
         {
+            if (floor < 0 || cell.x == 10) return "CeilingGrid";
             bool leak = cell.x >= 4 && cell.x <= 9 && cell.y >= 3 && cell.y <= 8;
-            return floor < 0 || cell.x == 10 ? "CeilingGrid"
-                : leak && Hash(cell, floor) % 4 == 0 ? "CeilingSagging" : "CeilingCoffer";
+            bool clearRoute = MallLayout.IsProtected(cell, floor)
+                || MallLayout.Doors.Any(d => d.Floor == floor && (d.A == cell || d.B == cell))
+                || MallLayout.AllFlights.Any(f => (f.Floor == floor || f.Floor + 1 == floor)
+                    && (f.Tiles.Contains(cell) || cell == f.Start - f.Dir || cell == f.Start + f.Dir * 2));
+            if (!leak || clearRoute) return "CeilingCoffer";
+            return (Hash(cell, floor) % 4) switch
+            {
+                0 => "CeilingSagging", 1 => "CeilingDamaged", _ => "CeilingCoffer",
+            };
         }
     }
 }

@@ -28,7 +28,8 @@ namespace Abandoned.EditorTools
             }
             var entrance = System.Array.Find(MallLayout.Exterior, e => e.floor == 0 && e.side == 'S' && !e.window);
             float entrancePlane = MallLayout.ExteriorPosition(entrance).z;
-            Sign(group, new Vector3(MallLayout.EntranceTarget.x, 7.1f, entrancePlane - 0.24f), Vector3.back, "MERIDIAN MALL", 10f, 0.7f);
+            // The anchor fins project half a metre beyond the wall; the fascia sits in front of them.
+            Sign(group, new Vector3(MallLayout.EntranceTarget.x, 7.1f, entrancePlane - 0.62f), Vector3.back, "MERIDIAN MALL", 10f, 0.7f);
             Sign(group, new Vector3(MallLayout.EntranceTarget.x, 3.74f, entrancePlane - 4.12f), Vector3.back,
                 "WE WILL REOPEN SHORTLY / EST. 2009", 6.4f, 0.22f);
             Sign(group, new Vector3(28f, 2.55f, 47.76f), Vector3.back, "FOOD COURT / FOOD SUBJECT TO AVAILABILITY", 8.4f, 0.42f);
@@ -47,7 +48,8 @@ namespace Abandoned.EditorTools
             Directory(group);
         }
 
-        public static void Sign(Transform group, Vector3 at, Vector3 front, string text, float width, float height)
+        public static void Sign(Transform group, Vector3 at, Vector3 front, string text, float width, float height,
+            float lineSpacing = 1f)
         {
             Transform holder = Group("Sign_" + text.Replace(' ', '_').Replace('/', '_'), group);
             holder.SetLocalPositionAndRotation(at, Quaternion.LookRotation(front));
@@ -64,10 +66,32 @@ namespace Abandoned.EditorTools
             label.anchor = TextAnchor.MiddleCenter;
             label.alignment = TextAlignment.Center;
             label.fontSize = 64;
-            label.characterSize = Mathf.Min(height * 0.60f, width / Mathf.Max(1, text.Length) * 1.35f);
-            label.color = new Color(0.77f, 0.76f, 0.64f);
+            label.characterSize = 1f;
+            label.lineSpacing = lineSpacing;
+            label.color = new Color(0.40f, 0.41f, 0.34f);
             WorldTextMaterial.Apply(label, AssetDatabase.LoadAssetAtPath<Font>(FontPath));
+            Fit(label, width * 0.90f, height * 0.76f);
             face.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+        }
+
+        private static void Fit(TextMesh label, float width, float height)
+        {
+            Font font = label.font;
+            if (font == null) throw new System.InvalidOperationException("Meridian signs require their authored font.");
+            font.RequestCharactersInTexture(label.text, label.fontSize, label.fontStyle);
+            WorldTextMaterial.Apply(label, font);
+            // Force native TextMesh generation after assigning the actual font, before measuring its geometry.
+            string text = label.text;
+            label.text = string.Empty;
+            label.text = text;
+            var renderer = label.GetComponent<MeshRenderer>();
+            Bounds bounds = renderer.localBounds;
+            if (bounds.size.x <= 0.0001f || bounds.size.y <= 0.0001f)
+                throw new System.InvalidOperationException($"Meridian sign has no generated glyph bounds: {text}");
+            float scale = Mathf.Min(width / bounds.size.x, height / bounds.size.y);
+            label.transform.localScale = Vector3.one * scale;
+            label.transform.localPosition = Vector3.forward * 0.023f
+                - label.transform.localRotation * (bounds.center * scale);
         }
 
         private static void Directory(Transform group)
@@ -75,11 +99,7 @@ namespace Abandoned.EditorTools
             const string map = "MERIDIAN\n02  FINAL REEL / GALLERY\n01  TOYS / HOME / TERRACE\n00  SHOPS / FOOD COURT\nSERVICE & LOADING  >";
             Quaternion rotation = Quaternion.Euler(0f, 20f, 0f);
             Vector3 front = rotation * Vector3.forward;
-            Sign(group, new Vector3(18f, 1.5f, 9.4f) + front * 0.34f, front, map, 1.14f, 1.5f);
-            Transform holder = group.GetChild(group.childCount - 1);
-            TextMesh label = holder.GetComponentInChildren<TextMesh>();
-            label.characterSize = 0.073f;
-            label.lineSpacing = 1.35f;
+            Sign(group, new Vector3(18f, 1.5f, 9.4f) + front * 0.34f, front, map, 1.14f, 1.5f, 1.35f);
         }
     }
 }

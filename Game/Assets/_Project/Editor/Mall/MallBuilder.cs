@@ -43,7 +43,8 @@ namespace Abandoned.EditorTools
             int problems=MallFlightValidator.Run(mall)+InvisibleColliderAudit.Run(mall,"Mall");
             if(problems!=0)throw new System.InvalidOperationException($"Mall rebuild has {problems} validation problem(s).");
             EditorSceneManager.SaveScene(scene,ScenePath);BuildScenes.ApplyToEditorSettings();NetworkObjectIds.StampScene(scene);
-            AssetDatabase.SaveAssets();
+            if(!OcclusionBake.Bake())throw new System.InvalidOperationException("Meridian occlusion bake failed.");
+            EditorSceneManager.SaveScene(scene,ScenePath);AssetDatabase.SaveAssets();
             Debug.Log($"[Meridian] Saved shaped mall: {tiles} tiles, {System.Linq.Enumerable.Count(AllFlights)} flights, {fixtures} fixtures, {shutters} shutters.");
         }
         public static string TileName(Vector2Int c,int floor)=>$"{(IsWalkwayTile(c,floor)?"Walk":"Floor")}_{floor}_{c.x}_{c.y}";

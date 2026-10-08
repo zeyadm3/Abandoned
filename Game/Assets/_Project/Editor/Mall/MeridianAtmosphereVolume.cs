@@ -12,10 +12,12 @@ namespace Abandoned.EditorTools
 
         public static void Apply(Transform parent, MeridianPresentationConfig config)
         {
+            MeridianSkyBuilder.Apply(config);
             RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = config.AmbientSky;
             RenderSettings.ambientEquatorColor = config.AmbientEquator;
             RenderSettings.ambientGroundColor = config.AmbientGround;
+            RenderSettings.reflectionIntensity = config.ReflectionIntensity;
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = config.ExteriorFog;

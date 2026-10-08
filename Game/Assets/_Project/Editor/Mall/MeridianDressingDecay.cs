@@ -151,9 +151,6 @@ namespace Abandoned.EditorTools
                 var cell = new Vector2Int(x, z);
                 StructuralSection support = Support(mall, cell, -1);
                 if (support == null) continue;
-                if ((x + z) % 2 == 0)
-                    Prop("Puddle", group, MallLayout.TileTopCenter(cell, -1) + Vector3.up * 0.075f,
-                        Quaternion.Euler(0f, z * 17f, 0f), support, new Vector3(2.2f, 1f, 2.2f));
                 if (x != area.xMin || z % 2 != 0) continue;
                 Prop("Overgrowth", group, MallLayout.TileTopCenter(cell, -1) + new Vector3(-1.7f, 0f, 0.7f), Quaternion.identity,
                     support, new Vector3(0.6f, 0.4f, 0.6f));

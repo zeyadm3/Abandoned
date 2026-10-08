@@ -5,6 +5,7 @@ namespace Abandoned.EditorTools
 {
     public static class MeridianArchitectureTrim
     {
+        private static Material brass;
         private const string Folder = "Assets/_Project/Art/Generated/MeridianDetails";
 
         public static void WallBands(Transform group, Vector3 at, Vector3 front, bool plinth)
@@ -36,6 +37,7 @@ namespace Abandoned.EditorTools
 
         public static Material Brass()
         {
+            if(brass!=null)return brass;
             PolishAssets.EnsureFolder(Folder);
             string path = Folder + "/BrassAccent.mat";
             Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -48,7 +50,7 @@ namespace Abandoned.EditorTools
             material.SetColor("_BaseColor", new Color(0.61f, 0.43f, 0.19f));
             material.enableInstancing = true;
             EditorUtility.SetDirty(material);
-            return material;
+            brass=material;return material;
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Abandoned.Structure
         [SerializeField, Min(0.1f)] private float fixtureFallLifetime = 5f;
 
         [Header("Atmosphere")]
+        [SerializeField, Min(0f)] private float skyExposure = 1f;
         [SerializeField] private Color ambientSky = new(0.045f, 0.06f, 0.08f);
         [SerializeField] private Color ambientEquator = new(0.025f, 0.036f, 0.038f);
         [SerializeField] private Color ambientGround = new(0.012f, 0.014f, 0.011f);
@@ -60,6 +61,7 @@ namespace Abandoned.Structure
         public float AlarmIntensity => alarmIntensity;
         public float AlarmRange => alarmRange;
         public float FixtureFallLifetime => fixtureFallLifetime;
+        public float SkyExposure => skyExposure;
         public Color AmbientSky => ambientSky;
         public Color AmbientEquator => ambientEquator;
         public Color AmbientGround => ambientGround;

@@ -42,7 +42,8 @@ namespace Abandoned.EditorTools
                     if(!a.HasValue||!b.HasValue||SameSpace(a.Value,b.Value)) continue;
                     Door? door=DoorBetween(c,n,floor);
                     WallOpening? hole=door.HasValue?new WallOpening(door.Value.Wide?WideWidth:1.8f,0,door.Value.Wide?WideHeight:2.5f):null;
-                    Panel(permanent,$"Partition_{floor}_{x}_{z}_{side}",centre,dir.x!=0,StoryHeight-SlabThickness,hole,wall,frame);
+                    Material finish=a.Value.Tag=="stock"||b.Value.Tag=="stock"?MeridianArt.Material("Block"):wall;
+                    Panel(permanent,$"Partition_{floor}_{x}_{z}_{side}",centre,dir.x!=0,StoryHeight-SlabThickness,hole,finish,frame);
                     count++;
                 }
             }

@@ -109,7 +109,7 @@ namespace Abandoned.EditorTools
             // Continuous permanent slabs reach every landing; shortcuts retain the risk.
             return c.x==0 || c.x==10 || c.y==3 || c.y==(floor==2?8:9) ||
                 (c.x>=11 && c.y>=8) || (floor==0 && c.x>=5 && c.x<=8 && c.y<=2) ||
-                (floor==2 && c.x==5 && c.y==11) || (floor==1 && c.x==13 && (c.y==3 || c.y==4));
+                (floor==2 && c.x==5 && c.y==11) || (floor==1 && c.y==4 && c.x>=12);
         }
         public static bool IsFlightOpening(Vector2Int a,Vector2Int b,int floor)
         {
