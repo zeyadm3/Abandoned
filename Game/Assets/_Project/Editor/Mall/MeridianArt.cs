@@ -8,7 +8,9 @@ namespace Abandoned.EditorTools
     public static class MeridianArt
     {
         public const string Folder="Assets/_Project/Art/Custom/Environment/Meridian";
-        public static bool UseKit=>false;
+        public static bool UseKit=>true;
+        public static bool Dress=>false;
+        public static bool Illuminate=>false;
         public static void Prepare() => MeridianMaterials.Prepare();
         public static Material Material(string key) => MeridianMaterials.Get(key);
         public static GameObject Model(string key) => AssetDatabase.LoadAssetAtPath<GameObject>($"{Folder}/{key}.fbx");
@@ -24,6 +26,8 @@ namespace Abandoned.EditorTools
             holder.transform.localScale=scale??Vector3.one;
             var geometry=(GameObject)PrefabUtility.InstantiatePrefab(source,holder.transform);
             geometry.name="Geometry";
+            // Unity recognises Blender's LOD names automatically; replace its imported groups with one owner.
+            foreach(LODGroup imported in geometry.GetComponentsInChildren<LODGroup>(true))UnityEngine.Object.DestroyImmediate(imported);
             foreach(Collider c in geometry.GetComponentsInChildren<Collider>(true)) UnityEngine.Object.DestroyImmediate(c);
             foreach(Renderer r in geometry.GetComponentsInChildren<Renderer>(true))
                 r.sharedMaterials=r.sharedMaterials.Select(m=>m!=null?Material(m.name):throw new InvalidOperationException($"Unbound Meridian slot {key}")).ToArray();

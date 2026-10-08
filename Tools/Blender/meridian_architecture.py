@@ -1,6 +1,6 @@
 """Manufactured mall shell, storefronts, flights and ceiling modules."""
 import math
-from meridian_core import box, mesh, rod, cylinder, export
+from meridian_core import box, mesh, rod, cylinder, export, export_chunks
 
 def wall(block=False, lod=0):
     key='Block' if block else 'Plaster'
@@ -124,6 +124,44 @@ def shutter(lod=0):
         for i in range(26):box('RolledSlat',(0,.065+i*.118,.055),(3.4,.026,.018),'EscalatorSteel',.006,detail=1)
     box('BottomLockRail',(0,.04,.035),(3.4,.08,.14),'FixtureTrim',.013)
     box('LockPlate',(0,.20,.09),(.13,.2,.025),'Rust',.009)
+
+def fractured_flights():
+    for name,kind in (('EscalatorFractured','Escalator'),('HaulRampFractured','HaulRamp'),
+                      ('ServiceStairFractured','ServiceStair'),('StairsFractured','ServiceStair')):
+        haul=kind=='HaulRamp'; esc=kind=='Escalator'; rise=2 if haul else 4
+        width=4 if haul else 2.4 if esc else 3; key='EscalatorSteel' if haul or esc else 'Concrete'
+        chunks=[]
+        for index in range(10):
+            def chunk(i=index,h=haul,e=esc,r=rise,w=width,k=key):
+                z0,z1=i*.8,(i+1)*.8; offset=.04 if h else .1
+                vertices=[(-w/2,r*z0/8-.16,z0),(w/2,r*z0/8-.16,z0),
+                    (w/2,r*z1/8-.16,z1),(-w/2,r*z1/8-.16,z1),
+                    (-w/2,r*z0/8+offset,z0),(w/2,r*z0/8+offset,z0),
+                    (w/2,r*z1/8+offset,z1),(-w/2,r*z1/8+offset,z1)]
+                mesh('FracturedFlightCore',vertices,[(0,1,2,3),(4,7,6,5),
+                    (0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)],k)
+                if not h:
+                    for step in (i*2,i*2+1):
+                        y=(step+1)*.2
+                        box('BrokenTread',(0,y-.06,(step+.5)*.4),(w,.12,.4),k,.009,detail=1)
+                        box('Nosing',(0,y+.002,step*.4+.025),(w,.012,.035),'StorefrontTrim',.002)
+                else:
+                    for strip in range(24):
+                        z=(strip+.5)*8/24
+                        if z0<=z<z1:box('TractionStrip',(0,z*r/8+.045,z),(w,.008,.06),'FixtureTrim',0)
+                for sign in (-1,1):
+                    x=sign*(w/2+.15)
+                    rod('BrokenRail',(x,r*z0/8+1.03,z0),(x,r*z1/8+1.03,z1),.055,'FixtureTrim',8)
+                    if e:
+                        mesh('TornSkirt',[(x,r*z0/8+.05,z0),(x,r*z1/8+.05,z1),
+                             (x,r*z1/8+.83,z1),(x,r*z0/8+.83,z0)],[(0,1,2,3)],k)
+                        if i==0:box('BrokenNewel',(x,.52,.05),(.24,1,.5),k,.085,detail=2)
+                    else:
+                        for z in (0,2,4,6,8):
+                            if z0<=z<z1 or (i==9 and z==8):
+                                rod('DetachedBaluster',(x,r*z/8,z),(x,r*z/8+1,z),.027,'FixtureTrim',8)
+            chunks.append(chunk)
+        export_chunks(name,chunks)
 
 def generate():
     for name,maker in {'WallPlaster':lambda l:wall(False,l),'WallBlock':lambda l:wall(True,l),

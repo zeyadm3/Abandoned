@@ -37,6 +37,7 @@ namespace Abandoned.Structure
 
         private void Fall(StructuralSection section)
         {
+            if (section.CollapsedQuietly) return;
             if (visual == null || config == null || GameLayers.DebrisLayer < 0) return;
             ClearFragment();
             fragment = Instantiate(visual.gameObject, visual.position, visual.rotation);

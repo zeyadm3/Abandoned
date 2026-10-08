@@ -31,6 +31,9 @@ it does not launch Unity or perform gameplay tests.
   Drive that renderer's emission with LightFixture, and attach the complete fixture to its slab.
 - No FBX supplies collision. Builders author only useful gameplay collision around solid
   geometry; the thin floor/wall decay pieces and fixtures are decorative.
+- EscalatorFractured, HaulRampFractured and ServiceStairFractured (also exported as
+  StairsFractured) preserve their intact flight dimensions, with ten sibling Chunk_XX
+  solids and centroid pivots; they do not contain duplicate LOD meshes.
 
 ## Structural and module dimensions
 

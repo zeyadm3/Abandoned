@@ -13,9 +13,13 @@ namespace Abandoned.EditorTools
             for(int floor=0;floor<Floors;floor++) MallWalls.Build(walls,floor,MeridianArt.Material("Plaster"),MeridianArt.Material("Trim"),MeridianArt.Material("Metal"));
             Transform columns=Group("Columns",mall);
             // Columns sit behind the inner edge: the four-metre haul strips remain clear.
-            foreach(Vector3 at in new[]{new Vector3(19.4f,0,15.4f),new Vector3(36.6f,0,15.4f),new Vector3(19.4f,0,32.6f),new Vector3(36.6f,0,32.6f)})
+            foreach(Vector3 at in new[]{new Vector3(20.45f,0,16.45f),new Vector3(35.55f,0,16.45f),new Vector3(20.45f,0,31.55f),new Vector3(35.55f,0,31.55f)})
             {
-                if(MeridianArt.UseKit) for(int f=0;f<Floors;f++) MeridianArt.Place("Column",columns,at+Vector3.up*FloorY(f),0,new Vector3(1,StoryHeight/3.75f,1));
+                if(MeridianArt.UseKit) {
+                    var pillar=Group("Column",columns);pillar.localPosition=at;
+                    var c=pillar.gameObject.AddComponent<BoxCollider>();c.center=Vector3.up*6;c.size=new Vector3(.7f,12,.7f);
+                    for(int f=0;f<Floors;f++)MeridianArt.Place("Column",pillar,Vector3.up*FloorY(f),0,new Vector3(1,StoryHeight/3.75f,1));
+                }
                 else Box("Column",columns,at+Vector3.up*6,new Vector3(.7f,12,.7f),MeridianArt.Material("FacadeStone"));
             }
             MarkStatic(columns);

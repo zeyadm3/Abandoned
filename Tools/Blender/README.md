@@ -1,6 +1,6 @@
 # Original ABANDONED assets
 
-`meridian.py` generates the realistic Meridian Mall 0.13.0 kit: 79 FBX assets and 25 original
+`meridian.py` generates the realistic Meridian Mall 0.13.0 kit: 83 FBX assets and 25 original
 PBR texture sets (75 PNG maps). `environment.py` retains the earlier modular kit, depot props,
 wardrobe and procedural palette textures. `threats.py` builds eight original skinned silhouettes
 and their Idle, Walk, Chase, Attack and Special animation takes.
@@ -31,7 +31,8 @@ standard finishes and 512 for small props/decals. Each set has `_BaseColor`, `_N
 maps. The mask packs R metallic, G occlusion, B unused, A smoothness; Unity imports colour as
 sRGB, normals as normal maps and masks as linear data, with mipmaps and explicit compressed
 desktop settings. FBX slots are `MALL_<Set>`. Major assets have explicit LOD0/1/2 groups;
-fractured floor files contain nine sibling chunks. Flights climb Unity +Z; pivots sit at the
+fractured floor files contain nine sibling chunks and each flight fracture has ten siblings.
+Flights climb Unity +Z; pivots sit at the
 floor/base centre or flight foot. The coordinate conversion remains Unity `(x,y,z)` to Blender
 `(x,z,y)`. Nested LOD exports use `bake_space_transform=False` to avoid duplicate unit/axis
 conversion; Unity preserves file-scale/axis import corrections beneath neutral placement holders.

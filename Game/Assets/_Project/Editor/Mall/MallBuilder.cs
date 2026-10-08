@@ -30,14 +30,11 @@ namespace Abandoned.EditorTools
             var setup=new StructureSceneSetup();
             foreach(Transform e in mall.Find("Exits"))setup.AddSection(e.Find("Ledge"),SectionType.Balcony,false);
             MallArchitectureBuilder.BindRails(mall);
-            int fixtures;
-            if(MeridianArt.UseKit) {
-                MeridianAtmosphere.Apply(mall);MeridianDressing.Place(mall);fixtures=MeridianLighting.Place(mall);
-            } else {
-                MallArchitectureBuilder.Ceilings(mall);
-                MeridianAtmosphere.Apply(mall);Transform lights=Group("Lights",mall);
-                fixtures=MallFixtures.Place(lights,mall.Find(TilesGroup));
-            }
+            MeridianAtmosphere.Apply(mall);
+            if(MeridianArt.UseKit)MeridianArchitectureDetails.Place(mall);
+            if(MeridianArt.Dress)MeridianDressing.Place(mall);else MallArchitectureBuilder.Ceilings(mall);
+            int fixtures=MeridianArt.Illuminate?MeridianLighting.Place(mall):MallFixtures.Place(Group("Lights",mall),mall.Find(TilesGroup));
+            MallSurfaceBuilder.Assign(mall);
             BakeNavMesh(mall);
             int shutters=MallShutters.Place(mall);
             int problems=MallFlightValidator.Run(mall)+InvisibleColliderAudit.Run(mall,"Mall");

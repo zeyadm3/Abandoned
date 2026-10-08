@@ -22,7 +22,7 @@ namespace Abandoned.EditorTools
                     else Box("Slab",Group("Visual",tile),collider.center,collider.size,MeridianArt.Material(finish),false);
                     Transform surface=tile.Find("Visual");
                     // Divider strips visibly identify the structural module without blocking a trolley.
-                    foreach(float edge in new[]{-1f,1f}) {
+                    if(!MeridianArt.UseKit)foreach(float edge in new[]{-1f,1f}) {
                         Box("DividerX",surface,new Vector3(0,.002f,edge*1.985f),new Vector3(3.97f,.008f,.03f),MeridianArt.Material("Brass"),false);
                         Box("DividerZ",surface,new Vector3(edge*1.985f,.002f,0),new Vector3(.03f,.008f,3.97f),MeridianArt.Material("Brass"),false);
                     }

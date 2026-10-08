@@ -23,12 +23,16 @@ if mode in ('all','meshes'):
     core.initialize(output,textures.SETS)
     meridian_surfaces.generate(); meridian_architecture.generate()
     meridian_props.generate(); meridian_decay.generate()
+    meridian_architecture.fractured_flights()
+if mode=='flight-fractures':
+    core.initialize(output,textures.SETS)
+    meridian_architecture.fractured_flights()
 
 manifest={'version':'0.13.0','author':'Original ABANDONED art',
     'coordinateMapping':'Unity (x,y,z) = Blender (x,z,y); metres; +Z front/climb',
     'pivot':'Floor walking-top centre; flight foot centre; other module base centre',
     'lodHierarchy':'LOD0/1/2 children; <Model>_LOD0/1/2 renderers. Diffuser separate.',
-    'fractureHierarchy':'Floor*Fractured has nine sibling Chunk_00..08 meshes with local centroid pivots',
+    'fractureHierarchy':'Floor*Fractured:9 sibling chunks; flight *Fractured:10 siblings; centroid pivots',
     'maskPacking':{'r':'metallic','g':'occlusion','b':'unused','a':'smoothness'},
     'textures':{key:{'size':size,'slot':'MALL_'+key,'paths':[
         'Textures/MALL_'+key+'_'+suffix+'.png' for suffix in ('BaseColor','Normal','Mask')]}
