@@ -12,10 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 971d4aa364541460b9d8c10b81845ecd, type: 3}
   m_Name: HorrorConfig
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Extraction.HorrorConfig
+  levels:
+  - Mall
   <FinalDelay>k__BackingField: 90
+  <SoloFinalDelayBonus>k__BackingField: 60
   <ScareInterval>k__BackingField: 80
   <PressureInterval>k__BackingField: 18
+  <SlamFromDanger>k__BackingField: 2
   <Building>k__BackingField:
     m_Center: {x: 28, y: 4, z: 24}
     m_Extent: {x: 28, y: 8, z: 24}
   <ScareModel>k__BackingField: {fileID: 5892754854047771061, guid: 5aac0c1334dba4d539137625d0639c17, type: 3}
+  <ArrivalBeats>k__BackingField:
+  - 2
+  - 9
+  - 17
+  - 30
+  - 46
+  <ArrivalFallback>k__BackingField: {x: 28, y: 0, z: 10}
+  <ArrivalFigure>k__BackingField: {x: 26, y: 4, z: 29}
+  <ArrivalDoor>k__BackingField: {x: 40, y: 4, z: 30}
+  <ArrivalBlackout>k__BackingField: {x: 5, y: 16}
+  <ArrivalBlackoutSpeed>k__BackingField: 5
+  <RoarPoint>k__BackingField: {x: 28, y: 8, z: 24}
+  <SectorCell>k__BackingField: {x: 12, y: 4, z: 12}
+  <Sectors>k__BackingField: 6
+  <SectorsLitAtMaxDanger>k__BackingField: 2
