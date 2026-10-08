@@ -24,7 +24,8 @@ namespace Abandoned.UI
             MenuKit.Text(scroll, "THE BUILDING", "section");
             MenuKit.Text(scroll, "Floors, stairs and walkways have a load limit. Weight cracks them (you'll hear creaks and groans), " +
                                  "hard impacts damage them, and a failing floor collapses with everything on it. Spread out, and think before " +
-                                 "the whole crew stands on the bridge with the piano.");
+                                 "the whole crew stands on the bridge with the piano. Falling hurts: one floor costs health, more if you were " +
+                                 "carrying something heavy, and three floors kills.");
             MenuKit.Text(scroll, "THE LOOT", "section");
             MenuKit.Text(scroll, "Heavy things slow you down; big things need a crew on the handles (or a slow drag). Fragile things lose value " +
                                  "every time they hit something. Scan to reveal prices, pocket values and the haul for a few seconds. " +

@@ -105,6 +105,13 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, dev tool; written, untested): holding Shift + Control + Option/Alt + Command/Windows together hurts
+  the local player 5 HP at once and every 0.5 s while held (NetworkPlayer.DevHurt; Core.DevTools only, so never in a
+  shareable build; the host applies it and a shareable host ignores a dev client's request).
+- 2026-10-09 (user: "add fall damage"; written, untested): fall damage already existed but was free up to 4 m, exactly
+  one mall storey, and quadratic above it. Now SafeFallHeight 2.5 m (asset edited by hand) and a linear curve
+  (PlayerHealthConfig.FallDamageCurve = 1; 2 restores the old shape), lethal still at 12 m: one storey ~16 HP, two ~58,
+  three kills; carried weight still multiplies it (+1 % per kg, up to x2.5). Knock-down height (PlayerRagdollConfig) unchanged.
 - 2026-10-09 (user spec, vitals and low-health feedback; written, untested, user tests): every number is in
   PlayerHealthConfig (new fields default on the existing asset). The vitals bar grades by whole HP: electric blue to 41
   (leaning toward red from 50), into orange-red 40-31, crimson 30-21, dark blood red pulsing with the heartbeat at 20

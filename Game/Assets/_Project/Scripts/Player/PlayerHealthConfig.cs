@@ -11,8 +11,11 @@ namespace Abandoned.Player
         [field: SerializeField, Min(1f)] public float MedkitHeal { get; private set; } = 65f;
         [field: SerializeField, Min(1f)] public float ReviveHealth { get; private set; } = 50f;
         [field: Header("Fall damage")]
-        [field: SerializeField, Min(0f)] public float SafeFallHeight { get; private set; } = 4f;
+        [field: Tooltip("Drops up to this height (m) are free. Below one 4 m storey on purpose (2026-10-09): falling a floor must hurt.")]
+        [field: SerializeField, Min(0f)] public float SafeFallHeight { get; private set; } = 2.5f;
         [field: SerializeField, Min(1f)] public float LethalFallHeight { get; private set; } = 12f;
+        [field: Tooltip("Shape of the damage between the safe and the lethal height: 1 = even all the way, 2 = gentle at first (the old curve).")]
+        [field: SerializeField, Range(0.5f, 3f)] public float FallDamageCurve { get; private set; } = 1f;
         [field: Tooltip("50 kg carried increases fall damage by 50%. Dragged weight is excluded.")]
         [field: SerializeField, Min(1f)] public float FullWeightPenaltyKg { get; private set; } = 100f;
         [field: SerializeField, Min(1f)] public float MaxWeightMultiplier { get; private set; } = 2.5f;
@@ -95,7 +98,7 @@ namespace Abandoned.Player
             if (height <= SafeFallHeight) return 0f;
             float fraction = Mathf.InverseLerp(SafeFallHeight, LethalFallHeight, height);
             float weight = Mathf.Clamp(1f + Mathf.Max(0f, carriedKg) / FullWeightPenaltyKg, 1f, MaxWeightMultiplier);
-            return Mathf.Min(MaxHealth, fraction * fraction * MaxHealth * weight);
+            return Mathf.Min(MaxHealth, Mathf.Pow(fraction, FallDamageCurve) * MaxHealth * weight);
         }
 
         /// <summary>0 = fine, 1 = critical, 2 = severe trauma, 3 = near death. Judged on whole HP, as the HUD shows it.</summary>

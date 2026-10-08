@@ -132,6 +132,7 @@ namespace Abandoned.Networking
             // NetworkVariable only sends when the value actually changed.
             state.Value = PlayerNetState.From(motor.IsGrounded, motor.IsSprinting, motor.IsCrouching,
                 ragdoll.IsRagdolled, ragdoll.IsBodyResting, ragdoll.BodyPosition, look != null ? look.Pitch : 0f);
+            TickDevHurt();
         }
 
         private void OnStateChanged(PlayerNetState previous, PlayerNetState current) => ApplyRemote(current);

@@ -4,6 +4,14 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.13.5d.EEA — fall damage retune and the developer hurt key (2026-10-09; not compiled or played by Claude)
+
+Fall damage was already wired (motor landing -> host -> PlayerHealthConfig.FallDamage) but did nothing up to 4 m,
+one mall storey. Now free up to 2.5 m and linear to lethal at 12 m: one storey ~16 HP, two ~58, three kills;
+carried weight multiplies it. "How to play" says so.
+Dev tool: hold Shift + Control + Option/Alt + Command/Windows to lose 5 HP at once and every 0.5 s (editor and
+Development builds only; NetworkPlayer.DevHurt).
+
 ## 0.13.5c.EEA — vitals and low-health feedback (2026-10-09; not compiled or played by Claude)
 
 Built to the user's written spec; the user tests it. Script-only: no scene, prefab or asset edited, no rebuild needed.
