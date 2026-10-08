@@ -29,6 +29,11 @@ and cash out salvage. The 0.13.0 shaped mall architecture and gameplay layout re
   texture GPU storage is 127.98 MiB (256.04 MiB Editor/native); five added parking lights cast no shadows.
   No EditMode/PlayMode, gameplay, network or screenshot tests run. TestMap and HQ are unchanged; unrelated
   regenerated assets were restored. Existing low-poly vehicles remain stylistically simple in this environment.
+- **Builds:** shareable Mac and Windows passed from clean commit **d95ced2**. Archives are
+  `~/Documents/Abandoned-builds/dev/Abandoned-0.13.1-d95ced2-Mac.zip` (**92.1 MiB**) and
+  `Abandoned-0.13.1-d95ced2-Windows.zip` (**82.5 MiB**). Build reports: Mac 291 MB / 14 seconds;
+  Windows 271 MB / 10 seconds. Both stamps agree on version, clean commit and UTC build time
+  (2026-10-08T15:23:09Z); platform/size fields differ as expected. No players launched or push performed.
 
 Test first:
 
