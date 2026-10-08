@@ -77,6 +77,9 @@ namespace Abandoned.Company
                 Fact(sheet, "STABILITY", $"{c.Stability:P0}", c.Stability < 0.6f);
                 Fact(sheet, "POWER", c.PowerOff ? "OFF" : "ON", c.PowerOff);
                 Fact(sheet, "WINDOW", $"{c.WindowSeconds / 60f:0} MIN", false);
+                // QA B-18: a Sealed job is a wasted trip without something to open shutters with.
+                if (company.ModifierOf(c) is ContractModifier sealedJob && sealedJob.Sealed)
+                    Fact(sheet, "TOOLS", "BOLT CUTTERS OR A CROWBAR", true, "every door is shuttered: bring one");
                 if (company.IsServer)
                 {
                     int index = i;

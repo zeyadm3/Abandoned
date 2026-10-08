@@ -93,12 +93,13 @@ namespace Abandoned.Player
         }
 
         [Rpc(SendTo.Server)]
-        private void BuyRpc(CosmeticKind kind, int index)
+        private void BuyRpc(CosmeticKind kind, int index, RpcParams rpcParams = default)
         {
             CosmeticDefinition d = Definition(kind, index);
             CompanyService company = CompanyService.Current;
             if (d == null || d.Unlock != CosmeticUnlock.Buy) BuyResultRpc(kind, index, false, "That isn't for sale.");
             else if (company == null || !company.IsSpawned) BuyResultRpc(kind, index, false, "Only at the HQ: the company pays for it.");
+            else if (!company.Allows(rpcParams.Receive.SenderClientId, CrewRule.Spend)) BuyResultRpc(kind, index, false, CompanyService.Refusal(CrewRule.Spend));
             else if (!company.TryCharge(d.Price, d.DisplayName)) BuyResultRpc(kind, index, false, $"The company can't afford ${d.Price:N0}.");
             else BuyResultRpc(kind, index, true, "");
         }

@@ -110,7 +110,11 @@ namespace Abandoned.Networking
         {
             if (!IsSpawned) return;
             if (IsServer) WatchHolder();
-            else if (reconcilePending) Reconcile();
+            else
+            {
+                if (reconcilePending) Reconcile();
+                SendQueuedThrow();
+            }
         }
 
         private void WatchHolder()
@@ -203,9 +207,34 @@ namespace Abandoned.Networking
         /// <summary>The carrier's machine knows where the item really is; the host checks it's plausible.</summary>
         public bool ClientRequestRelease(Vector3 velocity, bool isThrow)
         {
-            if (!requestGuard.TryBegin(LootRequest.Release, Time.time, config.RequestRepeatGuard)) return false;
+            if (!requestGuard.TryBegin(LootRequest.Release, Time.time, config.RequestRepeatGuard))
+            {
+                // QA B-22: a throw right after another release request isn't lost; it goes as soon as it may.
+                if (isThrow) (queuedThrow, queuedThrowUntil) = (velocity, Time.time + QueuedThrowLifetime);
+                return false;
+            }
+            queuedThrowUntil = 0f;
             RequestReleaseRpc(velocity, transform.position, transform.rotation, isThrow);
             return true;
+        }
+
+        private const float QueuedThrowLifetime = 1f;
+        private Vector3 queuedThrow;
+        private float queuedThrowUntil;
+
+        // Client: send a queued throw once the guard allows, if we still hold the item.
+        private void SendQueuedThrow()
+        {
+            if (queuedThrowUntil <= 0f) return;
+            bool stillOurs = grabbable.Holder != null && grabbable.Holder.IsLocal && hold.Value.Mode == LootHoldMode.Held;
+            if (Time.time > queuedThrowUntil || !stillOurs)
+            {
+                queuedThrowUntil = 0f;
+                return;
+            }
+            if (!requestGuard.TryBegin(LootRequest.Release, Time.time, config.RequestRepeatGuard)) return;
+            queuedThrowUntil = 0f;
+            RequestReleaseRpc(queuedThrow, transform.position, transform.rotation, true);
         }
 
         public bool ClientRequestUnpocket(Vector3 aim, Vector3 inheritedVelocity)

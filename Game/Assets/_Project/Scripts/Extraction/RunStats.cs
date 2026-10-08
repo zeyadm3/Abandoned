@@ -124,6 +124,6 @@ namespace Abandoned.Extraction
             return lines.ToArray();
         }
 
-        private static string Name(ulong client) => $"Player {client + 1}";
+        private static string Name(ulong client) => NetworkPlayer.NameOf(client);
     }
 }

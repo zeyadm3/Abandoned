@@ -23,6 +23,9 @@ namespace Abandoned.UI
         private readonly Label crewTitle, joinHint;
         private readonly Button invite, leave;
         private readonly Dictionary<ulong, Row> rows = new();
+        private readonly VisualElement hostRules;
+        private Company.CompanyService rulesFor;
+        private VisualElement companyTools;
         private string shownCrew;
 
         private sealed class Row
@@ -58,8 +61,16 @@ namespace Abandoned.UI
             MenuKit.Button(left, "How to play", () => menu.Push(MenuScreen.HowToPlay));
             MenuKit.Button(left, "Achievements", () => menu.Push(MenuScreen.Achievements));
             invite = MenuKit.Button(left, "Invite friends", () => menu.Lobby?.Flow?.OpenInviteOverlay());
-            leave = MenuKit.Button(left, "Leave game", () => menu.Bootstrap.Disconnect(), SoundId.UiBack, important: true);
-            MenuKit.Button(left, "Quit to desktop", menu.Quit, SoundId.UiBack, important: true);
+            leave = MenuKit.Button(left, "Leave game", () =>
+            {
+                Company.CompanyService.Current?.MarkLeavingMidJob();
+                menu.Bootstrap.Disconnect();
+            }, SoundId.UiBack, important: true);
+            MenuKit.Button(left, "Quit to desktop", () =>
+            {
+                Company.CompanyService.Current?.MarkLeavingMidJob();
+                menu.Quit();
+            }, SoundId.UiBack, important: true);
             MenuKit.Button(left, "Report a problem", () =>
             {
                 Launch.OpenLogFolder();
@@ -76,6 +87,46 @@ namespace Abandoned.UI
             crewList = MenuKit.Scroll(right, "pause__crew-list");
             joinHint = MenuKit.Text(right, "", "text");
             joinHint.AddToClassList("text--small");
+            hostRules = new VisualElement();
+            right.Add(hostRules);
+        }
+
+        // QA B-08: the host decides what the rest of the crew may do with the company.
+        private void BuildHostRules(bool isHost)
+        {
+            Company.CompanyService company = Company.CompanyService.Current;
+            bool show = isHost && company != null && company.IsSpawned;
+            MenuKit.Show(hostRules, show);
+            if (show && companyTools != null) MenuKit.Show(companyTools, !company.JobInProgress);
+            if (!show || rulesFor == company) return;
+            rulesFor = company;
+            hostRules.Clear();
+            MenuKit.Text(hostRules, "CREW MAY", "section");
+            MenuKit.Toggle(hostRules, "Spend company money", company.CrewMay(Company.CrewRule.Spend), v => company.SetCrewRule(Company.CrewRule.Spend, v));
+            MenuKit.Toggle(hostRules, "Start the van", company.CrewMay(Company.CrewRule.Drive), v => company.SetCrewRule(Company.CrewRule.Drive, v));
+            MenuKit.Toggle(hostRules, "Pull the truck lever", company.CrewMay(Company.CrewRule.Lever), v => company.SetCrewRule(Company.CrewRule.Lever, v));
+            // QA B-24: the company itself, between jobs only.
+            companyTools = new VisualElement();
+            hostRules.Add(companyTools);
+            MenuKit.Text(companyTools, "COMPANY", "section");
+            var rename = new TextField { value = company.State.Name.ToString(), maxLength = NetworkPlayer.MaxNameLength };
+            rename.AddToClassList("field");
+            rename.RegisterCallback<FocusOutEvent>(_ => company.RenameCompany(rename.value));
+            companyTools.Add(rename);
+            Button fresh = null;
+            float armedUntil = -1f;
+            fresh = MenuKit.Button(companyTools, "Start a new company", () =>
+            {
+                if (Time.unscaledTime > armedUntil)
+                {
+                    armedUntil = Time.unscaledTime + 3f;
+                    fresh.text = "Lose everything? Press again";
+                    return;
+                }
+                fresh.text = "Start a new company";
+                company.StartNewCompany();
+                rename.value = company.State.Name.ToString();
+            }, SoundId.UiBack, small: true);
         }
 
         public void Refresh()
@@ -94,8 +145,9 @@ namespace Abandoned.UI
                 crewList.Clear();
                 rows.Clear();
                 foreach (NetworkPlayer p in NetworkPlayer.All)
-                    if (p != null && p.IsSpawned) rows[p.OwnerClientId] = Build(p);
+                    if (p != null && p.IsSpawned) rows[p.OwnerClientId] = Build(p, isHost);
             }
+            BuildHostRules(isHost);
             int count = 0;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
@@ -108,10 +160,11 @@ namespace Abandoned.UI
             MenuKit.Show(invite, isHost && flow != null && flow.InLobby);
             joinHint.text = flow != null && flow.InLobby ? $"Steam lobby: {flow.Members.Count}/{max} - friends join from the overlay or your profile."
                 : isHost && b.HostPort != 0 ? $"Friends join at your LAN address, port {b.HostPort}. Players join at the HQ only." : "";
-            leave.text = isHost ? "End game for everyone" : "Leave game";
+            bool midJob = isHost && Company.CompanyService.Current != null && Company.CompanyService.Current.JobInProgress;
+            leave.text = !isHost ? "Leave game" : midJob ? "End game (job counts as failed)" : "End game for everyone";
         }
 
-        private Row Build(NetworkPlayer p)
+        private Row Build(NetworkPlayer p, bool isHost)
         {
             var row = new Row { Root = new VisualElement() };
             row.Root.AddToClassList("crew-row");
@@ -125,7 +178,7 @@ namespace Abandoned.UI
             var who = new VisualElement();
             who.AddToClassList("crew-row__who");
             row.Root.Add(who);
-            row.Name = MenuKit.Text(who, $"Player {p.OwnerClientId + 1}", "crew-row__name");
+            row.Name = MenuKit.Text(who, p.DisplayName, "crew-row__name");
             row.Tags = MenuKit.Text(who, "", "crew-row__tags");
             row.Talking = new VisualElement();
             row.Talking.AddToClassList("crew-row__talking");
@@ -146,6 +199,22 @@ namespace Abandoned.UI
                     row.Mute.EnableInClassList("menu-button--on", VoiceSettings.PlayerMuted(id));
                 }, SoundId.UiClick, small: true);
                 row.Mute.EnableInClassList("menu-button--on", VoiceSettings.PlayerMuted(id));
+                if (isHost)
+                {
+                    // Two presses, so a stray click doesn't throw a friend out (QA B-24).
+                    Button kick = null;
+                    float armedUntil = -1f;
+                    kick = MenuKit.Button(row.Root, "Kick", () =>
+                    {
+                        if (Time.unscaledTime > armedUntil)
+                        {
+                            armedUntil = Time.unscaledTime + 3f;
+                            kick.text = "Sure?";
+                            return;
+                        }
+                        Company.CompanyService.Current?.Kick(id);
+                    }, SoundId.UiBack, small: true);
+                }
             }
             crewList.Add(row.Root);
             return row;

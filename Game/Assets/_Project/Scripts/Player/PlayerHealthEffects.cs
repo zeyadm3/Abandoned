@@ -53,7 +53,9 @@ namespace Abandoned.Player
             RunState run = RunState.Current;
             bool insideJob = run != null && (run.State.Phase == RunPhase.Running || run.State.Phase == RunPhase.Honking);
             bool inTruck = TruckCargo.Current != null && TruckCargo.Current.Carries(player.transform.position);
-            if (!insideJob || inTruck) return;
+            // QA B-30: the player sets how loud their own heartbeat and breath are (0 = off).
+            float vitals = Core.GameSettings.VitalsVolume;
+            if (!insideJob || inTruck || vitals <= 0f) return;
             if (Time.time >= nextThreatScan)
             {
                 nextThreatScan = Time.time + 0.25f;
@@ -70,12 +72,12 @@ namespace Abandoned.Player
             if (Time.time >= nextHeartbeat)
             {
                 nextHeartbeat = Time.time + Mathf.Lerp(1.05f, 0.48f, pressure);
-                GameAudio.PlayHeartbeat(config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
+                GameAudio.PlayHeartbeat(vitals * config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
             }
             if (Time.time >= nextBreath)
             {
                 nextBreath = Time.time + Mathf.Lerp(4.2f, 2f, pressure);
-                GameAudio.PlayBreath(Mathf.Lerp(0.04f, 0.18f, pressure));
+                GameAudio.PlayBreath(vitals * Mathf.Lerp(0.04f, 0.18f, pressure));
             }
         }
 

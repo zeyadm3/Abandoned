@@ -53,6 +53,8 @@ namespace Abandoned.Extraction
 
         public int Quota, Seed;
         public float Seconds;
+        /// <summary>Nobody made it: the truck was towed home with part of its load (QA B-20).</summary>
+        public bool Wiped;
         public Item[] Items = Array.Empty<Item>();
         public Player[] Players = Array.Empty<Player>();
         /// <summary>Funny stats lines (filled by the run's stats tracker, 5.4).</summary>
@@ -67,6 +69,7 @@ namespace Abandoned.Extraction
             s.SerializeValue(ref Quota);
             s.SerializeValue(ref Seed);
             s.SerializeValue(ref Seconds);
+            s.SerializeValue(ref Wiped);
             SerializeArray(s, ref Items);
             SerializeArray(s, ref Players);
             int n = Stats.Length;

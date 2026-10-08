@@ -16,12 +16,15 @@ namespace Abandoned.Core
         private const string SensitivityKey = "settings.sensitivity", FovKey = "settings.fov", BobKey = "settings.headbob",
             ShakeKey = "settings.shake", SubtitlesKey = "settings.subtitles", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale",
             ReduceMenuEffectsKey = "settings.reducemenufx", InvertYKey = "settings.inverty", CrouchToggleKey = "settings.crouchtoggle",
-            CrosshairKey = "settings.crosshair", SubtitleSizeKey = "settings.subtitlesize", MuteUnfocusedKey = "settings.muteunfocused";
+            CrosshairKey = "settings.crosshair", SubtitleSizeKey = "settings.subtitlesize", MuteUnfocusedKey = "settings.muteunfocused",
+            ReduceFlashingKey = "settings.reduceflashing", FewerScaresKey = "settings.fewerscares", VitalsVolumeKey = "settings.vitalsvolume",
+            PlayerNameKey = "settings.playername";
         public static readonly string[] SubtitleSizeNames = { "Small", "Medium", "Large" };
         public const float MinUiScale = 0.75f, MaxUiScale = 1.5f;
 
-        private static float? sensitivity, fov, uiScale;
-        private static bool? headBob, shake, subtitles, colorblind, reduceMenuEffects, invertY, crouchToggle, crosshair, muteUnfocused;
+        private static float? sensitivity, fov, uiScale, vitalsVolume;
+        private static bool? headBob, shake, subtitles, colorblind, reduceMenuEffects, invertY, crouchToggle, crosshair, muteUnfocused,
+            reduceFlashing, fewerScares;
         private static int? subtitleSize;
 
         public static event Action Changed;
@@ -51,10 +54,10 @@ namespace Abandoned.Core
             set => Set(ref shake, ShakeKey, value);
         }
 
-        /// <summary>Captions for structural warnings and threat sounds.</summary>
+        /// <summary>Captions for structural warnings and threat sounds. On by default: sound carries the game's warnings.</summary>
         public static bool Subtitles
         {
-            get => subtitles ??= Prefs.GetInt(SubtitlesKey, 0) == 1;
+            get => subtitles ??= Prefs.GetInt(SubtitlesKey, 1) == 1;
             set => Set(ref subtitles, SubtitlesKey, value);
         }
 
@@ -73,6 +76,41 @@ namespace Abandoned.Core
         {
             get => reduceMenuEffects ??= Prefs.GetInt(ReduceMenuEffectsKey, 0) == 1;
             set => Set(ref reduceMenuEffects, ReduceMenuEffectsKey, value);
+        }
+
+        /// <summary>
+        /// In-game lights never strobe (QA O-01): failing fixtures, danger flickers and the flashlight near a
+        /// monster dim and recover smoothly instead of blinking.
+        /// </summary>
+        public static bool ReduceFlashing
+        {
+            get => reduceFlashing ??= Prefs.GetInt(ReduceFlashingKey, 0) == 1;
+            set => Set(ref reduceFlashing, ReduceFlashingKey, value);
+        }
+
+        /// <summary>No sudden apparitions (the figures the building shows you); the sounds and the monsters stay.</summary>
+        public static bool FewerJumpScares
+        {
+            get => fewerScares ??= Prefs.GetInt(FewerScaresKey, 0) == 1;
+            set => Set(ref fewerScares, FewerScaresKey, value);
+        }
+
+        /// <summary>Volume of your own heartbeat and breathing (0 = off).</summary>
+        public static float VitalsVolume
+        {
+            get => vitalsVolume ??= Prefs.GetFloat(VitalsVolumeKey, 1f);
+            set => Set(ref vitalsVolume, VitalsVolumeKey, Mathf.Clamp01(value));
+        }
+
+        /// <summary>The name others see when you're not on Steam (Steam sessions use your Steam name). Empty = "Player N".</summary>
+        public static string PlayerName
+        {
+            get => Prefs.GetString(PlayerNameKey, "");
+            set
+            {
+                Prefs.SetString(PlayerNameKey, (value ?? "").Trim());
+                Changed?.Invoke();
+            }
         }
 
         public static bool InvertY
@@ -124,10 +162,12 @@ namespace Abandoned.Core
         public static void ResetAll()
         {
             foreach (string key in new[] { SensitivityKey, FovKey, BobKey, ShakeKey, SubtitlesKey, ColorblindKey, UiScaleKey, ReduceMenuEffectsKey,
-                         InvertYKey, CrouchToggleKey, CrosshairKey, SubtitleSizeKey, MuteUnfocusedKey }) Prefs.Delete(key);
+                         InvertYKey, CrouchToggleKey, CrosshairKey, SubtitleSizeKey, MuteUnfocusedKey, ReduceFlashingKey, FewerScaresKey,
+                         VitalsVolumeKey }) Prefs.Delete(key);
             Prefs.Save(); // a delete that isn't flushed can come back next launch
-            sensitivity = fov = uiScale = null;
+            sensitivity = fov = uiScale = vitalsVolume = null;
             headBob = shake = subtitles = colorblind = reduceMenuEffects = invertY = crouchToggle = crosshair = muteUnfocused = null;
+            reduceFlashing = fewerScares = null;
             subtitleSize = null;
             Changed?.Invoke();
         }
@@ -149,8 +189,9 @@ namespace Abandoned.Core
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {
-            sensitivity = fov = null;
+            sensitivity = fov = uiScale = vitalsVolume = null;
             headBob = shake = subtitles = colorblind = reduceMenuEffects = invertY = crouchToggle = crosshair = muteUnfocused = null;
+            reduceFlashing = fewerScares = null;
             subtitleSize = null;
             Changed = null;
         }

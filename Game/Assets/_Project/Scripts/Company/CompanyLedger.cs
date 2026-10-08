@@ -33,16 +33,27 @@ namespace Abandoned.Company
         }
 
         /// <summary>
-        /// A job left unfinished (the host quit mid-run) counts as an empty haul, so quitting can't dodge
-        /// a missed quota. Returns the outcome, or null when nothing was pending.
+        /// A job the host chose to leave unfinished counts as an empty haul, so quitting can't dodge a missed
+        /// quota. A job cut short by a crash or a lost connection is voided instead: no pay, no penalty, no
+        /// strike (QA B-06). Returns the outcome of a counted job, or null when nothing was pending or it was voided.
         /// </summary>
-        public static RunOutcome? SettleAbandoned(CompanySave save, CompanyConfig c)
+        public static RunOutcome? SettleAbandoned(CompanySave save, CompanyConfig c) => SettleAbandoned(save, c, out _);
+
+        public static RunOutcome? SettleAbandoned(CompanySave save, CompanyConfig c, out bool voided)
         {
+            voided = false;
             if (save.pendingQuota <= 0) return null;
             int quota = save.pendingQuota;
             float bonus = save.pendingBonus;
+            bool onPurpose = save.pendingLeftOnPurpose;
             save.pendingQuota = 0;
             save.pendingBonus = 0f;
+            save.pendingLeftOnPurpose = false;
+            if (!onPurpose)
+            {
+                voided = true;
+                return null;
+            }
             return Apply(save, c, 0, quota, bonus);
         }
 

@@ -16,11 +16,49 @@ namespace Abandoned.Company
         /// <summary>The demo keeps its own company, so the full game never inherits a demo save (or the reverse).</summary>
         public const string DemoFileName = "company_demo.json";
 
+        public const int Slots = 3;
+        private const string SlotKey = "save.slot";
+
         private readonly string path;
 
-        public SaveStore(string folder = null)
+        /// <summary>
+        /// Which company this machine hosts (1-<see cref="Slots"/>, QA B-24); slot 1 is the original
+        /// company.json, so older saves stay where they were. The demo always has its own single file.
+        /// </summary>
+        public static int Slot
         {
-            path = System.IO.Path.Combine(folder ?? Application.persistentDataPath, Core.Demo.IsDemo ? DemoFileName : FileName);
+            get => Mathf.Clamp(Core.Prefs.GetInt(SlotKey, 1), 1, Slots);
+            set
+            {
+                Core.Prefs.SetInt(SlotKey, Mathf.Clamp(value, 1, Slots));
+                Core.Prefs.Save();
+            }
+        }
+
+        public SaveStore(string folder = null) : this(folder, Slot) { }
+
+        public SaveStore(string folder, int slot)
+        {
+            path = System.IO.Path.Combine(folder ?? Application.persistentDataPath, FileFor(slot));
+        }
+
+        public static string FileFor(int slot) =>
+            Core.Demo.IsDemo ? DemoFileName : slot <= 1 ? FileName : $"company_{Mathf.Clamp(slot, 1, Slots)}.json";
+
+        /// <summary>A one-line description of a slot for the menu ("Empty", or name, level and money).</summary>
+        public static string Describe(int slot, string folder = null)
+        {
+            string file = System.IO.Path.Combine(folder ?? Application.persistentDataPath, FileFor(slot));
+            if (!File.Exists(file)) return "Empty: a new company";
+            try
+            {
+                CompanySave save = JsonUtility.FromJson<CompanySave>(File.ReadAllText(file));
+                return save == null ? "Unreadable" : $"{save.companyName} - level {save.level} - ${save.money:N0}";
+            }
+            catch (Exception)
+            {
+                return "Unreadable";
+            }
         }
 
         public string Path => path;

@@ -27,7 +27,7 @@ namespace Abandoned.UI
         };
 
         private VisualElement root;
-        private Label where, terms, tip;
+        private Label where, terms, status, tip;
         private int seenTravel = -1;
         private float until;
         private AudioSource rumble;
@@ -66,6 +66,15 @@ namespace Abandoned.UI
             }
             if (Showing && root == null) Refresh(travel.Level);
             Set(Showing && (Time.unscaledTime < until || !SessionTravel.LevelReady || !Loaded(travel.Level)));
+            if (Showing && status != null) status.text = Status(travel);
+        }
+
+        // QA B-04/B-05: what's holding the drive up, so a long wait isn't a mystery.
+        private static string Status(SessionTravel travel)
+        {
+            if (!Loaded(travel.Level) || travel.LoadProgress < 1f) return $"LOADING  {travel.LoadProgress:P0}";
+            string waiting = travel.WaitingFor;
+            return string.IsNullOrEmpty(waiting) ? "" : $"WAITING FOR {waiting.ToUpperInvariant()}";
         }
 
         private static bool Loaded(string level) => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == level;
@@ -114,6 +123,8 @@ namespace Abandoned.UI
             middle.Add(van);
             where = Text(middle, "travel__where");
             terms = Text(middle, "travel__terms");
+            status = Text(middle, "travel__terms");
+            status.enableRichText = false;
             var road = new VisualElement { pickingMode = PickingMode.Ignore };
             road.AddToClassList("travel__road");
             middle.Add(road);

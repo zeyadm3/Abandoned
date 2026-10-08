@@ -10,6 +10,8 @@ namespace Abandoned.Interaction
         [SerializeField] private CarryConfig config;
 
         private readonly List<Grabbable> items = new();
+        // Which pocket the drop key empties (QA B-16); -1 = the newest one.
+        private int selected = -1;
 
         public IReadOnlyList<Grabbable> Items
         {
@@ -36,6 +38,27 @@ namespace Abandoned.Interaction
             }
         }
 
+        /// <summary>The pocket the drop key empties: the one picked with the wheel, else the newest.</summary>
+        public int SelectedIndex
+        {
+            get
+            {
+                int count = Count;
+                return selected >= 0 && selected < count ? selected : count - 1;
+            }
+        }
+
+        public Grabbable Selected => Count > 0 ? Items[SelectedIndex] : null;
+
+        /// <summary>Move the pocket selection (mouse wheel while the inventory key is held).</summary>
+        public void Cycle(int step)
+        {
+            int count = Count;
+            if (count == 0 || step == 0) return;
+            selected = ((SelectedIndex + step) % count + count) % count;
+            Changed?.Invoke();
+        }
+
         public event Action Changed;
 
         internal void Add(Grabbable item)
@@ -46,7 +69,11 @@ namespace Abandoned.Interaction
 
         internal bool Remove(Grabbable item)
         {
-            if (!items.Remove(item)) return false;
+            int index = items.IndexOf(item);
+            if (index < 0) return false;
+            items.RemoveAt(index);
+            if (index == selected) selected = -1;
+            else if (index < selected) selected--;
             Changed?.Invoke();
             return true;
         }

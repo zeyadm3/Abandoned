@@ -45,7 +45,7 @@ namespace Abandoned.UI
             bool inGame = menu != null && menu.Bootstrap != null && menu.Bootstrap.IsRunning && menu.Showing == MenuScreen.None && NetworkPlayer.Local != null;
             if (!inGame && Typing) Close();
             Keyboard k = Keyboard.current;
-            if (inGame && !Typing && k != null && k.tKey.wasPressedThisFrame && !Core.CursorOwner.UiActive) Open();
+            if (inGame && !Typing && Core.InputBindings.WasPressed("Chat") && !Core.CursorOwner.UiActive) Open();
             else if (Typing && k != null && k.escapeKey.wasPressedThisFrame) Close();
             else if (Typing && k != null && (k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame)) Send();
             Fade(inGame);
@@ -115,8 +115,8 @@ namespace Abandoned.UI
                 if (p != null && p.OwnerClientId == sender && p.GetComponent<PlayerCosmetics>() is PlayerCosmetics look && look.Catalog != null
                     && look.Catalog.Coverall(look.Choice.Coverall) is CosmeticDefinition suit)
                     color = suit.Color;
-            string name = $"PLAYER {sender + 1}" + (ghost ? " (GHOST)" : "");
-            label.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.Lerp(color, Color.white, 0.25f))}><b>{name}</b></color>  <noparse>{text}</noparse>";
+            string name = NetworkPlayer.NameOf(sender).ToUpperInvariant() + (ghost ? " (GHOST)" : "");
+            label.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.Lerp(color, Color.white, 0.25f))}><b><noparse>{Plain(name)}</noparse></b></color>  <noparse>{Plain(text)}</noparse>";
             log.Add(label);
             if (log is ScrollView scroll) scroll.schedule.Execute(() => scroll.ScrollTo(label)).StartingIn(16);
             lines.Add(new Line { Label = label, Time = Time.unscaledTime });
@@ -127,6 +127,10 @@ namespace Abandoned.UI
             }
             Audio.GameAudio.PlayUi(Audio.SoundId.UiClick, 0.4f);
         }
+
+        // QA B-15: a player can't close the <noparse> around their words and inject markup.
+        private static string Plain(string text) =>
+            System.Text.RegularExpressions.Regex.Replace(text ?? "", @"<\s*/?\s*noparse\s*>", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         // Recent lines stay a while and fade; with the chat open, the last few all show.
         private void Fade(bool inGame)

@@ -28,15 +28,29 @@ namespace Abandoned.Networking
         public void Say(string text)
         {
             if (!IsOwner || string.IsNullOrWhiteSpace(text)) return;
-            text = text.Trim();
-            if (text.Length > MaxLength) text = text.Substring(0, MaxLength);
-            SayRpc(new FixedString128Bytes(text));
+            SayRpc(new FixedString512Bytes(Fit(text)));
         }
 
-        [Rpc(SendTo.Server)]
-        private void SayRpc(FixedString128Bytes text, RpcParams rpcParams = default)
+        /// <summary>
+        /// At most <see cref="MaxLength"/> characters, never more bytes than the wire holds (QA B-15: Arabic,
+        /// Chinese or emoji take 2-4 bytes each) and never half a surrogate pair.
+        /// </summary>
+        public static string Fit(string text)
         {
-            if (rpcParams.Receive.SenderClientId != OwnerClientId || Time.unscaledTime < nextAllowed) return;
+            text = text.Trim();
+            if (text.Length > MaxLength) text = text.Substring(0, MaxLength);
+            while (text.Length > 0 && System.Text.Encoding.UTF8.GetByteCount(text) > MaxBytes) text = text.Substring(0, text.Length - 1);
+            if (text.Length > 0 && char.IsHighSurrogate(text[text.Length - 1])) text = text.Substring(0, text.Length - 1);
+            return text;
+        }
+
+        // FixedString512Bytes holds 509 UTF-8 bytes: 120 characters of up to 4 bytes each.
+        private const int MaxBytes = 509;
+
+        [Rpc(SendTo.Server)]
+        private void SayRpc(FixedString512Bytes text, RpcParams rpcParams = default)
+        {
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || Time.unscaledTime < nextAllowed || text.ToString().Length > MaxLength) return;
             nextAllowed = Time.unscaledTime + MinInterval;
             bool ghost = player != null && player.IsDead;
             if (!ghost)
@@ -51,7 +65,7 @@ namespace Abandoned.Networking
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        private void HearRpc(FixedString128Bytes text, bool ghost, RpcParams rpcParams) => Received?.Invoke(OwnerClientId, text.ToString(), ghost);
+        private void HearRpc(FixedString512Bytes text, bool ghost, RpcParams rpcParams) => Received?.Invoke(OwnerClientId, text.ToString(), ghost);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => Received = null;

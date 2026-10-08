@@ -72,7 +72,7 @@ namespace Abandoned.Voice
                     mark = new VisualElement { pickingMode = PickingMode.Ignore };
                     mark.AddToClassList("speaker-mark");
                     UI.UiKit.Icon(mark, "icon/audioOn", "small");
-                    var who = new Label($"PLAYER {v.OwnerClientId + 1}") { pickingMode = PickingMode.Ignore };
+                    var who = new Label(Networking.NetworkPlayer.NameOf(v.OwnerClientId).ToUpperInvariant()) { pickingMode = PickingMode.Ignore, enableRichText = false };
                     who.AddToClassList("speaker-mark__name");
                     mark.Add(who);
                     UI.HudLayer.World.Add(mark);

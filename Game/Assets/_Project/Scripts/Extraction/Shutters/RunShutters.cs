@@ -25,10 +25,16 @@ namespace Abandoned.Extraction
         [SerializeField, Range(1, 10)] private int pryStrikes = 4;
         [SerializeField, Min(0.1f)] private float pryCooldown = 0.6f;
         [SerializeField, Min(1f)] private float reach = 3f;
+        [Tooltip("Heaving a shutter up by hand from inside the store (no tools): how long it takes.")]
+        [SerializeField, Min(0.5f)] private float handLiftSeconds = 6f;
+        [Tooltip("A slam waits while a living player is this close to the doorway, on either side (m).")]
+        [SerializeField, Min(0.5f)] private float slamClearance = 1.5f;
 
         // -1 until the host has rolled this run's locks (shutters hold still until then).
         private readonly NetworkVariable<int> down = new(-1);
         private readonly Dictionary<int, float> cuts = new();
+        private readonly Dictionary<int, float> lifts = new();
+        private static readonly Collider[] DoorwayHits = new Collider[8];
         private readonly Dictionary<int, int> pries = new();
         private readonly Dictionary<ulong, float> nextStrike = new();
 
@@ -93,15 +99,38 @@ namespace Abandoned.Extraction
             }
         }
 
+        /// <summary>Host: someone inside the store is heaving this shutter up by hand.</summary>
+        public bool IsLifting(int index) => lifts.ContainsKey(index);
+
+        /// <summary>Host (the horror director's scare): drop an open store shutter, unless that could trap anyone.</summary>
         public void ServerSlam(int index)
         {
-            if(!IsServer||!Ready)return;
-            RollerShutter shutter=RollerShutter.All.FirstOrDefault(s=>s!=null&&s.Index==index&&!s.Entrance);
-            if(shutter==null)return;
-            // Do not crush a carrier in the doorway; fallback service stairs/rope windows never get shutters.
-            if(NetworkPlayer.All.Any(p=>p!=null&&!p.IsDead&&Vector3.Distance(p.transform.position,shutter.transform.position)<2f))return;
-            cuts.Remove(index);pries.Remove(index);down.Value|=1<<index;
-            SoundRpc(SoundId.ShutterOpen,shutter.transform.position+Vector3.up);
+            if (!IsServer || !Ready) return;
+            RollerShutter shutter = RollerShutter.All.FirstOrDefault(s => s != null && s.Index == index && !s.Entrance);
+            if (shutter == null || !SafeToSlam(shutter)) return;
+            cuts.Remove(index);
+            lifts.Remove(index);
+            pries.Remove(index);
+            down.Value |= 1 << index;
+            SoundRpc(SoundId.ShutterSlam, shutter.transform.position + Vector3.up);
+        }
+
+        // QA B-01: a slam may scare, never trap. Nobody alive in the store or near its doorway, and no loot
+        // in the doorway (a shared carry straddling it would get the shutter's collider inside it).
+        private bool SafeToSlam(RollerShutter shutter)
+        {
+            Bounds doorway = shutter.DoorwayBounds;
+            Bounds near = doorway;
+            near.Expand(slamClearance * 2f);
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || p.IsDead || p.NetworkManager != NetworkManager) continue;
+                Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
+                if (shutter.InRoom(at) || near.Contains(at + Vector3.up)) return false;
+            }
+            int lootMask = LayerMask.GetMask(GameLayers.Loot);
+            return Physics.OverlapBoxNonAlloc(doorway.center, doorway.extents + new Vector3(0.25f, 0f, 0.25f), DoorwayHits,
+                Quaternion.identity, lootMask, QueryTriggerInteraction.Ignore) == 0;
         }
 
         /// <summary>This machine's player pressed E on a locked shutter.</summary>
@@ -112,7 +141,7 @@ namespace Abandoned.Extraction
         {
             ulong client = rpcParams.Receive.SenderClientId;
             RollerShutter shutter = RollerShutter.All.FirstOrDefault(s => s != null && s.Index == index);
-            if (shutter == null || !IsDown(index) || cuts.ContainsKey(index)) return;
+            if (shutter == null || !IsDown(index) || cuts.ContainsKey(index) || lifts.ContainsKey(index)) return;
             if (!rolled) return;
             NetworkObject player = NetworkManager.ConnectedClients.TryGetValue(client, out NetworkClient c) ? c.PlayerObject : null;
             if (player == null || !player.TryGetComponent(out NetworkPlayer np) || np.IsDead || np.Ragdoll.IsRagdolled) return;
@@ -127,7 +156,15 @@ namespace Abandoned.Extraction
                 SoundRpc(SoundId.BoltCut, at);
                 return;
             }
-            if (!gear.Has(EquipmentKind.Crowbar)) return;
+            if (!gear.Has(EquipmentKind.Crowbar))
+            {
+                // No tools, but on the inside: the padlock is out there, so the shutter heaves up slowly and loudly.
+                if (!shutter.InRoom(player.transform.position) || lifts.ContainsKey(index)) return;
+                lifts[index] = Time.time + handLiftSeconds;
+                NoiseSystem.Emit(at, 0.6f, NoiseSource.Other);
+                SoundRpc(SoundId.CrowbarHit, at);
+                return;
+            }
             if (nextStrike.TryGetValue(client, out float next) && Time.time < next) return;
             nextStrike[client] = Time.time + pryCooldown;
             NoiseSystem.Emit(at, 0.75f, NoiseSource.Other);
@@ -140,11 +177,18 @@ namespace Abandoned.Extraction
         {
             if (!IsServer || !IsSpawned) return;
             if (!rolled) RollOnce();
-            if (cuts.Count == 0) return;
-            foreach (int index in cuts.Keys.ToList())
+            FinishTimed(cuts);
+            FinishTimed(lifts);
+        }
+
+        // Host: bolt cuts and hand lifts that have run their time open their shutter.
+        private void FinishTimed(Dictionary<int, float> timers)
+        {
+            if (timers.Count == 0) return;
+            foreach (int index in timers.Keys.ToList())
             {
-                if (Time.time < cuts[index]) continue;
-                cuts.Remove(index);
+                if (Time.time < timers[index]) continue;
+                timers.Remove(index);
                 RollerShutter shutter = RollerShutter.All.FirstOrDefault(s => s != null && s.Index == index);
                 Open(index, shutter != null ? shutter.transform.position + Vector3.up * 1.2f : transform.position);
             }
@@ -153,6 +197,8 @@ namespace Abandoned.Extraction
         private void Open(int index, Vector3 at)
         {
             pries.Remove(index);
+            cuts.Remove(index);
+            lifts.Remove(index);
             down.Value &= ~(1 << index);
             // Rolling a shutter up is never quiet.
             NoiseSystem.Emit(at, 0.45f, NoiseSource.Other);

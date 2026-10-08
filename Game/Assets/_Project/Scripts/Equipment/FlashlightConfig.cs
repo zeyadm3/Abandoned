@@ -7,7 +7,9 @@ namespace Abandoned.Equipment
     [CreateAssetMenu(menuName = "Abandoned/Equipment/Flashlight Config", fileName = "FlashlightConfig")]
     public class FlashlightConfig : ScriptableObject, IValidatable
     {
-        [field: SerializeField, Min(10f)] public float BatterySeconds { get; private set; } = 180f;
+        [field: SerializeField, Min(10f)] public float BatterySeconds { get; private set; } = 420f;
+        [field: Tooltip("Battery seconds gained per second while standing in the truck (QA D-01); 0 = no recharge.")]
+        [field: SerializeField, Min(0f)] public float TruckRechargePerSecond { get; private set; } = 8f;
         [field: SerializeField, Min(1f)] public float Range { get; private set; } = 12f;
         [field: SerializeField, Min(0f)] public float Intensity { get; private set; } = 6f;
         [field: SerializeField, Range(15f, 100f)] public float SpotAngle { get; private set; } = 52f;

@@ -95,12 +95,26 @@ namespace Abandoned.Tests
             Assert.IsNull(CompanyLedger.SettleAbandoned(save, config), "nothing pending");
             save.pendingQuota = 20000;
             save.pendingBonus = 0.5f;
+            save.pendingLeftOnPurpose = true;
             RunOutcome? o = CompanyLedger.SettleAbandoned(save, config);
             Assert.IsTrue(o.HasValue);
             Assert.IsFalse(o.Value.QuotaMet);
             Assert.AreEqual(1, save.missedQuotas, "quitting mid-job counts as a miss");
             Assert.AreEqual(0, save.pendingQuota, "settled once");
             Assert.IsNull(CompanyLedger.SettleAbandoned(save, config));
+        }
+
+        [Test]
+        public void AJobCutShortByACrashIsVoided()
+        {
+            CompanySave save = CompanySave.New();
+            int money = save.money;
+            save.pendingQuota = 20000;
+            Assert.IsNull(CompanyLedger.SettleAbandoned(save, config, out bool voided));
+            Assert.IsTrue(voided);
+            Assert.AreEqual(0, save.missedQuotas, "a crash is not a strike");
+            Assert.AreEqual(money, save.money, "and costs nothing");
+            Assert.AreEqual(0, save.pendingQuota);
         }
 
         [Test]

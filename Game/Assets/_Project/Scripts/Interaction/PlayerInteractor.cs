@@ -62,13 +62,18 @@ namespace Abandoned.Interaction
             bool useHeld = input.UseHeld && !suppressUseUntilRelease;
 
             UseTarget = null;
-            Target = carrier.Held == null ? FindTarget() : null;
+            Target = FindTarget();
+            // With hands full only pocket-sized loot can still be picked up (it goes in a pocket, QA B-11).
+            if (carrier.Held != null && Target != null && Target.CarryClass != CarryClass.Pocket) Target = null;
             IInteractionHandler handler = InteractionService.Handler;
 
-            if (input.InteractPressed && carrier.Held == null && Target != null)
+            if (input.InteractPressed && Target != null)
                 handler.RequestPickup(carrier, Target);
             else if (input.InteractPressed && UseTarget != null && UseTarget.UsePrompt(gameObject) != null)
-                UseTarget.Use(gameObject);
+                UseTarget.Use(gameObject); // levers, shutters, notes: usable with loot in hand too (QA B-11)
+
+            // Inventory key + wheel picks which pocket the drop key empties (QA B-16).
+            if (input.InventoryHeld && input.Scroll != 0f) carrier.Inventory.Cycle(input.Scroll > 0f ? -1 : 1);
 
             if (carrier.Held == null)
             {
@@ -151,15 +156,20 @@ namespace Abandoned.Interaction
 
         private Grabbable FindTarget()
         {
-            // RaycastAll + nearest, because the ray starts inside our own CharacterController.
+            // RaycastAll + nearest, because the ray starts inside our own CharacterController. Rubble and other
+            // players never stand between you and what you aim at (QA B-23); walls still do.
+            int mask = Physics.DefaultRaycastLayers & ~LayerMask.GetMask(GameLayers.Debris, GameLayers.Player);
             int count = Physics.RaycastNonAlloc(carrier.EyePosition, carrier.EyeForward, hits,
-                carrier.Config.Reach, ~0, QueryTriggerInteraction.Ignore);
+                carrier.Config.Reach, mask, QueryTriggerInteraction.Ignore);
             float best = float.MaxValue;
             Grabbable found = null;
             UseTarget = null;
+            Rigidbody held = carrier.Held != null ? carrier.Held.Body : null;
             for (int i = 0; i < count; i++)
             {
                 if (hits[i].collider == carrier.Controller || hits[i].distance >= best) continue;
+                // What we're carrying is in front of our eyes; look past it.
+                if (held != null && hits[i].rigidbody == held) continue;
                 best = hits[i].distance;
                 found = hits[i].rigidbody != null ? hits[i].rigidbody.GetComponent<Grabbable>() : null;
                 UseTarget = found == null ? hits[i].collider.GetComponentInParent<IUsable>() : null;

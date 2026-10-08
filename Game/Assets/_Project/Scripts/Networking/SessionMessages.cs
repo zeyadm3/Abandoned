@@ -8,6 +8,8 @@ namespace Abandoned.Networking
     {
         public const string HostLeft = "The host left the game.";
         public const string LostHost = "Lost connection to the host.";
+        public const string Kicked = "The host removed you from the game.";
+        public const string LoadTimedOut = "Your game took too long to load the level, so the crew went on without you. Rejoin at the HQ.";
 
         /// <summary>
         /// Refused before our approval check ever ran (NGO's own prefab/config hash check fails for most

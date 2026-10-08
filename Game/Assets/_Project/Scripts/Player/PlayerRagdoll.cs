@@ -145,6 +145,11 @@ namespace Abandoned.Player
         private void Update()
         {
             if (IsRemote) return;
+            if (!IsRagdolled && motor.IsGrounded && controller.enabled)
+            {
+                lastSafeFeet = transform.position;
+                hasSafeFeet = true;
+            }
             if (inputReader != null && inputReader.isActiveAndEnabled && inputReader.Current.DebugRagdollPressed)
             {
                 // Dead players stay down (no getting up with the debug key either).
@@ -228,6 +233,8 @@ namespace Abandoned.Player
             ragdollRoot.gameObject.SetActive(true);
             Physics.SyncTransforms();
             fallPeak = pelvis.position.y;
+            // Going limp mid-fall doesn't restart the fall (QA B-10): measure from the top, pelvis-relative.
+            if (motor.IsAirborne) fallPeak = Mathf.Max(fallPeak, motor.AirPeakY + (pelvis.position.y - transform.position.y));
             fallImpact = Mathf.Max(0f, -velocity.y);
             awaitingLanding = true;
             foreach (Rigidbody part in parts)
@@ -242,7 +249,13 @@ namespace Abandoned.Player
         {
             Vector3.zero, new(0.6f, 0, 0), new(-0.6f, 0, 0), new(0, 0, 0.6f), new(0, 0, -0.6f),
             new(1.2f, 0, 0), new(-1.2f, 0, 0), new(0, 0, 1.2f), new(0, 0, -1.2f),
+            new(0.85f, 0, 0.85f), new(-0.85f, 0, 0.85f), new(0.85f, 0, -0.85f), new(-0.85f, 0, -0.85f),
+            new(2.2f, 0, 0), new(-2.2f, 0, 0), new(0, 0, 2.2f), new(0, 0, -2.2f),
         };
+
+        // Where the player last stood on solid ground: the fallback when nothing near the body fits (QA B-26).
+        private Vector3 lastSafeFeet;
+        private bool hasSafeFeet;
 
         /// <summary>Floor under the body (ignoring loot and debris) where the standing capsule fits.</summary>
         private Vector3 FindStandingSpot(Vector3 body)
@@ -263,7 +276,8 @@ namespace Abandoned.Player
                         QueryTriggerInteraction.Ignore))
                     return feet;
             }
-            return new Vector3(body.x, body.y - 0.9f, body.z);
+            // Never stand up inside geometry: back to the last floor we stood on.
+            return hasSafeFeet ? lastSafeFeet : new Vector3(body.x, body.y - 0.9f, body.z);
         }
 
         public void Recover()

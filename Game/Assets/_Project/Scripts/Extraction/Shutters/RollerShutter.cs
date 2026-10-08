@@ -9,7 +9,8 @@ namespace Abandoned.Extraction
     /// <summary>
     /// A store's roller shutter (GDD 8 "locked doors", M10.4): rolled up (open) or down and padlocked, as
     /// the run's <see cref="RunShutters"/> says. Down, it blocks the doorway for players, loot and monsters
-    /// (a carved NavMesh hole). E on it with bolt cutters or a crowbar in hand asks the host to open it.
+    /// (a carved NavMesh hole). E on it with bolt cutters or a crowbar in hand asks the host to open it;
+    /// from inside the store, bare hands do too (slowly), so a slam can never trap anyone.
     /// Scene object on every machine; nothing here is networked itself.
     /// </summary>
     public class RollerShutter : MonoBehaviour, IUsable
@@ -34,6 +35,11 @@ namespace Abandoned.Extraction
         public bool Entrance => entrance;
         public Bounds Room => room;
         public bool IsDown => RunShutters.Current != null && RunShutters.Current.IsDown(index);
+        /// <summary>The closed doorway's solid (world bounds), used to keep a slam off anyone standing in it.</summary>
+        public Bounds DoorwayBounds => blocker != null ? blocker.bounds : new Bounds(transform.position + Vector3.up, new Vector3(1.5f, 2.3f, 0.3f));
+
+        /// <summary>Is this point in the store behind the shutter (the side a slam can trap you on)?</summary>
+        public bool InRoom(Vector3 at) => room.size.sqrMagnitude > 0.01f && room.Contains(at + Vector3.up * 0.2f);
 
         // Open until a run says otherwise: a level with no run yet (or a test) must never be walled off.
         private void Awake() => Show(1f);
@@ -67,6 +73,9 @@ namespace Abandoned.Extraction
             PlayerEquipment gear = user != null ? user.GetComponentInParent<PlayerEquipment>() : null;
             if (gear != null && gear.Has(EquipmentKind.BoltCutters)) return "Cut the padlock (quiet)";
             if (gear != null && gear.Has(EquipmentKind.Crowbar)) return "Pry the shutter up (loud, a few goes)";
+            // The padlock is on the outside: from inside the store you can always heave it up (QA B-01).
+            if (user != null && InRoom(user.transform.position))
+                return RunShutters.Current != null && RunShutters.Current.IsLifting(index) ? "Heaving it up..." : "Heave the shutter up from inside (slow, loud)";
             return entrance ? "Shuttered. Bolt cutters or a crowbar would get you in" : "Locked. Bolt cutters or a crowbar would open it";
         }
 

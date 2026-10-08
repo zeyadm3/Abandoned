@@ -161,6 +161,10 @@ namespace Abandoned.Player
         /// <summary>A remote player's landing reported by its owner (host side): same listeners as a local landing.</summary>
         public void RaiseRemoteLanding(float fallHeight, float impactSpeed) => Landed?.Invoke(fallHeight, impactSpeed);
 
+        /// <summary>In the air with a fall being tracked, and the highest the feet got (QA B-10: a ragdoll mid-fall keeps it).</summary>
+        public bool IsAirborne => airborne;
+        public float AirPeakY => airPeakY;
+
         /// <summary>Forget any fall in progress (after teleports, respawns, getting up from a ragdoll).</summary>
         public void ResetFallTracking() => airborne = false;
 
@@ -207,7 +211,9 @@ namespace Abandoned.Player
         {
             bool coyote = now - lastGroundedTime <= config.CoyoteTime;
             bool buffered = now - lastJumpPressedTime <= config.JumpBufferTime;
-            if (coyote && buffered && !IsCrouching && stamina.TryConsume(config.JumpStaminaCost))
+            // No hopping with a crew on the other end of a sofa, or with something dragged behind you (QA B-32).
+            bool hauling = carrier != null && (carrier.IsSharing || carrier.IsDragging);
+            if (coyote && buffered && !IsCrouching && !hauling && stamina.TryConsume(config.JumpStaminaCost))
             {
                 verticalVelocity = Mathf.Sqrt(2f * config.Gravity * config.JumpHeight);
                 // Consume both windows so one press can't trigger a second jump.

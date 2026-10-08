@@ -66,8 +66,24 @@ namespace Abandoned.Threats
             return null;
         }
 
-        /// <summary>Host: inside an armored truck (M10.1) nothing can touch you.</summary>
-        protected static bool Sheltered(Vector3 at) => Extraction.TruckCargo.Current != null && Extraction.TruckCargo.Current.Carries(at);
+        /// <summary>Host: safe in the truck (see <see cref="Extraction.RunState.Shelters"/>: armored, or already leaving).</summary>
+        protected static bool Sheltered(Vector3 at) => Extraction.RunState.Current != null && Extraction.RunState.Current.Shelters(at);
+
+        // QA P-04: chasing monsters re-asked for a path every frame. Ask again only a few times a second, or
+        // at once when the goal has moved a real distance.
+        private const float RepathInterval = 0.25f, RepathDistance = 1.5f;
+        private float nextRepath;
+        private Vector3 lastGoal = new(float.NaN, 0f, 0f);
+
+        /// <summary>Host: head for <paramref name="goal"/>, re-pathing at most a few times a second.</summary>
+        protected void Steer(UnityEngine.AI.NavMeshAgent agent, Vector3 goal)
+        {
+            bool moved = float.IsNaN(lastGoal.x) || (goal - lastGoal).sqrMagnitude > RepathDistance * RepathDistance;
+            if (!moved && Time.time < nextRepath) return;
+            nextRepath = Time.time + RepathInterval;
+            lastGoal = goal;
+            agent.SetDestination(goal);
+        }
 
         private readonly RaycastHit[] sightHits = new RaycastHit[8];
 

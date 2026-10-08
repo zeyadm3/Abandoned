@@ -18,6 +18,8 @@ namespace Abandoned.Interaction
         private ICarryable carryable;
         private Collider[] colliders;
         private Renderer[] renderers;
+        // Each renderer's authored shadow mode, restored when the item leaves someone's hands (QA B-28).
+        private UnityEngine.Rendering.ShadowCastingMode[] authoredShadows;
         private RigidbodyInterpolation restingInterpolation;
         private CollisionDetectionMode dynamicDetection;
         private readonly TrackedVelocity followedVelocity = new();
@@ -61,6 +63,8 @@ namespace Abandoned.Interaction
             Shared = GetComponent<SharedCarryable>();
             colliders = GetComponentsInChildren<Collider>();
             renderers = GetComponentsInChildren<Renderer>();
+            authoredShadows = new UnityEngine.Rendering.ShadowCastingMode[renderers.Length];
+            for (int i = 0; i < renderers.Length; i++) authoredShadows[i] = renderers[i].shadowCastingMode;
             restingInterpolation = body.interpolation;
             dynamicDetection = body.collisionDetectionMode;
         }
@@ -175,8 +179,9 @@ namespace Abandoned.Interaction
                 : restingInterpolation;
             // In hands it sits in front of the carrier's flashlight: a shadow would black out their view.
             bool carried = Holder != null || (Shared != null && Shared.CarrierCount > 0);
-            foreach (Renderer r in renderers)
-                r.shadowCastingMode = carried ? UnityEngine.Rendering.ShadowCastingMode.Off : UnityEngine.Rendering.ShadowCastingMode.On;
+            for (int i = 0; i < renderers.Length; i++)
+                if (renderers[i] != null)
+                    renderers[i].shadowCastingMode = carried ? UnityEngine.Rendering.ShadowCastingMode.Off : authoredShadows[i];
         }
 
         private void SetVelocity(Vector3 velocity)

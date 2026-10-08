@@ -79,12 +79,12 @@ namespace Abandoned.Threats
                     // Hang back: walk to a point FollowDistance short of them.
                     Vector3 away = (transform.position - at).normalized;
                     if (away.sqrMagnitude < 0.01f) away = -target.transform.forward;
-                    agent.SetDestination(at + away * config.FollowDistance);
+                    Steer(agent, at + away * config.FollowDistance);
                     break;
                 case StalkerState.Rush:
                     agent.isStopped = false;
                     agent.speed = config.RushSpeed * SpeedScale;
-                    agent.SetDestination(at);
+                    Steer(agent, at);
                     // Prey it can't reach (at the truck, off the NavMesh): give up rather than camp the doorway.
                     if (!agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete) brain.Reset();
                     else if (DamageWithinReach(config.AttackRange, 85f) != null) brain.Reset();
@@ -128,12 +128,13 @@ namespace Abandoned.Threats
 
         private static Vector3 Flat(Vector3 v) => new(v.x, 0f, v.z);
 
-        // Every machine: a slow breath when it's close behind you.
+        // Every machine: a slow breath when it's close behind you. Its own breath, never the structural creak:
+        // a creak must only ever mean the floor (QA B-14).
         private void Breathe()
         {
             if (Time.time < nextBreath) return;
             nextBreath = Time.time + (state.Value == StalkerState.Rush ? 0.6f : 2.2f);
-            Audio.GameAudio.Play(Audio.SoundId.Creak, transform.position + Vector3.up * 1.8f, 0.35f);
+            Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Breathing, transform.position + Vector3.up * 1.8f, 0.35f, true, 18f);
         }
     }
 }

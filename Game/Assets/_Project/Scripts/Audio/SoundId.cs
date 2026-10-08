@@ -35,5 +35,7 @@ namespace Abandoned.Audio
         BoltCut,
         // UI overhaul: the loot scan's sonar ping
         ScanPing,
+        // QA fixes: a shutter crashing down (not the open rattle)
+        ShutterSlam,
     }
 }

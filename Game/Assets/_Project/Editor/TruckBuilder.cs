@@ -57,7 +57,7 @@ namespace Abandoned.EditorTools
             AddDisplay(root, half);
 
             var cargo = root.gameObject.AddComponent<TruckCargo>();
-            root.gameObject.AddComponent<TruckSanctuary>();
+            root.gameObject.AddComponent<TruckSanctuary>().EditorSetup(GetMaterial("Greybox_TruckDoors", new Color(0.18f, 0.2f, 0.18f)), TruckMirrorMaterial());
             cargo.EditorSetup(trigger, new Bounds(new Vector3(0f, 1.5f, 1f), new Vector3(BayWidth + 0.6f, 3.5f, BayLength + 3f)), ignition.transform);
             foreach (Transform piece in root) piece.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             return cargo;
@@ -74,6 +74,18 @@ namespace Abandoned.EditorTools
             root.gameObject.AddComponent<TruckDisplay>().EditorSetup(quad.GetComponent<MeshRenderer>(),
                 UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.UIElements.ThemeStyleSheet>(UiContentBuilder.ThemePath),
                 UnityEditor.AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath));
+        }
+
+        // QA B-21: an asset, so URP Unlit ships with the build (the mirror's render texture is set at runtime).
+        private static Material TruckMirrorMaterial()
+        {
+            const string path = "Assets/_Project/Art/Greybox/TruckMirror.mat";
+            var m = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (m != null) return m;
+            m = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            m.SetColor("_BaseColor", Color.white);
+            UnityEditor.AssetDatabase.CreateAsset(m, path);
+            return m;
         }
 
         // Unlit, so the board reads in a dark lot; the texture is set at runtime.

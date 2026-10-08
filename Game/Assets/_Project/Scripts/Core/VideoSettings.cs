@@ -25,63 +25,63 @@ namespace Abandoned.Core
 
         public static FullScreenMode WindowMode
         {
-            get => (FullScreenMode)Prefs.GetInt(ModeKey, (int)FullScreenMode.FullScreenWindow);
-            set { Prefs.SetInt(ModeKey, (int)value); Changed?.Invoke(); }
+            get => (FullScreenMode)GetInt(ModeKey, (int)FullScreenMode.FullScreenWindow);
+            set { SetInt(ModeKey, (int)value); Changed?.Invoke(); }
         }
 
         /// <summary>0 x 0 = the desktop's resolution.</summary>
         public static Vector2Int Resolution
         {
-            get => new(Prefs.GetInt(WidthKey, 0), Prefs.GetInt(HeightKey, 0));
-            set { Prefs.SetInt(WidthKey, value.x); Prefs.SetInt(HeightKey, value.y); Changed?.Invoke(); }
+            get => new(GetInt(WidthKey, 0), GetInt(HeightKey, 0));
+            set { SetInt(WidthKey, value.x); SetInt(HeightKey, value.y); Changed?.Invoke(); }
         }
 
         public static bool VSync
         {
-            get => Prefs.GetInt(VsyncKey, 1) == 1;
-            set { Prefs.SetInt(VsyncKey, value ? 1 : 0); Changed?.Invoke(); }
+            get => GetInt(VsyncKey, 1) == 1;
+            set { SetInt(VsyncKey, value ? 1 : 0); Changed?.Invoke(); }
         }
 
         /// <summary>Frames per second when VSync is off; 0 = unlimited.</summary>
         public static int FrameCap
         {
-            get => Prefs.GetInt(CapKey, 0);
-            set { Prefs.SetInt(CapKey, Mathf.Max(0, value)); Changed?.Invoke(); }
+            get => GetInt(CapKey, 0);
+            set { SetInt(CapKey, Mathf.Max(0, value)); Changed?.Invoke(); }
         }
 
         /// <summary>Index into QualitySettings.names; -1 = whatever the build ships with.</summary>
         public static int Quality
         {
-            get => Prefs.GetInt(QualityKey, -1);
-            set { Prefs.SetInt(QualityKey, value); Changed?.Invoke(); }
+            get => GetInt(QualityKey, -1);
+            set { SetInt(QualityKey, value); Changed?.Invoke(); }
         }
 
         /// <summary>Index into <see cref="ShadowNames"/>; High is the shipped shadow budget (M7.6).</summary>
         public static int Shadows
         {
-            get => Mathf.Clamp(Prefs.GetInt(ShadowsKey, ShadowNames.Length - 1), 0, ShadowNames.Length - 1);
-            set { Prefs.SetInt(ShadowsKey, Mathf.Clamp(value, 0, ShadowNames.Length - 1)); Changed?.Invoke(); }
+            get => Mathf.Clamp(GetInt(ShadowsKey, ShadowNames.Length - 1), 0, ShadowNames.Length - 1);
+            set { SetInt(ShadowsKey, Mathf.Clamp(value, 0, ShadowNames.Length - 1)); Changed?.Invoke(); }
         }
 
         /// <summary>Exposure offset in stops, -1..+1.5 (power-off jobs can be very dark on some screens).</summary>
         public static float Brightness
         {
-            get => Prefs.GetFloat(BrightnessKey, 0f);
-            set { Prefs.SetFloat(BrightnessKey, Mathf.Clamp(value, -1f, 1.5f)); Changed?.Invoke(); }
+            get => GetFloat(BrightnessKey, 0f);
+            set { SetFloat(BrightnessKey, Mathf.Clamp(value, -1f, 1.5f)); Changed?.Invoke(); }
         }
 
         /// <summary>3D resolution as a fraction of the window (UI stays sharp); lower is faster on weak GPUs.</summary>
         public static float RenderScale
         {
-            get => Mathf.Clamp(Prefs.GetFloat(ScaleKey, 1f), MinRenderScale, 1f);
-            set { Prefs.SetFloat(ScaleKey, Mathf.Clamp(value, MinRenderScale, 1f)); Changed?.Invoke(); }
+            get => Mathf.Clamp(GetFloat(ScaleKey, 1f), MinRenderScale, 1f);
+            set { SetFloat(ScaleKey, Mathf.Clamp(value, MinRenderScale, 1f)); Changed?.Invoke(); }
         }
 
         /// <summary>Index into <see cref="AntiAliasingNames"/>.</summary>
         public static int AntiAliasing
         {
-            get => Mathf.Clamp(Prefs.GetInt(AaKey, 1), 0, AntiAliasingNames.Length - 1);
-            set { Prefs.SetInt(AaKey, Mathf.Clamp(value, 0, AntiAliasingNames.Length - 1)); Changed?.Invoke(); }
+            get => Mathf.Clamp(GetInt(AaKey, 1), 0, AntiAliasingNames.Length - 1);
+            set { SetInt(AaKey, Mathf.Clamp(value, 0, AntiAliasingNames.Length - 1)); Changed?.Invoke(); }
         }
 
         /// <summary>Back to the shipped look and window (Settings > Restore defaults on the Video/Graphics pages).</summary>
@@ -89,10 +89,43 @@ namespace Abandoned.Core
         {
             foreach (string key in new[] { ModeKey, WidthKey, HeightKey, VsyncKey, CapKey, QualityKey, ShadowsKey, BrightnessKey, ScaleKey, AaKey })
                 Prefs.Delete(key);
+            cache.Clear();
+            Prefs.Save(); // a delete that isn't flushed can come back next launch (QA B-33)
             Changed?.Invoke();
         }
 
+        // Read once, then from memory (QA B-33: the applier reads these every time anything changes).
+        private static readonly System.Collections.Generic.Dictionary<string, float> cache = new();
+
+        private static int GetInt(string key, int fallback)
+        {
+            if (!cache.TryGetValue(key, out float v)) cache[key] = v = Prefs.GetInt(key, fallback);
+            return (int)v;
+        }
+
+        private static float GetFloat(string key, float fallback)
+        {
+            if (!cache.TryGetValue(key, out float v)) cache[key] = v = Prefs.GetFloat(key, fallback);
+            return v;
+        }
+
+        private static void SetInt(string key, int value)
+        {
+            cache[key] = value;
+            Prefs.SetInt(key, value);
+        }
+
+        private static void SetFloat(string key, float value)
+        {
+            cache[key] = value;
+            Prefs.SetFloat(key, value);
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => Changed = null;
+        private static void ResetStatics()
+        {
+            Changed = null;
+            cache.Clear();
+        }
     }
 }

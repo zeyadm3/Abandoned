@@ -23,8 +23,9 @@ namespace Abandoned.EditorTools
             var danger=SerializedWiring.LoadOrCreateAsset<DangerConfig>(NetworkContentBuilder.DangerConfigPath);
             var d=new SerializedObject(danger);
             d.FindProperty("<LevelInterval>k__BackingField").floatValue=110;
-            d.FindProperty("<AgingInterval>k__BackingField").floatValue=9;
-            d.FindProperty("<AgingDamage>k__BackingField").floatValue=0.10f;
+            // QA D-02: at 9 s / 10 % a danger-3 building lost ~20 sections a minute on top of faster decay.
+            d.FindProperty("<AgingInterval>k__BackingField").floatValue=15;
+            d.FindProperty("<AgingDamage>k__BackingField").floatValue=0.08f;
             d.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(danger);
             var root=PrefabUtility.LoadPrefabContents(NetworkContentBuilder.RunStatePrefabPath);
             var horror=root.GetComponent<RunHorrorDirector>()??root.AddComponent<RunHorrorDirector>();

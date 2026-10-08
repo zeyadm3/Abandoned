@@ -154,7 +154,7 @@ namespace Abandoned.UI
         {
             // Rebuilt only when something changes: gear in hand, the active slot, pocket contents and values.
             key.Clear().Append(equipment.State.Slot0).Append(',').Append(equipment.State.Slot1).Append(',').Append(equipment.State.Active)
-                .Append('|').Append(carrier.Inventory.Capacity).Append('|').Append(LootTags.ValuesVisible);
+                .Append('|').Append(carrier.Inventory.Capacity).Append('|').Append(LootTags.ValuesVisible).Append('|').Append(carrier.Inventory.SelectedIndex);
             foreach (Grabbable g in carrier.Inventory.Items)
                 key.Append('|').Append(g != null ? g.GetInstanceID() : 0).Append(':').Append(g != null && g.TryGetComponent(out IValuable v) ? v.CurrentValue : 0);
             string now = key.ToString();
@@ -177,6 +177,7 @@ namespace Abandoned.UI
                 LootItem item = g != null ? g.GetComponent<LootItem>() : null;
                 Fill(pockets[i], item != null ? "loot/" + item.Definition.Id : g != null ? "board/pouch" : null,
                     item != null && LootTags.ValuesVisible ? Money.Short(item.CurrentValue) : null);
+                pockets[i].EnableInClassList("slot--active", g != null && i == carrier.Inventory.SelectedIndex);
             }
         }
 
@@ -194,14 +195,16 @@ namespace Abandoned.UI
             var text = new StringBuilder();
             text.AppendLine($"<b>POCKETS</b>  {carrier.Inventory.Count}/{carrier.Inventory.Capacity}");
             int total = 0;
+            int index = 0, chosen = carrier.Inventory.SelectedIndex;
             foreach (Grabbable item in carrier.Inventory.Items)
             {
                 int value = item.TryGetComponent(out IValuable v) ? v.CurrentValue : 0;
                 total += value;
-                text.AppendLine(LootTags.ValuesVisible ? $"{item.DisplayName}   <color=#abb59a>${value:N0}</color>" : item.DisplayName);
+                string marker = index++ == chosen ? "> " : "   ";
+                text.AppendLine(LootTags.ValuesVisible ? $"{marker}{item.DisplayName}   <color=#abb59a>${value:N0}</color>" : marker + item.DisplayName);
             }
             if (LootTags.ValuesVisible) text.AppendLine($"<b>TOTAL</b>  <color=#abb59a>${total:N0}</color>");
-            text.Append($"<color=#a5a196>{InputBindings.Display("Drop")} while holding {InputBindings.Display("Inventory")}: drop the last one</color>");
+            text.Append($"<color=#a5a196>Wheel: choose  -  {InputBindings.Display("Drop")} while holding {InputBindings.Display("Inventory")}: drop it</color>");
             return text.ToString();
         }
 

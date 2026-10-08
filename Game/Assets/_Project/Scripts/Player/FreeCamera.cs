@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 namespace Abandoned.Player
 {
     /// <summary>
-    /// A free-flying camera for trailer shots (M10.11, F9; pair with F10 clip mode): it takes over the view
+    /// A free-flying camera for trailer shots (M10.11, F9; pair with F10 clip mode; see <see cref="Allowed"/>): it takes over the view
     /// from where you are, your player stands still, and the game carries on around you. Local only:
     /// nobody else sees anything. Mouse looks, WASD flies, Q/E down/up, Shift fast, the wheel sets speed.
     /// </summary>
@@ -17,6 +17,22 @@ namespace Abandoned.Player
         private float yaw, pitch, speed = 3f;
 
         public static bool Active => instance != null;
+
+        /// <summary>
+        /// Dev builds anywhere; in player builds only where it can't scout for the living (QA B-02): at the
+        /// HQ between jobs, or as a ghost.
+        /// </summary>
+        public static bool Allowed
+        {
+            get
+            {
+                if (Core.DevTools.Enabled) return true;
+                var run = Extraction.RunState.Current;
+                bool onJob = run != null && run.IsSpawned && run.State.Phase != Extraction.RunPhase.Departed;
+                var me = Networking.NetworkPlayer.Local;
+                return !onJob || (me != null && me.IsDead);
+            }
+        }
 
         public static void Toggle()
         {

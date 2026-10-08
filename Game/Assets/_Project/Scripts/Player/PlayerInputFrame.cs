@@ -29,12 +29,14 @@ namespace Abandoned.Player
         public readonly bool RotateHeld;
         public readonly bool DropHeld;
         public readonly bool DropReleased;
+        /// <summary>Mouse wheel this frame (+ up, - down), in notches.</summary>
+        public readonly float Scroll;
 
         public PlayerInputFrame(Vector2 move, Vector2 look, bool sprintHeld, bool crouchHeld, bool crouchPressed,
             bool jumpPressed, bool usePressed, bool useHeld, bool interactPressed, bool dropPressed,
             bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false, bool talkHeld = false, bool radioHeld = false,
             bool slot1Pressed = false, bool slot2Pressed = false, bool flashlightPressed = false,
-            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false)
+            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false, float scroll = 0f)
         {
             Move = move;
             Look = look;
@@ -57,6 +59,7 @@ namespace Abandoned.Player
             RotateHeld = rotateHeld;
             DropHeld = dropHeld;
             DropReleased = dropReleased;
+            Scroll = scroll;
         }
     }
 }

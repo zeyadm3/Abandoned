@@ -102,8 +102,11 @@ namespace Abandoned.Threats
                 RestoreLights();
                 return;
             }
+            // QA O-01: with flashing reduced, the level-up is one slow dip and recovery, never a strobe.
+            float calm = 1f - 0.5f * Mathf.Sin(Mathf.PI * Mathf.Clamp01(1f - (flickerUntil - Time.time) / FlickerSeconds));
             foreach ((Light l, float intensity) in lights)
-                if (l != null) l.intensity = intensity * (Random.value < 0.35f ? 0.05f : Random.Range(0.6f, 1f));
+                if (l != null) l.intensity = Core.GameSettings.ReduceFlashing ? intensity * calm
+                    : intensity * (Random.value < 0.35f ? 0.05f : Random.Range(0.6f, 1f));
         }
 
         private void RestoreLights()

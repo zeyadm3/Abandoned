@@ -91,7 +91,7 @@ namespace Abandoned.Threats
                 case HunterState.Chase:
                     agent.isStopped = false;
                     agent.speed = config.ChaseSpeed * SpeedScale;
-                    agent.SetDestination(lastSeen);
+                    Steer(agent, lastSeen);
                     if (KillWithinReach(config.AttackRange) != null) { target = null; Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
                     else if (seen == null && Time.time - lostAt > config.LoseAfter * Mathf.Min(Aggression, 1.8f)) { Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
                     break;

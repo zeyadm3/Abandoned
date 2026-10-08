@@ -8,9 +8,9 @@ namespace Abandoned.Equipment
     public partial class PlayerEquipment
     {
         [SerializeField] private FlashlightConfig flashlightConfig;
-        private readonly NetworkVariable<float> battery = new(180f,
+        private readonly NetworkVariable<float> battery = new(420f,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-        private float drainAccumulator, nextThreatLightScan, flickerPressure;
+        private float drainAccumulator, rechargeAccumulator, nextThreatLightScan, flickerPressure;
 
         public FlashlightConfig FlashlightConfig => flashlightConfig != null ? flashlightConfig : Abandoned.Equipment.FlashlightConfig.Default;
         public float BatterySeconds => battery.Value;
@@ -52,7 +52,18 @@ namespace Abandoned.Equipment
         {
             RunState run = RunState.Current;
             bool activeRun = run != null && (run.State.Phase == RunPhase.Running || run.State.Phase == RunPhase.Honking);
-            if (IsServer && LightOn && activeRun)
+            // QA D-01: the truck's lamp socket tops the battery up while you stand in the bay.
+            if (IsServer && activeRun && !IsDead && Has(EquipmentKind.Flashlight) && Battery01 < 1f && FlashlightConfig.TruckRechargePerSecond > 0f
+                && TruckCargo.Current != null && TruckCargo.Current.Carries(transform.position))
+            {
+                rechargeAccumulator += Time.deltaTime;
+                if (rechargeAccumulator >= 0.25f)
+                {
+                    battery.Value = Mathf.Min(FlashlightConfig.BatterySeconds, battery.Value + rechargeAccumulator * FlashlightConfig.TruckRechargePerSecond);
+                    rechargeAccumulator = 0f;
+                }
+            }
+            else if (IsServer && LightOn && activeRun)
             {
                 drainAccumulator += Time.deltaTime;
                 if (drainAccumulator >= 0.25f)
@@ -81,6 +92,9 @@ namespace Abandoned.Equipment
             }
             float flicker = Mathf.PerlinNoise(OwnerClientId * 1.7f, Time.time * FlashlightConfig.FlickerFrequency);
             float dip = flicker < 0.38f ? FlashlightConfig.MinimumFlickerIntensity : Mathf.Lerp(0.65f, 1f, flicker);
+            // QA O-01: the warning is still there with flashing reduced, as a slow fade rather than a strobe.
+            if (Core.GameSettings.ReduceFlashing)
+                dip = Mathf.Lerp(0.45f, 0.8f, Mathf.PerlinNoise(OwnerClientId * 1.7f, Time.time * 0.6f));
             flashlight.intensity = FlashlightConfig.Intensity * Mathf.Lerp(1f, dip, flickerPressure);
         }
     }

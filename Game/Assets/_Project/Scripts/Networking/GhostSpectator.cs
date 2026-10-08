@@ -116,7 +116,7 @@ namespace Abandoned.Networking
                 UI.MenuKit.Show(ghostBar, on);
                 if (on)
                 {
-                    string line = $"GHOST   Watching Player {Following.OwnerClientId + 1}   [{InputBindings.Display("Drop")}] previous   [{InputBindings.Display("Use")}] next";
+                    string line = $"GHOST   Watching {Following.DisplayName}   [{InputBindings.Display("Drop")}] previous   [{InputBindings.Display("Use")}] next";
                     if (line != ghostShown)
                     {
                         ghostShown = line;

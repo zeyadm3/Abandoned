@@ -16,8 +16,26 @@ namespace Abandoned.Core
         public static readonly string[] Rebindable =
         {
             "Move", "Sprint", "Crouch", "Jump", "Interact", "Use", "Drop", "Scan", "Flashlight",
-            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio", "Rotate",
+            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio", "Rotate", "Chat", "PhotoCamera", "HideHud",
         };
+
+        // Menu-level keys read outside the player (chat, free camera, clip mode): one always-on copy of the
+        // actions with the player's bindings, so they follow rebinding like everything else (QA B-34).
+        private static readonly string[] MenuKeys = { "Chat", "PhotoCamera", "HideHud" };
+        private static AbandonedInput menuKeys;
+
+        /// <summary>This frame the player pressed a Gameplay action read outside the player (Chat, PhotoCamera, HideHud).</summary>
+        public static bool WasPressed(string action)
+        {
+            if (menuKeys == null)
+            {
+                menuKeys = new AbandonedInput();
+                Apply(menuKeys.asset);
+                foreach (string name in MenuKeys) menuKeys.asset.FindAction($"Gameplay/{name}")?.Enable();
+            }
+            InputAction a = menuKeys.asset.FindAction($"Gameplay/{action}");
+            return a != null && a.WasPressedThisFrame();
+        }
 
         public static event Action Changed;
 
@@ -52,6 +70,7 @@ namespace Abandoned.Core
             Prefs.SetString(Key, edited.SaveBindingOverridesAsJson());
             Prefs.Save();
             if (display != null) Apply(display.asset);
+            if (menuKeys != null) Apply(menuKeys.asset);
             Changed?.Invoke();
         }
 
@@ -60,6 +79,7 @@ namespace Abandoned.Core
             Prefs.Delete(Key);
             Prefs.Save();
             if (display != null) Apply(display.asset);
+            if (menuKeys != null) Apply(menuKeys.asset);
             Changed?.Invoke();
         }
 
@@ -87,6 +107,8 @@ namespace Abandoned.Core
             Changed = null;
             display?.Dispose();
             display = null;
+            menuKeys?.Dispose();
+            menuKeys = null;
         }
     }
 }

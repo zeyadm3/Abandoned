@@ -66,6 +66,7 @@ namespace Abandoned.Networking
         {
             Spawned.Add(this);
             SpawnHealth();
+            SpawnName();
             if (IsServer)
             {
                 SpawnSlots seats = NetworkBootstrap.Resolve(null)?.Slots;
@@ -215,9 +216,26 @@ namespace Abandoned.Networking
             // The cause first: it reaches the owner before (or with) the death itself.
             deathCause.Value = new Unity.Collections.FixedString64Bytes(Truncate(cause ?? "Something got you.", 60));
             dead.Value = true;
-            // GDD 11: a dead player's pocket loot drops where they died, for the others to recover.
-            foreach (Grabbable item in new List<Grabbable>(carrier.Inventory.Items))
-                if (NetworkLoot.Of(item) is NetworkLoot loot) LootServerActions.FreeOrphan(loot);
+            // GDD 11: a dead player's pocket loot drops where they died, for the others to recover: in a ring
+            // around the body, not all in one spot where they'd fling each other apart (QA B-17).
+            Vector3 body = ragdoll.IsRagdolled ? ragdoll.BodyPosition : transform.position + Vector3.up * 0.5f;
+            var pockets = new List<Grabbable>(carrier.Inventory.Items);
+            for (int i = 0; i < pockets.Count; i++)
+                if (NetworkLoot.Of(pockets[i]) is NetworkLoot loot) LootServerActions.FreeOrphan(loot, DropSpot(body, i, pockets.Count));
+        }
+
+        // A spot on a small ring around the body, pulled in short of any wall.
+        private static Vector3 DropSpot(Vector3 body, int index, int count)
+        {
+            Vector3 centre = body + Vector3.up * 0.4f;
+            if (count <= 1) return centre;
+            float angle = index * Mathf.PI * 2f / count;
+            Vector3 direction = new(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+            const float radius = 0.45f;
+            int walls = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
+            float reach = Physics.Raycast(centre, direction, out RaycastHit hit, radius + 0.15f, walls, QueryTriggerInteraction.Ignore)
+                ? Mathf.Max(0f, hit.distance - 0.15f) : radius;
+            return centre + direction * reach + Vector3.up * (index * 0.12f);
         }
 
         private static string Truncate(string s, int max) => s.Length <= max ? s : s.Substring(0, max);
@@ -229,8 +247,10 @@ namespace Abandoned.Networking
             {
                 if (now) ragdoll.Enter(Vector3.zero);
                 ragdoll.HoldDown = now;
+                // Back alive while the body still lies there: getting up (Recover) switches these on when the
+                // controller is back, not a frame before it (QA B-31).
                 foreach (Behaviour b in ownerOnlyBehaviours)
-                    if (b is PlayerMotor || b is PlayerInteractor) b.enabled = !now;
+                    if (b is PlayerMotor || b is PlayerInteractor) b.enabled = !now && !ragdoll.IsRagdolled;
             }
             if (now && IsOwner)
             {

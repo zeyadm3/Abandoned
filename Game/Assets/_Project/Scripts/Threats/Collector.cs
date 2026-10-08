@@ -88,7 +88,7 @@ namespace Abandoned.Threats
                     break;
                 case CollectorState.Seeking:
                     if (prey == null || !prey.IsSpawned || prey.Hold.Mode != LootHoldMode.Free) { Set(CollectorState.Idle); break; }
-                    agent.SetDestination(prey.transform.position);
+                    Steer(agent, prey.transform.position);
                     if (Time.time > seekUntil || (!agent.pathPending && agent.pathStatus == NavMeshPathStatus.PathInvalid))
                     {
                         unreachable.Add(prey);

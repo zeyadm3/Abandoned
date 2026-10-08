@@ -339,9 +339,10 @@ namespace Abandoned.Interaction
             Inventory.Add(target);
         }
 
-        internal void ApplyUnpocketLast()
+        internal void ApplyUnpocketSelected()
         {
-            Grabbable item = Inventory.Items[^1];
+            Grabbable item = Inventory.Selected;
+            if (item == null) return;
             Pose pose = UnpocketPose(EyeForward);
             ApplyUnpocket(item, pose.position, pose.rotation, DropVelocity);
         }

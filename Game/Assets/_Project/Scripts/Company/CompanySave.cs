@@ -28,6 +28,9 @@ namespace Abandoned.Company
         // A job taken but not yet settled (quota > 0): the host quit or crashed mid-run.
         public int pendingQuota;
         public float pendingBonus;
+        // The host chose to end the game mid-job (pause menu): that counts as a failed job. Without it the
+        // game crashed or lost its connection, and the job is voided instead (QA B-06).
+        public bool pendingLeftOnPurpose;
 
         [Serializable]
         public struct OwnedItem

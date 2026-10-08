@@ -75,6 +75,13 @@ namespace Abandoned.Structure
         {
             if (!Lit) return;
             bool disturbed = IsDisturbed;
+            if (Core.GameSettings.ReduceFlashing)
+            {
+                // QA O-01: no strobing. A failing or disturbed light sags and recovers slowly instead.
+                float target = disturbed ? 0.5f : faulty ? 0.75f : 1f;
+                if (!Mathf.Approximately(level, target)) Apply(Mathf.MoveTowards(Mathf.Max(0f, level), target, Time.deltaTime * 1.5f));
+                return;
+            }
             if (!faulty && !disturbed) { Apply(1f); return; }
 
             float clock = Time.time + seed * 0.137f;

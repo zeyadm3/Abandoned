@@ -73,7 +73,7 @@ namespace Abandoned.Player
                 g.Drop.WasPressedThisFrame(),
                 g.Inventory.IsPressed(),
                 g.Pause.WasPressedThisFrame(),
-                ragdollDebugAction.WasPressedThisFrame(),
+                ragdollDebugAction.WasPressedThisFrame() && DevTools.Enabled,
                 g.PushToTalk.IsPressed(),
                 g.Radio.IsPressed(),
                 g.HandSlot1.WasPressedThisFrame(),
@@ -81,7 +81,8 @@ namespace Abandoned.Player
                 g.Flashlight.WasPressedThisFrame(),
                 g.Rotate.IsPressed(),
                 g.Drop.IsPressed(),
-                g.Drop.WasReleasedThisFrame());
+                g.Drop.WasReleasedThisFrame(),
+                Mouse.current != null ? Mathf.Sign(Mouse.current.scroll.ReadValue().y) * (Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0.01f ? 1f : 0f) : 0f);
         }
     }
 }

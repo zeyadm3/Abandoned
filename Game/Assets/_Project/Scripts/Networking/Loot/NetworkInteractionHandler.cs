@@ -89,8 +89,8 @@ namespace Abandoned.Networking
         public void RequestDropFromPocket(PlayerCarrier carrier)
         {
             if (!PickupRules.CanDropFromPocket(carrier, out string reason)) { carrier.ShowHint(reason); return; }
-            Grabbable last = carrier.Inventory.Items[^1];
-            NetworkLoot loot = NetworkLoot.Of(last);
+            Grabbable chosen = carrier.Inventory.Selected;
+            NetworkLoot loot = NetworkLoot.Of(chosen);
             if (loot == null) { local.RequestDropFromPocket(carrier); return; }
 
             if (!loot.IsServer) { loot.ClientRequestUnpocket(carrier.EyeForward, carrier.DropVelocity); return; }

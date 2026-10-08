@@ -71,6 +71,8 @@ namespace Abandoned.EditorTools
             // Locked stores (M10.4): a shutter rattling up, the snip of bolt cutters.
             Cue(SoundId.ShutterOpen, new SoundCue(Clips(Impact, "impactPlate_heavy").Concat(Clips(Impact, "impactMetal_medium")).ToArray(), 1f, new Vector2(0.55f, 0.7f), 3f, 35f));
             Cue(SoundId.BoltCut, new SoundCue(Clips(Rpg, "metalClick"), 0.9f, new Vector2(0.7f, 0.8f), 1f, 12f));
+            // A shutter dropping shut: one heavy metal bang, lower than the rattle up.
+            Cue(SoundId.ShutterSlam, new SoundCue(Clips(Impact, "impactMetal_heavy").Concat(Clips(Impact, "impactPlate_heavy")).ToArray(), 1f, new Vector2(0.45f, 0.55f), 4f, 45f));
             // Menus (M7.4).
             Cue(SoundId.UiClick, new SoundCue(Clips(Ui, "click_"), 0.6f, Normal, 1f, 5f));
             Cue(SoundId.UiConfirm, new SoundCue(Clips(Ui, "confirmation_"), 0.7f, Normal, 1f, 5f));

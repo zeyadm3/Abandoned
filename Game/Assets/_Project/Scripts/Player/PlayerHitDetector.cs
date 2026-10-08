@@ -15,7 +15,13 @@ namespace Abandoned.Player
     {
         [SerializeField] private PlayerRagdoll ragdoll;
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider other) => Report(other);
+
+        // An item already touching us and then swung or shoved into us counts too (QA B-27); the ragdoll
+        // only reacts to real closing speed, so a resting touch does nothing.
+        private void OnTriggerStay(Collider other) => Report(other);
+
+        private void Report(Collider other)
         {
             Rigidbody body = other.attachedRigidbody;
             if (body == null || body.transform.IsChildOf(ragdoll.transform)) return;

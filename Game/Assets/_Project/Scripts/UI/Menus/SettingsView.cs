@@ -97,6 +97,13 @@ namespace Abandoned.UI
                 Note(Toggle("Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v), "The camera sways as you walk.");
                 Note(Toggle("Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v), "Collapses, landings and big hits shake the view.");
                 Note(Toggle("Crosshair", GameSettings.ShowCrosshair, v => GameSettings.ShowCrosshair = v), "Off hides the dot; the ring still shows on things you can use.");
+                Section("YOU");
+                VisualElement nameRow = Row("Your name");
+                var nameField = new TextField { value = GameSettings.PlayerName, maxLength = Networking.NetworkPlayer.MaxNameLength };
+                nameField.AddToClassList("field");
+                nameField.RegisterValueChangedCallback(e => GameSettings.PlayerName = e.newValue);
+                nameRow.Add(nameField);
+                Note(nameRow, "What the crew sees when you play without Steam (Steam uses your Steam name). Applies from the next game.");
                 Section("INTERFACE");
                 // Applied when the slider is let go: resizing the whole UI under the pointer mid-drag is unusable.
                 Slider scale = MenuKit.Range(body, "UI scale", GameSettings.MinUiScale, GameSettings.MaxUiScale, GameSettings.UiScale, "0.00x", _ => { });
@@ -212,12 +219,18 @@ namespace Abandoned.UI
                 MenuKit.Choice(body, "Subtitle size", GameSettings.SubtitleSizeNames, GameSettings.SubtitleSize, i => GameSettings.SubtitleSize = i);
                 Section("COLOUR AND MOTION");
                 Note(Toggle("Colourblind-safe scanner", GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v), "Blue / orange / vermilion stress colours.");
+                Note(Toggle("Reduce flashing lights", GameSettings.ReduceFlashing, v => GameSettings.ReduceFlashing = v), "Lights in the game dim and recover smoothly instead of flickering or strobing.");
                 Note(Toggle("Reduce menu effects", GameSettings.ReduceMenuEffects, v => GameSettings.ReduceMenuEffects = v), "No flicker, glitches, jitter or static in the menus.");
+                Note(Toggle("Fewer jump scares", GameSettings.FewerJumpScares, v => GameSettings.FewerJumpScares = v), "The building stops showing you sudden figures. Sounds and monsters stay.");
                 Note(Toggle("Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v), "Also on the Gameplay page.");
                 Note(Toggle("Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v), "Also on the Gameplay page.");
+                Section("SOUND");
+                Note(MenuKit.Percent(body, "Heartbeat and breathing", GameSettings.VitalsVolume, v => GameSettings.VitalsVolume = v), "Your own heartbeat and breath during a job. 0 turns them off.");
             }, () =>
             {
-                GameSettings.Subtitles = GameSettings.ColorblindScanner = GameSettings.ReduceMenuEffects = false;
+                GameSettings.Subtitles = true;
+                GameSettings.VitalsVolume = 1f;
+                GameSettings.ColorblindScanner = GameSettings.ReduceMenuEffects = GameSettings.ReduceFlashing = GameSettings.FewerJumpScares = false;
                 GameSettings.SubtitleSize = 1;
             });
         }

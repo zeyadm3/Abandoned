@@ -263,6 +263,36 @@ namespace Abandoned.Core
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Chat"",
+                    ""type"": ""Button"",
+                    ""id"": ""48049f6e-b321-49f2-8eda-80e0688185ff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""PhotoCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d6d368a-6a07-4b65-a003-06c05442a923"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""HideHud"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0c949b7-ed55-42b7-887e-c8b7ef2764bd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -505,6 +535,39 @@ namespace Abandoned.Core
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9ed7d3cd-01f3-4f6c-90e7-4d300315413a"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Chat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bc832f94-1ccf-4f3d-8665-eb02daeb85ad"",
+                    ""path"": ""<Keyboard>/f9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PhotoCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a7c6fe0-e291-4775-8716-1c2756db2e36"",
+                    ""path"": ""<Keyboard>/f10"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""HideHud"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -893,6 +956,9 @@ namespace Abandoned.Core
             m_Gameplay_Radio = m_Gameplay.FindAction("Radio", throwIfNotFound: true);
             m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
             m_Gameplay_Rotate = m_Gameplay.FindAction("Rotate", throwIfNotFound: true);
+            m_Gameplay_Chat = m_Gameplay.FindAction("Chat", throwIfNotFound: true);
+            m_Gameplay_PhotoCamera = m_Gameplay.FindAction("PhotoCamera", throwIfNotFound: true);
+            m_Gameplay_HideHud = m_Gameplay.FindAction("HideHud", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1009,6 +1075,9 @@ namespace Abandoned.Core
         private readonly InputAction m_Gameplay_Radio;
         private readonly InputAction m_Gameplay_Pause;
         private readonly InputAction m_Gameplay_Rotate;
+        private readonly InputAction m_Gameplay_Chat;
+        private readonly InputAction m_Gameplay_PhotoCamera;
+        private readonly InputAction m_Gameplay_HideHud;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -1089,6 +1158,18 @@ namespace Abandoned.Core
             /// </summary>
             public InputAction @Rotate => m_Wrapper.m_Gameplay_Rotate;
             /// <summary>
+            /// Provides access to the underlying input action "Gameplay/Chat".
+            /// </summary>
+            public InputAction @Chat => m_Wrapper.m_Gameplay_Chat;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/PhotoCamera".
+            /// </summary>
+            public InputAction @PhotoCamera => m_Wrapper.m_Gameplay_PhotoCamera;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/HideHud".
+            /// </summary>
+            public InputAction @HideHud => m_Wrapper.m_Gameplay_HideHud;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -1165,6 +1246,15 @@ namespace Abandoned.Core
                 @Rotate.started += instance.OnRotate;
                 @Rotate.performed += instance.OnRotate;
                 @Rotate.canceled += instance.OnRotate;
+                @Chat.started += instance.OnChat;
+                @Chat.performed += instance.OnChat;
+                @Chat.canceled += instance.OnChat;
+                @PhotoCamera.started += instance.OnPhotoCamera;
+                @PhotoCamera.performed += instance.OnPhotoCamera;
+                @PhotoCamera.canceled += instance.OnPhotoCamera;
+                @HideHud.started += instance.OnHideHud;
+                @HideHud.performed += instance.OnHideHud;
+                @HideHud.canceled += instance.OnHideHud;
             }
 
             /// <summary>
@@ -1227,6 +1317,15 @@ namespace Abandoned.Core
                 @Rotate.started -= instance.OnRotate;
                 @Rotate.performed -= instance.OnRotate;
                 @Rotate.canceled -= instance.OnRotate;
+                @Chat.started -= instance.OnChat;
+                @Chat.performed -= instance.OnChat;
+                @Chat.canceled -= instance.OnChat;
+                @PhotoCamera.started -= instance.OnPhotoCamera;
+                @PhotoCamera.performed -= instance.OnPhotoCamera;
+                @PhotoCamera.canceled -= instance.OnPhotoCamera;
+                @HideHud.started -= instance.OnHideHud;
+                @HideHud.performed -= instance.OnHideHud;
+                @HideHud.canceled -= instance.OnHideHud;
             }
 
             /// <summary>
@@ -1712,6 +1811,27 @@ namespace Abandoned.Core
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnRotate(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Chat" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnChat(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PhotoCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPhotoCamera(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "HideHud" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnHideHud(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

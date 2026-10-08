@@ -14,6 +14,8 @@ namespace Abandoned.Threats
         [SerializeField] private NetworkObject[] roster = System.Array.Empty<NetworkObject>();
         [SerializeField] private float[] openingWeights = System.Array.Empty<float>();
         [SerializeField] private ThreatCatalog catalog;
+        [Tooltip("A monster never appears closer than this to a living player, nor where one can see the spot (QA B-13).")]
+        [SerializeField, Min(0f)] private float minSpawnDistance = 14f;
         private float spawnAt = -1f;
         private int runSeed, spawnedTier;
         private bool finalSpawned;
@@ -115,13 +117,38 @@ namespace Abandoned.Threats
             if (!IsHost || prefab == null) return null;
             ThreatSpawnPoint[] points = FindObjectsByType<ThreatSpawnPoint>(FindObjectsSortMode.None).OrderBy(p => p.name).ToArray();
             if (points.Length == 0) return null;
-            Transform at = points[(int)((uint)(runSeed + Threat.All.Count) % (uint)points.Length)].transform;
+            Transform at = ChooseSpawn(points, (int)((uint)(runSeed + Threat.All.Count) % (uint)points.Length));
             NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at.position, rotation: at.rotation);
             Threat threat = spawned.GetComponent<Threat>();
             if (threat is LastHunter final) final.SetHuntBounds(HuntBounds());
             Debug.Log($"[Threat] The {threat.DisplayName} appears at {at.name}.");
             return threat;
         }
+        // From the seeded pick, the first point no living player is near or can see; failing that, the one
+        // farthest from everyone. Same seed and same crew positions give the same choice.
+        private Transform ChooseSpawn(ThreatSpawnPoint[] points, int start)
+        {
+            int walls = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
+            Transform farthest = points[start].transform;
+            float farthestDistance = -1f;
+            for (int k = 0; k < points.Length; k++)
+            {
+                Transform t = points[(start + k) % points.Length].transform;
+                float nearest = float.MaxValue;
+                bool seen = false;
+                foreach (NetworkPlayer p in NetworkPlayer.All)
+                {
+                    if (p == null || p.IsDead || p.NetworkManager != Manager) continue;
+                    Vector3 eye = p.transform.position + Vector3.up * 1.6f;
+                    nearest = Mathf.Min(nearest, Vector3.Distance(eye, t.position));
+                    if (!Physics.Linecast(eye, t.position + Vector3.up * 1.2f, walls, QueryTriggerInteraction.Ignore)) seen = true;
+                }
+                if (nearest >= minSpawnDistance && !seen) return t;
+                if (nearest > farthestDistance) (farthest, farthestDistance) = (t, nearest);
+            }
+            return farthest;
+        }
+
         private static Bounds HuntBounds()
         {
             var bounds = new Bounds(Vector3.zero, Vector3.zero);

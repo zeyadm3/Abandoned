@@ -74,6 +74,7 @@ namespace Abandoned.EditorTools
             ThreatContentBuilder.CreateBlindOne(); ThreatContentBuilder.CreateOthers();
             NewThreatContentBuilder.Create();
             NetworkContentBuilder.RegisterNetworkPrefabs();
+            SoundBankBuilder.CreateMissing(); // only adds cues it doesn't have yet (QA: the shutter slam)
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing(); MenuEffectsBuilder.Create();
             MaterialAudit.RemapThirdPartyMaterials(); // before the scenes so their models already use URP copies
             GarageDoorBuilder.Create();

@@ -18,15 +18,28 @@ namespace Abandoned.Networking
     /// </summary>
     public class SessionTravel : NetworkBehaviour
     {
+        [Tooltip("Host: a machine that still hasn't loaded the level after this long is dropped, so one stuck player can't hold up the crew.")]
+        [SerializeField, Min(10f)] private float loadTimeout = 90f;
+
         private readonly NetworkVariable<FixedString64Bytes> level = new();
         private readonly NetworkVariable<int> travel = new();
+        // Host-written: who the crew is waiting for ("" when nobody), for the travel screen.
+        private readonly NetworkVariable<FixedString128Bytes> waitingFor = new();
         private readonly Dictionary<ulong, int> readyFor = new();
         private int loadedTravel = -1;
         private bool placed;
+        private float travelStarted, nextWaitingCheck;
+        private AsyncOperation loading;
 
         public static SessionTravel Current { get; private set; }
 
         public string Level => level.Value.ToString();
+
+        /// <summary>Names of the players everyone is waiting on to finish loading (empty when nobody).</summary>
+        public string WaitingFor => waitingFor.Value.ToString();
+
+        /// <summary>This machine's progress loading the level (0-1; 1 when not loading).</summary>
+        public float LoadProgress => loading == null || loading.isDone ? 1f : Mathf.Clamp01(loading.progress / 0.9f);
 
         /// <summary>Host: the level this session began on (the HQ in the real game; a dev level in tests).</summary>
         public string StartLevel { get; private set; }
@@ -88,6 +101,7 @@ namespace Abandoned.Networking
             foreach (NetworkObject no in NetworkManager.SpawnManager.SpawnedObjectsList.ToList())
                 if (no != null && !no.IsPlayerObject && no.gameObject.scene.name != "DontDestroyOnLoad") no.Despawn(true);
             placed = false;
+            travelStarted = Time.unscaledTime;
             travel.Value++;
             level.Value = sceneName;
             Debug.Log($"[Travel] Everyone to {sceneName} (travel {travel.Value}).");
@@ -123,7 +137,13 @@ namespace Abandoned.Networking
                 Arrived?.Invoke(scene);
             }
             SceneManager.sceneLoaded += OnLoaded;
-            SceneManager.LoadScene(scene, LoadSceneMode.Single);
+            // QA B-05: async, so the travel screen keeps animating and the connection keeps ticking while it loads.
+            loading = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Single);
+            if (loading == null)
+            {
+                SceneManager.sceneLoaded -= OnLoaded;
+                Debug.LogError($"[Travel] Could not start loading {scene}.");
+            }
         }
 
         [Rpc(SendTo.Server)]
@@ -132,13 +152,45 @@ namespace Abandoned.Networking
         // Host: once everyone is in, put them on this level's spawn points (each keeps their slot).
         private void Update()
         {
-            if (!IsServer || placed || !AllReady) return;
+            if (!IsServer || placed) return;
+            if (!AllReady)
+            {
+                WatchStragglers();
+                return;
+            }
             placed = true;
+            waitingFor.Value = default;
             NetworkBootstrap session = NetworkBootstrap.Persistent != null ? NetworkBootstrap.Persistent : NetworkBootstrap.Instance;
             foreach (NetworkPlayer p in NetworkPlayer.All)
                 if (p != null && p.NetworkManager == NetworkManager && session != null && session.Slots.TryGetSlot(p.OwnerClientId, out int slot))
                     p.ServerRespawn(PlayerSpawnPoint.PoseFor(slot));
             Debug.Log($"[Travel] Everyone is in {Level}.");
+        }
+
+        // Host, while the crew loads (QA B-04): name who we're waiting for, and drop anyone stuck past the timeout.
+        private void WatchStragglers()
+        {
+            if (Time.unscaledTime < nextWaitingCheck || loadedTravel != travel.Value) return;
+            nextWaitingCheck = Time.unscaledTime + 0.5f;
+            var late = new List<ulong>();
+            foreach (ulong id in NetworkManager.ConnectedClientsIds)
+                if (id != NetworkManager.ServerClientId && (!readyFor.TryGetValue(id, out int t) || t != travel.Value)) late.Add(id);
+            if (late.Count == 0) return;
+            if (Time.unscaledTime - travelStarted > loadTimeout)
+            {
+                foreach (ulong id in late)
+                {
+                    Debug.LogWarning($"[Travel] {NetworkPlayer.NameOf(id)} (client {id}) didn't load {Level} in {loadTimeout:0} s; dropping them.");
+                    NetworkManager.DisconnectClient(id, SessionMessages.LoadTimedOut);
+                    readyFor.Remove(id);
+                }
+                return;
+            }
+            string names = string.Join(", ", late.Select(NetworkPlayer.NameOf));
+            if (names.Length > 100) names = names.Substring(0, 100) + "...";
+            var text = new FixedString128Bytes();
+            text.CopyFromTruncated(names); // names may be any script: cut at a character, never mid-byte
+            if (!text.Equals(waitingFor.Value)) waitingFor.Value = text;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

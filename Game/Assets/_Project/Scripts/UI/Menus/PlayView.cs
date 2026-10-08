@@ -45,6 +45,11 @@ namespace Abandoned.UI
             cards.AddToClassList("play__cards");
             body.Add(cards);
 
+            // QA B-24: up to three companies on this machine; hosting (or solo) plays the chosen one.
+            var slots = new string[Company.SaveStore.Slots];
+            for (int i = 0; i < slots.Length; i++) slots[i] = $"{i + 1}: {Company.SaveStore.Describe(i + 1)}";
+            MenuKit.Choice(body, "Company", slots, Company.SaveStore.Slot - 1, i => Company.SaveStore.Slot = i + 1);
+
             VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "Just you and the building. Hard, not impossible: the trolley helps. Friends can still join you at the HQ.");
             MenuKit.Button(solo, "Start", () => b.StartHost(), SoundId.UiConfirm, important: true);
 

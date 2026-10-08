@@ -17,7 +17,7 @@ namespace Abandoned.Company
     /// (or the shortfall becomes debt) and the company file is saved; "Back to HQ" brings everyone home
     /// to a fresh board. Test and batch runs never touch the player's real save.
     /// </summary>
-    public class CompanyService : NetworkBehaviour
+    public partial class CompanyService : NetworkBehaviour
     {
         public const string HomeLevel = "HQ";
 
@@ -102,12 +102,20 @@ namespace Abandoned.Company
             {
                 if (now.LevelledUp && now.Run != before.Run) Audio.MusicPlayer.Play(Audio.MusicSting.LevelUp);
             };
+            SpawnCrewRules();
             if (!IsServer) return;
+            // Closing the window mid-job is choosing to leave (only a crash or a lost connection is forgiven).
+            Application.quitting += MarkLeavingMidJob;
             store = PersistsToDisk ? new SaveStore(SaveFolderOverride) : null;
             save = store != null ? store.Load() : CompanySave.New();
-            if (CompanyLedger.SettleAbandoned(save, config) is RunOutcome abandoned)
+            if (CompanyLedger.SettleAbandoned(save, config, out bool voided) is RunOutcome abandoned)
             {
-                Debug.LogWarning($"[Company] The last job was never finished: settled as an empty haul (penalty ${abandoned.Penalty:N0}).");
+                Debug.LogWarning($"[Company] The last job was abandoned: settled as an empty haul (penalty ${abandoned.Penalty:N0}).");
+                store?.Save(save);
+            }
+            else if (voided)
+            {
+                Debug.LogWarning("[Company] The last job was cut short (crash or lost connection): voided, no penalty.");
                 store?.Save(save);
             }
             state.Value = CompanyNetState.Of(save, truckUpgrades);
@@ -126,6 +134,7 @@ namespace Abandoned.Company
         {
             if (Current == this) Current = null;
             if (IsServer) NetworkBootstrap.JoinBlocker = null;
+            Application.quitting -= MarkLeavingMidJob;
             Unhook();
         }
 
@@ -213,15 +222,18 @@ namespace Abandoned.Company
             Debug.Log("[Company] Demo restarted with a new company.");
         }
 
-        /// <summary>Anyone at the van: drive to the selected contract.</summary>
+        /// <summary>Anyone at the van (the host, or the crew if allowed): drive to the selected contract.</summary>
         public void RequestDepart()
         {
             if (IsServer) Depart();
-            else DepartRpc();
+            else if (!RefuseLocally(CrewRule.Drive)) DepartRpc();
         }
 
         [Rpc(SendTo.Server)]
-        private void DepartRpc() => Depart();
+        private void DepartRpc(RpcParams rpcParams = default)
+        {
+            if (Allows(rpcParams.Receive.SenderClientId, CrewRule.Drive)) Depart();
+        }
 
         private void Depart()
         {
@@ -233,9 +245,49 @@ namespace Abandoned.Company
             // Written before leaving: quitting mid-job must not dodge the missed quota (settled on next load).
             save.pendingQuota = c.Quota;
             save.pendingBonus = c.PayoutBonus;
+            save.pendingLeftOnPurpose = false;
             Saved();
             Debug.Log($"[Company] Taking the {c.ModifierName} contract at {c.Location}: quota ${c.Quota:N0}, stability {c.Stability:P0}.");
             SessionTravel.Current.Travel(c.Scene);
+        }
+
+        /// <summary>Host, at the HQ between jobs: rename the company (QA B-24).</summary>
+        public void RenameCompany(string newName)
+        {
+            if (!IsServer || save == null || JobInProgress) return;
+            string clean = NetworkPlayer.Clean(newName);
+            if (clean.Length == 0 || clean == save.companyName) return;
+            save.companyName = clean;
+            Saved();
+            Debug.Log($"[Company] Renamed to {clean}.");
+        }
+
+        /// <summary>Host, at the HQ between jobs: throw this company away and start a new one in its slot (QA B-24).</summary>
+        public void StartNewCompany()
+        {
+            if (!IsServer || save == null || JobInProgress) return;
+            int bankruptcies = save.bankruptcies;
+            CompanyLedger.GoBankrupt(save);
+            save.bankruptcies = bankruptcies; // starting over by choice isn't going bankrupt
+            save.companyName = CompanySave.New().companyName;
+            Saved();
+            selected.Value = -1;
+            boardSeed.Value = NewSeed();
+            Debug.Log("[Company] A new company was started in this slot.");
+        }
+
+        /// <summary>Host is on a job that hasn't been settled yet (leaving now counts as a failed job).</summary>
+        public bool JobInProgress => IsServer && save != null && save.pendingQuota > 0;
+
+        /// <summary>
+        /// Host chose to end the game mid-job (pause menu): the job counts as failed on the next load. Crashes
+        /// and lost connections never call this, so they're voided instead (QA B-06).
+        /// </summary>
+        public void MarkLeavingMidJob()
+        {
+            if (!JobInProgress) return;
+            save.pendingLeftOnPurpose = true;
+            Saved();
         }
 
         /// <summary>Host, from the appraisal: everyone home to a fresh board.</summary>
@@ -253,9 +305,10 @@ namespace Abandoned.Company
         private void OnDeparted(RunResults results)
         {
             if (!IsServer || !active.Value.IsValid) return;
-            RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, active.Value.PayoutBonus);
+            RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, results.Wiped ? 0f : active.Value.PayoutBonus);
             save.pendingQuota = 0;
             save.pendingBonus = 0f;
+            save.pendingLeftOnPurpose = false;
             Saved();
             lastOutcome.Value = OutcomeNet.Of(o, save.runs + save.bankruptcies * 1000);
             Debug.Log($"[Company] Run {save.runs}: payout ${o.Payout:N0}, penalty ${o.Penalty:N0}, +{o.Xp} xp, money ${save.money:N0}" +
@@ -284,11 +337,14 @@ namespace Abandoned.Company
         public void RequestBuy(int index)
         {
             if (IsServer) Buy(index);
-            else BuyRpc(index);
+            else if (!RefuseLocally(CrewRule.Spend)) BuyRpc(index);
         }
 
         [Rpc(SendTo.Server)]
-        private void BuyRpc(int index) => Buy(index);
+        private void BuyRpc(int index, RpcParams rpcParams = default)
+        {
+            if (Allows(rpcParams.Receive.SenderClientId, CrewRule.Spend)) Buy(index);
+        }
 
         private void Buy(int index)
         {
@@ -339,11 +395,14 @@ namespace Abandoned.Company
         public void RequestBuyUpgrade(int index)
         {
             if (IsServer) BuyUpgrade(index);
-            else BuyUpgradeRpc(index);
+            else if (!RefuseLocally(CrewRule.Spend)) BuyUpgradeRpc(index);
         }
 
         [Rpc(SendTo.Server)]
-        private void BuyUpgradeRpc(int index) => BuyUpgrade(index);
+        private void BuyUpgradeRpc(int index, RpcParams rpcParams = default)
+        {
+            if (Allows(rpcParams.Receive.SenderClientId, CrewRule.Spend)) BuyUpgrade(index);
+        }
 
         private void BuyUpgrade(int index)
         {

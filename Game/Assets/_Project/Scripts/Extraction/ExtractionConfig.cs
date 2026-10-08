@@ -20,6 +20,8 @@ namespace Abandoned.Extraction
         [field: SerializeField, Range(1f, 6f)] public float IgnitionRange { get; private set; } = 3.5f;
         [Tooltip("Seconds between horn blasts while the truck waits.")]
         [field: SerializeField, Range(0.5f, 5f)] public float HornInterval { get; private set; } = 1.5f;
+        [Tooltip("Everyone died: the company tows the truck home and this share of the bay's value survives the trip (QA B-20). No bonus.")]
+        [field: SerializeField, Range(0f, 1f)] public float WipeRecovery { get; private set; } = 0.5f;
 
         public void Validate(List<string> errors)
         {

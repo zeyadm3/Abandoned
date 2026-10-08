@@ -47,7 +47,7 @@ namespace Abandoned.Interaction
                 carrier.ShowHint(reason);
                 return;
             }
-            carrier.ApplyUnpocketLast();
+            carrier.ApplyUnpocketSelected();
         }
 
         public bool RequestPlace(PlayerCarrier carrier)

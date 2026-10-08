@@ -103,7 +103,9 @@ namespace Abandoned.Extraction
             var receipt = new VisualElement();
             receipt.AddToClassList("receipt");
             columns.Add(receipt);
-            Line(receipt, "ZEYAD SALVAGE CO.", "receipt__head");
+            Company.CompanyService company = Company.CompanyService.Current;
+            // Names are cleaned of markup when set (NetworkPlayer.Clean), so they're safe in a rich-text line.
+            Line(receipt, company != null && company.State.Name.Length > 0 ? company.State.Name.ToString().ToUpperInvariant() : "ZEYAD SALVAGE CO.", "receipt__head");
             Line(receipt, $"APPRAISAL - RUN {r.Seed % 10000:0000} - {(int)r.Seconds / 60}:{(int)r.Seconds % 60:00} ON SITE", "receipt__small");
             Line(receipt, new string('-', 44), "receipt__rule");
             var lines = new System.Collections.Generic.List<VisualElement>();

@@ -17,6 +17,7 @@ namespace Abandoned.UI
             ["Move"] = "Move", ["Sprint"] = "Sprint", ["Crouch"] = "Crouch", ["Jump"] = "Jump", ["Interact"] = "Interact / pick up",
             ["Use"] = "Use / throw", ["Drop"] = "Drop / hold to set down", ["Rotate"] = "Rotate held object", ["Scan"] = "Scan", ["Flashlight"] = "Flashlight", ["HandSlot1"] = "Hand slot 1",
             ["HandSlot2"] = "Hand slot 2", ["Inventory"] = "Inventory", ["PushToTalk"] = "Push to talk", ["Radio"] = "Radio",
+            ["Chat"] = "Text chat", ["PhotoCamera"] = "Free camera (photo)", ["HideHud"] = "Hide the HUD (clips)",
         };
 
         private readonly AbandonedInput editing = new();
