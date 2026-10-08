@@ -26,10 +26,12 @@ namespace Abandoned.EditorTools
                 if (store.Value.Tag == "stock")
                     Sign(group, at + front * 0.19f + Vector3.up * 2.72f, front, "SERVICE / SAFE STAIRS", 2.6f, 0.26f);
             }
-            Sign(group, new Vector3(28f, 7.1f, 4.12f), Vector3.back, "MERIDIAN MALL", 10f, 0.7f);
-            Sign(group, new Vector3(28f, 3.1f, 4.16f), Vector3.back, "WE WILL REOPEN SHORTLY / EST. 2009", 6.4f, 0.28f);
+            var entrance = System.Array.Find(MallLayout.Exterior, e => e.floor == 0 && e.side == 'S' && !e.window);
+            float entrancePlane = MallLayout.ExteriorPosition(entrance).z;
+            Sign(group, new Vector3(MallLayout.EntranceTarget.x, 7.1f, entrancePlane - 0.24f), Vector3.back, "MERIDIAN MALL", 10f, 0.7f);
+            Sign(group, new Vector3(MallLayout.EntranceTarget.x, 3.74f, entrancePlane - 4.12f), Vector3.back,
+                "WE WILL REOPEN SHORTLY / EST. 2009", 6.4f, 0.22f);
             Sign(group, new Vector3(28f, 2.55f, 47.76f), Vector3.back, "FOOD COURT / FOOD SUBJECT TO AVAILABILITY", 8.4f, 0.42f);
-            Sign(group, new Vector3(15.76f, 10.55f, 26f), Vector3.right, "THE LAST SCREENING", 5.8f, 0.42f);
             Sign(group, new Vector3(40.24f, 2.2f, 30f), Vector3.right, "STAFF ONLY / EVERYONE LEFT", 2.8f, 0.35f);
             Sign(group, new Vector3(55.7f, 2.6f, 34f), Vector3.left, "LOADING / TRUCK", 2.6f, 0.32f);
             Sign(group, new Vector3(40.24f, -1.8f, 42f), Vector3.right, "LEVEL -1 / NO REFUNDS BELOW THIS LINE", 3.6f, 0.34f);
@@ -70,8 +72,14 @@ namespace Abandoned.EditorTools
 
         private static void Directory(Transform group)
         {
-            const string map = "MERIDIAN\n2  CINEMA / NORTH GALLERY\n1  TOYS / HOME / FOOD TERRACE\n0  SHOPS / FOUNTAIN / FOOD COURT\nSERVICE STAIRS & LOADING  >";
-            Sign(group, new Vector3(17.72f, 1.55f, 9.4f), Vector3.right, map, 2.2f, 1.45f);
+            const string map = "MERIDIAN\n02  FINAL REEL / GALLERY\n01  TOYS / HOME / TERRACE\n00  SHOPS / FOOD COURT\nSERVICE & LOADING  >";
+            Quaternion rotation = Quaternion.Euler(0f, 20f, 0f);
+            Vector3 front = rotation * Vector3.forward;
+            Sign(group, new Vector3(18f, 1.5f, 9.4f) + front * 0.34f, front, map, 1.14f, 1.5f);
+            Transform holder = group.GetChild(group.childCount - 1);
+            TextMesh label = holder.GetComponentInChildren<TextMesh>();
+            label.characterSize = 0.073f;
+            label.lineSpacing = 1.35f;
         }
     }
 }

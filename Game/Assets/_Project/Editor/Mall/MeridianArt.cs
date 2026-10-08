@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
     {
         public const string Folder="Assets/_Project/Art/Custom/Environment/Meridian";
         public static bool UseKit=>true;
-        public static bool Dress=>false;
+        public static bool Dress=>true;
         public static bool Illuminate=>false;
         public static void Prepare() => MeridianMaterials.Prepare();
         public static Material Material(string key) => MeridianMaterials.Get(key);

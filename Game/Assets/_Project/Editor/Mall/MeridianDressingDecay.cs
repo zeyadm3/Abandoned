@@ -33,8 +33,8 @@ namespace Abandoned.EditorTools
             }
             for (int floor = 0; floor < MallLayout.Floors; floor++)
             {
-                EdgePlant(new Vector3(18.15f, MallLayout.FloorY(floor), 30.6f), floor);
-                EdgePlant(new Vector3(38.2f, MallLayout.FloorY(floor), 18.6f), floor);
+                EdgePlant(new Vector3(21.7f, MallLayout.FloorY(floor), 30.6f), floor);
+                if (floor == 0) EdgePlant(new Vector3(34.3f, 0f, 30.6f), floor);
             }
             void EdgePlant(Vector3 at, int floor)
             {
@@ -96,7 +96,7 @@ namespace Abandoned.EditorTools
             foreach (MallLayout.Zone zone in MallLayout.ZonesByFloor[floor])
             {
                 if (zone.Tag != "clothing" && zone.Tag != "electronics" && zone.Tag != "jewelry") continue;
-                var cell = new Vector2Int(zone.Area.xMin + 1, zone.Area.yMin + 1);
+                if (!ScavengerCell(zone, floor, out Vector2Int cell)) continue;
                 StructuralSection support = Support(mall, cell, floor);
                 if (support == null || !Occupied(cell, floor)) continue;
                 Vector3 at = MallLayout.TileTopCenter(cell, floor);
@@ -105,10 +105,24 @@ namespace Abandoned.EditorTools
                 {
                     Prop("CampMattress", group, at + new Vector3(-1f, 0f, 1.1f), Quaternion.Euler(0f, 12f, 0f), support);
                     Prop("CampScorch", group, at + new Vector3(0.4f, 0.014f, 0.9f), Quaternion.identity, support);
-                    Prop("GraffitiTag", group, new Vector3(zone.Area.xMin * MallLayout.Tile + 0.16f,
-                        MallLayout.FloorY(floor) + 1.65f, at.z), Quaternion.Euler(0f, 90f, 0f));
+                    int wallColumn = zone.Area.xMin == 0 ? 1 : zone.Area.xMin;
+                    Prop("GraffitiTag", group, new Vector3(wallColumn * MallLayout.Tile + 0.16f,
+                        MallLayout.FloorY(floor) + 1.65f, at.z), Quaternion.Euler(0f, 0f, -90f));
                 }
             }
+        }
+
+        private static bool ScavengerCell(MallLayout.Zone zone, int floor, out Vector2Int cell)
+        {
+            for (int z = zone.Area.yMin + 1; z < zone.Area.yMax; z++)
+            for (int x = zone.Area.xMin + 1; x < zone.Area.xMax; x++)
+            {
+                cell = new Vector2Int(x, z);
+                if (Occupied(cell, floor) && MallLayout.ZoneAt(cell, floor)?.Name == zone.Name
+                    && !MallLayout.IsProtected(cell, floor) && !MallLootPoints.IsJackpotTile(cell, floor)) return true;
+            }
+            cell = default;
+            return false;
         }
 
         private static void Gallery(Transform mall, Transform group)
