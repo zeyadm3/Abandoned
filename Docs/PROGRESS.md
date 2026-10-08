@@ -10,7 +10,8 @@ From the user's pause-menu screenshot: you work for a company you hate; it isn't
 section (rename, "Start a new company") is gone, as are those host methods; the Play screen's slot picker is "Save"
 (level, money, jobs); menu copy says crew, not company owner. The crew panel is one scrolling body under the title
 (note, crew rows, join hint, HOST RULES: THE CREW MAY), 600 px tall, so the rows have room and nothing spills out of
-the panel. Not tested (user tests); compile and builds only.
+the panel. Not tested (user tests); compile and builds only. Builds **0.12.7**, commit **8facd66** (clean):
+`~/Documents/Abandoned-builds/dev/Abandoned-0.12.7-8facd66-Mac.zip` (54 MB) and `...-Windows.zip` (44 MB).
 
 ## 0.12.6 — QA fix pass (2026-10-08)
 
