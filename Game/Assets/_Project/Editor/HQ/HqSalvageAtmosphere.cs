@@ -5,15 +5,15 @@ using static Abandoned.EditorTools.GreyboxFactory;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>HQ-only shop lighting: tired cool tubes and readable, warm work pools.</summary>
+    /// <summary>Suspended warehouse tubes, clerestory daylight and warm service-wing work pools.</summary>
     public static class HqSalvageAtmosphere
     {
         public static readonly LevelAtmosphere.Mood Mood = new(
-            sky: new Color(.095f, .11f, .117f), equator: new Color(.055f, .062f, .064f),
-            ground: new Color(.028f, .026f, .022f), fog: new Color(.22f, .24f, .245f),
-            fogDensity: .007f, bloom: .20f, vignette: .17f, grain: .12f,
-            saturation: -13f, contrast: 10f, sunColor: new Color(.86f, .91f, .95f),
-            sunIntensity: .16f, sunEuler: new Vector3(50f, -30f, 0f));
+            sky: new Color(.12f, .132f, .14f), equator: new Color(.079f, .085f, .087f),
+            ground: new Color(.038f, .035f, .030f), fog: new Color(.22f, .24f, .245f),
+            fogDensity: .0045f, bloom: .20f, vignette: .14f, grain: .10f,
+            saturation: -10f, contrast: 8f, sunColor: new Color(.86f, .91f, .95f),
+            sunIntensity: .10f, sunEuler: new Vector3(50f, -30f, 0f));
 
         public static void Build(Transform root)
         {
@@ -24,19 +24,36 @@ namespace Abandoned.EditorTools
             Material cool = HqSalvageAtmosphereAssets.Solid("ShopTubeGlow", new Color(.65f, .78f, .82f), glow: 2.8f);
             Material warm = HqSalvageAtmosphereAssets.Solid("BareBulbGlow", new Color(1f, .61f, .28f), glow: 3.4f);
 
-            Fluorescent("Arrival", new Vector3(5.2f, 3.62f, 3.4f), 0f, 11f, 7f, false, 104);
-            Fluorescent("Garage", new Vector3(6f, 3.58f, 9f), 0f, 12f, 7.5f, false, 213);
-            Fluorescent("ScrapStacks", new Vector3(9.1f, 3.61f, 14.3f), 90f, 8f, 5.8f, true, 328);
-            Fluorescent("OfficeEntry", new Vector3(15.1f, 3.58f, 2.6f), 0f, 9f, 6f, false, 441);
-            Fluorescent("OfficeBack", new Vector3(21.1f, 3.62f, 7.8f), 90f, 8f, 5.6f, true, 552);
-            Fluorescent("Workshop", new Vector3(18f, 3.55f, 13.5f), 0f, 11f, 6.8f, false, 665);
-            Fluorescent("SpareParts", new Vector3(22.1f, 3.65f, 12.2f), 90f, 7f, 4.8f, false, 776);
+            for (int bay = 0; bay < 3; bay++)
+            for (int aisle = 0; aisle < 3; aisle++)
+            {
+                Vector3 at = new(5f + aisle * 7f, 5.5f, 5f + bay * 8f);
+                bool faulty = bay == 2 && aisle == 2;
+                Fluorescent($"Warehouse_{bay}_{aisle}", at, 0f, faulty ? 30f : 42f, 11f,
+                    faulty, 104 + bay * 100 + aisle * 17);
+            }
+            Fluorescent("Dispatch", new Vector3(30f, 3.35f, 5.1f), 0f, 19f, 7f, false, 441);
+            Fluorescent("CrewRoom", new Vector3(31.5f, 3.35f, 14f), 0f, 15f, 6.8f, false, 552);
+            Fluorescent("Workshop", new Vector3(31.5f, 3.35f, 23.1f), 90f, 20f, 7f, false, 665);
+            Fluorescent("SpareParts", new Vector3(28.8f, 3.35f, 20f), 0f, 10f, 4.5f, true, 776);
+            Fluorescent("ServiceSpine", new Vector3(25.5f, 3.35f, 15.2f), 90f, 11f, 5.7f, false, 790);
 
             // The working surfaces stay steady while two secondary ballasts sputter.
-            Pendant("DispatchDesk", new Vector3(18f, 2.68f, 5f), 8.5f, 4.5f, 811);
-            Pendant("ScrapDepot", new Vector3(5.3f, 2.86f, 14.7f), 8f, 4.4f, 823);
-            Pendant("GearBench", new Vector3(18f, 2.72f, 13.5f), 7f, 4.2f, 837);
-            Pendant("LockerBay", new Vector3(1.7f, 2.84f, 6.6f), 3.8f, 3.3f, 849);
+            Pendant("DispatchDesk", HqLayout.Dispatch + Vector3.up * 2.8f, 12f, 5.2f, 811);
+            Pendant("ScrapDepot", HqLayout.Depot + Vector3.up * 3.05f, 12f, 5.2f, 823);
+            Pendant("GearBench", HqLayout.Maintenance + Vector3.up * 2.9f, 11f, 5f, 837);
+            Pendant("CrewLounge", new Vector3(30f, 2.85f, 14.1f), 9f, 4.8f, 849);
+
+            // These weak, broad fills belong to the glazed roof slots, leaving shop lamps dominant.
+            foreach (float z in new[] { 6f, 14f, 22f })
+            {
+                Transform opening = Group("ClerestoryFill_" + z, lights);
+                opening.localPosition = new Vector3(HqLayout.HallWidth * .5f, HqLayout.Ridge - .25f, z);
+                Light daylight = Lamp(opening, LightType.Spot, new Color(.67f, .78f, .87f), 12f, 13f);
+                daylight.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                daylight.spotAngle = 102f;
+                daylight.innerSpotAngle = 72f;
+            }
 
             HqSalvageAir.Build(root);
 
@@ -44,23 +61,24 @@ namespace Abandoned.EditorTools
             {
                 Transform holder = Group("Tube_" + name, lights);
                 holder.SetLocalPositionAndRotation(at, Quaternion.Euler(0f, yaw, 0f));
-                Box("BallastHousing", holder, Vector3.zero, new Vector3(1.72f, .10f, .34f), metal, false);
-                Box("Reflector", holder, new Vector3(0f, -.067f, 0f), new Vector3(1.60f, .025f, .29f), metal, false);
+                float length = at.x < HqLayout.HallWidth ? 2.5f : 1.72f;
+                Box("BallastHousing", holder, Vector3.zero, new Vector3(length, .10f, .34f), metal, false);
+                Box("Reflector", holder, new Vector3(0f, -.067f, 0f), new Vector3(length - .12f, .025f, .29f), metal, false);
                 foreach (float z in new[] { -.092f, .092f })
                 {
                     GameObject tube = Primitive(PrimitiveType.Cylinder, "FluorescentTube", holder,
-                        new Vector3(0f, -.097f, z), new Vector3(.048f, .76f, .048f), cool, false);
+                        new Vector3(0f, -.097f, z), new Vector3(.048f, (length - .20f) * .5f, .048f), cool, false);
                     tube.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                    foreach (float x in new[] { -.79f, .79f })
+                    foreach (float x in new[] { -length * .5f + .07f, length * .5f - .07f })
                         Box("PorcelainSocket", holder, new Vector3(x, -.087f, z), new Vector3(.07f, .085f, .07f), rubber, false);
                 }
-                foreach (float x in new[] { -.60f, .60f })
+                foreach (float x in new[] { -length * .35f, length * .35f })
                 {
-                    float drop = 3.94f - at.y;
+                    float drop = SuspensionHeight(at) - at.y;
                     Box("SuspensionRod", holder, new Vector3(x, drop * .5f, 0f), new Vector3(.012f, drop, .012f), rust, false);
                     Box("RustClip", holder, new Vector3(x, .063f, 0f), new Vector3(.13f, .027f, .37f), rust, false);
                 }
-                Light lamp = Lamp(holder, LightType.Spot, new Color(.70f, .81f, .85f), intensity, range);
+                Light lamp = Lamp(holder, LightType.Spot, new Color(.79f, .87f, .88f), intensity, range);
                 lamp.transform.localPosition = Vector3.down * .15f;
                 lamp.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
                 lamp.spotAngle = 118f;
@@ -73,7 +91,7 @@ namespace Abandoned.EditorTools
             {
                 Transform holder = Group("HangingBulb_" + name, lights);
                 holder.localPosition = at;
-                float drop = 3.96f - at.y;
+                float drop = SuspensionHeight(at) - at.y;
                 Box("ExposedFlex", holder, new Vector3(0f, (drop + .155f) * .5f, 0f), new Vector3(.021f, drop - .155f, .021f), rubber, false);
                 Primitive(PrimitiveType.Cylinder, "Socket", holder, new Vector3(0f, .10f, 0f), new Vector3(.085f, .055f, .085f), metal, false);
                 Primitive(PrimitiveType.Sphere, "ExposedGlassBulb", holder, new Vector3(0f, -.019f, 0f), new Vector3(.13f, .18f, .13f), warm, false);
@@ -84,6 +102,9 @@ namespace Abandoned.EditorTools
                 NoSelfShadows(holder);
             }
         }
+
+        private static float SuspensionHeight(Vector3 at) =>
+            at.x < HqLayout.HallWidth ? HqLayout.WarehouseTrussBottom : HqLayout.ServiceCeiling;
 
         private static Light Lamp(Transform parent, LightType type, Color color, float intensity, float range)
         {

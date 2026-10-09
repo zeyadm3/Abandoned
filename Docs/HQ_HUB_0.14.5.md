@@ -1,57 +1,59 @@
 # HQ Hub Overhaul — 0.14.5
 
-The headquarters is a working Abandoned Salvaging warehouse: dirty steel furniture, sorted scrap,
-stacked crates, retired electronics and maintenance supplies. The existing 24 × 16 m building,
-garage door placement, four crew spawns and van remain the basis of the layout.
+Abandoned Salvaging now occupies a 36 × 28 m industrial company building: a high-bay receiving,
+sorting and stock warehouse, with an attached lower operations wing. Warehouse eaves are 6.4 m;
+the pitched roof reaches 8.2 m. Steel portal frames, rooflight bands, brick plinths and corrugated
+cladding establish the industrial scale. The office wing has its own staff entrance and glazed
+views into the receiving floor.
 
-## Stations
+## Floor plan
 
-- **Dispatch workbench:** a heavy steel bench in the middle of the office. The rotary telephone opens
-  the existing host-controlled contract selection and briefing. Original spoken dispatch warnings
-  accompany a readable transcript; the selected contract supplies its exact quota, threat, power,
-  stability and time window. The boss's answering machine sits at the back of the same bench.
-- **Field guide:** a scuffed leather logbook immediately beside the telephone. Interact opens a
-  paper-and-leather monster manual with an index and previous/next page controls. It uses the existing
-  encounter unlocks and threat descriptions; unread subjects remain unknown.
-- **Scrap and quota depot:** a rusted platform scale and reinforced receiving chute against the
-  garage's north wall. The scale displays the company's receipt; the depot screen includes current
-  quota, the previous settled haul and its weight/count where available. Legitimate loose HQ salvage
-  can be unloaded at the chute through the host. Haul already credited on return is never paid twice.
-- **Maintenance and gear:** a steel workbench with the supply terminal, tool pegboard, spare
-  flashlights, battery chargers, tool cases and the inventory rack together in the workshop.
-- **Logistics corkboard:** taped mall floor plans, wiring sketches, handwritten instructions and
-  hazard notices along the office wall, including reminders about noise, sight and overloaded floors.
+| Area | Location | Purpose |
+| --- | --- | --- |
+| Receiving and vehicle dispatch | Warehouse front | Van, industrial scale, deposit chute, marked goods-in apron |
+| Recovery and sorting | Warehouse middle | Sorting island, graded bins, vice, gantry, pallet jack and parked forklift |
+| Company stock | Warehouse rear | Tall loaded pallet racks, numbered aisles, reclaimed parts and metal/e-waste skips |
+| Dispatch office | East wing front | Central metal desk, rotary telephone, leather field guide, voicemail and logistics board |
+| Crew facilities | East wing middle | Wardrobe lockers, lunch seating, time clock, water station and PPE |
+| Maintenance bay | East wing rear | Workbench, tools, charging batteries, supply terminal and inventory rack |
 
-## Warehouse dressing and atmosphere
+The main warehouse has a continuous haul route alongside the stock aisles. A separate service spine
+connects dispatch, crew facilities and the workshop through wide framed openings. Painted lane edges,
+numbered hanging signs and department labels make the work sequence visible: receive, weigh, sort,
+store, repair and dispatch. The yard includes a loading canopy, fleet parking, separate pedestrian
+approach, company facade signs and a waste collection pad.
 
-Wall stock includes wooden crate stacks with bracing, rusted storage shelves, decommissioned electronic
-racks, copper pipe bundles, oil drums and labeled plastic bins. Clutter stays at the room edges and
-leaves the dispatch approach, doorways, van and spawn area open by authored placement.
+## Functional stations
 
-Cool fluorescent shop lights and exposed warm bulbs light the working stations. Two secondary tubes
-use the existing faulty-fixture behavior, while the main task lights remain steady. Localized particle
-systems add dust in the light pools and faint shafts. Atmospheric meshes are explicitly walk-through.
-The existing reduced-flashing setting and runtime shadow budget continue to apply.
+- **Dispatch:** the rotary telephone opens the existing host-controlled contract selection and plays
+  original condition briefings. Exact quota, threat, power, stability and time-window details remain
+  in its readable transcript. The boss's answering machine stays on the same desk.
+- **Field guide:** the worn leather logbook beside the phone opens a book-style monster manual. Its
+  index and page controls use the existing encounter unlocks and survival prose.
+- **Depot:** the industrial scale and reinforced chute show haul weight/value, quota and settlement
+  receipts. Loose physical HQ salvage can be unloaded through the host; an already settled truck
+  haul is never credited twice.
+- **Maintenance:** the supply terminal and inventory rack retain gear and upgrade functions. Crew
+  wardrobe lockers have their own room instead of sharing the loading floor.
 
-## Authoring
+Dispatch has filing cabinets, shift paperwork and visitor seating. The logistics corkboard carries
+mall plans, wiring sketches and crew hazard notes. Company stock is organized into actual aisles;
+clutter and recovery equipment occupy designated work cells.
 
-In Unity, use **Tools → Abandoned → HQ → Rebuild Salvage Hub (0.14.5)**. This generates and saves
-`Assets/_Project/Scenes/HQ.unity`, creates the HQ-owned art assets and installs the dispatch clips in
-the existing sound bank. It skips the collider validation/audit passes. The usual Create HQ and
-whole-project content builders also include the redesign.
+## Atmosphere and authoring
 
-Batch authoring entry point: `Abandoned.EditorTools.HqBuilder.AuthorSalvageHub`. This is generation
-only, with no tests, screenshots or validation passes. Do not use `Tools/unity.sh all` for authoring
-this change: that command explicitly performs verification and tests.
+Suspended high-bay fluorescents light the warehouse. The operations rooms have lower fittings and
+warm task pendants. Two secondary tubes retain faulty-fixture behavior; work surfaces stay steady.
+Rooflight shafts and localized dust follow the taller building. Air effects remain explicitly
+walk-through; existing reduced-flashing and runtime shadow-budget behavior still applies.
 
-The original dispatch speech is authored locally with the installed macOS speech voice; the checked-in
-WAV clips play through GameAudio on every supported platform. Regenerate those clips with the dedicated
-`Tools/Audio/generate_hq_dispatch.py` authoring script if the dispatch wording changes.
+Use **Tools → Abandoned → HQ → Rebuild Salvage Hub (0.14.5)** to regenerate and save
+`Assets/_Project/Scenes/HQ.unity`. The shared floor plan lives in `Editor/HQ/HqLayout.cs`; architecture,
+operational stations, dressing and lighting use its anchors. The dedicated batch authoring entry point
+is `Abandoned.EditorTools.HqBuilder.AuthorSalvageHub`; it skips validation and collider audits.
 
-## Handoff
+Original dispatch WAV clips are included in the shared SoundBank. The reproducible local speech
+authoring script is `Tools/Audio/generate_hq_dispatch.py`.
 
-The dedicated authoring command completed and saved the redesigned HQ scene and generated assets.
-
-The user requested that tests and verification be left to them. No test suites, gameplay sessions,
-network tests, QA captures, audits or verification commands were run for this redesign. The first-day
-guide and HQ hints now direct players to the telephone, adjacent book and maintenance bench.
+The user will handle testing and verification. No test suites, gameplay checks, network tests,
+QA captures, audits or verification commands were run for this layout revision.

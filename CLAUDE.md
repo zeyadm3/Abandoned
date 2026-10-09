@@ -109,6 +109,14 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, **0.14.5 layout replacement**, user tests): the first clutter pass still looked like a shed.
+  Replace the old 24 × 16 m / 4 m-high three-room HQ with a 36 × 28 m company building: warehouse eaves
+  6.4 m and pitched ridge 8.2 m, plus a lower 3.8 m operations wing. Receiving/van/depot at the front,
+  sorting island/handling machinery in the middle, tall numbered stock aisles behind; glazed dispatch,
+  separate crew/locker/break room and maintenance in the east wing. Paved loading yard, pedestrian
+  staff entrance, steel portal frames, rooflights and company facade branding establish the business.
+  This supersedes preservation of the original HQ envelope and room split. Functional systems and
+  original garage-door placement remain. `Editor/HQ/HqLayout` is the common plan. No tests or verification.
 - 2026-10-09 (user, **0.14.5 HQ Hub Overhaul**, user tests): the HQ is a cluttered utilitarian salvage warehouse.
   Dispatch contracts come from a rotary telephone on the central steel bench, with condition briefing audio;
   the adjacent worn leather field guide replaces the office computer bestiary and keeps encounter unlocks.

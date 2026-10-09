@@ -16,14 +16,23 @@ namespace Abandoned.EditorTools
                 .EditorSetup("Dust and light shafts are air effects with no physical volume.");
             Material dust = HqSalvageAtmosphereAssets.Dust();
             Material shaft = HqSalvageAtmosphereAssets.Shaft();
-            Mesh mesh = ShaftMesh();
-            Pool("DeskAir", new Vector3(18f, 2.50f, 5f), 1.55f, 1.6f, 28, 811, true);
-            Pool("DepotAir", new Vector3(5.3f, 2.67f, 14.7f), 1.9f, 1.5f, 34, 823, true);
-            Pool("GearAir", new Vector3(18f, 2.53f, 13.5f), 1.55f, 1.7f, 28, 837, true);
-            Pool("BayAir", new Vector3(6f, 3.33f, 9f), 2.9f, 2.4f, 46, 213, false);
-            Pool("OfficeAir", new Vector3(15.1f, 3.33f, 2.6f), 2.3f, 2f, 28, 441, false);
+            Material daylight = HqSalvageAtmosphereAssets.Shaft(true);
+            Mesh mesh = ShaftMesh(false), roofMesh = ShaftMesh(true);
+            Pool("DispatchAir", HqLayout.Dispatch + Vector3.up * 2.60f, 1.65f, new Vector2(1.9f, 1.9f), 30, 811, true);
+            Pool("DepotAir", HqLayout.Depot + Vector3.up * 2.85f, 1.9f, new Vector2(2.5f, 2.5f), 36, 823, true);
+            Pool("MaintenanceAir", HqLayout.Maintenance + Vector3.up * 2.70f, 1.7f, new Vector2(2.3f, 1.8f), 32, 837, true);
+            Pool("ArrivalAir", new Vector3(5f, 5.30f, 5f), 4.4f, new Vector2(5f, 5f), 52, 213, false);
+            Pool("StockAisleWest", new Vector3(4.5f, 5.30f, 22f), 4.4f, new Vector2(3f, 5.5f), 48, 441, false);
+            Pool("StockAisleCentre", new Vector3(11.8f, 5.30f, 23.7f), 4.4f, new Vector2(3f, 3.5f), 40, 452, false);
+            Pool("CrewRoomAir", new Vector3(30f, 2.65f, 14.1f), 1.9f, new Vector2(2.2f, 2.2f), 26, 849, false);
+            int slot = 0;
+            foreach (float z in new[] { 6f, 14f, 22f })
+            {
+                Pool("ClerestoryAir_" + z, new Vector3(HqLayout.HallWidth * .5f, HqLayout.Ridge - .30f, z),
+                    HqLayout.Ridge - 1.05f, new Vector2(6f, 1.4f), 76, (uint)(901 + slot++), true, true);
+            }
 
-            void Pool(string name, Vector3 top, float height, float spread, int count, uint seed, bool hasShaft)
+            void Pool(string name, Vector3 top, float height, Vector2 spread, int count, uint seed, bool hasShaft, bool roof = false)
             {
                 Transform air = Group(name, group);
                 air.localPosition = top + Vector3.down * height * .5f;
@@ -44,7 +53,7 @@ namespace Abandoned.EditorTools
                 emission.rateOverTime = count / 20f;
                 ParticleSystem.ShapeModule shape = particles.shape;
                 shape.shapeType = ParticleSystemShapeType.Box;
-                shape.scale = new Vector3(spread, height * .80f, spread);
+                shape.scale = new Vector3(spread.x, height * .80f, spread.y);
                 ParticleSystem.NoiseModule noise = particles.noise;
                 noise.enabled = true;
                 noise.strength = .024f;
@@ -55,22 +64,23 @@ namespace Abandoned.EditorTools
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
                 renderer.receiveShadows = false;
 
-                // Shafts belong only to steady task lamps so a failed tube cannot leave a lit beam behind.
+                // Shafts follow steady task lamps or real roof glazing; failing tubes only light the motes.
                 if (!hasShaft) return;
                 Transform beam = Group("LightShaft", group);
                 beam.localPosition = top;
-                beam.localScale = new Vector3(spread, height, spread);
-                beam.gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
+                beam.localScale = new Vector3(spread.x, height, spread.y);
+                beam.gameObject.AddComponent<MeshFilter>().sharedMesh = roof ? roofMesh : mesh;
                 var beamRenderer = beam.gameObject.AddComponent<MeshRenderer>();
-                beamRenderer.sharedMaterial = shaft;
+                beamRenderer.sharedMaterial = roof ? daylight : shaft;
                 beamRenderer.shadowCastingMode = ShadowCastingMode.Off;
                 beamRenderer.receiveShadows = false;
             }
         }
 
-        private static Mesh ShaftMesh()
+        private static Mesh ShaftMesh(bool roof)
         {
-            string path = HqSalvageAtmosphereAssets.Folder + "/ShopShaft.asset";
+            string name = roof ? "ClerestoryShaft" : "ShopShaft";
+            string path = HqSalvageAtmosphereAssets.Folder + "/" + name + ".asset";
             Mesh existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null) return existing;
             var vertices = new List<Vector3>();
@@ -85,7 +95,7 @@ namespace Abandoned.EditorTools
                 for (int column = 0; column <= across; column++)
                 {
                     float t = row / (float)down, side = column / (float)across;
-                    float width = Mathf.Lerp(.045f, .50f, t);
+                    float width = roof ? Mathf.Lerp(.50f, .86f, t) : Mathf.Lerp(.045f, .50f, t);
                     float x = (side * 2f - 1f) * width;
                     vertices.Add(plane == 0 ? new Vector3(x, -t, 0f) : new Vector3(0f, -t, x));
                     float alpha = Mathf.Sin(t * Mathf.PI) * Mathf.Pow(1f - Mathf.Abs(side * 2f - 1f), 2f) * .13f;
@@ -99,7 +109,7 @@ namespace Abandoned.EditorTools
                     triangles.AddRange(new[] { a, b, a + 1, a + 1, b, b + 1 });
                 }
             }
-            var mesh = new Mesh { name = "ShopShaft" };
+            var mesh = new Mesh { name = name };
             mesh.SetVertices(vertices);
             mesh.SetColors(colors);
             mesh.SetUVs(0, uv);

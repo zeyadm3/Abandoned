@@ -35,11 +35,11 @@ namespace Abandoned.EditorTools
             return material;
         }
 
-        public static Material Shaft()
+        public static Material Shaft(bool daylight = false)
         {
-            Material material = Load("ShopLightShaft", "Universal Render Pipeline/Particles/Unlit");
+            Material material = Load(daylight ? "ClerestoryLightShaft" : "ShopLightShaft", "Universal Render Pipeline/Particles/Unlit");
             material.SetTexture("_BaseMap", SoftDot());
-            material.SetColor("_BaseColor", new Color(.92f, .86f, .69f, .30f));
+            material.SetColor("_BaseColor", daylight ? new Color(.65f, .78f, .87f, .23f) : new Color(.92f, .86f, .69f, .30f));
             Transparent(material, true);
             material.SetFloat("_Cull", (float)CullMode.Off);
             EditorUtility.SetDirty(material);

@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
 
         public static void Build(Transform parent)
         {
-            Transform board = At("LogisticsCorkboard", parent, new Vector3(23.79f, 2.04f, 5.52f), 90f);
+            Transform board = At("LogisticsCorkboard", parent, HqLayout.Logistics, 90f);
             Material cork = PolishAssets.Material("HQ_Corkboard", new Color(.40f, .29f, .18f), .96f,
                 PolishAssets.Texture("HQ_CorkGrain"));
             Material wood = CustomMallArt.Material("Wood");

@@ -16,7 +16,6 @@ namespace Abandoned.EditorTools
     public static class HqBuilder
     {
         public const string ScenePath = "Assets/_Project/Scenes/HQ.unity";
-        private const float Width = 24f, Depth = 16f, Height = 4f;
 
         [MenuItem("Tools/Abandoned/Create HQ")]
         public static void Create()
@@ -44,9 +43,10 @@ namespace Abandoned.EditorTools
             CustomMallArt.Prepare();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             Transform root = new GameObject("HQ").transform;
-            BuildShell(root);
-            BuildStations(root);
+            HqIndustrialShell.Build(root);
+            HqSalvageStations.Build(root);
             HqDressingBuilder.Build(root);
+            HqWarehouseMachinery.Build(root);
             HqSalvageAtmosphere.Build(root);
             PlaceGarageDoor(root);
 
@@ -55,7 +55,7 @@ namespace Abandoned.EditorTools
             {
                 Transform spawn = new GameObject($"PlayerSpawn_{i}").transform;
                 spawn.SetParent(spawns, false);
-                spawn.SetPositionAndRotation(new Vector3(3f + i * 1.5f, .05f, 3.5f), Quaternion.identity);
+                spawn.SetPositionAndRotation(new Vector3(26.2f + i * 1.5f, .05f, 1.8f), Quaternion.identity);
                 spawn.gameObject.AddComponent<PlayerSpawnPoint>().EditorSetup(i);
             }
 
@@ -64,14 +64,14 @@ namespace Abandoned.EditorTools
             if (camera != null)
             {
                 if (camera.GetComponent<CinemachineBrain>() == null) camera.gameObject.AddComponent<CinemachineBrain>();
-                camera.transform.position = new Vector3(12f, 18f, -14f);
-                camera.transform.LookAt(new Vector3(12f, 0f, 8f));
+                camera.transform.position = new Vector3(18f, 24f, -21f);
+                camera.transform.LookAt(new Vector3(18f, 0f, 14f));
             }
-            // Frame the working dispatch bench through its open doorway on the title screen.
+            // The title screen shows the receiving floor, stock aisles and high warehouse roof.
             var vantage = new GameObject("MenuVantage");
             vantage.transform.SetParent(root, false);
-            vantage.transform.position = new Vector3(9.35f, 1.62f, 4.6f);
-            vantage.transform.rotation = Quaternion.LookRotation(new Vector3(18.8f, 1.25f, 5.4f) - vantage.transform.position);
+            vantage.transform.position = HqLayout.MenuEye;
+            vantage.transform.rotation = Quaternion.LookRotation(HqLayout.MenuFocus - vantage.transform.position);
             vantage.AddComponent<Abandoned.UI.MenuVantage>();
             NetworkSceneBuilder.Add();
             var ui = new GameObject("CompanyUI");
@@ -80,7 +80,7 @@ namespace Abandoned.EditorTools
             ui.AddComponent<Abandoned.Equipment.GearScreens>();
             LevelAtmosphere.Apply("HQ", HqSalvageAtmosphere.Mood, root);
             AmbienceBuilder.Hq(root);
-            // 0.14.0: everything with volume is solid. The HQ has no carry routes to protect.
+            // Author collision after all of the operational stock and furniture have been placed.
             SolidObjectsPass.Apply(root, "HQ");
             if (runAudits)
             {
@@ -112,110 +112,5 @@ namespace Abandoned.EditorTools
             door.GetComponent<GarageDoor>().EditorSetOpen(placements.GarageDoorOpen);
         }
 
-        private static void BuildShell(Transform root)
-        {
-            Transform shell = Group("Shell", root);
-            Material concrete = CustomMallArt.Material("Concrete");
-            GameObject slab = Box("Floor", shell, new Vector3(12f, -.15f, 8f), new Vector3(Width, .3f, Depth), concrete);
-            slab.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-            CustomMallArt.HidePrimitive(slab);
-            GameObject roof = Box("Roof", shell, new Vector3(12f, Height + .15f, 8f), new Vector3(Width + .22f, .3f, Depth + .22f), CustomMallArt.Material("Metal"));
-            // The visible opaque roof closes the garage above its exposed trusses.
-            roof.GetComponent<Renderer>().enabled = true;
-            Box("Yard", shell, new Vector3(12f, -.4f, -10f), new Vector3(64f, .3f, 20f), CustomMallArt.Material("Dirt"))
-                .AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Dirt);
-
-            // Each solid portion is a modular visual over its own authoritative collision box.
-            Solid("GaragePierL", new Vector3(1f, 0f, -.1f), 2f);
-            Solid("GaragePierR", new Vector3(11f, 0f, -.1f), 2f);
-            Solid("GarageHeader", new Vector3(6f, 3.4f, -.1f), 8f, .6f);
-            for (int x = 0; x < 6; x++)
-            {
-                if (x >= 3) Solid($"South_{x}", new Vector3(x * 4f + 2f, 0f, -.1f), 4f);
-                Solid($"North_{x}", new Vector3(x * 4f + 2f, 0f, Depth + .1f), 4f);
-            }
-            for (int z = 0; z < 4; z++)
-            {
-                Solid($"West_{z}", new Vector3(-.1f, 0f, z * 4f + 2f), 4f, Height, 90f);
-                Solid($"East_{z}", new Vector3(Width + .1f, 0f, z * 4f + 2f), 4f, Height, 90f);
-            }
-            // The three original doorways remain 2 m wide and 2.4 m high, including bulky gear routes.
-            Solid("GarageOfficeSouth", new Vector3(12f, 0f, 2f), 4f, Height, 90f);
-            Solid("GarageOfficeNorth", new Vector3(12f, 0f, 8f), 4f, Height, 90f);
-            Solid("GarageOfficeHeader", new Vector3(12f, 2.4f, 5f), 2f, 1.6f, 90f);
-            Solid("GarageShopSouth", new Vector3(12f, 0f, 11f), 2f, Height, 90f);
-            Solid("GarageShopNorth", new Vector3(12f, 0f, 15f), 2f, Height, 90f);
-            Solid("GarageShopHeader", new Vector3(12f, 2.4f, 13f), 2f, 1.6f, 90f);
-            Solid("OfficeShopWest", new Vector3(14f, 0f, 10f), 4f);
-            Solid("OfficeShopWestJamb", new Vector3(16.5f, 0f, 10f), 1f);
-            Solid("OfficeShopEast", new Vector3(21f, 0f, 10f), 4f);
-            Solid("OfficeShopEastJamb", new Vector3(23.5f, 0f, 10f), 1f);
-            Solid("OfficeShopHeader", new Vector3(18f, 2.4f, 10f), 2f, 1.6f);
-            foreach (Vector3 corner in new[] { new Vector3(-.1f, 0f, -.1f), new Vector3(Width + .1f, 0f, -.1f),
-                         new Vector3(-.1f, 0f, Depth + .1f), new Vector3(Width + .1f, 0f, Depth + .1f) })
-                Box("CornerClosure", shell, corner + Vector3.up * (Height * .5f), new Vector3(.2f, Height, .2f), CustomMallArt.Material("Plaster"));
-            MarkStatic(shell);
-
-            void Solid(string name, Vector3 floor, float length, float height = Height, float yaw = 0f)
-            {
-                var wall = new GameObject(name);
-                wall.transform.SetParent(shell, false);
-                wall.transform.SetLocalPositionAndRotation(floor, Quaternion.Euler(0f, yaw, 0f));
-                var collider = wall.AddComponent<BoxCollider>();
-                collider.center = Vector3.up * height * .5f;
-                collider.size = new Vector3(length, height, .2f);
-                CustomMallArt.Place("WallSolid", wall.transform, Vector3.zero, Quaternion.identity, new Vector3(length / 4f, height / 3.82f, 1f));
-            }
-        }
-
-        private static void BuildStations(Transform root)
-        {
-            Material trim = CustomMallArt.Material("Trim");
-            HqSalvageStations.Build(root);
-
-            GameObject van = Box("Van", root, new Vector3(6f, 1.25f, 9f), new Vector3(2.4f, 2.4f, 5f), trim);
-            van.AddComponent<HqVan>();
-            Vehicles.Dress(van, Vehicles.Van);
-            foreach (Renderer renderer in van.GetComponentsInChildren<Renderer>())
-            {
-                if (renderer.sharedMaterial == null) continue;
-                var block = new MaterialPropertyBlock();
-                block.SetColor("_BaseColor", new Color(.33f, .36f, .31f));
-                renderer.SetPropertyBlock(block);
-            }
-
-            GameObject terminal = Box("ShopTerminal", root, new Vector3(18f, 1.4f, 13.6f), new Vector3(.8f, .5f, .3f), trim);
-            terminal.AddComponent<Abandoned.Equipment.ShopTerminal>();
-            HqDressingBuilder.TerminalFace(terminal.transform);
-
-            Transform rack = Station(root, "GearRack", new Vector3(21.6f, 0f, 13.3f), new Vector3(2.06f, 2.4f, .62f));
-            rack.gameObject.AddComponent<Abandoned.Equipment.GearRack>();
-            CustomMallArt.Place("RetailShelf", rack, Vector3.zero, Quaternion.Euler(0f, 180f, 0f), new Vector3(1.2f, 1.12f, 1.12f));
-            Transform lockers = Station(root, "Lockers", new Vector3(.4f, 0f, 6.5f), new Vector3(.55f, 2.1f, 2.4f));
-            lockers.gameObject.AddComponent<Abandoned.UI.WardrobeLocker>();
-            CustomMallArt.Place("DepotLockers", lockers, Vector3.zero, Quaternion.Euler(0f, 90f, 0f), new Vector3(1.33f, 1f, 1f));
-
-            // Keep the boss's existing messages alongside the new dispatch telephone.
-            var machine = new GameObject("AnsweringMachine");
-            machine.transform.SetParent(root, false);
-            machine.transform.localPosition = new Vector3(18f, 1.125f, 4.52f);
-            var hit = machine.AddComponent<BoxCollider>();
-            hit.center = new Vector3(.02f, .05f, 0f);
-            hit.size = new Vector3(.42f, .1f, .28f);
-            CustomMallArt.Place("AnsweringMachine", machine.transform, Vector3.zero, Quaternion.identity);
-            Material blink = PolishAssets.Material("HQ_MessageLamp", new Color(.62f, .23f, .075f), emission: 2.4f);
-            GameObject lamp = Primitive(PrimitiveType.Cylinder, "MessageLight", machine.transform, new Vector3(.105f, .064f, .07f), new Vector3(.016f, .003f, .016f), blink, false);
-            machine.AddComponent<AnsweringMachine>().EditorSetup(lamp.GetComponent<Renderer>());
-        }
-
-        private static Transform Station(Transform parent, string name, Vector3 floor, Vector3 size)
-        {
-            Transform station = Group(name, parent);
-            station.localPosition = floor;
-            var collider = station.gameObject.AddComponent<BoxCollider>();
-            collider.center = Vector3.up * size.y * .5f;
-            collider.size = size;
-            return station;
-        }
     }
 }

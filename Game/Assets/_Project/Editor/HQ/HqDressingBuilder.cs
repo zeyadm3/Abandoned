@@ -10,43 +10,13 @@ namespace Abandoned.EditorTools
     {
         public static void Build(Transform root)
         {
-            Transform decor = Group("DepotDressing", root);
-            for (int x = 0; x < 6; x++)
-            for (int z = 0; z < 4; z++)
-            {
-                Vector3 centre = new(x * 4f + 2f, 0f, z * 4f + 2f);
-                CustomMallArt.Place((x + z * 3) % 7 == 0 ? "FloorDamaged" : "FloorConcrete", decor, centre, Quaternion.identity, new Vector3(1f, .3f / .18f, 1f));
-                if (x >= 3)
-                    CustomMallArt.Place(x == 5 && z == 3 ? "CeilingSagging" : "CeilingGrid", decor, centre + Vector3.up * 3.94f);
-                if ((x * 11 + z * 7) % 9 == 0)
-                    CustomMallArt.Place("FloorCrack", decor, centre + new Vector3(.5f, .007f, -.6f), 33f * z, new Vector3(.55f, 1f, .55f));
-            }
+            Transform decor = Group("CompanyOperationsDressing", root);
             ExposedServices(decor);
-            // 0.12.3: the user placed these by hand along the garage/office line; kept here so rebuilds don't move them.
-            float[] pillarZ = { 3.466f, 6.551f, 11.419f, 14.455f };
-            foreach (float z in pillarZ)
-                CustomMallArt.Place("Pillar", decor, new Vector3(11.4f, 0f, z), Quaternion.identity, new Vector3(.62f, 1.046f, .62f));
-
             HqSalvageDressing.Build(decor);
-            CustomMallArt.Place("DebrisPile", decor, new Vector3(10.9f, .01f, 1.25f), 32f, new Vector3(.7f, .7f, .7f));
-            CustomMallArt.Place("Overgrowth", decor, new Vector3(.4f, .01f, .7f), 11f, new Vector3(.5f, .6f, .5f));
-            foreach (Vector3 position in new[] { new Vector3(2.3f, .008f, 1.7f), new Vector3(9.4f, .008f, 12.8f), new Vector3(22f, .008f, 11f) })
-                CustomMallArt.Place("Puddle", decor, position, position.x * 13f, new Vector3(.68f, 1f, .68f));
-
-            WallGrime(decor);
-            Box("CompanySign", decor, new Vector3(6f, 3.46f, -.26f), new Vector3(5.8f, .55f, .08f), CustomMallArt.Material("Metal"), false);
-            Caption(decor, "ABANDONED SALVAGING", new Vector3(6f, 3.46f, -.308f), 0f, .19f);
-            CustomMallArt.Place("SignDontGoUp", decor, new Vector3(10.1f, 2.15f, 15.86f), 180f, new Vector3(.8f, .8f, 1f));
-            CustomMallArt.Place("SignQuarantine", decor, new Vector3(23.87f, 1.5f, 13.8f), 270f, new Vector3(.6f, .8f, 1f));
-            CustomMallArt.Place("MissingPoster", decor, new Vector3(.14f, 1.4f, 2.25f), 90f);
-            CustomMallArt.Place("MissingPoster", decor, new Vector3(14.6f, 1.35f, .15f), 0f, new Vector3(.8f, .8f, 1f));
-            Caption(decor, "ABANDONED SALVAGING\nRECOVERY / SORT / REPAIR", new Vector3(8.9f, 2.8f, 15.85f), 0f, .10f);
-            Caption(decor, "CONTRACTS / CREW OFFICE", new Vector3(12.18f, 2.64f, 5f), 90f, .095f);
-            Caption(decor, "EQUIPMENT / REPAIRS", new Vector3(18f, 2.74f, 10.16f), 180f, .11f);
-
-            Area(root, "DepotVentilation", new Vector3(6f, 2f, 8f), new Vector3(12f, 4f, 16f), 0);
-            Area(root, "OfficeElectricalHum", new Vector3(18f, 2f, 5f), new Vector3(12f, 4f, 10f), 1);
-            Area(root, "WorkshopLeak", new Vector3(18f, 2f, 13f), new Vector3(12f, 4f, 6f), 2);
+            HqCompanyRooms.Build(decor);
+            Area(root, "WarehouseVentilation", new Vector3(12f, 3.2f, 14f), new Vector3(24f, 6.4f, 28f), 0);
+            Area(root, "DispatchElectricalHum", new Vector3(30f, 1.9f, 5f), new Vector3(12f, 3.8f, 10f), 1);
+            Area(root, "WorkshopVentilation", new Vector3(31.5f, 1.9f, 23f), new Vector3(9f, 3.8f, 10f), 2);
         }
 
         public static void ContractFace(Transform board)
@@ -80,31 +50,14 @@ namespace Abandoned.EditorTools
         private static void ExposedServices(Transform decor)
         {
             Material metal = CustomMallArt.Material("Metal"), rust = CustomMallArt.Material("Rust");
-            for (int z = 0; z < 4; z++)
-            {
-                Box("RoofTruss", decor, new Vector3(6f, 3.86f, z * 4f + 2f), new Vector3(11.8f, .22f, .13f), metal, false);
-                for (int x = 0; x < 4; x++)
-                {
-                    GameObject brace = Box("TrussBrace", decor, new Vector3(x * 3f + 1.5f, 3.55f, z * 4f + 2f), new Vector3(3.1f, .08f, .08f), rust, false);
-                    brace.transform.localRotation = Quaternion.Euler(0f, 0f, x % 2 == 0 ? 11f : -11f);
-                }
-            }
-            Box("VentDuct", decor, new Vector3(10.1f, 3.63f, 8f), new Vector3(.48f, .36f, 15.6f), metal, false);
-            for (int z = 0; z < 8; z++)
-                Box("DuctBand", decor, new Vector3(10.1f, 3.63f, z * 2f + .8f), new Vector3(.51f, .39f, .04f), rust, false);
-            Box("WaterMain", decor, new Vector3(23.6f, 3.60f, 8f), new Vector3(.10f, .10f, 15.6f), rust, false);
-        }
-
-        private static void WallGrime(Transform decor)
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                CustomMallArt.Place("WaterStain", decor, new Vector3(i * 4f + 2f, 2.1f, 15.875f), Quaternion.Euler(-90f, 0f, 0f), new Vector3(.74f, 1f, 1.45f));
-                if (i % 2 == 0)
-                    CustomMallArt.Place("MouldPatch", decor, new Vector3(i * 4f + 2.7f, .4f, 15.875f), Quaternion.Euler(-90f, 0f, 0f));
-            }
-            for (int z = 0; z < 4; z++)
-                CustomMallArt.Place("WaterStain", decor, new Vector3(.125f, 2.35f, z * 4f + 1.2f), Quaternion.Euler(0f, 0f, -90f), new Vector3(1f, 1f, 1.5f));
+            Box("WarehouseVentDuct", decor, new Vector3(22.95f, 5.72f, 14f), new Vector3(.48f, .42f, 27.5f), metal, false);
+            for (int z = 0; z < 14; z++)
+                Box("DuctBand", decor, new Vector3(22.95f, 5.72f, z * 2f + .5f), new Vector3(.53f, .47f, .045f), rust, false);
+            Box("ServiceWingCableTray", decor, new Vector3(25.5f, 3.4f, 18.5f), new Vector3(.35f, .12f, 18.7f), metal, false);
+            Box("WorkshopWaterMain", decor, new Vector3(35.7f, 3.35f, 23f), new Vector3(.09f, .09f, 9.8f), rust, false);
+            Box("ExtractorBranch", decor, new Vector3(31.5f, 3.42f, 25.9f), new Vector3(8.1f, .28f, .32f), metal, false);
+            Box("ExtractorHood", decor, new Vector3(31f, 3.14f, 26.7f), new Vector3(2.2f, .25f, .75f), metal, false);
+            MarkStatic(decor);
         }
 
         private static void Area(Transform root, string name, Vector3 centre, Vector3 size, int character)

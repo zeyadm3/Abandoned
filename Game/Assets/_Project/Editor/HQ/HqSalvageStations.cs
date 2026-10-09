@@ -15,17 +15,21 @@ namespace Abandoned.EditorTools
 
         public static void Build(Transform root)
         {
-            Transform desk = Bench(root, "DispatchWorkbench", new Vector3(18f, 0f, 5f), 3.4f, 1.45f);
+            Transform desk = Bench(root, "DispatchWorkbench", HqLayout.Dispatch, 3.8f, 1.6f);
+            Box("ReceptionFascia", desk, new Vector3(0f, .72f, -.835f), new Vector3(3.65f, .56f, .07f), Steel);
+            Box("CompanyNameplate", desk, new Vector3(0f, .82f, -.877f), new Vector3(2.78f, .26f, .022f), CustomMallArt.Material("Brass"), false);
             RotaryPhone(desk);
             FieldGuide(desk);
-            Box("DispatchTray", desk, new Vector3(-1.23f, 1.13f, -.35f), new Vector3(.56f, .065f, .34f), Steel, false);
+            Box("DispatchTray", desk, new Vector3(-1.4f, 1.13f, .32f), new Vector3(.56f, .065f, .34f), Steel, false);
             for (int i = 0; i < 4; i++)
-                Box("CarbonJobSheet", desk, new Vector3(-1.24f + i * .012f, 1.17f + i * .002f, -.35f),
+                Box("CarbonJobSheet", desk, new Vector3(-1.41f + i * .012f, 1.17f + i * .002f, .32f),
                     new Vector3(.46f, .002f, .28f), CustomMallArt.Material("Paper"), false);
-            Label(desk, "ABANDONED SALVAGING / DISPATCH", new Vector3(0f, .90f, .743f), 180f, .05f);
-            Label(desk, "PHONE: CONTRACTS     BOOK: FIELD GUIDE", new Vector3(0f, .77f, .743f), 180f, .035f);
-            Bench(root, "MaintenanceWorkbench", new Vector3(18f, 0f, 13.5f), 3.6f, 1f);
+            Label(desk, "ABANDONED SALVAGING", new Vector3(0f, .82f, -.895f), 0f, .071f);
+            Label(desk, "RECEPTION / CONTRACT DISPATCH", new Vector3(0f, .62f, -.883f), 0f, .043f);
+            Bench(root, "MaintenanceWorkbench", HqLayout.Maintenance, 4.8f, 1.35f);
+            HqOperationsStations.Build(root);
             Depot(root);
+            HqSortingIsland.Build(root);
         }
 
         private static Transform Bench(Transform root, string name, Vector3 floor, float width, float depth)
@@ -55,7 +59,7 @@ namespace Abandoned.EditorTools
         private static void RotaryPhone(Transform desk)
         {
             Transform phone = Group("DispatchTelephone", desk);
-            phone.localPosition = new Vector3(-.65f, 1.125f, .20f);
+            phone.localPosition = new Vector3(-.65f, 1.125f, -.27f);
             var hit = phone.gameObject.AddComponent<BoxCollider>();
             hit.center = new Vector3(0f, .12f, 0f);
             hit.size = new Vector3(.58f, .24f, .45f);
@@ -84,13 +88,13 @@ namespace Abandoned.EditorTools
                 Primitive(PrimitiveType.Sphere, "CoiledCord", phone,
                     new Vector3(-.255f - i * .009f, .022f + Mathf.Sin(i * 2.1f) * .011f, -.14f + Mathf.Cos(i * 2.1f) * .018f),
                     Vector3.one * .021f, Rubber, false);
-            Label(desk, "DISPATCH / E", new Vector3(-.65f, .91f, .747f), 180f, .029f);
+            Label(desk, "DISPATCH / E", new Vector3(-.65f, 1.01f, -.835f), 0f, .03f);
         }
 
         private static void FieldGuide(Transform desk)
         {
             Transform book = Group("FieldGuide", desk);
-            book.SetLocalPositionAndRotation(new Vector3(.62f, 1.13f, .20f), Quaternion.Euler(0f, -12f, 0f));
+            book.SetLocalPositionAndRotation(new Vector3(.62f, 1.13f, -.27f), Quaternion.Euler(0f, -12f, 0f));
             var hit = book.gameObject.AddComponent<BoxCollider>();
             hit.center = new Vector3(0f, .06f, 0f);
             hit.size = new Vector3(.55f, .12f, .70f);
@@ -111,13 +115,13 @@ namespace Abandoned.EditorTools
             for (int i = 0; i < 5; i++)
                 Box("CoverScuff", book, new Vector3(-.20f + i * .09f, .101f, -.285f + i % 2 * .57f),
                     new Vector3(.07f, .001f, .011f), Rust, false);
-            Label(desk, "FIELD GUIDE / E", new Vector3(.62f, .91f, .747f), 180f, .029f);
+            Label(desk, "FIELD GUIDE / E", new Vector3(.62f, 1.01f, -.835f), 0f, .03f);
         }
 
         private static void Depot(Transform root)
         {
             Transform bay = Group("ScrapQuotaDepot", root);
-            bay.localPosition = new Vector3(5.3f, 0f, 14.25f);
+            bay.localPosition = HqLayout.Depot;
             Material hazard = PolishAssets.Material("HQ_SalvageHazard", new Color(.64f, .47f, .10f));
             Box("ScaleBase", bay, new Vector3(0f, .12f, 0f), new Vector3(2.3f, .24f, 1.6f), Rust);
             Box("WeighingPlatform", bay, new Vector3(0f, .29f, 0f), new Vector3(2.2f, .10f, 1.5f), Steel);
@@ -160,7 +164,11 @@ namespace Abandoned.EditorTools
             Label(chute, "KEEP HANDS CLEAR", new Vector3(0f, .66f, -.682f), 0f, .031f);
             for (int side = -1; side <= 1; side += 2)
                 Box("ProcessingBayLine", bay, new Vector3(side * 1.5f, .008f, -.15f), new Vector3(.06f, .008f, 2.25f), hazard, false);
-            Label(bay, "SCRAP / QUOTA DEPOT", new Vector3(.9f, 2.25f, 1.57f), 0f, .105f);
+            foreach (float x in new[] { -1.65f, 4f })
+                Box("DepotSignPost", bay, new Vector3(x, 1.26f, 1.4f), new Vector3(.10f, 2.52f, .10f), Steel);
+            Box("DepotSignBack", bay, new Vector3(1.17f, 2.26f, 1.4f), new Vector3(5.85f, .58f, .10f), Steel);
+            Label(bay, "01 / RECEIVING & WEIGHING", new Vector3(1.17f, 2.30f, 1.338f), 0f, .09f);
+            Label(bay, "SCRAP INTAKE     /     QUOTA RECEIPTS", new Vector3(1.17f, 2.10f, 1.338f), 0f, .036f);
         }
 
         private static TextMesh Label(Transform parent, string text, Vector3 at, float yaw, float size)

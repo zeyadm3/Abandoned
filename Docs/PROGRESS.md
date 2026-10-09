@@ -4,6 +4,26 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.14.5.EEA: company floor-plan replacement (2026-10-09; user tests)
+
+The user approved the completed layout and requested that all current work be committed as 0.14.5.
+
+The user found the first redesign still felt like a shed and requested a new layout. The building is
+now 36 × 28 m, with a 6.4 m-high industrial warehouse and an 8.2 m pitched roof, plus a 3.8 m operations
+wing. Brick plinths, corrugated cladding, steel portal frames, rooflight bands and a branded loading
+canopy replace the old low three-room shell. A marked paved yard separates goods-in and staff access.
+
+Workflow: front receiving/van/scale/chute → middle sorting island and handling equipment → tall rear
+stock aisles. The east wing has glazed dispatch at the front, a separate crew/locker/break room and
+maintenance at the rear, joined by a service spine and wide warehouse openings. Original parked
+forklift, pallet jack, company paperwork, time clock, PPE and lunch facilities ground the operation.
+Telephone/manual/voicemail/depot/gear/wardrobe/van behavior is preserved. `HqLayout` is the single
+floor-plan source for architecture, stations, dressing and lighting. Old tile grid, sagging ceilings,
+short trusses and mall horror dressing are removed. New high-bay lighting follows the taller roof.
+
+Only the HQ authoring save is used. No tests, gameplay checks, network tests, screenshots, audits or
+verification commands were run; the user will assess the result. Details: `Docs/HQ_HUB_0.14.5.md`.
+
 ## 0.14.5.EEA: HQ salvage warehouse (2026-10-09; user handles tests and verification)
 
 The headquarters is redesigned as an active Abandoned Salvaging warehouse. Original code-authored

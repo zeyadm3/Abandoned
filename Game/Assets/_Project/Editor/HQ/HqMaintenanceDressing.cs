@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
 
         private static void Pegboard(Transform parent)
         {
-            Transform wall = At("MaintenancePegboard", parent, new Vector3(18f, 2.02f, 15.82f));
+            Transform wall = At("MaintenancePegboard", parent, HqLayout.Pegboard);
             Material board = PolishAssets.Material("HQ_Pegboard", new Color(.36f, .31f, .23f), .94f);
             Material metal = CustomMallArt.Material("Metal"), black = CustomMallArt.Material("Black");
             Box("PerforatedBoard", wall, Vector3.zero, new Vector3(4.24f, 1.7f, .065f), board, false);
@@ -56,7 +56,7 @@ namespace Abandoned.EditorTools
 
         private static void BenchEquipment(Transform parent)
         {
-            Transform tools = At("BenchToolbox", parent, new Vector3(16.77f, 1.117f, 13.49f), -3f);
+            Transform tools = At("BenchToolbox", parent, HqLayout.Maintenance + new Vector3(-1.5f, 1.117f, -.01f), -3f);
             Material red = PolishAssets.Material("HQ_ToolboxPaint", new Color(.37f, .17f, .12f), .86f);
             Material metal = CustomMallArt.Material("Metal"), rubber = CustomMallArt.Material("Rubber");
             Box("Toolbox", tools, Vector3.up * .12f, new Vector3(.58f, .24f, .36f), red);
@@ -67,9 +67,9 @@ namespace Abandoned.EditorTools
                 Rod("HandleFoot", tools, new Vector3(x, .27f, 0f), new Vector3(x, .31f, 0f), .027f, metal);
             }
             Rod("CarryHandle", tools, new Vector3(-.14f, .31f, 0f), new Vector3(.14f, .31f, 0f), .03f, rubber);
-            Flashlight(parent, new Vector3(17.25f, 1.148f, 13.23f), Quaternion.Euler(90f, 0f, -18f));
+            Flashlight(parent, HqLayout.Maintenance + new Vector3(-.75f, 1.148f, -.27f), Quaternion.Euler(90f, 0f, -18f));
 
-            Transform charger = At("BatteryChargingDock", parent, new Vector3(19.14f, 1.117f, 13.53f));
+            Transform charger = At("BatteryChargingDock", parent, HqLayout.Maintenance + new Vector3(1.8f, 1.117f, .03f));
             Box("ChargingBase", charger, Vector3.up * .048f, new Vector3(.57f, .095f, .35f), rubber);
             for (int i = 0; i < 3; i++)
             {
@@ -82,26 +82,26 @@ namespace Abandoned.EditorTools
             Box("ChargerLabel", charger, new Vector3(0f, .05f, -.18f), new Vector3(.43f, .063f, .009f), CustomMallArt.Material("Paper"), false);
             Label(charger, "CHARGE / READY", new Vector3(0f, .05f, -.188f), .027f);
             Rod("PowerLead", charger, new Vector3(.27f, .06f, .12f), new Vector3(.4f, .025f, .29f), .014f, rubber);
-            Box("Rag", parent, new Vector3(16.39f, 1.132f, 13.55f), new Vector3(.18f, .018f, .28f), CustomMallArt.Material("Cloth"), false);
+            Box("Rag", parent, HqLayout.Maintenance + new Vector3(-2.1f, 1.132f, .05f), new Vector3(.18f, .018f, .28f), CustomMallArt.Material("Cloth"), false);
         }
 
         private static void SpareGear(Transform parent)
         {
             // This dresses the existing interactive GearRack, rather than introducing a second inventory station.
-            Transform rack = At("SpareGearStock", parent, new Vector3(21.6f, 0f, 13.3f));
+            Transform rack = At("SpareGearStock", parent, HqLayout.GearRack, 90f);
             for (int i = 0; i < 4; i++)
-                Flashlight(rack, new Vector3(-.72f + i * .28f, .55f, -.15f), Quaternion.identity);
+                Flashlight(rack, new Vector3(-.72f + i * .28f, .175f, -.15f), Quaternion.identity);
             for (int i = 0; i < 4; i++)
-                Battery(rack, new Vector3(-.69f + i * .23f, 1.06f, -.04f));
+                Battery(rack, new Vector3(-.69f + i * .23f, 1.2425f, -.04f));
             Material caseMaterial = CustomMallArt.Material("Canvas");
             for (int i = 0; i < 2; i++)
             {
-                Vector3 at = new Vector3(-.52f + i * .9f, 1.57f, 0f);
+                Vector3 at = new Vector3(-.52f + i * .9f, 2.31f, 0f);
                 Box("FieldToolCase", rack, at + Vector3.up * .14f, new Vector3(.66f, .28f, .38f), caseMaterial);
                 Box("CaseStrap", rack, at + new Vector3(0f, .15f, -.2f), new Vector3(.07f, .31f, .03f), CustomMallArt.Material("Rubber"), false);
             }
-            Box("GearRackLabel", rack, new Vector3(0f, 2.2f, -.29f), new Vector3(1.8f, .24f, .025f), CustomMallArt.Material("Paper"), false);
-            Label(rack, "FIELD GEAR / CREW ISSUE", new Vector3(0f, 2.2f, -.309f), .052f);
+            Box("GearRackLabel", rack, new Vector3(0f, 2.85f, -.29f), new Vector3(1.8f, .24f, .025f), CustomMallArt.Material("Paper"), false);
+            Label(rack, "FIELD GEAR / CREW ISSUE", new Vector3(0f, 2.85f, -.309f), .052f);
         }
 
         private static void Battery(Transform parent, Vector3 floor)
