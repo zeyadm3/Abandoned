@@ -30,7 +30,7 @@ namespace Abandoned.Structure
         private class Casting
         {
             public Light Light;
-            public float Strength;
+            public float Strength, Score;
             public bool Wanted;
         }
 
@@ -43,6 +43,7 @@ namespace Abandoned.Structure
         private static ShadowDirector instance;
         private readonly List<Casting> casting = new();
         private readonly List<Candidate> candidates = new();
+        private readonly HashSet<Light> considered = new();
         private float nextChoose, nextSweep;
         private int budget, room, outside;
 
@@ -75,6 +76,10 @@ namespace Abandoned.Structure
                 nextSweep = Time.unscaledTime + SweepEvery;
                 Sweep();
             }
+            budget = config.Lights(VideoSettings.Shadows);
+            room = Room(config);
+            // Quality and atlas changes apply before rendering, even between camera selection passes.
+            Trim(config.PointLights(VideoSettings.Shadows));
             Camera eye = Camera.main;
             if (eye != null && Time.unscaledTime >= nextChoose)
             {
@@ -87,9 +92,8 @@ namespace Abandoned.Structure
         private void Choose(Transform eye, ShadowBudgetConfig config)
         {
             int setting = VideoSettings.Shadows;
-            budget = config.Lights(setting);
-            room = Room(config);
             candidates.Clear();
+            considered.Clear();
             foreach (LightFixture fixture in LightFixture.All)
                 if (fixture != null && fixture.Lit) Consider(fixture.Lamp, eye, config);
             foreach (ShadowBudgetLight extra in ShadowBudgetLight.All)
@@ -114,7 +118,8 @@ namespace Abandoned.Structure
                 {
                     // Its place is kept, so the lights it replaces fade out, but it starts only once they have
                     // let go of their maps (and a point light only once another point light has finished).
-                    if (held + maps > room || (point && PointsCasting() >= config.PointLights(setting))) continue;
+                    if (casting.Count >= budget || held + maps > room ||
+                        (point && PointsCasting() >= config.PointLights(setting))) continue;
                     held += maps;
                     c = new Casting { Light = light };
                     casting.Add(c);
@@ -122,6 +127,7 @@ namespace Abandoned.Structure
                     light.shadowStrength = 0f;
                     light.shadows = LightShadows.Soft;
                 }
+                c.Score = candidates[i].Score;
                 c.Wanted = true;
             }
         }
@@ -130,7 +136,8 @@ namespace Abandoned.Structure
         // (the old fixed four) loses them unless it is one of ours.
         private void Consider(Light light, Transform eye, ShadowBudgetConfig config)
         {
-            if (light == null || (light.type != LightType.Spot && light.type != LightType.Point)) return;
+            if (light == null || !light.isActiveAndEnabled || !considered.Add(light) ||
+                (light.type != LightType.Spot && light.type != LightType.Point)) return;
             Casting current = Find(light);
             if (current == null && light.shadows != LightShadows.None) light.shadows = LightShadows.None;
             Vector3 to = light.transform.position - eye.position;
@@ -144,22 +151,48 @@ namespace Abandoned.Structure
             candidates.Add(new Candidate { Light = light, Score = score });
         }
 
+        // Fading lights still consume atlas space. Normal replacements wait; lowering quality must release
+        // surplus maps immediately because the smaller atlas is already active this frame.
+        private void Trim(int pointLimit)
+        {
+            for (int i = casting.Count - 1; i >= 0; i--)
+                if (casting[i].Light == null || !casting[i].Light.isActiveAndEnabled || Maps(casting[i].Light) == 0) Stop(i);
+            int points = PointsCasting(), maps = MapsCasting();
+            while (casting.Count > budget || points > pointLimit || maps > room)
+            {
+                int remove = -1;
+                for (int i = 0; i < casting.Count; i++)
+                {
+                    Casting c = casting[i];
+                    if (points > pointLimit && c.Light.type != LightType.Point) continue;
+                    if (remove < 0 || (!c.Wanted && casting[remove].Wanted) ||
+                        (c.Wanted == casting[remove].Wanted && c.Score > casting[remove].Score)) remove = i;
+                }
+                if (remove < 0) break;
+                Light light = casting[remove].Light;
+                if (light.type == LightType.Point) points--;
+                maps -= Maps(light);
+                Stop(remove);
+            }
+        }
+
+        private void Stop(int index)
+        {
+            Light light = casting[index].Light;
+            if (light != null) { light.shadowStrength = 0f; light.shadows = LightShadows.None; }
+            casting.RemoveAt(index);
+        }
+
         private void Fade(ShadowBudgetConfig config)
         {
             float step = Time.unscaledDeltaTime / config.FadeSeconds * config.Strength;
             for (int i = casting.Count - 1; i >= 0; i--)
             {
                 Casting c = casting[i];
-                if (c.Light == null)
-                {
-                    casting.RemoveAt(i);
-                    continue;
-                }
                 c.Strength = Mathf.MoveTowards(c.Strength, c.Wanted ? config.Strength : 0f, step);
                 c.Light.shadowStrength = c.Strength;
                 if (c.Wanted || c.Strength > 0f) continue;
-                c.Light.shadows = LightShadows.None;
-                casting.RemoveAt(i);
+                Stop(i);
             }
         }
 
@@ -219,9 +252,16 @@ namespace Abandoned.Structure
             int maps = 0;
             foreach (Light light in FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
-                if (light.shadows != LightShadows.None && Find(light) == null) maps += Maps(light);
-                if (storeys == null) continue;
                 var fixture = light.GetComponentInParent<LightFixture>();
+                var extra = light.GetComponent<ShadowBudgetLight>();
+                bool managed = (fixture != null && fixture.isActiveAndEnabled && fixture.Lamp == light) ||
+                               (extra != null && extra.isActiveAndEnabled);
+                if (Find(light) == null)
+                {
+                    if (managed) light.shadows = LightShadows.None;
+                    else if (light.shadows != LightShadows.None) maps += Maps(light);
+                }
+                if (storeys == null) continue;
                 storeys.Apply(light, fixture != null && fixture.Lamp == light);
             }
             outside = maps;

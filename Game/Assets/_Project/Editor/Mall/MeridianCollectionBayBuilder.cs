@@ -29,7 +29,7 @@ namespace Abandoned.EditorTools
 
             // The approach is wide while the original cargo box remains the sole counting volume.
             Vector3 apronSize = apron.localScale;
-            apronSize.z = ApproachWidth;
+            apronSize.x = ApproachWidth + .6f;
             apron.localScale = apronSize;
             Vector3 rampSize = ramp.localScale;
             rampSize.x = ApproachWidth;
@@ -39,28 +39,36 @@ namespace Abandoned.EditorTools
             if (ramp.GetComponent<SurfaceTag>() == null) ramp.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             apron.GetComponent<SurfaceTag>()?.EditorSet(SurfaceMaterial.Concrete);
 
-            Approach(group, amber, ivory);
+            Approach(group, truck.transform, amber, ivory);
             RampPaint(ramp, amber);
             CargoBoundary(floor, amber);
-            Signs(group, ink, ivory);
+            Signs(group, truck.transform, ink, ivory);
         }
 
-        private static void Approach(Transform group, Material amber, Material ivory)
+        private static void Approach(Transform group, Transform truck, Material amber, Material ivory)
         {
-            float door = MallLayout.LoadingDoor.x, foot = MallLayout.TruckRear.x - TruckBuilder.RampLength;
-            float length = foot - door, centre = (door + foot) * 0.5f, z = MallLayout.LoadingDoor.z;
+            Vector3 rear = truck.TransformPoint(new Vector3(0f, 0f, -TruckBuilder.BayLength * .5f));
+            rear.y = 0f;
+            Vector3 towardMall = -truck.forward;
+            Vector3 rampFoot = rear + towardMall * TruckBuilder.RampLength;
+            // The short front loading lane meets the main entry plaza; there is no east-side dock route.
+            Transform lane = GreyboxFactory.Group("FrontCollectionApproach", group);
+            lane.SetPositionAndRotation(rampFoot + towardMall * 2f, Quaternion.LookRotation(towardMall));
             foreach (float side in new[] { -1f, 1f })
             {
-                Box("ClearHaulLaneEdge", group, new Vector3(centre, 0.012f, z + side * ApproachWidth * 0.5f),
-                    new Vector3(length, 0.006f, 0.10f), Quaternion.identity, amber);
-                for (int stripe = 0; stripe < 4; stripe++)
-                    Box("DockEdgeDash", group, new Vector3(door + stripe + 0.35f, 0.014f, z + side * 1.98f),
-                        new Vector3(0.45f, 0.006f, 0.065f), Quaternion.identity, ivory);
+                Box("ClearHaulLaneEdge", lane, new Vector3(side * ApproachWidth * .5f, .026f, 0f),
+                    new Vector3(.10f, .006f, 4f), Quaternion.identity, amber);
+                for (int dash = 0; dash < 4; dash++)
+                    Box("CollectionEdgeDash", lane, new Vector3(side * 1.98f, .028f, -.9f + dash * .65f),
+                        new Vector3(.065f, .006f, .35f), Quaternion.identity, ivory);
             }
-            foreach (float x in new[] { door + 1.4f, door + 3.0f })
+            Transform arrow = GreyboxFactory.Group("CollectionApproachArrow", lane);
+            arrow.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            Box("CollectionArrowStem", arrow, new Vector3(0f, .028f, -.15f),
+                new Vector3(.14f, .006f, 1.2f), Quaternion.identity, amber);
             foreach (float side in new[] { -1f, 1f })
-                Box("ToTruckArrow", group, new Vector3(x - 0.36f, 0.015f, z + side * 0.25f),
-                    new Vector3(0.9f, 0.006f, 0.11f), Quaternion.Euler(0f, side * 35f, 0f), amber);
+                Box("CollectionArrowHead", arrow, new Vector3(side * .23f, .028f, .36f),
+                    new Vector3(.11f, .006f, .72f), Quaternion.Euler(0f, side * -45f, 0f), amber);
         }
 
         private static void RampPaint(Transform ramp, Material amber)
@@ -83,17 +91,17 @@ namespace Abandoned.EditorTools
                 new Vector3(0.94f, 0.0125f, 0.015f), Quaternion.identity, amber);
         }
 
-        private static void Signs(Transform group, Material ink, Material ivory)
+        private static void Signs(Transform group, Transform truck, Material ink, Material ivory)
         {
-            Vector3 rear = MallLayout.TruckRear;
+            Vector3 rear = truck.TransformPoint(new Vector3(0f, 0f, -TruckBuilder.BayLength * .5f));
+            rear.y = 0f;
+            Vector3 front = -truck.forward, right = truck.right;
             Material steel = MeridianArt.Material("EscalatorSteel");
             foreach (float side in new[] { -1f, 1f })
-            {
-                Box("TailgateSignBracket", group, rear + new Vector3(.12f, 2.94f, side * 1.26f),
+                Box("TailgateSignBracket", group, group.InverseTransformPoint(rear + front * .12f + right * (side * 1.26f) + Vector3.up * 2.94f),
                     new Vector3(.06f, .68f, .06f), Quaternion.identity, steel);
-            }
-            Sign(group, rear + new Vector3(0.08f, 3.05f, 0f), Vector3.left,
-                "COLLECTION", TruckBuilder.BayWidth, 0.32f, ink, ivory);
+            Sign(group, group.InverseTransformPoint(rear + front * .08f + Vector3.up * 3.05f), front,
+                "COLLECTION", TruckBuilder.BayWidth, .32f, ink, ivory);
         }
 
         private static void Sign(Transform group, Vector3 position, Vector3 front, string text, float width, float height,

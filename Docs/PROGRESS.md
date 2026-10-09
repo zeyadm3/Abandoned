@@ -4,6 +4,37 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.15.0.EEA: mall and parking rebuilt from scratch (2026-10-09; user tests)
+
+The user rejected the first mall pass and requested a complete replacement of the building and
+parking area, retaining the surrounding roads and buildings. The new plan is a rectangular 56 × 48 m,
+two-storey shopping centre around a shared atrium: a straight front promenade, visible glass-fronted
+tenants, paired escalators, an upper gallery/bridge and a rear food court. Internal stairs and broad
+haul ramps connect the service basement and upper floor to the same front route.
+
+There is exactly one continuous eight-metre main entrance, with one entrance shutter. Side doors,
+loading doors, rope descents, open windows and other exterior escape openings are removed. Exterior
+walls and windows are sealed. The functional collection truck is now in the front arrival court,
+beside the crew van; its loading ramp faces the mall. Its existing cargo trigger, value display,
+ignition, extraction and payout remain the sole collection system.
+
+Entire room layouts replace the old scattered dressing: electronics display aisles, jeweller cases,
+clothing rails and fitting rooms, office desks and partitions, furniture showroom vignettes, a toy
+shop, a cinema with one screen and rows of seats, nine rear food stalls and organized dining grids.
+The central court has a fountain, kiosk, directory and grouped seating. Ceiling fittings, subdued
+power-controlled lighting, dust and reflections use the existing systems. Floor-supported furnishings
+remain tied to structural collapse; the permanent aisles connect every shop to the main entrance.
+Loot pockets are authored around the final solid fixtures. Featured sites and threat spawns are moved
+to the new floor plan rather than retaining positions on deleted upper floors.
+
+The approved `MeridianWorldSurroundings` hierarchy is moved intact into the new scene. Continuous
+wooded foothills and mountain ranges are added outside the district, covering the ground edge and
+keeping a permanent horizon silhouette. The HQ and shared material tuning are retained.
+
+Authoring menu: **Tools > Abandoned > Mall > Rebuild Mall and Parking (0.15.0)**. This generates the
+new scene, navigation and culling data without tests, audits, screenshots or gameplay verification.
+Version remains 0.15.0.EEA. Scene, navigation, culling and dependent gameplay/generated assets were saved through an isolated Unity authoring copy and transferred back into the project; the existing Unity session stayed open. No tests or gameplay verification were run.
+
 ## Voice sources: "Only custom filters can be played" (2026-10-09; user tests)
 
 Each player spawn logged the warning for the Player prefab's `Voice` and `Radio` AudioSources: they were saved

@@ -17,10 +17,10 @@ namespace Abandoned.EditorTools
         public static Vector3 SpawnPosition=>SpawnCentre;
         public static readonly float[] SpawnOffsetsX={0,1.5f,-1.5f,3};
         private static readonly Dictionary<string,(float health,float capacity)> WeakSpots=new() {
-            ["Floor_2_4_9"]=(.65f,.55f),["Floor_2_5_9"]=(.60f,.5f),["Floor_2_6_9"]=(.65f,.5f),
+            ["Floor_1_2_7"]=(.65f,.55f),["Floor_1_3_7"]=(.60f,.5f),
             ["Walk_1_6_6"]=(.8f,.6f),["Walk_1_7_6"]=(.8f,.6f)
         };
-        public static void Populate(Transform mall)
+        public static void Populate(Transform mall,bool authorLoot=true)
         {
             new GameObject("DebugView",typeof(DebugViewToggle),typeof(PerfOverlay));
             Camera camera=Object.FindFirstObjectByType<Camera>();
@@ -33,11 +33,12 @@ namespace Abandoned.EditorTools
                 spawn.gameObject.AddComponent<Abandoned.Player.PlayerSpawnPoint>().EditorSetup(i);
             }
             var bootstrap=NetworkSceneBuilder.Add();AddStructure(mall);
-            MallLootPoints.Place(GreyboxFactory.Group("LootPoints",mall));
+            Transform lootPoints=GreyboxFactory.Group("LootPoints",mall);
+            if(authorLoot)MallLootPoints.Place(lootPoints);
             var spawner=new GameObject("LootSpawner").AddComponent<Abandoned.Networking.NetworkLootSpawner>();
             spawner.Setup(bootstrap,AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath),
                 AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath),autoSpawn:false);
-            TruckBuilder.Build(GreyboxFactory.Group("Truck",mall),TruckRear,Vector3.right);
+            TruckBuilder.Build(GreyboxFactory.Group("Truck",mall),TruckRear,Vector3.back);
             MeridianCollectionBayBuilder.Build(mall);
             var run=new GameObject("Run");
             var director=run.AddComponent<Abandoned.Extraction.RunDirector>();
@@ -79,8 +80,8 @@ namespace Abandoned.EditorTools
             setup.AddSimulation(DefaultStability,DefaultSeed);
         }
         // Shared with the dressing pass (MeridianDressingClearance): solid furniture never stands on a spawn tile.
-        public static readonly (int floor,int x,int z)[] ThreatSpawnCells={(0,2,3),(0,2,7),(0,12,5),(0,7,10),(1,2,6),(1,7,1),(1,12,4),(1,10,10),
-            (2,2,6),(2,6,2),(2,5,10),(2,12,5),(-1,10,6),(-1,12,7)};
+        public static readonly (int floor,int x,int z)[] ThreatSpawnCells={(0,2,2),(0,2,6),(0,12,2),(0,7,10),
+            (1,2,2),(1,2,6),(1,12,2),(1,12,6),(-1,10,6),(-1,12,6)};
         private static void PlaceThreats(Transform mall,Abandoned.Networking.NetworkBootstrap bootstrap)
         {
             Transform points=GreyboxFactory.Group("ThreatSpawns",mall);

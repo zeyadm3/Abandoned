@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Abandoned.EditorTools
 {
-    // The envelope is a budget, not a box: setbacks and the entry court shape the occupied cells.
+    // The court and its surrounding gallery organise every shop around the same front entrance.
     public static partial class MallLayout
     {
         public const float Tile = 4f, StoryHeight = 4f, SlabThickness = .25f;
-        public const int TilesX = 14, TilesZ = 12, Floors = 3;
+        public const int TilesX = 14, TilesZ = 12, Floors = 2;
         public enum Kind { Store, Walkway, Bridge, Concourse }
         public enum FlightKind { Escalator, Stair, HaulRamp }
 
@@ -57,44 +57,31 @@ namespace Abandoned.EditorTools
         }
 
         public static readonly RectInt Atrium = new(5,4,4,4), Ring = new(4,3,6,6), Basement = new(10,6,4,6);
-        public static Bounds BuildingBounds => new(new Vector3(28,4,24),new Vector3(56,16,48));
-        public static Vector3 LoadingDoor => new(56,0,34);
-        public static Vector3 TruckRear => LoadingDoor+Vector3.right*6;
-        public static Vector3 ArrivalVehicle => new(18,0,-17);
-        public static Vector3 SpawnCentre => new(22,.05f,-12);
-        public static Vector3 EntranceTarget => new(28,1.2f,5);
+        public static Bounds BuildingBounds => new(new Vector3(28,2,24),new Vector3(56,12,48));
+        public static Vector3 LoadingDoor => new(28,0,0);
+        public static Vector3 TruckRear => new(36,0,-11);
+        public static Vector3 ArrivalVehicle => new(19,0,-15);
+        public static Vector3 SpawnCentre => new(24,.05f,-13);
+        public static Vector3 EntranceTarget => new(28,1.2f,3);
         public static float FloorY(int floor) => floor*StoryHeight;
         public static Vector3 TileTopCenter(Vector2Int c,int floor) => new((c.x+.5f)*Tile,FloorY(floor),(c.y+.5f)*Tile);
         public static bool InGrid(Vector2Int c) => c.x>=0 && c.x<TilesX && c.y>=0 && c.y<TilesZ;
-        public static bool InFootprint(Vector2Int c)
-        {
-            if(!InGrid(c)) return false;
-            if(c.y<2 && (c.x<2 || c.x>=11)) return false;
-            if(c.y==0 && c.x>=5 && c.x<=8) return false;
-            if(c.y==11 && c.x<2) return false;
-            if(c.x==13 && c.y<4) return false;
-            return true;
-        }
-        public static bool IsAtriumVoid(Vector2Int c)
-        {
-            if(!Atrium.Contains(c)) return false;
-            return !((c.x==5 || c.x==8) && (c.y==4 || c.y==7));
-        }
+        public static bool InFootprint(Vector2Int c) => InGrid(c);
+        public static bool IsAtriumVoid(Vector2Int c) => Atrium.Contains(c);
         public static bool IsBridge(Vector2Int c,int floor) => floor==1 && c.y==6 && c.x>=5 && c.x<=8;
         public static bool IsCoreOpening(Vector2Int c) => c.x>=11 && c.y>=9 && (c.y<=10 || c.x>=12);
         public static bool IsVoid(Vector2Int c,int floor)
         {
-            if(!InFootprint(c)) return true;
+            if(!InFootprint(c) || floor < -1 || floor >= Floors) return true;
             if(IsCoreOpening(c)) return true;
             if(floor<0) return !Basement.Contains(c);
-            if(floor==2 && c.y>=10 && c.x>=7 && c.x<=9) return true;
             if(floor>0 && IsAtriumVoid(c) && !IsBridge(c,floor)) return true;
             return Flights.Any(f=>f.Kind==FlightKind.Escalator && f.Floor==floor-1 && f.Tiles.Contains(c));
         }
         public static Zone? ZoneAt(Vector2Int c,int floor)
         {
             if(IsVoid(c,floor)) return null;
-            if(floor<0) return new Zone("BasementStock","stock",Kind.Store,10,6,4,6,"SERVICE / LEVEL -1");
+            if(floor<0) return new Zone("BasementStock","stock",Kind.Store,10,6,4,6,"SERVICE");
             foreach(Zone z in ZonesByFloor[floor]) if(z.Contains(c)) return z;
             return null;
         }
@@ -106,11 +93,15 @@ namespace Abandoned.EditorTools
         public static bool IsProtected(Vector2Int c,int floor)
         {
             if(IsVoid(c,floor)) return false;
-            if(floor<0) return c.x==10 || c.y==8;
-            // Continuous permanent slabs reach every landing; shortcuts retain the risk.
-            return c.x==0 || c.x==10 || c.y==3 || c.y==(floor==2?8:9) ||
-                (c.x>=11 && c.y>=8) || (floor==0 && c.x>=5 && c.x<=8 && c.y<=2) ||
-                (floor==2 && c.x==5 && c.y==11) || (floor==1 && c.y==4 && c.x>=12);
+            if(floor<0) return c.x==10 || c.y==8 || (c.x==11 && c.y==11);
+            // A continuous permanent aisle joins the entrance, every storefront and the service ramps.
+            // The shop display bays and the bridge retain their structural risk.
+            bool courtRing=Ring.Contains(c) && !Atrium.Contains(c);
+            bool promenade=c.x>=6 && c.x<=7 && (c.y<=3 || c.y>=8);
+            bool storefrontAisle=(c.y==1 && (c.x<=5 || c.x>=8)) ||
+                (c.y==5 && (c.x<=3 || c.x>=10));
+            return courtRing || promenade || storefrontAisle || c.y==8 ||
+                (c.x>=11 && c.y>=8);
         }
         public static bool IsFlightOpening(Vector2Int a,Vector2Int b,int floor)
         {

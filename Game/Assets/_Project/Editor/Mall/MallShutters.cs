@@ -22,14 +22,13 @@ namespace Abandoned.EditorTools
                 Bounds room=new(new Vector3(zone.Area.center.x*Tile,FloorY(floor)+2,zone.Area.center.y*Tile),new Vector3(zone.Area.width*Tile,4,zone.Area.height*Tile));
                 Shutter(group,$"Shutter_{floor}_{zone.Name}",index++,false,at,along,room);
             }
-            foreach(var e in Exterior.Where(e=>e.floor==0&&e.side=='S'&&(e.column==6||e.column==7)))
-                Shutter(group,$"Shutter_Entrance_{e.column}",index++,true,ExteriorPosition(e),Vector3.right,default);
+            Shutter(group,"Shutter_MainEntrance",index++,true,LoadingDoor,Vector3.right,default,8f);
             return index;
         }
-        private static void Shutter(Transform parent,string name,int index,bool entrance,Vector3 at,Vector3 along,Bounds room)
+        private static void Shutter(Transform parent,string name,int index,bool entrance,Vector3 at,Vector3 along,Bounds room,float width=MallWalls.WideWidth)
         {
             if(index>=32)throw new System.InvalidOperationException("More than32 shutters.");
-            const float width=MallWalls.WideWidth,height=MallWalls.WideHeight;
+            const float height=MallWalls.WideHeight;
             Transform root=Group(name,parent);root.localPosition=at;root.localRotation=Quaternion.FromToRotation(Vector3.right,along);
             var blocker=root.gameObject.AddComponent<BoxCollider>();blocker.center=Vector3.up*height/2;blocker.size=new Vector3(width,height,.12f);
             Transform curtain=Group("Curtain",root);curtain.localPosition=Vector3.up*height;
@@ -40,6 +39,8 @@ namespace Abandoned.EditorTools
             obstacle.size=new Vector3(width,height,.4f);obstacle.carving=true;obstacle.enabled=false;
             root.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             root.gameObject.AddComponent<RollerShutter>().EditorSetup(index,entrance,curtain,blocker,obstacle,room);
+            // Save the visual in its ordinary open state; run locks animate it closed at runtime.
+            curtain.localScale=new Vector3(1f,.05f,1f);blocker.enabled=false;
         }
     }
 }

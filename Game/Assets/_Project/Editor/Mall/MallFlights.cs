@@ -50,7 +50,7 @@ namespace Abandoned.EditorTools
         }
         public static void Landings(Transform parent)
         {
-            for(int floor=-1;floor<2;floor++)
+            for(int floor=-1;floor<MallLayout.Floors-1;floor++)
             {
                 var slab=Group($"RampTurn_{floor}",parent);
                 slab.localPosition=new Vector3(51.75f,MallLayout.FloorY(floor)+2,46);

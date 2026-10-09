@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
     {
         public static void Apply(Transform mall)
         {
-            var storeys = mall.gameObject.AddComponent<LevelStoreys>();
+            var storeys = mall.GetComponent<LevelStoreys>() ?? mall.gameObject.AddComponent<LevelStoreys>();
             storeys.EditorSetup(MallLayout.StoryHeight, -1, MallLayout.Floors - 1, MallLayout.BuildingBounds);
 
             int tagged = 0, split = 0;
@@ -31,6 +31,7 @@ namespace Abandoned.EditorTools
             int own = 0, everywhere = 0;
             foreach (Light light in Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
+                if (light.gameObject.scene != mall.gameObject.scene) continue;
                 var fixture = light.GetComponentInParent<LightFixture>(true);
                 bool ceiling = fixture != null && fixture.Lamp == light;
                 storeys.Apply(light, ceiling);

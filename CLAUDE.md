@@ -109,6 +109,16 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, **0.15.0 complete mall replacement**, user tests): the initial mall redesign was
+  rejected. Rebuild the entire mall and parking from scratch, keeping the approved surrounding roads
+  and buildings intact. Two-storey rectangular shopping centre, straight promenade, glass-fronted
+  fitted tenants, atrium/escalators/upper gallery, rear food court and internal basement/service core.
+  Exactly one continuous eight-metre front entrance/exit; no side loading door, rope/window escape or
+  other exterior opening. The functional payout/cargo truck sits beside the arrival van in the front
+  court, ramp toward the mall. Add an enclosing wooded mountain horizon beyond the district. Retain
+  HQ/shared asset tuning, structural gameplay and the existing payout system; reauthor loot/spawns,
+  network IDs, navigation and culling for the new plan. Menu: Tools/Abandoned/Mall/Rebuild Mall and
+  Parking (0.15.0). No tests/audits/QA; the user will review after saving. Version 0.15.0.EEA.
 - 2026-10-09 (user: fix the console's "Reduced additional punctual light shadows resolution ... 17/18 shadow maps";
   compiles, the user's walk-through check is still open): the shadow atlas is budgeted in shadow MAPS, not lights. Every light asks for a
   1024 px map (URP's High tier), the 4096 atlas holds 16, a spot is one map and a point light six, so the old

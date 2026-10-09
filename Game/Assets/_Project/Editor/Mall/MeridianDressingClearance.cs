@@ -63,6 +63,18 @@ namespace Abandoned.EditorTools
             Vector3 actualScale = scale ?? Vector3.one;
             Bounds bounds = TransformBounds(ModelBounds(key), Matrix4x4.TRS(position, rotation, actualScale));
             var cell = new Vector2Int(Mathf.FloorToInt(position.x / MallLayout.Tile), Mathf.FloorToInt(position.z / MallLayout.Tile));
+            StructuralSection support = Support(mall, cell, ceiling ? floor + 1 : floor);
+            if (support == null || !Reserve(bounds, floor, ceiling)) return false;
+            Prop(key, parent, position, rotation, support, actualScale, solid: !ceiling);
+            counts[key] = counts.TryGetValue(key, out int count) ? count + 1 : 1;
+            floorCounts[floor + 1]++;
+            return true;
+        }
+
+        // Procedural shop bays share the same real footprints as imported fixtures.
+        public bool Reserve(Bounds bounds, int floor, bool ceiling = false)
+        {
+            var cell = new Vector2Int(Mathf.FloorToInt(bounds.center.x / MallLayout.Tile), Mathf.FloorToInt(bounds.center.z / MallLayout.Tile));
             if (!ClearCell(cell, floor)) return false;
             float minX = cell.x * MallLayout.Tile + 0.04f, minZ = cell.y * MallLayout.Tile + 0.04f;
             if (bounds.min.x < minX || bounds.max.x > minX + MallLayout.Tile - 0.08f
@@ -81,12 +93,7 @@ namespace Abandoned.EditorTools
             Bounds separation = bounds;
             separation.Expand(0.12f);
             if (occupied.Any(b => b.Intersects(separation))) return false;
-            StructuralSection support = Support(mall, cell, ceiling ? floor + 1 : floor);
-            if (support == null) return false;
-            Prop(key, parent, position, rotation, support, actualScale, solid: !ceiling);
             occupied.Add(bounds);
-            counts[key] = counts.TryGetValue(key, out int count) ? count + 1 : 1;
-            floorCounts[floor + 1]++;
             return true;
         }
 

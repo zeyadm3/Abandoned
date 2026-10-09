@@ -1,6 +1,7 @@
 using System.Linq;
 using Abandoned.Interaction;
 using Abandoned.Loot;
+using Abandoned.Structure;
 using UnityEngine;
 using static Abandoned.EditorTools.MallLayout;
 
@@ -9,8 +10,8 @@ namespace Abandoned.EditorTools
     public static class MallLootPoints
     {
         private static readonly (int floor,int x,int z,string tag,string id,bool jackpot)[] Prizes={
-            (2,5,11,"gallery","marble_statue",true),(1,2,10,"furniture","designer_sofa",false),
-            (-1,12,7,"stock","military_generator",true),(1,7,6,"furniture","grand_piano",true)
+            (1,2,7,"gallery","marble_statue",true),(1,2,5,"furniture","designer_sofa",false),
+            (-1,12,7,"stock","military_generator",true),(1,6,6,"furniture","grand_piano",true)
         };
         public static int Place(Transform parent)
         {
@@ -25,8 +26,14 @@ namespace Abandoned.EditorTools
                 if(!zone.HasValue||IsJackpotTile(c,f)||IsProtected(c,f)||UnderFlight(c,f)||LandmarkReserved(c,f))continue;
                 if((x+z+f)%3!=0)continue;
                 bool heavy=zone.Value.Kind==Kind.Store&&(x+z)%7==0;
-                // Stocking at wall edges preserves the middle of the carry aisle.
-                Vector2 offset=heavy?Vector2.zero:new Vector2((x%2==0?1:-1)*.8f,(z%2==0?1:-1)*.65f);
+                // Fittings are authored first; select open pockets beside them instead of scattering through them.
+                Vector2 offset=Vector2.zero;
+                bool found=false;
+                foreach(Vector2 candidate in new[]{Vector2.zero,new Vector2(1.1f,0),new Vector2(-1.1f,0),new Vector2(0,1.1f),new Vector2(0,-1.1f)}) {
+                    if(!Clear(parent.root,TileTopCenter(c,f)+new Vector3(candidate.x,0,candidate.y),heavy?1.35f:.65f))continue;
+                    offset=candidate;found=true;break;
+                }
+                if(!found)continue;
                 Point(parent,f,c,IsWalkwayTile(c,f)?"walkway":zone.Value.Tag,heavy?CarryClass.OneHand:CarryClass.Pocket,
                     heavy?CarryClass.Heavy:CarryClass.TwoHand,false,offset);count++;
             }
@@ -39,6 +46,17 @@ namespace Abandoned.EditorTools
             p.gameObject.AddComponent<LootSpawnPoint>().EditorSetup(tag,min,max,jackpot,ids,featured);
         }
         private static bool UnderFlight(Vector2Int c,int floor)=>AllFlights.Any(f=>f.Floor==floor&&f.Tiles.Contains(c));
+        private static bool Clear(Transform mall,Vector3 at,float radius)
+        {
+            foreach(Collider collider in mall.GetComponentsInChildren<Collider>(true)) {
+                if(collider.isTrigger||collider.GetComponentInParent<StructuralSection>()!=null)continue;
+                Bounds bounds=collider.bounds;
+                if(bounds.max.y<at.y+.15f||bounds.min.y>at.y+1.5f)continue;
+                Vector3 nearest=bounds.ClosestPoint(at+Vector3.up*.5f);
+                if(new Vector2(nearest.x-at.x,nearest.z-at.z).sqrMagnitude<radius*radius)return false;
+            }
+            return true;
+        }
         // Loose floor loot would be hidden inside the fixed fountain basin or planter at these sites.
         private static bool LandmarkReserved(Vector2Int c,int floor)=>floor==0&&
             ((c.x==6&&c.y==6)||(c.x==8&&c.y==7)||(c.x==4&&c.y==2)); // 0.14.0: the mall directory is solid too
