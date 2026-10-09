@@ -109,6 +109,12 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user, plan only): **Early Access is 0.25.0**, not 0.20.0, to allow more time and features.
+  0.20, 0.21, 0.23 and 0.24 are numbered in Docs/ROADMAP_0.16-0.25.md and approved by the user. 0.25.0 stays fixes only.
+- 2026-10-10 (user, **0.22 total UI revamp**, plan only): the user's friend redoes the whole UI from a reference
+  the user has in mind (not yet shared; first planned as a paid freelancer). Ten steps, 0.22.0–0.22.9, in
+  Docs/ROADMAP_0.16-0.25.md. Do not start a UI redesign ourselves; until 0.22, new features get thin UI on
+  the current kit.
 - 2026-10-09 (user, **0.15.0 complete mall replacement**, user tests): the initial mall redesign was
   rejected. Rebuild the entire mall and parking from scratch, keeping the approved surrounding roads
   and buildings intact. Two-storey rectangular shopping centre, straight promenade, glass-fronted
