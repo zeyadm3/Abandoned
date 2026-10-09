@@ -28,6 +28,11 @@ Color blocks, papers, schematics and arrows remain. Functional menus and proximi
 
 ## Functional stations
 
+The staff entrance behind the spawn area has a locked steel double door that physically closes the
+opening. Outside, the company occupies an industrial estate with vacant warehouse and office blocks,
+closed loading shutters, roads, utilities, trees and a distant wooded horizon. These surroundings keep
+views through glazing grounded in a larger world. They add no environmental lettering.
+
 - **Dispatch:** the rotary telephone opens the existing host-controlled contract selection and plays
   original condition briefings. Exact quota, threat, power, stability and time-window details remain
   in its readable transcript. The boss's answering machine stays on the same desk.
@@ -55,6 +60,10 @@ Use **Tools → Abandoned → HQ → Rebuild Salvage Hub (0.14.5b)** to regenera
 operational stations, dressing and lighting use its anchors. The dedicated batch authoring entry point
 is `Abandoned.EditorTools.HqBuilder.AuthorSalvageHub`; it skips validation and collider audits.
 `HqWorldText.Remove` removes generated TextMesh objects after dressing so future rebuilds omit lettering.
+
+To add the staff door and estate surroundings to an existing HQ while retaining hand-edited interior
+placements and materials, use **Tools → Abandoned → HQ → Add Staff Door and Exterior**. The batch
+entry point is `Abandoned.EditorTools.HqExteriorAuthoring.AuthorExterior`; it edits the saved HQ in place.
 
 Original dispatch WAV clips are included in the shared SoundBank. The reproducible local speech
 authoring script is `Tools/Audio/generate_hq_dispatch.py`.

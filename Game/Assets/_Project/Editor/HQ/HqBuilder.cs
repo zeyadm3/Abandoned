@@ -49,6 +49,8 @@ namespace Abandoned.EditorTools
             HqWarehouseMachinery.Build(root);
             HqSalvageAtmosphere.Build(root);
             PlaceGarageDoor(root);
+            HqStaffEntryDoor.Build(root);
+            HqExteriorBuilder.Build(root);
 
             Transform spawns = Group("Spawns", root);
             for (int i = 0; i < 4; i++)

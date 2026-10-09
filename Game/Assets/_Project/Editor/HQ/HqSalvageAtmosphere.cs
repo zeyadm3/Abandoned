@@ -33,7 +33,7 @@ namespace Abandoned.EditorTools
                     faulty, 104 + bay * 100 + aisle * 17);
             }
             Fluorescent("Dispatch", new Vector3(30f, 3.35f, 5.1f), 0f, 19f, 7f, false, 441);
-            Fluorescent("CrewRoom", new Vector3(31.5f, 3.35f, 14f), 0f, 15f, 6.8f, false, 552);
+            Fluorescent("CrewRoom", new Vector3(31.5f, 3.35f, 14f), 0f, 15f, 6.8f, false, 552, 164.3437f);
             Fluorescent("Workshop", new Vector3(31.5f, 3.35f, 23.1f), 90f, 20f, 7f, false, 665);
             Fluorescent("SpareParts", new Vector3(28.8f, 3.35f, 20f), 0f, 10f, 4.5f, true, 776);
             Fluorescent("ServiceSpine", new Vector3(25.5f, 3.35f, 15.2f), 90f, 11f, 5.7f, false, 790);
@@ -57,7 +57,8 @@ namespace Abandoned.EditorTools
 
             HqSalvageAir.Build(root);
 
-            void Fluorescent(string name, Vector3 at, float yaw, float intensity, float range, bool faulty, int seed)
+            void Fluorescent(string name, Vector3 at, float yaw, float intensity, float range, bool faulty, int seed,
+                float spotAngle = 118f)
             {
                 Transform holder = Group("Tube_" + name, lights);
                 holder.SetLocalPositionAndRotation(at, Quaternion.Euler(0f, yaw, 0f));
@@ -81,7 +82,7 @@ namespace Abandoned.EditorTools
                 Light lamp = Lamp(holder, LightType.Spot, new Color(.79f, .87f, .88f), intensity, range);
                 lamp.transform.localPosition = Vector3.down * .15f;
                 lamp.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-                lamp.spotAngle = 118f;
+                lamp.spotAngle = spotAngle;
                 lamp.innerSpotAngle = 88f;
                 holder.gameObject.AddComponent<LightFixture>().EditorSetup(lamp, null, faulty, false, seed);
                 NoSelfShadows(holder);

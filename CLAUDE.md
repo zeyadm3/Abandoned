@@ -109,6 +109,15 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, **wardrobe room lighting save**, user tests): preserve the user's manual lighting
+  angle change in the crew/wardrobe room: outer spotlight cone 164.3437 degrees, inner cone 88 degrees.
+  Saved in the current HQ scene and the crew-room authoring default. Keep the current interior,
+  staff door and estate surroundings; do not regenerate HQ or run tests/verification.
+- 2026-10-09 (user, **HQ staff entrance and exterior**, user tests): close the staff doorway behind
+  the player spawns with a solid locked steel door. Surround the company yard with vacant industrial
+  buildings, streets, utilities, trees and a distant wooded horizon so views outside feel situated.
+  Apply additions to the existing HQ scene, preserving the user's interior placements and asset edits;
+  do not regenerate the interior. Keep environmental lettering absent. No tests or verification.
 - 2026-10-09 (user, **0.14.5c asset edits**, user tests): preserve the user's edited assets and scene
   as present on disk in 0.14.5c.EEA, carrying forward the 0.14.5b physical HQ lettering removal and
   functional prompts/menus. Details of the user's asset edits were not specified. Do not regenerate

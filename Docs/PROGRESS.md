@@ -4,6 +4,30 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Preserve wardrobe-room lighting adjustment (2026-10-09; user tests)
+
+The user's wider crew/wardrobe-room spotlight was captured and saved directly in the current HQ:
+outer cone 164.3437 degrees, inner cone 88 degrees. The authoring default also keeps the new outer
+angle so rebuilding HQ will not reset that adjustment. The user's other scene placements and the
+staff door/exterior additions are retained. No HQ regeneration, tests or verification were run.
+
+## HQ staff door and surrounding world (2026-10-09; user tests)
+
+The user requested a door behind the spawn area to block leaving through the staff entrance, and an
+exterior that feels like a world rather than a void. The entrance receives a closed steel double door
+with full-height solid leaves, vision panes, handles and a secured central lock. It follows the existing
+staff portal's placement and keeps environmental text absent.
+
+The yard is surrounded by empty industrial blocks, shuttered loading bays, dark office windows,
+roof equipment and layered distant buildings. Estate streets, sidewalks, utility cables, subdued
+streetlights and tree belts connect the lots; broad ground and distant wooded berms cover the horizon.
+
+The authoring tool adds the door and surroundings to the existing HQ scene without regenerating the
+interior or rewriting existing materials. Menu: **Tools > Abandoned > HQ > Add Staff Door and Exterior**.
+The dedicated authoring save completed on the existing HQ scene after correcting malformed metadata
+for the new editor assets. The interior was retained. No tests, audits, gameplay checks, screenshots
+or verification commands were run; the user will review the result.
+
 ## 0.14.5c.EEA: preserve user asset edits (2026-10-09; user tests)
 
 The user requested saving their asset changes as 0.14.5c. This revision preserves the assets and scene
