@@ -1,4 +1,4 @@
-# HQ Hub Overhaul — 0.14.5
+# HQ Hub Overhaul — 0.14.5b
 
 Abandoned Salvaging now occupies a 36 × 28 m industrial company building: a high-bay receiving,
 sorting and stock warehouse, with an attached lower operations wing. Warehouse eaves are 6.4 m;
@@ -12,16 +12,19 @@ views into the receiving floor.
 | --- | --- | --- |
 | Receiving and vehicle dispatch | Warehouse front | Van, industrial scale, deposit chute, marked goods-in apron |
 | Recovery and sorting | Warehouse middle | Sorting island, graded bins, vice, gantry, pallet jack and parked forklift |
-| Company stock | Warehouse rear | Tall loaded pallet racks, numbered aisles, reclaimed parts and metal/e-waste skips |
+| Company stock | Warehouse rear | Tall loaded pallet racks, stock aisles, reclaimed parts and metal/e-waste skips |
 | Dispatch office | East wing front | Central metal desk, rotary telephone, leather field guide, voicemail and logistics board |
 | Crew facilities | East wing middle | Wardrobe lockers, lunch seating, time clock, water station and PPE |
 | Maintenance bay | East wing rear | Workbench, tools, charging batteries, supply terminal and inventory rack |
 
 The main warehouse has a continuous haul route alongside the stock aisles. A separate service spine
-connects dispatch, crew facilities and the workshop through wide framed openings. Painted lane edges,
-numbered hanging signs and department labels make the work sequence visible: receive, weigh, sort,
-store, repair and dispatch. The yard includes a loading canopy, fleet parking, separate pedestrian
-approach, company facade signs and a waste collection pad.
+connects dispatch, crew facilities and the workshop through wide framed openings. Painted lane edges
+and equipment placement establish the work sequence: receive, weigh, sort, store, repair and dispatch.
+The yard includes a loading canopy, fleet parking, separate pedestrian approach and a waste collection pad.
+
+At the user's request, 0.14.5b removes all environmental lettering: signs, floor words, prop labels,
+book titles, clock labels, the physical scale readout and handwritten sentences on the corkboard.
+Color blocks, papers, schematics and arrows remain. Functional menus and proximity prompts retain text.
 
 ## Functional stations
 
@@ -30,14 +33,14 @@ approach, company facade signs and a waste collection pad.
   in its readable transcript. The boss's answering machine stays on the same desk.
 - **Field guide:** the worn leather logbook beside the phone opens a book-style monster manual. Its
   index and page controls use the existing encounter unlocks and survival prose.
-- **Depot:** the industrial scale and reinforced chute show haul weight/value, quota and settlement
+- **Depot:** interacting with the industrial scale opens haul weight/value, quota and settlement
   receipts. Loose physical HQ salvage can be unloaded through the host; an already settled truck
   haul is never credited twice.
 - **Maintenance:** the supply terminal and inventory rack retain gear and upgrade functions. Crew
   wardrobe lockers have their own room instead of sharing the loading floor.
 
 Dispatch has filing cabinets, shift paperwork and visitor seating. The logistics corkboard carries
-mall plans, wiring sketches and crew hazard notes. Company stock is organized into actual aisles;
+mall plans and wiring sketches. Company stock is organized into actual aisles;
 clutter and recovery equipment occupy designated work cells.
 
 ## Atmosphere and authoring
@@ -47,10 +50,11 @@ warm task pendants. Two secondary tubes retain faulty-fixture behavior; work sur
 Rooflight shafts and localized dust follow the taller building. Air effects remain explicitly
 walk-through; existing reduced-flashing and runtime shadow-budget behavior still applies.
 
-Use **Tools → Abandoned → HQ → Rebuild Salvage Hub (0.14.5)** to regenerate and save
+Use **Tools → Abandoned → HQ → Rebuild Salvage Hub (0.14.5b)** to regenerate and save
 `Assets/_Project/Scenes/HQ.unity`. The shared floor plan lives in `Editor/HQ/HqLayout.cs`; architecture,
 operational stations, dressing and lighting use its anchors. The dedicated batch authoring entry point
 is `Abandoned.EditorTools.HqBuilder.AuthorSalvageHub`; it skips validation and collider audits.
+`HqWorldText.Remove` removes generated TextMesh objects after dressing so future rebuilds omit lettering.
 
 Original dispatch WAV clips are included in the shared SoundBank. The reproducible local speech
 authoring script is `Tools/Audio/generate_hq_dispatch.py`.

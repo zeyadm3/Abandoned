@@ -4,6 +4,27 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.14.5c.EEA: preserve user asset edits (2026-10-09; user tests)
+
+The user requested saving their asset changes as 0.14.5c. This revision preserves the assets and scene
+as present on disk and carries forward the 0.14.5b removal of physical HQ lettering, while keeping
+functional interaction prompts and menus. The individual asset edits are not described here because
+the user did not specify their details. No Unity regeneration, tests or verification were run;
+the user will test this revision.
+
+## 0.14.5b.EEA: remove HQ environmental text (2026-10-09; user tests)
+
+The user requested removal of all the excess words throughout the approved salvage HQ. World-space
+signs, floor lettering, bin/crate/gear labels, book titles, clock labels and the scale receipt text
+are removed during HQ authoring. Corkboard handwriting drawn from mesh strokes is also removed;
+papers, diagrams, pins and arrows remain. The industrial layout, equipment, clutter and lighting stay.
+
+The scale still opens its receipt/quota menu. Contract selection, field guide, gear menus and proximity
+interaction prompts keep their functional text. `HqWorldText.Remove` runs after dressing so subsequent
+rebuilds also omit physical lettering. Version is 0.14.5b.EEA. Authoring menu:
+**Tools > Abandoned > HQ > Rebuild Salvage Hub (0.14.5b)**. The dedicated HQ authoring save completed.
+No tests, audits, gameplay checks or verification commands were run; the user will assess the result.
+
 ## 0.14.5.EEA: company floor-plan replacement (2026-10-09; user tests)
 
 The user approved the completed layout and requested that all current work be committed as 0.14.5.

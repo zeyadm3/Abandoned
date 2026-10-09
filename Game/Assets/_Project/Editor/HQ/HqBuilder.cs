@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
         public static void Build()
             => BuildScene(runAudits: true);
 
-        [MenuItem("Tools/Abandoned/HQ/Rebuild Salvage Hub (0.14.5)")]
+        [MenuItem("Tools/Abandoned/HQ/Rebuild Salvage Hub (0.14.5b)")]
         public static void RebuildSalvageHub()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -80,6 +80,7 @@ namespace Abandoned.EditorTools
             ui.AddComponent<Abandoned.Equipment.GearScreens>();
             LevelAtmosphere.Apply("HQ", HqSalvageAtmosphere.Mood, root);
             AmbienceBuilder.Hq(root);
+            HqWorldText.Remove(root);
             // Author collision after all of the operational stock and furniture have been placed.
             SolidObjectsPass.Apply(root, "HQ");
             if (runAudits)

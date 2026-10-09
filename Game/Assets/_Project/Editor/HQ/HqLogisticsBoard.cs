@@ -1,30 +1,12 @@
-using System.Collections.Generic;
-using System.Globalization;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
 using static Abandoned.EditorTools.HqSalvageProps;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>Company plans and crew annotations hint at the actual threat rules without adding a second manual.</summary>
+    /// <summary>Company plans, schematics and pinned papers retain their nontext visual detail.</summary>
     public static class HqLogisticsBoard
     {
-        private static readonly Dictionary<char, string> Hand = new()
-        {
-            ['K'] = "0,0 0,1;0,.43 .72,1;0,.43 .78,0",
-            ['E'] = ".76,1 0,1 .02,0 .77,.02;0,.52 .63,.54",
-            ['P'] = "0,0 0,1 .63,1 .78,.82 .61,.55 0,.56",
-            ['Q'] = ".16,0 0,.21 .03,.83 .2,1 .61,.97 .77,.76 .74,.2 .55,0 .16,0;.44,.3 .85,-.1",
-            ['U'] = "0,1 .03,.2 .18,.02 .6,0 .77,.23 .75,1",
-            ['I'] = "0,1 .65,.99;.33,1 .3,0;0,0 .62,.01",
-            ['T'] = "0,1 .8,1;.4,1 .38,0",
-            ['L'] = "0,1 .02,0 .76,.02",
-            ['O'] = ".16,0 0,.21 .03,.83 .2,1 .61,.97 .77,.76 .74,.2 .55,0 .16,0",
-            ['B'] = "0,0 0,1 .57,1 .74,.8 .55,.53 0,.53;.55,.53 .78,.3 .58,0 0,0",
-            ['A'] = "0,0 .33,1 .48,1 .84,0;.17,.41 .67,.42",
-            ['C'] = ".77,.85 .58,1 .2,.98 0,.76 .03,.21 .22,0 .61,.02 .79,.17",
-        };
-
         public static void Build(Transform parent)
         {
             Transform board = At("LogisticsCorkboard", parent, HqLayout.Logistics, 90f);
@@ -39,8 +21,8 @@ namespace Abandoned.EditorTools
             Label(board, "LOGISTICS / CREW NOTES", new Vector3(0f, 1.31f, -.034f), .087f, new Color(.69f, .64f, .49f));
 
             MallBlueprint(board);
-            AnnotatedNote(board, new Vector3(.8f, .53f, -.059f), "KEEP QUIET", "BLIND ONE / LESS CLATTER", -4f);
-            AnnotatedNote(board, new Vector3(.8f, -.09f, -.065f), "LOOK BACK", "STALKER / WORK IN PAIRS", 3f);
+            AnnotatedNote(board, new Vector3(.8f, .53f, -.059f), "BLIND ONE / LESS CLATTER", -4f);
+            AnnotatedNote(board, new Vector3(.8f, -.09f, -.065f), "STALKER / WORK IN PAIRS", 3f);
             Transform warning = Paper(board, new Vector3(.82f, -.76f, -.067f), new Vector2(1.18f, .49f), -3f);
             Box("HazardHeader", warning, new Vector3(0f, .16f, -.011f), new Vector3(1.15f, .12f, .008f), CustomMallArt.Material("Hazard"), false);
             Label(warning, "LIGHT / USE WITH CARE", new Vector3(0f, .16f, -.017f), .039f);
@@ -91,10 +73,9 @@ namespace Abandoned.EditorTools
             Label(circuit, "CHARGER / 12V ONLY", new Vector3(0f, .095f, -.028f), .033f);
         }
 
-        private static void AnnotatedNote(Transform board, Vector3 at, string handwritten, string subject, float angle)
+        private static void AnnotatedNote(Transform board, Vector3 at, string subject, float angle)
         {
             Transform note = Paper(board, at, new Vector2(1.14f, .53f), angle);
-            MarkerWords(note, handwritten, new Vector2(-.36f, .037f), .10f);
             Label(note, subject, new Vector3(0f, -.14f, -.021f), .037f);
             Material marker = CustomMallArt.Material("Black");
             MapLine(note, new Vector2(-.38f, -.018f), new Vector2(.34f, -.008f), marker, .007f);
@@ -128,32 +109,5 @@ namespace Abandoned.EditorTools
         private static void MapLine(Transform paper, Vector2 from, Vector2 to, Material ink, float width = .013f)
             => Bar("PenLine", paper, new Vector3(from.x, from.y, -.018f), new Vector3(to.x, to.y, -.018f), width, .005f, ink);
 
-        private static void MarkerWords(Transform paper, string words, Vector2 origin, float height)
-        {
-            Material ink = CustomMallArt.Material("Black");
-            for (int i = 0; i < words.Length; i++)
-            {
-                char letter = words[i];
-                if (!Hand.TryGetValue(letter, out string paths)) continue;
-                Vector2 start = origin + new Vector2(i * height * .73f, (i % 3 - 1) * .0025f);
-                foreach (string path in paths.Split(';'))
-                {
-                    string[] points = path.Split(' ');
-                    for (int p = 1; p < points.Length; p++)
-                    {
-                        Vector2 a = Read(points[p - 1]), b = Read(points[p]);
-                        a.x += a.y * .09f;
-                        b.x += b.y * .09f;
-                        MapLine(paper, start + a * height, start + b * height, ink, .008f);
-                    }
-                }
-            }
-
-            static Vector2 Read(string point)
-            {
-                string[] xy = point.Split(',');
-                return new Vector2(float.Parse(xy[0], CultureInfo.InvariantCulture), float.Parse(xy[1], CultureInfo.InvariantCulture));
-            }
-        }
     }
 }

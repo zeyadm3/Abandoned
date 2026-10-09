@@ -132,10 +132,9 @@ namespace Abandoned.EditorTools
             readout.localPosition = new Vector3(-1.35f, 1.29f, .4f);
             Box("ReadoutHousing", readout, Vector3.zero, new Vector3(.70f, .35f, .17f), Steel, false);
             Box("ReadoutGlass", readout, new Vector3(0f, 0f, -.096f), new Vector3(.61f, .27f, .02f), Rubber, false);
-            TextMesh receipt = Label(readout, "HAUL RECEIPT\n[E] WEIGHT / QUOTA", new Vector3(0f, 0f, -.11f), 0f, .023f);
             var screenHit = readout.gameObject.AddComponent<BoxCollider>();
             screenHit.size = new Vector3(.70f, .35f, .20f);
-            readout.gameObject.AddComponent<ScrapDepot>().EditorSetup(null, receipt);
+            readout.gameObject.AddComponent<ScrapDepot>().EditorSetup(null);
 
             Transform chute = Group("ReinforcedDepositChute", bay);
             chute.localPosition = new Vector3(2.8f, 0f, .45f);

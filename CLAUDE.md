@@ -109,6 +109,15 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, **0.14.5c asset edits**, user tests): preserve the user's edited assets and scene
+  as present on disk in 0.14.5c.EEA, carrying forward the 0.14.5b physical HQ lettering removal and
+  functional prompts/menus. Details of the user's asset edits were not specified. Do not regenerate
+  the HQ or run tests/verification for this save; the user will test afterward.
+- 2026-10-09 (user, **0.14.5b HQ lettering cleanup**, user tests): remove all physical words and numbers
+  from the salvage HQ, including signs, floor stencils, prop labels, book lettering, clock labels,
+  scale readout and corkboard handwriting. Preserve the approved company layout, clutter and diagrams.
+  `HqWorldText.Remove` strips world TextMesh objects after dressing; the depot keeps receipts in its
+  interaction menu. Functional UI and proximity interaction prompts remain. No tests or verification.
 - 2026-10-09 (user, **0.14.5 layout replacement**, user tests): the first clutter pass still looked like a shed.
   Replace the old 24 × 16 m / 4 m-high three-room HQ with a 36 × 28 m company building: warehouse eaves
   6.4 m and pitched ridge 8.2 m, plus a lower 3.8 m operations wing. Receiving/van/depot at the front,
