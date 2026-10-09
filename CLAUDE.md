@@ -109,6 +109,15 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user: fix the console's "Reduced additional punctual light shadows resolution ... 17/18 shadow maps";
+  compiles, the user's walk-through check is still open): the shadow atlas is budgeted in shadow MAPS, not lights. Every light asks for a
+  1024 px map (URP's High tier), the 4096 atlas holds 16, a spot is one map and a point light six, so the old
+  6 lights with 2 points (16) plus the flashlight, plus any spot still fading out, overflowed and URP halved them all.
+  `ShadowDirector` now keeps its lights inside the atlas less the maps of lights it doesn't manage (counted each
+  second; never fewer than `ShadowBudgetConfig.ReservedMaps` = 1, the player's flashlight). The 2 / 4 / 6 counts are
+  upper limits: with two point lights casting, three spots fit beside them, not four. A new light keeps its place but
+  only starts once the lights fading out have let go of their maps, so a full atlas swaps one after another instead
+  of cross-fading. This replaces "one still fading out holds its place" (0.14.0), which covered point lights only.
 - 2026-10-09 (user, **wardrobe room lighting save**, user tests): preserve the user's manual lighting
   angle change in the crew/wardrobe room: outer spotlight cone 164.3437 degrees, inner cone 88 degrees.
   Saved in the current HQ scene and the crew-room authoring default. Keep the current interior,

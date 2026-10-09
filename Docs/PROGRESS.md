@@ -4,6 +4,48 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Voice sources: "Only custom filters can be played" (2026-10-09; user tests)
+
+Each player spawn logged the warning for the Player prefab's `Voice` and `Radio` AudioSources: they were saved
+with Play On Awake on and no clip (the clip is made when someone first speaks). `PlayerVoiceBuilder` now builds
+them with it off, and **Tools > Abandoned > Fix > Silence Player Voice Sources** applies the same to the saved
+prefab without regenerating it. No other prefab or scene has such a source. The fix also applies itself once,
+when the editor next reloads scripts outside Play mode (`PlayerVoiceBuilder.FixOnLoad`; it logs
+`[Voice] Player prefab: play on awake switched off on 2 voice source(s).` and then finds nothing to do).
+Confirmed in the user's editor: it applied itself (the prefab changed by those two lines) and the next Play
+logged neither warning.
+
+## Blind One: "same field name is serialized multiple times" (2026-10-09; user tests)
+
+`BlindOne` and its base `Threat` both declared private `nextRepath` and `lastGoal`; Unity rejects a field name
+repeated down a class chain, private ones included. The Blind One's are now `nextPath` and `pathGoal` (private,
+never saved in a prefab, behaviour unchanged). A scan of the runtime scripts found no other such pair.
+The yellow "Can't Generate Mesh, No Font Asset has been assigned" (stack: `HandleUtility:BeginHandles`) was traced
+but not changed: it is the Unity editor's own. Editor.log has the whole stack, with no project code in it:
+`HandleUtility.BeginHandles` > `EditorGUI.s_DelayedTextEditor` > `TextEditor` constructor > `IMGUITextHandle` >
+`TextHandle.UpdateWithHash`, twice, straight after "Loaded All Assemblies" in every script reload (each recompile
+and each press of Play). Unity 6000.3.25f1, default editor font, no TextMeshPro in the project. Editor only: it
+cannot reach a build. It is intermittent: the last two reloads of the session did not log it.
+The rename compiled in the user's editor and the two errors have not been logged since.
+
+## Content validation: 19 light fixture failures (2026-10-09; user tests)
+
+**Tools > Abandoned > Validate Content** reported `LightFixture.panel is not assigned` on the HQ's 18 tubes and
+hanging bulbs and `LightFixture.lamp is not assigned` on the mall's cinema marquee. Both are how the builders
+make them (the HQ fixtures glow through their own emissive parts; the marquee is glow only) and `LightFixture`
+handles either being empty, so the two fields are now `[OptionalReference]`. No scene was changed.
+The user re-ran the validation: `[ALL PASS] Content validation`.
+
+## Shadow atlas warnings (2026-10-09; user tests)
+
+The console reported "Reduced additional punctual light shadows resolution by 2 to make 17 (18) shadow maps
+fit in the 4096x4096 shadow atlas". `ShadowDirector` counted lights, but the atlas fills by shadow maps
+(spot 1, point 6; 16 fit): two point lights, four spots and the flashlight are 17, and spots fading out
+added more. It now budgets in maps and a new light waits for room. `ShadowBudgetConfig.ReservedMaps` (1) is
+new and defaults on the existing asset. F1's `SHADOWS` line shows `maps used/room` in place of the atlas size.
+It compiles in the user's editor and no atlas line has been logged since, but the real check is still open:
+walk the HQ at High shadows with the flashlight on and watch that `maps` never passes its second number.
+
 ## Preserve wardrobe-room lighting adjustment (2026-10-09; user tests)
 
 The user's wider crew/wardrobe-room spotlight was captured and saved directly in the current HQ:
@@ -130,7 +172,7 @@ Still to run by hand: Tools > Abandoned > Generate Loot Prefabs (Heavy/Huge loot
 **Shadows** (the director works at once; light layers and caster pass on rebuild)
 - `ShadowDirector`: nearest lit lights cast, 2 / 4 / 6 by the Shadows setting. `LevelStoreys`: no more ceiling light
   through floors. `ShadowCasterPass`. Atlas 4096, ambient occlusion up a notch.
-- F1: `SHADOWS` line (lights casting / budget, atlas, storey layers on or off), lines to the casting lights in Scene view.
+- F1: `SHADOWS` line (lights casting / budget, shadow maps used / room, storey layers on or off), lines to the casting lights in Scene view.
 
 **Open, for the user to judge**
 - How every sound actually sounds: none of it has been heard.

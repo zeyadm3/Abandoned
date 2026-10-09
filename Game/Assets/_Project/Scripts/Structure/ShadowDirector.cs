@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Abandoned.Core;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace Abandoned.Structure
@@ -14,13 +15,17 @@ namespace Abandoned.Structure
     /// (<see cref="ShadowBudgetConfig"/>). The player's own flashlight and the moon are not managed here:
     /// they always cast.
     ///
+    /// The lights share one shadow atlas, and it is counted in shadow maps, not lights: a spot light is one
+    /// map and a point light six. The pipeline halves every map (and says so in the console) the moment
+    /// they don't all fit, so a light only starts casting when the atlas has room for it at full size.
+    ///
     /// Also keeps lights made at run time on every rendering layer in a level split by storey
     /// (<see cref="LevelStoreys"/>). Local and cosmetic: nothing is networked, every machine has its own
     /// set. One per game, made on first scene load (never in batch mode).
     /// </summary>
     public class ShadowDirector : MonoBehaviour
     {
-        private const float ChooseEvery = 0.2f, LayersEvery = 1f;
+        private const float ChooseEvery = 0.2f, SweepEvery = 1f;
 
         private class Casting
         {
@@ -38,8 +43,8 @@ namespace Abandoned.Structure
         private static ShadowDirector instance;
         private readonly List<Casting> casting = new();
         private readonly List<Candidate> candidates = new();
-        private float nextChoose, nextLayers;
-        private int budget, atlas;
+        private float nextChoose, nextSweep;
+        private int budget, room, outside;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Boot()
@@ -58,12 +63,18 @@ namespace Abandoned.Structure
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             nextChoose = 0f;
-            nextLayers = 0f;
+            nextSweep = 0f;
         }
 
         private void Update()
         {
             ShadowBudgetConfig config = ShadowBudgetConfig.Current;
+            // Before choosing: in a new level the maps set aside must be that level's count, not the last one's.
+            if (Time.unscaledTime >= nextSweep)
+            {
+                nextSweep = Time.unscaledTime + SweepEvery;
+                Sweep();
+            }
             Camera eye = Camera.main;
             if (eye != null && Time.unscaledTime >= nextChoose)
             {
@@ -71,18 +82,13 @@ namespace Abandoned.Structure
                 Choose(eye.transform, config);
             }
             Fade(config);
-            if (Time.unscaledTime >= nextLayers)
-            {
-                nextLayers = Time.unscaledTime + LayersEvery;
-                KeepLayers();
-            }
         }
 
         private void Choose(Transform eye, ShadowBudgetConfig config)
         {
             int setting = VideoSettings.Shadows;
             budget = config.Lights(setting);
-            atlas = config.Atlas(setting);
+            room = Room(config);
             candidates.Clear();
             foreach (LightFixture fixture in LightFixture.All)
                 if (fixture != null && fixture.Lit) Consider(fixture.Lamp, eye, config);
@@ -91,21 +97,25 @@ namespace Abandoned.Structure
             candidates.Sort((a, b) => a.Score.CompareTo(b.Score));
 
             foreach (Casting c in casting) c.Wanted = false;
-            int points = config.PointLights(setting), taken = 0;
+            // chosen = the maps the lights picked so far need; held = the maps in the atlas right now, which
+            // still includes every light that is fading out.
+            int points = config.PointLights(setting), taken = 0, chosen = 0, held = MapsCasting();
             for (int i = 0; i < candidates.Count && taken < budget; i++)
             {
                 Light light = candidates[i].Light;
-                Casting c = Find(light);
-                if (light.type == LightType.Point)
-                {
-                    // A point light is six shadow maps. One that is still fading out keeps its six until it is
-                    // done, so a new one waits for it: the atlas is never asked for more than the budget's worth.
-                    if (points <= 0 || (c == null && PointsCasting() >= config.PointLights(setting))) continue;
-                    points--;
-                }
+                bool point = light.type == LightType.Point;
+                int maps = Maps(light);
+                if ((point && points <= 0) || chosen + maps > room) continue;
+                if (point) points--;
                 taken++;
+                chosen += maps;
+                Casting c = Find(light);
                 if (c == null)
                 {
+                    // Its place is kept, so the lights it replaces fade out, but it starts only once they have
+                    // let go of their maps (and a point light only once another point light has finished).
+                    if (held + maps > room || (point && PointsCasting() >= config.PointLights(setting))) continue;
+                    held += maps;
                     c = new Casting { Light = light };
                     casting.Add(c);
                     Unblock(light);
@@ -161,6 +171,26 @@ namespace Abandoned.Structure
             return count;
         }
 
+        private int MapsCasting()
+        {
+            int maps = 0;
+            foreach (Casting c in casting)
+                if (c.Light != null) maps += Maps(c.Light);
+            return maps;
+        }
+
+        private static int Maps(Light light) => light.type == LightType.Point ? 6 : light.type == LightType.Spot ? 1 : 0;
+
+        // The shadow maps the atlas holds at full size, less those set aside for lights outside the budget.
+        // Every light asks for the pipeline's High tier: it is the default and nothing in the project sets another.
+        private int Room(ShadowBudgetConfig config)
+        {
+            UniversalRenderPipelineAsset pipeline = UniversalRenderPipeline.asset;
+            if (pipeline == null) return 0;
+            int across = pipeline.additionalLightsShadowmapResolution / Mathf.Max(1, pipeline.additionalLightsShadowResolutionTierHigh);
+            return Mathf.Max(0, across * across - Mathf.Max(outside, config.ReservedMaps));
+        }
+
         // A fixture's housing and diffuser sit round its lamp: casting, they would shadow their own light.
         // The rebuild switches them off (ShadowCasterPass); this covers a level saved before it did.
         private static void Unblock(Light light)
@@ -178,18 +208,23 @@ namespace Abandoned.Structure
             return null;
         }
 
-        // In a level split by storey, a light made after the rebuild's pass (a truck lamp, a flashlight, the
-        // night-vision illuminator) would only reach the default layer. Everything that isn't a ceiling fixture
-        // lights every layer.
-        private static void KeepLayers()
+        // Once a second, over every light. A light that casts shadows without being one of ours (the player's
+        // own flashlight) has its maps set aside, switched on or not, so it never has to wait for room.
+        // And in a level split by storey, a light made after the rebuild's pass (a truck lamp, a flashlight,
+        // the night-vision illuminator) would only reach the default layer: everything that isn't a ceiling
+        // fixture lights every layer.
+        private void Sweep()
         {
             LevelStoreys storeys = LevelStoreys.Current;
-            if (storeys == null) return;
+            int maps = 0;
             foreach (Light light in FindObjectsByType<Light>(FindObjectsSortMode.None))
             {
+                if (light.shadows != LightShadows.None && Find(light) == null) maps += Maps(light);
+                if (storeys == null) continue;
                 var fixture = light.GetComponentInParent<LightFixture>();
                 storeys.Apply(light, fixture != null && fixture.Lamp == light);
             }
+            outside = maps;
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -200,7 +235,7 @@ namespace Abandoned.Structure
             foreach (Casting c in casting) if (!c.Wanted) fading++;
             GUI.Label(new Rect(Screen.width - 360f, 162f, 350f, 22f),
                 $"SHADOWS {VideoSettings.ShadowNames[VideoSettings.Shadows]}: {casting.Count - fading}/{budget} lights ({fading} fading)  " +
-                $"atlas {atlas}  storeys {(LevelStoreys.Current != null ? "on" : "off")}");
+                $"maps {MapsCasting()}/{room}  storeys {(LevelStoreys.Current != null ? "on" : "off")}");
         }
 
         // Lines from the camera to the lights casting now (Scene view, with F1 on).

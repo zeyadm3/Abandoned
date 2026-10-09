@@ -16,7 +16,8 @@ namespace Abandoned.EditorTools
     {
         public const float ShadowDistance = 35f;
         public const int Cascades = 2;
-        // Sixteen 1024 px maps: the flashlight and up to six ceiling lights at full size, with room to spare.
+        // Sixteen 1024 px maps. A spot light is one and a point light six, so the flashlight, two point lights
+        // and three spots fill it: ShadowDirector counts maps, not lights, to stay inside.
         public const int LocalShadowAtlas = 4096;
         public const string PcAssetPath = "Assets/Settings/PC_RPAsset.asset";
         public const string PcRendererPath = "Assets/Settings/PC_Renderer.asset";

@@ -6,6 +6,8 @@ namespace Abandoned.Core
     /// The shadow budget (0.14.0): how many of the ceiling lights nearest the camera cast shadows at each
     /// Shadows setting, and how they fade as the player moves. The player's own flashlight and the moon
     /// always cast (within the setting's shadow distance) and are not counted here.
+    /// The counts are upper limits: the atlas is shared in shadow maps (a spot light is one, a point light
+    /// six), so with two point lights casting there is room for fewer spot lights beside them.
     /// Lives at Data/Core/Resources/ShadowBudgetConfig (Tools/Abandoned/Art/Apply Render Budget makes it);
     /// the defaults below apply until that asset exists.
     /// </summary>
@@ -15,12 +17,14 @@ namespace Abandoned.Core
         public const string ResourcePath = "ShadowBudgetConfig";
 
         [Header("Per Shadows setting: Off, Low, Medium, High")]
-        [Tooltip("Ceiling and street lights nearest the camera that cast shadows.")]
+        [Tooltip("Ceiling and street lights nearest the camera that cast shadows, at most: fewer when the atlas is full.")]
         [SerializeField] private int[] lights = { 0, 2, 4, 6 };
         [Tooltip("Of those, how many may be point lights (each one costs six shadow maps; the HQ's tubes are points).")]
         [SerializeField] private int[] pointLights = { 0, 1, 2, 2 };
         [Tooltip("Size (pixels) of the shadow atlas the flashlight and these lights share.")]
         [SerializeField] private int[] atlas = { 1024, 4096, 4096, 4096 };
+        [Tooltip("Shadow maps always kept free in the atlas for lights outside this budget (the player's own flashlight is one).")]
+        [SerializeField, Min(0)] private int reservedMaps = 1;
 
         [Header("Choosing")]
         [Tooltip("Lights further than this (m) from the camera never cast.")]
@@ -46,6 +50,7 @@ namespace Abandoned.Core
         public float StoreyHeight => storeyHeight;
         public float FadeSeconds => fadeSeconds;
         public float Strength => strength;
+        public int ReservedMaps => reservedMaps;
 
         public int Lights(int setting) => Pick(lights, setting, 0);
         public int PointLights(int setting) => Pick(pointLights, setting, 0);

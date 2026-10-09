@@ -29,8 +29,10 @@ namespace Abandoned.Threats
         private NavMeshAgent agent;
         private BlindOneBrain brain;
         private int wallMask;
-        private float nextRepath, nextClick;
-        private Vector3 wanderTarget, lastGoal;
+        // Its own path timer and goal, named apart from Threat's: Unity rejects a field name repeated down a
+        // class chain, private ones included (it keeps them across a script reload in the editor).
+        private float nextPath, nextClick;
+        private Vector3 wanderTarget, pathGoal;
         private bool hasWanderTarget, hasGoal;
 
         /// <summary>Just the Blind Ones (Threat.All has every threat).</summary>
@@ -102,17 +104,17 @@ namespace Abandoned.Threats
 
             Vector3 goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
             // "Arrived" only counts for the goal it is walking to now, not the one before it heard something.
-            bool arrived = hasGoal && (goal - lastGoal).sqrMagnitude < 1f && !agent.pathPending && agent.remainingDistance <= ArrivedDistance;
+            bool arrived = hasGoal && (goal - pathGoal).sqrMagnitude < 1f && !agent.pathPending && agent.remainingDistance <= ArrivedDistance;
             brain.Tick(transform.position, arrived, Time.time);
             if (brain.State == BlindOneState.Wander && (arrived || !hasWanderTarget)) PickWanderTarget();
             agent.speed = brain.Speed * SpeedScale;
             goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
-            bool newGoal = !hasGoal || (goal - lastGoal).sqrMagnitude >= 1f;
-            if (newGoal || Time.time >= nextRepath)
+            bool newGoal = !hasGoal || (goal - pathGoal).sqrMagnitude >= 1f;
+            if (newGoal || Time.time >= nextPath)
             {
-                nextRepath = Time.time + RepathInterval;
+                nextPath = Time.time + RepathInterval;
                 if (NavMesh.SamplePosition(goal, out NavMeshHit hit, 3f, NavMesh.AllAreas)) agent.SetDestination(hit.position);
-                lastGoal = goal;
+                pathGoal = goal;
                 hasGoal = true;
             }
             if (RunActive) KillOnContact();

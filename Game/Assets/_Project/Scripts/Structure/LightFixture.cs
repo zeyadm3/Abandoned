@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Structure
@@ -10,8 +11,10 @@ namespace Abandoned.Structure
         private static readonly List<LightFixture> all = new();
         private static float disturbedUntil;
 
-        [SerializeField] private Light lamp;
-        [SerializeField] private Renderer panel;
+        // Either may be left empty on purpose: without a panel the fixture glows through its own emissive
+        // parts (the HQ's tubes and bulbs), and without a lamp it is glow only (the cinema marquee).
+        [OptionalReference, SerializeField] private Light lamp;
+        [OptionalReference, SerializeField] private Renderer panel;
         [SerializeField, ColorUsage(false, true)] private Color glow = new(2.2f, 2.1f, 1.9f);
         [SerializeField] private bool faulty;
         [SerializeField] private bool dead;

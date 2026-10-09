@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using Abandoned.Player;
 using Abandoned.Voice;
+using UnityEditor;
 using UnityEngine;
 using static Abandoned.EditorTools.SerializedWiring;
 
@@ -32,7 +35,7 @@ namespace Abandoned.EditorTools
 
             var mouth = new GameObject("Voice");
             mouth.transform.SetParent(cameraRoot, false);
-            mouth.AddComponent<AudioSource>();
+            SilentSource(mouth);
             mouth.AddComponent<AudioLowPassFilter>().cutoffFrequency = VoiceMath.OpenCutoff;
             var playback = mouth.AddComponent<VoicePlayback>();
             Set(playback, "config", config);
@@ -40,7 +43,7 @@ namespace Abandoned.EditorTools
             // The radio is in the listener's hand, not at the speaker: 2D, so where it hangs doesn't matter.
             var handset = new GameObject("Radio");
             handset.transform.SetParent(root.transform, false);
-            handset.AddComponent<AudioSource>();
+            SilentSource(handset);
             handset.AddComponent<AudioHighPassFilter>();
             handset.AddComponent<AudioLowPassFilter>();
             var radio = handset.AddComponent<RadioPlayback>();
@@ -117,6 +120,51 @@ namespace Abandoned.EditorTools
             root.AddComponent<Abandoned.UI.LootTags>().EditorSetup(root.GetComponent<Abandoned.Networking.NetworkPlayer>(),
                 root.GetComponent<Abandoned.Interaction.PlayerInteractor>(), root.GetComponent<Abandoned.Interaction.PlayerCarrier>(), reader);
             return new Result(transmitter, hud);
+        }
+
+        // A voice source has no clip until someone first speaks (VoiceStream makes it then). Left at Unity's
+        // default it tries to play the moment a player spawns, and logs "Only custom filters can be played".
+        private static void SilentSource(GameObject host) => host.AddComponent<AudioSource>().playOnAwake = false;
+
+        // A prefab saved before the builder did this is put right as soon as the editor has loaded its scripts,
+        // so nobody has to remember the menu item. Once the prefab is right this finds nothing to do.
+        [InitializeOnLoadMethod]
+        private static void FixOnLoad()
+        {
+            if (Application.isBatchMode) return; // batch rebuilds regenerate the prefab with the builder above
+            EditorApplication.delayCall += () =>
+            {
+                if (EditorApplication.isPlayingOrWillChangePlaymode) return;
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
+                if (prefab != null && VoiceSources(prefab).Any(source => source.playOnAwake)) FixSavedPrefab();
+            };
+        }
+
+        /// <summary>The same setting on the Player prefab already saved, without regenerating it.</summary>
+        [MenuItem("Tools/Abandoned/Fix/Silence Player Voice Sources")]
+        public static void FixSavedPrefab()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(PlayerPrefabBuilder.PrefabPath);
+            try
+            {
+                int changed = 0;
+                foreach (AudioSource source in VoiceSources(root))
+                {
+                    if (!source.playOnAwake) continue;
+                    source.playOnAwake = false;
+                    changed++;
+                }
+                if (changed > 0) PrefabUtility.SaveAsPrefabAsset(root, PlayerPrefabBuilder.PrefabPath);
+                Debug.Log($"[Voice] Player prefab: play on awake switched off on {changed} voice source(s).");
+            }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
+        }
+
+        private static IEnumerable<AudioSource> VoiceSources(GameObject player)
+        {
+            var playbacks = new Component[] { player.GetComponentInChildren<VoicePlayback>(true), player.GetComponentInChildren<RadioPlayback>(true) };
+            foreach (Component playback in playbacks)
+                if (playback != null && playback.TryGetComponent(out AudioSource source)) yield return source;
         }
     }
 }
