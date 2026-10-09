@@ -7,7 +7,8 @@ namespace Abandoned.Player
 {
     /// <summary>
     /// Plays a footstep every StepLength metres walked on the ground, by surface material, louder
-    /// when sprinting and quieter when crouched. Raises <see cref="Stepped"/> for the noise system.
+    /// when sprinting and quieter when crouched, plus the landing after a drop and the body going down.
+    /// Raises <see cref="Stepped"/> for the noise system.
     /// </summary>
     public class PlayerFootsteps : MonoBehaviour
     {
@@ -18,8 +19,12 @@ namespace Abandoned.Player
         private const float ProbeHeight = 0.3f;
         private const float ProbeDistance = 0.8f;
 
+        // A hop makes no landing sound; from this height (m) it does, at full volume from FullLanding.
+        private const float SmallestLanding = 0.45f, FullLanding = 4f;
+
         private Vector3 lastPosition;
-        private float distance;
+        private float distance, peakY;
+        private bool airborne, wasDown;
 
         public int StepCount { get; private set; }
         public SurfaceMaterial LastSurface { get; private set; }
@@ -50,6 +55,7 @@ namespace Abandoned.Player
             Vector3 position = transform.position;
             Vector3 delta = position - lastPosition;
             lastPosition = position;
+            Body(position);
             if (ragdoll.IsRagdolled || !motor.IsGrounded) return;
 
             distance += new Vector2(delta.x, delta.z).magnitude;
@@ -58,6 +64,30 @@ namespace Abandoned.Player
             // Teleports and ragdoll recovery shouldn't fire a burst of steps.
             if (distance > settings.StepLength) distance = 0f;
             Step(position);
+        }
+
+        // Landing and being knocked down, from state every machine has: crewmates' are heard too.
+        private void Body(Vector3 position)
+        {
+            bool down = ragdoll.IsRagdolled;
+            if (down && !wasDown && settings.FootstepsEnabled) GameAudio.Play(SoundId.BodyFall, ragdoll.BodyPosition, 0.9f);
+            wasDown = down;
+            if (down)
+            {
+                airborne = false;
+                return;
+            }
+            if (!motor.IsGrounded)
+            {
+                peakY = airborne ? Mathf.Max(peakY, position.y) : position.y;
+                airborne = true;
+                return;
+            }
+            if (!airborne) return;
+            airborne = false;
+            float fall = peakY - position.y;
+            if (fall >= SmallestLanding && settings.FootstepsEnabled)
+                GameAudio.Play(SoundId.PlayerLand, position, Mathf.Lerp(0.3f, 1f, Mathf.InverseLerp(SmallestLanding, FullLanding, fall)));
         }
 
         private void Step(Vector3 position)

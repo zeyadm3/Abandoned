@@ -100,11 +100,65 @@ Latest instruction: **build everything first; the user will test afterward**. Co
 content and make builds; no gameplay, EditMode/PlayMode/nettest or QA screenshots during this pass.
 Use existing/free assets and original code-built low-poly art. New paid packs/packages are not authorized.
 
+0.14.0 (2026-10-09): the sound system rebuild, the solid-objects pass and the shadow rework compile and
+`Tools/unity.sh rebuild-horror` finishes clean (the user asked for that run; the standing rule is still not to run
+anything unasked). Not play-tested beyond the user's first listen, after which the base volume was halved.
+
 Milestones 0–10 are built (autonomous build merged into main on 2026-10-07; the separate
 autobuild-2 worktree is gone, everything lives in this one folder). Next: the user's full test pass.
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-09 (user, **0.14.5 HQ Hub Overhaul**, user tests): the HQ is a cluttered utilitarian salvage warehouse.
+  Dispatch contracts come from a rotary telephone on the central steel bench, with condition briefing audio;
+  the adjacent worn leather field guide replaces the office computer bestiary and keeps encounter unlocks.
+  The workshop groups inventory/upgrades at a maintenance bench, tool pegboard and charging station;
+  processing has an industrial scale and reinforced chute; logistics has mall plans and hazard notes.
+  Crates, retired electronics, copper pipe, rusted shelving, oil drums and labeled bins dress the perimeter.
+  Dim tubes, exposed bulbs and localized dust/shafts use existing reduced-flashing/shadow behavior.
+  Recovered truck haul remains settled once at extraction; the HQ receipt/unloading cannot pay it twice.
+  Author via Tools/Abandoned/HQ/Rebuild Salvage Hub (0.14.5), which skips audits. No tests or verification
+  authorized for this task; the user will do those after the redesign. Original dispatch speech was
+  requested as part of this feature, authored locally without a new package or purchased asset.
+- 2026-10-09 (user, **0.14.0**: sound rebuild, solid objects, shadow rework; compiled and rebuilt clean, barely played):
+  - **Sound** is one system. Every sound is a `SoundId` described once in `Audio/SoundCatalog` (bus, priority, range,
+    caption, how walls treat it); tuning and recordings stay in the SoundBank; `GameAudio` is the only way to play one
+    (`Play`, `PlayUi`, `PlayDelayed`, `Loop`). `AudioMix` turns the volume settings into one gain per bus
+    (Effects, Footsteps, Structure, Threats, Ambience, Music, Ui, Vitals); nothing else multiplies `AudioLevels` by hand.
+    Tunables: Data/Audio/Resources/AudioConfig, including `BaseLevel` (0.5: the user found the first pass far too loud;
+    it sits under every bus, not under crew voices). HorrorAudio, PlaceholderAudio, AmbienceSynth, MusicSynth,
+    PlayerVitalAudio, WaterSurfaceAudio and ThreatMusicSynth are gone.
+  - Sound sources (user's choice): synthesised in code (`Audio/Synth/*`, rendered on a worker thread by `SynthLibrary`)
+    plus the three Kenney CC0 packs already in the project, which stay for impacts, footsteps, menu buttons and things
+    held in the hand. No new audio assets without asking. Creak/groan/snap play the recording AND a synth layer.
+  - Walls and floors dull and quieten sound (`AudioOcclusion`), except the building's warnings and the horn (never) and
+    monsters (dulled, never much quieter). The listener's room (`ListenerSpace`) is measured with rays and drives a live
+    reverb; it also owns the low-health muffle. 2D sounds, music and crew voices bypass both.
+  - All music is played by `Audio.MusicPlayer`; `Threats.ThreatMusic` only chooses the song and its level. Jobs still
+    have no music of their own (the departure theme stays off, as since 0.13.0).
+  - Kept exactly: low health is the heartbeat alone, each monster's own song with the 15 s warning, captions never give
+    direction, stings wait for HQ, a creak only ever means the floor, crew speech ducks ambience and music only.
+  - **Collision**: everything with volume that a player can reach is solid. `Editor/SolidObjectsPass` runs in the Mall
+    and HQ builds after dressing and before the NavMesh bake; it reads each model's mesh and puts boxes only where the
+    model has geometry at body height (a canopy = its columns). Stay walk-through: lower than 0.3 m, thinner than 8 cm,
+    higher than 2.1 m above the floor, soft vegetation (Overgrowth, LeafScatter), loose collapse chunks (still cosmetic).
+    This replaces "flat litter, decals, ceiling pieces and signs stay walk-through" (2026-10-09) with those measured rules.
+    An object that would stand in a stair, doorway, exit, spawn, the truck's approach or the middle lane of a carry-route
+    tile (`MallRouteClearance`) is left walk-through, tagged `Core.WalkThroughObject` and reported, never made solid.
+    New rebuild lines to keep at 0: `[MallValidation] ... walk-through objects`, `reachability ... cut off` (warnings,
+    never fatal). Heavy/Huge loot uses speculative continuous collision.
+  - **Shadows**: the lit ceiling lights nearest the camera cast, fading as you move (`Structure.ShadowDirector`):
+    2 / 4 / 6 on the Shadows setting Low / Medium / High (`Core.ShadowBudgetConfig`), at most 2 of them point lights
+    (six shadow maps each; one still fading out holds its place so the atlas never overflows).
+    This replaces the four fixed shadow fixtures and supersedes "no additional shadow lights" (0.13.2). Your own
+    flashlight and the moon always cast; crewmates' beams still don't. Builders set every fixture to no shadows.
+  - Each mall storey is its own rendering layer (`Structure.LevelStoreys`, `Editor/Mall/MeridianLightLayers`): fixed
+    geometry is tagged by storey, a ceiling fixture lights only its own storey plus everything on the Default layer
+    (anything that moves), and every other light must reach all layers. A light created at run time must call
+    `LevelStoreys.LightEverything` (ShadowDirector also fixes them within a second).
+  - `Editor/ShadowCasterPass` only ever switches casting off (fixture housings, flat surfaces, see-through materials).
+    Local-light shadow atlas 4096; ambient occlusion slightly stronger (RenderPipelineSetup).
+  - Four-player host performance with six shadowed lights is unmeasured; the Shadows setting is the lever.
 - 2026-10-09 (user, after playing 0.13.5d; written, untested): low-health feedback comes sooner, for urgency. The
   thresholds in PlayerHealthConfig are now: bar leans toward red from 80, orange-red from 60, crimson + steady heartbeat
   at 50 and below, pulsing blood red + faster heartbeat + muffle + vignette + corner blood at 35 and below, fastest

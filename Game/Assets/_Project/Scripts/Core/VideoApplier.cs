@@ -6,8 +6,8 @@ namespace Abandoned.Core
 {
     /// <summary>
     /// Applies <see cref="VideoSettings"/> (UI step 5): the window, VSync and frame cap, the quality preset,
-    /// the shadow distance (on a runtime copy of the render pipeline asset, so the project's asset is never
-    /// edited) and a brightness volume. Made on first scene load; skipped in batch mode (tests, nettest).
+    /// the shadow distance and shadow atlas (on a runtime copy of the render pipeline asset, so the project's
+    /// asset is never edited) and a brightness volume. Made on first scene load; skipped in batch mode (tests, nettest).
     /// </summary>
     public class VideoApplier : MonoBehaviour
     {
@@ -70,6 +70,8 @@ namespace Abandoned.Core
                 QualitySettings.renderPipeline = runtimeAsset;
             }
             runtimeAsset.shadowDistance = VideoSettings.ShadowDistances[VideoSettings.Shadows];
+            // Room in the atlas for the flashlight and the ceiling lights the setting allows (Structure.ShadowDirector).
+            runtimeAsset.additionalLightsShadowmapResolution = ShadowBudgetConfig.Current.Atlas(VideoSettings.Shadows);
             runtimeAsset.renderScale = VideoSettings.RenderScale;
             runtimeAsset.msaaSampleCount = VideoSettings.AntiAliasingSamples[VideoSettings.AntiAliasing];
         }

@@ -30,7 +30,7 @@ namespace Abandoned.UI
         private Label where, terms, status, tip;
         private int seenTravel = -1;
         private float until;
-        private AudioSource rumble;
+        private Audio.SoundLoop rumble;
 
         /// <summary>Tests: the drive is on screen.</summary>
         public bool Showing { get; private set; }
@@ -158,52 +158,23 @@ namespace Abandoned.UI
             Rumble(on);
         }
 
-        // A low engine drone (synthesised once) while the screen is up.
+        // The drive's engine bed while the screen is up (Audio: TravelEngineLoop).
         private void Rumble(bool on)
         {
             if (Application.isBatchMode) return;
             if (rumble == null)
             {
                 if (!on) return;
-                rumble = gameObject.AddComponent<AudioSource>();
-                rumble.loop = true;
-                rumble.spatialBlend = 0f;
-                rumble.playOnAwake = false;
-                rumble.clip = Engine();
+                rumble = Audio.GameAudio.Loop(Audio.SoundId.TravelEngineLoop, transform, "TravelEngine");
             }
-            float target = on ? 0.25f * Audio.AudioLevels.Sfx * Audio.AudioLevels.BackgroundDuck : 0f;
-            rumble.volume = Mathf.MoveTowards(rumble.volume, target, Time.unscaledDeltaTime * 0.6f);
-            if (rumble.volume > 0f && !rumble.isPlaying) rumble.Play();
-            else if (rumble.volume <= 0f && rumble.isPlaying) rumble.Stop();
-        }
-
-        private static AudioClip Engine()
-        {
-            const int rate = 22050;
-            const float seconds = 2f;
-            var data = new float[(int)(rate * seconds)];
-            var random = new System.Random(4);
-            float lp = 0f;
-            for (int i = 0; i < data.Length; i++)
-            {
-                float t = i / (float)rate;
-                lp += (((float)random.NextDouble() * 2f - 1f) - lp) * 0.05f;
-                // 30 Hz firing (whole cycles over 2 s, so it loops) with road noise under it.
-                float engine = Mathf.Sin(2f * Mathf.PI * 30f * t) * 0.5f + Mathf.Sin(2f * Mathf.PI * 60f * t) * 0.25f;
-                data[i] = (engine * (0.7f + 0.3f * Mathf.Sin(2f * Mathf.PI * 2f * t)) + lp * 2.2f) * 0.5f;
-            }
-            AudioClip clip = AudioClip.Create("Travel_Engine", data.Length, 1, rate, false);
-            clip.SetData(data, 0);
-            return clip;
+            rumble.Level = Mathf.MoveTowards(rumble.Level, on ? 0.25f : 0f, Time.unscaledDeltaTime * 0.6f);
         }
 
         private void OnDisable()
         {
             SessionTravel.Arrived -= OnArrived;
             Set(false);
-            if (rumble == null) return;
-            rumble.Stop();
-            rumble.volume = 0f;
+            if (rumble != null) rumble.Level = 0f;
         }
 
         private void OnDestroy()

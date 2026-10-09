@@ -86,7 +86,7 @@ namespace Abandoned.Extraction
             if (!arrivalPlayed && run.State.Phase == RunPhase.Running)
             {
                 arrivalPlayed = true;
-                HorrorAudio.Play(HorrorAudio.Cue.EngineStop, TruckCargo.Current != null ? TruckCargo.Current.transform.position : Vector3.zero, 0.7f);
+                GameAudio.Play(SoundId.EngineStop, TruckCargo.Current != null ? TruckCargo.Current.transform.position : Vector3.zero, 0.7f);
                 Say("DISPATCH: Don't stay past dark. Last crew didn't.", 8f);
             }
             if (run.State.Phase != RunPhase.Running && run.State.Phase != RunPhase.Honking) return;
@@ -96,22 +96,22 @@ namespace Abandoned.Extraction
             {
                 announced = true;
                 Say("LOCKDOWN / IT IS HERE / GET TO THE TRUCK", 12f);
-                HorrorAudio.Play(HorrorAudio.Cue.Roar, config.RoarPoint, 1f, false);
+                GameAudio.PlayUi(SoundId.Roar, 1f);
                 nextSiren = 0f;
                 LightFixture.Disturb(8f);
             }
             if (final.Value && Time.time >= nextSiren)
             {
                 nextSiren = Time.time + 9f;
-                HorrorAudio.Play(HorrorAudio.Cue.Siren, Vector3.zero, 0.7f, false);
+                GameAudio.PlayUi(SoundId.Siren, 0.7f);
             }
             if (run.State.Phase == RunPhase.Running) departurePlayed = false; // the lever can call a departure off
             if (run.State.Phase == RunPhase.Honking && !departurePlayed && TruckCargo.Current != null)
             {
                 departurePlayed = true;
                 Vector3 truck = TruckCargo.Current.transform.position;
-                HorrorAudio.Play(HorrorAudio.Cue.Door, truck, 1f);
-                HorrorAudio.Play(HorrorAudio.Cue.EngineEscape, truck, 0.9f);
+                GameAudio.Play(SoundId.DoorSlam, truck, 1f);
+                GameAudio.Play(SoundId.EngineEscape, truck, 0.9f);
                 Say("DOORS SHUT. HOLD ON.", 4f);
             }
         }
@@ -200,6 +200,8 @@ namespace Abandoned.Extraction
             if (inWave || (arrival >= wave.y && !arrivalWaveDone) || danger != shownLightsDanger || final.Value != shownLightsFinal)
             {
                 if (arrival >= wave.y) arrivalWaveDone = true;
+                bool sectors = danger != shownLightsDanger && !inWave;
+                int lost = 0;
                 shownLightsDanger = danger;
                 shownLightsFinal = final.Value;
                 for (int i = 0; i < fixtures.Length; i++)
@@ -208,9 +210,13 @@ namespace Abandoned.Extraction
                     if (f == null) continue;
                     bool power = config.SectorPowered(fixtureSectors[i], danger);
                     if (inWave) power &= Mathf.Abs((float)arrival - wave.x - f.transform.position.z / config.ArrivalBlackoutSpeed) >= 1.2f;
+                    bool wasLit = f.Lit;
                     f.SetHorrorPower(power);
                     f.SetAlarm(final.Value);
+                    if (wasLit && !f.Lit) lost++;
                 }
+                // A sector of the building losing power as the danger climbs: one breaker, not one per lamp.
+                if (sectors && lost > 0) GameAudio.PlayUi(SoundId.PowerDown, Mathf.Lerp(0.5f, 0.9f, lost / 40f));
                 foreach (Light l in alarms) if (l != null) l.enabled = final.Value;
             }
             if (shownDanger != danger)
@@ -227,13 +233,13 @@ namespace Abandoned.Extraction
             {
                 case 0: GameAudio.Play(SoundId.Groan, at + Vector3.up * 6f, 1f); LightFixture.Disturb(3f); break;
                 case 1: GameAudio.Play(SoundId.RadioStatic, at, 0.35f); break;
-                case 2: HorrorAudio.Play(HorrorAudio.Cue.Scream, at + Vector3.forward * 22f + Vector3.up * 5f, 0.7f); break;
-                case 3: Scare(0, config.ArrivalFigure, seed); HorrorAudio.Play(HorrorAudio.Cue.Door, config.ArrivalDoor, 0.8f); break;
-                case 4: HorrorAudio.Play(HorrorAudio.Cue.Ceiling, at + Vector3.up * 4f, 0.7f); break;
-                case 5: HorrorAudio.Play(HorrorAudio.Cue.Whisper, at, 0.45f); break;
-                case 6: HorrorAudio.Play(HorrorAudio.Cue.Knock, at, 0.6f); break;
-                case 7: HorrorAudio.Play(HorrorAudio.Cue.Ceiling, at, 0.65f); break;
-                default: Scare(kind - 8, at + (kind == 9 ? Vector3.up * 2f : Vector3.zero), seed); HorrorAudio.Play(HorrorAudio.Cue.Door, at, 0.6f); break;
+                case 2: GameAudio.Play(SoundId.Scream, at + Vector3.forward * 22f + Vector3.up * 5f, 0.7f); break;
+                case 3: Scare(0, config.ArrivalFigure, seed); GameAudio.Play(SoundId.DoorSlam, config.ArrivalDoor, 0.8f); break;
+                case 4: GameAudio.Play(SoundId.CeilingScuttle, at + Vector3.up * 4f, 0.7f); break;
+                case 5: GameAudio.Play(SoundId.Whisper, at, 0.45f); break;
+                case 6: GameAudio.Play(SoundId.Knock, at, 0.6f); break;
+                case 7: GameAudio.Play(SoundId.CeilingScuttle, at, 0.65f); break;
+                default: Scare(kind - 8, at + (kind == 9 ? Vector3.up * 2f : Vector3.zero), seed); GameAudio.Play(SoundId.DoorSlam, at, 0.6f); break;
             }
         }
 

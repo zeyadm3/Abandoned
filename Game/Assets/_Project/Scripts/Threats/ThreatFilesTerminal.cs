@@ -3,14 +3,16 @@ using UnityEngine;
 
 namespace Abandoned.Threats
 {
-    /// <summary>The HQ office's desk computer: press E to read the threat files (<see cref="ThreatFiles"/>).</summary>
+    /// <summary>The worn HQ field guide: press E to inspect the monster notes (<see cref="ThreatFiles"/>).</summary>
     public class ThreatFilesTerminal : MonoBehaviour, IUsable
     {
         public static bool Open { get; set; }
 
-        public string UsePrompt(GameObject user) => "Read the threat files";
+        public string UsePrompt(GameObject user) => "Inspect the field guide / monster manual";
 
         public void Use(GameObject user) => Open = true;
+
+        private void OnDisable() => Open = false;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => Open = false;

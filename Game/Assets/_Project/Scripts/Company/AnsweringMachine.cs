@@ -39,7 +39,7 @@ namespace Abandoned.Company
             if (!Current(out key, out text)) return;
             heard = key;
             open = true;
-            GameAudio.PlayUi(SoundId.UiOpen);
+            GameAudio.Play(SoundId.VoicemailBeep, transform.position, 1f);
             GameAudio.Play(SoundId.RadioStatic, transform.position, 0.4f);
         }
 

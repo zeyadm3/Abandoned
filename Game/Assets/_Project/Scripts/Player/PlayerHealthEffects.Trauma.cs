@@ -17,14 +17,12 @@ namespace Abandoned.Player
     // The beat itself is PlayerPulse, so the vitals bar, the vignette and the blood all move with the sound.
     public partial class PlayerHealthEffects
     {
-        private const float OpenCutoff = 22000f, BeatDecay = 5.5f;
+        private const float BeatDecay = 5.5f;
 
         private ChromaticAberration fringe;
         private LensDistortion warp;
-        private AudioSource pulseSource;
-        private AudioLowPassFilter muffle;
         private TraumaOverlay overlay;
-        private float severe, nearDeath, drip, nextBeat, cutoff = OpenCutoff;
+        private float severe, nearDeath, drip, nextBeat;
         private int traumaTier;
 
         /// <summary>Runs the thresholds for this frame and returns the tier (0 = above critical).</summary>
@@ -49,58 +47,24 @@ namespace Abandoned.Player
                     // Added to the schedule, not to "now": the tempo stays even whatever the frame rate does.
                     nextBeat = Mathf.Max(nextBeat + interval, Time.time + interval * 0.5f);
                     beat = 1f;
-                    if (vitals > 0f) Heartbeat(config, tier, vitals);
+                    if (vitals > 0f) Heartbeat(config, tier);
                 }
             }
             else nextBeat = 0f;
             PlayerPulse.Beat = beat < 0.002f ? 0f : beat;
             PlayerPulse.Tier = traumaTier;
 
-            Muffle(tier >= 2 ? config.MuffleCutoff : OpenCutoff);
+            // The world's low-pass sits on the listener with its room (Audio.ListenerSpace); this only asks for it.
+            ListenerSpace.Muffle = tier >= 2 ? config.MuffleCutoff : ListenerSpace.OpenCutoff;
             Blood(config);
             return tier;
         }
 
-        private void Heartbeat(PlayerHealthConfig config, int tier, float vitals)
-        {
-            InnerSource();
-            pulseSource.pitch = PlayerHealthConfig.Pick(config.TraumaHeartbeatPitch, tier);
-            pulseSource.PlayOneShot(PlayerVitalAudio.Heartbeat,
-                Mathf.Clamp01(vitals * PlayerHealthConfig.Pick(config.TraumaHeartbeatVolume, tier)) * AudioLevels.Sfx);
-        }
-
-        // The player's own pulse: its own source, so it never passes through the muffle or a reverb.
-        private void InnerSource()
-        {
-            if (pulseSource != null) return;
-            var go = new GameObject("Trauma audio");
-            go.transform.SetParent(transform, false);
-            pulseSource = go.AddComponent<AudioSource>();
-            pulseSource.playOnAwake = false;
-            pulseSource.spatialBlend = 0f;
-            pulseSource.dopplerLevel = 0f;
-            pulseSource.priority = 40;
-            pulseSource.bypassListenerEffects = true;
-            pulseSource.bypassReverbZones = true;
-        }
-
-        // A low-pass on the listener muffles everything in the world. It sits on whichever listener is live.
-        private void Muffle(float target)
-        {
-            cutoff = Mathf.Lerp(cutoff, target, 1f - Mathf.Exp(-4f * Time.deltaTime));
-            bool on = cutoff < OpenCutoff - 250f;
-            if (!on && muffle == null) return;
-            AudioListener ear = VoiceListener.Current;
-            if (muffle == null || ear == null || muffle.gameObject != ear.gameObject)
-            {
-                if (muffle != null) Destroy(muffle);
-                muffle = ear != null ? ear.gameObject.AddComponent<AudioLowPassFilter>() : null;
-                if (muffle == null) return;
-                muffle.lowpassResonanceQ = 1f;
-            }
-            muffle.enabled = on;
-            if (on) muffle.cutoffFrequency = cutoff;
-        }
+        // In the player's ears, on the Vitals bus (which applies the Vitals setting): it never passes through
+        // the muffle or the room.
+        private static void Heartbeat(PlayerHealthConfig config, int tier) =>
+            GameAudio.PlayHeartbeat(PlayerHealthConfig.Pick(config.TraumaHeartbeatVolume, tier),
+                PlayerHealthConfig.Pick(config.TraumaHeartbeatPitch, tier));
 
         private void Blood(PlayerHealthConfig config)
         {
@@ -147,17 +111,15 @@ namespace Abandoned.Player
             severe = nearDeath = drip = 0f;
             nextBeat = 0f;
             traumaTier = 0;
-            cutoff = OpenCutoff;
             PlayerPulse.Beat = 0f;
             PlayerPulse.Tier = 0;
-            if (muffle != null) muffle.enabled = false;
+            ListenerSpace.Muffle = ListenerSpace.OpenCutoff;
             overlay?.Hide();
         }
 
         private void DestroyTrauma()
         {
             StopTrauma();
-            if (muffle != null) Destroy(muffle);
             overlay?.Remove();
             overlay = null;
         }
@@ -168,7 +130,7 @@ namespace Abandoned.Player
             if (!DebugView.Visible || player == null || !player.IsSpawned || !player.IsOwner || player.IsDead) return;
             float bpm = traumaTier > 0 ? PlayerHealthConfig.Pick(player.HealthConfig.HeartbeatBpm, traumaTier) : 0f;
             GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f),
-                $"TRAUMA tier {traumaTier}  {player.Health:0.0} HP  {bpm:0} BPM  muffle {cutoff:0} Hz  vision {severe:0.00}/{nearDeath:0.00}");
+                $"TRAUMA tier {traumaTier}  {player.Health:0.0} HP  {bpm:0} BPM  muffle {ListenerSpace.MuffleNow:0} Hz  vision {severe:0.00}/{nearDeath:0.00}");
         }
 #endif
     }

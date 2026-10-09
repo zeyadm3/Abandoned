@@ -136,7 +136,7 @@ namespace Abandoned.UI
                 card.AddToClassList("wardrobe__card");
                 card.EnableInClassList("wardrobe__card--selected", i == selected);
                 card.EnableInClassList("wardrobe__card--locked", !PlayerProfile.Unlocked(d));
-                card.RegisterCallback<PointerEnterEvent>(_ => GameAudio.PlayUi(SoundId.UiClick, 0.2f));
+                card.RegisterCallback<PointerEnterEvent>(_ => GameAudio.PlayUi(SoundId.UiHover));
                 var chip = new VisualElement { pickingMode = PickingMode.Ignore };
                 chip.AddToClassList("wardrobe__chip");
                 if (Kind == CosmeticKind.Coverall) chip.style.backgroundColor = d.Color;

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Abandoned.Audio;
 using Abandoned.Core;
 using Abandoned.EditorTools;
@@ -32,16 +31,19 @@ namespace Abandoned.Tests
         }
 
         [Test]
-        public void EveryNamedSoundHasACueAndOnlySignaturesAreSynthesised()
+        public void EveryNamedSoundHasACueAndRecordingsWhereTheCatalogSaysSo()
         {
-            SoundId[] synthesised = { SoundId.Crash, SoundId.BlindOneClick, SoundId.Horn, SoundId.NoiseMakerShriek, SoundId.RadioStatic };
+            // 0.14.0: the SoundCatalog says which sounds are recorded (or a recording with a synthesised layer);
+            // the rest have an empty row and play their synthesised sound.
             foreach (SoundId id in Enum.GetValues(typeof(SoundId)))
             {
                 SoundCue cue = bank.Get(id);
                 Assert.IsNotNull(cue, $"{id} has no cue");
-                Assert.AreEqual(!synthesised.Contains(id), cue.HasClips, $"{id}: library clips expected unless it's a synthesised signature");
+                bool recorded = SoundCatalog.Info(id).Mode != SoundMode.Synth;
+                Assert.AreEqual(recorded, cue.HasClips, $"{id}: library clips expected exactly when the catalog marks it recorded or layered");
                 Assert.Greater(cue.MaxDistance, cue.MinDistance, $"{id}: distances");
             }
+            Assert.AreEqual(SoundCatalog.Revision, bank.Revision, "the bank was built for this catalog: run Tools/Abandoned/Audio/Build Sound Bank");
         }
     }
 }

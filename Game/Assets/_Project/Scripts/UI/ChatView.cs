@@ -125,7 +125,7 @@ namespace Abandoned.UI
                 lines[0].Label.RemoveFromHierarchy();
                 lines.RemoveAt(0);
             }
-            Audio.GameAudio.PlayUi(Audio.SoundId.UiClick, 0.4f);
+            Audio.GameAudio.PlayUi(Audio.SoundId.ChatBlip);
         }
 
         // QA B-15: a player can't close the <noparse> around their words and inject markup.

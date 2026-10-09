@@ -58,7 +58,7 @@ namespace Abandoned.UI
                 (string title, string body, string icon, Kind kind) = Waiting.Dequeue();
                 shown.Add(new Toast { Root = Build(title, body, icon, kind), Until = Time.time + Seconds });
                 stack.BringToFront(); // over banners
-                Audio.GameAudio.PlayUi(kind == Kind.Good ? Audio.SoundId.UiConfirm : Audio.SoundId.UiOpen, 0.6f);
+                Audio.GameAudio.PlayUi(kind == Kind.Good ? Audio.SoundId.UiConfirm : Audio.SoundId.UiToast, kind == Kind.Good ? 0.6f : 1f);
             }
         }
 

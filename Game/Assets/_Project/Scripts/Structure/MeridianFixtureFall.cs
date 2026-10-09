@@ -72,6 +72,8 @@ namespace Abandoned.Structure
             foreach (char letter in section.name) seed = unchecked(seed * 31 + letter);
             body.angularVelocity = new Vector3(0.6f, ((seed & 255) / 255f - 0.5f) * 2f, 0.35f);
             Destroy(fragment, config.FixtureFallLifetime);
+            // The housing hits the floor a storey down, after the slab's own crash.
+            Audio.GameAudio.PlayDelayed(Audio.SoundId.FixtureFall, visual.position + Vector3.down * 3.2f, 0.75f, 0.8f);
         }
 
         private void Restore(StructuralSection section) => ClearFragment();

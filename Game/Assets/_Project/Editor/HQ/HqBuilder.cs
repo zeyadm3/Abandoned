@@ -12,7 +12,7 @@ using static Abandoned.EditorTools.GreyboxFactory;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>A dim salvage depot: warm departure bay, cold office and worn equipment workshop.</summary>
+    /// <summary>A working salvage warehouse with dispatch, processing and maintenance stations.</summary>
     public static class HqBuilder
     {
         public const string ScenePath = "Assets/_Project/Scenes/HQ.unity";
@@ -26,13 +26,28 @@ namespace Abandoned.EditorTools
         }
 
         public static void Build()
+            => BuildScene(runAudits: true);
+
+        [MenuItem("Tools/Abandoned/HQ/Rebuild Salvage Hub (0.14.5)")]
+        public static void RebuildSalvageHub()
         {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            BuildScene(runAudits: false);
+        }
+
+        /// <summary>Authoring only: generate the HQ without running the validation passes.</summary>
+        public static void AuthorSalvageHub() => BuildScene(runAudits: false);
+
+        private static void BuildScene(bool runAudits)
+        {
+            HqDispatchAudioBuilder.Build();
             CustomMallArt.Prepare();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             Transform root = new GameObject("HQ").transform;
             BuildShell(root);
             BuildStations(root);
             HqDressingBuilder.Build(root);
+            HqSalvageAtmosphere.Build(root);
             PlaceGarageDoor(root);
 
             Transform spawns = Group("Spawns", root);
@@ -52,20 +67,27 @@ namespace Abandoned.EditorTools
                 camera.transform.position = new Vector3(12f, 18f, -14f);
                 camera.transform.LookAt(new Vector3(12f, 0f, 8f));
             }
-            // Title screen: eye height in the garage, looking through the office doorway at its failing tubes.
+            // Frame the working dispatch bench through its open doorway on the title screen.
             var vantage = new GameObject("MenuVantage");
             vantage.transform.SetParent(root, false);
-            vantage.transform.position = new Vector3(2.2f, 1.62f, 1.2f);
-            vantage.transform.rotation = Quaternion.LookRotation(new Vector3(22f, 1.35f, 8.9f) - vantage.transform.position);
+            vantage.transform.position = new Vector3(9.35f, 1.62f, 4.6f);
+            vantage.transform.rotation = Quaternion.LookRotation(new Vector3(18.8f, 1.25f, 5.4f) - vantage.transform.position);
             vantage.AddComponent<Abandoned.UI.MenuVantage>();
             NetworkSceneBuilder.Add();
             var ui = new GameObject("CompanyUI");
             ui.AddComponent<HqHud>();
             ui.AddComponent<ContractBoardScreen>();
             ui.AddComponent<Abandoned.Equipment.GearScreens>();
-            LevelAtmosphere.Apply("HQ", LevelAtmosphere.Hq, root);
+            LevelAtmosphere.Apply("HQ", HqSalvageAtmosphere.Mood, root);
             AmbienceBuilder.Hq(root);
-            InvisibleColliderAudit.Run(root, "HQ");
+            // 0.14.0: everything with volume is solid. The HQ has no carry routes to protect.
+            SolidObjectsPass.Apply(root, "HQ");
+            if (runAudits)
+            {
+                InvisibleColliderAudit.Run(root, "HQ");
+                SolidObjectsPass.Audit(root, "HQ");
+            }
+            ShadowCasterPass.Apply(root, "HQ");
 
             // Our own save must not be captured as a hand placement (HqPlacementSync).
             HqPlacementSync.Building = true;
@@ -148,10 +170,8 @@ namespace Abandoned.EditorTools
 
         private static void BuildStations(Transform root)
         {
-            Material wood = CustomMallArt.Material("Wood"), metal = CustomMallArt.Material("Metal"), trim = CustomMallArt.Material("Trim");
-            GameObject board = Box("ContractBoard", root, new Vector3(18f, 1.7f, .25f), new Vector3(4f, 1.8f, .15f), wood);
-            board.AddComponent<ContractBoard>();
-            HqDressingBuilder.ContractFace(board.transform);
+            Material trim = CustomMallArt.Material("Trim");
+            HqSalvageStations.Build(root);
 
             GameObject van = Box("Van", root, new Vector3(6f, 1.25f, 9f), new Vector3(2.4f, 2.4f, 5f), trim);
             van.AddComponent<HqVan>();
@@ -164,26 +184,21 @@ namespace Abandoned.EditorTools
                 renderer.SetPropertyBlock(block);
             }
 
-            GameObject counter = Box("ShopCounter", root, new Vector3(18f, .55f, 13.5f), new Vector3(3f, 1.1f, .8f), wood);
-            CustomMallArt.Fit(counter, "Counter", Vector3.one);
-            GameObject terminal = Box("ShopTerminal", root, new Vector3(18f, 1.35f, 13.6f), new Vector3(.8f, .5f, .3f), trim);
+            GameObject terminal = Box("ShopTerminal", root, new Vector3(18f, 1.4f, 13.6f), new Vector3(.8f, .5f, .3f), trim);
             terminal.AddComponent<Abandoned.Equipment.ShopTerminal>();
             HqDressingBuilder.TerminalFace(terminal.transform);
 
-            Transform rack = Station(root, "GearRack", new Vector3(.65f, 0f, 12f), new Vector3(.62f, 2.4f, 3f));
+            Transform rack = Station(root, "GearRack", new Vector3(21.6f, 0f, 13.3f), new Vector3(2.06f, 2.4f, .62f));
             rack.gameObject.AddComponent<Abandoned.Equipment.GearRack>();
-            CustomMallArt.Place("RetailShelf", rack, Vector3.zero, Quaternion.Euler(0f, 90f, 0f), new Vector3(1.74f, 1.12f, 1.12f));
+            CustomMallArt.Place("RetailShelf", rack, Vector3.zero, Quaternion.Euler(0f, 180f, 0f), new Vector3(1.2f, 1.12f, 1.12f));
             Transform lockers = Station(root, "Lockers", new Vector3(.4f, 0f, 6.5f), new Vector3(.55f, 2.1f, 2.4f));
             lockers.gameObject.AddComponent<Abandoned.UI.WardrobeLocker>();
             CustomMallArt.Place("DepotLockers", lockers, Vector3.zero, Quaternion.Euler(0f, 90f, 0f), new Vector3(1.33f, 1f, 1f));
 
-            GameObject desk = Box("OfficeDesk", root, new Vector3(21.5f, .4f, 2.2f), new Vector3(2f, .8f, 1f), wood);
-            CustomMallArt.Fit(desk, "Counter", Vector3.one);
-            // 0.12.5: the kit's answering machine on the desk top, facing into the office. The collider is what E
-            // targets; the message lamp is its own small emissive piece in the model's bezel so it can blink.
+            // Keep the boss's existing messages alongside the new dispatch telephone.
             var machine = new GameObject("AnsweringMachine");
             machine.transform.SetParent(root, false);
-            machine.transform.localPosition = new Vector3(21.3f, .8f, 2.25f);
+            machine.transform.localPosition = new Vector3(18f, 1.125f, 4.52f);
             var hit = machine.AddComponent<BoxCollider>();
             hit.center = new Vector3(.02f, .05f, 0f);
             hit.size = new Vector3(.42f, .1f, .28f);

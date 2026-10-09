@@ -37,10 +37,18 @@ namespace Abandoned.EditorTools
             if(MeridianArt.UseKit)MeridianArchitectureDetails.Place(mall);
             if(MeridianArt.Dress)MeridianDressing.Place(mall);else MallArchitectureBuilder.Ceilings(mall);
             int fixtures=MeridianArt.Illuminate?MeridianLighting.Place(mall):MallFixtures.Place(Group("Lights",mall),mall.Find(TilesGroup));
+            // 0.14.0: everything with volume is solid (before the surfaces are tagged and the NavMesh is baked round it).
+            var routes=new MallRouteClearance(mall);
+            SolidObjectsPass.Apply(mall,"Mall",routes.Conflict);
             MallSurfaceBuilder.Assign(mall);
             BakeNavMesh(mall);
             int shutters=MallShutters.Place(mall);
             int problems=MallFlightValidator.Run(mall)+InvisibleColliderAudit.Run(mall,"Mall");
+            // Reported, never fatal: what can still be walked through, and whether every doorway is still reachable.
+            SolidObjectsPass.Audit(mall,"Mall");routes.Reachability();
+            // 0.14.0: each storey is its own light layer, so ceiling lights stop shining through floors.
+            MeridianLightLayers.Apply(mall);
+            ShadowCasterPass.Apply(mall,"Mall");
             if(problems!=0)throw new System.InvalidOperationException($"Mall rebuild has {problems} validation problem(s).");
             EditorSceneManager.SaveScene(scene,ScenePath);BuildScenes.ApplyToEditorSettings();NetworkObjectIds.StampScene(scene);
             if(!OcclusionBake.Bake())throw new System.InvalidOperationException("Meridian occlusion bake failed.");

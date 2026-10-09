@@ -14,13 +14,14 @@ namespace Abandoned.Threats
     /// never shorter, so that is at least 15 s of warning). It stops soon after it stops coming or changes floor. Of all the monsters counting, only the highest in the hierarchy
     /// (<see cref="ThreatDefinition.HierarchyScore"/>) plays, the nearer one breaking a tie; it gets louder
     /// as it gets closer and crossfades when another takes over. Reads only replicated position and state,
-    /// so nothing new is networked. One per game, made on first scene load (never in batch mode).
+    /// so nothing new is networked. This object only chooses; Audio.MusicPlayer plays the song.
+    /// One per game, made on first scene load (never in batch mode).
     /// </summary>
     public class ThreatMusic : MonoBehaviour
     {
         public const float StartSeconds = 15f;
-        private const float FullSeconds = 2f, Linger = 2f, Crossfade = 1.5f, Tick = 0.1f;
-        private const float Level = 0.6f, QuietestShare = 0.15f, ChaseBoost = 0.15f, ClosingSpeed = 0.3f;
+        private const float FullSeconds = 2f, Linger = 2f, Tick = 0.1f;
+        private const float QuietestShare = 0.15f, ChaseBoost = 0.15f, ClosingSpeed = 0.3f;
         // Same floor: feet within this height of each other (stories are 4 m), and the ear sits ~1.6 m above the feet.
         private const float SameFloor = 2.5f, EarHeight = 1.6f;
 
@@ -35,12 +36,9 @@ namespace Abandoned.Threats
         private static ThreatMusic instance;
         private readonly Dictionary<Threat, Track> tracks = new();
         private readonly List<Threat> gone = new();
-        private AudioSource current, previous;
         private Threat leader;
-        private ThreatKind? playing;
         private float nextTick, targetVolume, speedPerLevel = 0.08f;
         private RunState lastRun;
-        private int warmed;
 
         /// <summary>The monster whose song this machine plays now, or null.</summary>
         public static Threat Leader => instance != null ? instance.leader : null;
@@ -54,36 +52,21 @@ namespace Abandoned.Threats
             instance = go.AddComponent<ThreatMusic>();
         }
 
-        private void Awake()
-        {
-            current = Source();
-            previous = Source();
-        }
-
-        private AudioSource Source()
-        {
-            AudioSource s = gameObject.AddComponent<AudioSource>();
-            s.loop = true;
-            s.playOnAwake = false;
-            s.spatialBlend = 0f;
-            s.priority = 64;
-            s.volume = 0f;
-            return s;
-        }
-
         private void Update()
         {
             RunState run = RunState.Current;
             bool live = run != null && run.IsSpawned && run.State.Phase != RunPhase.Departed;
             if (live && run != lastRun) NewRun(run);
-            if (live) Warm();
             if (Time.time >= nextTick)
             {
                 nextTick = Time.time + Tick;
                 if (live) Choose(run);
                 else { leader = null; tracks.Clear(); }
             }
-            Mix();
+            // The song itself is played by the one music object, with the rest of the game's music.
+            if (leader != null && leader.Definition != null)
+                MusicPlayer.SetThreat(SoundId.ThemeBlindOne + (int)leader.Definition.Kind, leader.Definition.MusicClip, targetVolume);
+            else MusicPlayer.ClearThreat();
         }
 
         private void NewRun(RunState run)
@@ -92,15 +75,6 @@ namespace Abandoned.Threats
             tracks.Clear();
             DangerDirector danger = FindAnyObjectByType<DangerDirector>();
             speedPerLevel = danger != null && danger.Config != null ? danger.Config.SpeedPerLevel : 0.08f;
-            warmed = 0;
-        }
-
-        // Build one theme per frame at the start of a job, so the first monster never stalls a frame.
-        private void Warm()
-        {
-            if (warmed >= 8) return;
-            ThreatMusicSynth.Theme((ThreatKind)warmed);
-            warmed++;
         }
 
         private void Choose(RunState run)
@@ -137,11 +111,9 @@ namespace Abandoned.Threats
             }
             leader = best;
             if (best == null) { targetVolume = 0f; return; }
-            ThreatDefinition d = best.Definition;
             float closeness = Mathf.InverseLerp(StartSeconds, FullSeconds, bestEta);
             bool chasing = best.DesiredMotion == ThreatMotion.Chase || best.DesiredMotion == ThreatMotion.Attack;
             targetVolume = Mathf.Clamp01(Mathf.Lerp(QuietestShare, 1f, Mathf.Pow(closeness, 0.8f)) + (chasing ? ChaseBoost : 0f));
-            if (playing != d.Kind) Switch(d);
         }
 
         // Closing speed and time-to-reach for one monster, and whether its song may play.
@@ -171,38 +143,12 @@ namespace Abandoned.Threats
             track.active = sameFloor && approaching && (track.active || track.eta <= StartSeconds);
         }
 
-        private void Switch(ThreatDefinition d)
-        {
-            playing = d.Kind;
-            (current, previous) = (previous, current);
-            current.clip = d.MusicClip != null ? d.MusicClip : ThreatMusicSynth.Theme(d.Kind);
-            current.volume = 0f;
-            current.time = 0f;
-            current.Play();
-        }
-
-        private void Mix()
-        {
-            float step = Time.unscaledDeltaTime / Crossfade;
-            float master = AudioLevels.Music * Level * AudioLevels.BackgroundDuck;
-            float want = leader != null ? targetVolume * master : 0f;
-            // Getting closer swells quickly; fading out after it gives up is slower.
-            current.volume = Mathf.MoveTowards(current.volume, want, step * (want > current.volume ? 1.5f : 0.6f));
-            previous.volume = Mathf.MoveTowards(previous.volume, 0f, step);
-            if (previous.isPlaying && previous.volume <= 0f) previous.Stop();
-            if (leader == null && current.volume <= 0f && current.isPlaying)
-            {
-                current.Stop();
-                playing = null;
-            }
-        }
-
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (!DebugView.Visible || RunState.Current == null) return;
             string text = leader != null && tracks.TryGetValue(leader, out Track t)
-                ? $"MUSIC {leader.DisplayName} (rank {leader.Definition.HierarchyScore:0}) eta {t.eta:0.0}s vol {current.volume:0.00}"
+                ? $"MUSIC {leader.DisplayName} (rank {leader.Definition.HierarchyScore:0}) eta {t.eta:0.0}s vol {MusicPlayer.ThreatVolume:0.00}"
                 : "MUSIC none";
             int counting = 0;
             foreach (Track track in tracks.Values) if (track.active) counting++;

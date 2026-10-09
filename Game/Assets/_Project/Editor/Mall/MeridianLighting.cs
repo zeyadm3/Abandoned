@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
         {
             MeridianPresentationConfig config = MeridianPresentationConfigBuilder.Load();
             Transform group = Group("MeridianFixtures", mall);
-            int fixtures = 0, shadows = 0;
+            int fixtures = 0;
             int atrium = MeridianAtriumLighting.Place(group, config, Mathf.Min(config.AtriumFixtures, config.MaximumFixtures));
             int ceilingBudget = Mathf.Max(0, config.MaximumFixtures - atrium);
             for (int floor = -1; floor < MallLayout.Floors; floor++)
@@ -28,14 +28,11 @@ namespace Abandoned.EditorTools
                 if (floor + 1 < MallLayout.Floors && support == null) continue;
                 if (floor == MallLayout.Floors - 1 && MallLayout.IsAtriumVoid(cell)) continue;
                 if (fixtures >= ceilingBudget) continue;
-                int hash = Hash(cell, floor);
-                bool shadow = floor >= 0 && shadows < Mathf.Min(4, config.ShadowLights) && hash % 13 == 0;
-                if (shadow) shadows++;
-                Fixture(group, cell, floor, support, config, shadow);
+                Fixture(group, cell, floor, support, config, false);
                 fixtures++;
             }
             Alarms(group, config);
-            Debug.Log($"[MeridianLighting] {fixtures} ceiling + {atrium} atrium = {fixtures + atrium} realtime fixtures, {shadows} shadow lights; basement included. Hard cap {config.MaximumFixtures}.");
+            Debug.Log($"[MeridianLighting] {fixtures} ceiling + {atrium} atrium = {fixtures + atrium} realtime fixtures, shadows follow the camera (ShadowDirector); basement included. Hard cap {config.MaximumFixtures}.");
             return fixtures + atrium;
         }
 
@@ -73,7 +70,8 @@ namespace Abandoned.EditorTools
             light.intensity = atrium ? config.AtriumFixtureIntensity : config.FixtureIntensity * (floor < 0 ? config.BasementIntensityScale : 1f);
             string tag = floor < 0 ? "stock" : MallLayout.ZoneAt(cell, floor)?.Tag;
             light.color = tag == "food" || tag == "furniture" || tag == "gallery" ? config.Sodium : config.Fluorescent;
-            light.shadows = shadow ? LightShadows.Hard : LightShadows.None;
+            // 0.14.0: which fixtures cast is decided at run time, by distance to the camera (ShadowDirector).
+            light.shadows = LightShadows.None;
             light.shadowResolution = LightShadowResolution.Low;
             light.shadowBias = 0.025f;
             light.shadowNormalBias = 0.2f;

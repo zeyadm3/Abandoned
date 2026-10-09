@@ -213,8 +213,8 @@ namespace Abandoned.Extraction
             {
                 shownTotal = true;
                 nextRadio = 0f;
-                HorrorAudio.Play(HorrorAudio.Cue.Siren, ear, 0.8f, false);
-                HorrorAudio.Play(HorrorAudio.Cue.Roar, ear + Vector3.up * 6f, 0.7f);
+                GameAudio.PlayUi(SoundId.Siren, 0.8f);
+                GameAudio.Play(SoundId.DeepRumble, ear + Vector3.up * 6f, 1f);
                 LightFixture.Disturb(config.TotalCollapseSeconds);
             }
             float remaining = run.CollapseRemaining;
@@ -222,11 +222,13 @@ namespace Abandoned.Extraction
             {
                 nextRadio = Time.time + RadioInterval;
                 RunHorrorDirector.Say($"STRUCTURE FAILING / GET OUT NOW / {Mathf.CeilToInt(remaining)} s", RadioInterval + 0.5f);
-                HorrorAudio.Play(HorrorAudio.Cue.Siren, ear, 0.6f, false);
+                GameAudio.PlayUi(SoundId.Siren, 0.6f);
             }
             if (Time.time >= nextRumble && remaining > 0f)
             {
                 nextRumble = Time.time + RumbleInterval;
+                // The whole frame working loose: louder as the minute runs out.
+                GameAudio.Play(SoundId.DeepRumble, ear + Vector3.up * 3f, Mathf.Lerp(0.5f, 1f, 1f - remaining / config.TotalCollapseSeconds));
                 CameraShake.EmitCollapse(ear + Vector3.up * 3f, Mathf.Lerp(1500f, 4500f, 1f - remaining / config.TotalCollapseSeconds));
             }
         }

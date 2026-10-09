@@ -56,7 +56,7 @@ namespace Abandoned.UI
             if (view == null || !view.Valid || Hints.Seen(id)) return false;
             Hints.MarkSeen(id);
             view.Show(id, Hints.Text(id));
-            Audio.GameAudio.PlayUi(Audio.SoundId.UiOpen, 0.5f);
+            Audio.GameAudio.PlayUi(Audio.SoundId.UiToast, 0.8f);
             return true;
         }
 

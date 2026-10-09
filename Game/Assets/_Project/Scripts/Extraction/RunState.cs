@@ -223,7 +223,7 @@ namespace Abandoned.Extraction
             if (truck != null)
                 foreach (LootItem item in Cargo(truck))
                     items.Add(new RunResults.Item { Name = item.Definition.DisplayName, StartValue = item.FullValue,
-                        FinalValue = Mathf.RoundToInt(item.CurrentValue * kept), Jackpot = item.Definition.Jackpot });
+                        FinalValue = Mathf.RoundToInt(item.CurrentValue * kept), Weight = item.Definition.GameplayWeight, Jackpot = item.Definition.Jackpot });
 
             var players = new List<RunResults.Player>();
             foreach (NetworkPlayer p in NetworkPlayer.All)
@@ -236,7 +236,7 @@ namespace Abandoned.Extraction
                 {
                     if (pocketed == null || !pocketed.TryGetComponent(out LootItem item)) continue;
                     // Pockets ride along with their owner; left behind, they're gone (GDD 10).
-                    if (extracted) items.Add(new RunResults.Item { Name = item.Definition.DisplayName, StartValue = item.FullValue, FinalValue = item.CurrentValue, Pocketed = true, Jackpot = item.Definition.Jackpot });
+                    if (extracted) items.Add(new RunResults.Item { Name = item.Definition.DisplayName, StartValue = item.FullValue, FinalValue = item.CurrentValue, Weight = item.Definition.GameplayWeight, Pocketed = true, Jackpot = item.Definition.Jackpot });
                     else lost += item.CurrentValue;
                 }
                 players.Add(new RunResults.Player { ClientId = p.OwnerClientId, Name = p.DisplayName, Extracted = extracted, Died = p.IsDead, PocketValueLost = lost });

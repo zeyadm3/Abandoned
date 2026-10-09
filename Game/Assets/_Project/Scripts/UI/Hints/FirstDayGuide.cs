@@ -104,9 +104,9 @@ namespace Abandoned.UI
             {
                 case Step.Board:
                     return company != null && !company.IsServer
-                        ? "Wait for the host to take a job from the contract board."
-                        : $"Walk to the contract board, press {K("Interact")} and take a job.";
-                case Step.Van: return $"Job taken. Get in the van ({K("Interact")}) to drive there. Gear and the monster files are here at the HQ.";
+                        ? "Wait for the host to take a job at the dispatch telephone."
+                        : $"Walk to the telephone on the central dispatch bench, press {K("Interact")} and take a job.";
+                case Step.Van: return $"Job taken. Get in the van ({K("Interact")}) to drive there. Gear is at the maintenance bench; the field guide is beside the phone.";
                 case Step.Light: return $"Turn your flashlight on ({K("Flashlight")}). Health and breath are bottom left; the compass is up top.";
                 case Step.Scan: return $"Scan ({K("Scan")}) to see what things are worth and how much you have hauled.";
                 case Step.Grab: return $"Pick something up ({K("Interact")}). Heavy things slow you down; fragile things lose value when they hit anything.";

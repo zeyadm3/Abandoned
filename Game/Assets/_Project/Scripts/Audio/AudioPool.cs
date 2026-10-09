@@ -1,18 +1,23 @@
+using System.Collections.Generic;
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Audio
 {
     /// <summary>
-    /// A fixed set of reusable one-shot sources (no object per sound, unlike PlayClipAtPoint). When all
-    /// are busy the oldest sound of equal or lower importance is cut, preserving structural warnings.
+    /// The one place sound comes out of (0.14.0): a fixed set of reusable one-shot voices (no object per
+    /// sound, unlike PlayClipAtPoint) and every running loop. When all voices are busy the oldest sound of
+    /// equal or lower importance is cut, so the building's warnings survive a pile of dropped loot. Each
+    /// frame every voice and loop is re-levelled from its bus, so the volume settings act on what is playing.
     /// </summary>
     public class AudioPool : MonoBehaviour
     {
-        private const int Size = 32;
-
         private static AudioPool instance;
-        private AudioSource[] sources;
-        private float[] started;
+        private static readonly List<SoundLoop> loops = new();
+        private AudioVoice[] voices;
+
+        /// <summary>Voices sounding this frame; for the F1 overlay.</summary>
+        public static int Playing { get; private set; }
 
         private static AudioPool Instance
         {
@@ -26,56 +31,112 @@ namespace Abandoned.Audio
             }
         }
 
+        // Made at once outside batch mode, so the synth's finished renders become clips from the first frame.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void Boot()
+        {
+            if (!Application.isBatchMode) _ = Instance;
+        }
+
         private void Awake()
         {
-            sources = new AudioSource[Size];
-            started = new float[Size];
-            for (int i = 0; i < Size; i++)
-            {
-                var child = new GameObject($"Source{i}");
-                child.transform.SetParent(transform, false);
-                AudioSource s = child.AddComponent<AudioSource>();
-                s.playOnAwake = false;
-                s.rolloffMode = AudioRolloffMode.Linear;
-                s.dopplerLevel = 0f;
-                sources[i] = s;
-            }
+            voices = new AudioVoice[AudioConfig.Current.Voices];
+            for (int i = 0; i < voices.Length; i++) voices[i] = new AudioVoice(transform, i);
         }
 
         /// <summary>Plays a clip at a point (spatial) or flat in the listener's ears (UI, 2D).</summary>
-        public static AudioSource Play(AudioClip clip, Vector3 position, float volume, float pitch, float minDistance, float maxDistance, bool spatial, int priority = 128)
+        public static AudioSource Play(AudioClip clip, in VoiceRequest request)
         {
-            if (clip == null || volume <= 0f) return null;
-            AudioSource s = Instance.Next(priority);
-            if (s == null) return null;
-            s.transform.position = position;
-            s.clip = clip;
-            s.volume = volume;
-            s.pitch = pitch;
-            s.spatialBlend = spatial ? 1f : 0f;
-            // 2D sounds are in the player's head or the UI: the low-health muffle on the listener is for the world only.
-            s.bypassListenerEffects = !spatial;
-            s.minDistance = minDistance;
-            s.maxDistance = Mathf.Max(minDistance + 0.1f, maxDistance);
-            s.priority = priority;
-            s.Play();
-            return s;
+            if (clip == null || request.Volume * request.OcclusionGain <= 0f) return null;
+            AudioVoice voice = Instance.Next(request.Priority);
+            if (voice == null) return null;
+            voice.Play(clip, request);
+            return voice.Source;
         }
 
-        private AudioSource Next(int priority)
+        // Capture the voice's use, so a caller cannot stop a different sound after this source is reused.
+        internal static SoundPlayback Capture(AudioSource source)
+        {
+            if (source == null || instance == null) return default;
+            foreach (AudioVoice voice in instance.voices)
+                if (voice.Source == source) return new SoundPlayback(voice);
+            return default;
+        }
+
+        private AudioVoice Next(int priority)
         {
             int oldest = -1;
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < voices.Length; i++)
             {
-                if (!sources[i].isPlaying) { oldest = i; break; }
-                if (sources[i].priority >= priority && (oldest < 0 || started[i] < started[oldest])) oldest = i;
+                AudioVoice v = voices[i];
+                if (!v.Source.isPlaying) return v;
+                if (v.Source.priority >= priority && (oldest < 0 || v.Started < voices[oldest].Started)) oldest = i;
             }
-            if (oldest < 0) return null;
-            started[oldest] = Time.unscaledTime;
-            return sources[oldest];
+            return oldest < 0 ? null : voices[oldest];
+        }
+
+        internal static void Register(SoundLoop loop)
+        {
+            _ = Instance; // loops are levelled from this object's Update
+            loops.Add(loop);
+        }
+
+        private void Update()
+        {
+            int playing = 0;
+            foreach (AudioVoice v in voices)
+            {
+                if (!v.Source.isPlaying) continue;
+                v.Refresh();
+                playing++;
+            }
+            Playing = playing;
+            SynthLibrary.Adopt();
+            // A loop whose object went with its scene drops out here.
+            for (int i = loops.Count - 1; i >= 0; i--)
+                if (!loops[i].Tick()) loops.RemoveAt(i);
+        }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private void OnGUI()
+        {
+            if (!DebugView.Visible) return;
+            GUI.Label(new Rect(Screen.width - 360f, 118f, 350f, 22f),
+                $"AUDIO voices {Playing}/{voices.Length}  loops {loops.Count}  synth {SynthLibrary.Rendered}/{SynthLibrary.Total}  last {GameAudio.LastSound}");
+            GUI.Label(new Rect(Screen.width - 360f, 140f, 350f, 22f), ListenerSpace.Describe());
+        }
+
+        // Where the last sounds were played, coloured by bus (Scene view, with F1 on).
+        private void OnDrawGizmos()
+        {
+            if (!DebugView.Visible) return;
+            foreach (GameAudio.Mark mark in GameAudio.Recent)
+            {
+                float age = Time.unscaledTime - mark.Time;
+                if (age > 4f) continue;
+                Gizmos.color = mark.Bus switch
+                {
+                    AudioBus.Structure => new Color(1f, 0.6f, 0.1f, 1f - age / 4f),
+                    AudioBus.Threats => new Color(1f, 0.15f, 0.15f, 1f - age / 4f),
+                    AudioBus.Footsteps => new Color(0.4f, 1f, 0.4f, 1f - age / 4f),
+                    _ => new Color(0.3f, 0.8f, 1f, 1f - age / 4f),
+                };
+                Gizmos.DrawWireSphere(mark.Position, 0.25f + age * 0.3f);
+            }
+        }
+#endif
+
+        private void OnDestroy()
+        {
+            if (instance == this) instance = null;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => instance = null;
+        private static void ResetStatics()
+        {
+            instance = null;
+            loops.Clear();
+            Playing = 0;
+        }
     }
 }

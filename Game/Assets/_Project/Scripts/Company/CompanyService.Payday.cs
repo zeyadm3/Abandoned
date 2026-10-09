@@ -18,6 +18,10 @@ namespace Abandoned.Company
         private void OnDeparted(RunResults results)
         {
             if (!IsServer || !active.Value.IsValid) return;
+            lastLoadedWeight.Value = results.LoadedWeight;
+            lastLoadedItems.Value = results.Items.Length;
+            intakeItems.Value = 0;
+            intakeWeight.Value = 0f;
             RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, results.Wiped ? 0f : active.Value.PayoutBonus);
             save.pendingQuota = 0;
             save.pendingBonus = 0f;

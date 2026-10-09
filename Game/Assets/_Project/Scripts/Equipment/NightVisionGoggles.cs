@@ -43,7 +43,7 @@ namespace Abandoned.Equipment
             else if (inputReader != null && inputReader.Current.UsePressed && (carrier == null || carrier.Held == null) && battery > 1f)
             {
                 on = !on;
-                Audio.GameAudio.Play(Audio.SoundId.FlashlightClick, transform.position + Vector3.up * 1.6f, 0.5f);
+                Audio.GameAudio.Play(on ? Audio.SoundId.NightVisionOn : Audio.SoundId.NightVisionOff, transform.position + Vector3.up * 1.6f, 0.6f);
             }
             if (on)
             {
@@ -88,6 +88,7 @@ namespace Abandoned.Equipment
             illuminator.intensity = 1.6f;
             illuminator.color = new Color(0.75f, 1f, 0.75f);
             illuminator.shadows = LightShadows.None;
+            Structure.LevelStoreys.LightEverything(illuminator);
         }
 
         private void ShowBattery()

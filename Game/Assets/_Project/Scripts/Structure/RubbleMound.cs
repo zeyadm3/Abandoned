@@ -80,6 +80,8 @@ namespace Abandoned.Structure
 
             Physics.SyncTransforms();
             StructureSignals.RaiseRubbleLanded(mound.Solid);
+            // Heard where it lands, a moment after the floor above lets go. Not for sections already down when we joined.
+            if (!fallen.CollapsedQuietly) Audio.GameAudio.PlayDelayed(Audio.SoundId.RubbleLand, mound.Solid.center, 0.55f, 0.9f);
             if (GameAuthority.IsHost) mound.LiftLoot();
             return mound;
         }

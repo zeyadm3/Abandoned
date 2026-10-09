@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6617593208423845612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7185613045501581346}
+  m_Layer: 9
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7185613045501581346
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6617593208423845612}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.011111021, z: 0.0056818128}
+  m_LocalScale: {x: 1.0101011, y: 1.0101011, z: 1.0101011}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 558971590650726488}
+  m_Father: {fileID: 6750525420325903997}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7957987717062727283
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +148,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
@@ -148,7 +180,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!114 &5119876581708184821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,7 +314,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 6750525420325903997}
+    m_TransformParent: {fileID: 7185613045501581346}
     m_Modifications:
     - target: {fileID: 2785883464424927665, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_Layer
@@ -298,23 +330,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6635970784741394107, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: marble_statue
       objectReference: {fileID: 0}
     - target: {fileID: 6635970784741394107, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.0101011
-      objectReference: {fileID: 0}
-    - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.0101011
-      objectReference: {fileID: 0}
-    - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.0101011
       objectReference: {fileID: 0}
     - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_LocalPosition.x
@@ -322,11 +342,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.01111114
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0056818128
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
       propertyPath: m_LocalRotation.w
@@ -361,7 +381,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
---- !u!4 &7185613045501581346 stripped
+--- !u!4 &558971590650726488 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7240012821634568309, guid: 70c6198a532cd4ee1b6c33f982192a09, type: 3}
   m_PrefabInstance: {fileID: 558971590650726487}

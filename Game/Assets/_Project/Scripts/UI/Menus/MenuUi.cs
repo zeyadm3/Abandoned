@@ -150,7 +150,9 @@ namespace Abandoned.UI
 
         private void OnDisable()
         {
-            if (document != null) document.rootVisualElement.UnregisterCallback<GeometryChangedEvent>(OnRootGeometry);
+            // The UIDocument may be torn down first (leaving Play mode, session teardown); its root is null by then.
+            VisualElement root = document != null ? document.rootVisualElement : null;
+            root?.UnregisterCallback<GeometryChangedEvent>(OnRootGeometry);
             GameSettings.Changed -= ApplyUiScale;
             CursorOwner.Set(this, false);
             if (subtitles != null) SubtitleFeed.Heard -= subtitles.Add;

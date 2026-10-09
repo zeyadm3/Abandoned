@@ -10,13 +10,17 @@ namespace Abandoned.EditorTools
     /// <summary>
     /// Builds Data/Audio/Resources/SoundBank from the imported Kenney CC0 packs (M7.3). Cues and
     /// materials already in the bank keep their clips and tuning; only missing ones are added, so
-    /// edits in the inspector survive a rebuild. Cues with no fitting library sound stay empty and
-    /// play the synthesised placeholder (the Blind One's click, the horn, the shriek, static).
+    /// edits in the inspector survive a rebuild. Since 0.14.0 every <see cref="SoundId"/> has a row:
+    /// recordings where the SoundCatalog says the sound is recorded or layered, and an empty row (which
+    /// plays the synthesised sound, and can be given a clip to replace it) for the rest. A bank built
+    /// before a sound moved to synthesis has that sound's old recordings cleared once, on upgrade.
+    /// Also makes Data/Audio/Resources/AudioConfig, the sound system's tunables.
     /// </summary>
     public static class SoundBankBuilder
     {
         public const string Folder = "Assets/_Project/Data/Audio/Resources";
         public const string BankPath = Folder + "/SoundBank.asset";
+        public const string ConfigPath = Folder + "/AudioConfig.asset";
         private const string Impact = ThirdPartyModelImport.Root + "Kenney/ImpactSounds/";
         private const string Ui = ThirdPartyModelImport.Root + "Kenney/InterfaceSounds/";
         private const string Rpg = ThirdPartyModelImport.Root + "Kenney/RPGAudio/";
@@ -35,7 +39,22 @@ namespace Abandoned.EditorTools
                 AssetDatabase.CreateAsset(bank, BankPath);
             }
 
+            if (AssetDatabase.LoadAssetAtPath<AudioConfig>(ConfigPath) == null)
+                AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<AudioConfig>(), ConfigPath);
+
             var named = bank.Cues.ToList();
+            // Upgrading an older bank: sounds that are synthesised now give up the recordings they used to play.
+            if (bank.Revision < SoundCatalog.Revision)
+            {
+                int cleared = 0;
+                foreach (SoundBank.Named n in named)
+                {
+                    if (SoundCatalog.Info(n.Id).Mode != SoundMode.Synth || !n.Cue.HasClips) continue;
+                    n.Cue.EditorSetClips(System.Array.Empty<AudioClip>());
+                    cleared++;
+                }
+                Debug.Log($"[SoundBank] Upgraded to catalog revision {SoundCatalog.Revision}: {cleared} cue(s) now play their synthesised sound.");
+            }
             void Cue(SoundId id, SoundCue cue)
             {
                 if (named.Any(n => n.Id == id && n.Cue.HasClips)) return;
@@ -60,19 +79,13 @@ namespace Abandoned.EditorTools
             Cue(SoundId.LootPickup, new SoundCue(Clips(Rpg, "cloth"), 0.8f, Normal, 1f, 12f));
             Cue(SoundId.LootPocket, new SoundCue(Clips(Rpg, "handleSmallLeather"), 0.9f, Normal, 1f, 10f));
             Cue(SoundId.Coins, new SoundCue(Clips(Rpg, "handleCoins"), 1f, Normal, 1f, 10f));
-            // Far-off settling: metal ticking and a pot rolling somewhere, never a creak (creaks are warnings).
-            Cue(SoundId.DistantSettle, new SoundCue(Clips(Rpg, "metalPot").Concat(Clips(Impact, "impactTin_medium")).ToArray(), 0.5f, Low, 6f, 40f));
-            // The Hunter (M9.1): its heavy tread and the crash when it falls through a floor.
+            // The Hunter (M9.1): its heavy tread, under the synthesised weight of it.
             Cue(SoundId.HunterStep, new SoundCue(Clips(Impact, "impactSoft_heavy"), 1f, new Vector2(0.42f, 0.52f), 4f, 38f));
-            Cue(SoundId.HunterLanding, new SoundCue(Clips(Impact, "impactWood_heavy").Concat(Clips(Impact, "impactMining")).ToArray(), 1f, new Vector2(0.35f, 0.45f), 6f, 60f));
             // Gear (M9.4): the crowbar's clang, the jack braced.
             Cue(SoundId.CrowbarHit, new SoundCue(Clips(Impact, "impactMetal_heavy"), 1f, new Vector2(0.85f, 1f), 3f, 40f));
             Cue(SoundId.JackPlaced, new SoundCue(Clips(Rpg, "metalLatch"), 1f, new Vector2(0.6f, 0.7f), 2f, 20f));
-            // Locked stores (M10.4): a shutter rattling up, the snip of bolt cutters.
-            Cue(SoundId.ShutterOpen, new SoundCue(Clips(Impact, "impactPlate_heavy").Concat(Clips(Impact, "impactMetal_medium")).ToArray(), 1f, new Vector2(0.55f, 0.7f), 3f, 35f));
+            // Locked stores (M10.4): the snip of bolt cutters (the shutters themselves are synthesised).
             Cue(SoundId.BoltCut, new SoundCue(Clips(Rpg, "metalClick"), 0.9f, new Vector2(0.7f, 0.8f), 1f, 12f));
-            // A shutter dropping shut: one heavy metal bang, lower than the rattle up.
-            Cue(SoundId.ShutterSlam, new SoundCue(Clips(Impact, "impactMetal_heavy").Concat(Clips(Impact, "impactPlate_heavy")).ToArray(), 1f, new Vector2(0.45f, 0.55f), 4f, 45f));
             // Menus (M7.4).
             Cue(SoundId.UiClick, new SoundCue(Clips(Ui, "click_"), 0.6f, Normal, 1f, 5f));
             Cue(SoundId.UiConfirm, new SoundCue(Clips(Ui, "confirmation_"), 0.7f, Normal, 1f, 5f));
@@ -80,6 +93,20 @@ namespace Abandoned.EditorTools
             Cue(SoundId.UiError, new SoundCue(Clips(Ui, "error_"), 0.6f, Normal, 1f, 5f));
             Cue(SoundId.UiOpen, new SoundCue(Clips(Ui, "open_"), 0.6f, Normal, 1f, 5f));
             Cue(SoundId.UiClose, new SoundCue(Clips(Ui, "close_"), 0.6f, Normal, 1f, 5f));
+
+            // Everything else is synthesised: an empty row with the catalog's range, so it shows in the inspector
+            // and a recording dropped into it takes over.
+            for (int i = 0; i < SoundCatalog.Count; i++)
+            {
+                var id = (SoundId)i;
+                if (named.Any(n => n.Id == id)) continue;
+                SoundInfo info = SoundCatalog.Info(id);
+                named.Add(new SoundBank.Named
+                {
+                    Id = id,
+                    Cue = new SoundCue(System.Array.Empty<AudioClip>(), info.Volume, new Vector2(info.PitchLow, info.PitchHigh), info.MinDistance, info.MaxDistance),
+                });
+            }
 
             var impacts = bank.Impacts.ToList();
             void Hit(SurfaceMaterial m, string light, string heavy, float volume = 1f)

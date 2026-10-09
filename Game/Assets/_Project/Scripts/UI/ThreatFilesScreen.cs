@@ -8,9 +8,8 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The threat files on the HQ desk computer (same amber CRT as the supply terminal): the list of subjects
-    /// on the left, the chosen file on the right. Files this player hasn't opened yet show as unknown.
-    /// Esc or LOG OFF closes it. On the session object, so it needs nothing placed in a scene.
+    /// An inspectable company field guide: contents on the left, encounter notes on the right.
+    /// Its worn pages retain the player's encounter unlocks; Esc or closing the book releases the cursor.
     /// </summary>
     public class ThreatFilesScreen : MonoBehaviour
     {
@@ -27,12 +26,16 @@ namespace Abandoned.UI
             {
                 if (!open) return;
                 if ((screen = ScreenPanel.Create(wide: true)) == null) return;
-                screen.Panel.AddToClassList("crt");
+                screen.Panel.AddToClassList("field-guide");
+                screen.Panel.style.width = 1160f;
+                screen.Panel.style.maxWidth = Length.Percent(94f);
+                StyleSheet styles = Resources.Load<StyleSheet>("HqStations");
+                if (styles != null) screen.Panel.styleSheets.Add(styles);
             }
             screen.Show(open);
             if (!open) return;
             if (selected < 0) selected = FirstMet();
-            screen.Build($"files|{selected}|{ThreatFiles.MetCount}", Fill);
+            screen.Build($"guide|{selected}|{ThreatFiles.MetCount}", Fill);
         }
 
         private static int FirstMet()
@@ -43,27 +46,21 @@ namespace Abandoned.UI
 
         private void Fill(VisualElement panel)
         {
-            var area = new VisualElement();
-            area.AddToClassList("crt__screen");
-            panel.Add(area);
-            Crt(area, $"{Company.CompanySave.DefaultName.ToUpperInvariant()} - INCIDENT FILES v1.3", "crt__title");
-            Crt(area, $"FILES OPEN {ThreatFiles.MetCount}/{ThreatFiles.Order.Length}     A FILE OPENS WHEN YOU MEET ITS SUBJECT", "crt__line");
-            Crt(area, new string('=', 72), "crt__rule");
-
+            Text(panel, "FIELD GUIDE", "field-guide__cover-title");
+            Text(panel, $"{Company.CompanySave.DefaultName.ToUpperInvariant()} / MONSTER MANUAL", "field-guide__cover-note");
             var columns = new VisualElement();
-            columns.style.flexDirection = FlexDirection.Row;
-            columns.style.alignItems = Align.FlexStart;
-            area.Add(columns);
+            columns.AddToClassList("field-guide__spread");
+            panel.Add(columns);
             var list = new VisualElement();
-            list.style.width = 330f;
-            list.style.flexShrink = 0;
-            list.style.marginRight = 24f;
+            list.AddToClassList("field-guide__contents");
             columns.Add(list);
             var file = new VisualElement();
-            file.style.flexGrow = 1;
-            file.style.flexBasis = 0;
-            file.style.minWidth = 0;
+            file.AddToClassList("field-guide__page");
             columns.Add(file);
+
+            Text(list, "CONTENTS", "field-guide__section");
+            Text(list, $"{ThreatFiles.MetCount} of {ThreatFiles.Order.Length} subjects observed", "field-guide__note");
+            Text(list, "Notes appear after your first encounter. Unseen subjects stay unidentified.", "field-guide__body");
 
             for (int i = 0; i < ThreatFiles.Order.Length; i++)
             {
@@ -74,10 +71,11 @@ namespace Abandoned.UI
                     GameAudio.PlayUi(SoundId.UiClick);
                     selected = index;
                 });
-                row.AddToClassList("crt__row");
-                row.EnableInClassList("crt__row--locked", !met);
-                string name = met ? ThreatFiles.For(ThreatFiles.Order[i]).Name.ToUpperInvariant() : "??????";
-                Crt(row, (i == selected ? "> " : "  ") + name, "crt__name");
+                row.AddToClassList("field-guide__entry");
+                row.EnableInClassList("field-guide__entry--locked", !met);
+                row.EnableInClassList("field-guide__entry--selected", i == selected);
+                string name = met ? ThreatFiles.For(ThreatFiles.Order[i]).Name : "Unidentified subject";
+                Text(row, $"{i + 1:00}  {name}", "field-guide__entry-name");
                 list.Add(row);
             }
 
@@ -85,33 +83,53 @@ namespace Abandoned.UI
             if (ThreatFiles.Met(kind))
             {
                 ThreatFiles.Entry entry = ThreatFiles.For(kind);
-                Crt(file, entry.Name.ToUpperInvariant(), "crt__title");
-                Crt(file, entry.Summary, "crt__about");
-                Crt(file, "HOW IT MOVES", "crt__line").style.marginTop = 14f;
-                Crt(file, entry.Movement, "crt__about");
-                Crt(file, "HOW TO SURVIVE IT", "crt__line").style.marginTop = 14f;
-                Crt(file, entry.Counter, "crt__about");
+                Text(file, $"OBSERVATION {selected + 1:00}", "field-guide__note");
+                Text(file, entry.Name.ToUpperInvariant(), "field-guide__title");
+                Text(file, entry.Summary, "field-guide__body");
+                Text(file, "MOVEMENT & BEHAVIOUR", "field-guide__section");
+                Text(file, entry.Movement, "field-guide__body");
+                Text(file, "SURVIVAL NOTES", "field-guide__section");
+                Text(file, entry.Counter, "field-guide__body");
             }
             else
             {
-                Crt(file, "NO ENCOUNTER ON FILE", "crt__title");
-                Crt(file, "The company does not pay for rumours. Come back when you have seen it.", "crt__about");
+                Text(file, $"OBSERVATION {selected + 1:00}", "field-guide__note");
+                Text(file, "NO ENCOUNTER RECORDED", "field-guide__title");
+                Text(file, "This page is blank. The company does not pay for rumours. Come back when you have seen it.", "field-guide__body");
             }
 
-            Crt(area, new string('-', 72), "crt__rule");
-            var logOff = new Button(() =>
+            var paging = MenuKit.Row(file);
+            paging.AddToClassList("field-guide__paging");
+            PageButton(paging, "Previous entry", () => selected = Mathf.Max(0, selected - 1), selected > 0);
+            Text(paging, $"{selected + 1} / {ThreatFiles.Order.Length}", "field-guide__page-number");
+            PageButton(paging, "Next entry", () => selected = Mathf.Min(ThreatFiles.Order.Length - 1, selected + 1), selected < ThreatFiles.Order.Length - 1);
+
+            var close = new Button(() =>
             {
                 GameAudio.PlayUi(SoundId.UiBack);
                 ThreatFilesTerminal.Open = false;
-            }) { text = "[ LOG OFF ]" };
-            logOff.AddToClassList("crt__button");
-            area.Add(logOff);
+            }) { text = "Close the book" };
+            close.AddToClassList("field-guide__close");
+            panel.Add(close);
         }
 
-        private static Label Crt(VisualElement parent, string text, string cls)
+        private static void PageButton(VisualElement parent, string text, System.Action turn, bool enabled)
+        {
+            var button = new Button(() =>
+            {
+                GameAudio.PlayUi(SoundId.UiClick);
+                turn();
+            }) { text = text };
+            button.AddToClassList("field-guide__turn");
+            button.SetEnabled(enabled);
+            parent.Add(button);
+        }
+
+        private static Label Text(VisualElement parent, string text, string cls)
         {
             var l = new Label(text) { pickingMode = PickingMode.Ignore };
             l.AddToClassList(cls);
+            l.style.whiteSpace = WhiteSpace.Normal;
             parent.Add(l);
             return l;
         }
@@ -122,5 +140,7 @@ namespace Abandoned.UI
             ThreatFilesTerminal.Open = false;
             screen?.Show(false);
         }
+
+        private void OnDestroy() => screen?.Remove();
     }
 }

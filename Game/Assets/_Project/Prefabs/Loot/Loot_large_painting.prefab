@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &965780840527851024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8365501274692701441}
+  m_Layer: 9
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8365501274692701441
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965780840527851024}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.002790697}
+  m_LocalScale: {x: 0.9302326, y: 0.9302326, z: 0.9302326}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7360792060093239261}
+  m_Father: {fileID: 785478703179896468}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1692842517002372781
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,7 +146,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
@@ -254,23 +286,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 785478703179896468}
+    m_TransformParent: {fileID: 8365501274692701441}
     m_Modifications:
     - target: {fileID: 376039059310423907, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.9302326
-      objectReference: {fileID: 0}
-    - target: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.9302326
-      objectReference: {fileID: 0}
-    - target: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.9302326
       objectReference: {fileID: 0}
     - target: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
       propertyPath: m_LocalPosition.x
@@ -282,7 +302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.002790697
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
       propertyPath: m_LocalRotation.w
@@ -322,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7728720048945488332, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: large_painting
       objectReference: {fileID: 0}
     - target: {fileID: 7728720048945488332, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
       propertyPath: m_Layer
@@ -337,7 +357,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
---- !u!4 &8365501274692701441 stripped
+--- !u!4 &7360792060093239261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1314754735789392605, guid: 50845c487924f42eb97082e4c8cf7034, type: 3}
   m_PrefabInstance: {fileID: 7360792060093239260}

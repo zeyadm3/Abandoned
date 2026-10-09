@@ -142,7 +142,7 @@ namespace Abandoned.Equipment
             row.RegisterCallback<PointerEnterEvent>(_ =>
             {
                 about.text = "> " + spec.ToUpperInvariant();
-                GameAudio.PlayUi(SoundId.UiClick, 0.2f);
+                GameAudio.PlayUi(SoundId.UiHover);
             });
             list.Add(row);
         }

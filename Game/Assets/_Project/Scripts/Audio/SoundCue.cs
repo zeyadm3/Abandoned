@@ -5,7 +5,7 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// One sound: a few variations picked at random, with a pitch spread so repeats don't sound
-    /// mechanical, and how far it carries. No clips = the synthesised placeholder plays instead.
+    /// mechanical, and how far it carries. No clips = the synthesised sound plays instead.
     /// </summary>
     [Serializable]
     public class SoundCue

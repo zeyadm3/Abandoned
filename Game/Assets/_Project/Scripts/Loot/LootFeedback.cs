@@ -49,6 +49,8 @@ namespace Abandoned.Loot
         {
             FloatingText.Show(point + Vector3.up * 0.3f, $"${loot.FullValue:N0} → $0", LossColor);
             GameAudio.PlayImpact(loot.Definition.Material, point, 1f);
+            // Whatever it was made of, it is in pieces now.
+            GameAudio.Play(SoundId.LootBreak, point, 0.9f);
             var visual = loot.GetComponentInChildren<Renderer>();
             ShatterEffect.Spawn(loot.transform.position, loot.Definition.Size, visual != null ? visual.sharedMaterial : null);
         }

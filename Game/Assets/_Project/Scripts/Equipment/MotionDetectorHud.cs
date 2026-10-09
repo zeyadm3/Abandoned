@@ -97,7 +97,7 @@ namespace Abandoned.Equipment
             if (contacts.Count == 0 || Time.time < nextTick) return;
             float nearest = contacts[0].distance;
             nextTick = Time.time + Mathf.Lerp(0.25f, 1.4f, nearest / range);
-            Audio.GameAudio.PlayUi(Audio.SoundId.UiClick);
+            Audio.GameAudio.PlayUi(Audio.SoundId.DetectorBlip);
         }
 
         private void Show()

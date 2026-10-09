@@ -61,7 +61,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
@@ -195,6 +195,38 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
   networkTransform: {fileID: 2429476000091260415}
+--- !u!1 &640396269394137238
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 263730710203419180}
+  m_Layer: 9
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &263730710203419180
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640396269394137238}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.32681546, y: -0.42019132, z: -0.45}
+  m_LocalScale: {x: 0.13339406, y: 0.13339406, z: 0.13339406}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8478777648991779878}
+  m_Father: {fileID: 2223346385891039639}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9125778313710509072
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,37 +280,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1001 &297884992278900167
+--- !u!1001 &8223592865793596365
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2223346385891039639}
+    m_TransformParent: {fileID: 263730710203419180}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.13339406
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.13339406
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.13339406
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.32681546
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.42019132
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -290,11 +310,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -310,7 +330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: loungeChairRelax
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
       propertyPath: m_Layer
@@ -321,8 +341,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
---- !u!4 &263730710203419180 stripped
+--- !u!4 &8478777648991779878 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 282a298966bb348e09e726e46d5466b2, type: 3}
-  m_PrefabInstance: {fileID: 297884992278900167}
+  m_PrefabInstance: {fileID: 8223592865793596365}
   m_PrefabAsset: {fileID: 0}

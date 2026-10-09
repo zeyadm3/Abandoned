@@ -41,7 +41,7 @@ namespace Abandoned.UI
             {
                 focused = true;
                 // The mouse already announced itself on enter; a keyboard or pad arrival gets the hover sound here.
-                if (!hovered) GameAudio.PlayUi(SoundId.UiClick, 0.25f);
+                if (!hovered) GameAudio.PlayUi(SoundId.UiHover);
                 Refresh(true);
             });
             button.RegisterCallback<FocusOutEvent>(_ => { focused = false; Refresh(false); });

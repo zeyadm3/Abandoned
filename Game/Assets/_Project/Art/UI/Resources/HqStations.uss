@@ -1,0 +1,140 @@
+/* HQ paperwork: worn leather cover, cream pages and the depot's clipped receipts. */
+.field-guide {
+    background-color: rgb(65, 39, 26);
+    background-image: url("../HorrorGrime.png");
+    border-width: 8px;
+    border-color: rgb(44, 28, 21);
+    border-radius: 9px;
+    padding: 22px 24px 20px 24px;
+}
+
+.field-guide__cover-title {
+    font-size: 40px;
+    -unity-font-style: bold;
+    letter-spacing: 7px;
+    color: rgb(211, 182, 123);
+    margin-bottom: 2px;
+}
+
+.field-guide__cover-note {
+    color: rgb(183, 154, 107);
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.field-guide__spread {
+    flex-direction: row;
+    align-items: stretch;
+    flex-shrink: 0;
+    background-color: rgb(214, 199, 165);
+    border-width: 2px;
+    border-color: rgb(152, 126, 86);
+    border-bottom-width: 7px;
+    border-bottom-color: rgb(168, 150, 115);
+    min-height: 480px;
+}
+
+.field-guide__contents {
+    width: 34%;
+    flex-shrink: 0;
+    min-width: 0;
+    padding: 22px 18px 22px 22px;
+    border-right-width: 10px;
+    border-right-color: rgb(177, 155, 115);
+    background-color: rgb(202, 186, 151);
+}
+
+.field-guide__page {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+    padding: 24px 28px 20px 28px;
+    border-left-width: 2px;
+    border-left-color: rgb(231, 216, 177);
+}
+
+.field-guide__title {
+    font-size: 34px;
+    -unity-font-style: bold;
+    color: rgb(54, 47, 36);
+    margin: 5px 0 14px 0;
+}
+
+.field-guide__section {
+    font-size: 19px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(113, 58, 39);
+    margin: 18px 0 8px 0;
+    padding-bottom: 5px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(85, 60, 36, 0.28);
+}
+
+.field-guide__contents > .field-guide__section { margin-top: 0; }
+
+.field-guide__body {
+    font-size: 20px;
+    color: rgb(62, 54, 40);
+    margin-bottom: 8px;
+}
+
+.field-guide__note {
+    font-size: 15px;
+    -unity-font-style: italic;
+    color: rgb(111, 87, 59);
+    margin-bottom: 8px;
+}
+
+.field-guide__contents > .field-guide__body { font-size: 17px; margin-bottom: 18px; }
+
+.field-guide__entry {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(79, 57, 34, 0.15);
+    border-left-width: 3px;
+    border-left-color: rgba(0, 0, 0, 0);
+    min-height: 42px;
+    padding: 7px 5px 7px 7px;
+    margin: 2px 0 2px 0;
+    -unity-text-align: middle-left;
+}
+
+.field-guide__entry-name { font-size: 18px; color: rgb(69, 54, 37); }
+.field-guide__entry--locked .field-guide__entry-name { color: rgb(128, 113, 88); -unity-font-style: italic; }
+.field-guide__entry:hover, .field-guide__entry:focus { background-color: rgba(126, 82, 42, 0.12); }
+.field-guide__entry--selected { border-left-color: rgb(139, 56, 39); background-color: rgba(126, 82, 42, 0.1); }
+.field-guide__paging { margin-top: 28px; justify-content: space-between; flex-wrap: wrap; }
+.field-guide__page-number { font-size: 16px; color: rgb(108, 82, 52); padding: 5px 10px 5px 10px; }
+
+.field-guide__turn {
+    font-size: 17px;
+    color: rgb(87, 51, 32);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 1px;
+    border-color: rgba(92, 64, 38, 0.4);
+    padding: 7px 10px 7px 10px;
+    margin: 2px 0 2px 0;
+}
+
+.field-guide__turn:hover, .field-guide__turn:focus { background-color: rgb(190, 165, 121); }
+.field-guide__turn:disabled { opacity: 0.4; }
+
+.field-guide__close {
+    font-size: 22px;
+    color: rgb(216, 191, 145);
+    background-color: rgb(51, 31, 22);
+    border-width: 1px;
+    border-color: rgb(147, 115, 72);
+    align-self: flex-end;
+    padding: 8px 20px 8px 20px;
+    margin-top: 16px;
+}
+
+.field-guide__close:hover, .field-guide__close:focus { background-color: rgb(95, 58, 34); }
+.dispatch-briefing { background-color: rgb(25, 29, 26); padding: 12px 18px 16px 18px; margin-bottom: 18px; border-left-width: 4px; border-left-color: rgb(152, 134, 85); }
+.dispatch-briefing > .section { margin-top: 0; }
+.dispatch-briefing > .subtitle { font-size: 20px; margin-bottom: 8px; }
+.scrap-depot { border-top-color: rgb(156, 125, 67); }

@@ -159,11 +159,11 @@ namespace Abandoned.Threats
             {
                 // The two moments worth hearing: it breaks into a rush, and it stops dead because someone looked.
                 if (now == StalkerState.Rush)
-                    Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Scream, transform.position + Vector3.up * 1.8f, 0.85f, true, 40f);
+                    Audio.GameAudio.Play(Audio.SoundId.Scream, transform.position + Vector3.up * 1.8f, 0.85f, 40f);
                 else if (now == StalkerState.Frozen && Time.time >= nextHalt)
                 {
                     nextHalt = Time.time + 3f;
-                    Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Knock, transform.position + Vector3.up * 1.2f, 0.5f, true, 30f);
+                    Audio.GameAudio.Play(Audio.SoundId.Knock, transform.position + Vector3.up * 1.2f, 0.5f, 30f);
                 }
                 heardState = now;
             }
@@ -171,7 +171,7 @@ namespace Abandoned.Threats
             // The breathing quickens and swells as it works up to a rush.
             float worked = Dread01;
             nextBreath = Time.time + Mathf.Lerp(2.2f, 0.6f, worked);
-            Audio.HorrorAudio.Play(Audio.HorrorAudio.Cue.Breathing, transform.position + Vector3.up * 1.8f, Mathf.Lerp(0.35f, 0.8f, worked), true, 18f);
+            Audio.GameAudio.Play(Audio.SoundId.StalkerBreath, transform.position + Vector3.up * 1.8f, Mathf.Lerp(0.35f, 0.8f, worked), 18f);
         }
     }
 }

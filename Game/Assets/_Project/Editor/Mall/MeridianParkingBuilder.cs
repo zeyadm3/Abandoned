@@ -156,6 +156,8 @@ namespace Abandoned.EditorTools
                 lamp.type = LightType.Spot; lamp.spotAngle = 115f; lamp.innerSpotAngle = 85f;
                 lamp.intensity = config.ParkingLampIntensity; lamp.range = config.ParkingLampRange;
                 lamp.color = config.ParkingLampColor; lamp.shadows = LightShadows.None;
+                // In the shadow budget with the ceiling lights: the lamps nearest you throw the van's and the crew's shadows.
+                lamp.gameObject.AddComponent<Abandoned.Structure.ShadowBudgetLight>();
             }
         }
 

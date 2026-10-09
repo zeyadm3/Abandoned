@@ -173,7 +173,7 @@ namespace Abandoned.UI
                 if (quality.Length > 1)
                     MenuKit.Choice(body, "Preset", quality, VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
                 MenuKit.Choice(body, "Shadows", VideoSettings.ShadowNames, VideoSettings.Shadows, i => VideoSettings.Shadows = i);
-                NoteLast("How far flashlight and ceiling-light shadows reach.");
+                NoteLast("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6).");
                 Note(MenuKit.Percent(body, "Render scale", Mathf.InverseLerp(VideoSettings.MinRenderScale, 1f, VideoSettings.RenderScale),
                     v => VideoSettings.RenderScale = Mathf.Lerp(VideoSettings.MinRenderScale, 1f, v)), "Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp.");
                 MenuKit.Choice(body, "Anti-aliasing", VideoSettings.AntiAliasingNames, VideoSettings.AntiAliasing, i => VideoSettings.AntiAliasing = i);

@@ -23,7 +23,7 @@ namespace Abandoned.Extraction
         [SerializeField] private Vector3 headlights = new(4f, 17f, 55f);
         [SerializeField, Range(0f, 1f)] private float idleVolume = 0.15f;
 
-        private AudioSource idle;
+        private SoundLoop idle;
         private TruckCargo truck;
         private Camera mirrorCamera;
         private RenderTexture reflection;
@@ -35,14 +35,7 @@ namespace Abandoned.Extraction
         private void Awake()
         {
             truck = GetComponent<TruckCargo>();
-            idle = gameObject.AddComponent<AudioSource>();
-            idle.clip = HorrorAudio.Clip(HorrorAudio.Cue.EngineIdle);
-            idle.loop = true;
-            idle.playOnAwake = false;
-            idle.spatialBlend = 1f;
-            idle.minDistance = 2f;
-            idle.maxDistance = 22f;
-            idle.volume = 0f;
+            idle = GameAudio.Loop(SoundId.EngineIdle, transform, "EngineIdle", spatial: true);
             AddLight(new Vector3(0f, 2.5f, 0f), new Color(1f, 0.65f, 0.29f), bayLamp.x, bayLamp.y);
             foreach (float side in new[] { -0.9f, 0.9f })
             {
@@ -116,6 +109,7 @@ namespace Abandoned.Extraction
             light.intensity = intensity;
             light.range = range;
             light.shadows = LightShadows.None;
+            Structure.LevelStoreys.LightEverything(light); // made at run time: not in the level's storey pass
             return light;
         }
 
@@ -125,8 +119,7 @@ namespace Abandoned.Extraction
             Camera eye = Camera.main;
             bool near = eye != null && Vector3.Distance(eye.transform.position, transform.position) < NearDistance;
             if (run != null && run.IsSpawned && run.Elapsed < 7f) near = false;
-            if (near && !idle.isPlaying) idle.Play();
-            idle.volume = near ? idleVolume * AudioLevels.Sfx : 0f;
+            idle.Level = near ? idleVolume : 0f;
             if (mirrorCamera != null)
             {
                 bool inBay = near && truck != null && eye != null && truck.Carries(eye.transform.position - Vector3.up);
@@ -135,6 +128,7 @@ namespace Abandoned.Extraction
             if (run == null)
             {
                 leaving = false;
+                idle.Pitch = 1f;
                 doors.gameObject.SetActive(false);
                 if (mirrorCamera != null) mirrorCamera.transform.localPosition = cameraHome;
                 return;
@@ -144,13 +138,13 @@ namespace Abandoned.Extraction
                 if (!leaving)
                 {
                     leaving = true;
-                    HorrorAudio.Play(HorrorAudio.Cue.Door, transform.position, 0.9f);
+                    GameAudio.Play(SoundId.DoorSlam, transform.position, 0.9f);
                 }
                 doors.gameObject.SetActive(true);
                 float progress = 1f - run.HonkRemaining / 2f;
                 doors.localScale = new Vector3(Mathf.Max(0.02f, progress), 1f, 1f);
                 if (mirrorCamera != null) mirrorCamera.transform.localPosition = cameraHome + Vector3.forward * progress * 8f;
-                idle.pitch = 1f + progress;
+                idle.Pitch = 1f + progress;
             }
         }
 

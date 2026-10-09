@@ -56,7 +56,7 @@ namespace Abandoned.UI
             if (small) button.AddToClassList("menu-button--small");
             button.RegisterCallback<PointerEnterEvent>(_ =>
             {
-                if (button.enabledSelf) GameAudio.PlayUi(SoundId.UiClick, 0.25f);
+                if (button.enabledSelf) GameAudio.PlayUi(SoundId.UiHover);
             });
             MenuTactile.Attach(button, small);
             parent.Add(button);

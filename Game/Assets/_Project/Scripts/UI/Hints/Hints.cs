@@ -36,8 +36,8 @@ namespace Abandoned.UI
                 scan = InputBindings.Display("Scan"), rotate = InputBindings.Display("Rotate");
             return id switch
             {
-                HintId.HqBoard => $"This is the company HQ. Read the contract board ({interact}) to pick today's job.",
-                HintId.HqVan => $"Job taken. Grab gear from the rack and the shop, then get in the van ({interact}) when the crew is ready.",
+                HintId.HqBoard => $"This is the company HQ. Use the telephone on the central dispatch bench ({interact}) to pick today's job. The field guide is beside it.",
+                HintId.HqVan => $"Job taken. Grab gear and upgrades at the maintenance bench, then get in the van ({interact}) when the crew is ready.",
                 HintId.RunGoal => $"Scan ({scan}) to reveal prices and haul. Carry loot to the loading-bay truck and pull the yellow lever to leave. Its board shows your quota.",
                 HintId.PickUp => $"{interact} picks things up. Heavier loot slows you down; fragile loot loses value when it hits something.",
                 HintId.Pockets => $"Small things go straight into your pockets. Hold {inventory} to see them ({inventory} + {drop} drops the last).",

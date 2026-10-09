@@ -53,6 +53,38 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7293276309677933533
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7262605926704423362}
+  m_Layer: 9
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7262605926704423362
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7293276309677933533}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7528058065479551591}
+  m_Father: {fileID: 1845867663403847105}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7301305839441304400
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +148,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
@@ -148,7 +180,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!114 &94458144991681005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,7 +314,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1845867663403847105}
+    m_TransformParent: {fileID: 7262605926704423362}
     m_Modifications:
     - target: {fileID: 914509383406283684, guid: aca83258cbcb94514ab9a5bce9228642, type: 3}
       propertyPath: m_LocalPosition.x
@@ -326,7 +358,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 959236781994953147, guid: aca83258cbcb94514ab9a5bce9228642, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: grandfather_clock
       objectReference: {fileID: 0}
     - target: {fileID: 959236781994953147, guid: aca83258cbcb94514ab9a5bce9228642, type: 3}
       propertyPath: m_Layer
@@ -353,7 +385,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aca83258cbcb94514ab9a5bce9228642, type: 3}
---- !u!4 &7262605926704423362 stripped
+--- !u!4 &7528058065479551591 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 914509383406283684, guid: aca83258cbcb94514ab9a5bce9228642, type: 3}
   m_PrefabInstance: {fileID: 7528058065479551590}

@@ -37,6 +37,9 @@ namespace Abandoned.UI
                                  "(proximity voice) and use the radio when you split up. The dead watch as ghosts; a crewmate nearby can " +
                                  "bring them back with a single-use medkit.");
             MenuKit.Text(scroll, "THE COMPANY", "section");
+            MenuKit.Text(scroll, "At HQ, use the rotary phone on the central dispatch bench to choose a contract and read its briefing. " +
+                                 "The leather field guide beside it records the monsters you have encountered. Check haul receipts at the scrap depot " +
+                                 "and collect gear and upgrades at the maintenance bench.");
             MenuKit.Text(scroll, "Every job costs running costs, whatever you bring back. Spend the rest at the HQ: gear from the shop (two hand " +
                                  "slots each; single-use gear is used with your hands empty), truck upgrades, better jobs as the company levels up. " +
                                  "Locked stores hold the good stock: bolt cutters or a crowbar get you in. A rope and pulley over a hole lowers " +

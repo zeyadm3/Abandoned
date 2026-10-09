@@ -89,9 +89,11 @@ namespace Abandoned.EditorTools
             body.mass = definition.PhysicsMass;
             body.interpolation = RigidbodyInterpolation.Interpolate;
             // Small, light things get thrown fast; continuous detection stops them tunnelling through floors.
+            // Heavy and Huge items aren't thrown, but one dropped two storeys moves further in a physics step
+            // than a slab is thick: speculative detection (0.14.0) catches that without the cost of sweeps.
             body.collisionDetectionMode = definition.CarryClass <= CarryClass.TwoHand
                 ? CollisionDetectionMode.ContinuousDynamic
-                : CollisionDetectionMode.Discrete;
+                : CollisionDetectionMode.ContinuousSpeculative;
 
             root.AddComponent<Grabbable>();
             // Heavy/Huge items are carried together through carry points generated from the definition.

@@ -47,6 +47,8 @@ namespace Abandoned.Extraction
             bool on = run == null || !run.IsSpawned || !run.State.PowerOff;
             bool dark = run != null && run.IsSpawned && run.State.Night;
             if (powered == on && night == dark) return;
+            // The mains going, or coming back: everyone hears the breaker (not the day/night change).
+            if (powered != on && run != null && run.IsSpawned) Audio.GameAudio.PlayUi(on ? Audio.SoundId.PowerUp : Audio.SoundId.PowerDown, 0.9f);
             powered = on;
             night = dark;
             foreach (Light l in lights) if (l != null) l.enabled = on;

@@ -5,7 +5,8 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// Player volume settings by category (master, effects, ambience, music), kept in Prefs. Voice has
-    /// its own volume (VoiceSettings). The settings menu (M7.4) edits these.
+    /// its own volume (VoiceSettings). The settings menu (M7.4) edits these; <see cref="AudioMix"/> turns
+    /// them into one gain per bus, so nothing else multiplies them by hand.
     /// </summary>
     public static class AudioLevels
     {
@@ -38,7 +39,7 @@ namespace Abandoned.Audio
                     bool nearby = speaker.Playback != null && speaker.Playback.isActiveAndEnabled && speaker.Playback.Gain > 0.08f;
                     if (radio || nearby) { audible = true; break; }
                 }
-                float target = audible ? 0.65f : 1f;
+                float target = audible ? AudioConfig.Current.SpeechDuck : 1f;
                 backgroundDuck = Mathf.MoveTowards(backgroundDuck, target, Time.unscaledDeltaTime * (audible ? 3f : 1.2f));
                 return backgroundDuck;
             }

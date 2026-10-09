@@ -71,6 +71,7 @@ namespace Abandoned.EditorTools
                 torch.color = config != null ? config.Color : new Color(.83f, .87f, .8f);
                 // Match the owner's shadow beam and the three non-shadowed remote beams.
                 torch.shadows = index == 0 ? LightShadows.Soft : LightShadows.None;
+                Abandoned.Structure.LevelStoreys.LightEverything(torch); // the level is split into storey light layers
                 torches.Add(torch);
             }
             int seed = 0;

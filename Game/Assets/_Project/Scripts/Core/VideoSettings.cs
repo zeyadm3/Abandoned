@@ -56,7 +56,10 @@ namespace Abandoned.Core
             set { SetInt(QualityKey, value); Changed?.Invoke(); }
         }
 
-        /// <summary>Index into <see cref="ShadowNames"/>; High is the shipped shadow budget (M7.6).</summary>
+        /// <summary>
+        /// Index into <see cref="ShadowNames"/>; High is the shipped shadow budget. It sets how far shadows reach
+        /// (<see cref="ShadowDistances"/>) and how many nearby ceiling lights cast them (<see cref="ShadowBudgetConfig"/>).
+        /// </summary>
         public static int Shadows
         {
             get => Mathf.Clamp(GetInt(ShadowsKey, ShadowNames.Length - 1), 0, ShadowNames.Length - 1);

@@ -16,6 +16,8 @@ namespace Abandoned.Company
     {
         private ScreenPanel screen;
         private readonly StringBuilder key = new();
+        private int briefed = -1;
+        private bool wasOpen;
 
         private void Update()
         {
@@ -35,11 +37,27 @@ namespace Abandoned.Company
                 // MenuKit.Panel sizes inline, which beats the stylesheet: the board's width is set here.
                 screen.Panel.style.width = 1320f;
                 screen.Panel.style.maxWidth = Length.Percent(96f);
+                StyleSheet stationStyles = Resources.Load<StyleSheet>("HqStations");
+                if (stationStyles != null) screen.Panel.styleSheets.Add(stationStyles);
             }
             screen.Show(open);
-            if (!open) return;
+            if (!open)
+            {
+                if (wasOpen && ContractBoard.FromTelephone) DispatchBriefingAudio.Stop();
+                briefed = -1;
+                wasOpen = false;
+                return;
+            }
 
-            key.Clear().Append(company.IsServer).Append('|').Append(company.Selected).Append('|').Append(CompanyService.CrewSize);
+            if (!wasOpen) briefed = company.Selected;
+            wasOpen = true;
+            if (ContractBoard.FromTelephone && company.Selected != briefed)
+            {
+                briefed = company.Selected;
+                if (briefed >= 0) DispatchTelephone.PlayLine();
+            }
+
+            key.Clear().Append(ContractBoard.FromTelephone).Append('|').Append(company.IsServer).Append('|').Append(company.Selected).Append('|').Append(CompanyService.CrewSize);
             foreach (Contract c in company.Board) key.Append('|').Append(c.Seed);
             screen.Build(key.ToString(), panel => Fill(panel, company));
         }
@@ -47,8 +65,9 @@ namespace Abandoned.Company
         // UI step 8: job sheets pinned to cork, each a little crooked; TAKEN is stamped on the chosen one.
         private static void Fill(VisualElement panel, CompanyService company)
         {
-            MenuKit.Text(panel, "CONTRACT BOARD", "heading");
+            MenuKit.Text(panel, ContractBoard.FromTelephone ? "DISPATCH TELEPHONE" : "CONTRACT BOARD", "heading");
             MenuKit.Text(panel, company.IsServer ? "Pick today's job, then take the van." : "The host picks the job.", "subtitle");
+            if (ContractBoard.FromTelephone) Briefing(panel, company);
             var cards = new VisualElement();
             cards.AddToClassList("hud-cards");
             cards.AddToClassList("board__cork");
@@ -94,7 +113,34 @@ namespace Abandoned.Company
                     UiKit.Slam(stamp);
                 }
             }
-            MenuKit.Button(panel, "Close", () => ContractBoard.Open = false, Audio.SoundId.UiBack);
+            MenuKit.Button(panel, ContractBoard.FromTelephone ? "Hang up" : "Close", () => ContractBoard.Open = false, Audio.SoundId.UiBack);
+        }
+
+        private static void Briefing(VisualElement panel, CompanyService company)
+        {
+            var briefing = new VisualElement();
+            briefing.AddToClassList("dispatch-briefing");
+            panel.Add(briefing);
+            MenuKit.Text(briefing, "DISPATCH / LINE OPEN", "section");
+            if (company.Selected < 0 || company.Selected >= company.Board.Count)
+            {
+                MenuKit.Text(briefing, "Choose a job sheet below. Dispatch will attach its briefing to this line.");
+                return;
+            }
+            Contract c = company.Board[company.Selected];
+            MenuKit.Text(briefing, $"{c.Location.ToUpperInvariant()} / {c.ModifierName.ToUpperInvariant()}", "subtitle");
+            string spoken = DispatchBriefingAudio.TranscriptFor(company);
+            if (!string.IsNullOrEmpty(spoken)) MenuKit.Text(briefing, $"\"{spoken}\"");
+            MenuKit.Text(briefing, $"Recover ${company.QuotaFor(c):N0} for a crew of {CompanyService.CrewSize}. " +
+                $"The departure window is {c.WindowSeconds / 60f:0} minutes. Threat: {Contract.ThreatName(c.ThreatLevel)}. " +
+                $"Power is {(c.PowerOff ? "off; bring a charged flashlight" : "on")}. Floors start at {c.Stability:P0} stability.");
+            if (company.ModifierOf(c) is ContractModifier modifier)
+            {
+                if (!string.IsNullOrEmpty(modifier.Description)) MenuKit.Text(briefing, modifier.Description);
+                if (modifier.Sealed) MenuKit.Text(briefing, "Shuttered access: pack bolt cutters or a crowbar.", "text--error");
+            }
+            MenuKit.Text(briefing, "Load salvage into the truck and leave with the crew. The haul is appraised at departure.");
+            MenuKit.Button(briefing, "Reconnect briefing line", DispatchTelephone.PlayLine, Audio.SoundId.UiClick, small: true);
         }
 
         private static Label Sheet(VisualElement parent, string text, string cls)
@@ -121,6 +167,8 @@ namespace Abandoned.Company
 
         private void OnDisable()
         {
+            if (ContractBoard.FromTelephone) DispatchBriefingAudio.Stop();
+            wasOpen = false;
             CursorOwner.Set(this, false);
             ContractBoard.Open = false;
             screen?.Show(false);

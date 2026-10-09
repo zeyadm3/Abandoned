@@ -61,7 +61,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
@@ -195,6 +195,38 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
   networkTransform: {fileID: 360560328505204617}
+--- !u!1 &7369758479636688861
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2888847456816347206}
+  m_Layer: 9
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2888847456816347206
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7369758479636688861}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.006326854, z: 0}
+  m_LocalScale: {x: 1.0180768, y: 1.0180768, z: 1.0180768}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1518741571684341219}
+  m_Father: {fileID: 2155176695068868210}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8860269825526063957
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,23 +286,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2155176695068868210}
+    m_TransformParent: {fileID: 2888847456816347206}
     m_Modifications:
     - target: {fileID: 2250366275168604686, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.0180768
-      objectReference: {fileID: 0}
-    - target: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.0180768
-      objectReference: {fileID: 0}
-    - target: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.0180768
       objectReference: {fileID: 0}
     - target: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -278,7 +298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.006326854
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -318,7 +338,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8310552139713215039, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: glass_sculpture
       objectReference: {fileID: 0}
     - target: {fileID: 8310552139713215039, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
       propertyPath: m_Layer
@@ -329,7 +349,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
---- !u!4 &2888847456816347206 stripped
+--- !u!4 &1518741571684341219 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4396806388220243364, guid: 9673db441145f48a3b22e49097580bf7, type: 3}
   m_PrefabInstance: {fileID: 1518741571684341218}

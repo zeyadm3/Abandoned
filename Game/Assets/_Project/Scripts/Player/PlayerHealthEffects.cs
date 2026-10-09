@@ -41,7 +41,8 @@ namespace Abandoned.Player
             PlayerHealthConfig config = player.HealthConfig;
             float low = 1f - Mathf.Clamp01(player.Health01 / config.LowHealthThreshold);
             damageFlash = Mathf.MoveTowards(damageFlash, 0f, Time.deltaTime / config.DamageFadeSeconds);
-            // QA B-30: the player sets how loud their own heartbeat and breath are (0 = off).
+            // QA B-30: the player sets how loud their own heartbeat and breath are (0 = off). The Vitals bus
+            // applies the level; here it only decides whether anything plays at all.
             float vitals = Core.GameSettings.VitalsVolume;
             // Low health by threshold (PlayerHealthEffects.Trauma): it runs wherever the player is, job or not.
             int tier = TickTrauma(config, vitals);
@@ -77,12 +78,12 @@ namespace Abandoned.Player
             if (tier == 0 && Time.time >= nextHeartbeat)
             {
                 nextHeartbeat = Time.time + Mathf.Lerp(config.HeartbeatInterval.x, config.HeartbeatInterval.y, pressure);
-                GameAudio.PlayHeartbeat(vitals * config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
+                GameAudio.PlayHeartbeat(config.HeartbeatVolume * Mathf.Lerp(0.18f, 1f, pressure));
             }
             if (tier == 0 && Time.time >= nextBreath)
             {
                 nextBreath = Time.time + Mathf.Lerp(config.BreathInterval.x, config.BreathInterval.y, pressure);
-                GameAudio.PlayBreath(vitals * Mathf.Lerp(0.04f, 0.18f, pressure));
+                GameAudio.PlayBreath(Mathf.Lerp(0.04f, 0.18f, pressure));
             }
         }
 

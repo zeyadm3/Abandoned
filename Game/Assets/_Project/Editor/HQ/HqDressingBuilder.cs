@@ -1,12 +1,11 @@
 using Abandoned.Audio;
-using Abandoned.Structure;
 using UnityEditor;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>Quiet depot detail: original kit silhouettes, previous crews' belongings and failing tubes.</summary>
+    /// <summary>The depot's worn shell and services, around an active salvage operation.</summary>
     public static class HqDressingBuilder
     {
         public static void Build(Transform root)
@@ -28,58 +27,33 @@ namespace Abandoned.EditorTools
             foreach (float z in pillarZ)
                 CustomMallArt.Place("Pillar", decor, new Vector3(11.4f, 0f, z), Quaternion.identity, new Vector3(.62f, 1.046f, .62f));
 
-            // Heavy furniture stays along walls, leaving the crew's spawn, departure and gear lanes open.
-            Prop("Bench", new Vector3(8.8f, 0f, 15.2f), 180f, new Vector3(1.2f, 1f, 1f), new Vector3(2.4f, .95f, .55f));
-            Prop("Counter", new Vector3(21.7f, 0f, 15.2f), 180f, new Vector3(1.35f, 1f, 1f), new Vector3(2.86f, 1.1f, .82f));
-            Prop("RetailShelf", new Vector3(23.15f, 0f, 11.8f), 270f, Vector3.one, new Vector3(1.72f, 2.12f, .52f));
-            // 2026-10-09: the office computer is the bestiary. E on the desk opens the threat files.
-            Prop("SecurityDesk", new Vector3(22.7f, 0f, 7.8f), 270f, Vector3.one, new Vector3(2f, 1.25f, 1f))
-                .AddComponent<Abandoned.Threats.ThreatFilesTerminal>();
-            Prop("Bench", new Vector3(13.3f, 0f, 7.8f), 90f, Vector3.one, new Vector3(2f, .95f, .55f));
-            Prop("RetailShelf", new Vector3(10.3f, 0f, 15.6f), 180f, Vector3.one, new Vector3(1.72f, 2.12f, .52f));
-            for (int i = 0; i < 5; i++)
-            {
-                CustomMallArt.Place("Suitcase", decor, new Vector3(8.3f + (i % 3) * .71f, (i / 3) * .48f, 14.2f), 17f + i * 18f);
-                CustomMallArt.Place("AbandonedBackpack", decor, new Vector3(21f + (i % 3) * .55f, (i / 3) * .52f + 1.1f, 15.2f), i * 41f);
-            }
-            CustomMallArt.Place("Barricade", decor, new Vector3(2.5f, 0f, 15.1f), 14f);
-            CustomMallArt.Place("MannequinWrong", decor, new Vector3(23.2f, 0f, 14.7f), 225f);
+            HqSalvageDressing.Build(decor);
             CustomMallArt.Place("DebrisPile", decor, new Vector3(10.9f, .01f, 1.25f), 32f, new Vector3(.7f, .7f, .7f));
             CustomMallArt.Place("Overgrowth", decor, new Vector3(.4f, .01f, .7f), 11f, new Vector3(.5f, .6f, .5f));
             foreach (Vector3 position in new[] { new Vector3(2.3f, .008f, 1.7f), new Vector3(9.4f, .008f, 12.8f), new Vector3(22f, .008f, 11f) })
                 CustomMallArt.Place("Puddle", decor, position, position.x * 13f, new Vector3(.68f, 1f, .68f));
 
             WallGrime(decor);
-            CustomMallArt.Place("SignDepot", decor, new Vector3(6f, 3.46f, -.26f), 180f, new Vector3(2.15f, .72f, 1f));
+            Box("CompanySign", decor, new Vector3(6f, 3.46f, -.26f), new Vector3(5.8f, .55f, .08f), CustomMallArt.Material("Metal"), false);
+            Caption(decor, "ABANDONED SALVAGING", new Vector3(6f, 3.46f, -.308f), 0f, .19f);
             CustomMallArt.Place("SignDontGoUp", decor, new Vector3(10.1f, 2.15f, 15.86f), 180f, new Vector3(.8f, .8f, 1f));
             CustomMallArt.Place("SignQuarantine", decor, new Vector3(23.87f, 1.5f, 13.8f), 270f, new Vector3(.6f, .8f, 1f));
             CustomMallArt.Place("MissingPoster", decor, new Vector3(.14f, 1.4f, 2.25f), 90f);
             CustomMallArt.Place("MissingPoster", decor, new Vector3(14.6f, 1.35f, .15f), 0f, new Vector3(.8f, .8f, 1f));
-            Caption(decor, "DEPARTURE BAY", new Vector3(8.9f, 2.8f, 15.85f), 180f, .14f);
+            Caption(decor, "ABANDONED SALVAGING\nRECOVERY / SORT / REPAIR", new Vector3(8.9f, 2.8f, 15.85f), 0f, .10f);
             Caption(decor, "CONTRACTS / CREW OFFICE", new Vector3(12.18f, 2.64f, 5f), 90f, .095f);
             Caption(decor, "EQUIPMENT / REPAIRS", new Vector3(18f, 2.74f, 10.16f), 180f, .11f);
 
-            Lighting(root);
             Area(root, "DepotVentilation", new Vector3(6f, 2f, 8f), new Vector3(12f, 4f, 16f), 0);
             Area(root, "OfficeElectricalHum", new Vector3(18f, 2f, 5f), new Vector3(12f, 4f, 10f), 1);
             Area(root, "WorkshopLeak", new Vector3(18f, 2f, 13f), new Vector3(12f, 4f, 6f), 2);
-
-            GameObject Prop(string model, Vector3 floor, float yaw, Vector3 scale, Vector3 collisionSize)
-            {
-                GameObject instance = CustomMallArt.Place(model, decor, floor, yaw, scale);
-                Bounds bounds = ModelFit.LocalBounds(instance, instance.transform);
-                var collider = instance.AddComponent<BoxCollider>();
-                collider.center = bounds.center;
-                collider.size = bounds.size;
-                return instance;
-            }
         }
 
         public static void ContractFace(Transform board)
         {
             Transform face = Group("ContractFace", board.parent);
             face.localPosition = board.localPosition + Vector3.forward * .086f;
-            Caption(face, "ASHLINE / DISPATCH", new Vector3(0f, 1.364f, .01f), 180f, .14f);
+            Caption(face, "ABANDONED SALVAGING / DISPATCH", new Vector3(0f, 1.364f, .01f), 180f, .11f);
             for (int i = 0; i < 4; i++)
             {
                 float x = -.94f + i * .63f;
@@ -98,7 +72,7 @@ namespace Abandoned.EditorTools
             face.localPosition = terminal.localPosition;
             Box("CRTBezel", face, new Vector3(-.04f, .025f, -.16f), new Vector3(.66f, .37f, .035f), CustomMallArt.Material("Rubber"), false);
             Box("AmberCRT", face, new Vector3(-.04f, .025f, -.18f), new Vector3(.57f, .28f, .014f), PolishAssets.Material("HQ_CRTGlow", new Color(.19f, .12f, .045f), emission: .9f), false);
-            Caption(face, "ASHLINE SUPPLY\nGEAR / BATTERIES\nPRESS E", new Vector3(-.04f, -.677f, -.464f), 0f, .035f);
+            Caption(face, "ABANDONED SUPPLY\nGEAR / BATTERIES\nPRESS E", new Vector3(-.04f, -.677f, -.464f), 0f, .035f);
             for (int i = 0; i < 3; i++)
                 Box("Switch", face, new Vector3(.33f, .075f - i * .07f, -.17f), new Vector3(.032f, .025f, .023f), CustomMallArt.Material("Metal"), false);
         }
@@ -131,45 +105,6 @@ namespace Abandoned.EditorTools
             }
             for (int z = 0; z < 4; z++)
                 CustomMallArt.Place("WaterStain", decor, new Vector3(.125f, 2.35f, z * 4f + 1.2f), Quaternion.Euler(0f, 0f, -90f), new Vector3(1f, 1f, 1.5f));
-        }
-
-        private static void Lighting(Transform root)
-        {
-            Transform lights = Group("DepotLights", root);
-            // Intensities as the user tuned them in 0.12.3.
-            Fixture(new Vector3(6f, 3.15f, 9f), new Color(1f, .71f, .42f), 30f, 9f, false, false, 1);
-            Fixture(new Vector3(5.2f, 3.30f, 3.4f), new Color(1f, .72f, .46f), 50f, 8f, false, false, 2);
-            Fixture(new Vector3(18f, 3.25f, 13.1f), new Color(1f, .68f, .40f), 30f, 7.5f, false, false, 3);
-            Fixture(new Vector3(18.1f, 3.20f, 2.1f), new Color(.65f, .72f, .74f), 30f, 8f, false, false, 4);
-            Fixture(new Vector3(20.8f, 3.65f, 7.4f), new Color(.61f, .70f, .74f), 30f, 7f, true, false, 5);
-            Fixture(new Vector3(8.8f, 3.5f, 14.5f), new Color(.63f, .70f, .72f), 30f, 6.5f, true, false, 6);
-            Fixture(new Vector3(15f, 3.72f, 7.6f), new Color(.62f, .7f, .74f), 30f, 7f, false, true, 7);
-            Point("TerminalWarmth", new Vector3(18f, 1.7f, 13.15f), new Color(1f, .57f, .28f), .65f, 2.2f);
-
-            void Fixture(Vector3 at, Color color, float intensity, float range, bool faulty, bool dead, int seed)
-            {
-                Transform fixture = Group("Tube_" + seed, lights);
-                fixture.localPosition = at;
-                CustomMallArt.Place("FluorescentFixture", fixture, Vector3.zero);
-                var lamp = new GameObject("RealtimeLight").AddComponent<Light>();
-                lamp.transform.SetParent(fixture, false);
-                lamp.transform.localPosition = Vector3.down * .13f;
-                lamp.type = LightType.Point;
-                lamp.color = color;
-                lamp.intensity = intensity;
-                lamp.range = range;
-                lamp.shadows = seed is 1 or 3 ? LightShadows.Soft : LightShadows.None;
-                GameObject diffuser = Box("TubeGlow", fixture, new Vector3(0f, -.091f, 0f), new Vector3(1.03f, .012f, .18f), PolishAssets.Material("HQ_TubeGlow", new Color(.45f, .37f, .24f), emission: 1f), false);
-                fixture.gameObject.AddComponent<LightFixture>().EditorSetup(lamp, diffuser.GetComponent<Renderer>(), faulty, dead, seed + 820);
-            }
-            void Point(string name, Vector3 at, Color color, float intensity, float range)
-            {
-                var light = new GameObject(name).AddComponent<Light>();
-                light.transform.SetParent(lights, false);
-                light.transform.localPosition = at;
-                light.type = LightType.Point; light.color = color; light.intensity = intensity; light.range = range;
-                light.shadows = LightShadows.None;
-            }
         }
 
         private static void Area(Transform root, string name, Vector3 centre, Vector3 size, int character)

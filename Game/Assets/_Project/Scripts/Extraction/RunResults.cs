@@ -14,6 +14,8 @@ namespace Abandoned.Extraction
             /// <summary>Value when it was found (rolled value x condition).</summary>
             public int StartValue;
             public int FinalValue;
+            /// <summary>Gameplay kilograms loaded with this item, before any towing losses.</summary>
+            public float Weight;
             /// <summary>Carried out in a pocket rather than loaded in the cargo.</summary>
             public bool Pocketed;
             /// <summary>One of the run's big prizes (M9.5 achievements).</summary>
@@ -26,6 +28,7 @@ namespace Abandoned.Extraction
                 s.SerializeValue(ref Name);
                 s.SerializeValue(ref StartValue);
                 s.SerializeValue(ref FinalValue);
+                s.SerializeValue(ref Weight);
                 s.SerializeValue(ref Pocketed);
                 s.SerializeValue(ref Jackpot);
             }
@@ -62,6 +65,7 @@ namespace Abandoned.Extraction
 
         public int Haul => Items.Sum(i => i.FinalValue);
         public int StartValue => Items.Sum(i => i.StartValue);
+        public float LoadedWeight => Items.Sum(i => i.Weight);
         public bool QuotaMet => Haul >= Quota;
 
         public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter

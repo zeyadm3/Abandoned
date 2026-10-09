@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 1329931773152840751}
   - component: {fileID: 504471906661161857}
   - component: {fileID: 1088950803353713028}
-  - component: {fileID: 6392649378329072978}
-  - component: {fileID: 7812178037529905415}
+  - component: {fileID: 3002038080809559874}
+  - component: {fileID: 2630795320294756437}
   m_Layer: 0
   m_Name: Stalker
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 874537570712655867}
+  - {fileID: 10472774444917703}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2038404425636403431
@@ -172,7 +172,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   definition: {fileID: 11400000, guid: 88a7199dea91f438d9f7bc303b905038, type: 2}
   config: {fileID: 11400000, guid: dc5a2c9f992ad448b81f6b2c5508c2b7, type: 2}
---- !u!114 &6392649378329072978
+--- !u!114 &3002038080809559874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatAnimationSync
   ShowTopMostFoldoutHeaderGroup: 1
-  animator: {fileID: 5829711611837661352}
---- !u!114 &7812178037529905415
+  animator: {fileID: 2650280152754639576}
+--- !u!114 &2630795320294756437
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,7 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5284b08e2ae44303a72982ce7e1e546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatHorrorAudio
---- !u!1 &3730116496144457119
+--- !u!1 &6677662333514501411
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 874537570712655867}
+  - component: {fileID: 10472774444917703}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -214,29 +214,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &874537570712655867
+--- !u!4 &10472774444917703
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3730116496144457119}
+  m_GameObject: {fileID: 6677662333514501411}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 434429166208686802}
+  - {fileID: 8225687371996760226}
   m_Father: {fileID: 1888014197047015813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &111990186108091705
+--- !u!1001 &8479497892564168521
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 874537570712655867}
+    m_TransformParent: {fileID: 10472774444917703}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
       propertyPath: m_LocalPosition.x
@@ -291,13 +291,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
---- !u!4 &434429166208686802 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-  m_PrefabInstance: {fileID: 111990186108091705}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &5829711611837661352 stripped
+--- !u!95 &2650280152754639576 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
-  m_PrefabInstance: {fileID: 111990186108091705}
+  m_PrefabInstance: {fileID: 8479497892564168521}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8225687371996760226 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 809fa4361262d47f88848f5d76cb3f12, type: 3}
+  m_PrefabInstance: {fileID: 8479497892564168521}
   m_PrefabAsset: {fileID: 0}

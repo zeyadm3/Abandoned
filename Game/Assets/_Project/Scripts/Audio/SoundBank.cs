@@ -7,8 +7,8 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// Every library sound in one asset (Data/Audio/Resources/SoundBank): named cues, and impacts and
-    /// footsteps per surface material. Swapping a sound is a data change; a cue without clips falls
-    /// back to the synthesised placeholder.
+    /// footsteps per surface material. Swapping a sound is a data change; a cue without clips plays
+    /// the synthesised sound (<see cref="SynthLibrary"/>). What a cue is lives in <see cref="SoundCatalog"/>.
     /// </summary>
     [CreateAssetMenu(menuName = "Abandoned/Audio/Sound Bank", fileName = "SoundBank")]
     public class SoundBank : ScriptableObject
@@ -35,10 +35,14 @@ namespace Abandoned.Audio
         [SerializeField] private List<ByMaterial> footsteps = new();
         [Tooltip("Impact volume (0..1) from which the heavy variation plays.")]
         [SerializeField, Range(0f, 1f)] private float heavyFrom = 0.6f;
+        [Tooltip("Which SoundCatalog revision this bank was built for. Set by the builder; don't edit.")]
+        [SerializeField] private int revision;
 
         public IReadOnlyList<Named> Cues => cues;
         public IReadOnlyList<ByMaterial> Impacts => impacts;
         public IReadOnlyList<ByMaterial> Footsteps => footsteps;
+        public float HeavyFrom => heavyFrom;
+        public int Revision => revision;
 
         public SoundCue Get(SoundId id)
         {
@@ -63,6 +67,7 @@ namespace Abandoned.Audio
             cues = named;
             impacts = impactList;
             footsteps = footstepList;
+            revision = SoundCatalog.Revision;
         }
 #endif
     }

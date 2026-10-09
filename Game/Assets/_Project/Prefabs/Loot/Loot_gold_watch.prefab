@@ -114,7 +114,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   m_InScenePlaced: 0
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
   AutoObjectParentSync: 0
@@ -248,13 +248,45 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
   networkTransform: {fileID: 5772043235099595618}
+--- !u!1 &8951948060862094483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7147219797383828351}
+  m_Layer: 9
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7147219797383828351
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8951948060862094483}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.0016999999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5684901388111289199}
+  m_Father: {fileID: 1725811766176006770}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5684901388111289198
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1725811766176006770}
+    m_TransformParent: {fileID: 7147219797383828351}
     m_Modifications:
     - target: {fileID: 1117940075084509324, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
       propertyPath: m_Layer
@@ -266,7 +298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3302498865676830737, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.0016999999
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3302498865676830737, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -302,7 +334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3665761758558095357, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
       propertyPath: m_Name
-      value: Model
+      value: gold_watch
       objectReference: {fileID: 0}
     - target: {fileID: 3665761758558095357, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
       propertyPath: m_Layer
@@ -321,7 +353,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
---- !u!4 &7147219797383828351 stripped
+--- !u!4 &5684901388111289199 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3302498865676830737, guid: 722076422d67342aa95e66fb832ddd2d, type: 3}
   m_PrefabInstance: {fileID: 5684901388111289198}

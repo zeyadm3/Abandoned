@@ -4,6 +4,76 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.14.5.EEA: HQ salvage warehouse (2026-10-09; user handles tests and verification)
+
+The headquarters is redesigned as an active Abandoned Salvaging warehouse. Original code-authored
+crate stacks, rusted shelves, retired electronics, copper pipe bundles, oil drums and labeled bins
+replace the sparse shed/retail dressing. The central metal dispatch bench carries a rotary contract
+telephone, a leather field guide and the existing boss-message answering machine. Gear inventory and
+upgrades now sit together at the maintenance workbench, backed by a tool pegboard, flashlights,
+charging batteries and spare gear. A logistics corkboard has mall diagrams and hazard notes.
+
+The field guide uses encounter unlocks and the existing threat prose in a new book presentation.
+Dispatch preserves host-controlled contract selection; original spoken condition warnings play through
+the shared audio system with exact job facts in the transcript. A platform scale and reinforced chute
+provide a last-haul/current-quota receipt and host-authoritative unloading of any loose HQ salvage,
+without a second payment for already settled truck cargo. The save schema is unchanged.
+
+HQ lighting uses dim cool tubes (two faulty) and steady warm hanging bulbs, with localized dust/shafts;
+existing reduced-flashing and shadow budget behavior remains. The first-day guide and tips point at
+the new stations. Version: 0.14.5.EEA. Details: `Docs/HQ_HUB_0.14.5.md`.
+
+Authoring menu: **Tools > Abandoned > HQ > Rebuild Salvage Hub (0.14.5)**. Its generation path skips
+collider audits. The dedicated HQ authoring command completed and saved the redesigned scene/assets.
+No tests, gameplay, network tests, screenshots or verification commands were run,
+as the user explicitly requested. User validation remains pending.
+
+## 0.14.0.EEA: sound rebuild, solid objects, shadow rework (2026-10-09; compiled and rebuilt, not play-tested by Claude)
+
+Three whole-game passes the user asked for in one go. It compiled clean in the user's editor, and the user asked for
+`Tools/unity.sh rebuild-horror`, which now finishes clean:
+- Mall: 37 objects made solid (15 storefront bays, 5 parking lamp posts, 4 vehicle bodies, 3 planters, 3 exposed rebar,
+  2 truck wheels, fountain, kiosk, mall directory, directions post, the entrance canopy as its two columns); 0 left
+  walk-through; flights 0, invisible colliders 0, walk-through objects 0, reachability 80 points / 0 cut off.
+- HQ: 16 made solid (5 suitcases, 5 backpacks, 4 pillars, barricade, mannequin); 0 problems.
+- Storey light layers on 9,648 renderers and 358 ceiling fixtures; materials 0 problems.
+- The SoundBank is at catalog revision 2; AudioConfig and ShadowBudgetConfig assets exist.
+After the user's first listen ("everything sounds so loud"): `AudioConfig.BaseLevel` 0.5 under every bus.
+One loot spawn tile (ground floor, 4/2) is reserved so nothing spawns against the now-solid mall directory.
+Still to run by hand: Tools > Abandoned > Generate Loot Prefabs (Heavy/Huge loot collision mode).
+
+**Sound** (script-only until the rebuild; works on the old SoundBank asset too)
+- One catalog (`SoundId` 30 -> 90 entries, `SoundCatalog`), one player (`GameAudio` -> `AudioPool` voices and `SoundLoop`s),
+  one mixer (`AudioMix`, eight buses), tunables in `AudioConfig`.
+- Every synthesised sound redesigned on a new toolkit (`Audio/Synth`): the building (steel and concrete, not timber),
+  eight monsters matching their threat files, truck, shutters, siren, gear, player body, beds, UI, HQ / drive / departure
+  music, stings and the eight monster songs (now stereo). Rendered in the background from the first scene.
+- New sounds for things that were silent: taking a hit, dying, landing, being knocked down, loot shattering, rubble
+  landing, a fixture falling, the mains going or coming back, a sector losing power, a failing tube buzzing nearby,
+  thunder on storm jobs, night vision on/off, the motion detector, menu hover, toasts, chat, the answering machine,
+  a monster's blow landing, the whole-building collapse rumble.
+- Walls and floors dull and quieten sound; the room you stand in has a live reverb.
+- F1: `AUDIO` (voices, loops, synth progress, last sound), `SPACE` (room size, decay, muffle, walls), sound gizmos.
+
+**Collision** (takes effect on rebuild)
+- `SolidObjectsPass` in the Mall and HQ builds; `MallRouteClearance` protects stairs, doors, exits, spawns, the truck and
+  carry-route lanes; a reachability check on the baked NavMesh. See the rebuild log for `[MallValidation]` lines:
+  `solid objects: N made solid`, `left walk-through, it would ...` (each one listed), `walk-through objects: N problem(s)`,
+  `reachability: N points checked, M cut off`.
+- Heavy/Huge loot: speculative continuous collision (needs Tools/Abandoned/Generate Loot Prefabs).
+
+**Shadows** (the director works at once; light layers and caster pass on rebuild)
+- `ShadowDirector`: nearest lit lights cast, 2 / 4 / 6 by the Shadows setting. `LevelStoreys`: no more ceiling light
+  through floors. `ShadowCasterPass`. Atlas 4096, ambient occlusion up a notch.
+- F1: `SHADOWS` line (lights casting / budget, atlas, storey layers on or off), lines to the casting lights in Scene view.
+
+**Open, for the user to judge**
+- How every sound actually sounds: none of it has been heard.
+- Any object the rebuild reports as left walk-through: say whether to move it, remove it or let it block.
+- Soft vegetation (Overgrowth, LeafScatter) is deliberately walk-through.
+- Performance with six shadowed ceiling lights, especially hosting four players.
+- The departure theme exists but stays off during jobs, as it has since 0.13.0.
+
 ## 0.13.5e.EEA — low-health feedback sooner, no breathing (2026-10-09; not compiled or played by Claude)
 
 User feedback from playing 0.13.5d. Thresholds raised to 80 / 60 / 50 / 35 / 20 (were 50 / 40 / 30 / 20 / 10), so

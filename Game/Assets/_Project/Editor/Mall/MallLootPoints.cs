@@ -41,7 +41,7 @@ namespace Abandoned.EditorTools
         private static bool UnderFlight(Vector2Int c,int floor)=>AllFlights.Any(f=>f.Floor==floor&&f.Tiles.Contains(c));
         // Loose floor loot would be hidden inside the fixed fountain basin or planter at these sites.
         private static bool LandmarkReserved(Vector2Int c,int floor)=>floor==0&&
-            ((c.x==6&&c.y==6)||(c.x==8&&c.y==7));
+            ((c.x==6&&c.y==6)||(c.x==8&&c.y==7)||(c.x==4&&c.y==2)); // 0.14.0: the mall directory is solid too
         public static bool IsJackpotTile(Vector2Int c,int floor)=>Prizes.Any(p=>p.floor==floor&&p.x==c.x&&p.z==c.y);
     }
 }
