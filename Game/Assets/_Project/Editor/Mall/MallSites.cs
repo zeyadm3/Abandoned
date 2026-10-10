@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Abandoned.Structure;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -222,6 +223,36 @@ namespace Abandoned.EditorTools
         public static void Bind(GameObject added, StructuralSection floor)
         {
             if (floor != null) added.AddComponent<SectionProp>().EditorSetup(floor);
+        }
+
+        /// <summary>
+        /// Free floor for something flat and walk-through (litter, puddles, marks): only solid things at shin
+        /// height and the flights' approaches rule a spot out, not carry routes or doorways.
+        /// </summary>
+        public static List<Site> FlatSites(Func<Vector2Int, int, bool> where, float half)
+        {
+            var found = new List<Site>();
+            Vector3[] nudges = { Vector3.zero, new(1.2f, 0f, 0.6f), new(-1.1f, 0f, -0.8f), new(0.7f, 0f, -1.2f), new(-0.8f, 0f, 1.1f) };
+            for (int floor = -1; floor < MallLayout.Floors; floor++)
+            for (int z = 0; z < MallLayout.TilesZ; z++)
+            for (int x = 0; x < MallLayout.TilesX; x++)
+            {
+                var tile = new Vector2Int(x, z);
+                if (MallLayout.IsVoid(tile, floor) || !where(tile, floor)) continue;
+                if (MallLayout.AllFlights.Any(f => f.Tiles.Contains(tile) && (f.Floor == floor || f.Floor + 1 == floor))) continue;
+                foreach (Vector3 nudge in nudges)
+                {
+                    Vector3 top = MallLayout.TileTopCenter(tile, floor) + nudge + Vector3.up * 1f;
+                    if (!Physics.Raycast(top, Vector3.down, out RaycastHit ground, 1.4f, ~0, QueryTriggerInteraction.Ignore)) continue;
+                    if (Mathf.Abs(ground.point.y - MallLayout.FloorY(floor)) > 0.2f) continue; // landed on furniture
+                    if (Physics.CheckBox(ground.point + Vector3.up * 0.3f, new Vector3(half, 0.22f, half), Quaternion.identity, ~0, QueryTriggerInteraction.Ignore)) continue;
+                    var box = new Bounds(ground.point + Vector3.up * 0.1f, new Vector3(half * 2f, 0.2f, half * 2f));
+                    if (taken.Any(t => t.Intersects(box))) continue;
+                    found.Add(new Site(ground.point, Vector3.forward, floor, tile, ground.collider.GetComponentInParent<StructuralSection>()));
+                    break;
+                }
+            }
+            return found;
         }
     }
 }

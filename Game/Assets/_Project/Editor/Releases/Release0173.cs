@@ -34,8 +34,7 @@ namespace Abandoned.EditorTools
         {
             Transform root = MallSites.FreshGroup(mall, GroupName);
             var config = AssetDatabase.LoadAssetAtPath<HorrorConfig>(HorrorContentBuilder.Path);
-            var sites = MallSites.WallSites((_, _) => false, Size); // (keeps the search state fresh)
-            sites = MallSites.FloorSites((_, _) => true, Size);
+            var sites = MallSites.FlatSites((_, _) => true, Size.x * 0.5f);
             var random = new System.Random(173);
             int placed = 0;
             foreach (MallSites.Site site in MallSites.Spread(sites, Patches, 6f, 173))
@@ -44,7 +43,7 @@ namespace Abandoned.EditorTools
                 GroundKind kind = site.Floor < 0 || zone == "food" ? (random.NextDouble() < 0.7 ? GroundKind.Puddle : GroundKind.LooseTiles)
                     : site.Zone?.Kind == MallLayout.Kind.Store ? (random.NextDouble() < 0.6 ? GroundKind.BrokenGlass : GroundKind.LooseTiles)
                     : (random.NextDouble() < 0.5 ? GroundKind.BrokenGlass : random.NextDouble() < 0.5 ? GroundKind.Puddle : GroundKind.LooseTiles);
-                MallSites.Claim(site, Size);
+                MallSites.Claim(site, new Vector3(Size.x, 0.2f, Size.z));
                 int sector = config != null ? config.SectorOf(site.At + Vector3.up * 1.4f) : 0;
                 Patch(root, placed++, kind, site, sector, random);
             }
