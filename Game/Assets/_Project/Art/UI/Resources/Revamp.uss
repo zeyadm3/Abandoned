@@ -323,3 +323,42 @@
 .tile { border-radius: 0; border-width: 1px; border-color: rgba(242, 190, 40, 0.15); background-color: var(--c-panel-2); }
 .tile:hover { border-color: var(--c-accent); }
 .sheet__stamp { border-radius: 0; }
+
+/* ==== 0.22.8 job-flow screens ==== */
+
+/* The drive: a slate card with the company's yellow rule. */
+.travel { background-color: rgb(10, 11, 12); }
+.travel__title { color: var(--c-accent); letter-spacing: 6px; }
+
+/* The appraisal: the receipt stays paper; the side column is the company's verdict. */
+.appraisal__side { border-left-width: 6px; border-left-color: var(--c-accent); background-color: var(--c-panel); }
+.award { border-bottom-width: 1px; border-bottom-color: rgba(255, 255, 255, 0.06); }
+.award__icon { -unity-background-image-tint-color: var(--c-accent); }
+.receipt { border-top-width: 10px; border-top-color: var(--c-accent); }
+
+/* Security monitors (0.16.7, UI Toolkit since 0.22.8): the feed fills the screen, tinted like an old CRT. */
+.monitor {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgb(0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(190, 255, 205);
+    justify-content: space-between;
+    padding: 3% 4% 3% 4%;
+}
+.monitor__caption {
+    -unity-font-definition: url("../../ThirdParty/Fonts/VT323/VT323-Regular.ttf");
+    font-size: 34px;
+    color: rgb(200, 255, 205);
+    text-shadow: 0 0 6px rgba(120, 255, 140, 0.6);
+}
+.monitor__help {
+    align-self: center;
+    padding: 3px 14px 3px 14px;
+    background-color: rgba(10, 11, 12, 0.75);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-accent);
+    -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 19px;
+    letter-spacing: 2px;
+}

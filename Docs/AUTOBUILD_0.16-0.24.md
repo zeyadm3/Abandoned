@@ -442,3 +442,10 @@ cork, the supply terminal stays an amber CRT) and take the company's marks: job 
 yellow header band and square stamps; the guide's selected entry gets a yellow index tab and its buttons fill
 yellow (in HqStations.uss, which those panels load themselves); gear/shop/upgrade/wardrobe tiles are square
 slate cases that frame yellow on hover. The loot catalogue (0.18.7) uses the guide's style, so it follows.
+
+## 0.22.8 job-flow screens
+The security monitor view (0.16.7) is now a UI Toolkit screen on the HUD layer (`monitor`: the camera's
+RenderTexture as a CRT-green-tinted background, the camera's name and clock in VT323, the keys on a slate slip)
+instead of IMGUI. Revamp.uss: the drive screen in black with a yellow title; the appraisal's side column (crew,
+WHO DID WHAT, awards) gets the slate panel and yellow spine, award icons tinted yellow; the receipt stays paper
+with a yellow header band. The truck's haul display is a texture panel and follows the tokens.

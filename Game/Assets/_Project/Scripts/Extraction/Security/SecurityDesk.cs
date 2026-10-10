@@ -111,24 +111,33 @@ namespace Abandoned.Extraction
             if (feed != null) feed.Release();
         }
 
-        // The feed, full screen, in the green of an old CRT, with the camera's name and a clock.
-        private void OnGUI()
+        // The feed, full screen (0.22.8: UI Toolkit in the revamp's style, was IMGUI): the picture, the camera's
+        // name and a clock in the corner, the keys along the bottom.
+        private UnityEngine.UIElements.VisualElement screen;
+        private UnityEngine.UIElements.Label caption, help;
+
+        private void LateUpdate()
         {
-            if (!watching || feed == null || current >= SecurityCamera.All.Count) return;
-            var full = new Rect(0, 0, Screen.width, Screen.height);
-            GUI.color = Color.black;
-            GUI.DrawTexture(full, Texture2D.whiteTexture);
-            GUI.color = new Color(0.75f, 1f, 0.8f, 1f);
-            GUI.DrawTexture(full, feed, ScaleMode.ScaleToFit);
-            GUI.color = new Color(0.8f, 1f, 0.8f, 0.95f);
-            var style = new GUIStyle(GUI.skin.label) { fontSize = Mathf.RoundToInt(Screen.height * 0.028f) };
-            string clock = System.TimeSpan.FromSeconds(Time.time).ToString(@"hh\:mm\:ss");
-            GUI.Label(new Rect(Screen.width * 0.04f, Screen.height * 0.04f, Screen.width * 0.6f, Screen.height * 0.06f),
-                $"{SecurityCamera.All[current].Label}   {clock}", style);
-            style.alignment = TextAnchor.LowerCenter;
-            style.fontSize = Mathf.RoundToInt(Screen.height * 0.022f);
-            GUI.Label(new Rect(0, Screen.height * 0.88f, Screen.width, Screen.height * 0.08f),
-                $"A / D or click: next camera     {InputBindings.Display("Interact")}: get up", style);
+            if (!watching)
+            {
+                if (screen != null) screen.style.display = UnityEngine.UIElements.DisplayStyle.None;
+                return;
+            }
+            if ((screen == null || screen.panel == null) && UI.HudLayer.Root != null)
+            {
+                screen = UI.HudLayer.Add(new UnityEngine.UIElements.VisualElement(), "monitor");
+                caption = new UnityEngine.UIElements.Label();
+                caption.AddToClassList("monitor__caption");
+                screen.Add(caption);
+                help = new UnityEngine.UIElements.Label();
+                help.AddToClassList("monitor__help");
+                screen.Add(help);
+            }
+            if (screen == null || feed == null || current >= SecurityCamera.All.Count) return;
+            screen.style.display = UnityEngine.UIElements.DisplayStyle.Flex;
+            screen.style.backgroundImage = UnityEngine.UIElements.Background.FromRenderTexture(feed);
+            caption.text = $"{SecurityCamera.All[current].Label}     {System.TimeSpan.FromSeconds(Time.time):hh\\:mm\\:ss}";
+            help.text = $"A / D or click   next camera          {InputBindings.Display("Interact")}   get up";
         }
 
 #if UNITY_EDITOR
