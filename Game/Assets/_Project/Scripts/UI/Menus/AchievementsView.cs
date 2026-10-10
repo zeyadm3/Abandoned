@@ -37,6 +37,9 @@ namespace Abandoned.UI
                 if (unlocked) got++;
                 VisualElement row = MenuKit.Row(list);
                 row.AddToClassList("hud-row");
+                // 0.24.3: its icon, grey until earned.
+                VisualElement icon = UiKit.Icon(row, $"achievement/{a.Id}", "large");
+                if (!unlocked) icon.style.unityBackgroundImageTintColor = new UnityEngine.Color(0.45f, 0.45f, 0.45f, 0.7f);
                 Label name = MenuKit.Text(row, $"<b>{(unlocked ? "<color=#7dff7d>" + a.DisplayName + "</color>" : a.DisplayName)}</b>\n{a.Description}", "text");
                 name.AddToClassList("hud-cell--name");
                 long progress = System.Math.Min(Achievements.Stat(a.Stat), a.Threshold);

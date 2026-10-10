@@ -66,6 +66,7 @@ namespace Abandoned.EditorTools
             (ThirdPartyModelImport.Root + "Kenney/BoardGameIcons", "board"), (ThirdPartyModelImport.Root + "Kenney/InputPrompts", "mouse"),
             (LootIconRenderer.Folder, "loot"),
             (UiGearIconBuilder.Folder, "item"),
+            ("Assets/_Project/Art/Generated/AchievementIcons", "achievement"), // 0.24.3
         };
 
         /// <summary>Data/UI/Resources/UiIcons: every icon PNG in the packs by "prefix/name".</summary>

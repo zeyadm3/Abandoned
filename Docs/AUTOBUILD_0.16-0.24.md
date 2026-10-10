@@ -542,3 +542,11 @@ answering-machine tape (narrow band, wow and flutter, hiss) into Art/Audio/Voice
 each file named by an MD5 of its text. The answering machine plays the matching clip after its beep (Effects
 bus volume) and stops it when you hang up; an edited line with no clip still shows its text. Re-run the script
 after editing the lines. Credited in Docs/ASSET_CREDITS.md (no third-party audio).
+
+## 0.24.3 achievement icons
+`Editor/Releases/Release0243` draws a 256 px pair for every achievement (22): a symbol for what it counts
+(toolbox, exit arrow, coin, tick, gem, falling slab, skull, cross, moon, breaker, dial, lift, vent, set,
+request sheet, clock, new hire, ping diamond...) in a stamped frame, hazard yellow on slate with a striped foot
+when achieved, grey when not. Files for Steam's partner site: Tools/Steam/AchievementIcons/<ACH_ID>.png and
+<ACH_ID>_locked.png. In game: Art/Generated/AchievementIcons as "achievement/<id>" icons, shown (greyed until
+earned) beside each achievement. Menu: Tools/Abandoned/Content/Achievement Icons (0.24.3).
