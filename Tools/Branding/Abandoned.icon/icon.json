@@ -1,0 +1,32 @@
+{
+  "fill": "none",
+  "groups": [
+    {
+      "name": "Abandoned",
+      "layers": [
+        {
+          "name": "Light artwork",
+          "image-name": "AbandonedIcon-Light.png",
+          "glass": false,
+          "hidden-specializations": [
+            { "value": false },
+            { "appearance": "dark", "value": true }
+          ]
+        },
+        {
+          "name": "Dark artwork",
+          "image-name": "AbandonedIcon-Dark.png",
+          "glass": false,
+          "hidden-specializations": [
+            { "value": true },
+            { "appearance": "dark", "value": false }
+          ]
+        }
+      ],
+      "specular": false,
+      "shadow": { "kind": "neutral", "opacity": 0 },
+      "translucency": { "enabled": false, "value": 0 }
+    }
+  ],
+  "supported-platforms": { "squares": ["macOS"] }
+}

@@ -20,7 +20,7 @@ namespace Abandoned.EditorTools
     {
         public const string ProductName = "Abandoned";
         /// <summary>0.&lt;milestone being built&gt;.&lt;patch&gt;; bump the middle number when a milestone starts.</summary>
-        public const string Version = "0.24.6.EEA";
+        public const string Version = "0.24.6b";
         public const string CompanyName = "Zeyad Games";
         public const string BundleId = "com.zeyadgames.abandoned";
         public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";
@@ -110,6 +110,7 @@ namespace Abandoned.EditorTools
             // Several instances on one Mac (MPPM, nettest, LAN tests): an unfocused one must keep simulating.
             PlayerSettings.runInBackground = true;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+            ApplicationBranding.ApplyPlayerSettings();
         }
 
         public static bool Build(BuildPlatform platform, BuildFlavor flavor, string builtAtUtc = null, bool inspectSignature = true)
@@ -158,6 +159,15 @@ namespace Abandoned.EditorTools
             }
             RemoveDoNotShipFolders(platform, flavor);
             if (ShipsSteamAppId(flavor)) CopySteamAppId(platform, flavor);
+            if (platform == BuildPlatform.Mac)
+            {
+                try { MacApplicationIcon.Install(options.locationPathName); }
+                catch (Exception exception)
+                {
+                    Debug.LogError($"[Build] Mac application branding failed: {exception.Message}");
+                    return false;
+                }
+            }
             if (inspectSignature && platform == BuildPlatform.Mac && MacSignature.Problem(options.locationPathName) is string signature)
             {
                 Debug.LogError($"[Build] {options.locationPathName} signature is broken: {signature}");

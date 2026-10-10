@@ -4,6 +4,20 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.24.6b: desktop logo and native Apple appearances (2026-10-10)
+
+Original fractured concrete A emblem generated with built-in `image_gen`, with matching
+light and dark appearances. Windows embeds only the light image; Mac builds compile an
+Icon Composer source into a native appearance-aware catalog, install it and re-sign the
+bundle. The light `.icns` remains the fallback for older macOS. Masters, prompt records,
+Windows ICO and native Apple previews are saved in `Tools/Branding/0.24.6b/`.
+
+Unity's `Release0246b.AuthorAndExit` completed and saved icon import settings, standalone
+icon slots and version `0.24.6b` without compile errors. The menu is **Tools > Abandoned >
+Branding > Install Application Logo (0.24.6b)**; `Tools/unity.sh build` packages both
+platforms. This release changes application branding and build settings. Details:
+`Docs/APP_LOGO_0.24.6b.md`.
+
 ## 0.16.1 to 0.24.6: autonomous build (2026-10-10 on)
 
 Every roadmap version after 0.16.0 is logged in **Docs/AUTOBUILD_0.16-0.24.md** (one section per version:

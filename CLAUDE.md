@@ -95,6 +95,13 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
+
+**0.24.6b (2026-10-10): application logo.** Original fractured architectural A icon,
+Apple native light/dark appearances and Windows light-only icon. Unity import/settings
+authoring completed; `Tools/unity.sh build` packages this version. Native Mac icon
+compilation requires Xcode; the build re-signs the bundle after installing the catalog.
+Sources, prompts, exports and details: Docs/APP_LOGO_0.24.6b.md.
+
 **0.24.6 (2026-10-10): the autonomous 0.16–0.24 build is done** (Docs/AUTOBUILD_0.16-0.24.md, one commit and
 one Mac + Windows build per version in ~/Documents/Abandoned-builds/dev/). Nothing from 0.16.0 on has been
 played. Next: the user's full test pass, then the Steam app (Docs/LAUNCH.md "0.24.6"), then 0.25.0 = fixes only.

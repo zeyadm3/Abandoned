@@ -88,3 +88,9 @@ or paid assets were added; the existing PBR textures and vehicle/font credits co
 Voice lines (0.14.5 dispatch, 0.24.2 boss voicemails) are original text spoken by the installed macOS system voices
 (default voice; "Ralph") through Tools/Audio/*.py and processed into telephone/tape sound; no voice pack, paid service
 or recording of a real person.
+
+The ABANDONED desktop emblem (0.24.6b, 2026-10-10) is original project artwork generated
+with the built-in `image_gen` tool: fractured architectural A with light and dark concrete
+tiles. Final Unity PNGs are under `Art/Branding/`; masters, Windows light-only ICO and exact
+prompts are under `Tools/Branding/0.24.6b/`. No third-party logo, font, pack or Unity package
+is used by this emblem. Details: `Docs/APP_LOGO_0.24.6b.md`.
