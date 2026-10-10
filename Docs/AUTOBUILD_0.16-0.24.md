@@ -312,3 +312,9 @@ static network object, Prefabs/Equipment/Floodlight). A 95° spot, range 22 m, i
 last 15 s it sags and stutters, then it's gone. Only the oldest standing floodlight casts shadows
 (ToolConfig.FloodlightShadows = 1; one map in the atlas, which ShadowDirector already counts as a light it
 doesn't manage), the rest light without shadows. Reaches every storey layer.
+
+## 0.20.1 lockpick
+New tool ($1,800, level 2): with it in a hand slot (and no bolt cutters), E on a locked shutter picks the
+padlock in 14 s (ToolConfig.LockpickSeconds) with almost no noise (0.05) and a faint ticking, through
+RunShutters' existing timed opening. Bolt cutters stay quicker (1.6 s, a little louder); the crowbar stays fast
+and loud.

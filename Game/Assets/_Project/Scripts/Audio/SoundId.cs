@@ -175,6 +175,8 @@ namespace Abandoned.Audio
         GhostWhoosh,
         // 0.19.6: the HQ toys.
         ToyScore,
+        // 0.20.1: the lockpick (barely audible).
+        LockpickWork,
         // @@ids
     }
 }

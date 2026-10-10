@@ -29,6 +29,7 @@ namespace Abandoned.Equipment
         Flares,
         MovingBlanket,
         Floodlight,
+        Lockpick,
         // @@kinds
     }
 }

@@ -75,6 +75,12 @@ namespace Abandoned.Equipment
         public float FloodlightAngle => floodlightAngle;
         public int FloodlightShadows => floodlightShadows;
 
+        [Header("Lockpick (0.20.1)")]
+        [Tooltip("Seconds to pick a shutter's padlock (bolt cutters are quicker, a crowbar quicker still and loud).")]
+        [SerializeField, Min(1f)] private float lockpickSeconds = 14f;
+
+        public float LockpickSeconds => lockpickSeconds;
+
         // @@fields
 
         private static ToolConfig current;

@@ -61,6 +61,8 @@ namespace Abandoned.Audio
                 case SoundId.GhostWhoosh: return Patch.Mono(id, take, CrewPatches.GhostWhoosh(take), 0.6f);
                 // 0.19.6: the HQ toys.
                 case SoundId.ToyScore: return Patch.Mono(id, take, CrewPatches.ToyScore(), 0.6f);
+                // 0.20.1: the lockpick (barely audible).
+                case SoundId.LockpickWork: return Patch.Mono(id, take, GearPatches2.Lockpick(take), 0.5f);
                 // @@cases
                 default: return null;
             }

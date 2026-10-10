@@ -72,6 +72,7 @@ namespace Abandoned.Extraction
             if (!IsDown) return null;
             PlayerEquipment gear = user != null ? user.GetComponentInParent<PlayerEquipment>() : null;
             if (gear != null && gear.Has(EquipmentKind.BoltCutters)) return "Cut the padlock (quiet)";
+            if (gear != null && gear.Has(EquipmentKind.Lockpick)) return $"Pick the lock (silent, {ToolConfig.Current.LockpickSeconds:0} s)";
             if (gear != null && gear.Has(EquipmentKind.Crowbar)) return "Pry the shutter up (loud, a few goes)";
             // The padlock is on the outside: from inside the store you can always heave it up (QA B-01).
             if (user != null && InRoom(user.transform.position))

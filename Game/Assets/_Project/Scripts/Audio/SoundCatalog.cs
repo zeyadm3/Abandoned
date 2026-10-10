@@ -208,6 +208,8 @@ namespace Abandoned.Audio
             Set(SoundId.GhostWhoosh, Fx, 120, 1f, 14f, Syn, Wall, 2, null, 0.7f);
             // 0.19.6: the HQ toys.
             Set(SoundId.ToyScore, Menu, 90, 1f, 10f, Syn, Open, 1, null, 0.7f, 0f);
+            // 0.20.1: the lockpick (barely audible).
+            Set(SoundId.LockpickWork, Fx, 140, 0.5f, 6f, Syn, Wall, 2, null, 0.6f);
             // @@catalog
             return t;
         }

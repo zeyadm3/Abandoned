@@ -56,6 +56,8 @@ namespace Abandoned.EditorTools
                     EquipmentKind.MovingBlanket, 600, 2, true, new Color(0.25f, 0.35f, 0.55f)),
                 Item("floodlight", "Portable Floodlight", "Stand it down (use): a work light that lights a whole room for four minutes, then its battery is done (single use).",
                     EquipmentKind.Floodlight, 1400, 2, true, new Color(1f, 0.85f, 0.3f)),
+                Item("lockpick", "Lockpick Set", "E on a locked shutter: picks the padlock in silence, slowly. Bolt cutters are quicker, a crowbar quicker still and loud.",
+                    EquipmentKind.Lockpick, 1800, 2, false, new Color(0.6f, 0.6f, 0.65f)),
                 // @@gear
             };
             CreateNoiseMaker();

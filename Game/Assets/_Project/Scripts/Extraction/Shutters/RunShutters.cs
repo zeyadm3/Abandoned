@@ -149,6 +149,14 @@ namespace Abandoned.Extraction
             PlayerEquipment gear = PlayerEquipment.Of(NetworkManager, client);
             if (gear == null) return;
             Vector3 at = shutter.transform.position + Vector3.up * 1.2f;
+            // 0.20.1: a lockpick is quieter still, and much slower.
+            if (!gear.Has(EquipmentKind.BoltCutters) && gear.Has(EquipmentKind.Lockpick))
+            {
+                cuts[index] = Time.time + ToolConfig.Current.LockpickSeconds;
+                NoiseSystem.Emit(at, 0.05f, NoiseSource.Other);
+                SoundRpc(SoundId.LockpickWork, at);
+                return;
+            }
             if (gear.Has(EquipmentKind.BoltCutters))
             {
                 cuts[index] = Time.time + cutSeconds;

@@ -20,6 +20,7 @@ namespace Abandoned.Equipment
             {
                 case EquipmentKind.Sledgehammer: Smash(); return true;
                 case EquipmentKind.SprayChalk: return true; // drawn while held (TickHeldTool)
+                case EquipmentKind.Lockpick: return true;   // used on a shutter (E), not in the air
                 // @@tools
                 default: return false;
             }
