@@ -31,6 +31,8 @@ namespace Abandoned.Equipment
             switch (d.Kind)
             {
                 case EquipmentKind.CrashMat: return LayMat();
+                case EquipmentKind.GlowSticks: return ThrowLight(EquipmentKind.GlowSticks, 0.7f);
+                case EquipmentKind.Flares: return ThrowLight(EquipmentKind.Flares, 1f);
                 // @@consumables
                 default: return false;
             }
@@ -96,6 +98,19 @@ namespace Abandoned.Equipment
             if (Vector3.Distance(eye, transform.position + Vector3.up * 1.5f) > 1.5f || direction.sqrMagnitude < 0.5f) return;
             if (!Physics.Raycast(eye, direction.normalized, out RaycastHit hit, ToolConfig.Current.ChalkReach, wallMask, QueryTriggerInteraction.Ignore)) return;
             Extraction.RunChalk.Current?.ServerAdd(hit.point, hit.normal, (byte)Mathf.Max(0, player.CrewSeat));
+        }
+
+        // Host (0.17.7): lob a glow stick or a flare the way the noise maker is thrown (a gentler arc for a stick).
+        private bool ThrowLight(EquipmentKind kind, float strength)
+        {
+            Transform t = transform;
+            Vector3 at = Eye + t.forward * 0.6f;
+            if (Physics.Linecast(Eye, at + t.forward * 0.15f, out RaycastHit hit, wallMask, QueryTriggerInteraction.Ignore))
+                at = Eye + t.forward * Mathf.Max(0f, hit.distance - 0.2f);
+            NetworkObject thrown = SpawnGear(kind, at, t.rotation);
+            if (thrown == null) return false;
+            thrown.GetComponent<ThrownLight>().Launch(Aim * throwSpeed.x * strength + Vector3.up * throwSpeed.y * 0.6f);
+            return true;
         }
 
         /// <summary>Host: spawn one of the newer gear's network objects.</summary>

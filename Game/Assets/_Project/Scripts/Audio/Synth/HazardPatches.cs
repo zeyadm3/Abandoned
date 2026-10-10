@@ -157,5 +157,23 @@ namespace Abandoned.Audio
             if (take == 0) Patch.Layer(d, Synth.Modal(0.06f, 2400f, Patch.Bar, null, 90f), 0.25f, 0.02f);
             return d;
         }
+
+        /// <summary>A road flare struck: the scrape and the whoosh of it catching.</summary>
+        public static float[] FlareIgnite()
+        {
+            float[] d = Synth.Buffer(1.2f);
+            Patch.Layer(d, Synth.Noise(0.15f, 1771, 5000f, 2500f, 0.005f, 15f), 0.6f);
+            Patch.Layer(d, Synth.Fade(Synth.Resonant(1f, 1772, 600f, 2400f, 1.5f, 0.05f, 2f), 0.05f, 0.3f), 0.7f, 0.12f);
+            return d;
+        }
+
+        /// <summary>A burning flare's steady sputtering hiss.</summary>
+        public static float[] FlareHiss(int take)
+        {
+            float[] d = Synth.Buffer(1.4f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(1.4f, 1773 + take, 7000f, 6500f, 0.05f, 0.2f, 1200f), 0.1f, 0.1f), 0.5f);
+            Patch.Debris(d, 1774 + take, 6, 0.05f, 1.3f, 5000f);
+            return d;
+        }
     }
 }

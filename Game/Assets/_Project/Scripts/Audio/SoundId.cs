@@ -161,6 +161,9 @@ namespace Abandoned.Audio
         WaterZap,
         // 0.17.6: spray chalk.
         ChalkSpray,
+        // 0.17.7: flares.
+        FlareIgnite,
+        FlareHiss,
         // @@ids
     }
 }

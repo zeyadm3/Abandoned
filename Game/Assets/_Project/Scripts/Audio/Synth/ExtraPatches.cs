@@ -47,6 +47,9 @@ namespace Abandoned.Audio
                 case SoundId.WaterZap: return Patch.Mono(id, take, HazardPatches.WaterZap(take), 0.9f);
                 // 0.17.6: spray chalk.
                 case SoundId.ChalkSpray: return Patch.Mono(id, take, HazardPatches.Spray(take), 0.6f);
+                // 0.17.7: flares.
+                case SoundId.FlareIgnite: return Patch.Mono(id, take, HazardPatches.FlareIgnite(), 0.85f);
+                case SoundId.FlareHiss: return Patch.Mono(id, take, HazardPatches.FlareHiss(take), 0.5f);
                 // @@cases
                 default: return null;
             }

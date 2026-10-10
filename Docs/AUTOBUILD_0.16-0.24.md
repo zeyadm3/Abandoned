@@ -134,3 +134,10 @@ Every machine draws all dots as one mesh of 11 cm quads in the sprayer's crew-se
 blue, pink) with an unlit Particles material (Art/Greybox/ChalkMarks.mat), so marks read in the dark. A
 hiss plays as dots appear. Marks on a section that falls stay where they were (known gap).
 Menu: Tools/Abandoned/Content/Spray Chalk (0.17.6).
+
+## 0.17.7 glow sticks and flares
+Two consumables: glow stick ($150, level 1: dim green point light, range 6 m, 10 min, silent) and flare ($350,
+level 2: red, range 14 m, 90 s, flickers, hisses, noise 0.2 every 3 s). Use throws one like the noise maker
+(host-simulated, NetworkTransform). No shadows, so the 0.14.0 shadow atlas is untouched; the light reaches
+every storey layer (`LevelStoreys.LightEverything`). Prefabs: Prefabs/Equipment/GlowStick, Flare (GearPrefabs).
+Menu: Tools/Abandoned/Content/Glow Sticks and Flares (0.17.7).

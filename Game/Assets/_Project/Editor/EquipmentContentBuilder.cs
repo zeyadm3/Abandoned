@@ -48,6 +48,10 @@ namespace Abandoned.EditorTools
                     EquipmentKind.CrashMat, 1800, 3, true, new Color(0.2f, 0.45f, 0.85f)),
                 Item("spray_chalk", "Spray Chalk", "Hold use to draw on any floor or wall: mark a weak spot, a route, anything. The crew sees it in your colour.",
                     EquipmentKind.SprayChalk, 400, 1, false, new Color(1f, 0.55f, 0.1f)),
+                Item("glow_sticks", "Glow Sticks", "Throw one (use): a dim green light that burns for ten minutes. Marks a room, a route or a hole (single use).",
+                    EquipmentKind.GlowSticks, 150, 1, true, new Color(0.3f, 1f, 0.4f)),
+                Item("flares", "Flare", "Throw it (use): a fierce red light for a minute and a half. It hisses, and things hear it (single use).",
+                    EquipmentKind.Flares, 350, 2, true, new Color(1f, 0.2f, 0.15f)),
                 // @@gear
             };
             CreateNoiseMaker();

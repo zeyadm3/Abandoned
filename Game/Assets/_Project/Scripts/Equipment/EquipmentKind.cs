@@ -25,6 +25,8 @@ namespace Abandoned.Equipment
         Sledgehammer,
         CrashMat,
         SprayChalk,
+        GlowSticks,
+        Flares,
         // @@kinds
     }
 }

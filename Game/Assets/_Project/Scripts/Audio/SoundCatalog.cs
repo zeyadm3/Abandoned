@@ -194,6 +194,9 @@ namespace Abandoned.Audio
             Set(SoundId.WaterZap, Fx, 50, 1f, 25f, Syn, Dull, 3, "an electric crack");
             // 0.17.6: spray chalk.
             Set(SoundId.ChalkSpray, Fx, 150, 1f, 10f, Syn, Wall, 3, null, 0.6f);
+            // 0.17.7: flares.
+            Set(SoundId.FlareIgnite, Fx, 80, 2f, 30f, Syn, Wall, 1, "a flare is struck");
+            Set(SoundId.FlareHiss, Fx, 160, 1f, 14f, Syn, Wall, 3, null, 0.5f);
             // @@catalog
             return t;
         }
