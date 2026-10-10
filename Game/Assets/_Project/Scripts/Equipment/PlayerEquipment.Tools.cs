@@ -21,6 +21,7 @@ namespace Abandoned.Equipment
                 case EquipmentKind.Sledgehammer: Smash(); return true;
                 case EquipmentKind.SprayChalk: return true; // drawn while held (TickHeldTool)
                 case EquipmentKind.Lockpick: return true;   // used on a shutter (E), not in the air
+                case EquipmentKind.ThermalCamera: return true; // switched on its owner's machine (ThermalCamera)
                 // @@tools
                 default: return false;
             }

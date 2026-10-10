@@ -30,6 +30,7 @@ namespace Abandoned.Equipment
         MovingBlanket,
         Floodlight,
         Lockpick,
+        ThermalCamera,
         // @@kinds
     }
 }

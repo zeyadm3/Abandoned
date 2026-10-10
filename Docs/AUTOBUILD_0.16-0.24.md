@@ -331,3 +331,9 @@ at the cargo bay's open end; with the upgrade owned, E there hooks the nearest H
 1.3 m/s, gravity off, first to the ramp's foot and then up into the bay; it lets go once aboard, if anyone grabs
 it, or after 5 s without progress. Everyone sees the cable (LineRenderer); the motor grinds (noise 0.5 a second).
 Menu: Tools/Abandoned/Mall/Add Truck Winch (0.20.3). Watch on the test: the reel's path round obstacles.
+
+## 0.20.4 thermal camera
+New tool ($12,000, level 5). Owner-local like night vision (`Equipment.ThermalCamera`, on ExtraScreens, so no
+player-prefab change): in hand, use toggles it. The view goes cold blue and dark (a global URP volume), and every
+monster and crewmate within 45 m with a clear line of sight gets an orange-white heat blob over its outline,
+however dark or foggy; walls still hide them. 60 s of battery, 0.3 s back per second while off.

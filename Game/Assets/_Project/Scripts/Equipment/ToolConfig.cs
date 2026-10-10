@@ -81,6 +81,14 @@ namespace Abandoned.Equipment
 
         public float LockpickSeconds => lockpickSeconds;
 
+        [Header("Thermal camera (0.20.4)")]
+        [SerializeField, Min(5f)] private float thermalSeconds = 60f;
+        [Tooltip("Battery seconds regained per second while off.")]
+        [SerializeField, Min(0f)] private float thermalRecharge = 0.3f;
+
+        public float ThermalSeconds => thermalSeconds;
+        public float ThermalRecharge => thermalRecharge;
+
         // @@fields
 
         private static ToolConfig current;
