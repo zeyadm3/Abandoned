@@ -38,6 +38,14 @@ namespace Abandoned.EditorTools
                     asset = FontAsset.CreateFontAsset(font);
                     asset.name = $"{name} SDF";
                     asset.isMultiAtlasTexturesEnabled = true;
+                    // Otherwise each player build rewrites the asset and the next platform's build is "dirty".
+                    var so = new SerializedObject(asset);
+                    SerializedProperty clear = so.FindProperty("m_ClearDynamicDataOnBuild");
+                    if (clear != null)
+                    {
+                        clear.boolValue = false;
+                        so.ApplyModifiedPropertiesWithoutUndo();
+                    }
                     AssetDatabase.CreateAsset(asset, path);
                     if (asset.material != null)
                     {
