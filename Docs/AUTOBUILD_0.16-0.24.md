@@ -187,3 +187,9 @@ New consumable ($600, level 2): look at a loot item (2.6 m) and use. The host se
 flag (NetworkLoot.Blanket.cs); every machine drapes a quilt box over it and sets `LootItem.Cushion` to 0.4, so
 its impacts keep 40 % of their speed for the rest of the job (with a crash mat too, the two multiply).
 Menu: Tools/Abandoned/Content/Moving Blanket (0.18.5).
+
+## 0.18.6 overtime
+`RunOvertime` (RunState): the server time the haul first meets quota is kept (toast "QUOTA MET... overtime");
+from then the multiplier on everything over quota climbs 0.1 a minute up to ×2, shown on the scan HUD, and
+paid at departure through `RunState.Settling` on the haul at the moment of leaving. The building's decay
+clock keeps running, so staying is the risk. Tunables: BonusConfig.

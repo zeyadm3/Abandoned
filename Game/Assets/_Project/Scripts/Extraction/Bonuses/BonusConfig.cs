@@ -35,6 +35,15 @@ namespace Abandoned.Extraction
         public float RushSeconds => rushSeconds;
         public float RushMultiplier => rushMultiplier;
 
+        [Header("Overtime (0.18.6)")]
+        [Tooltip("Once quota is met, the multiplier on everything over quota climbs this much per minute you stay...")]
+        [SerializeField, Min(0f)] private float overtimePerMinute = 0.1f;
+        [Tooltip("...up to this.")]
+        [SerializeField, Min(1f)] private float overtimeMax = 2f;
+
+        public float OvertimePerMinute => overtimePerMinute;
+        public float OvertimeMax => overtimeMax;
+
         // @@bonusfields
 
         private static BonusConfig current;
