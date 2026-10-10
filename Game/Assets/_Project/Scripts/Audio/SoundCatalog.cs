@@ -210,6 +210,8 @@ namespace Abandoned.Audio
             Set(SoundId.ToyScore, Menu, 90, 1f, 10f, Syn, Open, 1, null, 0.7f, 0f);
             // 0.20.1: the lockpick (barely audible).
             Set(SoundId.LockpickWork, Fx, 140, 0.5f, 6f, Syn, Wall, 2, null, 0.6f);
+            // 0.20.2: flashlight charging at the truck.
+            Set(SoundId.ChargeTick, Menu, 150, 1f, 10f, Syn, Open, 1, null, 0.5f, 0f);
             // @@catalog
             return t;
         }

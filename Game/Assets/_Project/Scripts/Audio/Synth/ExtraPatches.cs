@@ -63,6 +63,8 @@ namespace Abandoned.Audio
                 case SoundId.ToyScore: return Patch.Mono(id, take, CrewPatches.ToyScore(), 0.6f);
                 // 0.20.1: the lockpick (barely audible).
                 case SoundId.LockpickWork: return Patch.Mono(id, take, GearPatches2.Lockpick(take), 0.5f);
+                // 0.20.2: flashlight charging at the truck.
+                case SoundId.ChargeTick: return Patch.Mono(id, take, GearPatches2.ChargeTick(), 0.4f);
                 // @@cases
                 default: return null;
             }

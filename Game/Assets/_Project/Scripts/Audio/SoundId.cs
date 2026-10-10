@@ -177,6 +177,8 @@ namespace Abandoned.Audio
         ToyScore,
         // 0.20.1: the lockpick (barely audible).
         LockpickWork,
+        // 0.20.2: flashlight charging at the truck.
+        ChargeTick,
         // @@ids
     }
 }

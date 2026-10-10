@@ -21,6 +21,7 @@ namespace Abandoned.UI
             go.AddComponent<PingView>(); // 0.19.0
             go.AddComponent<GhostActions>(); // 0.19.2
             go.AddComponent<AchievementWatcher>(); // 0.19.10
+            go.AddComponent<ChargeIndicator>(); // 0.20.2
             // @@screens
         }
     }

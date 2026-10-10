@@ -11,5 +11,13 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Fade(Synth.Noise(0.8f, 2002 + take, 7000f, 6000f, 0.05f, 2f, 2500f), 0.05f, 0.2f), 0.12f, 0.2f);
             return d;
         }
+
+        /// <summary>A charger's soft electronic tick.</summary>
+        public static float[] ChargeTick()
+        {
+            float[] d = Synth.Buffer(0.15f);
+            Patch.Layer(d, Synth.Sweep(0.06f, 2200f, 2600f, 0.002f, 50f), 0.4f);
+            return d;
+        }
     }
 }

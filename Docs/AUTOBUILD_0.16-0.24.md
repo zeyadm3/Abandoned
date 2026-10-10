@@ -318,3 +318,8 @@ New tool ($1,800, level 2): with it in a hand slot (and no bolt cutters), E on a
 padlock in 14 s (ToolConfig.LockpickSeconds) with almost no noise (0.05) and a faint ticking, through
 RunShutters' existing timed opening. Bolt cutters stay quicker (1.6 s, a little louder); the crowbar stays fast
 and loud.
+
+## 0.20.2 flashlight recharge at the truck
+Already in the game since 0.12.6 (QA D-01: standing in the truck bay tops the battery up, FlashlightConfig.
+TruckRechargePerSecond), but invisible. Now `UI/ChargeIndicator` shows "CHARGING FLASHLIGHT 64%" under the
+crosshair while yours charges there, with a soft tick as it fills.
