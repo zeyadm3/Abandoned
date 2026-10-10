@@ -63,6 +63,34 @@ namespace Abandoned.Player
         {
             if (instance == this) instance = null;
             Freeze(false);
+            UI.HudCallout.Clear(this);
+        }
+
+        // ---- 0.23.6 photo mode ----
+
+        /// <summary>Where photos go: Pictures/Abandoned (or the game's data folder where there's no Pictures).</summary>
+        public static string PhotoFolder
+        {
+            get
+            {
+                string pictures = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures);
+                return string.IsNullOrEmpty(pictures) ? System.IO.Path.Combine(Application.persistentDataPath, "Photos") : System.IO.Path.Combine(pictures, "Abandoned");
+            }
+        }
+
+        private System.Collections.IEnumerator TakePhoto()
+        {
+            UnityEngine.UIElements.VisualElement hud = UI.HudLayer.Root;
+            var shown = hud != null ? hud.resolvedStyle.display : UnityEngine.UIElements.DisplayStyle.Flex;
+            if (hud != null) hud.style.display = UnityEngine.UIElements.DisplayStyle.None;
+            yield return new WaitForEndOfFrame();
+            System.IO.Directory.CreateDirectory(PhotoFolder);
+            string file = System.IO.Path.Combine(PhotoFolder, $"Abandoned_{System.DateTime.Now:yyyyMMdd_HHmmss}.png");
+            ScreenCapture.CaptureScreenshot(file);
+            yield return null;
+            if (hud != null) hud.style.display = shown;
+            Audio.GameAudio.PlayUi(Audio.SoundId.UiConfirm, 0.8f);
+            UI.ToastFeed.Show("PHOTO", $"Saved to {file}", null, UI.ToastFeed.Kind.Good);
         }
 
         // Every player on this machine stands still while we fly (only ours reads devices anyway).
@@ -86,6 +114,10 @@ namespace Abandoned.Player
             }
             transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
             if (k == null) return;
+            UI.HudCallout.Set(this, "PHOTO MODE   WASD / Q E fly   wheel speed   Z / X zoom   Enter take a photo   F9 leave");
+            if (k.zKey.isPressed) cam.Lens.FieldOfView = Mathf.Max(15f, cam.Lens.FieldOfView - 30f * Time.unscaledDeltaTime);
+            if (k.xKey.isPressed) cam.Lens.FieldOfView = Mathf.Min(110f, cam.Lens.FieldOfView + 30f * Time.unscaledDeltaTime);
+            if (k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame) StartCoroutine(TakePhoto());
             Vector3 move = Vector3.zero;
             if (k.wKey.isPressed) move += Vector3.forward;
             if (k.sKey.isPressed) move += Vector3.back;

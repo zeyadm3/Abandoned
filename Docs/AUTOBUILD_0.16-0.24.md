@@ -505,3 +505,9 @@ under their identity (Steam id, or chosen name) in `SpawnSlots.Remember`, and wh
 (`NetworkPlayer.Rejoin`) they get the same seat (number, colour, spawn point) if nobody has taken it. Each machine
 keeps what it last joined (address:port or SteamID64), and the Play screen's Join card shows "Rejoin your last
 crew" for it. Over Steam, accepting the invite again also works as before.
+
+## 0.23.6 photo mode
+The F9 free camera was already allowed in player builds where it can't scout for the living (at the HQ, or as a
+ghost on a job). Now it is photo mode: a help line, Z/X zoom (field of view 15–110), and Enter takes a photo
+(the HUD hides for that frame) saved as a PNG in Pictures/Abandoned (or the game's data folder), with a toast
+saying where. F10 clip mode still hides the HUD for video.
