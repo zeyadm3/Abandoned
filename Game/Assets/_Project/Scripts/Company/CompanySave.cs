@@ -35,6 +35,8 @@ namespace Abandoned.Company
         public List<OwnedItem> equipment = new();
         /// <summary>One-off purchases the company keeps (truck upgrades, M10.1), by id.</summary>
         public List<string> unlocks = new();
+        /// <summary>0.18.7: every kind of loot the company has ever sold (the HQ loot catalogue and trophy shelf).</summary>
+        public List<string> catalogue = new();
         // A job taken but not yet settled (quota > 0): the host quit or crashed mid-run.
         public int pendingQuota;
         public float pendingBonus;

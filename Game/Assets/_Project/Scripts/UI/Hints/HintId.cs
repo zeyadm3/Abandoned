@@ -36,6 +36,8 @@ namespace Abandoned.UI
         Vault,
         // 0.16.7
         Security,
+        // 0.18.7
+        Catalogue,
         // @@hints
     }
 }

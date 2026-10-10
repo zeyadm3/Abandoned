@@ -193,3 +193,12 @@ Menu: Tools/Abandoned/Content/Moving Blanket (0.18.5).
 from then the multiplier on everything over quota climbs 0.1 a minute up to ×2, shown on the scan HUD, and
 paid at departure through `RunState.Settling` on the haul at the moment of leaving. The building's decay
 clock keeps running, so staying is the risk. Tunables: BonusConfig.
+
+## 0.18.7 loot catalogue and trophy shelf
+`CompanySave.catalogue` lists every kind of loot the company has sold (`RunResults.Item.Id` is new); the host
+adds to it at payday (not for a wiped crew) and mirrors it on `CompanyService` (CompanyService.Catalogue.cs).
+At the HQ (added to the saved scene by `HqSites`, never regenerated): a lectern with the catalogue ledger (E:
+`UI/LootCatalogueScreen`, in the field guide's style: found kinds with picture and price range, jackpots
+starred, the rest blank) and a three-board trophy shelf with 12 places that shows a small copy of every
+jackpot sold, best first (`Company.TrophyShelf`). New screens from here on live on `UI/ExtraScreens`, created
+at start-up (no session-prefab change). Menu: Tools/Abandoned/HQ/Add Loot Catalogue and Trophy Shelf (0.18.7).

@@ -11,6 +11,8 @@ namespace Abandoned.Extraction
         public struct Item : INetworkSerializable
         {
             public string Name;
+            /// <summary>Its loot definition's id (0.18.7: the HQ loot catalogue).</summary>
+            public string Id;
             /// <summary>Value when it was found (rolled value x condition).</summary>
             public int StartValue;
             public int FinalValue;
@@ -26,6 +28,8 @@ namespace Abandoned.Extraction
             public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
             {
                 s.SerializeValue(ref Name);
+                Id ??= "";
+                s.SerializeValue(ref Id);
                 s.SerializeValue(ref StartValue);
                 s.SerializeValue(ref FinalValue);
                 s.SerializeValue(ref Weight);

@@ -95,6 +95,7 @@ namespace Abandoned.Company
 
         public override void OnNetworkSpawn()
         {
+            HookCatalogue();
             Current = this;
             DontDestroyOnLoad(gameObject);
             // Every machine: a level gained on payday gets its sting (M10.8).
@@ -133,6 +134,7 @@ namespace Abandoned.Company
 
         public override void OnNetworkDespawn()
         {
+            UnhookCatalogue();
             if (Current == this) Current = null;
             if (IsServer) NetworkBootstrap.JoinBlocker = null;
             Application.quitting -= MarkLeavingMidJob;
@@ -147,6 +149,7 @@ namespace Abandoned.Company
         private void Update()
         {
             if (!IsServer || !IsSpawned) return;
+            SyncCatalogue(); // 0.18.7: cheap when nothing changed
             // The Steam lobby takes joiners only while everyone is at the HQ.
             bool home = SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel;
             if (lobby == null && Time.unscaledTime >= nextLobbyLookup)
