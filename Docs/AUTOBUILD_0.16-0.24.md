@@ -550,3 +550,14 @@ request sheet, clock, new hire, ping diamond...) in a stamped frame, hazard yell
 when achieved, grey when not. Files for Steam's partner site: Tools/Steam/AchievementIcons/<ACH_ID>.png and
 <ACH_ID>_locked.png. In game: Art/Generated/AchievementIcons as "achievement/<id>" icons, shown (greyed until
 earned) beside each achievement. Menu: Tools/Abandoned/Content/Achievement Icons (0.24.3).
+
+## 0.24.4 store art and screenshots
+`Editor/Releases/Release0244` renders, from the saved mall in the editor (nothing saved back), into
+Docs/StoreArt: six 1920×1080 screenshots with staged loot, crew and monsters (the atrium with the Hunter, the
+glass bridge with the piano, loading the truck, a dark store with the Stalker, the food court with the Blind One,
+the flooded basement with the Crawlers) and Steam's capsule set at the current sizes (header 920×430, small
+462×174, main 1232×706, vertical 748×896, library capsule 600×900, library hero 3840×1240 with no text, library
+logo 1280×720 on transparent, page background 1438×810), the title in Saira Stencil rendered alone and laid over
+each scene. A small exposure lift is used for these only. Treat them as drafts: the staged crew stand in their
+rest pose, and real gameplay captures (F9 photo mode, 0.23.6) will look better. Menu: Tools/Abandoned/Store/
+Render Store Art and Screenshots (0.24.4).
