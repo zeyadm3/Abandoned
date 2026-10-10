@@ -188,6 +188,8 @@ namespace Abandoned.Audio
         Shove,
         // 0.21.3: a monster recoils.
         ThreatFlinch,
+        // 0.21.4: the cab's toot (not the departure horn: two short, higher blips).
+        CabToot,
         // @@ids
     }
 }

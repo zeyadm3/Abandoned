@@ -74,6 +74,8 @@ namespace Abandoned.Audio
                 case SoundId.Shove: return Patch.Mono(id, take, CrewPatches.Shove(take), 0.6f);
                 // 0.21.3: a monster recoils.
                 case SoundId.ThreatFlinch: return Patch.Mono(id, take, CrewPatches.Flinch(take), 0.85f);
+                // 0.21.4: the cab's toot (not the departure horn: two short, higher blips).
+                case SoundId.CabToot: return Patch.Mono(id, take, GearPatches2.CabToot(), 0.9f);
                 // @@cases
                 default: return null;
             }

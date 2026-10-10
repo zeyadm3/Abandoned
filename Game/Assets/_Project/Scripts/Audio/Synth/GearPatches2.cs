@@ -48,5 +48,17 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Fade(Synth.Noise(1f, 2011 + take, 4000f, 3500f, 0.05f, 0.1f, 1500f), 0.05f, 0.05f), 0.2f);
             return d;
         }
+
+        /// <summary>Two short, higher toots: "over here", not "we're leaving".</summary>
+        public static float[] CabToot()
+        {
+            float[] d = Synth.Buffer(0.8f);
+            for (int i = 0; i < 2; i++)
+            {
+                Patch.Layer(d, Synth.Fade(Synth.Sweep(0.16f, 440f, 440f, 0.005f, 0.5f, 2), 0.005f, 0.03f), 0.5f, i * 0.26f);
+                Patch.Layer(d, Synth.Fade(Synth.Sweep(0.16f, 554f, 554f, 0.005f, 0.5f, 2), 0.005f, 0.03f), 0.4f, i * 0.26f);
+            }
+            return SynthReverb.Apply(d, 1.2f, 0.2f);
+        }
     }
 }

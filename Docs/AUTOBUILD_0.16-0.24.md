@@ -379,3 +379,12 @@ loot hits it hard (host sees the collision → `Threat.FlinchRpc` to everyone, w
 gives each kind its own idle when standing: the Blind One sweeps its head listening, the Stalker barely breathes,
 the Collector twitches about, the Hunter heaves, the Weight sways, the Thing turns slowly, the Crawlers scuttle
 on the spot, the Last Hunter swings its head. Visual only.
+
+## 0.21.4 truck interior
+The 0.15.7b truck already replaced the code-built box with a real cab (seats, sloped dashboard, steering wheel,
+side mirrors, glazed windows) and a rear-view monitor, so this version makes the cab work instead
+(`Extraction.TruckDashboard`, added under the saved truck): two gauges in a binnacle behind the wheel read the
+haul against quota and how full the bay is (seen through the windscreen), a lamp beside them turns green once
+quota is met, a dome light comes on while the truck honks to leave, and a red horn button beside the ignition
+gives a short double toot (`RunCab`, everyone hears it, noise 0.8, 2 s apart) to call the crew back. Opening
+cab doors were left out: the cab's panels are merged per LOD and nobody can get in.

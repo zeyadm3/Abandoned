@@ -104,6 +104,7 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Extraction.RunHires),      // 0.19.1
             typeof(Abandoned.Extraction.RunGhosts),     // 0.19.2
             typeof(Abandoned.Extraction.RunWinch),      // 0.20.3
+            typeof(Abandoned.Extraction.RunCab),        // 0.21.4
             // @@runstate
         };
 

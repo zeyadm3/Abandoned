@@ -221,6 +221,8 @@ namespace Abandoned.Audio
             Set(SoundId.Shove, Fx, 130, 1f, 12f, Syn, Wall, 2, null, 0.7f);
             // 0.21.3: a monster recoils.
             Set(SoundId.ThreatFlinch, Monsters, 60, 2f, 30f, Syn, Dull, 2, "something snarls");
+            // 0.21.4: the cab's toot (not the departure horn: two short, higher blips).
+            Set(SoundId.CabToot, Fx, 40, 6f, 90f, Syn, Open, 1, "a short toot of the truck's horn");
             // @@catalog
             return t;
         }
