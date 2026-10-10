@@ -12,9 +12,9 @@ namespace Abandoned.Audio
             switch (id)
             {
                 // The building.
-                case SoundId.Creak: return Patch.Mono(id, take, StructurePatches.Creak(take), 0.8f);
-                case SoundId.Groan: return Patch.Mono(id, take, StructurePatches.Groan(take), 0.85f);
-                case SoundId.Snap: return Patch.Mono(id, take, StructurePatches.Snap(take));
+                case SoundId.Creak: return Patch.Mono(id, take, CuePatches.Creak(take), 0.8f);
+                case SoundId.Groan: return Patch.Mono(id, take, CuePatches.Groan(take), 0.85f);
+                case SoundId.Snap: return Patch.Mono(id, take, CuePatches.Snap(take));
                 case SoundId.Crash: return Patch.Mono(id, take, StructurePatches.Crash(take), 0.95f);
                 case SoundId.CrashDebris: return Patch.Mono(id, take, StructurePatches.RubbleLand(take), 0.8f);
                 case SoundId.RubbleLand: return Patch.Mono(id, take, StructurePatches.RubbleLand(take));
@@ -26,9 +26,9 @@ namespace Abandoned.Audio
                 case SoundId.DistantSettle: return Patch.Mono(id, take, StructurePatches.DistantSettle(take), 0.7f);
 
                 // Monsters.
-                case SoundId.BlindOneClick: return Patch.Mono(id, take, ThreatPatches.BlindOneClick(take));
+                case SoundId.BlindOneClick: return Patch.Mono(id, take, CuePatches.BlindOneClick(take));
                 case SoundId.CollectorJingle: return Patch.Mono(id, take, ThreatPatches.CollectorJingle(take), 0.7f);
-                case SoundId.HunterStep: return Patch.Mono(id, take, ThreatPatches.HunterStep(take), 0.95f);
+                case SoundId.HunterStep: return Patch.Mono(id, take, CuePatches.HunterStep(take), 0.95f);
                 case SoundId.HunterLanding: return Patch.Mono(id, take, ThreatPatches.HunterLanding(), 0.95f);
                 case SoundId.ThreatStrike: return Patch.Mono(id, take, ThreatPatches.Strike(take));
                 case SoundId.Scream: return Patch.Mono(id, take, ThreatPatches.Scream(take));
@@ -37,12 +37,12 @@ namespace Abandoned.Audio
                 case SoundId.CeilingScuttle: return Patch.Mono(id, take, ThreatPatches.CeilingScuttle(take), 0.8f);
                 case SoundId.Roar: return Patch.Mono(id, take, ThreatPatches.Roar(), 0.95f);
                 case SoundId.StalkerBreath: return Patch.Mono(id, take, ThreatPatches.StalkerBreath(take), 0.6f);
-                case SoundId.StalkerSignature: return Patch.Mono(id, take, ThreatPatches.StalkerSignature(take), 0.8f);
-                case SoundId.CollectorSignature: return Patch.Mono(id, take, ThreatPatches.CollectorSignature(take), 0.8f);
-                case SoundId.WeightSignature: return Patch.Mono(id, take, ThreatPatches.WeightSignature(take), 0.95f);
-                case SoundId.ThingSignature: return Patch.Mono(id, take, ThreatPatches.ThingSignature(take), 0.8f);
-                case SoundId.CrawlersSignature: return Patch.Mono(id, take, ThreatPatches.CrawlersSignature(take), 0.8f);
-                case SoundId.LastHunterSignature: return Patch.Mono(id, take, ThreatPatches.LastHunterSignature(take), 0.95f);
+                case SoundId.StalkerSignature: return Patch.Mono(id, take, CuePatches.StalkerSignature(take), 0.8f);
+                case SoundId.CollectorSignature: return Patch.Mono(id, take, CuePatches.CollectorSignature(take), 0.8f);
+                case SoundId.WeightSignature: return Patch.Mono(id, take, CuePatches.WeightSignature(take), 0.95f);
+                case SoundId.ThingSignature: return Patch.Mono(id, take, CuePatches.ThingSignature(take), 0.8f);
+                case SoundId.CrawlersSignature: return Patch.Mono(id, take, CuePatches.CrawlersSignature(take), 0.8f);
+                case SoundId.LastHunterSignature: return Patch.Mono(id, take, CuePatches.LastHunterSignature(take), 0.95f);
 
                 // The truck, the shutters, the siren.
                 case SoundId.Horn: return Patch.Mono(id, take, TruckPatches.Horn());

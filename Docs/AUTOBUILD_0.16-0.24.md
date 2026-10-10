@@ -511,3 +511,17 @@ The F9 free camera was already allowed in player builds where it can't scout for
 ghost on a job). Now it is photo mode: a help line, Z/X zoom (field of view 15–110), and Enter takes a photo
 (the HUD hides for that frame) saved as a PNG in Pictures/Abandoned (or the game's data folder), with a toast
 saying where. F10 clip mode still hides the HUD for video.
+
+## 0.24.0 sound cue pass
+`Audio/Synth/CuePatches.cs` replaces the synthesised voices players must learn (SoundPatches now points at it;
+the old StructurePatches/ThreatPatches versions are kept, unused, for comparison):
+- Floor warnings: creak = a stick-slip friction run (tiny wood-resonant clicks whose rate slides) over the
+  slab's body; groan = two detuned low sweeps beating against each other with a slow grinding slip; snap = a dry
+  crack, a crackle running away from it, rebar ringing and a drop. They stay Layered with the Kenney recordings,
+  and nothing else uses the stick-slip voice: a creak still only ever means the floor.
+- Monsters: Blind One = double sonar-sharp tongue clicks and a throat rattle; Hunter step = heavy dragged
+  footfall shaking grit; Stalker = slow wet inhale and a joint popping; Collector = clinking stolen trinkets and a
+  chitter; Weight = chain dragged over concrete over a deep shudder (no creak); Thing = a glassy ring that swells
+  as if played backwards; Crawlers = bursts of tiny hard feet; Last Hunter = a slow double pound.
+No new audio files (original synthesis), so nothing to add to ASSET_CREDITS. Listen and tune first: these were
+written by ear-less maths.
