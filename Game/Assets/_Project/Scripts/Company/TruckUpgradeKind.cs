@@ -7,5 +7,8 @@ namespace Abandoned.Company
         Engine,
         Armor,
         Floodlights,
+        // 0.20+ (append only)
+        Winch,
+        Forecast,
     }
 }

@@ -323,3 +323,11 @@ and loud.
 Already in the game since 0.12.6 (QA D-01: standing in the truck bay tops the battery up, FlashlightConfig.
 TruckRechargePerSecond), but invisible. Now `UI/ChargeIndicator` shows "CHARGING FLASHLIGHT 64%" under the
 crosshair while yours charges there, with a soft tick as it fills.
+
+## 0.20.3 truck winch
+A truck upgrade (catalog append: "Truck Winch", $18,000, company level 4, `TruckUpgradeKind.Winch`). A cable drum
+at the cargo bay's open end; with the upgrade owned, E there hooks the nearest Heavy or Huge item lying within
+30 m of the ramp's foot (not held, not already aboard). `RunWinch` (RunState) then reels it on the host at
+1.3 m/s, gravity off, first to the ramp's foot and then up into the bay; it lets go once aboard, if anyone grabs
+it, or after 5 s without progress. Everyone sees the cable (LineRenderer); the motor grinds (noise 0.5 a second).
+Menu: Tools/Abandoned/Mall/Add Truck Winch (0.20.3). Watch on the test: the reel's path round obstacles.

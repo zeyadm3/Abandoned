@@ -66,6 +66,7 @@ namespace Abandoned.UI
                 HintId.Catalogue => $"The loot catalogue ({interact}). Every kind of salvage the company has sold gets a line; every jackpot gets a place on the trophy shelf.",
                 HintId.Hire => $"The agency radio ({interact}). A dead crewmate can come back as a new hire, standing in the truck. The fee comes out of the payout.",
                 HintId.Difficulty => $"The difficulty switch. Relaxed, Standard or Brutal: it moves the quota, how hard monsters hit, how often they come and how fast the building falls apart. Only the host turns it.",
+                HintId.Winch => $"The truck's winch ({interact}). It hooks the nearest heavy item near the ramp and reels it in, slowly and loudly. Grab the item to unhook it.",
                 // @@hinttext
                 _ => "",
             };

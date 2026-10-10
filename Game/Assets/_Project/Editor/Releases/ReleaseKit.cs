@@ -69,6 +69,10 @@ namespace Abandoned.EditorTools
 
 
         /// <summary>Batch: only stamp the version into Player Settings (a step with no content of its own).</summary>
-        public static void ApplySettingsAndExit() => RunAndExit(BuildScript.ApplyPlayerSettings);
+        public static void ApplySettingsAndExit() => RunAndExit(() =>
+        {
+            SoundBankBuilder.CreateMissing(); // a new sound row, if the version added one
+            BuildScript.ApplyPlayerSettings();
+        });
     }
 }

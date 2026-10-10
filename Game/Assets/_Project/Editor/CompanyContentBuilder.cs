@@ -176,6 +176,10 @@ namespace Abandoned.EditorTools
                 Upgrade("engine_2", "V8", "Leaves 4 s after the lever. Hold on to something.", TruckUpgradeKind.Engine, 2, 25000, 7, 4f),
                 Upgrade("armor", "Armored Bay", "Steel plates and a cage: nothing that lives in there can touch you inside the truck.",
                     TruckUpgradeKind.Armor, 1, 40000, 9, 1f),
+                // 0.20+ (append only)
+                Upgrade("winch", "Truck Winch", "A cable drum at the tailgate: it reels a Heavy or Huge item across the court and up the ramp.",
+                    TruckUpgradeKind.Winch, 1, 18000, 4, 1f),
+                // @@upgrades
             };
             var catalog = LoadOrCreateAsset<TruckUpgradeCatalog>(TruckUpgradeCatalogPath);
             // Keep the existing order (network bits); append what's new.

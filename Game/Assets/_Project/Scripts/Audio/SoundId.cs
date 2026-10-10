@@ -179,6 +179,9 @@ namespace Abandoned.Audio
         LockpickWork,
         // 0.20.2: flashlight charging at the truck.
         ChargeTick,
+        // 0.20.3: the truck winch.
+        WinchStart,
+        WinchRun,
         // @@ids
     }
 }

@@ -212,6 +212,9 @@ namespace Abandoned.Audio
             Set(SoundId.LockpickWork, Fx, 140, 0.5f, 6f, Syn, Wall, 2, null, 0.6f);
             // 0.20.2: flashlight charging at the truck.
             Set(SoundId.ChargeTick, Menu, 150, 1f, 10f, Syn, Open, 1, null, 0.5f, 0f);
+            // 0.20.3: the truck winch.
+            Set(SoundId.WinchStart, Fx, 60, 3f, 45f, Syn, Dull, 1, "a winch clanks into gear");
+            Set(SoundId.WinchRun, Fx, 80, 3f, 40f, Syn, Dull, 2, "a winch grinds", 0.8f);
             // @@catalog
             return t;
         }

@@ -19,5 +19,24 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Sweep(0.06f, 2200f, 2600f, 0.002f, 50f), 0.4f);
             return d;
         }
+
+        /// <summary>A winch clutch dropping in: a clank and the cable snapping taut.</summary>
+        public static float[] WinchStart()
+        {
+            float[] d = Synth.Buffer(0.9f);
+            Patch.Layer(d, Synth.Thump(0.3f, 180f, 70f, 14f), 0.8f);
+            Patch.Layer(d, Synth.Modal(0.5f, 330f, Patch.Bar, null, 10f), 0.4f);
+            Patch.Layer(d, Synth.Sweep(0.3f, 600f, 1400f, 0.005f, 8f, 2), 0.25f, 0.15f);
+            return SynthReverb.Apply(d, 0.9f, 0.2f);
+        }
+
+        /// <summary>The drum turning: a geared motor and the ratchet's clicks.</summary>
+        public static float[] WinchRun(int take)
+        {
+            float[] d = Synth.Buffer(1f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(1f, 95f + take * 4f, 95f, 0.05f, 0.1f, 2), 0.05f, 0.05f), 0.5f);
+            for (int i = 0; i < 8; i++) Patch.Layer(d, Synth.Modal(0.05f, 2100f, Patch.Bar, null, 90f), 0.25f, i * 0.12f);
+            return d;
+        }
     }
 }

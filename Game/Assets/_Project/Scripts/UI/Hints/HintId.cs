@@ -42,6 +42,8 @@ namespace Abandoned.UI
         Hire,
         // 0.19.4
         Difficulty,
+        // 0.20.3
+        Winch,
         // @@hints
     }
 }

@@ -65,6 +65,9 @@ namespace Abandoned.Audio
                 case SoundId.LockpickWork: return Patch.Mono(id, take, GearPatches2.Lockpick(take), 0.5f);
                 // 0.20.2: flashlight charging at the truck.
                 case SoundId.ChargeTick: return Patch.Mono(id, take, GearPatches2.ChargeTick(), 0.4f);
+                // 0.20.3: the truck winch.
+                case SoundId.WinchStart: return Patch.Mono(id, take, GearPatches2.WinchStart(), 0.85f);
+                case SoundId.WinchRun: return Patch.Mono(id, take, GearPatches2.WinchRun(take), 0.7f);
                 // @@cases
                 default: return null;
             }
