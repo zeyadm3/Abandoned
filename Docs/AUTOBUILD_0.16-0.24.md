@@ -165,3 +165,9 @@ second via `LootItem.Drain`), rings for 4 s at a seeded moment in most 75 s wind
 seed and server clock, so every machine agrees; noise 0.6), top-heavy (centre of mass raised to 35 % of its
 height, so it tips). 27 existing items given quirks (clocks/phones/radios ring, fridges/washers/bathtubs leak,
 tool chests/cartons rattle, lamps/statues/racks top-heavy). Menu: Tools/Abandoned/Content/Loot Quirks (0.18.2).
+
+## 0.18.3 loot sets
+`Loot.LootSet` assets (Data/Loot/Sets) listed in `LootSetCatalog` (Data/Loot/Resources): Home Office, Kitchen
+Counter, Gallery Wall, Jewellery Box, Living Room, Checkout Lane, $1,400–3,000 each. `RunSets` (RunState) pays
+each set with one whole item of every member aboard at departure, and the scan HUD shows the set closest to
+done in the bay ("SET: Kitchen Counter 2/4"). A new set is a new asset. Menu: Tools/Abandoned/Content/Loot Sets (0.18.3).

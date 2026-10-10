@@ -97,6 +97,7 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Extraction.RunChalk),      // 0.17.6
             typeof(Abandoned.Extraction.RunRequests),   // 0.18.0
             typeof(Abandoned.Extraction.RunRush),       // 0.18.1
+            typeof(Abandoned.Extraction.RunSets),       // 0.18.3
             // @@runstate
         };
 
