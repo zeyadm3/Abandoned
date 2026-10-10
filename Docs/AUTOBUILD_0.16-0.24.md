@@ -345,3 +345,10 @@ camera (the main camera is switched off meanwhile) and their body stands still w
 sprint/jump up, crouch down, look to turn (4.5 m/s, stops at walls). Use again, a flat battery (90 s) or the
 pilot's death brings it home (despawns). Rotors heard by everyone; monsters hear them every 1.5 s (noise 0.35).
 Prefab: Prefabs/Equipment/Drone (GearPrefabs).
+
+## 0.20.6 threat forecast
+Each job sheet on the board has a KNOWN THREATS row: "???" until the company buys "Threat Forecast" (an upgrade
+in the truck-upgrade shop, $9,000, level 3, `TruckUpgradeKind.Forecast`). With it, the row names the first
+monster on site, worked out at the HQ from the contract's seed with the same catalog weights and roll as the
+mall's ThreatDirector (`Threats.ThreatForecast`, Data/Threats/Resources). Later arrivals are not forecast.
+If the director's opening rule ever changes, change ThreatForecast.Opening with it.

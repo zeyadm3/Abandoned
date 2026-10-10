@@ -93,6 +93,10 @@ namespace Abandoned.Company
                 Fact(sheet, "BONUS", $"+{c.PayoutBonus:P0}", false);
                 Fact(sheet, "LOOT", $"${c.LootMin / 1000}k - ${c.LootMax / 1000}k", false);
                 Fact(sheet, "THREAT", Contract.ThreatName(c.ThreatLevel), c.ThreatLevel >= 2, Contract.ThreatNote(c.ThreatLevel));
+                // 0.20.6: the forecast upgrade names the first monster on site; without it, nobody knows.
+                string first = company.HasUpgrade(TruckUpgradeKind.Forecast) && Threats.ThreatForecast.Current != null ? Threats.ThreatForecast.Current.Opening(c.Seed) : null;
+                Fact(sheet, "KNOWN THREATS", first != null ? $"first on site: {first}" : "???", false,
+                    first == null && !company.HasUpgrade(TruckUpgradeKind.Forecast) ? "the threat forecast (company upgrade) would say" : null);
                 Fact(sheet, "STABILITY", $"{c.Stability:P0}", c.Stability < 0.6f);
                 Fact(sheet, "POWER", c.PowerOff ? "OFF" : "ON", c.PowerOff);
                 Fact(sheet, "WINDOW", $"{c.WindowSeconds / 60f:0} MIN", false);

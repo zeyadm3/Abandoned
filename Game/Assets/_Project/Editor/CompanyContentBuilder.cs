@@ -179,6 +179,8 @@ namespace Abandoned.EditorTools
                 // 0.20+ (append only)
                 Upgrade("winch", "Truck Winch", "A cable drum at the tailgate: it reels a Heavy or Huge item across the court and up the ramp.",
                     TruckUpgradeKind.Winch, 1, 18000, 4, 1f),
+                Upgrade("forecast", "Threat Forecast", "A scanner and a contact at the council: each job on the board names the first thing waiting on site.",
+                    TruckUpgradeKind.Forecast, 1, 9000, 3, 1f),
                 // @@upgrades
             };
             var catalog = LoadOrCreateAsset<TruckUpgradeCatalog>(TruckUpgradeCatalogPath);
