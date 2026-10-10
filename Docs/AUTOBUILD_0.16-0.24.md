@@ -216,3 +216,10 @@ An agency radio beside the truck's ignition (`HireRadio`). With a crewmate dead,
 to 3 hires a job, and adds a fee of max($1,200, 12 % of the haul at that moment). Fees come off the payout at
 departure as negative lines through `RunState.Settling` (CompanyLedger now takes a negative extra). Respawn,
 not join. Tunables: BonusConfig. Menu: Tools/Abandoned/Mall/Add Agency Radio (0.19.1).
+
+## 0.19.2 ghost knock, flicker and nudge
+While spectating, a dead player's E knocks (a soft triple rap on wood, deliberately unlike the Stalker's
+knock), F makes every light within 8 m of where the ghost camera looks stutter for 1.6 s
+(`LightFixture.DisturbHere`), jump nudges the nearest loose small item (pocket/one-hand, not held) within 1.6 m.
+`RunGhosts` (RunState) checks the sender is dead, the spot is within 30 m of a living player, and 3.5 s between
+acts. No monster noise from any of it. `UI/GhostActions` (ExtraScreens) reads the keys and shows the help line.

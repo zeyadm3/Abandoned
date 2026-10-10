@@ -46,6 +46,11 @@ namespace Abandoned.Structure
         public static bool IsDisturbed => Time.time < disturbedUntil;
         public static void Disturb(float seconds) => disturbedUntil = Mathf.Max(disturbedUntil, Time.time + seconds);
 
+        private float ownDisturbedUntil;
+
+        /// <summary>0.19.2: this one light stutters for a moment (a ghost's flicker).</summary>
+        public void DisturbHere(float seconds) => ownDisturbedUntil = Mathf.Max(ownDisturbedUntil, Time.time + seconds);
+
         private void Awake()
         {
             if (lamp != null) originalColor = lamp.color;
@@ -77,7 +82,7 @@ namespace Abandoned.Structure
         private void Update()
         {
             if (!Lit) return;
-            bool disturbed = IsDisturbed;
+            bool disturbed = IsDisturbed || Time.time < ownDisturbedUntil;
             if (Core.GameSettings.ReduceFlashing)
             {
                 // QA O-01: no strobing. A failing or disturbed light sags and recovers slowly instead.

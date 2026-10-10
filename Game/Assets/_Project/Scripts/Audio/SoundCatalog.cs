@@ -203,6 +203,9 @@ namespace Abandoned.Audio
             Set(SoundId.LootRing, Fx, 60, 3f, 40f, Syn, Dull, 2, "something is ringing");
             // 0.19.0: ping marker (UI).
             Set(SoundId.PingBlip, Menu, 80, 1f, 10f, Syn, Open, 1, null, 0.7f, 0f);
+            // 0.19.2: ghosts (not the Stalker's knock: a ghost raps softly, three times, on wood).
+            Set(SoundId.GhostKnock, Fx, 70, 2f, 28f, Syn, Dull, 2, "a soft rap, rap, rap");
+            Set(SoundId.GhostWhoosh, Fx, 120, 1f, 14f, Syn, Wall, 2, null, 0.7f);
             // @@catalog
             return t;
         }

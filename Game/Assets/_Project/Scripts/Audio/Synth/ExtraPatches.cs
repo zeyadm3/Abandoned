@@ -56,6 +56,9 @@ namespace Abandoned.Audio
                 case SoundId.LootRing: return Patch.Mono(id, take, LootPatches.Ring(take), 0.8f);
                 // 0.19.0: ping marker (UI).
                 case SoundId.PingBlip: return Patch.Mono(id, take, CrewPatches.Ping(), 0.6f);
+                // 0.19.2: ghosts (not the Stalker's knock: a ghost raps softly, three times, on wood).
+                case SoundId.GhostKnock: return Patch.Mono(id, take, CrewPatches.GhostKnock(take), 0.8f);
+                case SoundId.GhostWhoosh: return Patch.Mono(id, take, CrewPatches.GhostWhoosh(take), 0.6f);
                 // @@cases
                 default: return null;
             }

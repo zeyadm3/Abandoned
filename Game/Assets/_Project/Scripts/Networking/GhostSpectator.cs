@@ -33,6 +33,8 @@ namespace Abandoned.Networking
         private readonly Dictionary<Threat, UnityEngine.UIElements.Label> threatMarks = new();
 
         public bool Spectating { get; private set; }
+        /// <summary>0.19.2: the ghost camera (where a ghost's knock, flicker and nudge aim).</summary>
+        public Transform View => ghostCamera != null ? ghostCamera.transform : null;
         public NetworkPlayer Following { get; private set; }
 
         private void LateUpdate()

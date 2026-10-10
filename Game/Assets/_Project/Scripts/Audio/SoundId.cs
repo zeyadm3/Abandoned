@@ -170,6 +170,9 @@ namespace Abandoned.Audio
         LootRing,
         // 0.19.0: ping marker (UI).
         PingBlip,
+        // 0.19.2: ghosts (not the Stalker's knock: a ghost raps softly, three times, on wood).
+        GhostKnock,
+        GhostWhoosh,
         // @@ids
     }
 }

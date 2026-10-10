@@ -19,6 +19,7 @@ namespace Abandoned.UI
             Instance = go.AddComponent<ExtraScreens>();
             go.AddComponent<LootCatalogueScreen>();
             go.AddComponent<PingView>(); // 0.19.0
+            go.AddComponent<GhostActions>(); // 0.19.2
             // @@screens
         }
     }
