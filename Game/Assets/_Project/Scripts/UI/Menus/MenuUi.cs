@@ -87,6 +87,9 @@ namespace Abandoned.UI
             if (theme != null)
             {
                 if (theme.Styles != null && !root.styleSheets.Contains(theme.Styles)) root.styleSheets.Add(theme.Styles);
+                // 0.22: the revamp sits on top of the base sheet (Docs/UI_STYLE_GUIDE_0.22.md).
+                StyleSheet revamp = Resources.Load<StyleSheet>("Revamp");
+                if (revamp != null && !root.styleSheets.Contains(revamp)) root.styleSheets.Add(revamp);
                 if (theme.BodyFont != null) font = theme.BodyFont;
                 if (theme.TitleFont != null) titleFont = theme.TitleFont;
             }

@@ -388,3 +388,10 @@ haul against quota and how full the bay is (seen through the windscreen), a lamp
 quota is met, a dome light comes on while the truck honks to leave, and a red horn button beside the ignition
 gives a short double toot (`RunCab`, everyone hears it, noise 0.8, 2 s apart) to call the crew back. Opening
 cab doors were left out: the cab's panels are merged per LOD and nobody can get in.
+
+## 0.22.0 reference, style guide and brief
+The user's reference wasn't available, so Docs/UI_STYLE_GUIDE_0.22.md sets a stand-in direction ("Company
+Issue": hazard yellow on cool slate, square industrial shapes; the company talking), colours, type, shapes,
+icons, motion, the rules that stay, and the full screen list. The whole revamp lives in
+`Art/UI/Resources/Revamp.uss`, loaded by MenuUi after Menu.uss (empty at this step); deleting it brings the old
+look back. The friend can replace the direction and keep the token names.
