@@ -197,6 +197,10 @@ namespace Abandoned.Audio
             // 0.17.7: flares.
             Set(SoundId.FlareIgnite, Fx, 80, 2f, 30f, Syn, Wall, 1, "a flare is struck");
             Set(SoundId.FlareHiss, Fx, 160, 1f, 14f, Syn, Wall, 3, null, 0.5f);
+            // 0.18.2: loot quirks.
+            Set(SoundId.LootRattle, Fx, 120, 1f, 20f, Syn, Wall, 3, "rattling", 0.8f);
+            Set(SoundId.LootDrip, Fx, 160, 1f, 8f, Syn, Wall, 3, null, 0.6f);
+            Set(SoundId.LootRing, Fx, 60, 3f, 40f, Syn, Dull, 2, "something is ringing");
             // @@catalog
             return t;
         }

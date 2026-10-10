@@ -156,3 +156,12 @@ unshattered item of that kind aboard pays max($1,500, 80 % of its value). Tunabl
 item still out in the building (seeded): toast, radio line, and a HUD goal with a countdown. For 3 min the
 host notes each item of that kind that lands in the truck bay; those still aboard and whole at departure pay
 ×2 (the extra value on top, through `RunState.Settling`). Tunables: BonusConfig.
+
+## 0.18.2 loot quirks
+`LootDefinition.Quirks` (flags: Rattles, Leaks, Rings, TopHeavy); `Loot.LootQuirks` (added at run time by
+LootItem for any quirky definition, so no prefab changes) does the rest on every machine: rattles while
+moving faster than 0.6 m/s (noise 0.25), leaks while carried (drips; the host drains ~0.2 % of full value per
+second via `LootItem.Drain`), rings for 4 s at a seeded moment in most 75 s windows (computed from the item
+seed and server clock, so every machine agrees; noise 0.6), top-heavy (centre of mass raised to 35 % of its
+height, so it tips). 27 existing items given quirks (clocks/phones/radios ring, fridges/washers/bathtubs leak,
+tool chests/cartons rattle, lamps/statues/racks top-heavy). Menu: Tools/Abandoned/Content/Loot Quirks (0.18.2).

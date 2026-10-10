@@ -50,6 +50,10 @@ namespace Abandoned.Audio
                 // 0.17.7: flares.
                 case SoundId.FlareIgnite: return Patch.Mono(id, take, HazardPatches.FlareIgnite(), 0.85f);
                 case SoundId.FlareHiss: return Patch.Mono(id, take, HazardPatches.FlareHiss(take), 0.5f);
+                // 0.18.2: loot quirks.
+                case SoundId.LootRattle: return Patch.Mono(id, take, LootPatches.Rattle(take), 0.6f);
+                case SoundId.LootDrip: return Patch.Mono(id, take, LootPatches.Drip(take), 0.5f);
+                case SoundId.LootRing: return Patch.Mono(id, take, LootPatches.Ring(take), 0.8f);
                 // @@cases
                 default: return null;
             }

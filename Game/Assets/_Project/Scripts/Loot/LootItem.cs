@@ -65,6 +65,18 @@ namespace Abandoned.Loot
         {
             grabbable = GetComponent<Grabbable>();
             body = GetComponent<Rigidbody>();
+            // 0.18.2: quirky items get their behaviour from the definition's data, on every machine.
+            if (definition != null && definition.Quirks != LootQuirk.None && GetComponent<LootQuirks>() == null) gameObject.AddComponent<LootQuirks>();
+        }
+
+        /// <summary>Host (0.18.2, leaks): value seeping away, no impact involved.</summary>
+        public void Drain(int loss)
+        {
+            if (IsShattered || !initialized || !HasValueAuthority || loss <= 0) return;
+            loss = Mathf.Min(loss, CurrentValue);
+            if (loss <= 0) return;
+            CurrentValue -= loss;
+            ValueChanged?.Invoke(this);
         }
 
         private void OnEnable() => LoadSources.Register(this);

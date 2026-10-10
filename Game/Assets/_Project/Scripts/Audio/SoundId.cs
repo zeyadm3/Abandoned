@@ -164,6 +164,10 @@ namespace Abandoned.Audio
         // 0.17.7: flares.
         FlareIgnite,
         FlareHiss,
+        // 0.18.2: loot quirks.
+        LootRattle,
+        LootDrip,
+        LootRing,
         // @@ids
     }
 }

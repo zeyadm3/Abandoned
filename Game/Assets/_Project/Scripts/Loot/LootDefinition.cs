@@ -55,6 +55,9 @@ namespace Abandoned.Loot
         [Tooltip("Gear that behaves like loot (a plank to carry and lay down): never spawned in a run, worth nothing.")]
         [field: SerializeField] public bool Utility { get; private set; }
 
+        [field: Tooltip("Quirks (0.18.2): rattles, leaks, rings at random, top-heavy. Behaviour lives in LootQuirks.")]
+        [field: SerializeField] public LootQuirk Quirks { get; private set; }
+
         [field: Header("Model")]
         [field: Tooltip("Art model (an imported FBX), fitted inside Size; the Size box stays the collider. Empty = the placeholder shape.")]
         [field: SerializeField] public GameObject Model { get; private set; }
@@ -124,6 +127,8 @@ namespace Abandoned.Loot
         }
 
         public void EditorSetUtility(bool utility) => Utility = utility;
+
+        public void EditorSetQuirks(LootQuirk quirks) => Quirks = quirks;
 
         /// <summary>Editor-only: the art model, and the Size box that hugs it.</summary>
         public void EditorSetModel(GameObject model, float yaw, Vector3 size)
