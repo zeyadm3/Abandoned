@@ -365,3 +365,9 @@ hiding, knocked down, or flying the drone. Code-built shapes (an artist's rig wo
 medkit with cross, radio, bolt cutters, spray can/flare/glow stick; anything else a box in the gear's colour).
 You see it in your first-person right glove; crewmates see it in your worker's right hand, the arm raised to
 carry it (`WorkerPresentation.HeldTool`, from the synced hand slots). It goes away while carrying loot.
+
+## 0.21.2 light player pushing
+Walking at more than 1.2 m/s into a crewmate (within 0.75 m, heading at them) asks their machine to nudge them:
+`NetworkPlayer.RequestShove` → an owner RPC → `PlayerMotor.Shove`, 60 % of your speed, capped at 2.2 m/s, at
+most every 0.4 s, never while they're hiding, down or dead. A soft thump plays. `Player.PlayerShove` runs on
+your own machine for your own player.

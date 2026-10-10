@@ -38,5 +38,14 @@ namespace Abandoned.Audio
             for (int i = 0; i < notes.Length; i++) Patch.Layer(d, Synth.Sweep(0.18f, notes[i], notes[i], 0.004f, 12f, 1), 0.4f, i * 0.07f);
             return d;
         }
+
+        /// <summary>A shoulder into a padded coverall: a soft thump and a rustle.</summary>
+        public static float[] Shove(int take)
+        {
+            float[] d = Synth.Buffer(0.35f);
+            Patch.Layer(d, Synth.Thump(0.2f, 120f + take * 10f, 70f, 20f), 0.6f);
+            Patch.Layer(d, Synth.Noise(0.25f, 2101 + take, 2500f, 1200f, 0.01f, 12f), 0.3f);
+            return d;
+        }
     }
 }

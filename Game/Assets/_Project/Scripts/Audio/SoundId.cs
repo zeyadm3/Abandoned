@@ -184,6 +184,8 @@ namespace Abandoned.Audio
         WinchRun,
         // 0.20.5: the drone.
         DroneBuzz,
+        // 0.21.2: a shove.
+        Shove,
         // @@ids
     }
 }

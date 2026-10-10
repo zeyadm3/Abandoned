@@ -171,6 +171,13 @@ namespace Abandoned.Player
         public bool IsAirborne => airborne;
         public float AirPeakY => airPeakY;
 
+        /// <summary>0.21.2: a crewmate walked into us. A small push, capped, decided on our own machine.</summary>
+        public void Shove(Vector3 push)
+        {
+            push.y = 0f;
+            horizontalVelocity += Vector3.ClampMagnitude(push, 2.2f);
+        }
+
         /// <summary>Forget any fall in progress (after teleports, respawns, getting up from a ragdoll).</summary>
         public void ResetFallTracking() => airborne = false;
 

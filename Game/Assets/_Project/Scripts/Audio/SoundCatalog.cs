@@ -217,6 +217,8 @@ namespace Abandoned.Audio
             Set(SoundId.WinchRun, Fx, 80, 3f, 40f, Syn, Dull, 2, "a winch grinds", 0.8f);
             // 0.20.5: the drone.
             Set(SoundId.DroneBuzz, Fx, 90, 2f, 30f, Syn, Dull, 2, "a drone whines", 0.8f);
+            // 0.21.2: a shove.
+            Set(SoundId.Shove, Fx, 130, 1f, 12f, Syn, Wall, 2, null, 0.7f);
             // @@catalog
             return t;
         }

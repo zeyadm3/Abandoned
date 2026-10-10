@@ -70,6 +70,8 @@ namespace Abandoned.Audio
                 case SoundId.WinchRun: return Patch.Mono(id, take, GearPatches2.WinchRun(take), 0.7f);
                 // 0.20.5: the drone.
                 case SoundId.DroneBuzz: return Patch.Mono(id, take, GearPatches2.DroneBuzz(take), 0.6f);
+                // 0.21.2: a shove.
+                case SoundId.Shove: return Patch.Mono(id, take, CrewPatches.Shove(take), 0.6f);
                 // @@cases
                 default: return null;
             }
