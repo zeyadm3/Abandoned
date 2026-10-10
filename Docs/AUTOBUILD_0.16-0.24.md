@@ -484,3 +484,10 @@ default). A second keyboard binding per action: an empty "alt" binding next to e
 AbandonedInput.inputactions, shown in Controls as "(2nd key)", and pad buttons as "(pad)". Choosing the pocket
 item to drop already existed (hold Inventory, scroll, Drop). Fixed: the Controls screen would have thrown on the
 Ping and emote actions (0.19.x) missing from its name table.
+
+## 0.23.3 audio and voice options
+Voice settings page, MICROPHONE section: microphone gain (scales the measured level the open-mic gate and
+meter use), open-mic threshold (a multiplier on VoiceConfig.OpenMicThreshold), radio volume (on top of the
+voice volume, RadioPlayback), voice chat off (nothing sent, nobody heard), text chat off (the chat key does
+nothing, no lines show). Per-crewmate volume was already remembered by Steam identity (VoiceSettings). Not
+done: choosing the audio output device (Unity has no runtime API for it; the system default is used).

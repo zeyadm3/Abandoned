@@ -40,7 +40,7 @@ namespace Abandoned.Voice
         private void Update()
         {
             owner ??= GetComponentInParent<Unity.Netcode.NetworkObject>();
-            source.volume = config.RadioVolume * VoiceSettings.Volume * (owner != null ? VoiceSettings.PlayerGain(owner.OwnerClientId) : 1f);
+            source.volume = config.RadioVolume * VoiceSettings.RadioVolume * VoiceSettings.Volume * (owner != null ? VoiceSettings.PlayerGain(owner.OwnerClientId) : 1f);
             stream.Tick();
         }
 

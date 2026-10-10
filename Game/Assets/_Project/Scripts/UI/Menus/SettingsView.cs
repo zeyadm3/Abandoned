@@ -266,6 +266,12 @@ namespace Abandoned.UI
             Section("HEARING");
             Note(MenuKit.Percent(body, "Voices", VoiceSettings.Volume, v => VoiceSettings.Volume = v), "Everyone's voice; per-player volume is in the pause menu's crew list.");
             Section("MICROPHONE");
+            // 0.23.3
+            Note(MenuKit.Percent(body, "Microphone gain", VoiceSettings.MicGain / 3f, v => VoiceSettings.MicGain = v * 3f), "How loud your mic counts for the open-mic gate (33 % is normal).");
+            Note(MenuKit.Percent(body, "Open mic threshold", VoiceSettings.OpenMicThreshold / 4f, v => VoiceSettings.OpenMicThreshold = v * 4f), "Higher: you must speak louder before open mic sends (25 % is normal).");
+            Note(MenuKit.Percent(body, "Radio volume", VoiceSettings.RadioVolume, v => VoiceSettings.RadioVolume = v), "The walkie-talkie, on top of the voice volume.");
+            Note(Toggle("Voice chat off", VoiceSettings.VoiceOff, v => VoiceSettings.VoiceOff = v), "Send nothing and hear nobody. Per-crewmate volumes are in the pause menu and are remembered.");
+            Note(Toggle("Text chat off", VoiceSettings.TextChatOff, v => VoiceSettings.TextChatOff = v), "The chat key does nothing and nobody's lines show.");
             var options = new List<string> { "System default" };
             options.AddRange(Microphone.devices);
             MenuKit.Choice(body, "Input device", options.ToArray(), Mathf.Max(0, options.IndexOf(VoiceSettings.MicDevice)),

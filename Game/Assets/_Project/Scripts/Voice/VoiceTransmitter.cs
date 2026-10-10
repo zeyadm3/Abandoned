@@ -53,7 +53,7 @@ namespace Abandoned.Voice
             PlayerInputFrame input = inputReader != null ? inputReader.Current : default;
             bool keyed = input.TalkHeld || input.RadioHeld;
             bool open = VoiceSettings.Mode == VoiceMode.OpenMic;
-            bool muted = VoiceSettings.MicMuted;
+            bool muted = VoiceSettings.MicMuted || VoiceSettings.VoiceOff; // 0.23.3
             capture.Recording = !muted && (keyed || open);
             // Keyed speech always goes out, and so does the tail Steam still has after the key is let go.
             if (keyed) lastLoud = Time.time;
@@ -64,11 +64,11 @@ namespace Abandoned.Voice
                 int length = capture.ReadPacket(packet);
                 if (length <= 0) break;
                 if (muted) continue; // drain what was captured before muting, but never send it
-                Level = MeasureLevel(length);
+                Level = Mathf.Clamp01(MeasureLevel(length) * VoiceSettings.MicGain); // 0.23.3
                 // Open mic: only real speech goes out, plus a short tail so word endings aren't cut.
                 if (!keyed)
                 {
-                    if (Level >= config.OpenMicThreshold) lastLoud = Time.time;
+                    if (Level >= config.OpenMicThreshold * VoiceSettings.OpenMicThreshold) lastLoud = Time.time;
                     if (Time.time - lastLoud > config.OpenMicHangTime) continue;
                 }
                 voice.Send(packet, length, capture.Codec, Level, OnRadio);

@@ -45,7 +45,7 @@ namespace Abandoned.UI
             bool inGame = menu != null && menu.Bootstrap != null && menu.Bootstrap.IsRunning && menu.Showing == MenuScreen.None && NetworkPlayer.Local != null;
             if (!inGame && Typing) Close();
             Keyboard k = Keyboard.current;
-            if (inGame && !Typing && Core.InputBindings.WasPressed("Chat") && !Core.CursorOwner.UiActive) Open();
+            if (inGame && !Typing && !Voice.VoiceSettings.TextChatOff && Core.InputBindings.WasPressed("Chat") && !Core.CursorOwner.UiActive) Open();
             else if (Typing && k != null && k.escapeKey.wasPressedThisFrame) Close();
             else if (Typing && k != null && (k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame)) Send();
             Fade(inGame);
@@ -106,7 +106,7 @@ namespace Abandoned.UI
 
         private void Add(ulong sender, string text, bool ghost)
         {
-            if (!Build()) return;
+            if (Voice.VoiceSettings.TextChatOff || !Build()) return; // 0.23.3
             var label = new Label { pickingMode = PickingMode.Ignore, enableRichText = true };
             label.AddToClassList("chat__line");
             // The sender's name in their coverall colour; the text as plain words (no markup from players).

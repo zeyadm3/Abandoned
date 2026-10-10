@@ -59,7 +59,7 @@ namespace Abandoned.Voice
         public static float PlayerGain(ulong clientId)
         {
             (float v, bool mute) = Player(clientId);
-            return mute ? 0f : v;
+            return mute || VoiceOff ? 0f : v;
         }
 
         private static string KeyOf(ulong clientId)
@@ -115,6 +115,23 @@ namespace Abandoned.Voice
 
         /// <summary>Writes the choices to disk (PlayerPrefs only flushes on a clean quit otherwise).</summary>
         public static void Flush() => Prefs.Save();
+
+        // ---- 0.23.3 ----
+
+        /// <summary>How much the mic's level counts for the open-mic gate and the meter (0.25-3).</summary>
+        public static float MicGain { get => Prefs.GetFloat("voice.micgain", 1f); set => Prefs.SetFloat("voice.micgain", Mathf.Clamp(value, 0.25f, 3f)); }
+
+        /// <summary>Open mic sends when the (gained) level passes this share of the default threshold (0.25-4).</summary>
+        public static float OpenMicThreshold { get => Prefs.GetFloat("voice.openmic", 1f); set => Prefs.SetFloat("voice.openmic", Mathf.Clamp(value, 0.25f, 4f)); }
+
+        /// <summary>The walkie-talkie, on top of the voice volume.</summary>
+        public static float RadioVolume { get => Prefs.GetFloat("voice.radiovolume", 1f); set => Prefs.SetFloat("voice.radiovolume", Mathf.Clamp01(value)); }
+
+        /// <summary>Voice chat off: nothing sent, nothing heard.</summary>
+        public static bool VoiceOff { get => Prefs.GetInt("voice.off", 0) == 1; set => Prefs.SetInt("voice.off", value ? 1 : 0); }
+
+        /// <summary>Text chat off: the chat key does nothing and nobody's lines show.</summary>
+        public static bool TextChatOff { get => Prefs.GetInt("chat.off", 0) == 1; set => Prefs.SetInt("chat.off", value ? 1 : 0); }
 
         private static void Save()
         {
