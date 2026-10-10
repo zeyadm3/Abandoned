@@ -270,3 +270,14 @@ Keyboard-only on a pad for now: chat, photo camera, hide HUD, emotes. `Core.PadI
 last; HUD prompts (`InputBindings.Display`) then show pad buttons as text ("X", "RT"). The eight screens that
 closed on a hard-coded Escape now use `PadInput.BackPressed` (Esc or pad B; the menu also takes Menu).
 Menu navigation with a pad is 0.23.0. Glyph images were not added (text names; a glyph pack needs approval).
+
+## 0.19.9 text table and font coverage
+`Core.TextTable` reads player text from Resources/Text/<language>.json (Data/Text/Resources/Text/en.json),
+key → text, with "{key:Interact}" filled in with the player's own key; code keeps its English as the
+fallback, so nothing ever shows a raw key. Moved so far: all 28 first-time tips (`hint.<HintId>`); tips added
+later read from code until re-exported. Not yet moved: menus, HUD, prompts, toasts (planned with 0.22's UI).
+Fonts: Noto Sans (Latin/Greek/Cyrillic), Noto Sans Arabic, Noto Sans SC (Chinese + kana) and Noto Sans KR
+(OFL, downloaded from google/fonts, credited in Docs/ASSET_CREDITS.md) as dynamic font assets
+(Data/UI/Fonts), set as global fallbacks on the menu panel's new PanelText settings: names and chat in those
+scripts now draw. Arabic letters may not join/flow right-to-left without UI Toolkit's advanced text generator
+(check on the test). Builds grow ~30 MB (the CJK fonts).
