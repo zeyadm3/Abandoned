@@ -27,7 +27,11 @@ namespace Abandoned.UI
             if (me == null || pings == null || me.IsDead || CursorOwner.UiActive) return;
             var reader = me.GetComponent<PlayerInputReader>();
             Camera cam = Camera.main;
-            if (reader != null && reader.PingPressed && cam != null) pings.RequestPing(cam.transform.position, cam.transform.forward);
+            if (reader != null && reader.PingPressed && cam != null)
+            {
+                pings.RequestPing(cam.transform.position, cam.transform.forward);
+                AchievementWatcher.Ping();
+            }
         }
 
         private void OnGUI()

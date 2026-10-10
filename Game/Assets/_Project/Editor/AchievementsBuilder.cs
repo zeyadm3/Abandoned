@@ -28,6 +28,17 @@ namespace Abandoned.EditorTools
             ("medic", "Medic", "Get a downed crewmate back on their feet.", Achievements.StatRevives, 1),
             ("timber", "Timber!", "Watch the Hunter fall through a floor.", Achievements.StatHunterFalls, 1),
             ("lights_out", "Lights Out", "Make it out of a job with the power off or after dark.", Achievements.StatDarkEscapes, 1),
+            // 0.19.10 (append only)
+            ("let_there_be_light", "Let There Be Light", "Throw a breaker.", Achievements.StatBreakers, 1),
+            ("safecracker", "Safecracker", "Be there when the vault drill gets through.", Achievements.StatVaults, 1),
+            ("going_up", "Going Up", "Ride the freight lift 10 times.", Achievements.StatLiftRides, 10),
+            ("ductwork", "Ductwork", "Crawl through 5 vents.", Achievements.StatVents, 5),
+            ("matching_set", "Matching Set", "Bring a complete loot set home.", Achievements.StatSets, 1),
+            ("teachers_pet", "Teacher's Pet", "Bring the boss what they asked for 3 times.", Achievements.StatBossRequests, 3),
+            ("express_delivery", "Express Delivery", "Deliver a rush order in time.", Achievements.StatRushOrders, 1),
+            ("under_new_management", "Under New Management", "Come back as a replacement worker.", Achievements.StatHires, 1),
+            ("look_over_there", "Look Over There", "Ping 100 things.", Achievements.StatPings, 100),
+            ("workaholic", "Workaholic", "Get paid overtime.", Achievements.StatOvertime, 1),
         };
 
         [MenuItem("Tools/Abandoned/Build Achievements")]

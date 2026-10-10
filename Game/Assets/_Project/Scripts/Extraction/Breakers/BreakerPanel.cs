@@ -62,7 +62,13 @@ namespace Abandoned.Extraction
             return "Throw the breaker (lights this sector, loudly)";
         }
 
-        public void Use(GameObject user) => RunBreakers.Current?.RequestThrow(sector);
+        public void Use(GameObject user)
+        {
+            RunBreakers run = RunBreakers.Current;
+            if (run == null || run.Restored(sector) || run.Cooldown(sector) > 0f) return;
+            run.RequestThrow(sector);
+            UI.AchievementWatcher.Breaker();
+        }
 
         private void OnDrawGizmos()
         {

@@ -43,6 +43,15 @@ namespace Abandoned.UI
                 MenuKit.Text(row, unlocked ? "DONE" : a.Threshold > 1 ? $"{progress:N0} / {a.Threshold:N0}" : "-", "hud-cell");
             }
             summary.text = $"{got} / {catalog.Items.Count} UNLOCKED";
+            // 0.19.10: the stats page, below the list.
+            MenuKit.Text(list, "STATS", "section");
+            foreach ((string stat, string label) in Achievements.StatLabels)
+            {
+                VisualElement row = MenuKit.Row(list);
+                row.AddToClassList("hud-row");
+                MenuKit.Text(row, label, "text").AddToClassList("hud-cell--name");
+                MenuKit.Text(row, Achievements.Stat(stat).ToString("N0"), "hud-cell");
+            }
         }
     }
 }

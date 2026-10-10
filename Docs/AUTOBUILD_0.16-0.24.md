@@ -281,3 +281,11 @@ Fonts: Noto Sans (Latin/Greek/Cyrillic), Noto Sans Arabic, Noto Sans SC (Chinese
 (Data/UI/Fonts), set as global fallbacks on the menu panel's new PanelText settings: names and chat in those
 scripts now draw. Arabic letters may not join/flow right-to-left without UI Toolkit's advanced text generator
 (check on the test). Builds grow ~30 MB (the CJK fonts).
+
+## 0.19.10 more achievements and a stats page
+Ten more achievements (22 in all), appended to the catalog with Steam names ACH_<ID>: Let There Be Light
+(breaker), Safecracker (vault), Going Up (10 lift rides), Ductwork (5 vents), Matching Set, Teacher's Pet (3 boss
+requests), Express Delivery (rush order), Under New Management (come back as a new hire), Look Over There
+(100 pings), Workaholic (overtime). Counted on each player's own machine (`UI/AchievementWatcher`, from what
+they did and the departure's bonus lines). The achievements screen lists every stat under STATS.
+Steam's partner site needs the 10 new API names (0.24.6).
