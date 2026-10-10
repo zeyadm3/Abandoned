@@ -29,18 +29,7 @@ namespace Abandoned.Extraction
 
         public HintId Hint => HintId.Security;
 
-        public bool Powered
-        {
-            get
-            {
-                RunState run = RunState.Current;
-                if (run == null || !run.IsSpawned) return true;
-                if (RunBreakers.Current != null && RunBreakers.Current.Restored(sector)) return true;
-                if (run.State.PowerOff) return false;
-                RunHorrorDirector horror = RunHorrorDirector.Current;
-                return horror == null || horror.Config == null || horror.Config.SectorPowered(sector, run.State.Danger);
-            }
-        }
+        public bool Powered => SectorPower.Live(sector);
 
         public string UsePrompt(GameObject user)
         {

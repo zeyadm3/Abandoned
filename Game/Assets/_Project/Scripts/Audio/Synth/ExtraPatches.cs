@@ -42,6 +42,9 @@ namespace Abandoned.Audio
                 case SoundId.PuddleSplash: return Patch.Mono(id, take, HazardPatches.Splash(take), 0.7f);
                 // 0.17.4: aftershocks (the ground itself; walls never hide it).
                 case SoundId.Aftershock: return Patch.Mono(id, take, HazardPatches.Aftershock(take), 0.95f);
+                // 0.17.5: live water (mains hum and arcing; never a creak).
+                case SoundId.WaterBuzz: return Patch.Mono(id, take, HazardPatches.WaterBuzz(take), 0.6f);
+                case SoundId.WaterZap: return Patch.Mono(id, take, HazardPatches.WaterZap(take), 0.9f);
                 // @@cases
                 default: return null;
             }

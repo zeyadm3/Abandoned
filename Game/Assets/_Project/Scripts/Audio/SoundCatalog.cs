@@ -189,6 +189,9 @@ namespace Abandoned.Audio
             Set(SoundId.PuddleSplash, Steps, 125, 1f, 16f, Syn, Wall, 4);
             // 0.17.4: aftershocks (the ground itself; walls never hide it).
             Set(SoundId.Aftershock, Building, 30, 10f, 140f, Syn, Open, 2, "THE GROUND SHAKES");
+            // 0.17.5: live water (mains hum and arcing; never a creak).
+            Set(SoundId.WaterBuzz, Fx, 90, 1f, 14f, Syn, Wall, 3, "live water buzzes", 0.7f);
+            Set(SoundId.WaterZap, Fx, 50, 1f, 25f, Syn, Dull, 3, "an electric crack");
             // @@catalog
             return t;
         }

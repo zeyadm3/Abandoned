@@ -116,3 +116,11 @@ twice, light flicker, the radio line "TREMOR / brace yourselves"), then the shoc
 shake for everyone, and 4–8 random collapsible sections lose 35 % health (never below 15 %) through
 `StructureSimulation.AgeRandomSections`, so they crack and warn but only weight brings them down.
 Tunables: Data/Extraction/Resources/AftershockConfig. Menu: Tools/Abandoned/Content/Aftershocks (0.17.4).
+
+## 0.17.5 live water
+Three 3.4 m flooded areas in the basement (the low ground). Every flood and every 0.17.3 puddle is water,
+and water is live while its power sector has power (`Extraction.SectorPower.Live`: its breaker is thrown, or
+the mains are on and the danger hasn't cut the sector; the lift and the security desk now use the same
+check). Live water buzzes and spits (heard by everyone nearby); standing in it zaps each 0.5 s and the
+host deals 22 HP/s ("Electrocuted in live water"). So a thrown breaker lights a sector and arms its water.
+Tunables: GroundConfig. Menu: Tools/Abandoned/Mall/Add Flooded Areas (0.17.5).

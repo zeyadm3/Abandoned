@@ -23,6 +23,11 @@ namespace Abandoned.Extraction
 
         private readonly Dictionary<NetworkPlayer, (Vector3 last, float walked)> walkers = new();
         private readonly List<NetworkPlayer> gone = new();
+        private readonly Dictionary<NetworkPlayer, float> nextShock = new();
+        private float nextBuzz;
+
+        /// <summary>Water with power in its sector (0.17.5): it shocks whoever stands in it.</summary>
+        public bool IsLive => kind == GroundKind.Puddle && SectorPower.Live(sector);
 
         public static IReadOnlyList<NoisyGround> All => Live;
         public GroundKind Kind => kind;
@@ -60,7 +65,24 @@ namespace Abandoned.Extraction
                     Step(p, feet, config);
                 }
                 walkers[p] = w;
+                if (IsLive) Shock(p, config);
             }
+            // Live water buzzes and spits; you hear it before you step in it.
+            if (IsLive && Time.time >= nextBuzz)
+            {
+                nextBuzz = Time.time + 1.1f;
+                GameAudio.Play(SoundId.WaterBuzz, transform.position, 1f);
+            }
+        }
+
+        // Every machine: the zap, for whoever stands in live water; the host also takes the health, again and
+        // again, until they get out or the power goes.
+        private void Shock(NetworkPlayer p, GroundConfig config)
+        {
+            if (nextShock.TryGetValue(p, out float next) && Time.time < next) return;
+            nextShock[p] = Time.time + config.ShockInterval;
+            GameAudio.Play(SoundId.WaterZap, p.transform.position + Vector3.up * 0.3f, 1f);
+            if (GameAuthority.IsHost) p.DealDamage(config.ShockDamage * config.ShockInterval, "Electrocuted in live water");
         }
 
         private void Step(NetworkPlayer p, Vector3 feet, GroundConfig config)

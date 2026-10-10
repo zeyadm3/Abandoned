@@ -129,5 +129,24 @@ namespace Abandoned.Audio
             Patch.Debris(d, 1743 + take, 22, 0.3f, 3f, 3000f);
             return SynthReverb.Apply(Patch.Heavy(d, 1.6f), 2.2f, 0.3f);
         }
+
+        /// <summary>Water carrying mains current: a 50 Hz buzz with spitting crackle.</summary>
+        public static float[] WaterBuzz(int take)
+        {
+            float[] d = Synth.Buffer(1.1f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(1.1f, 100f, 100f, 0.05f, 0.1f, 2), 0.1f, 0.2f), 0.5f);
+            Patch.Pings(d, 1751 + take, 8, 0f, 1f, 3000f, 7000f, Patch.Bar, 120f, 0.35f, 1f);
+            return d;
+        }
+
+        /// <summary>An arc through someone standing in it: a hard crack and a sizzle.</summary>
+        public static float[] WaterZap(int take)
+        {
+            float[] d = Synth.Buffer(0.6f);
+            Patch.Layer(d, Synth.Noise(0.06f, 1752 + take, 12000f, 6000f, 0.0005f, 50f), 0.95f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(0.4f, 100f, 100f, 0.001f, 6f, 2), 0f, 0.1f), 0.6f);
+            Patch.Layer(d, Synth.Noise(0.45f, 1753 + take, 6000f, 3000f, 0.01f, 7f, 1500f), 0.35f, 0.05f);
+            return d;
+        }
     }
 }

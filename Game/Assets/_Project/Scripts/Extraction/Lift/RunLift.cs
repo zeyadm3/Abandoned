@@ -58,14 +58,7 @@ namespace Abandoned.Extraction
         public bool Moving { get { Height(out bool m); return m; } }
 
         /// <summary>Is the lift's motor fed: the mains on in its sector, or its sector's breaker thrown.</summary>
-        public bool Powered(FreightLift lift)
-        {
-            if (run == null || lift == null) return false;
-            if (RunBreakers.Current != null && RunBreakers.Current.Restored(lift.Sector)) return true;
-            if (run.State.PowerOff) return false;
-            RunHorrorDirector horror = RunHorrorDirector.Current;
-            return horror == null || horror.Config == null || horror.Config.SectorPowered(lift.Sector, run.State.Danger);
-        }
+        public bool Powered(FreightLift lift) => lift != null && SectorPower.Live(lift.Sector);
 
         /// <summary>Host's view: gameplay weight on the deck now (players with what they hold, plus loot lying on it).</summary>
         public static float LoadOn(FreightLift lift)

@@ -156,6 +156,9 @@ namespace Abandoned.Audio
         PuddleSplash,
         // 0.17.4: aftershocks (the ground itself; walls never hide it).
         Aftershock,
+        // 0.17.5: live water (mains hum and arcing; never a creak).
+        WaterBuzz,
+        WaterZap,
         // @@ids
     }
 }
