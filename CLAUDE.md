@@ -109,6 +109,27 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user, **0.15.8b decorative world-text removal**, user tests): the 0.15.8 pass kept
+  too many physical salvage statuses and truck markings, and unfitted font-size/glyph metrics
+  caused oversized lettering. Remove nonessential mall world text, including operation statuses,
+  stock captions, kiosk labels, plain room identities and labels nested in model/loot prefabs.
+  Disable the truck decorative TextMesh and status lettering sources so regeneration keeps the
+  cleanup. Retain all ten generated logo/campaign PNGs and 39 placements. Keep only fitted EXIT,
+  SERVICE, SERVICE STAIRS and COLLECTION directions; functional UI, truck haul/cargo display,
+  pickup HUD and gameplay remain. Author scene/assets and Mac/Windows players as 0.15.8b.EEA.
+  Menu: Tools/Abandoned/Mall/Remove Decorative Text (0.15.8b). No tests, verification or QA;
+  user review afterward. Details: Docs/TEXT_DECLUTTER_0.15.8b.md. This supersedes the prior
+  operational/truck physical-text retention policy while preserving the generated advertising.
+- 2026-10-10 (user, **0.15.8 generated store branding and sale campaigns**, user tests): generate
+  original logo and campaign image assets for Apex Circuit, Nordic Habitat, Titan Tools, Vogue
+  Thread and Meridian Mall. Install themed 50%/90% off and buy-one/get-one offers behind glazing,
+  at entrances, on walls and hanging in the concourse. Replace repeated plaintext identities and
+  discard useless prop captions, stale notices and generic salvage tags. Keep real exit/service
+  directions, meaningful safety/recovery instructions and functional UI. Preserve the saved layout,
+  both furniture floors, pickups, threats and collection truck. Save scene/assets and Mac/Windows
+  players as 0.15.8.EEA. No tests, verification or QA; user review afterward. Built-in image_gen
+  outputs are copied into project assets; no new packages or purchased assets.
+  Details: Docs/MALL_BRANDING_0.15.8.md.
 - 2026-10-10 (user, **0.15.7b collection truck replacement**, user tests): the user rejected the
   0.15.7 truck's appearance. Replace it with a coherent original cab-over model: curved formed cab
   panels, hollow glazed interior, open wheel arches, new radial tyres/dished rims, continuous cargo

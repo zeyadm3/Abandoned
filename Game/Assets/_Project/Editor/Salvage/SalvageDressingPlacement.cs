@@ -8,7 +8,6 @@ namespace Abandoned.EditorTools
     /// <summary>Places fixed scene dressing on its actual floor; recoverable inventory uses loot spawns.</summary>
     internal sealed class SalvageDressingPlacement
     {
-        private const string FontPath = "Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf";
         private readonly Transform mall;
 
         public SalvageDressingPlacement(Transform mall) => this.mall = mall;
@@ -36,31 +35,12 @@ namespace Abandoned.EditorTools
 
         public void Sign(Transform parent, Vector3 at, float yaw, string text, float width, float height)
         {
-            Transform holder = Group("Mounted_" + text.Replace('\n', '_').Replace(' ', '_'), parent);
-            holder.localPosition = at;
-            holder.localRotation = Quaternion.Euler(0, yaw, 0);
-            Box(holder, "status backing", Vector3.zero, new Vector3(width, height, .014f), "Paper");
-            var label = new GameObject("PaintedStatusLetters").AddComponent<TextMesh>();
-            label.transform.SetParent(holder, false);
-            label.transform.localPosition = new Vector3(0, 0, .012f);
-            label.transform.localRotation = Quaternion.Euler(0, 180, 0);
-            label.anchor = TextAnchor.MiddleCenter;
-            label.alignment = TextAlignment.Center;
-            label.fontSize = 64;
-            label.lineSpacing = .9f;
-            int longest = 1;
-            foreach (string line in text.Split('\n')) longest = Mathf.Max(longest, line.Length);
-            label.characterSize = Mathf.Min(height * .52f / text.Split('\n').Length, width / longest * 1.5f);
-            label.text = text;
-            label.color = new Color(.12f, .15f, .12f);
-            WorldTextMaterial.Apply(label, AssetDatabase.LoadAssetAtPath<Font>(FontPath));
+            // Plain operation captions duplicated the actual salvage HUD and overwhelmed the printed retail artwork.
         }
 
         public void Tag(Transform parent, int floor, float x, float z, string text, float yaw = 0, float y = 1.45f)
         {
-            Transform mount = Assembly(parent, "StatusTag", floor, x, z, yaw);
-            Inside("salvage_tag", mount, new Vector3(0, y - .205f, 0));
-            Sign(mount, new Vector3(0, y, .017f), 0, text, .54f, .32f);
+            // Retain this authoring API for old layouts, without rebuilding empty plates or world-text status tags.
         }
 
         public Transform DisplayCase(Transform parent, int floor, float x, float z, int damage)
@@ -81,7 +61,6 @@ namespace Abandoned.EditorTools
                     new Vector3(damage == 0 ? 2.08f : .48f, .72f, .009f), "Glass");
             }
             if (damage == 1) Inside("broken_glass", item, new Vector3(.4f, .352f, -.05f));
-            Sign(item, new Vector3(0, .15f, -.419f), 180, damage == 2 ? "DISPLAY / REMOVED" : "APEX CIRCUIT", .72f, .11f);
             return item;
         }
 

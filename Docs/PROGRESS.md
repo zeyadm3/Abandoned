@@ -4,6 +4,40 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.15.8b.EEA: decorative world-text removal (2026-10-10; saved, user tests)
+
+The user still finds too much oversized text on the mall and collection truck. The first cleanup
+kept too many operational statuses and captions; unfitted font-size/glyph metrics let lettering
+outgrow its plaques. Remove decorative truck TextMesh lettering and disable its generation source.
+Remove nonessential mall world text, including operational labels, stock captions, kiosk labels,
+plain room identities and labels nested in original model/loot prefabs, and disable status sources.
+
+All ten generated logos/campaign PNGs and 39 artwork placements remain. EXIT, SERVICE, SERVICE
+STAIRS and COLLECTION directions are fitted to their plaque bounds. Functional truck haul/cargo
+display, pickup HUD, prompts, menus, pickups, threats and scene layout remain. Unity saved the scene
+and occlusion data after removing 115 decorative text objects (including old disabled captions),
+cleaning six library labels and fitting the remaining mounted exit sign. Mac (441 MB) and Windows
+(420 MB) players were built as 0.15.8b.EEA with one stamp. Menu: **Tools > Abandoned > Mall >
+Remove Decorative Text (0.15.8b)**. Batch: `MallBrandingRelease0158.DeclutterAndBuildPlayersAndExit`.
+No tests, verification or QA are run; the user reviews afterward. Details:
+`Docs/TEXT_DECLUTTER_0.15.8b.md`. The previous physical operational/truck-text retention policy
+is superseded; the generated advertisements are retained.
+
+## 0.15.8.EEA: generated store branding and sale artwork (2026-10-10; saved, user tests)
+
+Ten original built-in image_gen PNGs are saved for the four salvage stores and Meridian Mall:
+five wide logos and five portrait campaigns featuring 50%/90% off, phone/laptop and chair deals,
+fashion buy-one/get-one and a mall final-weekend sale. Unity authoring installs image fascias,
+behind-glass posters, interior advertisements and suspended campaigns over the saved scene.
+The scene contains 39 artwork placements; authoring removed 89 obsolete/caption signs, simplified
+one stock label and cleaned four source-model labels. Repeated captions are removed while useful directions, genuine
+recovery/hazard instructions, fragile/power labels and functional UI remain. Full regeneration
+retains the artwork and cleanup. The scene and occlusion data are saved. Mac (441 MB) and Windows
+(420 MB) players were built as 0.15.8.EEA with one stamp; no tests, verification or QA were run.
+Details: `Docs/MALL_BRANDING_0.15.8.md` and prompt records.
+The operational/truck world-text retention described above is superseded by 0.15.8b; all generated
+artwork remains in place.
+
 ## 0.15.7b.EEA: collection truck replacement (2026-10-10; saved, user tests)
 
 The user rejected the earlier truck appearance. The replacement rebuilds its cab with formed curved

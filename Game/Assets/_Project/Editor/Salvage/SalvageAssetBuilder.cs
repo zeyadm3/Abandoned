@@ -117,7 +117,6 @@ namespace Abandoned.EditorTools
 
                 Bounds geometry = ModelFit.LocalBounds(root, root.transform);
                 SalvagePrefabGeometry.AuthorSockets(root.transform, spec.Id, geometry, nested: true);
-                AddStatusLabel(root, spec, geometry);
                 // Art prefabs are deliberately collider-free. Collision belongs to dressing/loot variants.
                 foreach (Collider collider in root.GetComponentsInChildren<Collider>(true))
                     UnityEngine.Object.DestroyImmediate(collider);
@@ -276,66 +275,12 @@ namespace Abandoned.EditorTools
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static void AddStatusLabel(GameObject root, SalvageAssetSpec spec, Bounds bounds)
-        {
-            string words = spec.Id switch
-            {
-                "cargo_crate" => "RECOVER / CRATE",
-                "plastic_sorting_crate" => "SORT / MATERIAL",
-                "generator_hub" => "SOLUTIONS INC.\nTEMP POWER",
-                "industrial_battery" => "RECOVER / BATTERY",
-                "server_rack" => "HOLD / HIGH VALUE",
-                "salvage_tag" => "SALVAGE FIRST",
-                _ => null
-            };
-            if (words == null) return;
-            Transform anchor = root.transform.Find("Sockets/LabelAnchor");
-            float width = Mathf.Min(bounds.size.x * .70f, .78f);
-            float height = Mathf.Min(bounds.size.y * .32f, words.Contains('\n') ? .24f : .14f);
-            height = Mathf.Max(height, .06f);
-
-            var plaque = new GameObject("StatusPlate", typeof(MeshFilter), typeof(MeshRenderer));
-            plaque.transform.SetParent(anchor, false);
-            plaque.transform.localScale = new Vector3(width, height, 1);
-            var plane = new Mesh { name = spec.Id + "_StatusPlate" };
-            plane.vertices = new[] { new Vector3(-.5f, -.5f, 0), new Vector3(-.5f, .5f, 0),
-                new Vector3(.5f, .5f, 0), new Vector3(.5f, -.5f, 0) };
-            plane.uv = new[] { Vector2.zero, Vector2.up, Vector2.one, Vector2.right };
-            plane.triangles = new[] { 0, 2, 1, 0, 3, 2 };
-            plane.RecalculateNormals(); plane.RecalculateTangents(); plane.RecalculateBounds();
-            plaque.GetComponent<MeshFilter>().sharedMesh = SaveMesh(plane, $"{MeshFolder}/{spec.Id}_StatusPlate.asset");
-            MeshRenderer backing = plaque.GetComponent<MeshRenderer>();
-            backing.sharedMaterial = SalvageMaterials.Get("Paper");
-            backing.shadowCastingMode = ShadowCastingMode.Off;
-
-            var text = new GameObject("StatusText").AddComponent<TextMesh>();
-            text.transform.SetParent(anchor, false);
-            text.transform.localRotation = Quaternion.Euler(0, 180, 0);
-            text.text = words;
-            text.anchor = TextAnchor.MiddleCenter;
-            text.alignment = TextAlignment.Center;
-            text.fontSize = 64;
-            text.characterSize = 1;
-            text.color = new Color(.13f, .13f, .10f);
-            Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            font.RequestCharactersInTexture(words, text.fontSize, text.fontStyle);
-            WorldTextMaterial.Apply(text, font);
-            // Fit glyph geometry as part of authoring, using the project's existing world-text pattern.
-            text.text = string.Empty; text.text = words;
-            Bounds glyphs = text.GetComponent<MeshRenderer>().localBounds;
-            float scale = Mathf.Min(width * .91f / Mathf.Max(glyphs.size.x, .001f),
-                height * .72f / Mathf.Max(glyphs.size.y, .001f));
-            text.transform.localScale = Vector3.one * scale;
-            text.transform.localPosition = Vector3.forward * .003f
-                - text.transform.localRotation * (glyphs.center * scale);
-        }
-
         [Serializable]
         private sealed class AuthoredManifest
         {
             public string version = "0.15.5";
             public string status = "Authored content; tests, compilation and visual/physics verification deferred to the user.";
-            public string triangleCounting = "Combined recipe geometry per LOD; separate status text/plaque renderers excluded.";
+            public string triangleCounting = "Combined recipe geometry per LOD; no world-text status plaques.";
             public List<AuthoredAsset> assets = new List<AuthoredAsset>();
         }
 

@@ -74,6 +74,8 @@ namespace Abandoned.EditorTools
             MallExpansion0156.Build(mall);
             SalvagePickables0157.Author();
             SalvageLootPlacement0157.Build(mall);
+            MallTextCleanup0158.Build(mall);
+            MallRetailArtwork0158.Build(mall);
             MallSurfaceBuilder.Assign(mall);
             BakeNavMesh(mall);
             MallShutters.Place(mall);

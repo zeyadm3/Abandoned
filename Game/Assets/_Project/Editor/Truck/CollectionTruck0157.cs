@@ -49,7 +49,6 @@ namespace Abandoned.EditorTools
             CollectionTruckCargoRedo.Doors(cargoAttachments, truckRoot.GetComponent<TruckSanctuary>());
             GreyboxFactory.Box("RearViewMonitorFrame", art, new Vector3(.85f, 2.95f, 2.43f),
                 new Vector3(.36f, .20f, .06f), CollectionTruckMaterials.Get("Dark"), false);
-            Markings(art);
             RoofCollider(art);
             foreach (Transform child in art.GetComponentsInChildren<Transform>(true))
                 GameObjectUtility.SetStaticEditorFlags(child.gameObject,
@@ -73,27 +72,5 @@ namespace Abandoned.EditorTools
             proxy.gameObject.AddComponent<IntentionalInvisibleCollider>().EditorSetup("Detailed cargo-body roof uses a simple box for solid overhead clearance.");
         }
 
-        private static void Markings(Transform art)
-        {
-            foreach (float side in new[] { -1f, 1f })
-            {
-                Text(art, "SOLUTIONS INC.", new Vector3(side * 1.407f, 2.53f, .20f), Quaternion.Euler(0, side * -90f, 0), .105f, new Color(.12f, .20f, .19f));
-                Text(art, "CLEARANCE DIVISION", new Vector3(side * 1.407f, 2.26f, .20f), Quaternion.Euler(0, side * -90f, 0), .050f, new Color(.20f, .27f, .25f));
-                Text(art, "SC-07", new Vector3(side * 1.257f, 1.36f, 3.39f), Quaternion.Euler(0, side * -90f, 0), .042f, new Color(.14f, .18f, .17f));
-            }
-            Text(art, "SC 07 INC", new Vector3(0, .70f, 5.274f), Quaternion.Euler(0, 180, 0), .030f, new Color(.12f, .14f, .12f));
-            Text(art, "LOAD SECURELY", new Vector3(0, 3.28f, -2.632f), Quaternion.identity, .025f, new Color(.12f, .15f, .13f));
-        }
-
-        private static void Text(Transform parent, string label, Vector3 at, Quaternion rotation, float size, Color color)
-        {
-            Transform holder = GreyboxFactory.Group("Decal_" + label, parent);
-            holder.SetLocalPositionAndRotation(at, rotation);
-            var text = holder.gameObject.AddComponent<TextMesh>();
-            text.text = label; text.anchor = TextAnchor.MiddleCenter; text.alignment = TextAlignment.Center;
-            text.characterSize = size; text.fontSize = 96; text.color = color;
-            WorldTextMaterial.Apply(text, AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.FontPath));
-            holder.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        }
     }
 }
