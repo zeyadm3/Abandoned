@@ -157,6 +157,9 @@ namespace Abandoned.Audio
             Set(SoundId.DoorBreak, Monsters, 32, 6f, 75f, Syn, Dull, 1, "A DOOR IS BROKEN DOWN");
             Set(SoundId.LockerOpen, Fx, 110, 1f, 14f, Syn, Wall, 2, volume: 0.8f);
             Set(SoundId.LockerShut, Fx, 110, 1f, 16f, Syn, Wall, 2, volume: 0.85f);
+            // 0.16.1: breaker rooms (a heavy switch and the mains coming back, never a creak).
+            Set(SoundId.BreakerThrow, Fx, 40, 4f, 60f, Syn, Dull, 2, "a breaker slams on");
+            // @@catalog
             return t;
         }
     }

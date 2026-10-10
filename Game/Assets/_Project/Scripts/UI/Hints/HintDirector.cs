@@ -95,6 +95,7 @@ namespace Abandoned.UI
             if (interactor != null && interactor.UseTarget is RollerShutter shutter && shutter.IsDown && Unseen(HintId.LockedShutter) is HintId locked) return locked;
             if (interactor != null && interactor.UseTarget is SlidingDoor && Unseen(HintId.Door) is HintId door) return door;
             if (interactor != null && interactor.UseTarget is HidingLocker && Unseen(HintId.Locker) is HintId locker) return locker;
+            if (interactor != null && interactor.UseTarget is IHintSource source && Unseen(source.Hint) is HintId sourced) return sourced;
             if (interactor != null && interactor.Target != null)
             {
                 bool heavy = interactor.Target.Shared != null || interactor.Target.CarryClass >= CarryClass.Heavy;

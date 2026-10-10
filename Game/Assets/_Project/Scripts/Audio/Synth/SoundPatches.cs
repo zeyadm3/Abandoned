@@ -120,7 +120,7 @@ namespace Abandoned.Audio
                 default:
                     if (id >= SoundId.ThemeBlindOne && id <= SoundId.ThemeLastHunter)
                         return ThreatThemePatches.Render(id - SoundId.ThemeBlindOne);
-                    return null;
+                    return ExtraPatches.Render(id, take);
             }
         }
     }

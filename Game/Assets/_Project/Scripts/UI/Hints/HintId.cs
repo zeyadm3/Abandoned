@@ -24,5 +24,8 @@ namespace Abandoned.UI
         // 0.16.0
         Door,
         Locker,
+        // 0.16.1
+        Breaker,
+        // @@hints
     }
 }

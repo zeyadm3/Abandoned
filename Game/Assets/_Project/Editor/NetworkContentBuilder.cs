@@ -83,6 +83,15 @@ namespace Abandoned.EditorTools
             return prefab;
         }
 
+        /// <summary>Run-long state that rides on the RunState object, in the order it was added (append only).</summary>
+        public static readonly System.Type[] RunStateExtras =
+        {
+            typeof(Abandoned.Extraction.RunShutters),
+            typeof(Abandoned.Extraction.RunDoors),
+            typeof(Abandoned.Extraction.RunBreakers),   // 0.16.1
+            // @@runstate
+        };
+
         /// <summary>The run's state object (host-spawned by RunDirector). Created when missing, like StructureNet.</summary>
         public static GameObject CreateRunStatePrefab()
         {
@@ -92,12 +101,14 @@ namespace Abandoned.EditorTools
             if (existing != null && existing.GetComponent<Abandoned.Extraction.RunState>() != null)
             {
                 // M10.4: the run's shutters ride on the same object (keeps the prefab and its network hash).
-                // 0.16.0: so do its doors. Added after whatever is already there, so existing behaviours keep their order.
-                if (existing.GetComponent<Abandoned.Extraction.RunShutters>() == null || existing.GetComponent<Abandoned.Extraction.RunDoors>() == null)
+                // 0.16.0 on: so does each later feature's run state (RunStateExtras). Added after whatever is
+                // already there, so existing behaviours keep their order.
+                bool missing = false;
+                foreach (System.Type t in RunStateExtras) missing |= existing.GetComponent(t) == null;
+                if (missing)
                 {
                     GameObject contents = PrefabUtility.LoadPrefabContents(RunStatePrefabPath);
-                    if (contents.GetComponent<Abandoned.Extraction.RunShutters>() == null) contents.AddComponent<Abandoned.Extraction.RunShutters>();
-                    if (contents.GetComponent<Abandoned.Extraction.RunDoors>() == null) contents.AddComponent<Abandoned.Extraction.RunDoors>();
+                    foreach (System.Type t in RunStateExtras) if (contents.GetComponent(t) == null) contents.AddComponent(t);
                     PrefabUtility.SaveAsPrefabAsset(contents, RunStatePrefabPath);
                     PrefabUtility.UnloadPrefabContents(contents);
                     existing = AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath);
@@ -109,8 +120,7 @@ namespace Abandoned.EditorTools
             networkObject.DontDestroyWithOwner = true;
             networkObject.SynchronizeTransform = false;
             SerializedWiring.Set(root.AddComponent<Abandoned.Extraction.RunState>(), "config", config);
-            root.AddComponent<Abandoned.Extraction.RunShutters>();
-            root.AddComponent<Abandoned.Extraction.RunDoors>();
+            foreach (System.Type t in RunStateExtras) root.AddComponent(t);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, RunStatePrefabPath);
             Object.DestroyImmediate(root);
             NetworkObjectIds.StampPrefab(prefab);

@@ -23,6 +23,7 @@ namespace Abandoned.Extraction
         private Color litSky, litEquator, litGround;
         private float daySun = -1f;
         private bool? powered, night;
+        private int shownBreakers;
 
         public bool Powered => powered ?? true;
         public bool IsNight => night ?? false;
@@ -46,13 +47,22 @@ namespace Abandoned.Extraction
             RunState run = RunState.Current;
             bool on = run == null || !run.IsSpawned || !run.State.PowerOff;
             bool dark = run != null && run.IsSpawned && run.State.Night;
-            if (powered == on && night == dark) return;
+            // 0.16.1: with the mains off, a thrown breaker still lights its own sector's fixtures.
+            int breakers = !on && RunBreakers.Current != null ? RunBreakers.Current.RestoredMask : 0;
+            if (powered == on && night == dark && breakers == shownBreakers) return;
+            if (powered == on && night == dark)
+            {
+                shownBreakers = breakers;
+                ApplyBreakers(on, breakers);
+                return;
+            }
+            shownBreakers = breakers;
             // The mains going, or coming back: everyone hears the breaker (not the day/night change).
             if (powered != on && run != null && run.IsSpawned) Audio.GameAudio.PlayUi(on ? Audio.SoundId.PowerUp : Audio.SoundId.PowerDown, 0.9f);
             powered = on;
             night = dark;
             foreach (Light l in lights) if (l != null) l.enabled = on;
-            foreach (LightFixture f in fixtures) if (f != null) f.SetPowered(on);
+            ApplyBreakers(on, breakers);
             Light sun = RenderSettings.sun;
             if (sun != null)
             {
@@ -64,6 +74,13 @@ namespace Abandoned.Extraction
             RenderSettings.ambientSkyColor = litSky * k;
             RenderSettings.ambientEquatorColor = litEquator * k;
             RenderSettings.ambientGroundColor = litGround * k;
+        }
+
+        private void ApplyBreakers(bool on, int breakers)
+        {
+            HorrorConfig sectors = RunHorrorDirector.Current != null ? RunHorrorDirector.Current.Config : null;
+            foreach (LightFixture f in fixtures)
+                if (f != null) f.SetPowered(on || (sectors != null && (breakers & (1 << sectors.SectorOf(f.transform.position))) != 0));
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

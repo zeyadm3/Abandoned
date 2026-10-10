@@ -124,5 +124,8 @@ namespace Abandoned.Audio
         DoorBreak,
         LockerOpen,
         LockerShut,
+        // 0.16.1: breaker rooms (a heavy switch and the mains coming back, never a creak).
+        BreakerThrow,
+        // @@ids
     }
 }

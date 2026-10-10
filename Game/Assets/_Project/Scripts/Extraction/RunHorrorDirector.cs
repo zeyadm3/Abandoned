@@ -27,7 +27,7 @@ namespace Abandoned.Extraction
         private readonly NetworkVariable<bool> final = new();
         private readonly List<NetworkPlayer> inside = new();
         private RunState run;
-        private int arrivalBeat, shownDanger = -1, shownLightsDanger = -1;
+        private int arrivalBeat, shownDanger = -1, shownLightsDanger = -1, shownBreakers;
         private bool shownLightsFinal, arrivalWaveDone;
         private float nextPressure, nextScare, nextSiren;
         private bool announced, arrivalPlayed, departurePlayed;
@@ -40,6 +40,7 @@ namespace Abandoned.Extraction
         public static string RadioLine { get; private set; }
         public static float RadioUntil { get; private set; }
         public bool FinalPhase => final.Value;
+        public HorrorConfig Config => config;
 
         public bool Inside(Vector3 at) =>
             config != null && config.Building.Contains(at) && (TruckCargo.Current == null || !TruckCargo.Current.Carries(at));
@@ -197,8 +198,12 @@ namespace Abandoned.Extraction
             Vector2 wave = config.ArrivalBlackout;
             bool inWave = arrival >= wave.x && arrival < wave.y;
             // QA P-03: only touch every fixture when something changed (or the arrival wave is rolling).
-            if (inWave || (arrival >= wave.y && !arrivalWaveDone) || danger != shownLightsDanger || final.Value != shownLightsFinal)
+            // 0.16.1: a thrown breaker lights its sector whatever the danger says.
+            int breakers = RunBreakers.Current != null ? RunBreakers.Current.RestoredMask : 0;
+            if (inWave || (arrival >= wave.y && !arrivalWaveDone) || danger != shownLightsDanger || final.Value != shownLightsFinal
+                || breakers != shownBreakers)
             {
+                shownBreakers = breakers;
                 if (arrival >= wave.y) arrivalWaveDone = true;
                 bool sectors = danger != shownLightsDanger && !inWave;
                 int lost = 0;
@@ -208,7 +213,7 @@ namespace Abandoned.Extraction
                 {
                     LightFixture f = fixtures[i];
                     if (f == null) continue;
-                    bool power = config.SectorPowered(fixtureSectors[i], danger);
+                    bool power = config.SectorPowered(fixtureSectors[i], danger) || (breakers & (1 << fixtureSectors[i])) != 0;
                     if (inWave) power &= Mathf.Abs((float)arrival - wave.x - f.transform.position.z / config.ArrivalBlackoutSpeed) >= 1.2f;
                     bool wasLit = f.Lit;
                     f.SetHorrorPower(power);

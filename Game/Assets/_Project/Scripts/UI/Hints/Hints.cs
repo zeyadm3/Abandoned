@@ -55,6 +55,8 @@ namespace Abandoned.UI
                 HintId.Voicemail => "The answering machine is blinking: the boss left you a message.",
                 HintId.Door => $"Doors slide ({interact}). A shut door blocks sight, and most things can't open one. The Hunter breaks down a door it saw you go through: that takes it a few blows, and everyone hears them.",
                 HintId.Locker => $"You can hide in a locker ({interact}, hands empty). Nothing that hunts by sight finds you in there, unless it watched you climb in. Sound still carries.",
+                HintId.Breaker => $"A breaker panel ({interact}). Throwing it lights this part of the building for two minutes, but the bang and the hum carry, and things come to see.",
+                // @@hinttext
                 _ => "",
             };
         }
