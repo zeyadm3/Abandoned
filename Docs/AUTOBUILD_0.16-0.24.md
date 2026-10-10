@@ -42,3 +42,13 @@ Switched off (not deleted) to make room: the planter, bin and bench in that tile
 prop, and balustrade `Rail_1_4_7_(1, 0)`. Watch on the test: riding jitter for remote players (they follow
 their owner's NetworkTransform), and whether the upper landing step (0.15 m gap) feels right.
 Tunables: Data/Extraction/Resources/LiftConfig. Menu: Tools/Abandoned/Mall/Add Freight Lift (0.16.3).
+
+## 0.16.4 vents
+Six ducts, each a pair of floor-level grilles (found by MallSites): Basement↔Titan Tools, Cinema↔Apex
+Circuit, Closed Offices↔rear promenade, Nordic Habitat↔Toy Archive, Titan Tools↔Toy Archive, Toy
+Archive↔atrium. Crouch + E with nothing in your hands (pockets are fine) crawls through: the host writes
+`NetworkPlayer.VentBase + duct` into the hiding value, so the player counts as hidden and **no** monster
+follows them in (`Threat.HiddenFromMe`), whatever it saw. The duct is not modelled: the owner's player is
+parked 60 m under the exit for the crawl (black screen with a countdown), then stands at the far grille.
+Crawl time = grille distance / 1.4 m/s (at least 4 s). The duct rattles (noise 0.3 every 2 s at its middle).
+Tunables: Data/Extraction/Resources/VentConfig. Menu: Tools/Abandoned/Mall/Add Vents (0.16.4).

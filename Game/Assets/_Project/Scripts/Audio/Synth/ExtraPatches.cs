@@ -16,6 +16,8 @@ namespace Abandoned.Audio
                 case SoundId.LiftStart: return Patch.Mono(id, take, RoomPatches.LiftStart(), 0.9f);
                 case SoundId.LiftArrive: return Patch.Mono(id, take, RoomPatches.LiftArrive(take), 0.85f);
                 case SoundId.LiftSnap: return Patch.Mono(id, take, RoomPatches.LiftSnap(), 0.95f);
+                // 0.16.4: vents (thin sheet metal knocked about, never a creak).
+                case SoundId.VentCrawl: return Patch.Mono(id, take, RoomPatches.VentCrawl(take), 0.75f);
                 // @@cases
                 default: return null;
             }

@@ -80,7 +80,7 @@ namespace Abandoned.Networking
         public void ServerLeaveHiding()
         {
             if (!IsServer || !IsHiding) return;
-            HidingLocker locker = HidingLocker.ByIndex(hidingIn.Value);
+            HidingLocker locker = InVent ? null : HidingLocker.ByIndex(hidingIn.Value);
             DoorConfig config = DoorConfig.Current;
             hidingIn.Value = -1;
             nextHideAt = Time.time + config.HideCooldown;
@@ -91,6 +91,11 @@ namespace Abandoned.Networking
         private void TickServerHiding()
         {
             if (!IsHiding) return;
+            if (InVent)
+            {
+                TickServerVent();
+                return;
+            }
             HidingLocker locker = HidingLocker.ByIndex(hidingIn.Value);
             if (locker == null || !locker.Usable || dead.Value || state.Value.Ragdolled) ServerLeaveHiding();
         }
@@ -99,8 +104,11 @@ namespace Abandoned.Networking
         {
             HidingChanged?.Invoke(this, was, now);
             if (!IsOwner) return;
-            if (now >= 0) OwnerEnterLocker(HidingLocker.ByIndex(now));
-            else OwnerLeaveLocker(true);
+            // 0.16.4: a vent crawl is hiding too, at VentBase + the duct.
+            if (was >= VentBase) OwnerLeaveVent(was - VentBase);
+            if (now >= VentBase) OwnerEnterVent(now - VentBase);
+            else if (now >= 0) OwnerEnterLocker(HidingLocker.ByIndex(now));
+            else if (was < VentBase) OwnerLeaveLocker(true);
         }
 
         private void OwnerEnterLocker(HidingLocker locker)

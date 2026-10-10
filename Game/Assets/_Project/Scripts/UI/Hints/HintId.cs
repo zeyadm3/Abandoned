@@ -28,6 +28,8 @@ namespace Abandoned.UI
         Breaker,
         // 0.16.3
         Lift,
+        // 0.16.4
+        Vent,
         // @@hints
     }
 }

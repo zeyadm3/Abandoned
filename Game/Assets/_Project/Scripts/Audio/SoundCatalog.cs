@@ -163,6 +163,8 @@ namespace Abandoned.Audio
             Set(SoundId.LiftStart, Fx, 60, 3f, 45f, Syn, Dull, 1, "a lift motor starts");
             Set(SoundId.LiftArrive, Fx, 70, 2f, 35f, Syn, Dull, 2, "the lift stops");
             Set(SoundId.LiftSnap, Fx, 30, 5f, 70f, Syn, Open, 1, "A LIFT CABLE SNAPS");
+            // 0.16.4: vents (thin sheet metal knocked about, never a creak).
+            Set(SoundId.VentCrawl, Fx, 100, 1.5f, 22f, Syn, Dull, 3, "something crawls in the vents", 0.8f);
             // @@catalog
             return t;
         }

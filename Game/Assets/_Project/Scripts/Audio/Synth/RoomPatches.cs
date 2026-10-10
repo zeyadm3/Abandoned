@@ -52,5 +52,20 @@ namespace Abandoned.Audio
             Patch.Pings(d, 1642, 6, 0.1f, 0.8f, 900f, 2600f, Patch.Bar, 40f, 0.3f);
             return SynthReverb.Apply(Patch.Heavy(d, 1.4f), 1.6f, 0.3f);
         }
+
+        /// <summary>Knees and elbows in a sheet-metal duct: dull bongs and a scrape, a little different each time.</summary>
+        public static float[] VentCrawl(int take)
+        {
+            float[] d = Synth.Buffer(1.2f);
+            var rng = new Rng(1651 + take * 11);
+            for (int i = 0; i < 3; i++)
+            {
+                float at = 0.05f + i * rng.Range(0.22f, 0.32f);
+                Patch.Layer(d, Synth.Modal(0.4f, rng.Range(140f, 210f), Patch.Sheet, null, rng.Range(9f, 14f)), rng.Range(0.4f, 0.8f), at);
+                Patch.Layer(d, Synth.Thump(0.12f, rng.Range(110f, 140f), 60f, 30f), 0.4f, at);
+            }
+            Patch.Layer(d, Synth.Fade(Synth.Noise(0.5f, 1652 + take, 2500f, 1200f, 0.05f, 4f), 0.05f, 0.15f), 0.25f, 0.3f);
+            return SynthReverb.Apply(d, 0.5f, 0.35f);
+        }
     }
 }

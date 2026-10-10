@@ -130,6 +130,8 @@ namespace Abandoned.Audio
         LiftStart,
         LiftArrive,
         LiftSnap,
+        // 0.16.4: vents (thin sheet metal knocked about, never a creak).
+        VentCrawl,
         // @@ids
     }
 }

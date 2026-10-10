@@ -57,6 +57,7 @@ namespace Abandoned.UI
                 HintId.Locker => $"You can hide in a locker ({interact}, hands empty). Nothing that hunts by sight finds you in there, unless it watched you climb in. Sound still carries.",
                 HintId.Breaker => $"A breaker panel ({interact}). Throwing it lights this part of the building for two minutes, but the bang and the hum carry, and things come to see.",
                 HintId.Lift => $"The freight lift ({interact}) is slow and loud, and it needs power. Mind the weight on the deck: overloaded, it gives way halfway.",
+                HintId.Vent => $"A vent. Crouch and press {interact} to crawl through to wherever it comes out. Nothing follows you in there, but the duct rattles, and only what fits in your pockets comes with you.",
                 // @@hinttext
                 _ => "",
             };

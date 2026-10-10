@@ -101,7 +101,7 @@ namespace Abandoned.Threats
         protected virtual bool FindsHider(NetworkPlayer p) => watchedHide.Contains(p.OwnerClientId);
 
         /// <summary>Host: hiding in a locker, and this threat has no idea.</summary>
-        protected bool HiddenFromMe(NetworkPlayer p) => p.IsHiding && !FindsHider(p);
+        protected bool HiddenFromMe(NetworkPlayer p) => p.IsHiding && (p.InVent || !FindsHider(p)); // 0.16.4: nothing follows into a vent
 
         /// <summary>
         /// Where to go for a player and reach them from: for one in a locker, the floor in front of its door
