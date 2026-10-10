@@ -60,6 +60,8 @@ namespace Abandoned.EditorTools
                     EquipmentKind.Lockpick, 1800, 2, false, new Color(0.6f, 0.6f, 0.65f)),
                 Item("thermal_camera", "Thermal Camera", "In hand, use to switch on: anything warm in sight burns bright through dark and fog. A minute of battery; it recharges while off.",
                     EquipmentKind.ThermalCamera, 12000, 5, false, new Color(1f, 0.5f, 0.15f)),
+                Item("drone", "Scout Drone", "Use to launch and fly it (you stand still meanwhile); use again to bring it home. A minute and a half of battery. Monsters hear it.",
+                    EquipmentKind.Drone, 16000, 6, false, new Color(0.3f, 0.35f, 0.4f)),
                 // @@gear
             };
             CreateNoiseMaker();

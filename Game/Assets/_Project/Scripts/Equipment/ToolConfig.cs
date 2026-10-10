@@ -89,6 +89,16 @@ namespace Abandoned.Equipment
         public float ThermalSeconds => thermalSeconds;
         public float ThermalRecharge => thermalRecharge;
 
+        [Header("Drone (0.20.5)")]
+        [SerializeField, Min(5f)] private float droneSeconds = 90f;
+        [SerializeField, Min(0.5f)] private float droneSpeed = 4.5f;
+        [Tooltip("How loud its rotors are to monsters, every 1.5 s.")]
+        [SerializeField, Range(0f, 1f)] private float droneNoise = 0.35f;
+
+        public float DroneSeconds => droneSeconds;
+        public float DroneSpeed => droneSpeed;
+        public float DroneNoise => droneNoise;
+
         // @@fields
 
         private static ToolConfig current;

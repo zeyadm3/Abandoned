@@ -22,6 +22,7 @@ namespace Abandoned.Equipment
                 case EquipmentKind.SprayChalk: return true; // drawn while held (TickHeldTool)
                 case EquipmentKind.Lockpick: return true;   // used on a shutter (E), not in the air
                 case EquipmentKind.ThermalCamera: return true; // switched on its owner's machine (ThermalCamera)
+                case EquipmentKind.Drone: LaunchDrone(); return true;
                 // @@tools
                 default: return false;
             }
@@ -148,6 +149,23 @@ namespace Abandoned.Equipment
                 return false;
             }
             return SpawnGear(EquipmentKind.Floodlight, floor.point, yaw) != null;
+        }
+
+        private NetworkObject drone;
+
+        // Host (0.20.5): one drone per pilot, owned by them (their machine flies it).
+        private void LaunchDrone()
+        {
+            if (drone != null && drone.IsSpawned) return;
+            NetworkObject prefab = GearPrefabs.Current.For(EquipmentKind.Drone);
+            if (prefab == null) return;
+            Vector3 at = Eye + Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward * 0.8f;
+            if (Physics.Linecast(Eye, at, wallMask, QueryTriggerInteraction.Ignore))
+            {
+                HintRpc("No room to launch the drone here");
+                return;
+            }
+            drone = NetworkManager.SpawnManager.InstantiateAndSpawn(prefab, OwnerClientId, position: at, rotation: Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
         }
 
         /// <summary>Host: spawn one of the newer gear's network objects.</summary>

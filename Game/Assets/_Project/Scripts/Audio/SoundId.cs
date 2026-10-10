@@ -182,6 +182,8 @@ namespace Abandoned.Audio
         // 0.20.3: the truck winch.
         WinchStart,
         WinchRun,
+        // 0.20.5: the drone.
+        DroneBuzz,
         // @@ids
     }
 }

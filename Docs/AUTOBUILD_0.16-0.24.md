@@ -337,3 +337,11 @@ New tool ($12,000, level 5). Owner-local like night vision (`Equipment.ThermalCa
 player-prefab change): in hand, use toggles it. The view goes cold blue and dark (a global URP volume), and every
 monster and crewmate within 45 m with a clear line of sight gets an orange-white heat blob over its outline,
 however dark or foggy; walls still hide them. 60 s of battery, 0.3 s back per second while off.
+
+## 0.20.5 drone
+New tool ($16,000, level 6). Use launches a quadcopter just ahead (host-spawned, owned by the pilot: an owner
+NetworkTransform, so the pilot's machine flies it smoothly and everyone sees it). The pilot sees through its
+camera (the main camera is switched off meanwhile) and their body stands still with controls off. Move to fly,
+sprint/jump up, crouch down, look to turn (4.5 m/s, stops at walls). Use again, a flat battery (90 s) or the
+pilot's death brings it home (despawns). Rotors heard by everyone; monsters hear them every 1.5 s (noise 0.35).
+Prefab: Prefabs/Equipment/Drone (GearPrefabs).

@@ -31,6 +31,7 @@ namespace Abandoned.Equipment
         Floodlight,
         Lockpick,
         ThermalCamera,
+        Drone,
         // @@kinds
     }
 }

@@ -38,5 +38,15 @@ namespace Abandoned.Audio
             for (int i = 0; i < 8; i++) Patch.Layer(d, Synth.Modal(0.05f, 2100f, Patch.Bar, null, 90f), 0.25f, i * 0.12f);
             return d;
         }
+
+        /// <summary>Four small rotors: a beating, buzzing whine.</summary>
+        public static float[] DroneBuzz(int take)
+        {
+            float[] d = Synth.Buffer(1f);
+            for (int i = 0; i < 4; i++)
+                Patch.Layer(d, Synth.Fade(Synth.Sweep(1f, 210f + i * 9f + take * 3f, 214f + i * 9f, 0.05f, 0.05f, 2), 0.05f, 0.05f), 0.25f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(1f, 2011 + take, 4000f, 3500f, 0.05f, 0.1f, 1500f), 0.05f, 0.05f), 0.2f);
+            return d;
+        }
     }
 }
