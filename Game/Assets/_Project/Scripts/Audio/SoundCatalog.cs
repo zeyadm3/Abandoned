@@ -159,6 +159,10 @@ namespace Abandoned.Audio
             Set(SoundId.LockerShut, Fx, 110, 1f, 16f, Syn, Wall, 2, volume: 0.85f);
             // 0.16.1: breaker rooms (a heavy switch and the mains coming back, never a creak).
             Set(SoundId.BreakerThrow, Fx, 40, 4f, 60f, Syn, Dull, 2, "a breaker slams on");
+            // 0.16.3: the freight lift (motor, cable and brakes; never a creak).
+            Set(SoundId.LiftStart, Fx, 60, 3f, 45f, Syn, Dull, 1, "a lift motor starts");
+            Set(SoundId.LiftArrive, Fx, 70, 2f, 35f, Syn, Dull, 2, "the lift stops");
+            Set(SoundId.LiftSnap, Fx, 30, 5f, 70f, Syn, Open, 1, "A LIFT CABLE SNAPS");
             // @@catalog
             return t;
         }

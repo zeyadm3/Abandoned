@@ -127,6 +127,12 @@ namespace Abandoned.Player
             bool onRope = rope > 0f && !IsGrounded && verticalVelocity < -rope;
             if (onRope) verticalVelocity = -rope;
             float fallSpeed = -verticalVelocity;
+            // 0.16.3: riding the freight lift. Its own move first, so the step below starts from where it carried us.
+            if (IsGrounded && MovingPlatform.Under(before) is MovingPlatform platform && platform.FrameDelta != Vector3.zero)
+            {
+                controller.Move(platform.FrameDelta);
+                before = transform.position;
+            }
             CollisionFlags flags = controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
             TrackFall(before.y, fallSpeed);
             if (onRope && airborne) airPeakY = transform.position.y;

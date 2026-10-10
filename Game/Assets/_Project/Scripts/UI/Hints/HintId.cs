@@ -26,6 +26,8 @@ namespace Abandoned.UI
         Locker,
         // 0.16.1
         Breaker,
+        // 0.16.3
+        Lift,
         // @@hints
     }
 }

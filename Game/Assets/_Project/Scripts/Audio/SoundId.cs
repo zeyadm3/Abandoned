@@ -126,6 +126,10 @@ namespace Abandoned.Audio
         LockerShut,
         // 0.16.1: breaker rooms (a heavy switch and the mains coming back, never a creak).
         BreakerThrow,
+        // 0.16.3: the freight lift (motor, cable and brakes; never a creak).
+        LiftStart,
+        LiftArrive,
+        LiftSnap,
         // @@ids
     }
 }

@@ -12,6 +12,10 @@ namespace Abandoned.Audio
             {
                 // 0.16.1: breaker rooms (a heavy switch and the mains coming back, never a creak).
                 case SoundId.BreakerThrow: return Patch.Mono(id, take, RoomPatches.Breaker(take), 0.95f);
+                // 0.16.3: the freight lift (motor, cable and brakes; never a creak).
+                case SoundId.LiftStart: return Patch.Mono(id, take, RoomPatches.LiftStart(), 0.9f);
+                case SoundId.LiftArrive: return Patch.Mono(id, take, RoomPatches.LiftArrive(take), 0.85f);
+                case SoundId.LiftSnap: return Patch.Mono(id, take, RoomPatches.LiftSnap(), 0.95f);
                 // @@cases
                 default: return null;
             }

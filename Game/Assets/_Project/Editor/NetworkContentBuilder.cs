@@ -90,6 +90,7 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Extraction.RunDoors),
             typeof(Abandoned.Extraction.RunBreakers),   // 0.16.1
             typeof(Abandoned.Extraction.RunRoutes),     // 0.16.2
+            typeof(Abandoned.Extraction.RunLift),       // 0.16.3
             // @@runstate
         };
 

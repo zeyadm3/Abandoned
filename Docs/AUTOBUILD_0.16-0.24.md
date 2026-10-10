@@ -27,3 +27,18 @@ Locked stores (RunShutters) and doors shut at the start (RunDoors) already diffe
 normal structure path (synced, rubble mounds, NavMesh carving), and with 40 % chance one of the two
 escalators (never both). Stairs, protected routes and the ground floor can't collapse, so stores and the
 truck stay reachable. Tunables: Data/Extraction/Resources/RouteConfig.
+
+## 0.16.3 freight lift
+An open goods platform in the atrium's north-west void (tile 5,7, x 20–24 z 28–32), ground floor to the upper
+gallery, entered from the west on both levels. Buttons: one at each landing (call) and one on the deck (send).
+`RunLift` (RunState) holds the trip (from, to, start time, snap time); every machine places the platform from
+it and the server clock, so it is in the same place everywhere. Players ride it through the new
+`Core.MovingPlatform` (PlayerMotor adds the platform's frame move when grounded on it); loot rides the deck.
+Needs power: the mains in its sector (1) or that sector's breaker. 14 s a trip, motor noise every 1.5 s.
+Overloaded (gameplay weight on the deck above 450 kg when sent) it gives way halfway, free-falls to the
+bottom, hurts riders 35 and stays broken for the job. Gates at both landings are solid (and carve the
+NavMesh) unless the platform is parked there; a cage closes the ground level's other three sides.
+Switched off (not deleted) to make room: the planter, bin and bench in that tile, one industrial dumpster
+prop, and balustrade `Rail_1_4_7_(1, 0)`. Watch on the test: riding jitter for remote players (they follow
+their owner's NetworkTransform), and whether the upper landing step (0.15 m gap) feels right.
+Tunables: Data/Extraction/Resources/LiftConfig. Menu: Tools/Abandoned/Mall/Add Freight Lift (0.16.3).
