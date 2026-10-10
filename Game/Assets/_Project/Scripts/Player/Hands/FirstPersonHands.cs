@@ -22,6 +22,8 @@ namespace Abandoned.Player
         private Vector3[] shown = new Vector3[2];
         private float walk;
         private Vector3 lastPos;
+        private GameObject tool;
+        private EquipmentDefinition shownTool;
 
         public Transform RightHand => hands[1];
 
@@ -59,6 +61,28 @@ namespace Abandoned.Player
                 }
                 shown[side] = Vector3.Lerp(shown[side], target, 1f - Mathf.Exp(-14f * Time.deltaTime));
                 Pose(side, shown[side]);
+            }
+            ShowTool(held == null ? me.GetComponent<PlayerEquipment>()?.InHand : null);
+        }
+
+        // 0.21.1: the gear in hand, in the right glove.
+        private void ShowTool(EquipmentDefinition inHand)
+        {
+            if (inHand == shownTool) return;
+            shownTool = inHand;
+            if (tool != null) Destroy(tool);
+            if (inHand == null || hands[1] == null) return;
+            tool = ToolModels.Build(inHand, hands[1].parent);
+            tool.name = "FirstPersonHands_Tool";
+        }
+
+        private void LateUpdate()
+        {
+            if (tool != null && hands[1] != null)
+            {
+                tool.transform.localPosition = hands[1].localPosition + new Vector3(0f, 0.03f, 0.02f);
+                tool.transform.localRotation = Quaternion.Euler(-8f, 0f, 0f);
+                tool.SetActive(hands[1].gameObject.activeInHierarchy && arms[1].gameObject.activeSelf);
             }
         }
 

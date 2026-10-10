@@ -19,6 +19,8 @@ namespace Abandoned.Player
         private bool ownerHidden;
         private TextMesh[] crewNumbers;
         private int shownSeat = -1;
+        private GameObject heldTool;
+        private Equipment.EquipmentDefinition shownTool;
 
         private void Awake()
         {
@@ -68,6 +70,29 @@ namespace Abandoned.Player
             rig.LeftArm.localRotation = Quaternion.Euler(Mathf.Lerp(-stride * 0.55f, -52f, carry), 0f, -8f - carry * 6f);
             rig.RightArm.localRotation = Quaternion.Euler(Mathf.Lerp(stride * 0.55f, -52f, carry), 0f, 8f + carry * 6f);
             if (!holding && player != null) Emote(player.CurrentEmote(out float t), t);
+            HeldTool(holding);
+        }
+
+        // 0.21.1: the gear in this worker's hand, as the crew sees it (hidden on your own body, like the rest).
+        private void HeldTool(bool holding)
+        {
+            var gear = player != null ? player.GetComponent<Equipment.PlayerEquipment>() : null;
+            Equipment.EquipmentDefinition inHand = !holding && gear != null && gear.IsSpawned ? gear.InHand : null;
+            if (inHand != shownTool)
+            {
+                shownTool = inHand;
+                if (heldTool != null) Destroy(heldTool);
+                if (inHand != null)
+                {
+                    heldTool = Equipment.ToolModels.Build(inHand, rig.RightArm);
+                    heldTool.transform.localPosition = new Vector3(0f, -0.55f, 0.06f);
+                    heldTool.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                    if (ownerHidden)
+                        foreach (Renderer r in heldTool.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+                }
+            }
+            // Holding gear: the arm comes up to carry it in front, not swinging at the side.
+            if (heldTool != null) rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-55f, 0f, 6f), 0.8f);
         }
 
         // 0.19.5: point, wave or panic over the walking pose, eased in and out (hands must be free).

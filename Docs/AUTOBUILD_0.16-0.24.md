@@ -359,3 +359,9 @@ with dark gloves hung from the camera pivot. Empty-handed they sit low at the bo
 with the walk; carrying, each hand reaches to its side of the held item's box and grips it, shaking with the
 carried weight (full shake at 70 kg); with gear in hand the right hand comes up to hold it. Hidden when dead,
 hiding, knocked down, or flying the drone. Code-built shapes (an artist's rig would replace them; needs approval).
+
+## 0.21.1 held tools in view
+`Equipment.ToolModels` builds a small code-built model per kind (flashlight with lit lens, crowbar, sledgehammer,
+medkit with cross, radio, bolt cutters, spray can/flare/glow stick; anything else a box in the gear's colour).
+You see it in your first-person right glove; crewmates see it in your worker's right hand, the arm raised to
+carry it (`WorkerPresentation.HeldTool`, from the synced hand slots). It goes away while carrying loot.
