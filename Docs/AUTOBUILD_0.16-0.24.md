@@ -296,3 +296,12 @@ runs: "status" (plain text) and "steam_display" #Status_Menu / #Status_HQ (crew 
 quota), plus "steam_player_group" = the crew's Steam lobby so friends see the crew together. Needs the game's
 own App ID: upload Tools/Steam/rich_presence_english.vdf on the partner site (Rich Presence localization).
 Under App ID 480 Steam shows nothing; untested against Steam.
+
+## 0.19.12 daily seeded job with leaderboard
+The contract board gains a last offer every day: "Meridian Mall (today's daily job)" (`ContractGenerator.Daily`),
+rolled from the UTC date at company level 1 with no modifier, so its seed, quota, stability, loot, route
+changes and alarms are the same for every company that day (the host's difficulty preset still scales its
+quota). When a daily job's truck leaves with someone alive, each player submits the crew's haul to Steam
+leaderboard `daily_YYYYMMDD` (descending, numeric, best kept; `Networking.DailyLeaderboard`) and gets a toast
+with the crew's global rank; the best haul is also kept locally. Needs the game's own App ID (480's
+leaderboards may refuse it). Untested against Steam.

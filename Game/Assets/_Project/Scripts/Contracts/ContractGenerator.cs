@@ -32,8 +32,28 @@ namespace Abandoned.Contracts
                 }
                 offers.Add(Roll(c, m, companyLevel, random, lootEstimate));
             }
+            offers.Add(Daily(c, lootEstimate, DateTime.UtcNow)); // 0.19.12
             return offers;
         }
+
+        /// <summary>0.19.12: today's id ("20261010"); the daily job and its leaderboard are named after it.</summary>
+        public static string DayId(DateTime utc) => utc.ToString("yyyyMMdd");
+
+        /// <summary>
+        /// 0.19.12: the daily job. The same for everyone that UTC day: rolled from the date at company level 1
+        /// with no modifier, so the run seed (the mall's loot, route changes, alarms) matches too.
+        /// </summary>
+        public static Contract Daily(ContractConfig c, int lootEstimate, DateTime utc)
+        {
+            int day = int.Parse(DayId(utc));
+            Contract daily = Roll(c, null, 1, new System.Random(day * 7919 + 17), lootEstimate);
+            daily.ModifierId = DailyId;
+            daily.ModifierName = "Daily job";
+            daily.Location = MallLocation + " (today's daily job)";
+            return daily;
+        }
+
+        public const string DailyId = "daily";
 
         private static Contract Roll(ContractConfig c, ContractModifier m, int level, System.Random random, int lootEstimate)
         {
