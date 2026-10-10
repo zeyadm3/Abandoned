@@ -137,6 +137,7 @@ namespace Abandoned.Networking
                 ragdoll.IsRagdolled, ragdoll.IsBodyResting, ragdoll.BodyPosition, look != null ? look.Pitch : 0f);
             TickDevHurt();
             TickOwnerHiding();
+            TickOwnerEmote(); // 0.19.5
         }
 
         private void OnStateChanged(PlayerNetState previous, PlayerNetState current) => ApplyRemote(current);

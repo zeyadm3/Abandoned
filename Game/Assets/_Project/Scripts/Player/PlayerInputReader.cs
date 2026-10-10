@@ -13,6 +13,7 @@ namespace Abandoned.Player
     {
         private AbandonedInput input;
         private InputAction ragdollDebugAction, giveGearAction, pingAction;
+        private InputAction[] emoteActions;
 
         public PlayerInputFrame Current { get; private set; }
 
@@ -21,6 +22,18 @@ namespace Abandoned.Player
 
         /// <summary>0.19.0: the ping key this frame (read by the ping marker, outside the frame struct).</summary>
         public bool PingPressed => isActiveAndEnabled && !Override.HasValue && pingAction != null && pingAction.WasPressedThisFrame();
+
+        /// <summary>0.19.5: the emote pressed this frame (1 point, 2 wave, 3 panic), or 0.</summary>
+        public int EmotePressed
+        {
+            get
+            {
+                if (!isActiveAndEnabled || Override.HasValue || emoteActions == null) return 0;
+                for (int i = 0; i < emoteActions.Length; i++)
+                    if (emoteActions[i] != null && emoteActions[i].WasPressedThisFrame()) return i + 1;
+                return 0;
+            }
+        }
 
         /// <summary>When set, used instead of the devices (tests, replays, bots).</summary>
         public PlayerInputFrame? Override { get; set; }
@@ -32,6 +45,11 @@ namespace Abandoned.Player
             ragdollDebugAction = input.asset.FindAction("Debug/ToggleRagdoll", true);
             giveGearAction = input.asset.FindAction("Gameplay/GiveGear", true);
             pingAction = input.asset.FindAction("Gameplay/Ping", false); // 0.19.0
+            emoteActions = new[] // 0.19.5: point, wave, panic
+            {
+                input.asset.FindAction("Gameplay/EmotePoint", false), input.asset.FindAction("Gameplay/EmoteWave", false),
+                input.asset.FindAction("Gameplay/EmotePanic", false),
+            };
             InputBindings.Apply(input.asset);
             InputBindings.Changed += Rebind;
         }

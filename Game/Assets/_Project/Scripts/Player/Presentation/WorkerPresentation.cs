@@ -67,6 +67,29 @@ namespace Abandoned.Player
             rig.RightKnee.localRotation = Quaternion.Euler(crouch * 146f + Mathf.Max(0f, stride) * (1f - crouch) * 0.55f, 0f, 0f);
             rig.LeftArm.localRotation = Quaternion.Euler(Mathf.Lerp(-stride * 0.55f, -52f, carry), 0f, -8f - carry * 6f);
             rig.RightArm.localRotation = Quaternion.Euler(Mathf.Lerp(stride * 0.55f, -52f, carry), 0f, 8f + carry * 6f);
+            if (!holding && player != null) Emote(player.CurrentEmote(out float t), t);
+        }
+
+        // 0.19.5: point, wave or panic over the walking pose, eased in and out (hands must be free).
+        private void Emote(Networking.Emote emote, float t)
+        {
+            if (emote == Networking.Emote.None) return;
+            float w = Mathf.Clamp01(Mathf.Min(t, 1f - t) * 6f);
+            float clock = Time.time;
+            switch (emote)
+            {
+                case Networking.Emote.Point:
+                    rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-90f, 0f, 4f), w);
+                    break;
+                case Networking.Emote.Wave:
+                    rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-160f, 0f, 20f + Mathf.Sin(clock * 12f) * 22f), w);
+                    break;
+                default:
+                    rig.LeftArm.localRotation = Quaternion.Slerp(rig.LeftArm.localRotation, Quaternion.Euler(-150f + Mathf.Sin(clock * 19f) * 25f, 0f, -25f), w);
+                    rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-150f + Mathf.Sin(clock * 21f + 1f) * 25f, 0f, 25f), w);
+                    rig.Torso.localRotation *= Quaternion.Euler(0f, Mathf.Sin(clock * 15f) * 8f * w, 0f);
+                    break;
+            }
         }
 
 #if UNITY_EDITOR

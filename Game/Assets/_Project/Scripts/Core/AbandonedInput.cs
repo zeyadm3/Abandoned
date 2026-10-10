@@ -313,6 +313,36 @@ namespace Abandoned.Core
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""EmotePoint"",
+                    ""type"": ""Button"",
+                    ""id"": ""346a230a-5a86-4fae-9550-ddf81dc25255"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""EmoteWave"",
+                    ""type"": ""Button"",
+                    ""id"": ""2b8bdd86-aa36-4594-9438-776d70ef4ad4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""EmotePanic"",
+                    ""type"": ""Button"",
+                    ""id"": ""d12d1a71-64e9-40d8-a820-27e45879861a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -610,6 +640,39 @@ namespace Abandoned.Core
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Ping"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba9fb0a0-3a4d-4d27-a5bf-df4e4adf4863"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EmotePoint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9e9af30-d361-4dd0-8be4-5c031e52018a"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EmoteWave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14b94b35-e023-4496-9255-5c1627ae04f6"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EmotePanic"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1003,6 +1066,9 @@ namespace Abandoned.Core
             m_Gameplay_HideHud = m_Gameplay.FindAction("HideHud", throwIfNotFound: true);
             m_Gameplay_GiveGear = m_Gameplay.FindAction("GiveGear", throwIfNotFound: true);
             m_Gameplay_Ping = m_Gameplay.FindAction("Ping", throwIfNotFound: true);
+            m_Gameplay_EmotePoint = m_Gameplay.FindAction("EmotePoint", throwIfNotFound: true);
+            m_Gameplay_EmoteWave = m_Gameplay.FindAction("EmoteWave", throwIfNotFound: true);
+            m_Gameplay_EmotePanic = m_Gameplay.FindAction("EmotePanic", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1124,6 +1190,9 @@ namespace Abandoned.Core
         private readonly InputAction m_Gameplay_HideHud;
         private readonly InputAction m_Gameplay_GiveGear;
         private readonly InputAction m_Gameplay_Ping;
+        private readonly InputAction m_Gameplay_EmotePoint;
+        private readonly InputAction m_Gameplay_EmoteWave;
+        private readonly InputAction m_Gameplay_EmotePanic;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -1224,6 +1293,18 @@ namespace Abandoned.Core
             /// </summary>
             public InputAction @Ping => m_Wrapper.m_Gameplay_Ping;
             /// <summary>
+            /// Provides access to the underlying input action "Gameplay/EmotePoint".
+            /// </summary>
+            public InputAction @EmotePoint => m_Wrapper.m_Gameplay_EmotePoint;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/EmoteWave".
+            /// </summary>
+            public InputAction @EmoteWave => m_Wrapper.m_Gameplay_EmoteWave;
+            /// <summary>
+            /// Provides access to the underlying input action "Gameplay/EmotePanic".
+            /// </summary>
+            public InputAction @EmotePanic => m_Wrapper.m_Gameplay_EmotePanic;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -1315,6 +1396,15 @@ namespace Abandoned.Core
                 @Ping.started += instance.OnPing;
                 @Ping.performed += instance.OnPing;
                 @Ping.canceled += instance.OnPing;
+                @EmotePoint.started += instance.OnEmotePoint;
+                @EmotePoint.performed += instance.OnEmotePoint;
+                @EmotePoint.canceled += instance.OnEmotePoint;
+                @EmoteWave.started += instance.OnEmoteWave;
+                @EmoteWave.performed += instance.OnEmoteWave;
+                @EmoteWave.canceled += instance.OnEmoteWave;
+                @EmotePanic.started += instance.OnEmotePanic;
+                @EmotePanic.performed += instance.OnEmotePanic;
+                @EmotePanic.canceled += instance.OnEmotePanic;
             }
 
             /// <summary>
@@ -1392,6 +1482,15 @@ namespace Abandoned.Core
                 @Ping.started -= instance.OnPing;
                 @Ping.performed -= instance.OnPing;
                 @Ping.canceled -= instance.OnPing;
+                @EmotePoint.started -= instance.OnEmotePoint;
+                @EmotePoint.performed -= instance.OnEmotePoint;
+                @EmotePoint.canceled -= instance.OnEmotePoint;
+                @EmoteWave.started -= instance.OnEmoteWave;
+                @EmoteWave.performed -= instance.OnEmoteWave;
+                @EmoteWave.canceled -= instance.OnEmoteWave;
+                @EmotePanic.started -= instance.OnEmotePanic;
+                @EmotePanic.performed -= instance.OnEmotePanic;
+                @EmotePanic.canceled -= instance.OnEmotePanic;
             }
 
             /// <summary>
@@ -1912,6 +2011,27 @@ namespace Abandoned.Core
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnPing(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "EmotePoint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnEmotePoint(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "EmoteWave" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnEmoteWave(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "EmotePanic" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnEmotePanic(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

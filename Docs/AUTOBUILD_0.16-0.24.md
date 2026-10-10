@@ -238,3 +238,10 @@ three-way switch on an HQ wall near dispatch (only the host can turn it). `Diffi
 damage ×0.7/1/1.3 and the gap between arrivals ×1.4/1/0.75 (ThreatDirector). Known gap: the contract board
 still prints the unscaled quota; the HUD, truck and payday use the scaled one.
 Menu: Tools/Abandoned/HQ/Add Difficulty Switch (0.19.4).
+
+## 0.19.5 emotes
+Three new rebindable Gameplay actions, EmotePoint / EmoteWave / EmotePanic on 3 / 4 / 5. The owner writes the
+emote and its start time into two owner-written NetworkVariables on NetworkPlayer (NetworkPlayer.Emote.cs);
+every machine's `WorkerPresentation` lays a 2.6 s procedural pose over the gait (point: right arm forward;
+wave: right arm up and waving; panic: both arms flailing, torso twisting), only with empty hands. Your own
+body is hidden in first person, so you see crewmates' emotes, not yours. No editor step.
