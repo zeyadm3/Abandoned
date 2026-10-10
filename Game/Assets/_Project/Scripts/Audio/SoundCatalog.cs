@@ -201,6 +201,8 @@ namespace Abandoned.Audio
             Set(SoundId.LootRattle, Fx, 120, 1f, 20f, Syn, Wall, 3, "rattling", 0.8f);
             Set(SoundId.LootDrip, Fx, 160, 1f, 8f, Syn, Wall, 3, null, 0.6f);
             Set(SoundId.LootRing, Fx, 60, 3f, 40f, Syn, Dull, 2, "something is ringing");
+            // 0.19.0: ping marker (UI).
+            Set(SoundId.PingBlip, Menu, 80, 1f, 10f, Syn, Open, 1, null, 0.7f, 0f);
             // @@catalog
             return t;
         }

@@ -100,6 +100,7 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Extraction.RunSets),       // 0.18.3
             typeof(Abandoned.Extraction.RunCarts),      // 0.18.4
             typeof(Abandoned.Extraction.RunOvertime),   // 0.18.6
+            typeof(Abandoned.Extraction.RunPings),      // 0.19.0
             // @@runstate
         };
 

@@ -303,6 +303,16 @@ namespace Abandoned.Core
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Ping"",
+                    ""type"": ""Button"",
+                    ""id"": ""87cf9fdd-87e7-4c4b-8d5a-39eb96691d3d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -589,6 +599,17 @@ namespace Abandoned.Core
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""GiveGear"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f36a3d4-8f55-48ca-ac0e-a383bed4dbba"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Ping"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -981,6 +1002,7 @@ namespace Abandoned.Core
             m_Gameplay_PhotoCamera = m_Gameplay.FindAction("PhotoCamera", throwIfNotFound: true);
             m_Gameplay_HideHud = m_Gameplay.FindAction("HideHud", throwIfNotFound: true);
             m_Gameplay_GiveGear = m_Gameplay.FindAction("GiveGear", throwIfNotFound: true);
+            m_Gameplay_Ping = m_Gameplay.FindAction("Ping", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1101,6 +1123,7 @@ namespace Abandoned.Core
         private readonly InputAction m_Gameplay_PhotoCamera;
         private readonly InputAction m_Gameplay_HideHud;
         private readonly InputAction m_Gameplay_GiveGear;
+        private readonly InputAction m_Gameplay_Ping;
         /// <summary>
         /// Provides access to input actions defined in input action map "Gameplay".
         /// </summary>
@@ -1197,6 +1220,10 @@ namespace Abandoned.Core
             /// </summary>
             public InputAction @GiveGear => m_Wrapper.m_Gameplay_GiveGear;
             /// <summary>
+            /// Provides access to the underlying input action "Gameplay/Ping".
+            /// </summary>
+            public InputAction @Ping => m_Wrapper.m_Gameplay_Ping;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -1285,6 +1312,9 @@ namespace Abandoned.Core
                 @GiveGear.started += instance.OnGiveGear;
                 @GiveGear.performed += instance.OnGiveGear;
                 @GiveGear.canceled += instance.OnGiveGear;
+                @Ping.started += instance.OnPing;
+                @Ping.performed += instance.OnPing;
+                @Ping.canceled += instance.OnPing;
             }
 
             /// <summary>
@@ -1359,6 +1389,9 @@ namespace Abandoned.Core
                 @GiveGear.started -= instance.OnGiveGear;
                 @GiveGear.performed -= instance.OnGiveGear;
                 @GiveGear.canceled -= instance.OnGiveGear;
+                @Ping.started -= instance.OnPing;
+                @Ping.performed -= instance.OnPing;
+                @Ping.canceled -= instance.OnPing;
             }
 
             /// <summary>
@@ -1872,6 +1905,13 @@ namespace Abandoned.Core
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnGiveGear(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Ping" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPing(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

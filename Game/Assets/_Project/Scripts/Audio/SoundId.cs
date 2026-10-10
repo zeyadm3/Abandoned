@@ -168,6 +168,8 @@ namespace Abandoned.Audio
         LootRattle,
         LootDrip,
         LootRing,
+        // 0.19.0: ping marker (UI).
+        PingBlip,
         // @@ids
     }
 }

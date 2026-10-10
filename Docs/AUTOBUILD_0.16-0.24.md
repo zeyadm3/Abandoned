@@ -202,3 +202,10 @@ At the HQ (added to the saved scene by `HqSites`, never regenerated): a lectern 
 starred, the rest blank) and a three-board trophy shelf with 12 places that shows a small copy of every
 jackpot sold, best first (`Company.TrophyShelf`). New screens from here on live on `UI/ExtraScreens`, created
 at start-up (no session-prefab change). Menu: Tools/Abandoned/HQ/Add Loot Catalogue and Trophy Shelf (0.18.7).
+
+## 0.19.0 ping marker
+New Gameplay action `Ping` (middle mouse, rebindable) in AbandonedInput.inputactions, read by name in
+PlayerInputReader (`PingPressed`). `UI/PingView` (on ExtraScreens) sends the local camera ray to `RunPings`
+(RunState); the host raycasts 60 m and marks LOOT (follows the item), MONSTER! (follows it), WEAK FLOOR (a
+collapsible section past Stable) or HERE, for 12 s, max 3 per player (a 4th replaces the oldest). Every machine
+draws a diamond with the label and distance in the pinger's seat colour, fading out; a blip plays.

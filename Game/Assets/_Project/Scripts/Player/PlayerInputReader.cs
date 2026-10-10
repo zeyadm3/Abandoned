@@ -12,12 +12,15 @@ namespace Abandoned.Player
     public class PlayerInputReader : MonoBehaviour
     {
         private AbandonedInput input;
-        private InputAction ragdollDebugAction, giveGearAction;
+        private InputAction ragdollDebugAction, giveGearAction, pingAction;
 
         public PlayerInputFrame Current { get; private set; }
 
         /// <summary>This reader's actions, with the player's rebinding applied.</summary>
         public InputActionAsset Actions => input?.asset;
+
+        /// <summary>0.19.0: the ping key this frame (read by the ping marker, outside the frame struct).</summary>
+        public bool PingPressed => isActiveAndEnabled && !Override.HasValue && pingAction != null && pingAction.WasPressedThisFrame();
 
         /// <summary>When set, used instead of the devices (tests, replays, bots).</summary>
         public PlayerInputFrame? Override { get; set; }
@@ -28,6 +31,7 @@ namespace Abandoned.Player
             // Debug-only action; looked up by name so this doesn't depend on wrapper regeneration order.
             ragdollDebugAction = input.asset.FindAction("Debug/ToggleRagdoll", true);
             giveGearAction = input.asset.FindAction("Gameplay/GiveGear", true);
+            pingAction = input.asset.FindAction("Gameplay/Ping", false); // 0.19.0
             InputBindings.Apply(input.asset);
             InputBindings.Changed += Rebind;
         }

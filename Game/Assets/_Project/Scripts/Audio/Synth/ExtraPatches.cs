@@ -54,6 +54,8 @@ namespace Abandoned.Audio
                 case SoundId.LootRattle: return Patch.Mono(id, take, LootPatches.Rattle(take), 0.6f);
                 case SoundId.LootDrip: return Patch.Mono(id, take, LootPatches.Drip(take), 0.5f);
                 case SoundId.LootRing: return Patch.Mono(id, take, LootPatches.Ring(take), 0.8f);
+                // 0.19.0: ping marker (UI).
+                case SoundId.PingBlip: return Patch.Mono(id, take, CrewPatches.Ping(), 0.6f);
                 // @@cases
                 default: return null;
             }
