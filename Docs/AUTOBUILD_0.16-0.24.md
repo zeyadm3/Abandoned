@@ -371,3 +371,11 @@ Walking at more than 1.2 m/s into a crewmate (within 0.75 m, heading at them) as
 `NetworkPlayer.RequestShove` → an owner RPC → `PlayerMotor.Shove`, 60 % of your speed, capped at 2.2 m/s, at
 most every 0.4 s, never while they're hiding, down or dead. A soft thump plays. `Player.PlayerShove` runs on
 your own machine for your own player.
+
+## 0.21.3 monster animation polish
+`Threats.ThreatPolish` (added by Threat.Awake on every machine; runs after the body's own animation): a pivot
+slipped in above each monster's model leans it into turns (up to 12°, with speed), jerks it back and up when
+loot hits it hard (host sees the collision → `Threat.FlinchRpc` to everyone, with a snarl; it isn't hurt), and
+gives each kind its own idle when standing: the Blind One sweeps its head listening, the Stalker barely breathes,
+the Collector twitches about, the Hunter heaves, the Weight sways, the Thing turns slowly, the Crawlers scuttle
+on the spot, the Last Hunter swings its head. Visual only.

@@ -219,6 +219,8 @@ namespace Abandoned.Audio
             Set(SoundId.DroneBuzz, Fx, 90, 2f, 30f, Syn, Dull, 2, "a drone whines", 0.8f);
             // 0.21.2: a shove.
             Set(SoundId.Shove, Fx, 130, 1f, 12f, Syn, Wall, 2, null, 0.7f);
+            // 0.21.3: a monster recoils.
+            Set(SoundId.ThreatFlinch, Monsters, 60, 2f, 30f, Syn, Dull, 2, "something snarls");
             // @@catalog
             return t;
         }

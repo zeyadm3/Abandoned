@@ -186,6 +186,8 @@ namespace Abandoned.Audio
         DroneBuzz,
         // 0.21.2: a shove.
         Shove,
+        // 0.21.3: a monster recoils.
+        ThreatFlinch,
         // @@ids
     }
 }

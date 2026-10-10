@@ -50,7 +50,19 @@ namespace Abandoned.Threats
         {
             WallMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast");
             patrolPath = new NavMeshPath();
+            if (GetComponent<ThreatPolish>() == null) gameObject.AddComponent<ThreatPolish>(); // 0.21.3
         }
+
+        // 0.21.3: loot thrown or dropped hard into it makes it recoil, on every machine (it isn't hurt).
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (!IsServer || !IsSpawned || collision.rigidbody == null || collision.relativeVelocity.magnitude < 3f) return;
+            if (collision.rigidbody.GetComponent<Loot.LootItem>() == null) return;
+            FlinchRpc(-collision.relativeVelocity.normalized);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void FlinchRpc(Vector3 from) => GetComponent<ThreatPolish>()?.Flinch(from);
 
         public override void OnNetworkSpawn()
         {

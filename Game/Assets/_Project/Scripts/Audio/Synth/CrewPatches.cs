@@ -47,5 +47,14 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Noise(0.25f, 2101 + take, 2500f, 1200f, 0.01f, 12f), 0.3f);
             return d;
         }
+
+        /// <summary>A monster taking a blow: a startled, throaty hiss and a thud.</summary>
+        public static float[] Flinch(int take)
+        {
+            float[] d = Synth.Buffer(0.8f);
+            Patch.Layer(d, Synth.Thump(0.25f, 110f, 60f, 16f), 0.6f);
+            Patch.Layer(d, Synth.Fade(Synth.Resonant(0.7f, 2201 + take, 700f, 300f, 5f, 0.01f, 5f), 0.01f, 0.2f), 0.8f);
+            return SynthReverb.Apply(d, 1f, 0.25f);
+        }
     }
 }
