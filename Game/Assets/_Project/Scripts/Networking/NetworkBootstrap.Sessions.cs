@@ -54,8 +54,12 @@ namespace Abandoned.Networking
         }
 
         /// <summary>Joins a host: "address[:port]" for Unity Transport, a SteamID64 for Steam.</summary>
+        /// <summary>0.23.5: what this machine last tried to join (address:port or SteamID64), for "Rejoin your crew".</summary>
+        public string LastJoinTarget { get; private set; }
+
         public bool StartClient(string address, ushort port = 0)
         {
+            LastJoinTarget = port != 0 ? $"{address}:{port}" : address;
             if (!CanStart()) return false;
             if (string.IsNullOrWhiteSpace(address)) return Fail("Enter an address to join.");
             NetworkLaunchArgs.SplitAddress(address, out string host, out ushort parsedPort);

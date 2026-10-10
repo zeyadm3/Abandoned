@@ -129,6 +129,7 @@ namespace Abandoned.Networking
 
         private void LateUpdate()
         {
+            if (IsSpawned) TickRejoin(); // 0.23.5
             if (IsSpawned) TrackServerFall();
             if (IsSpawned && IsServer) TickServerHiding();
             if (!IsSpawned || !IsOwner) return;

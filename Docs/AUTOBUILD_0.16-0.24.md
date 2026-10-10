@@ -498,3 +498,10 @@ yellow counter, top left). Graphics page: texture detail Full/Half/Quarter (glob
 section with switches for fog, bloom, film grain and all post-processing. `Core.VideoExtras` (made at start-up)
 keeps them true every frame against each level's own atmosphere (fog forced off; a top-priority volume zeroes
 bloom/grain; the main camera's post-processing flag). Field of view now goes to 120 (was 100).
+
+## 0.23.5 rejoin at the HQ
+Joining was already open at the HQ between jobs (never mid-job). New: the host remembers a dropped player's seat
+under their identity (Steam id, or chosen name) in `SpawnSlots.Remember`, and when they come back
+(`NetworkPlayer.Rejoin`) they get the same seat (number, colour, spawn point) if nobody has taken it. Each machine
+keeps what it last joined (address:port or SteamID64), and the Play screen's Join card shows "Rejoin your last
+crew" for it. Over Steam, accepting the invite again also works as before.

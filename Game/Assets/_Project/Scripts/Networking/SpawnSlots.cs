@@ -33,6 +33,32 @@ namespace Abandoned.Networking
 
         public void Release(ulong clientId) => slotByClient.Remove(clientId);
 
-        public void Clear() => slotByClient.Clear();
+        // 0.23.5: a player who drops keeps their seat for when they come back to the HQ.
+        private readonly Dictionary<string, int> remembered = new();
+
+        /// <summary>Before releasing a leaving player's seat: remember it under who they are.</summary>
+        public void Remember(string identity, ulong clientId)
+        {
+            if (!string.IsNullOrEmpty(identity) && slotByClient.TryGetValue(clientId, out int slot)) remembered[identity] = slot;
+        }
+
+        /// <summary>A returning player gets their old seat back if nobody else has it now.</summary>
+        public bool TryReclaim(ulong clientId, string identity, out int slot)
+        {
+            slot = -1;
+            if (string.IsNullOrEmpty(identity) || !remembered.TryGetValue(identity, out int old)) return false;
+            foreach (KeyValuePair<ulong, int> kv in slotByClient)
+                if (kv.Value == old && kv.Key != clientId) return false;
+            slotByClient[clientId] = old;
+            remembered.Remove(identity);
+            slot = old;
+            return true;
+        }
+
+        public void Clear()
+        {
+            slotByClient.Clear();
+            remembered.Clear();
+        }
     }
 }

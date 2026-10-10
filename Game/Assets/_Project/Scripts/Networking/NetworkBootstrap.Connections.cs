@@ -43,6 +43,7 @@ namespace Abandoned.Networking
         {
             if (networkManager.IsServer)
             {
+                slots.Remember(NetworkPlayer.IdentityOf(clientId), clientId); // 0.23.5
                 slots.Release(clientId);
             }
             else if (clientId == networkManager.LocalClientId || clientId == NetworkManager.ServerClientId)

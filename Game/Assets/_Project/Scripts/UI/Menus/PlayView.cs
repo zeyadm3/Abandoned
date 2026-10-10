@@ -66,6 +66,10 @@ namespace Abandoned.UI
             address.AddToClassList("field");
             join.Add(address);
             MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, important: true);
+            // 0.23.5: back to the crew you were last with (they must be at the HQ).
+            string last = Core.Prefs.GetString(NetworkPlayer.LastJoinKey, "");
+            if (!string.IsNullOrEmpty(last))
+                MenuKit.Button(join, "Rejoin your last crew", () => b.StartClient(last), SoundId.UiConfirm, small: true);
 
             status = MenuKit.Text(body, "", "text");
             status.AddToClassList("text--small");
