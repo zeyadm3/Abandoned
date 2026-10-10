@@ -154,6 +154,10 @@ namespace Abandoned.EditorTools
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.CollectorPrefabPath));
             prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(ThreatContentBuilder.HunterPrefabPath));
             foreach(string path in NewThreatContentBuilder.PrefabPaths) prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(path));
+            // 0.17+: gear that spawns network objects (GearPrefabs), and anything else later versions register.
+            var gear = AssetDatabase.LoadAssetAtPath<Abandoned.Equipment.GearPrefabs>(ReleaseKit.GearPrefabsPath);
+            if (gear != null) foreach (var e in gear.Entries) if (e.Prefab != null) prefabs.Add(e.Prefab.gameObject);
+            foreach (string path in ReleaseKit.ExtraNetworkPrefabs) prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(path));
             foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { LootPrefabGenerator.Folder }))
                 prefabs.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));
             foreach (GameObject prefab in prefabs)

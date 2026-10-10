@@ -23,7 +23,11 @@ namespace Abandoned.Equipment
             EquipmentDefinition d = InSlot(slot);
             if (d == null) return;
             if (d.Kind == EquipmentKind.Crowbar) { Pry(); return; } // a tool: never used up
-            if (!d.Consumable) return;
+            if (!d.Consumable)
+            {
+                UseTool(d); // 0.17+ tools
+                return;
+            }
             bool used = d.Kind switch
             {
                 EquipmentKind.Medkit => TreatInjury(),
@@ -32,7 +36,8 @@ namespace Abandoned.Equipment
                 EquipmentKind.NoiseMaker => Throw(),
                 EquipmentKind.SupportJack => PlaceJack(),
                 EquipmentKind.RopePulley => RigPulley(),
-                _ => false,
+                _ => UseConsumable(d), // 0.17+ consumables
+
             };
             if (used) ServerConsume(slot);
         }

@@ -26,6 +26,9 @@ namespace Abandoned.Audio
                 case SoundId.VaultDrill: return Patch.Mono(id, take, RoomPatches.Drill(take), 0.8f);
                 case SoundId.VaultDrillJam: return Patch.Mono(id, take, RoomPatches.DrillJam(), 0.9f);
                 case SoundId.VaultOpen: return Patch.Mono(id, take, RoomPatches.SafeOpen(), 0.9f);
+                // 0.17.0: the sledgehammer.
+                case SoundId.SledgeHit: return Patch.Mono(id, take, HazardPatches.SledgeHit(take), 0.95f);
+                case SoundId.SledgeSwing: return Patch.Mono(id, take, HazardPatches.SledgeSwing(take), 0.6f);
                 // @@cases
                 default: return null;
             }

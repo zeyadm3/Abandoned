@@ -21,5 +21,8 @@ namespace Abandoned.Equipment
         MotionDetector,
         NightVision,
         Battery,
+        // 0.17+ (append only)
+        Sledgehammer,
+        // @@kinds
     }
 }

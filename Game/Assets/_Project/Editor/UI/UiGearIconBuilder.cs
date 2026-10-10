@@ -14,7 +14,8 @@ namespace Abandoned.EditorTools
         private static readonly string[] Ids =
         {
             "flashlight", "radio", "hand_trolley", "medkit", "planks", "noise_maker", "stress_scanner", "crowbar",
-            "backpack", "support_jack", "flatbed", "rope_pulley", "bolt_cutters", "motion_detector", "night_vision", "battery", "transport_van"
+            "backpack", "support_jack", "flatbed", "rope_pulley", "bolt_cutters", "motion_detector", "night_vision", "battery", "transport_van",
+            "sledgehammer", // @@icons
         };
 
         [MenuItem("Tools/Abandoned/UI/Create Gear Icons")]
@@ -111,6 +112,9 @@ namespace Abandoned.EditorTools
                     Ring(0.5f, 0.7f, 0.15f, 0.04f); Disc(0.5f, 0.7f, 0.035f);
                     Line(0.35f, 0.7f, 0.35f, 0.19f, 0.025f); Line(0.65f, 0.7f, 0.65f, 0.25f, 0.025f);
                     Ring(0.65f, 0.19f, 0.07f, 0.023f); break;
+                case "sledgehammer":
+                    Line(0.3f, 0.15f, 0.55f, 0.72f, 0.035f); Box(0.38f, 0.68f, 0.36f, 0.16f); break;
+                // @@iconshapes
                 case "night_vision":
                     Ring(0.32f, 0.44f, 0.17f, 0.06f); Ring(0.68f, 0.44f, 0.17f, 0.06f);
                     Box(0.42f, 0.48f, 0.16f, 0.11f); Line(0.2f, 0.62f, 0.8f, 0.62f, 0.025f); break;

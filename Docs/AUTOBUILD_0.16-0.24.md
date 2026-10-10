@@ -77,3 +77,11 @@ clock; A/D or click switches, E/jump/pause gets up. The viewer stands at the des
 Only the watched camera renders, only on the watcher's machine (640×360, no shadows or post); nothing is
 networked. Needs power in the desk's sector or its breaker. Labels are screen UI, not world text.
 Menu: Tools/Abandoned/Mall/Add Security Office (0.16.7).
+
+## 0.17.0 sledgehammer
+New gear (catalog index after the battery; $3,000, company level 2; tool, never used up). Use swings at
+what you aim at: 5,200 kg·m/s into a collapsible floor section (the crowbar is 1,500), 1.3 s apart, noise
+0.9. A sound floor breaks in a few blows through its normal Cracking warning; protected routes and stairs
+can't collapse and say so. Gear added from here on: `EquipmentKind` appends, `PlayerEquipment.Tools.cs`
+(host uses), `ToolConfig` (Data/Equipment/Resources), `GearPrefabs` (prefabs gear spawns, registered with
+NGO by `RegisterNetworkPrefabs`), icons drawn by UiGearIconBuilder. Menu: Tools/Abandoned/Content/Sledgehammer (0.17.0).

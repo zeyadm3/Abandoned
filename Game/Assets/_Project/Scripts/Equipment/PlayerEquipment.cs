@@ -160,7 +160,7 @@ namespace Abandoned.Equipment
                 else carrier.ShowHint("Your hands are full. Set the loot down to use your flashlight.");
             }
             // Single-use gear: the left mouse button with empty hands.
-            if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar)) UseRpc(state.Value.Active);
+            if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar || d.Kind >= EquipmentKind.Sledgehammer)) UseRpc(state.Value.Active);
         }
 
         // Like the interactor: clicks on a screen (gear rack, shop, pause) and the click that

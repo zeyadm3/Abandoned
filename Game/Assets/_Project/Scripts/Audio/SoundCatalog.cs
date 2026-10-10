@@ -173,6 +173,9 @@ namespace Abandoned.Audio
             Set(SoundId.VaultDrill, Fx, 60, 4f, 60f, Syn, Dull, 3, "drilling", 0.85f);
             Set(SoundId.VaultDrillJam, Fx, 60, 3f, 45f, Syn, Dull, 1, "the drill jams");
             Set(SoundId.VaultOpen, Fx, 50, 3f, 40f, Syn, Dull, 1, "a safe door swings open");
+            // 0.17.0: the sledgehammer.
+            Set(SoundId.SledgeHit, Fx, 50, 4f, 55f, Syn, Dull, 3, "a hammer pounds the floor");
+            Set(SoundId.SledgeSwing, Fx, 140, 1f, 10f, Syn, Wall, 2);
             // @@catalog
             return t;
         }

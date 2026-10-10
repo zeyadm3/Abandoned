@@ -41,6 +41,10 @@ namespace Abandoned.EditorTools
                     EquipmentKind.NightVision, 14000, 6, false, new Color(0.35f, 0.75f, 0.3f)),
                 Item("battery", "Flashlight Battery", "Replaces a used flashlight cell. Keep your flashlight in the other slot and use (single use).",
                     EquipmentKind.Battery, 500, 1, true, new Color(0.5f, 0.56f, 0.42f)),
+                // 0.17+ (append only)
+                Item("sledgehammer", "Sledgehammer", "Swing it at the floor (use): a few blows break a sound section, through its warning. Make your own hole to drop loot through. Very loud.",
+                    EquipmentKind.Sledgehammer, 3000, 2, false, new Color(0.45f, 0.42f, 0.4f)),
+                // @@gear
             };
             CreateNoiseMaker();
             CreateSupportJack();

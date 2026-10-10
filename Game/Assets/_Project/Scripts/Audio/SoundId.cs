@@ -140,6 +140,9 @@ namespace Abandoned.Audio
         VaultDrill,
         VaultDrillJam,
         VaultOpen,
+        // 0.17.0: the sledgehammer.
+        SledgeHit,
+        SledgeSwing,
         // @@ids
     }
 }
