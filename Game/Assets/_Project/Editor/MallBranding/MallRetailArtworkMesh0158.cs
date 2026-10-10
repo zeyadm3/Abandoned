@@ -11,7 +11,18 @@ namespace Abandoned.EditorTools
         {
             string path = MallRetailArtworkMaterials0158.Folder + "/Meshes/" + kind + ".asset";
             Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(path);
-            if (mesh != null) return mesh;
+            if (mesh != null)
+            {
+                // These surfaces face +Z: the viewer's left is local +X. Derive U from positions
+                // rather than toggling old UVs so repeated authoring cannot mirror the prints again.
+                Vector3[] points = mesh.vertices;
+                Vector2[] coordinates = mesh.uv;
+                for (int i = 0; i < coordinates.Length; i++) coordinates[i].x = .5f - points[i].x;
+                mesh.uv = coordinates;
+                mesh.RecalculateTangents();
+                EditorUtility.SetDirty(mesh);
+                return mesh;
+            }
             int columns = kind == "FasciaPrint" ? 1 : 8, rows = kind == "FasciaPrint" ? 1 : 10;
             var vertices = new List<Vector3>();
             var uv = new List<Vector2>();
@@ -26,7 +37,7 @@ namespace Abandoned.EditorTools
                 else if (kind == "HangingFabric")
                     depth = Mathf.Sin(u * Mathf.PI * 3.5f) * Mathf.Sin(v * Mathf.PI) * .012f;
                 vertices.Add(new Vector3(u - .5f, v - .5f, depth));
-                uv.Add(new Vector2(u, v));
+                uv.Add(new Vector2(1f - u, v));
             }
             for (int row = 0; row < rows; row++)
             for (int column = 0; column < columns; column++)

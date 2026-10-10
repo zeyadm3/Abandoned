@@ -109,6 +109,10 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user, **0.15.8c artwork orientation**, efficient immediate commit): fix mirrored or
+  wrong-facing generated store artwork by correcting shared print UV direction and front/back
+  orientation. Save existing scene/assets and version, then commit all. No tests, QA, regeneration
+  of images or player builds for this quick correction.
 - 2026-10-10 (user, **0.15.8b decorative world-text removal**, user tests): the 0.15.8 pass kept
   too many physical salvage statuses and truck markings, and unfitted font-size/glyph metrics
   caused oversized lettering. Remove nonessential mall world text, including operation statuses,

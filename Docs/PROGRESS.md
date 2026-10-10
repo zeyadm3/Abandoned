@@ -4,6 +4,14 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.15.8c.EEA: readable artwork orientation (2026-10-10)
+
+Correct horizontal UV direction for the shared fascia, paper and fabric meshes: their printed face
+points along +Z, so texture U must decrease with local X. Existing saved meshes are updated in place
+without toggling UVs on repeated authoring. Front prints face outwards and separate reverse prints
+face backwards with positive scale. Generated images and placements remain. Author/save and commit
+only at the user's request for efficiency; no tests, QA, image generation or player builds.
+
 ## 0.15.8b.EEA: decorative world-text removal (2026-10-10; saved, user tests)
 
 The user still finds too much oversized text on the mall and collection truck. The first cleanup
