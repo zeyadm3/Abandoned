@@ -305,3 +305,10 @@ quota). When a daily job's truck leaves with someone alive, each player submits 
 leaderboard `daily_YYYYMMDD` (descending, numeric, best kept; `Networking.DailyLeaderboard`) and gets a toast
 with the crew's global rank; the best haul is also kept locally. Needs the game's own App ID (480's
 leaderboards may refuse it). Untested against Steam.
+
+## 0.20.0 portable floodlight
+New consumable ($1,400, level 2): use stands a tripod work lamp a metre ahead, facing your way (host-spawned
+static network object, Prefabs/Equipment/Floodlight). A 95° spot, range 22 m, intensity 40, for 240 s; the
+last 15 s it sags and stutters, then it's gone. Only the oldest standing floodlight casts shadows
+(ToolConfig.FloodlightShadows = 1; one map in the atlas, which ShadowDirector already counts as a light it
+doesn't manage), the rest light without shadows. Reaches every storey layer.

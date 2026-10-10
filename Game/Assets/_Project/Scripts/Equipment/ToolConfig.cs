@@ -61,6 +61,20 @@ namespace Abandoned.Equipment
         public float BlanketReach => blanketReach;
         public Material BlanketMaterial => blanketMaterial;
 
+        [Header("Portable floodlight (0.20.0)")]
+        [SerializeField, Min(10f)] private float floodlightSeconds = 240f;
+        [SerializeField, Min(0.1f)] private float floodlightIntensity = 40f;
+        [SerializeField, Min(1f)] private float floodlightRange = 22f;
+        [SerializeField, Range(10f, 150f)] private float floodlightAngle = 95f;
+        [Tooltip("At most this many floodlights cast shadows at once (each is one map in the shadow atlas).")]
+        [SerializeField, Range(0, 4)] private int floodlightShadows = 1;
+
+        public float FloodlightSeconds => floodlightSeconds;
+        public float FloodlightIntensity => floodlightIntensity;
+        public float FloodlightRange => floodlightRange;
+        public float FloodlightAngle => floodlightAngle;
+        public int FloodlightShadows => floodlightShadows;
+
         // @@fields
 
         private static ToolConfig current;

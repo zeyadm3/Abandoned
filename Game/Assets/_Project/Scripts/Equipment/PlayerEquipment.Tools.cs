@@ -34,6 +34,7 @@ namespace Abandoned.Equipment
                 case EquipmentKind.GlowSticks: return ThrowLight(EquipmentKind.GlowSticks, 0.7f);
                 case EquipmentKind.Flares: return ThrowLight(EquipmentKind.Flares, 1f);
                 case EquipmentKind.MovingBlanket: return Wrap();
+                case EquipmentKind.Floodlight: return PlaceFloodlight();
                 // @@consumables
                 default: return false;
             }
@@ -131,6 +132,20 @@ namespace Abandoned.Equipment
                 return false;
             }
             return true;
+        }
+
+        // Host (0.20.0): the tripod stands on the floor a metre ahead, its lamp turned the way you face.
+        private bool PlaceFloodlight()
+        {
+            Quaternion yaw = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+            Vector3 probe = transform.position + yaw * Vector3.forward * 1f + Vector3.up * 1f;
+            if (Physics.Linecast(Eye, probe, wallMask, QueryTriggerInteraction.Ignore) ||
+                !Physics.Raycast(probe, Vector3.down, out RaycastHit floor, 2f, wallMask, QueryTriggerInteraction.Ignore))
+            {
+                HintRpc("No room to stand the floodlight here");
+                return false;
+            }
+            return SpawnGear(EquipmentKind.Floodlight, floor.point, yaw) != null;
         }
 
         /// <summary>Host: spawn one of the newer gear's network objects.</summary>

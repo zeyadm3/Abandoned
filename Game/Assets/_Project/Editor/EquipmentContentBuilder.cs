@@ -54,6 +54,8 @@ namespace Abandoned.EditorTools
                     EquipmentKind.Flares, 350, 2, true, new Color(1f, 0.2f, 0.15f)),
                 Item("moving_blanket", "Moving Blanket", "Look at an item and use: wrapped, its knocks hurt it far less for the rest of the job (single use).",
                     EquipmentKind.MovingBlanket, 600, 2, true, new Color(0.25f, 0.35f, 0.55f)),
+                Item("floodlight", "Portable Floodlight", "Stand it down (use): a work light that lights a whole room for four minutes, then its battery is done (single use).",
+                    EquipmentKind.Floodlight, 1400, 2, true, new Color(1f, 0.85f, 0.3f)),
                 // @@gear
             };
             CreateNoiseMaker();

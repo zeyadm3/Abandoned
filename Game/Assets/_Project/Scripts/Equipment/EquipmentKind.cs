@@ -28,6 +28,7 @@ namespace Abandoned.Equipment
         GlowSticks,
         Flares,
         MovingBlanket,
+        Floodlight,
         // @@kinds
     }
 }
