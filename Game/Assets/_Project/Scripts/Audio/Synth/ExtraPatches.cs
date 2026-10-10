@@ -40,6 +40,8 @@ namespace Abandoned.Audio
                 case SoundId.GlassCrunch: return Patch.Mono(id, take, HazardPatches.GlassCrunch(take), 0.8f);
                 case SoundId.TileClack: return Patch.Mono(id, take, HazardPatches.TileClack(take), 0.75f);
                 case SoundId.PuddleSplash: return Patch.Mono(id, take, HazardPatches.Splash(take), 0.7f);
+                // 0.17.4: aftershocks (the ground itself; walls never hide it).
+                case SoundId.Aftershock: return Patch.Mono(id, take, HazardPatches.Aftershock(take), 0.95f);
                 // @@cases
                 default: return null;
             }

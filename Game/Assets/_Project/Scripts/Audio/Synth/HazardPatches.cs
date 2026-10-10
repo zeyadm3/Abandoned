@@ -118,5 +118,16 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Sweep(0.1f, 900f, 1800f, 0.005f, 35f), 0.1f, 0.11f);
             return d;
         }
+
+        /// <summary>The shock itself: a deep thud through everything, the building rattling, settling grit.</summary>
+        public static float[] Aftershock(int take)
+        {
+            float[] d = Synth.Buffer(4f);
+            Patch.Layer(d, Synth.Thump(1.2f, 70f, 28f, 2.5f), 0.95f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(3.5f, 1741 + take, 160f, 60f, 0.05f, 0.9f), 0.05f, 1.2f), 0.8f);
+            Patch.Pings(d, 1742 + take, 18, 0.1f, 2f, 600f, 2400f, Patch.Sheet, 30f, 0.25f);
+            Patch.Debris(d, 1743 + take, 22, 0.3f, 3f, 3000f);
+            return SynthReverb.Apply(Patch.Heavy(d, 1.6f), 2.2f, 0.3f);
+        }
     }
 }

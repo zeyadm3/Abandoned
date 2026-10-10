@@ -154,6 +154,8 @@ namespace Abandoned.Audio
         GlassCrunch,
         TileClack,
         PuddleSplash,
+        // 0.17.4: aftershocks (the ground itself; walls never hide it).
+        Aftershock,
         // @@ids
     }
 }

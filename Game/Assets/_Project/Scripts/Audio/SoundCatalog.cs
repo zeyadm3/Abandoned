@@ -187,6 +187,8 @@ namespace Abandoned.Audio
             Set(SoundId.GlassCrunch, Steps, 120, 1f, 22f, Syn, Wall, 4, "glass crunches");
             Set(SoundId.TileClack, Steps, 125, 1f, 18f, Syn, Wall, 4);
             Set(SoundId.PuddleSplash, Steps, 125, 1f, 16f, Syn, Wall, 4);
+            // 0.17.4: aftershocks (the ground itself; walls never hide it).
+            Set(SoundId.Aftershock, Building, 30, 10f, 140f, Syn, Open, 2, "THE GROUND SHAKES");
             // @@catalog
             return t;
         }

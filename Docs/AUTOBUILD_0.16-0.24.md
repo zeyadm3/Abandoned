@@ -109,3 +109,10 @@ walked through a patch for any player (from synced positions); the host turns ea
 (glass 0.55, tiles 0.4, puddle 0.3; crouching 15 % of that). Art is flat and walk-through, merged per patch,
 bound to its floor section. Tunables: Data/Extraction/Resources/GroundConfig. Menu: Tools/Abandoned/Mall/Add
 Noisy Ground (0.17.3).
+
+## 0.17.4 aftershocks
+`RunAftershocks` (RunState): from 4 min into a job, every 4–7 min (seeded), an 8 s warning (a deep rumble
+twice, light flicker, the radio line "TREMOR / brace yourselves"), then the shock: a heavy thud and big camera
+shake for everyone, and 4–8 random collapsible sections lose 35 % health (never below 15 %) through
+`StructureSimulation.AgeRandomSections`, so they crack and warn but only weight brings them down.
+Tunables: Data/Extraction/Resources/AftershockConfig. Menu: Tools/Abandoned/Content/Aftershocks (0.17.4).
