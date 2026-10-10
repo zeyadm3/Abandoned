@@ -62,6 +62,7 @@ namespace Abandoned.UI
                 HintId.Vault => $"A safe. Set the drill on it ({interact}) and it is through in a minute and a half, but it is the loudest thing in the building, and it jams: someone has to stay and free it.",
                 HintId.Security => $"The security desk ({interact}). Whoever sits here sees the cameras and can talk the crew round the building, but they can't see what is behind them.",
                 HintId.Catalogue => $"The loot catalogue ({interact}). Every kind of salvage the company has sold gets a line; every jackpot gets a place on the trophy shelf.",
+                HintId.Hire => $"The agency radio ({interact}). A dead crewmate can come back as a new hire, standing in the truck. The fee comes out of the payout.",
                 // @@hinttext
                 _ => "",
             };

@@ -13,8 +13,9 @@ namespace Abandoned.Company
         public static RunOutcome Apply(CompanySave save, CompanyConfig c, int haul, int quota, float payoutBonus, int extra = 0)
         {
             bool met = haul >= quota;
-            // 0.18+: bonuses (boss requests, rush orders, sets, overtime) are paid on top, met or not.
-            int payout = (met ? Mathf.RoundToInt(haul * (1f + payoutBonus)) : haul) + Mathf.Max(0, extra);
+            // 0.18+: bonuses (boss requests, rush orders, sets, overtime) are paid on top, met or not; fees
+            // (0.19.1 replacement hires) come off the same way.
+            int payout = (met ? Mathf.RoundToInt(haul * (1f + payoutBonus)) : haul) + extra;
             int penalty = met ? 0 : Mathf.RoundToInt((quota - haul) * c.ShortfallPenalty);
             int xp = Mathf.FloorToInt(haul / 1000f * c.XpPerThousand) + (met ? c.QuotaXp : 0);
             int oldLevel = save.level;

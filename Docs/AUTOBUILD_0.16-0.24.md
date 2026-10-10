@@ -209,3 +209,10 @@ PlayerInputReader (`PingPressed`). `UI/PingView` (on ExtraScreens) sends the loc
 (RunState); the host raycasts 60 m and marks LOOT (follows the item), MONSTER! (follows it), WEAK FLOOR (a
 collapsible section past Stable) or HERE, for 12 s, max 3 per player (a 4th replaces the oldest). Every machine
 draws a diamond with the label and distance in the pinger's seat colour, fading out; a blip plays.
+
+## 0.19.1 replacement worker
+An agency radio beside the truck's ignition (`HireRadio`). With a crewmate dead, a living player there presses E:
+`RunHires` (RunState) respawns the crewmate who has been dead longest in the truck bay (`ServerRespawn`), up
+to 3 hires a job, and adds a fee of max($1,200, 12 % of the haul at that moment). Fees come off the payout at
+departure as negative lines through `RunState.Settling` (CompanyLedger now takes a negative extra). Respawn,
+not join. Tunables: BonusConfig. Menu: Tools/Abandoned/Mall/Add Agency Radio (0.19.1).

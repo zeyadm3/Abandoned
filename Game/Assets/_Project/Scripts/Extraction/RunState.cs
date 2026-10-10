@@ -278,7 +278,7 @@ namespace Abandoned.Extraction
             var stats = new List<string>();
             foreach ((int pay, string line) in lines)
             {
-                results.Extra += Mathf.Max(0, pay);
+                results.Extra += pay; // fees are negative
                 stats.Add(line);
             }
             stats.AddRange(results.Stats ?? Array.Empty<string>());

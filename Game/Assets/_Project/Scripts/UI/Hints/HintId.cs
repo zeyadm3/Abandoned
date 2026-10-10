@@ -38,6 +38,8 @@ namespace Abandoned.UI
         Security,
         // 0.18.7
         Catalogue,
+        // 0.19.1
+        Hire,
         // @@hints
     }
 }

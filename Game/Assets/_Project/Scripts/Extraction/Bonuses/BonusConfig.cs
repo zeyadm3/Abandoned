@@ -44,6 +44,16 @@ namespace Abandoned.Extraction
         public float OvertimePerMinute => overtimePerMinute;
         public float OvertimeMax => overtimeMax;
 
+        [Header("Replacement worker (0.19.1)")]
+        [Tooltip("A new hire costs this share of the haul at the moment of hiring, never less than the minimum.")]
+        [SerializeField, Range(0f, 1f)] private float hireShare = 0.12f;
+        [SerializeField, Min(0)] private int hireMinFee = 1200;
+        [SerializeField, Min(0)] private int hiresPerJob = 3;
+
+        public float HireShare => hireShare;
+        public int HireMinFee => hireMinFee;
+        public int HiresPerJob => hiresPerJob;
+
         // @@bonusfields
 
         private static BonusConfig current;

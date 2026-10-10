@@ -1,0 +1,100 @@
+using System.Collections.Generic;
+using Abandoned.Loot;
+using Abandoned.Networking;
+using Abandoned.UI;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace Abandoned.Extraction
+{
+    /// <summary>
+    /// The replacement worker (0.19.1), on the run state's object: at the truck's radio a living player calls
+    /// the agency, and the longest-dead crewmate comes back as a new hire standing in the truck bay. The fee
+    /// comes off the payout at departure (a negative line through <see cref="RunState.Settling"/>). It is a
+    /// respawn, not a join: "join only at the HQ" stands.
+    /// </summary>
+    public class RunHires : NetworkBehaviour
+    {
+        private readonly NetworkVariable<int> hires = new();
+        private readonly List<int> fees = new();
+        private readonly Dictionary<NetworkPlayer, float> diedAt = new();
+        private RunState run;
+
+        public static RunHires Current { get; private set; }
+
+        public override void OnNetworkSpawn()
+        {
+            Current = this;
+            run = GetComponent<RunState>();
+            if (IsServer) RunState.Settling += Settle;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            RunState.Settling -= Settle;
+            if (Current == this) Current = null;
+        }
+
+        /// <summary>The fee a hire would cost now (every machine, from the synced haul).</summary>
+        public int Fee
+        {
+            get
+            {
+                BonusConfig config = BonusConfig.Current;
+                int haul = run != null ? run.State.Haul : 0;
+                return Mathf.Max(config.HireMinFee, Mathf.RoundToInt(haul * config.HireShare / 50f) * 50);
+            }
+        }
+
+        public bool HiresLeft => hires.Value < BonusConfig.Current.HiresPerJob;
+
+        /// <summary>The crewmate a hire would replace: the one dead longest (every machine's view).</summary>
+        public NetworkPlayer Replaces()
+        {
+            NetworkPlayer best = null;
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || !p.IsSpawned || !p.IsDead) continue;
+                if (!diedAt.ContainsKey(p)) diedAt[p] = Time.time;
+                if (best == null || diedAt[p] < diedAt[best]) best = p;
+            }
+            foreach (NetworkPlayer p in NetworkPlayer.All) if (p != null && !p.IsDead) diedAt.Remove(p);
+            return best;
+        }
+
+        public void RequestHire() => HireRpc();
+
+        [Rpc(SendTo.Server)]
+        private void HireRpc(RpcParams rpcParams = default)
+        {
+            NetworkObject caller = NetworkManager.ConnectedClients.TryGetValue(rpcParams.Receive.SenderClientId, out NetworkClient c) ? c.PlayerObject : null;
+            TruckCargo truck = TruckCargo.Current;
+            if (caller == null || truck == null || run == null || run.State.Phase != RunPhase.Running || !HiresLeft) return;
+            if (!caller.TryGetComponent(out NetworkPlayer np) || np.IsDead) return;
+            if (Vector3.Distance(caller.transform.position, truck.Ignition.position) > run.Config.IgnitionRange + 1.5f) return;
+            NetworkPlayer dead = Replaces();
+            if (dead == null) return;
+            int fee = Fee;
+            fees.Add(fee);
+            hires.Value++;
+            Vector3 at = truck.transform.position;
+            if (Physics.Raycast(at + Vector3.up * 2f, Vector3.down, out RaycastHit floor, 4f, ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot), QueryTriggerInteraction.Ignore))
+                at = floor.point + Vector3.up * 0.05f;
+            dead.ServerRespawn(new Pose(at, truck.transform.rotation));
+            HiredRpc(dead.DisplayName, fee);
+            Debug.Log($"[Run] {dead.DisplayName} replaced by a new hire for ${fee:N0}.");
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void HiredRpc(string name, int fee) =>
+            ToastFeed.Show("NEW HIRE", $"The agency sent a replacement for {name}. ${fee:N0} comes off the payout.", null, ToastFeed.Kind.Warn);
+
+        private void Settle(IReadOnlyCollection<LootItem> aboard, List<(int pay, string line)> lines)
+        {
+            foreach (int fee in fees) lines.Add((-fee, $"AGENCY FEE: a replacement worker. -${fee:N0}"));
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => Current = null;
+    }
+}
