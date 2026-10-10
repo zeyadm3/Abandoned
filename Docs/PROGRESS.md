@@ -4,6 +4,11 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.16.1 to 0.24.6: autonomous build (2026-10-10 on)
+
+Every roadmap version after 0.16.0 is logged in **Docs/AUTOBUILD_0.16-0.24.md** (one section per version:
+what it does, tunables, menu item, what to look at first). Compiled and built, never played.
+
 ## 0.16.0.EEA: closable doors and hiding lockers (2026-10-10; written, not compiled or run)
 
 Roadmap 0.16.0, the Hunter's missing counterplay (GDD 9). Ten sliding doors stand in openings the mall

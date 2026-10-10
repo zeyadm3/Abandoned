@@ -69,3 +69,11 @@ z 14): a box-office safe. E sets a core drill on it: 90 s of drilling, noise 1.0
 4–6 of the most valuable one-hand items in the catalogue at 1.6× value, spawned by the host through the new
 `NetworkLootSpawner.SpawnExtra` (cleared with the rest at the next re-roll). Tunables:
 Data/Extraction/Resources/VaultConfig. Menu: Tools/Abandoned/Mall/Add Vault Safe (0.16.6).
+
+## 0.16.7 security office
+A monitor desk in the upper floor's closed offices and eight wall cameras (one per space where possible,
+10 m apart). E at the desk: the local screen becomes one camera's feed in CRT green with its name and a
+clock; A/D or click switches, E/jump/pause gets up. The viewer stands at the desk with controls off.
+Only the watched camera renders, only on the watcher's machine (640×360, no shadows or post); nothing is
+networked. Needs power in the desk's sector or its breaker. Labels are screen UI, not world text.
+Menu: Tools/Abandoned/Mall/Add Security Office (0.16.7).

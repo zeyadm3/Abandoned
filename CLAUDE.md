@@ -113,6 +113,13 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user: "do everything including the ui revamp, everything from 0.16.0 to 0.24.6, don't stop, full
+  permission"): **autonomous build of the whole 0.16-0.24 roadmap**, one commit and one Mac + Windows build
+  (zipped to ~/Documents/Abandoned-builds/dev/) per version, compiled and authored in batch mode, never played.
+  What each version did, where it lives and what to check first: **Docs/AUTOBUILD_0.16-0.24.md** (read it
+  before touching any 0.16.1+ feature). Version steps are Editor/Releases/Release<version>.cs (menu items +
+  `AuthorAndExit`, run by `Tools/unity.sh exec <Class.Method>`); they add to the saved scenes, never regenerate.
+  Blockers are pushed to ntfy.sh. This brief overrides "never run anything" for compiles, authoring and builds.
 - 2026-10-10 (user: "build all of 0.16.0"; **closable doors and hiding lockers**, written, not compiled
   or run; user tests): details in Docs/DOORS_AND_LOCKERS_0.16.0.md.
   - Doors are SLIDING and stand only in openings the mall already has: a pair of panels in each store's

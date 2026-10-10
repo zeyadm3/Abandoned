@@ -60,6 +60,7 @@ namespace Abandoned.UI
                 HintId.Vent => $"A vent. Crouch and press {interact} to crawl through to wherever it comes out. Nothing follows you in there, but the duct rattles, and only what fits in your pockets comes with you.",
                 HintId.Alarm => $"An alarm box. A blinking lamp means this store is wired: walk in and the bell rings for half a minute, and everything that hears it comes. Bolt cutters ({interact} at the box) cut it.",
                 HintId.Vault => $"A safe. Set the drill on it ({interact}) and it is through in a minute and a half, but it is the loudest thing in the building, and it jams: someone has to stay and free it.",
+                HintId.Security => $"The security desk ({interact}). Whoever sits here sees the cameras and can talk the crew round the building, but they can't see what is behind them.",
                 // @@hinttext
                 _ => "",
             };

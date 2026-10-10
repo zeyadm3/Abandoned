@@ -34,6 +34,8 @@ namespace Abandoned.UI
         Alarm,
         // 0.16.6
         Vault,
+        // 0.16.7
+        Security,
         // @@hints
     }
 }

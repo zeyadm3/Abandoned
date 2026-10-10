@@ -163,6 +163,12 @@ namespace Abandoned.Networking
             if (input.InteractPressed || input.JumpPressed) RequestLeaveHiding();
         }
 
+        /// <summary>Owner (0.16.7+): stop or restart walking and reaching, for screens that take over the view.</summary>
+        public void OwnerSetControl(bool on)
+        {
+            if (IsOwner) SetHidingControl(on);
+        }
+
         private void SetHidingControl(bool on)
         {
             foreach (Behaviour b in ownerOnlyBehaviours)
