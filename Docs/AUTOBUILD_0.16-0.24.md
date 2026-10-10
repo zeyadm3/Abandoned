@@ -403,3 +403,11 @@ spine and square corners; chips are square slate slabs with a yellow underline t
 big menu buttons show a yellow left bar on focus (for 0.23's pad navigation); fields are slate with a yellow
 underline; sliders get a slim track and a square yellow handle; key caps are yellow-outlined boxes; toggles are
 square boxes that fill yellow; bars, tags and stamps lose their rounding.
+
+## 0.22.2 in-job HUD
+Revamp.uss: haul and clock on slate plates with yellow rules and monospace numbers (no jitter as they count);
+square hand slots, the active one lifted in a yellow frame; health blocks squared (their colours still come from
+PlayerHealthConfig); compass with yellow ticks and needle; condensed prompts; a small square yellow crosshair;
+tips and the first-day guide on slate with a yellow spine. New `UI.HudCallout` (one HUD line, newest wins, and
+a full-screen blackout): flashlight charging, the drone and thermal readouts, the ghost's keys and the vent
+crawl now draw in UI Toolkit in the revamp's style instead of IMGUI.

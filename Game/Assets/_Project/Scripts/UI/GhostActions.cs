@@ -11,8 +11,6 @@ namespace Abandoned.UI
     /// </summary>
     public class GhostActions : MonoBehaviour
     {
-        private GUIStyle style;
-
         private static GhostSpectator Ghost(out NetworkPlayer me)
         {
             me = NetworkPlayer.Local;
@@ -23,7 +21,13 @@ namespace Abandoned.UI
         {
             GhostSpectator ghost = Ghost(out NetworkPlayer me);
             RunGhosts run = RunGhosts.Current;
-            if (ghost == null || !ghost.Spectating || ghost.View == null || run == null || Core.CursorOwner.UiActive) return;
+            if (ghost == null || !ghost.Spectating || ghost.View == null || run == null)
+            {
+                HudCallout.Clear(this);
+                return;
+            }
+            HudCallout.Set(this, $"{Core.InputBindings.Display("Interact")}  knock      {Core.InputBindings.Display("Flashlight")}  flicker the lights      {Core.InputBindings.Display("Jump")}  nudge something");
+            if (Core.CursorOwner.UiActive) return;
             var reader = me.GetComponent<PlayerInputReader>();
             if (reader == null) return;
             PlayerInputFrame input = reader.Current;
@@ -32,18 +36,6 @@ namespace Abandoned.UI
             Transform view = ghost.View;
             Vector3 at = Physics.Raycast(view.position, view.forward, out RaycastHit hit, 20f, ~0, QueryTriggerInteraction.Ignore) ? hit.point : view.position + view.forward * 6f;
             run.Request(act.Value, at, view.forward);
-        }
-
-        private void OnGUI()
-        {
-            GhostSpectator ghost = Ghost(out _);
-            if (ghost == null || !ghost.Spectating || RunGhosts.Current == null) return;
-            style ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.LowerCenter };
-            style.fontSize = Mathf.RoundToInt(Screen.height * 0.019f);
-            GUI.color = new Color(0.75f, 0.85f, 1f, 0.85f);
-            GUI.Label(new Rect(0, Screen.height * 0.8f, Screen.width, Screen.height * 0.05f),
-                $"{Core.InputBindings.Display("Interact")}: knock    {Core.InputBindings.Display("Flashlight")}: flicker the lights    {Core.InputBindings.Display("Jump")}: nudge something", style);
-            GUI.color = Color.white;
         }
     }
 }

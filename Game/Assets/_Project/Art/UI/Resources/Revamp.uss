@@ -115,3 +115,80 @@
 }
 
 .hazard { height: 8px; }
+
+/* ==== 0.22.2 in-job HUD ==== */
+
+/* Haul and clock: on a slate plate with a yellow rule, numbers in a monospace that doesn't jitter. */
+.run-haul > .run-haul__row {
+    background-color: rgba(10, 11, 12, 0.62);
+    padding: 2px 14px 2px 14px;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-accent);
+}
+.run-haul__label { color: var(--c-accent); letter-spacing: 4px; }
+.run-haul__amount { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); font-size: 30px; }
+.run-haul__quota { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf"); font-size: 19px; }
+.run-haul__bar { height: 4px; border-width: 0; }
+.run-haul__cargo { color: var(--c-dim); }
+.run-clock {
+    background-color: rgba(10, 11, 12, 0.62);
+    border-left-width: 4px;
+    border-left-color: var(--c-accent);
+    border-radius: 0;
+}
+.run-clock__time { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); }
+.run-clock--late { border-left-color: var(--c-bad); }
+
+/* Hand slots and pockets: square cases; the one in hand lifts with a yellow frame. */
+.slot { border-radius: 0; border-width: 1px; border-color: rgba(242, 190, 40, 0.18); background-color: rgba(10, 11, 12, 0.75); }
+.slot--active { border-width: 2px; border-color: var(--c-accent); translate: 0 -5px; }
+.slot__key { color: var(--c-accent); }
+
+/* Health blocks keep their colours from code; square, a hairline between. */
+.segment { border-radius: 0; margin-right: 2px; background-color: rgba(10, 11, 12, 0.8); }
+
+/* Compass: slate tape, yellow ticks and a yellow needle. */
+.compass { background-color: rgba(10, 11, 12, 0.6); border-bottom-color: var(--c-accent); }
+.compass__tick { background-color: rgba(242, 190, 40, 0.5); }
+.compass__point--cardinal { color: var(--c-accent); }
+.compass__needle { background-color: var(--c-accent); }
+
+/* Prompts and the crosshair. */
+.hud-prompt { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); font-size: 22px; letter-spacing: 1px; }
+.hud-crosshair { background-color: rgba(242, 190, 40, 0.9); border-radius: 0; width: 4px; height: 4px; margin-left: -2px; margin-top: -2px; }
+.hud-crosshair--target { background-color: var(--c-accent-hot); width: 8px; height: 8px; margin-left: -4px; margin-top: -4px; }
+.hud-hint, .first-day {
+    background-color: rgba(10, 11, 12, 0.82);
+    border-left-width: 4px;
+    border-left-color: var(--c-accent);
+    border-radius: 0;
+}
+
+/* 0.22.2: one-line callouts (charging, drone, thermal, ghost keys) and the vent crawl's blackout. */
+.hud-callout {
+    position: absolute;
+    left: 50%; bottom: 17%;
+    translate: -50% 0;
+    padding: 4px 16px 4px 16px;
+    background-color: rgba(10, 11, 12, 0.78);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-accent);
+    -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--c-text);
+    white-space: nowrap;
+}
+.hud-blackout {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgb(0, 0, 0);
+    align-items: center;
+    justify-content: center;
+}
+.hud-blackout__text {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 26px;
+    color: rgba(214, 218, 220, 0.7);
+    letter-spacing: 4px;
+}

@@ -45,6 +45,7 @@ namespace Abandoned.Equipment
         {
             if (!flying) return;
             flying = false;
+            UI.HudCallout.Clear(this);
             if (lens != null) lens.enabled = false;
             if (mainCamera != null) mainCamera.enabled = true;
             if (pilot != null && !pilot.IsDead) pilot.OwnerSetControl(true);
@@ -72,6 +73,7 @@ namespace Abandoned.Equipment
                 RecallRpc();
                 return;
             }
+            UI.HudCallout.Set(this, $"DRONE  {battery:0} s      {InputBindings.Display("Use")}  bring it home      {InputBindings.Display("Sprint")} / {InputBindings.Display("Crouch")}  up / down");
             float sens = 0.12f * GameSettings.Sensitivity;
             yaw += f.Look.x * sens;
             pitch = Mathf.Clamp(pitch - f.Look.y * sens, -70f, 70f);
@@ -83,15 +85,6 @@ namespace Abandoned.Equipment
             // Bump, don't pass: walls and floors stop it.
             if (step.sqrMagnitude > 0f && !Physics.SphereCast(transform.position, 0.25f, step.normalized, out _, step.magnitude + 0.05f, ~LayerMask.GetMask(GameLayers.Debris, "Ignore Raycast"), QueryTriggerInteraction.Ignore))
                 transform.position += step;
-        }
-
-        private void OnGUI()
-        {
-            if (!IsOwner || !flying) return;
-            GUI.color = new Color(0.8f, 1f, 0.8f, 0.9f);
-            GUI.Label(new Rect(Screen.width * 0.04f, Screen.height * 0.9f, 600f, 30f),
-                $"DRONE  {battery:0} s     {InputBindings.Display("Use")}: bring it home     {InputBindings.Display("Jump")}/{InputBindings.Display("Crouch")}: up/down");
-            GUI.color = Color.white;
         }
 
         [Rpc(SendTo.Server)]

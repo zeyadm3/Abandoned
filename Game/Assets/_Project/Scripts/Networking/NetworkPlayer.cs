@@ -138,6 +138,7 @@ namespace Abandoned.Networking
             TickDevHurt();
             TickOwnerHiding();
             TickOwnerEmote(); // 0.19.5
+            TickOwnerVentScreen(); // 0.16.4 / 0.22.2
         }
 
         private void OnStateChanged(PlayerNetState previous, PlayerNetState current) => ApplyRemote(current);

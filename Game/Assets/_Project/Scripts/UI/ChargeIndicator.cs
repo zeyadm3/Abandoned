@@ -12,7 +12,6 @@ namespace Abandoned.UI
     /// </summary>
     public class ChargeIndicator : MonoBehaviour
     {
-        private GUIStyle style;
         private float shownLevel = -1f, nextTick;
 
         private static bool Charging(out float level)
@@ -32,24 +31,16 @@ namespace Abandoned.UI
             if (!Charging(out float level))
             {
                 shownLevel = -1f;
+                HudCallout.Clear(this);
                 return;
             }
+            HudCallout.Set(this, $"CHARGING FLASHLIGHT  {level * 100f:0}%");
             if (shownLevel >= 0f && level > shownLevel + 0.001f && Time.time >= nextTick)
             {
                 nextTick = Time.time + 1.2f;
                 Audio.GameAudio.PlayUi(Audio.SoundId.ChargeTick, 0.4f);
             }
             shownLevel = level;
-        }
-
-        private void OnGUI()
-        {
-            if (!Charging(out float level) || HudLayer.Root == null) return;
-            style ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
-            style.fontSize = Mathf.RoundToInt(Screen.height * 0.02f);
-            GUI.color = new Color(0.55f, 0.9f, 1f, 0.9f);
-            GUI.Label(new Rect(0, Screen.height * 0.58f, Screen.width, Screen.height * 0.04f), $"CHARGING FLASHLIGHT  {level * 100f:0}%", style);
-            GUI.color = Color.white;
         }
     }
 }

@@ -47,6 +47,8 @@ namespace Abandoned.Equipment
             else battery = Mathf.Min(config.ThermalSeconds, battery + config.ThermalRecharge * Time.deltaTime);
             if (on && volume == null) Build();
             if (volume != null) volume.weight = on ? 1f : 0f;
+            if (on) UI.HudCallout.Set(this, $"THERMAL  {battery:0} s");
+            else UI.HudCallout.Clear(this);
         }
 
         private void Build()
@@ -84,9 +86,6 @@ namespace Abandoned.Equipment
             foreach (Threat t in Threat.All) if (t != null) Heat(cam, t.transform.position, 1.2f, 1.9f);
             foreach (NetworkPlayer p in NetworkPlayer.All)
                 if (p != null && !p.IsOwner && !p.IsDead) Heat(cam, p.transform.position, 0.6f, 1.8f);
-            GUI.color = new Color(0.7f, 0.85f, 1f, 0.85f);
-            GUI.Label(new Rect(Screen.width * 0.04f, Screen.height * 0.9f, 300f, 30f), $"THERMAL  {battery:0} s");
-            GUI.color = Color.white;
         }
 
         // A warm body: an orange-white blob over its outline, only where the camera could actually see it.

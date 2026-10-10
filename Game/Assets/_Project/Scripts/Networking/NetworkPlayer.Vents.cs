@@ -108,15 +108,11 @@ namespace Abandoned.Networking
             if (!dead.Value && !ragdoll.IsRagdolled) SetHidingControl(true);
         }
 
-        // Owner: the crawl is dark, cramped and a few seconds long.
-        private void OnGUI()
+        // Owner: the crawl is dark, cramped and a few seconds long (0.22.2: the HUD's blackout).
+        private void TickOwnerVentScreen()
         {
-            if (!ventHere) return;
-            GUI.color = Color.black;
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
-            GUI.color = new Color(0.8f, 0.8f, 0.75f, 0.9f);
-            var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = Mathf.RoundToInt(Screen.height * 0.03f) };
-            GUI.Label(new Rect(0, Screen.height * 0.45f, Screen.width, Screen.height * 0.1f), $"crawling... {VentRemaining:0}", style);
+            if (ventHere) UI.HudCallout.Blackout(this, $"crawling...  {VentRemaining:0}");
+            else UI.HudCallout.Blackout(this, null);
         }
     }
 }
