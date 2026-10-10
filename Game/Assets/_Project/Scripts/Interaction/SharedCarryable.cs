@@ -182,7 +182,7 @@ namespace Abandoned.Interaction
             get
             {
                 for (int i = 0; i < localPoints.Length; i++)
-                    if (carriers[i] != null && carriers[i].CanSoloDrag(grabbable.CarryClass)) return true;
+                    if (carriers[i] != null && (carriers[i].CanSoloDrag(grabbable.CarryClass) || PlayerCarrier.Wheeled(grabbable))) return true;
                 return false;
             }
         }

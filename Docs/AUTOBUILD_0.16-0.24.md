@@ -171,3 +171,13 @@ tool chests/cartons rattle, lamps/statues/racks top-heavy). Menu: Tools/Abandone
 Counter, Gallery Wall, Jewellery Box, Living Room, Checkout Lane, $1,400–3,000 each. `RunSets` (RunState) pays
 each set with one whole item of every member aboard at departure, and the scan HUD shows the set closest to
 done in the bay ("SET: Kitchen Counter 2/4"). A new set is a new asset. Menu: Tools/Abandoned/Content/Loot Sets (0.18.3).
+
+## 0.18.4 shopping carts
+The cart is loot data: `shopping_cart` (Utility: worth nothing, never planned; Heavy, 18 kg; `Wheeled`; Rattles
+quirk). `LootDefinition.Wheeled` lets anyone drag it alone without a trolley (PlayerCarrier.Holds and
+SharedCarryable). Its prefab (generated, then the box collider swapped for a basket: floor, four sides, a
+stand) is host-simulated while dragged, as is anything resting in its basket, so small loot rides along and
+rattles; in the bay, what's in the basket counts like anything else there. `RunCarts` (RunState) stands one
+cart at each of 5 `CartBay` markers on the ground floor's concourse and food court 2 s into each job (through
+`NetworkLootSpawner.SpawnExtra`, so a re-roll clears them). Menu: Tools/Abandoned/Mall/Add Shopping Carts (0.18.4).
+Watch on the test: whether loot stays in the basket at drag speed, and how the drag hold point feels.

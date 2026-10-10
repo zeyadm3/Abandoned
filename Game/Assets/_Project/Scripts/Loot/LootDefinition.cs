@@ -58,6 +58,9 @@ namespace Abandoned.Loot
         [field: Tooltip("Quirks (0.18.2): rattles, leaks, rings at random, top-heavy. Behaviour lives in LootQuirks.")]
         [field: SerializeField] public LootQuirk Quirks { get; private set; }
 
+        [field: Tooltip("On wheels (0.18.4, the shopping cart): anyone may drag it alone, no trolley needed.")]
+        [field: SerializeField] public bool Wheeled { get; private set; }
+
         [field: Header("Model")]
         [field: Tooltip("Art model (an imported FBX), fitted inside Size; the Size box stays the collider. Empty = the placeholder shape.")]
         [field: SerializeField] public GameObject Model { get; private set; }
@@ -129,6 +132,8 @@ namespace Abandoned.Loot
         public void EditorSetUtility(bool utility) => Utility = utility;
 
         public void EditorSetQuirks(LootQuirk quirks) => Quirks = quirks;
+
+        public void EditorSetWheeled(bool wheeled) => Wheeled = wheeled;
 
         /// <summary>Editor-only: the art model, and the Size box that hugs it.</summary>
         public void EditorSetModel(GameObject model, float yaw, Vector3 size)

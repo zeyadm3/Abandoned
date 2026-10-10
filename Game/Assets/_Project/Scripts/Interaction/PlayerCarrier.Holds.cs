@@ -19,7 +19,7 @@ namespace Abandoned.Interaction
         {
             // Mirrored holds can arrive out of order (the old item's release after the new pickup).
             if (Held != null && Held != target) ApplyRelease(Vector3.zero);
-            bool drag = target.CarryClass > config.HeaviestSoloClass && CanSoloDrag(target.CarryClass);
+            bool drag = target.CarryClass > config.HeaviestSoloClass && (CanSoloDrag(target.CarryClass) || Wheeled(target));
             Held = target;
             CancelPlacement();
             holdTime = 0f;
@@ -106,5 +106,9 @@ namespace Abandoned.Interaction
         {
             if (Held == item) { Held = null; CancelPlacement(); }
         }
+
+        /// <summary>0.18.4: on wheels (a shopping cart): anyone may drag it alone.</summary>
+        public static bool Wheeled(Component item) =>
+            item != null && item.TryGetComponent(out Loot.LootItem loot) && loot.Definition != null && loot.Definition.Wheeled;
     }
 }
