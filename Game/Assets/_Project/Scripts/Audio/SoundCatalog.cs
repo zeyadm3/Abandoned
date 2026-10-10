@@ -176,6 +176,13 @@ namespace Abandoned.Audio
             // 0.17.0: the sledgehammer.
             Set(SoundId.SledgeHit, Fx, 50, 4f, 55f, Syn, Dull, 3, "a hammer pounds the floor");
             Set(SoundId.SledgeSwing, Fx, 140, 1f, 10f, Syn, Wall, 2);
+            // 0.17.2: floor types' own warnings. Building bus and never hidden by walls, like every floor warning.
+            Set(SoundId.GlassFloorCrack, Building, 42, 3f, 40f, Syn, Open, 3, "the glass floor cracks");
+            Set(SoundId.GlassFloorFail, Building, 38, 3f, 50f, Syn, Open, 2, "glass splinters underfoot");
+            Set(SoundId.TimberFloorCrack, Building, 42, 3f, 40f, Syn, Open, 3, "floorboards split");
+            Set(SoundId.TimberFloorFail, Building, 38, 3f, 50f, Syn, Open, 2, "floorboards give way");
+            Set(SoundId.TileFloorCrack, Building, 42, 3f, 40f, Syn, Open, 3, "floor tiles pop");
+            Set(SoundId.TileFloorFail, Building, 38, 3f, 50f, Syn, Open, 2, "the tiled floor buckles");
             // @@catalog
             return t;
         }

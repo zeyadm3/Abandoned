@@ -25,6 +25,8 @@ namespace Abandoned.Structure
         [SerializeField, Range(0.05f, 1f)] private float capacityMultiplier = 1f;
         [Tooltip("Child holding the renderers: sags while Failing and is replaced by debris on collapse.")]
         [SerializeField] private Transform visual;
+        [Tooltip("What it is made of (0.17.2): glass and timber hold less, and each kind warns in its own voice.")]
+        [SerializeField] private FloorKind floorKind = FloorKind.Concrete;
 
         private Collider[] colliders;
         private Bounds surfaceAtBreak;
@@ -37,6 +39,7 @@ namespace Abandoned.Structure
         public bool CanCollapse => canCollapse;
         public StructureConfig Config => config;
         public Transform Visual => visual;
+        public FloorKind FloorKind => floorKind;
         /// <summary>Load it holds before overload drains it: the profile, stability, authoring, and any support jack.</summary>
         public float Capacity => baseCapacity * Reinforcement;
         /// <summary>Host: a support jack under it (M9.4) multiplies its capacity until the next restore.</summary>
@@ -100,8 +103,9 @@ namespace Abandoned.Structure
         public void Configure(float capacityScale, float decayScale, int seedBase)
         {
             SectionProfile profile = config.Profile(type);
-            baseCapacity = profile.Capacity * capacityScale * capacityMultiplier;
-            MaxHealth = profile.MaxHealth;
+            FloorKindConfig kinds = FloorKindConfig.Current;
+            baseCapacity = profile.Capacity * capacityScale * capacityMultiplier * kinds.Capacity(floorKind);
+            MaxHealth = profile.MaxHealth * kinds.Health(floorKind);
             DecayScale = decayScale;
             collapseSeedBase = seedBase;
         }
@@ -296,6 +300,11 @@ namespace Abandoned.Structure
             initialHealth = startHealth;
             visual = visualRoot;
         }
+#endif
+
+#if UNITY_EDITOR
+        /// <summary>0.17.2: set what an existing section is made of.</summary>
+        public void EditorSetFloorKind(FloorKind kind) => floorKind = kind;
 #endif
     }
 }

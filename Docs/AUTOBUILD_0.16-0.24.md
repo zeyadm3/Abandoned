@@ -92,3 +92,12 @@ spawned static network object that lasts the job). A soft zone 0.9 m deep above 
 keeps 12 % of the speed of any loot impact in it, so dropped loot survives, and cuts a player's fall height
 to 1.4 % (height goes with speed squared). Applied in `LootItem.ApplyImpact` and the host's landing damage.
 Prefab: Prefabs/Equipment/CrashMat (GearPrefabs). Menu: Tools/Abandoned/Content/Crash Mat (0.17.1).
+
+## 0.17.2 floor types
+`StructuralSection.FloorKind` (Concrete, Glass, Timber, Tile) scales its capacity and health
+(`FloorKindConfig`, Data/Structure/Resources: glass 0.45 / 0.5, timber 0.75 / 0.8, tile 0.9 / 1.0). Set on the
+saved mall: the upper gallery's bridge is glass (drawn with the salvage glass material), the dining terrace
+is tile, the cinema and toy archive upstairs are timber; the rest stays concrete. Non-concrete floors give
+one warning of their own when they start Cracking (glass ticks and spiders, tiles pop, boards split) and
+fail with their own sound in place of the concrete snap. All are Structure-bus floor sounds that walls never
+hide; none is a creak. Menu: Tools/Abandoned/Mall/Set Floor Types (0.17.2).

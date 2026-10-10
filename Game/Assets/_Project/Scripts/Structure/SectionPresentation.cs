@@ -112,9 +112,31 @@ namespace Abandoned.Structure
             Vector3 at = section.SurfaceBounds.center;
             switch (stage)
             {
-                case StructuralStage.Failing: GameAudio.PlayStructure(StructureSound.Snap, at, visuals.SnapVolume); break;
+                case StructuralStage.Failing:
+                    // 0.17.2: glass, timber and tile fail in their own voice; concrete snaps.
+                    if (section.FloorKind == FloorKind.Concrete) GameAudio.PlayStructure(StructureSound.Snap, at, visuals.SnapVolume);
+                    else GameAudio.Play(FloorFailSound(section.FloorKind), at, visuals.SnapVolume);
+                    break;
+                case StructuralStage.Cracking when section.FloorKind != FloorKind.Concrete:
+                    // One warning as it starts to go: a glass floor ticks and spiders, tiles pop, boards split.
+                    GameAudio.Play(FloorCrackSound(section.FloorKind), at, visuals.SnapVolume * 0.8f);
+                    break;
             }
         }
+
+        private static SoundId FloorFailSound(FloorKind kind) => kind switch
+        {
+            FloorKind.Glass => SoundId.GlassFloorFail,
+            FloorKind.Timber => SoundId.TimberFloorFail,
+            _ => SoundId.TileFloorFail,
+        };
+
+        private static SoundId FloorCrackSound(FloorKind kind) => kind switch
+        {
+            FloorKind.Glass => SoundId.GlassFloorCrack,
+            FloorKind.Timber => SoundId.TimberFloorCrack,
+            _ => SoundId.TileFloorCrack,
+        };
 
         private void OnStageChanged(StructuralSection s, StructuralStage previous)
         {

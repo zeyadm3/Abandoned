@@ -29,6 +29,13 @@ namespace Abandoned.Audio
                 // 0.17.0: the sledgehammer.
                 case SoundId.SledgeHit: return Patch.Mono(id, take, HazardPatches.SledgeHit(take), 0.95f);
                 case SoundId.SledgeSwing: return Patch.Mono(id, take, HazardPatches.SledgeSwing(take), 0.6f);
+                // 0.17.2: floor types' own warnings. Building bus and never hidden by walls, like every floor warning.
+                case SoundId.GlassFloorCrack: return Patch.Mono(id, take, HazardPatches.GlassCrack(take), 0.85f);
+                case SoundId.GlassFloorFail: return Patch.Mono(id, take, HazardPatches.GlassFail(take), 0.95f);
+                case SoundId.TimberFloorCrack: return Patch.Mono(id, take, HazardPatches.TimberCrack(take), 0.85f);
+                case SoundId.TimberFloorFail: return Patch.Mono(id, take, HazardPatches.TimberFail(take), 0.95f);
+                case SoundId.TileFloorCrack: return Patch.Mono(id, take, HazardPatches.TileCrack(take), 0.85f);
+                case SoundId.TileFloorFail: return Patch.Mono(id, take, HazardPatches.TileFail(take), 0.95f);
                 // @@cases
                 default: return null;
             }

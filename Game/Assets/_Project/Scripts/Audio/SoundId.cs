@@ -143,6 +143,13 @@ namespace Abandoned.Audio
         // 0.17.0: the sledgehammer.
         SledgeHit,
         SledgeSwing,
+        // 0.17.2: floor types' own warnings. Building bus and never hidden by walls, like every floor warning.
+        GlassFloorCrack,
+        GlassFloorFail,
+        TimberFloorCrack,
+        TimberFloorFail,
+        TileFloorCrack,
+        TileFloorFail,
         // @@ids
     }
 }
