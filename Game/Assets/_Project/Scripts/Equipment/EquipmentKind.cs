@@ -23,6 +23,7 @@ namespace Abandoned.Equipment
         Battery,
         // 0.17+ (append only)
         Sledgehammer,
+        CrashMat,
         // @@kinds
     }
 }

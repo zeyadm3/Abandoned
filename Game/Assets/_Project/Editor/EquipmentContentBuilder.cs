@@ -44,6 +44,8 @@ namespace Abandoned.EditorTools
                 // 0.17+ (append only)
                 Item("sledgehammer", "Sledgehammer", "Swing it at the floor (use): a few blows break a sound section, through its warning. Make your own hole to drop loot through. Very loud.",
                     EquipmentKind.Sledgehammer, 3000, 2, false, new Color(0.45f, 0.42f, 0.4f)),
+                Item("crash_mat", "Crash Mat", "Lay it under a hole (use): loot dropped onto it lands softly, and so do you. Stays for the job (single use).",
+                    EquipmentKind.CrashMat, 1800, 3, true, new Color(0.2f, 0.45f, 0.85f)),
                 // @@gear
             };
             CreateNoiseMaker();

@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
         {
             "flashlight", "radio", "hand_trolley", "medkit", "planks", "noise_maker", "stress_scanner", "crowbar",
             "backpack", "support_jack", "flatbed", "rope_pulley", "bolt_cutters", "motion_detector", "night_vision", "battery", "transport_van",
-            "sledgehammer", // @@icons
+            "sledgehammer", "crash_mat", // @@icons
         };
 
         [MenuItem("Tools/Abandoned/UI/Create Gear Icons")]
@@ -114,6 +114,9 @@ namespace Abandoned.EditorTools
                     Ring(0.65f, 0.19f, 0.07f, 0.023f); break;
                 case "sledgehammer":
                     Line(0.3f, 0.15f, 0.55f, 0.72f, 0.035f); Box(0.38f, 0.68f, 0.36f, 0.16f); break;
+                case "crash_mat":
+                    Frame(0.14f, 0.3f, 0.72f, 0.26f, 0.05f); Line(0.32f, 0.3f, 0.32f, 0.56f, 0.02f); Line(0.5f, 0.3f, 0.5f, 0.56f, 0.02f);
+                    Line(0.68f, 0.3f, 0.68f, 0.56f, 0.02f); Line(0.5f, 0.88f, 0.5f, 0.64f, 0.03f); Line(0.42f, 0.72f, 0.5f, 0.64f, 0.03f); Line(0.58f, 0.72f, 0.5f, 0.64f, 0.03f); break;
                 // @@iconshapes
                 case "night_vision":
                     Ring(0.32f, 0.44f, 0.17f, 0.06f); Ring(0.68f, 0.44f, 0.17f, 0.06f);

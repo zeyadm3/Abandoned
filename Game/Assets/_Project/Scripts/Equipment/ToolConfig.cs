@@ -26,6 +26,15 @@ namespace Abandoned.Equipment
         public float SledgeCooldown => sledgeCooldown;
         public float SledgeNoise => sledgeNoise;
 
+        [Header("Crash mat (0.17.1)")]
+        [Tooltip("Share of its speed an item (or a falling player) keeps landing on the mat.")]
+        [SerializeField, Range(0.02f, 1f)] private float matCushion = 0.12f;
+        [Tooltip("How high above the mat (m) the soft zone reaches: what lands from above is caught.")]
+        [SerializeField, Min(0.2f)] private float matDepth = 0.9f;
+
+        public float MatCushion => matCushion;
+        public float MatDepth => matDepth;
+
         // @@fields
 
         private static ToolConfig current;

@@ -27,6 +27,8 @@ namespace Abandoned.Loot
         private bool? valueAuthority;
 
         public LootDefinition Definition => definition;
+        /// <summary>Share of an impact's speed this item feels (1 = all; a moving blanket lowers it, 0.18.5).</summary>
+        public float Cushion { get; set; } = 1f;
         public int FullValue { get; private set; }
         public float Condition { get; private set; }
         public int CurrentValue { get; private set; }
@@ -188,6 +190,8 @@ namespace Abandoned.Loot
         {
             if (IsShattered || !initialized || !HasValueAuthority) return;
             if (Time.time - lastDamageTime < damageConfig.ImpactCooldown) return;
+            // 0.17.1: a crash mat under the hole; 0.18.5: a moving blanket round the item.
+            speed *= ImpactCushion.At(point) * Cushion;
 
             int loss = LootMath.ImpactLoss(damageConfig.Profile(definition.Fragility), FullValue, speed, out bool shatters);
             if (shatters)

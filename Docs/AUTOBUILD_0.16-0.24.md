@@ -85,3 +85,10 @@ what you aim at: 5,200 kg·m/s into a collapsible floor section (the crowbar is 
 can't collapse and say so. Gear added from here on: `EquipmentKind` appends, `PlayerEquipment.Tools.cs`
 (host uses), `ToolConfig` (Data/Equipment/Resources), `GearPrefabs` (prefabs gear spawns, registered with
 NGO by `RegisterNetworkPrefabs`), icons drawn by UiGearIconBuilder. Menu: Tools/Abandoned/Content/Sledgehammer (0.17.0).
+
+## 0.17.1 crash mat
+New gear ($1,800, level 3, single use): use lays a 2.2 × 2.2 m pad flat on the floor 1.6 m ahead (a host-
+spawned static network object that lasts the job). A soft zone 0.9 m deep above it (`Core.ImpactCushion`)
+keeps 12 % of the speed of any loot impact in it, so dropped loot survives, and cuts a player's fall height
+to 1.4 % (height goes with speed squared). Applied in `LootItem.ApplyImpact` and the host's landing damage.
+Prefab: Prefabs/Equipment/CrashMat (GearPrefabs). Menu: Tools/Abandoned/Content/Crash Mat (0.17.1).

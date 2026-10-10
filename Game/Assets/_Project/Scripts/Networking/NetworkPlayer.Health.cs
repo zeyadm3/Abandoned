@@ -108,6 +108,9 @@ namespace Abandoned.Networking
             float weight = Mathf.Max(serverFallWeight, carrier != null ? carrier.CarriedWeight : 0f);
             trackingServerFall = false;
             serverFallWeight = 0f;
+            // 0.17.1: landing on a crash mat. A fall's height goes with the square of its speed.
+            float soft = Core.ImpactCushion.At(transform.position + Vector3.up * 0.3f);
+            fallHeight *= soft * soft;
             DealDamage(HealthConfig.FallDamage(fallHeight, weight), "Fell");
         }
     }

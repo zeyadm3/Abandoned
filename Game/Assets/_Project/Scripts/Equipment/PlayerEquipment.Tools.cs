@@ -29,6 +29,7 @@ namespace Abandoned.Equipment
         {
             switch (d.Kind)
             {
+                case EquipmentKind.CrashMat: return LayMat();
                 // @@consumables
                 default: return false;
             }
@@ -56,6 +57,20 @@ namespace Abandoned.Equipment
                 return;
             }
             section.ApplyImpact(config.SledgeMomentum);
+        }
+
+        // Host (0.17.1): the mat unrolls flat on the floor ahead (under the hole you mean to drop through).
+        private bool LayMat()
+        {
+            Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+            Vector3 probe = transform.position + forward * 1.6f + Vector3.up * 1f;
+            if (Physics.Linecast(Eye, probe, wallMask, QueryTriggerInteraction.Ignore) ||
+                !Physics.Raycast(probe, Vector3.down, out RaycastHit floor, 2f, wallMask, QueryTriggerInteraction.Ignore))
+            {
+                HintRpc("No room to lay the mat here");
+                return false;
+            }
+            return SpawnGear(EquipmentKind.CrashMat, floor.point, Quaternion.Euler(0f, transform.eulerAngles.y, 0f)) != null;
         }
 
         /// <summary>Host: spawn one of the newer gear's network objects.</summary>
