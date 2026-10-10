@@ -138,3 +138,9 @@
 .dispatch-briefing > .section { margin-top: 0; }
 .dispatch-briefing > .subtitle { font-size: 20px; margin-bottom: 8px; }
 .scrap-depot { border-top-color: rgb(156, 125, 67); }
+
+/* ==== 0.22.7 revamp (Docs/UI_STYLE_GUIDE_0.22.md): the guide stays a worn book; the company's yellow marks
+   its index tab and buttons. ==== */
+.field-guide__entry--selected { border-left-width: 5px; border-left-color: rgb(242, 190, 40); }
+.field-guide__close, .field-guide__turn { border-radius: 0; border-bottom-width: 2px; border-bottom-color: rgb(242, 190, 40); }
+.field-guide__close:hover, .field-guide__turn:hover { background-color: rgb(242, 190, 40); color: rgb(18, 16, 8); }

@@ -309,3 +309,17 @@
 .choice__arrow { color: var(--c-accent); }
 .choice__value { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); }
 .tab { border-radius: 0; }
+
+/* ==== 0.22.7 HQ screens ==== */
+
+/* Job sheets stay paper on the cork board, now company forms: a yellow header band, square, a stamped look. */
+.sheet { border-top-width: 10px; border-top-color: var(--c-accent); border-radius: 0; }
+.sheet__fact-value--warn { color: rgb(170, 40, 24); }
+
+/* The supply terminal is a real CRT: it keeps its amber; only the frame squares off. */
+.crt { border-radius: 2px; }
+
+/* Gear rack, shop, truck upgrades and wardrobe tiles. */
+.tile { border-radius: 0; border-width: 1px; border-color: rgba(242, 190, 40, 0.15); background-color: var(--c-panel-2); }
+.tile:hover { border-color: var(--c-accent); }
+.sheet__stamp { border-radius: 0; }

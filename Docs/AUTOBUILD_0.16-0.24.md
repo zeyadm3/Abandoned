@@ -435,3 +435,10 @@ Revamp.uss: the pause title in yellow; the crew panel is slate with the yellow s
 monospace, a yellow "talking" mark and square volume handles; settings pages run down the left as folder tabs
 with the open page's tab filled yellow, page titles in yellow, choice arrows yellow. Rows for 0.23's new
 options are added to the same tabs, so they pick this up.
+
+## 0.22.7 HQ screens
+The HQ's in-world screens keep their objects' looks (the field guide stays a worn book, job sheets stay paper on
+cork, the supply terminal stays an amber CRT) and take the company's marks: job sheets become forms with a
+yellow header band and square stamps; the guide's selected entry gets a yellow index tab and its buttons fill
+yellow (in HqStations.uss, which those panels load themselves); gear/shop/upgrade/wardrobe tiles are square
+slate cases that frame yellow on hover. The loot catalogue (0.18.7) uses the guide's style, so it follows.
