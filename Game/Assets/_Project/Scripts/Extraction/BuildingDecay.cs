@@ -34,6 +34,7 @@ namespace Abandoned.Extraction
         private bool crushed, shownTotal, warned;
 
         public static BuildingDecay Current { get; private set; }
+        public StructureSimulation Structure => structure;
 
         public void Setup(StructureSimulation simulation) => structure = simulation;
 

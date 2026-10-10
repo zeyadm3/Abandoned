@@ -20,3 +20,10 @@ E throws it (host-checked, `RunBreakers` on RunState): that sector's ceiling lig
 through danger blackouts and power-off contracts alike; the throw is heard 40 m away and the panel hums
 (noise 0.4 every 6 s) while lit, then 45 s cool-down. Tunables: Data/Extraction/Resources/BreakerConfig.
 Menu: Tools/Abandoned/Mall/Add Breaker Rooms (0.16.1).
+
+## 0.16.2 seeded route changes
+Locked stores (RunShutters) and doors shut at the start (RunDoors) already differed per job. New: `RunRoutes`
+(RunState) sends 2–5 collapsible floor sections, at least 9 m apart, down 3 s into each job through the
+normal structure path (synced, rubble mounds, NavMesh carving), and with 40 % chance one of the two
+escalators (never both). Stairs, protected routes and the ground floor can't collapse, so stores and the
+truck stay reachable. Tunables: Data/Extraction/Resources/RouteConfig.
