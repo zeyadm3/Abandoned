@@ -192,3 +192,39 @@
     color: rgba(214, 218, 220, 0.7);
     letter-spacing: 4px;
 }
+
+/* ==== 0.22.3 world tags and feed ==== */
+
+.loot-tag {
+    border-radius: 0;
+    background-color: rgba(10, 11, 12, 0.8);
+    border-bottom-width: 2px;
+}
+.loot-tag__value { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); }
+.loot-tag__name { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); letter-spacing: 1px; }
+
+/* Pings (0.19.0, UI Toolkit since 0.22.3): a turned square and a label in the pinger's colour. */
+.ping-mark { position: absolute; translate: -50% -100%; align-items: center; }
+.ping-mark__diamond { width: 14px; height: 14px; rotate: 45deg; border-width: 2px; border-color: rgb(10, 11, 12); }
+.ping-mark__text {
+    margin-top: 6px;
+    padding: 1px 8px 1px 8px;
+    background-color: rgba(10, 11, 12, 0.8);
+    -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+    font-size: 17px;
+    letter-spacing: 2px;
+}
+
+/* Toasts: slate slips with a yellow spine; good and warn keep their colours. */
+.toast { border-left-width: 5px; border-left-color: var(--c-accent); background-color: rgba(18, 21, 24, 0.95); border-radius: 0; }
+.toast--good { border-left-color: var(--c-good); }
+.toast--warn { border-left-color: var(--c-bad); }
+.toast__title { color: var(--c-accent); -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf"); letter-spacing: 2px; }
+.toast__body { color: var(--c-text); }
+
+/* Subtitles: a solid strip behind the words, for reading over anything. */
+.subtitle-line { background-color: rgba(10, 11, 12, 0.82); border-radius: 0; padding: 2px 10px 2px 10px; }
+
+/* Chat. */
+.chat__log { border-left-width: 3px; border-left-color: var(--c-line); }
+.chat__field > .unity-text-field__input { background-color: var(--c-panel-2); border-width: 0; border-bottom-width: 2px; border-bottom-color: var(--c-accent); border-radius: 0; }

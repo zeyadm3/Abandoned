@@ -411,3 +411,9 @@ PlayerHealthConfig); compass with yellow ticks and needle; condensed prompts; a 
 tips and the first-day guide on slate with a yellow spine. New `UI.HudCallout` (one HUD line, newest wins, and
 a full-screen blackout): flashlight charging, the drone and thermal readouts, the ghost's keys and the vent
 crawl now draw in UI Toolkit in the revamp's style instead of IMGUI.
+
+## 0.22.3 world tags and feed
+Ping markers are now UI Toolkit world marks on HudLayer.World (a turned square and a labelled slip in the
+pinger's colour, fading out) instead of IMGUI. Revamp.uss: loot tags square with monospace values and condensed
+names; toasts are slate slips with a yellow spine (green for good, red for warnings) and condensed yellow
+titles; subtitles get a solid strip behind them; chat gets the slate field with a yellow underline.
