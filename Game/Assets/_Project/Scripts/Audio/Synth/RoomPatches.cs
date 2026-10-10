@@ -87,5 +87,47 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Noise(0.05f, 1662, 9000f, 4000f, 0.001f, 80f), 0.6f, 0.14f);
             return d;
         }
+
+        /// <summary>The core drill spinning up against steel.</summary>
+        public static float[] DrillStart()
+        {
+            float[] d = Synth.Buffer(1.4f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(1.3f, 90f, 520f, 0.05f, 0.4f, 2, 0.5f), 0.02f, 0.2f), 0.6f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(1.3f, 1671, 2000f, 6000f, 0.2f, 0.3f), 0.2f, 0.2f), 0.4f);
+            return SynthReverb.Apply(d, 0.9f, 0.2f);
+        }
+
+        /// <summary>One stretch of drilling: the motor's whine, the bit grinding, a ring from the safe's skin.</summary>
+        public static float[] Drill(int take)
+        {
+            float[] d = Synth.Buffer(1f);
+            var rng = new Rng(1672 + take * 9);
+            float hz = rng.Range(500f, 540f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(1f, hz, hz * rng.Range(0.97f, 1.03f), 0.01f, 0.1f, 2), 0.05f, 0.05f), 0.5f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(1f, 1673 + take, 5000f, 4000f, 0.01f, 0.1f, 1500f), 0.05f, 0.05f), 0.5f);
+            Patch.Layer(d, Synth.Modal(1f, rng.Range(880f, 960f), Patch.Sheet, null, 3f), 0.12f);
+            return d;
+        }
+
+        /// <summary>The bit binding: a lurch, a squeal and the motor stalling.</summary>
+        public static float[] DrillJam()
+        {
+            float[] d = Synth.Buffer(1.3f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(0.9f, 520f, 60f, 0.01f, 2f, 2), 0f, 0.3f), 0.6f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(0.4f, 3100f, 2500f, 0.01f, 5f, 0), 0f, 0.1f), 0.4f, 0.05f);
+            Patch.Layer(d, Synth.Thump(0.3f, 160f, 60f, 14f), 0.7f, 0.05f);
+            return SynthReverb.Apply(d, 1f, 0.25f);
+        }
+
+        /// <summary>Bolts drawn back and a heavy door swinging on its hinge.</summary>
+        public static float[] SafeOpen()
+        {
+            float[] d = Synth.Buffer(2.2f);
+            Patch.Layer(d, Synth.Modal(0.3f, 420f, Patch.Bar, null, 20f), 0.6f);
+            Patch.Layer(d, Synth.Modal(0.3f, 390f, Patch.Bar, null, 20f), 0.5f, 0.12f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(1.4f, 1674, 300f, 220f, 0.3f, 0.6f), 0.3f, 0.4f), 0.4f, 0.3f);
+            Patch.Layer(d, Synth.Thump(0.5f, 120f, 45f, 6f), 0.8f, 1.6f);
+            return SynthReverb.Apply(d, 1.4f, 0.3f);
+        }
     }
 }

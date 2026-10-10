@@ -27,6 +27,8 @@ namespace Abandoned.Networking
         private int extraJackpots;
         private bool hooked, done;
 
+        public static NetworkLootSpawner Current { get; private set; }
+        public LootCatalog Catalog => catalog;
         public IReadOnlyList<NetworkLoot> Spawned => spawned;
         public int Seed => seed;
         public int TotalValue => spawned.Where(l => l != null && l.Item.IsInitialized).Sum(l => l.Item.CurrentValue);
@@ -43,6 +45,29 @@ namespace Abandoned.Networking
         public void SetSeed(int runSeed) => seed = runSeed;
 
         private NetworkBootstrap Session => NetworkBootstrap.Resolve(bootstrap);
+
+        private void OnEnable() => Current = this;
+
+        private void OnDisable()
+        {
+            if (Current == this) Current = null;
+        }
+
+        /// <summary>
+        /// Host (0.16.6+): one more item in this run, outside the seeded plan (a vault's contents, a boss's
+        /// request). It is counted and cleared with the rest at the next re-roll.
+        /// </summary>
+        public LootItem SpawnExtra(LootDefinition definition, Vector3 at, Quaternion rotation, int valueSeed)
+        {
+            GameObject prefab = catalog != null ? catalog.PrefabFor(definition) : null;
+            if (prefab == null) return null;
+            GameObject instance = Instantiate(prefab, at, rotation);
+            var item = instance.GetComponent<LootItem>();
+            item.Initialize(valueSeed);
+            instance.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);
+            spawned.Add(instance.GetComponent<NetworkLoot>());
+            return item;
+        }
 
         private void Start()
         {

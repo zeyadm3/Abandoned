@@ -21,6 +21,11 @@ namespace Abandoned.Audio
                 // 0.16.5: store alarms (an electric bell; the cut is a snip).
                 case SoundId.AlarmBell: return Patch.Mono(id, take, RoomPatches.AlarmBell(), 0.85f);
                 case SoundId.AlarmCut: return Patch.Mono(id, take, RoomPatches.AlarmCut(), 0.7f);
+                // 0.16.6: the vault drill (a core drill in steel; the door's bolts).
+                case SoundId.VaultDrillStart: return Patch.Mono(id, take, RoomPatches.DrillStart(), 0.9f);
+                case SoundId.VaultDrill: return Patch.Mono(id, take, RoomPatches.Drill(take), 0.8f);
+                case SoundId.VaultDrillJam: return Patch.Mono(id, take, RoomPatches.DrillJam(), 0.9f);
+                case SoundId.VaultOpen: return Patch.Mono(id, take, RoomPatches.SafeOpen(), 0.9f);
                 // @@cases
                 default: return null;
             }

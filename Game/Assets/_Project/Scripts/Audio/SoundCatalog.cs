@@ -168,6 +168,11 @@ namespace Abandoned.Audio
             // 0.16.5: store alarms (an electric bell; the cut is a snip).
             Set(SoundId.AlarmBell, Fx, 34, 6f, 70f, Syn, Dull, 1, "AN ALARM BELL RINGS", 0.9f, 0f);
             Set(SoundId.AlarmCut, Fx, 110, 1f, 12f, Syn, Wall, 1);
+            // 0.16.6: the vault drill (a core drill in steel; the door's bolts).
+            Set(SoundId.VaultDrillStart, Fx, 50, 4f, 60f, Syn, Dull, 1, "a heavy drill starts");
+            Set(SoundId.VaultDrill, Fx, 60, 4f, 60f, Syn, Dull, 3, "drilling", 0.85f);
+            Set(SoundId.VaultDrillJam, Fx, 60, 3f, 45f, Syn, Dull, 1, "the drill jams");
+            Set(SoundId.VaultOpen, Fx, 50, 3f, 40f, Syn, Dull, 1, "a safe door swings open");
             // @@catalog
             return t;
         }

@@ -60,3 +60,12 @@ player inside a wired store trips it once: an electric bell rings for 30 s (nois
 flashes. Bolt cutters in a hand slot + E at the box disarm it, before or while it rings. Armed boxes blink
 red every 2 s; a disarmed or unwired box is dark. Tunables: Data/Extraction/Resources/AlarmConfig.
 Menu: Tools/Abandoned/Mall/Add Store Alarms (0.16.5).
+
+## 0.16.6 vault drill
+The mall has no jewellery store (zone "Jewelry" is Nordic Habitat's furniture floor) and its ground-floor
+stores had no bare wall big enough, so the safe stands in the **Cinema** (upper floor, west wall, x 0.15
+z 14): a box-office safe. E sets a core drill on it: 90 s of drilling, noise 1.0 every 2 s, and every 12 s a
+40 % chance it jams until someone presses E again (`RunVault` on RunState). Through, the door swings open on
+4–6 of the most valuable one-hand items in the catalogue at 1.6× value, spawned by the host through the new
+`NetworkLootSpawner.SpawnExtra` (cleared with the rest at the next re-roll). Tunables:
+Data/Extraction/Resources/VaultConfig. Menu: Tools/Abandoned/Mall/Add Vault Safe (0.16.6).

@@ -32,6 +32,8 @@ namespace Abandoned.UI
         Vent,
         // 0.16.5
         Alarm,
+        // 0.16.6
+        Vault,
         // @@hints
     }
 }

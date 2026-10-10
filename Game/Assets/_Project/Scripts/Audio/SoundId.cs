@@ -135,6 +135,11 @@ namespace Abandoned.Audio
         // 0.16.5: store alarms (an electric bell; the cut is a snip).
         AlarmBell,
         AlarmCut,
+        // 0.16.6: the vault drill (a core drill in steel; the door's bolts).
+        VaultDrillStart,
+        VaultDrill,
+        VaultDrillJam,
+        VaultOpen,
         // @@ids
     }
 }
