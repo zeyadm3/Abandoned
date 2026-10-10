@@ -16,7 +16,7 @@ namespace Abandoned.Threats
     /// </summary>
     public class ThreatPacing : MonoBehaviour
     {
-        private const float TickInterval = 1f, HintRefresh = 20f;
+        private const float TickInterval = 1f, HintRefresh = 6f;
 
         private class Track { public float lastNear, lastClose, hintAt; }
 
@@ -60,44 +60,60 @@ namespace Abandoned.Threats
             {
                 if (t == null || !t.IsSpawned || !Paced(t)) continue;
                 if (!tracks.TryGetValue(t, out Track track)) tracks[t] = track = new Track { lastNear = Time.time, lastClose = Time.time };
-                float nearest = Nearest(t.transform.position);
+                float nearest = NearestRoute(t);
                 if (nearest <= config.DriftRange) { track.lastNear = Time.time; t.RoamHint = null; }
                 if (nearest <= config.RelocateDistance) track.lastClose = Time.time;
 
                 if (Time.time - track.lastClose >= config.RelocateAfter && director != null)
                 {
-                    tracks.Remove(t);
-                    director.Relocate(t);
-                    continue;
+                    if (director.Relocate(t) != null) { tracks.Remove(t); continue; }
+                    // Keep its history and retry soon if every fair marker is occupied.
+                    track.lastClose = Time.time - config.RelocateAfter + config.SpawnRetry;
                 }
                 if (Time.time - track.lastNear < config.DriftAfter) continue;
                 drifting++;
                 if (t.RoamHint.HasValue && Time.time - track.hintAt < HintRefresh) continue;
                 track.hintAt = Time.time;
-                t.RoamHint = DriftPoint(config.DriftScatter);
+                t.RoamHint = DriftPoint(t, config.DriftScatter);
             }
         }
 
         // Monsters with their own way of finding people keep it.
         private static bool Paced(Threat t) => !(t is Stalker) && !(t is Collector) && !(t is LastHunter);
 
-        private float Nearest(Vector3 at)
+        private float NearestRoute(Threat threat)
         {
             float best = float.MaxValue;
-            foreach (NetworkPlayer p in alive) best = Mathf.Min(best, Vector3.Distance(at, p.transform.position));
+            var path = new NavMeshPath();
+            foreach (NetworkPlayer p in alive)
+            {
+                if (!NavMesh.SamplePosition(p.transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas)
+                    || Mathf.Abs(hit.position.y - p.transform.position.y) > 1.5f) continue;
+                if (!NavMesh.CalculatePath(threat.transform.position, hit.position, NavMesh.AllAreas, path)
+                    || path.status != NavMeshPathStatus.PathComplete) continue;
+                float length = 0f;
+                Vector3[] corners = path.corners;
+                for (int i = 1; i < corners.Length; i++) length += Vector3.Distance(corners[i - 1], corners[i]);
+                if (Mathf.Abs(threat.transform.position.y - hit.position.y) > 2.5f) length += 8f;
+                best = Mathf.Min(best, length);
+            }
             return best;
         }
 
         // Somewhere walkable around one living player, never right on top of them.
-        private Vector3? DriftPoint(float scatter)
+        private Vector3? DriftPoint(Threat threat, float scatter)
         {
-            NetworkPlayer p = alive[random.Next(alive.Count)];
-            for (int i = 0; i < 6; i++)
+            var path = new NavMeshPath();
+            for (int i = 0; i < 12; i++)
             {
+                NetworkPlayer p = alive[random.Next(alive.Count)];
                 float angle = (float)random.NextDouble() * Mathf.PI * 2f;
                 float distance = Mathf.Lerp(scatter * 0.4f, scatter, (float)random.NextDouble());
                 Vector3 guess = p.transform.position + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * distance;
-                if (NavMesh.SamplePosition(guess, out NavMeshHit hit, 4f, NavMesh.AllAreas)) return hit.position;
+                if (NavMesh.SamplePosition(guess, out NavMeshHit hit, 1.75f, NavMesh.AllAreas)
+                    && Mathf.Abs(hit.position.y - p.transform.position.y) < 1.5f
+                    && NavMesh.CalculatePath(threat.transform.position, hit.position, NavMesh.AllAreas, path)
+                    && path.status == NavMeshPathStatus.PathComplete) return hit.position;
             }
             return null;
         }
@@ -108,7 +124,7 @@ namespace Abandoned.Threats
             if (!DebugView.Visible || director == null || !GameAuthority.IsHost || RunState.Current == null) return;
             float next = director.NextArrivalIn;
             GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
-                $"THREATS {Contracts.Contract.ThreatName((byte)RunState.Current.Terms.ThreatLevel)} {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drifting {drifting}");
+                $"THREATS {Contracts.Contract.ThreatName((byte)RunState.Current.Terms.ThreatLevel)} {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drift {drifting} retries {director.PlacementRetries}");
         }
 #endif
 

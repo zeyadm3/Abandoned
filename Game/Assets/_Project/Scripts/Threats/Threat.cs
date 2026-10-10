@@ -3,6 +3,7 @@ using Abandoned.Core;
 using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Abandoned.Threats
 {
@@ -16,6 +17,9 @@ namespace Abandoned.Threats
         private static readonly List<Threat> Spawned = new();
         [SerializeField] private ThreatDefinition definition;
         private float nextAttack;
+        private float attackReadyAt;
+        private NavMeshPath patrolPath;
+        public float WarningRemaining => Mathf.Max(0f, attackReadyAt - Time.time);
         public ThreatDefinition Definition => definition;
         public virtual ThreatMotion DesiredMotion => ThreatMotion.Idle;
         public float Aggression => 1f + (Extraction.RunState.Current != null ? Extraction.RunState.Current.State.Danger : 0) * (definition != null ? definition.AggressionPerDanger : 0.09f);
@@ -40,10 +44,17 @@ namespace Abandoned.Threats
 
         protected int WallMask { get; private set; }
 
-        protected virtual void Awake() =>
+        protected virtual void Awake()
+        {
             WallMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast");
+            patrolPath = new NavMeshPath();
+        }
 
-        public override void OnNetworkSpawn() => Spawned.Add(this);
+        public override void OnNetworkSpawn()
+        {
+            Spawned.Add(this);
+            attackReadyAt = Time.time + (definition != null ? definition.SpawnWarningSeconds : 0f);
+        }
 
         public override void OnNetworkDespawn() => Spawned.Remove(this);
 
@@ -56,16 +67,16 @@ namespace Abandoned.Threats
         /// <param name="senses">Optional: only players this threat can perceive (the Blind One must have heard them).</param>
         protected NetworkPlayer DamageWithinReach(float range, float fallbackDamage, bool lethal = false, System.Func<NetworkPlayer, bool> senses = null)
         {
-            if (!IsServer || !IsSpawned || Time.time < nextAttack) return null;
+            if (!IsServer || !IsSpawned || Time.time < nextAttack || Time.time < attackReadyAt) return null;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
-                if (p == null || p.NetworkManager != NetworkManager || p.IsDead) continue;
+                if (p == null || !p.IsSpawned || p.NetworkManager != NetworkManager || p.IsDead) continue;
                 if (senses != null && !senses(p)) continue;
                 Vector3 at = PositionOf(p);
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;
                 if (Sheltered(at)) continue;
-                if (Physics.Linecast(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f, WallMask, QueryTriggerInteraction.Ignore)) continue;
+                if (!LineOfSight(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f)) continue;
                 float damage = lethal || definition != null && definition.LethalContact ? p.MaxHealth : (definition != null ? definition.Damage : fallbackDamage) * Mathf.Min(Aggression, 1.4f) * ContractDamageScale;
                 p.DealDamage(damage, DeathLine);
                 if (p.IsDead) Kills++;
@@ -89,14 +100,30 @@ namespace Abandoned.Threats
         /// <summary>Host: head for <paramref name="goal"/>, re-pathing at most a few times a second.</summary>
         protected void Steer(UnityEngine.AI.NavMeshAgent agent, Vector3 goal)
         {
+            if (!agent.enabled || !agent.isOnNavMesh) return;
             bool moved = float.IsNaN(lastGoal.x) || (goal - lastGoal).sqrMagnitude > RepathDistance * RepathDistance;
-            if (!moved && Time.time < nextRepath) return;
+            if (!moved && (Time.time < nextRepath || agent.pathPending)) return;
             nextRepath = Time.time + RepathInterval;
             lastGoal = goal;
-            agent.SetDestination(goal);
+            var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+            // Keep an upstairs target upstairs: a wide nearest-point query can pick the floor below it.
+            if (NavMesh.SamplePosition(goal, out NavMeshHit hit, 2f, filter) && Mathf.Abs(hit.position.y - goal.y) < 1.75f)
+                agent.SetDestination(hit.position);
         }
 
-        private readonly RaycastHit[] sightHits = new RaycastHit[8];
+        /// <summary>Patrol goals must be on the intended floor and connected to where the creature stands.</summary>
+        protected bool ReachableGoal(NavMeshAgent agent, Vector3 guess, out Vector3 destination, float radius = 3f)
+        {
+            destination = default;
+            if (!agent.enabled || !agent.isOnNavMesh) return false;
+            var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+            if (!NavMesh.SamplePosition(guess, out NavMeshHit hit, radius, filter) || Mathf.Abs(hit.position.y - guess.y) > 1.75f) return false;
+            if (!agent.CalculatePath(hit.position, patrolPath) || patrolPath.status != NavMeshPathStatus.PathComplete) return false;
+            destination = hit.position;
+            return true;
+        }
+
+        private readonly RaycastHit[] sightHits = new RaycastHit[16];
 
         /// <summary>Nothing solid between two points (its own body doesn't count).</summary>
         protected bool LineOfSight(Vector3 from, Vector3 to)
@@ -105,6 +132,7 @@ namespace Abandoned.Threats
             float length = d.magnitude;
             if (length < 0.01f) return true;
             int n = Physics.RaycastNonAlloc(from, d / length, sightHits, length, WallMask, QueryTriggerInteraction.Ignore);
+            if (n == sightHits.Length) return false;
             for (int i = 0; i < n; i++)
                 if (!sightHits[i].collider.transform.IsChildOf(transform)) return false;
             return true;

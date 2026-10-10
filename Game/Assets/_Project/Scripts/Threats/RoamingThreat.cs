@@ -17,6 +17,7 @@ namespace Abandoned.Threats
         protected float SenseRange => Definition != null ? Definition.SenseRange * Mathf.Min(Aggression, 1.5f) : 22f;
         protected float Interval => (Definition != null ? Definition.SpecialInterval : 8f) / Mathf.Min(Aggression, 1.5f);
         protected float Momentum => Definition != null ? Definition.StructuralMomentum * Aggression : 1800f;
+        private float nextWander;
 
         protected override void Awake()
         {
@@ -49,12 +50,19 @@ namespace Abandoned.Threats
             if (!Agent.isOnNavMesh) return;
             Agent.isStopped = false;
             Agent.speed = speed * SpeedScale;
-            if (NavMesh.SamplePosition(to, out NavMeshHit hit, 4f, NavMesh.AllAreas)) Agent.SetDestination(hit.position);
+            Steer(Agent, to);
         }
         protected void Wander()
         {
-            if (!Agent.pathPending && (!Agent.hasPath || Agent.remainingDistance < 1f))
-                Move(RoamCentre + Random.insideUnitSphere * 12f, WalkSpeed);
+            if (Agent.pathPending || Time.time < nextWander || Agent.hasPath && Agent.remainingDistance >= 1f && Agent.pathStatus == NavMeshPathStatus.PathComplete) return;
+            nextWander = Time.time + 0.75f;
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 offset = Random.insideUnitCircle * 12f;
+                if (!ReachableGoal(Agent, RoamCentre + new Vector3(offset.x, 0f, offset.y), out Vector3 destination)) continue;
+                Move(destination, WalkSpeed);
+                return;
+            }
         }
         protected NetworkPlayer Nearest(float range = float.MaxValue)
         {
@@ -75,7 +83,7 @@ namespace Abandoned.Threats
             Camera camera = Camera.main;
             if (camera == null) return;
             Vector3 at = camera.WorldToScreenPoint(transform.position + Vector3.up * 2f);
-            if (at.z > 0f) GUI.Label(new Rect(at.x - 110f, Screen.height - at.y, 240f, 22f), $"{DisplayName}: {DesiredMotion} x{Aggression:0.0}");
+            if (at.z > 0f) GUI.Label(new Rect(at.x - 110f, Screen.height - at.y, 300f, 22f), $"{DisplayName}: {DesiredMotion} x{Aggression:0.0} warning {WarningRemaining:0}s");
         }
 #endif
         private void OnDrawGizmosSelected()

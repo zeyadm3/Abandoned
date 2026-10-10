@@ -99,9 +99,12 @@ namespace Abandoned.Threats
                     agent.isStopped = false;
                     agent.speed = config.FollowSpeed * SpeedScale;
                     // Hang back: walk to a point FollowDistance short of them.
-                    Vector3 away = (transform.position - at).normalized;
+                    Vector3 away = Flat(transform.position - at).normalized;
                     if (away.sqrMagnitude < 0.01f) away = -target.transform.forward;
-                    Steer(agent, at + away * config.FollowDistance);
+                    // Follow through the doorway first. An offset across a wall can strand it forever.
+                    if (!Sees(target)) Steer(agent, at);
+                    else if (Flat(transform.position - at).magnitude <= config.FollowDistance) agent.isStopped = true;
+                    else Steer(agent, at + away * config.FollowDistance);
                     break;
                 case StalkerState.Rush:
                     agent.isStopped = false;
@@ -121,7 +124,7 @@ namespace Abandoned.Threats
         private void PickTarget()
         {
             nextRetarget = Time.time + config.RetargetInterval;
-            var alive = NetworkPlayer.All.Where(p => p != null && p.NetworkManager == NetworkManager && !p.IsDead).ToList();
+            var alive = NetworkPlayer.All.Where(p => p != null && p.IsSpawned && p.NetworkManager == NetworkManager && !p.IsDead && !Sheltered(PositionOf(p))).ToList();
             // Two players are always equally far from each other: then the nearer one to it.
             NetworkPlayer picked = alive
                 .OrderByDescending(p => alive.Where(o => o != p).Select(o => Vector3.Distance(PositionOf(o), PositionOf(p))).DefaultIfEmpty(float.MaxValue).Min())

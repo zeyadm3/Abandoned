@@ -46,7 +46,7 @@ namespace Abandoned.Threats
             if (Time.time < nextKnock) return;
             NetworkPlayer bitten = DamageWithinReach(Reach, 8f);
             if (bitten == null) return;
-            nextKnock = Time.time + 4f;
+            nextKnock = Time.time + (Definition != null ? Definition.AttackCooldown : 2.5f) / Mathf.Min(Aggression, 1.6f);
             PlayerCarrier carrier = bitten.GetComponent<PlayerCarrier>();
             if (carrier != null && carrier.Held != null)
             {

@@ -88,7 +88,12 @@ namespace Abandoned.Threats
         {
             Vector3 d = to - from;
             float length = d.magnitude;
-            return length < 0.01f ? 0 : Physics.RaycastNonAlloc(from, d / length, wallHits, length, wallMask, QueryTriggerInteraction.Ignore);
+            if (length < 0.01f) return 0;
+            int n = Physics.RaycastNonAlloc(from, d / length, wallHits, length, wallMask, QueryTriggerInteraction.Ignore);
+            int walls = 0;
+            for (int i = 0; i < n; i++)
+                if (!wallHits[i].collider.transform.IsChildOf(transform)) walls++;
+            return walls;
         }
 
         private void Update()
@@ -104,13 +109,14 @@ namespace Abandoned.Threats
 
             Vector3 goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
             // "Arrived" only counts for the goal it is walking to now, not the one before it heard something.
-            bool arrived = hasGoal && (goal - pathGoal).sqrMagnitude < 1f && !agent.pathPending && agent.remainingDistance <= ArrivedDistance;
+            bool arrived = hasGoal && (goal - pathGoal).sqrMagnitude < 1f && !agent.pathPending &&
+                           agent.pathStatus == NavMeshPathStatus.PathComplete && (transform.position - goal).sqrMagnitude <= ArrivedDistance * ArrivedDistance;
             brain.Tick(transform.position, arrived, Time.time);
-            if (brain.State == BlindOneState.Wander && (arrived || !hasWanderTarget)) PickWanderTarget();
+            if (brain.State == BlindOneState.Wander && (arrived || !hasWanderTarget || !agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete)) PickWanderTarget();
             agent.speed = brain.Speed * SpeedScale;
             goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
             bool newGoal = !hasGoal || (goal - pathGoal).sqrMagnitude >= 1f;
-            if (newGoal || Time.time >= nextPath)
+            if (newGoal || Time.time >= nextPath && !agent.pathPending)
             {
                 nextPath = Time.time + RepathInterval;
                 if (NavMesh.SamplePosition(goal, out NavMeshHit hit, 3f, NavMesh.AllAreas)) agent.SetDestination(hit.position);
@@ -139,10 +145,14 @@ namespace Abandoned.Threats
 
         private void PickWanderTarget()
         {
-            Vector3 random = RoamCentre + Random.insideUnitSphere * config.WanderRadius;
-            if (!NavMesh.SamplePosition(random, out NavMeshHit hit, config.WanderRadius, NavMesh.AllAreas)) return;
-            wanderTarget = hit.position;
-            hasWanderTarget = true;
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 offset = Random.insideUnitCircle * config.WanderRadius;
+                if (!ReachableGoal(agent, RoamCentre + new Vector3(offset.x, 0f, offset.y), out Vector3 destination)) continue;
+                wanderTarget = destination;
+                hasWanderTarget = true;
+                return;
+            }
         }
 
         private void KillOnContact()

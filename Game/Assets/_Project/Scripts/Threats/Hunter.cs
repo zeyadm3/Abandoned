@@ -24,7 +24,7 @@ namespace Abandoned.Threats
         private NavMeshAgent agent;
         private NetworkPlayer target;
         private Vector3 lastSeen;
-        private float lostAt, searchUntil, stunnedUntil, nextStep, fallSpeed;
+        private float lostAt, searchUntil, stunnedUntil, nextStep, fallSpeed, nextPatrolPick;
         private bool falling;
         private Vector3 lastFooting;
         private StructuralSection standingOn;
@@ -99,13 +99,13 @@ namespace Abandoned.Threats
                     agent.isStopped = false;
                     agent.speed = config.PatrolSpeed * SpeedScale;
                     if (!agent.pathPending && agent.remainingDistance < 1f) transform.Rotate(0f, 90f * Time.deltaTime, 0f); // looking around
-                    if (agent.destination != lastSeen && Vector3.Distance(agent.destination, lastSeen) > 0.5f) agent.SetDestination(lastSeen);
+                    Steer(agent, lastSeen);
                     if (Time.time > searchUntil) Set(HunterState.Patrol);
                     break;
                 default:
                     agent.isStopped = false;
                     agent.speed = config.PatrolSpeed * SpeedScale;
-                    if (!agent.pathPending && (agent.remainingDistance < 1f || !agent.hasPath)) PatrolSomewhere();
+                    if (!agent.pathPending && (agent.remainingDistance < 1f || !agent.hasPath || agent.pathStatus != NavMeshPathStatus.PathComplete)) PatrolSomewhere();
                     break;
             }
             // Walking into it is fatal too, not only being chased down.
@@ -125,7 +125,7 @@ namespace Abandoned.Threats
             Vector3 eye = transform.position + Vector3.up * 2f;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
-                if (p == null || p.NetworkManager != NetworkManager || p.IsDead || !p.IsSpawned) continue;
+                if (p == null || p.NetworkManager != NetworkManager || p.IsDead || !p.IsSpawned || Sheltered(PositionOf(p))) continue;
                 Vector3 at = PositionOf(p) + Vector3.up * 1.2f;
                 Vector3 to = at - eye;
                 float distance = to.magnitude;
@@ -140,13 +140,15 @@ namespace Abandoned.Threats
 
         private void PatrolSomewhere()
         {
+            if (Time.time < nextPatrolPick) return;
+            nextPatrolPick = Time.time + 0.75f;
             for (int i = 0; i < 8; i++)
             {
                 Vector2 r = Random.insideUnitCircle * config.PatrolRadius;
-                Vector3 guess = RoamCentre + new Vector3(r.x, Random.Range(-4f, 4f), r.y);
-                if (NavMesh.SamplePosition(guess, out NavMeshHit hit, 4f, NavMesh.AllAreas))
+                Vector3 guess = RoamCentre + new Vector3(r.x, 0f, r.y);
+                if (ReachableGoal(agent, guess, out Vector3 destination))
                 {
-                    agent.SetDestination(hit.position);
+                    Steer(agent, destination);
                     return;
                 }
             }

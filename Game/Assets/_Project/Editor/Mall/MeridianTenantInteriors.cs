@@ -10,12 +10,8 @@ namespace Abandoned.EditorTools
         {
             Transform interiors = Group("TenantInteriors", mall);
             var fit = new MeridianTenantPlacement(mall);
-            Electronics(fit, Group("Ground_Electronics", interiors));
-            Jewelry(fit, Group("Ground_Jewellers", interiors));
-            Clothing(fit, Group("Ground_Clothing", interiors));
-            Office(fit, Group("Ground_Security", interiors), 0, 40, 16, 4);
-            Office(fit, Group("Upper_Management", interiors), 1, 32, 0, 6);
-            Furniture(fit, Group("Upper_HomeShowroom", interiors));
+            Office(fit, Group("Upper_ClosedAdministration", interiors), 1, 0, 16, 4);
+            SalvageMallDressing.Build(mall, interiors);
             Toys(fit, Group("Upper_ToyShop", interiors));
             MeridianTenantCinema.Build(fit, Group("Upper_Cinema", interiors));
             MeridianTenantFoodCourt.Build(fit, Group("Ground_FoodCourt", interiors), 0);

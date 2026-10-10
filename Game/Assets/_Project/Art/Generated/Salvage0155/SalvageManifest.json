@@ -1,0 +1,1208 @@
+{
+    "version": "0.15.5",
+    "status": "Authored content; tests, compilation and visual/physics verification deferred to the user.",
+    "triangleCounting": "Combined recipe geometry per LOD; separate status text/plaque renderers excluded.",
+    "assets": [
+        {
+            "id": "pc_tower",
+            "name": "PC Tower",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/pc_tower.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/pc_tower.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_pc_tower.prefab",
+            "definitionId": "salvage_pc_tower",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 12.0,
+            "physicsMass": 12.0,
+            "valueMin": 900,
+            "valueMax": 1500,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.2639999985694885,
+                "y": 0.4749999940395355,
+                "z": 0.46719586849212649
+            },
+            "meshTrianglesPerLod": [
+                464,
+                248,
+                108
+            ]
+        },
+        {
+            "id": "motherboard",
+            "name": "Motherboard",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/motherboard.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/motherboard.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_motherboard.prefab",
+            "definitionId": "salvage_motherboard",
+            "carryClass": "Pocket",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.6000000238418579,
+            "physicsMass": 0.6000000238418579,
+            "valueMin": 180,
+            "valueMax": 450,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.3050000071525574,
+                "y": 0.02500000037252903,
+                "z": 0.24400000274181367
+            },
+            "meshTrianglesPerLod": [
+                616
+            ]
+        },
+        {
+            "id": "crt_monitor",
+            "name": "CRT Monitor",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/crt_monitor.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/crt_monitor.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_crt_monitor.prefab",
+            "definitionId": "salvage_crt_monitor",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 24.0,
+            "physicsMass": 24.0,
+            "valueMin": 300,
+            "valueMax": 800,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.4300000071525574,
+                "y": 0.4000000059604645,
+                "z": 0.45233258605003359
+            },
+            "meshTrianglesPerLod": [
+                296,
+                128,
+                60
+            ]
+        },
+        {
+            "id": "led_monitor",
+            "name": "LED Monitor",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/led_monitor.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/led_monitor.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_led_monitor.prefab",
+            "definitionId": "salvage_led_monitor",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 5.0,
+            "physicsMass": 5.0,
+            "valueMin": 200,
+            "valueMax": 600,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.5400000214576721,
+                "y": 0.4300000071525574,
+                "z": 0.20000000298023225
+            },
+            "meshTrianglesPerLod": [
+                192,
+                72,
+                48
+            ]
+        },
+        {
+            "id": "circuit_board",
+            "name": "Loose Circuit Board",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/circuit_board.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/circuit_board.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_circuit_board.prefab",
+            "definitionId": "salvage_circuit_board",
+            "carryClass": "Pocket",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.20000000298023225,
+            "physicsMass": 0.20000000298023225,
+            "valueMin": 80,
+            "valueMax": 220,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.18000000715255738,
+                "y": 0.02500000037252903,
+                "z": 0.11999999731779099
+            },
+            "meshTrianglesPerLod": [
+                568
+            ]
+        },
+        {
+            "id": "server_rack",
+            "name": "Recoverable Server Rack",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/server_rack.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/server_rack.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_server_rack.prefab",
+            "definitionId": "salvage_server_rack",
+            "carryClass": "Huge",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 150.0,
+            "physicsMass": 80.0,
+            "valueMin": 6000,
+            "valueMax": 10000,
+            "requiredCarriers": 3,
+            "dimensions": {
+                "x": 0.6499999761581421,
+                "y": 2.0,
+                "z": 0.8059999942779541
+            },
+            "meshTrianglesPerLod": [
+                1400,
+                656,
+                156
+            ]
+        },
+        {
+            "id": "copper_spool",
+            "name": "Copper Spool",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/copper_spool.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/copper_spool.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_copper_spool.prefab",
+            "definitionId": "salvage_copper_spool",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 22.0,
+            "physicsMass": 22.0,
+            "valueMin": 1200,
+            "valueMax": 3500,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.36000001430511477,
+                "y": 0.32350000739097597,
+                "z": 0.36000001430511477
+            },
+            "meshTrianglesPerLod": [
+                668,
+                268,
+                96
+            ]
+        },
+        {
+            "id": "industrial_battery",
+            "name": "Industrial Battery",
+            "category": "Tech",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/industrial_battery.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/industrial_battery.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_industrial_battery.prefab",
+            "definitionId": "salvage_industrial_battery",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 55.0,
+            "physicsMass": 55.0,
+            "valueMin": 1200,
+            "valueMax": 2400,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 0.41999998688697817,
+                "y": 0.5199999809265137,
+                "z": 0.2825000286102295
+            },
+            "meshTrianglesPerLod": [
+                476,
+                208,
+                96
+            ]
+        },
+        {
+            "id": "steel_filing_cabinet",
+            "name": "Steel Filing Cabinet",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/steel_filing_cabinet.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/steel_filing_cabinet.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_steel_filing_cabinet.prefab",
+            "definitionId": "salvage_steel_filing_cabinet",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 60.0,
+            "physicsMass": 60.0,
+            "valueMin": 600,
+            "valueMax": 1500,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 0.47999998927116396,
+                "y": 1.3200000524520875,
+                "z": 0.6130000352859497
+            },
+            "meshTrianglesPerLod": [
+                516,
+                340,
+                120
+            ]
+        },
+        {
+            "id": "ergonomic_chair",
+            "name": "Ergonomic Chair",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/ergonomic_chair.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/ergonomic_chair.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_ergonomic_chair.prefab",
+            "definitionId": "salvage_ergonomic_chair",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 14.0,
+            "physicsMass": 14.0,
+            "valueMin": 200,
+            "valueMax": 800,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.656000018119812,
+                "y": 1.0327348709106446,
+                "z": 0.6201275587081909
+            },
+            "meshTrianglesPerLod": [
+                1068,
+                564,
+                408
+            ]
+        },
+        {
+            "id": "oak_conference_table",
+            "name": "Oak Conference Table",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/oak_conference_table.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/oak_conference_table.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_oak_conference_table.prefab",
+            "definitionId": "salvage_oak_conference_table",
+            "carryClass": "Huge",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 120.0,
+            "physicsMass": 80.0,
+            "valueMin": 3500,
+            "valueMax": 7000,
+            "requiredCarriers": 3,
+            "dimensions": {
+                "x": 3.0,
+                "y": 0.7910000085830689,
+                "z": 1.2000000476837159
+            },
+            "meshTrianglesPerLod": [
+                228,
+                120,
+                72
+            ]
+        },
+        {
+            "id": "modular_shelving",
+            "name": "Modular Shelving Unit",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/modular_shelving.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/modular_shelving.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_modular_shelving.prefab",
+            "definitionId": "salvage_modular_shelving",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 50.0,
+            "physicsMass": 50.0,
+            "valueMin": 500,
+            "valueMax": 1400,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 1.100000023841858,
+                "y": 1.7999999523162842,
+                "z": 0.45399999618530276
+            },
+            "meshTrianglesPerLod": [
+                540,
+                208,
+                120
+            ]
+        },
+        {
+            "id": "fabric_roll",
+            "name": "Fabric Roll",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/fabric_roll.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/fabric_roll.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_fabric_roll.prefab",
+            "definitionId": "salvage_fabric_roll",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 18.0,
+            "physicsMass": 18.0,
+            "valueMin": 150,
+            "valueMax": 500,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.26958125829696658,
+                "y": 0.25850000977516177,
+                "z": 1.1640000343322755
+            },
+            "meshTrianglesPerLod": [
+                264,
+                160,
+                72
+            ]
+        },
+        {
+            "id": "flatpack_desk",
+            "name": "Half-disassembled Flat-pack Desk",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/flatpack_desk.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/flatpack_desk.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_flatpack_desk.prefab",
+            "definitionId": "salvage_flatpack_desk",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 20.0,
+            "physicsMass": 20.0,
+            "valueMin": 300,
+            "valueMax": 1000,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 1.399999976158142,
+                "y": 0.7609999775886536,
+                "z": 0.8349553346633911
+            },
+            "meshTrianglesPerLod": [
+                316,
+                128,
+                60
+            ]
+        },
+        {
+            "id": "executive_chair",
+            "name": "Executive Chair",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/executive_chair.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/executive_chair.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_executive_chair.prefab",
+            "definitionId": "salvage_executive_chair",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 20.0,
+            "physicsMass": 20.0,
+            "valueMin": 300,
+            "valueMax": 1000,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.656000018119812,
+                "y": 1.1652404069900513,
+                "z": 0.6201275587081909
+            },
+            "meshTrianglesPerLod": [
+                1056,
+                576,
+                420
+            ]
+        },
+        {
+            "id": "shrinkwrap_roll",
+            "name": "Shrink-wrap Roll",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/shrinkwrap_roll.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/shrinkwrap_roll.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_shrinkwrap_roll.prefab",
+            "definitionId": "salvage_shrinkwrap_roll",
+            "carryClass": "OneHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 2.0,
+            "physicsMass": 2.0,
+            "valueMin": 40,
+            "valueMax": 90,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.1861019730567932,
+                "y": 0.5544999837875366,
+                "z": 0.17399999499320985
+            },
+            "meshTrianglesPerLod": [
+                360
+            ]
+        },
+        {
+            "id": "heavy_dolly",
+            "name": "Heavy-duty Dolly",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/heavy_dolly.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/heavy_dolly.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_heavy_dolly.prefab",
+            "definitionId": "salvage_heavy_dolly",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 25.0,
+            "physicsMass": 25.0,
+            "valueMin": 250,
+            "valueMax": 700,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.6220000386238098,
+                "y": 1.1115000247955323,
+                "z": 0.5249999761581421
+            },
+            "meshTrianglesPerLod": [
+                672,
+                440,
+                180
+            ]
+        },
+        {
+            "id": "hydraulic_jack",
+            "name": "Hydraulic Jack",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/hydraulic_jack.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/hydraulic_jack.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_hydraulic_jack.prefab",
+            "definitionId": "salvage_hydraulic_jack",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 20.0,
+            "physicsMass": 20.0,
+            "valueMin": 300,
+            "valueMax": 800,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.4150000512599945,
+                "y": 0.7785337567329407,
+                "z": 0.9458484649658203
+            },
+            "meshTrianglesPerLod": [
+                576,
+                356,
+                228
+            ]
+        },
+        {
+            "id": "portable_generator",
+            "name": "Portable Generator",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/portable_generator.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/portable_generator.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_portable_generator.prefab",
+            "definitionId": "salvage_portable_generator",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 70.0,
+            "physicsMass": 70.0,
+            "valueMin": 1800,
+            "valueMax": 4000,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 0.7179999947547913,
+                "y": 0.6190000772476196,
+                "z": 0.5189999938011169
+            },
+            "meshTrianglesPerLod": [
+                708,
+                448,
+                276
+            ]
+        },
+        {
+            "id": "angle_grinder",
+            "name": "Angle Grinder",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/angle_grinder.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/angle_grinder.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_angle_grinder.prefab",
+            "definitionId": "salvage_angle_grinder",
+            "carryClass": "OneHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 3.0,
+            "physicsMass": 3.0,
+            "valueMin": 150,
+            "valueMax": 600,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.21250000596046449,
+                "y": 0.12600001692771913,
+                "z": 0.39193761348724368
+            },
+            "meshTrianglesPerLod": [
+                372,
+                216,
+                108
+            ]
+        },
+        {
+            "id": "tool_chest",
+            "name": "Tool Chest",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/tool_chest.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/tool_chest.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_tool_chest.prefab",
+            "definitionId": "salvage_tool_chest",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 65.0,
+            "physicsMass": 65.0,
+            "valueMin": 1200,
+            "valueMax": 3000,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 1.0124999284744263,
+                "y": 1.0299999713897706,
+                "z": 0.5494999885559082
+            },
+            "meshTrianglesPerLod": [
+                468,
+                280,
+                144
+            ]
+        },
+        {
+            "id": "scaffolding_pipes",
+            "name": "Scaffolding Pipe Bundle",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/scaffolding_pipes.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/scaffolding_pipes.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_scaffolding_pipes.prefab",
+            "definitionId": "salvage_scaffolding_pipes",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 26.0,
+            "physicsMass": 26.0,
+            "valueMin": 500,
+            "valueMax": 1300,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.4300000071525574,
+                "y": 0.2199999988079071,
+                "z": 2.6000001430511476
+            },
+            "meshTrianglesPerLod": [
+                564,
+                384,
+                216
+            ]
+        },
+        {
+            "id": "safety_harness",
+            "name": "Safety Harness",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/safety_harness.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/safety_harness.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_safety_harness.prefab",
+            "definitionId": "salvage_safety_harness",
+            "carryClass": "OneHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 1.0,
+            "physicsMass": 1.0,
+            "valueMin": 90,
+            "valueMax": 250,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.4829643964767456,
+                "y": 0.8559999465942383,
+                "z": 0.054499998688697818
+            },
+            "meshTrianglesPerLod": [
+                300,
+                240,
+                120
+            ]
+        },
+        {
+            "id": "textile_bundle",
+            "name": "Compressed Textile Bundle",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/textile_bundle.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/textile_bundle.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_textile_bundle.prefab",
+            "definitionId": "salvage_textile_bundle",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 8.0,
+            "physicsMass": 8.0,
+            "valueMin": 100,
+            "valueMax": 600,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.7226861715316773,
+                "y": 0.3710000216960907,
+                "z": 0.6029714345932007
+            },
+            "meshTrianglesPerLod": [
+                228,
+                144,
+                96
+            ]
+        },
+        {
+            "id": "tag_detacher",
+            "name": "Security Tag Detacher",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/tag_detacher.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/tag_detacher.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_tag_detacher.prefab",
+            "definitionId": "salvage_tag_detacher",
+            "carryClass": "Pocket",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.4000000059604645,
+            "physicsMass": 0.4000000059604645,
+            "valueMin": 80,
+            "valueMax": 180,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.24819202721118928,
+                "y": 0.08900000154972077,
+                "z": 0.15089282393455506
+            },
+            "meshTrianglesPerLod": [
+                372
+            ]
+        },
+        {
+            "id": "floor_safe",
+            "name": "Floor Safe",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/floor_safe.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/floor_safe.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_floor_safe.prefab",
+            "definitionId": "salvage_floor_safe",
+            "carryClass": "Huge",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 100.0,
+            "physicsMass": 80.0,
+            "valueMin": 3000,
+            "valueMax": 7000,
+            "requiredCarriers": 3,
+            "dimensions": {
+                "x": 0.6000000238418579,
+                "y": 0.7200000286102295,
+                "z": 0.6054999828338623
+            },
+            "meshTrianglesPerLod": [
+                432,
+                196,
+                96
+            ]
+        },
+        {
+            "id": "laundry_bin",
+            "name": "Commercial Laundry Bin",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/laundry_bin.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/laundry_bin.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_laundry_bin.prefab",
+            "definitionId": "salvage_laundry_bin",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 12.0,
+            "physicsMass": 12.0,
+            "valueMin": 100,
+            "valueMax": 350,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.8560000061988831,
+                "y": 0.9399999976158142,
+                "z": 0.6110000014305115
+            },
+            "meshTrianglesPerLod": [
+                468,
+                312,
+                156
+            ]
+        },
+        {
+            "id": "mannequin",
+            "name": "Stripped Display Mannequin",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/mannequin.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/mannequin.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_mannequin.prefab",
+            "definitionId": "salvage_mannequin",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 9.0,
+            "physicsMass": 9.0,
+            "valueMin": 80,
+            "valueMax": 180,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.5940000414848328,
+                "y": 1.8350000381469727,
+                "z": 0.4300000071525574
+            },
+            "meshTrianglesPerLod": [
+                1380,
+                696,
+                468
+            ]
+        },
+        {
+            "id": "garment_rack",
+            "name": "Garment Rack",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/garment_rack.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/garment_rack.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_garment_rack.prefab",
+            "definitionId": "salvage_garment_rack",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 18.0,
+            "physicsMass": 18.0,
+            "valueMin": 100,
+            "valueMax": 400,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 1.320000171661377,
+                "y": 1.6460000276565552,
+                "z": 0.6340000033378601
+            },
+            "meshTrianglesPerLod": [
+                1248,
+                576,
+                240
+            ]
+        },
+        {
+            "id": "cashwrap_counter",
+            "name": "Cash-wrap Counter",
+            "category": "Furniture",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/cashwrap_counter.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/cashwrap_counter.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_cashwrap_counter.prefab",
+            "definitionId": "salvage_cashwrap_counter",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 80.0,
+            "physicsMass": 80.0,
+            "valueMin": 700,
+            "valueMax": 1800,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 1.7999999523162842,
+                "y": 1.1209999322891236,
+                "z": 1.1549999713897706
+            },
+            "meshTrianglesPerLod": [
+                156,
+                120,
+                84
+            ]
+        },
+        {
+            "id": "shipping_pallet",
+            "name": "Heavy Wooden Shipping Pallet",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/shipping_pallet.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/shipping_pallet.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_shipping_pallet.prefab",
+            "definitionId": "salvage_shipping_pallet",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 25.0,
+            "physicsMass": 25.0,
+            "valueMin": 50,
+            "valueMax": 100,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 1.2400000095367432,
+                "y": 0.15000000596046449,
+                "z": 1.0
+            },
+            "meshTrianglesPerLod": [
+                300,
+                204,
+                204
+            ]
+        },
+        {
+            "id": "industrial_dumpster",
+            "name": "Industrial Dumpster",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/industrial_dumpster.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/industrial_dumpster.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_industrial_dumpster.prefab",
+            "definitionId": "salvage_industrial_dumpster",
+            "carryClass": "Huge",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 220.0,
+            "physicsMass": 80.0,
+            "valueMin": 500,
+            "valueMax": 1200,
+            "requiredCarriers": 3,
+            "dimensions": {
+                "x": 2.7099997997283937,
+                "y": 2.105914354324341,
+                "z": 1.6099998950958253
+            },
+            "meshTrianglesPerLod": [
+                312,
+                216,
+                132
+            ]
+        },
+        {
+            "id": "pallet_jack",
+            "name": "Hydraulic Pallet Jack",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/pallet_jack.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/pallet_jack.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_pallet_jack.prefab",
+            "definitionId": "salvage_pallet_jack",
+            "carryClass": "Heavy",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 70.0,
+            "physicsMass": 70.0,
+            "valueMin": 800,
+            "valueMax": 1500,
+            "requiredCarriers": 2,
+            "dimensions": {
+                "x": 0.6200000047683716,
+                "y": 1.2090001106262208,
+                "z": 1.6089999675750733
+            },
+            "meshTrianglesPerLod": [
+                480,
+                292,
+                228
+            ]
+        },
+        {
+            "id": "cargo_crate",
+            "name": "Labeled Cargo Crate",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/cargo_crate.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/cargo_crate.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_cargo_crate.prefab",
+            "definitionId": "salvage_cargo_crate",
+            "carryClass": "TwoHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 35.0,
+            "physicsMass": 35.0,
+            "valueMin": 200,
+            "valueMax": 500,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 1.1299999952316285,
+                "y": 1.1150000095367432,
+                "z": 0.9290000200271606
+            },
+            "meshTrianglesPerLod": [
+                204,
+                156,
+                120
+            ]
+        },
+        {
+            "id": "plastic_sorting_crate",
+            "name": "Plastic Classification Crate",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/plastic_sorting_crate.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/plastic_sorting_crate.prefab",
+            "lootPrefabPath": "Assets/_Project/Prefabs/Loot/Loot_salvage_plastic_sorting_crate.prefab",
+            "definitionId": "salvage_plastic_sorting_crate",
+            "carryClass": "OneHand",
+            "hasRecoverableVariant": true,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 2.0,
+            "physicsMass": 2.0,
+            "valueMin": 50,
+            "valueMax": 80,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.6200000047683716,
+                "y": 0.3199999928474426,
+                "z": 0.4440000057220459
+            },
+            "meshTrianglesPerLod": [
+                288,
+                144,
+                108
+            ]
+        },
+        {
+            "id": "work_floodlight",
+            "name": "Mobile Work Floodlight",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/work_floodlight.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/work_floodlight.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.9900000691413879,
+                "y": 2.3448596000671388,
+                "z": 0.8766109943389893
+            },
+            "meshTrianglesPerLod": [
+                420,
+                232,
+                168
+            ]
+        },
+        {
+            "id": "generator_hub",
+            "name": "Crew Generator Hub",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/generator_hub.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/generator_hub.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 1.8799999952316285,
+                "y": 1.2000000476837159,
+                "z": 1.5640363693237305
+            },
+            "meshTrianglesPerLod": [
+                644,
+                280,
+                72
+            ]
+        },
+        {
+            "id": "demolition_fence",
+            "name": "Temporary Demolition Fence",
+            "category": "Hardware",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/demolition_fence.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/demolition_fence.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 2.3600001335144045,
+                "y": 1.814000129699707,
+                "z": 0.5299999713897705
+            },
+            "meshTrianglesPerLod": [
+                1332,
+                692,
+                144
+            ]
+        },
+        {
+            "id": "orange_netting",
+            "name": "Orange Safety Netting",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/orange_netting.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/orange_netting.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 2.56000018119812,
+                "y": 1.2640001773834229,
+                "z": 0.5299999713897705
+            },
+            "meshTrianglesPerLod": [
+                1464,
+                656,
+                144
+            ]
+        },
+        {
+            "id": "dust_sheet",
+            "name": "Heavy Dust Sheet",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/dust_sheet.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/dust_sheet.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 2.4976301193237306,
+                "y": 2.148495674133301,
+                "z": 0.5155836343765259
+            },
+            "meshTrianglesPerLod": [
+                276,
+                144,
+                96
+            ]
+        },
+        {
+            "id": "exposed_partition",
+            "name": "Exposed Drywall Partition",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/exposed_partition.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/exposed_partition.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 2.390000104904175,
+                "y": 2.3855488300323488,
+                "z": 0.4418709874153137
+            },
+            "meshTrianglesPerLod": [
+                264,
+                196,
+                120
+            ]
+        },
+        {
+            "id": "cable_bundle",
+            "name": "Zip-tied Power Cable Bundle",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/cable_bundle.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/cable_bundle.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.30579519271850588,
+                "y": 0.05650000274181366,
+                "z": 1.5355099439620972
+            },
+            "meshTrianglesPerLod": [
+                540,
+                312,
+                144
+            ]
+        },
+        {
+            "id": "salvage_tag",
+            "name": "Salvage Status Tag",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/salvage_tag.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/salvage_tag.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.5899999737739563,
+                "y": 0.41856592893600466,
+                "z": 0.016500018537044526
+            },
+            "meshTrianglesPerLod": [
+                48
+            ]
+        },
+        {
+            "id": "tire_track",
+            "name": "Forklift Tire Track",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/tire_track.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/tire_track.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.20148204267024995,
+                "y": 0.001999999862164259,
+                "z": 1.9798991680145264
+            },
+            "meshTrianglesPerLod": [
+                528
+            ]
+        },
+        {
+            "id": "broken_glass",
+            "name": "Broken Display Glass",
+            "category": "Material",
+            "modelPath": "Assets/_Project/Art/Generated/Salvage0155/Models/broken_glass.prefab",
+            "dressingPrefabPath": "Assets/_Project/Prefabs/SalvageDressing/broken_glass.prefab",
+            "lootPrefabPath": "",
+            "definitionId": "",
+            "carryClass": "Static dressing",
+            "hasRecoverableVariant": false,
+            "dressingHasRigidbody": false,
+            "gameplayWeight": 0.0,
+            "physicsMass": 0.0,
+            "valueMin": 0,
+            "valueMax": 0,
+            "requiredCarriers": 0,
+            "dimensions": {
+                "x": 0.7476756572723389,
+                "y": 0.00800000037997961,
+                "z": 0.626242458820343
+            },
+            "meshTrianglesPerLod": [
+                144
+            ]
+        }
+    ]
+}

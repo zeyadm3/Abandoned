@@ -45,6 +45,7 @@ namespace Abandoned.EditorTools
             mall.gameObject.AddComponent<BuildingInteriorAtmosphere>().EditorSetup(BuildingBounds);
 
             MallGameplayData.Apply();
+            ThreatPressure0156.Apply();
             int tiles = MallFloorBuilder.Build(Group(TilesGroup, mall));
             Transform flights = Group(FlightsGroup, mall);
             foreach (Flight flight in AllFlights) MallFlights.Build(flight, flights);
@@ -53,18 +54,26 @@ namespace Abandoned.EditorTools
             MallExteriorBuilder.Build(mall);
             MallExteriorBuilder.Exits(mall);
             MallPopulator.Populate(mall, authorLoot: false);
+            ThreatPressure0156.AuthorSpawns(mall);
             MeridianDressingCeilings.Place(mall, Group("MallCeilings", mall));
             MeridianTenantInteriors.Build(mall);
             MeridianMallCourt.Build(mall);
+            SalvageMallDressing.DryFountain(mall);
             MeridianMountainHorizon.Build(mall);
+            SalvageMallAtmosphere.ConfigurePreset();
             MeridianAtmosphere.Apply(mall);
             int fixtures = MeridianLighting.Place(mall);
             MeridianMallCourt.LightColors(mall);
+            SalvageMallAtmosphere.Build(mall);
 
             // Author collision around the fitted rooms before choosing open pockets for loot.
             var routes = new MallRouteClearance(mall);
             SolidObjectsPass.Apply(mall, "Mall", routes.Conflict);
-            MallLootPoints.Place(mall.Find("LootPoints"));
+            int lootPoints = SalvageMallLootPoints.Place(mall.Find("LootPoints"));
+            SalvageMallDensity.Build(mall);
+            MallExpansion0156.Build(mall);
+            SalvagePickables0157.Author();
+            SalvageLootPlacement0157.Build(mall);
             MallSurfaceBuilder.Assign(mall);
             BakeNavMesh(mall);
             MallShutters.Place(mall);
@@ -78,7 +87,7 @@ namespace Abandoned.EditorTools
             if (!OcclusionBake.Bake()) throw new InvalidOperationException("Unity could not author occlusion data for the rebuilt mall.");
             AssetDatabase.SaveAssets();
             if (!EditorSceneManager.SaveScene(scene, ScenePath)) throw new InvalidOperationException("Unity could not save the rebuilt mall.");
-            Debug.Log($"[Mall015Rebuild] Saved a new two-storey mall and parking court ({tiles} slabs, {fixtures} fixtures), one main entrance, adjacent arrival/collection vehicles, preserved district and mountain horizon.");
+            Debug.Log($"[Mall0155] Authored salvage mall ({tiles} slabs, {fixtures} mains fixtures, {lootPoints} loot pads), five salvage zones and two-floor Nordic Habitat, preserved district and mountain horizon.");
         }
 
         public static string TileName(Vector2Int cell, int floor) => $"{(IsWalkwayTile(cell, floor) ? "Walk" : "Floor")}_{floor}_{cell.x}_{cell.y}";

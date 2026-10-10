@@ -12,13 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3940f635f96b34a15b8b8a6e7b07cd0f, type: 3}
   m_Name: ThreatPacingConfig
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Threats.ThreatPacingConfig
-  <OpeningDelay>k__BackingField: 25
-  <ArrivalInterval>k__BackingField: {x: 90, y: 150}
-  <BaseAlive>k__BackingField: 3
+  <OpeningDelay>k__BackingField: 12
+  <OpeningCount>k__BackingField: 2
+  <SpawnRetry>k__BackingField: 3
+  <OpeningStagger>k__BackingField: 4
+  <ArrivalInterval>k__BackingField: {x: 28, y: 42}
+  <BaseAlive>k__BackingField: 4
   <PerPlayer>k__BackingField: 1
-  <MaxAlive>k__BackingField: 8
-  <DriftAfter>k__BackingField: 60
-  <DriftRange>k__BackingField: 30
-  <DriftScatter>k__BackingField: 15
-  <RelocateDistance>k__BackingField: 45
-  <RelocateAfter>k__BackingField: 120
+  <MaxAlive>k__BackingField: 10
+  <DriftAfter>k__BackingField: 10
+  <DriftRange>k__BackingField: 16
+  <DriftScatter>k__BackingField: 9
+  <RelocateDistance>k__BackingField: 34
+  <RelocateAfter>k__BackingField: 55
+  <LevelGapScale>k__BackingField:
+  - 1.15
+  - 1
+  - 0.75
+  <LevelOpeningScale>k__BackingField:
+  - 1.2
+  - 1
+  - 0.75
+  <LevelAliveBonus>k__BackingField: ffffffff0000000001000000
+  <LevelOpeningExtras>k__BackingField: 000000000100000002000000
+  <LevelDamageScale>k__BackingField:
+  - 0.9
+  - 1.1
+  - 1.25
+  <LowSparesLethalOpener>k__BackingField: 1
+  <FirstJobOpeningDelay>k__BackingField: 20

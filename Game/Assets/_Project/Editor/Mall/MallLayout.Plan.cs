@@ -30,10 +30,10 @@ namespace Abandoned.EditorTools
                 new Zone("EntryPromenade","concourse",Kind.Concourse,6,0,2,3,"MERIDIAN COURT"),
                 new Zone("RearPromenade","concourse",Kind.Concourse,0,8,11,1,"FOOD COURT"),
                 new Zone("FoodCourt","food",Kind.Concourse,0,9,11,3,"FOOD COURT"),
-                new Zone("DeadCircuit","electronics",Kind.Store,0,0,6,4,"DEAD CIRCUIT"),
-                new Zone("Threadbare","clothing",Kind.Store,0,4,4,4,"THREADBARE"),
-                new Zone("Jewelry","jewelry",Kind.Store,8,0,6,4,"JEWELLERS"),
-                new Zone("Security","office",Kind.Store,10,4,4,4,"MALL SECURITY"),
+                new Zone("DeadCircuit","electronics",Kind.Store,0,0,6,4,"APEX CIRCUIT"),
+                new Zone("Threadbare","clothing",Kind.Store,0,4,4,4,"VOGUE THREAD"),
+                new Zone("Jewelry","furniture",Kind.Store,8,0,6,4,"NORDIC HABITAT"),
+                new Zone("Security","hardware",Kind.Store,10,4,4,4,"TITAN TOOLS"),
             },
             new[] {
                 new Zone("ServiceCore","stock",Kind.Concourse,11,8,3,4,"SERVICE"),
@@ -42,8 +42,8 @@ namespace Abandoned.EditorTools
                 new Zone("RearGallery","concourse",Kind.Concourse,0,8,11,1,"DINING TERRACE"),
                 new Zone("FoodTerrace","food",Kind.Concourse,0,9,11,3,"DINING TERRACE"),
                 new Zone("Cinema","cinema",Kind.Store,0,0,6,4,"CINEMA"),
-                new Zone("Furniture","furniture",Kind.Store,0,4,4,4,"HOME"),
-                new Zone("Offices","office",Kind.Store,8,0,6,4,"MERIDIAN MANAGEMENT"),
+                new Zone("Furniture","office",Kind.Store,0,4,4,4,"CLOSED OFFICES"),
+                new Zone("Offices","furniture",Kind.Store,8,0,6,4,"NORDIC HABITAT"),
                 new Zone("ToyArchive","toys",Kind.Store,10,4,4,4,"TOY ARCHIVE"),
             }
         };

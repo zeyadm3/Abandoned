@@ -16,6 +16,8 @@ namespace Abandoned.Structure
         private Renderer[] renderers;
         private Collider[] colliders;
         private LightFixture[] fixtures;
+        private SalvageWorkLight[] workLights;
+        private SalvageGeneratorAudio[] generators;
 
         public StructuralSection Section => section;
 
@@ -24,6 +26,8 @@ namespace Abandoned.Structure
             renderers = GetComponentsInChildren<Renderer>(true);
             colliders = GetComponentsInChildren<Collider>(true);
             fixtures = GetComponentsInChildren<LightFixture>(true);
+            workLights = GetComponentsInChildren<SalvageWorkLight>(true);
+            generators = GetComponentsInChildren<SalvageGeneratorAudio>(true);
         }
 
         private void OnEnable()
@@ -50,6 +54,8 @@ namespace Abandoned.Structure
             foreach (Renderer r in renderers) r.enabled = visible;
             foreach (Collider c in colliders) c.enabled = visible;
             foreach (LightFixture f in fixtures) f.SetAttached(visible);
+            foreach (SalvageWorkLight light in workLights) light.SetAttached(visible);
+            foreach (SalvageGeneratorAudio generator in generators) generator.SetAttached(visible);
         }
 
 #if UNITY_EDITOR

@@ -4,6 +4,126 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.15.7b.EEA: collection truck replacement (2026-10-10; saved, user tests)
+
+The user rejected the earlier truck appearance. The replacement rebuilds its cab with formed curved
+panels, real wheel openings, a hollow glazed interior and properly framed doors, mirrors and lamps.
+New continuous tyre/rim meshes, fitted running gear, continuous box panels and restrained PBR wear
+replace the former visual treatment. Three distance LODs and saved material batches remain.
+
+The old 0.40 m deck sat below the 0.96 m tyre top. Cargo body geometry now rises 0.65 m to a 1.05 m
+deck and 3.40 m box roof, retaining cargo dimensions/capacity. The 4.4 m loading ramp, trigger,
+display, ignition, lights, collision and rear hinges are refitted. A small upper-right rear-view
+monitor uses a camera above the box. Existing pickup additions, mall density, stronger threats,
+authoritative cargo and payout remain. The scene and its occlusion data were saved through Unity.
+Mac (421 MB) and Windows (400 MB) players were built as 0.15.7b.EEA with one shared stamp. No tests,
+gameplay runs, QA renders, optional signature inspection or verification were performed; the user
+reviews afterward. Menu: **Tools > Abandoned > Mall > Replace Collection Truck (0.15.7b)**.
+Details: `Docs/TRUCK_REDO_0.15.7b.md`. The truck portion of the 0.15.7 notes is superseded.
+
+## 0.15.7.EEA: more pickable salvage and realistic collection truck (2026-10-10; user tests)
+
+The user requested more actual recoverable objects and realistic collection-truck art. Sixteen
+appropriate 0.15.6 prop families receive registered networked loot definitions/prefabs with dynamic
+collision, existing authoritative pickup/value/physics, focus outlines and shared carrying where
+appropriate. Additional fitted stock pockets extend the saved mall and ordinary fill rises from
+60% to 82%, retaining the existing featured/jackpot rolls, contract modifiers and 0.15.6 threats.
+
+The functional saved truck receives detailed original commercial art around its existing cargo,
+ramp, screen, ignition, ride zone and floodlight setup. Authored rear hinges close during departure
+and reopen on cancellation; headlights align with the front lenses. Both systems are retained by
+the full mall builder on regeneration. Menu: **Tools > Abandoned > Mall > More Pickups and Collection
+Truck (0.15.7)**. Batch: `Abandoned.EditorTools.SalvageRelease0157.AuthorAndBuildPlayersAndExit`.
+Details: `Docs/PICKUPS_AND_TRUCK_0.15.7.md`. User tests and verification remain pending.
+
+Saved through Unity: all 16 additional pickup definitions/prefabs and network registration,
+110 added fitted stock pockets (200 total markers), 82% ordinary fill and the detailed truck with
+three saved body/door LODs. The original cargo/extraction references and earlier scene layers remain.
+Mac (413 MB) and Windows (392 MB) shareable players were produced as 0.15.7.EEA with one shared stamp;
+archives are under `~/Documents/Abandoned-builds/dev`. A category/type naming conflict found during
+the initial compile was corrected before authoring. No tests, gameplay, screenshots or QA verification
+were run; the user performs the next review.
+
+## 0.15.6.EEA: active threats and further salvage construction (2026-10-10; user tests)
+
+The user reported very sparse, ineffective monsters during runs. This pass increases early and
+sustained population, adds fair reachable spawn coverage and short failure retries, and fixes patrol
+destination churn, unreachable wander goals, stalled stalking through walls and self-obstructed attack
+and hearing queries. Host-authoritative contact damage and creature escape rules remain; authored
+spawn warnings delay attacks while new monsters approach. Additive original prop families and more
+surrounding buildings extend the saved mall without replacing the approved layout or earlier density.
+
+Authoring menu: **Tools > Abandoned > Mall > Finish Threat and Content Update (0.15.6)**. Batch entry:
+`Abandoned.EditorTools.SalvageRelease0156.AuthorAndBuildPlayersAndExit`. The full mall builder retains
+the additions on regeneration. Content bakes and shareable Mac/Windows players are construction;
+tests and verification remain the user's responsibility. The running game is left intact and the
+update takes effect when the new player launches. Details: `Docs/THREAT_AND_CONTENT_0.15.6.md`.
+
+Saved through Unity: 30 additional threat marker candidates; opening waves of 2/3/4, first job 20 s,
+later arrivals 28–42 s before contract scaling, solo caps 4/5/6 and authored 15 s attack warnings. Eighteen
+new original three-LOD dressing families yielded 134 additional placements in 62 section batches;
+14 additional estate buildings/compounds retain the earlier saved scene content. Final Mac (408 MB)
+and Windows (388 MB) shareable players were produced as 0.15.6.EEA with a common stamp; archives are
+under `~/Documents/Abandoned-builds/dev`. Unity raised a patrol-path field-initializer error during
+the first construction pass; initialization was moved to Awake and both final players rebuilt.
+No tests, gameplay, screenshots or QA verification were run.
+
+## 0.15.5b.EEA: denser salvage stock and dismantled fittings (2026-10-10; user tests)
+
+The user found the mall too empty and requested a fuller 0.15.5b. An additive `_SALVAGE_DENSITY` layer
+fills shelves, work surfaces, recovery bays and staging stacks across all five zones and both Nordic
+Habitat floors. It reuses the 45 original assets and materials, retaining the approved mall, district,
+HQ, circulation, lighting and existing authoritative loot economy. New floor-standing fittings use
+simple collision; surface stock and thin packing/drywall remnants avoid minor-debris locomotion snags.
+
+Additional art is combined into saved material/LOD meshes per supporting structural section. This keeps
+collapse behavior and avoids separate mesh draws for every packing fragment. The new authoring menu
+**Tools > Abandoned > Mall > Fill Salvage Mall (0.15.5b)** replaces only the additive layer in the saved
+scene, then authors navigation/culling. The full mall builder retains this density pass on regeneration.
+Batch entry: `Abandoned.EditorTools.SalvageMallDensity.AuthorAndBuildPlayersAndExit`. Saved through Unity:
+366 additional stock props and 1,165 packing/demolition details in 132 section render batches, updated
+Mall scene, navigation and culling data. Mac (402 MB) and Windows (382 MB) shareable players were produced
+as 0.15.5b.EEA with a shared build stamp; archives are under `~/Documents/Abandoned-builds/dev`.
+Tests, QA verification and screenshots remain unrun at the user's request.
+Details: `Docs/SALVAGE_DENSITY_0.15.5b.md`.
+
+## 0.15.5.EEA: five-zone salvage mall asset production (2026-10-10; user tests)
+
+The user requested the comprehensive per-item production breakdown and immediate construction of the
+entire salvage mall set for 0.15.5. The breakdown is `Docs/SALVAGE_ASSET_BREAKDOWN_0.15.5.md`: 45 distinct
+items across tech, furniture, hardware, apparel and central clearance operations. Every entry includes
+category, triangle/LOD budget, PBR channels and wear, prefab physics/interaction sockets, and a standalone
+isometric concept prompt. Budgets are estimates; AI concepts are prompts, not generated images or meshes.
+
+Original code-authored low-poly models, saved combined meshes, 16 reusable worn PBR finishes with four
+512 px maps each, 45 static dressing prefabs and 35 networked recoverable variants are authored by
+`Editor/Salvage/SalvageAssetBuilder`. Construction data and effective item tuning are recorded in
+`Art/Generated/Salvage0155/SalvageManifest.json`. Existing loot authority, value, damage, pickup, physics
+ownership and shared carrying remain in use. Generated loot receives category metadata, compound
+collision proxies, carry/highlight sockets and the collider-free gold focus outline. New marker facing
+is explicit; existing scatter points retain seeded random yaw.
+
+Nordic Habitat occupies both aligned front-right floors. Heavy furniture is downstairs; the upper
+department has office sets and samples. Closed administration moves to the west upper furniture bay.
+Other upper tenants, food court, service basement, structure, front-only entrance/extraction, approved
+surrounding district and HQ remain. Fixed dressing follows its supporting structural section on collapse;
+independent work lamps and generator audio also detach when that support collapses.
+
+Scene dressing includes broken/empty tech cases, interrupted flat-pack assembly, tool-crib fencing,
+overturned apparel fixtures, classification crates, a dry scrap fountain, exposed framing, sheets,
+orange netting, ground-floor forklift tracks and routed cables. Remaining retail power is mostly dead;
+steady clearance lamps share the existing shadow-map budget. Amber battery guides, URP fog, bounded
+local dust and translucent beams provide atmosphere. Tune `SalvagePresentationConfig.asset`.
+
+Authoring menu: **Tools > Abandoned > Mall > Build Salvage Content (0.15.5)**. Batch entry point:
+`Abandoned.EditorTools.SalvageMallAuthoring.AuthorAndBuildPlayersAndExit`. This builds content plus Mac
+and Windows players without invoking the testing/audit wrappers or optional signature inspection.
+Saved through Unity: the 45-family asset library and generated prefabs/definitions, Mall scene with
+324 structural slabs and 90 authored loot markers, navigation and culling data. Mac (366 MB) and
+Windows (346 MB) shareable players were produced as 0.15.5.EEA with one common build stamp; packaged
+archives are under `~/Documents/Abandoned-builds/dev`. No EditMode/PlayMode tests, network tests,
+screenshots, gameplay runs or QA verification have been performed; the user will do them.
+
 ## 0.15.0.EEA: mall and parking rebuilt from scratch (2026-10-09; user tests)
 
 The user rejected the first mall pass and requested a complete replacement of the building and

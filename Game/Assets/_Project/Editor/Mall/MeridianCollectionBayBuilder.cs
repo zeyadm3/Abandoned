@@ -32,7 +32,7 @@ namespace Abandoned.EditorTools
             apronSize.x = ApproachWidth + .6f;
             apron.localScale = apronSize;
             Vector3 rampSize = ramp.localScale;
-            rampSize.x = ApproachWidth;
+            rampSize.x = TruckBuilder.BayWidth;
             ramp.localScale = rampSize;
             ramp.GetComponent<Renderer>().sharedMaterial = MeridianArt.Material("Metal");
             apron.GetComponent<Renderer>().sharedMaterial = MeridianArt.Material("Concrete");
@@ -95,13 +95,9 @@ namespace Abandoned.EditorTools
         {
             Vector3 rear = truck.TransformPoint(new Vector3(0f, 0f, -TruckBuilder.BayLength * .5f));
             rear.y = 0f;
-            Vector3 front = -truck.forward, right = truck.right;
-            Material steel = MeridianArt.Material("EscalatorSteel");
-            foreach (float side in new[] { -1f, 1f })
-                Box("TailgateSignBracket", group, group.InverseTransformPoint(rear + front * .12f + right * (side * 1.26f) + Vector3.up * 2.94f),
-                    new Vector3(.06f, .68f, .06f), Quaternion.identity, steel);
-            Sign(group, group.InverseTransformPoint(rear + front * .08f + Vector3.up * 3.05f), front,
-                "COLLECTION", TruckBuilder.BayWidth, .32f, ink, ivory);
+            Vector3 front = -truck.forward;
+            Sign(group, group.InverseTransformPoint(rear + front * .18f + Vector3.up * 3.28f), front,
+                "COLLECTION", 1.2f, .12f, ink, ivory);
         }
 
         private static void Sign(Transform group, Vector3 position, Vector3 front, string text, float width, float height,

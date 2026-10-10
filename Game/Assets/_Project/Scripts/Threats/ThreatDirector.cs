@@ -6,10 +6,7 @@ using UnityEngine;
 
 namespace Abandoned.Threats
 {
-    /// <summary>
-    /// Seeded host roster: an opening arrival, danger tier arrivals, steady timed arrivals for the whole job
-    /// (<see cref="ThreatPacingConfig"/>) up to a crew-sized cap, and a separately gated final creature.
-    /// </summary>
+    /// <summary>Host roster with staggered opening waves, steady replenishment and hidden connected placement.</summary>
     public class ThreatDirector : MonoBehaviour
     {
         [SerializeField] private NetworkBootstrap bootstrap;
@@ -17,13 +14,15 @@ namespace Abandoned.Threats
         [SerializeField] private NetworkObject[] roster = System.Array.Empty<NetworkObject>();
         [SerializeField] private float[] openingWeights = System.Array.Empty<float>();
         [SerializeField] private ThreatCatalog catalog;
-        [Tooltip("A monster never appears closer than this to a living player, nor where one can see the spot (QA B-13).")]
+        [Tooltip("No living player may see a spawn point or be closer than this.")]
         [SerializeField, Min(0f)] private float minSpawnDistance = 14f;
-        private float spawnAt = -1f, nextArrival;
-        private int runSeed, spawnedTier;
+        private float spawnAt = -1f, nextArrival, openingRetryAt;
+        private int runSeed, spawnedTier, openingRemaining = -1;
         private System.Random arrivals = new(1);
         private bool finalSpawned;
+        private ThreatSpawnPoint[] points = System.Array.Empty<ThreatSpawnPoint>();
         public static ThreatDirector Current { get; private set; }
+        public int PlacementRetries { get; private set; }
         public void Setup(NetworkBootstrap networkBootstrap, NetworkObject prefab, NetworkObject[] threats = null, float[] weights = null)
         {
             bootstrap = networkBootstrap; blindOnePrefab = prefab;
@@ -40,14 +39,11 @@ namespace Abandoned.Threats
         {
             Current = this;
             RunDirector.RunStarted += OnRunStarted;
-            // Drift and relocation ride along with every director, so older scenes get them without a rebuild.
             if (!TryGetComponent(out ThreatPacing _)) gameObject.AddComponent<ThreatPacing>();
         }
         private static ThreatPacingConfig Pacing => ThreatPacingConfig.Current;
-        /// <summary>Host: seconds until the next timed arrival (negative before the opening one).</summary>
         public float NextArrivalIn => spawnAt != 0f ? -1f : Mathf.Max(0f, nextArrival - Time.time);
-        /// <summary>Host: monsters (not the final hunter) alive now, and how many the crew size allows.</summary>
-        public int Alive => Threat.All.Count(t => t != null && !(t is LastHunter));
+        public int Alive => Threat.All.Count(t => t != null && t.IsSpawned && t.NetworkManager == Manager && !(t is LastHunter));
         public int AliveCap => Pacing.AliveCap(NetworkPlayer.All.Count(p => p != null && p.NetworkManager == Manager), Level);
         private static int Level => RunState.Current != null ? RunState.Current.Terms.ThreatLevel : 1;
         private void OnDisable() { if (Current == this) Current = null; RunDirector.RunStarted -= OnRunStarted; }
@@ -59,38 +55,57 @@ namespace Abandoned.Threats
             RunState run = RunState.Current;
             if (spawnAt < 0f && run != null && run.IsSpawned) Schedule(run.State.Seed);
             if (run == null || run.State.Phase != RunPhase.Running) return;
-            // The board's THREAT level is real (2026-10-09): how soon, how often, how many and how hard.
             int level = run.Terms.ThreatLevel;
             Threat.ContractDamageScale = Pacing.DamageScale(level);
-            if (spawnAt > 0f && Time.time >= spawnAt + Pacing.OpeningDelayFor(level, run.Terms.FirstJob) - Pacing.OpeningDelay)
+            if (spawnAt > 0f)
             {
-                spawnAt = 0f; Spawn(Opening(runSeed));
-                for (int i = 0; i < run.Terms.ExtraThreats + Pacing.OpeningExtras(level); i++) SpawnExtra();
-                nextArrival = Time.time + Pacing.NextGap(arrivals) * Pacing.GapScale(level);
+                float firstAt = spawnAt + Pacing.OpeningDelayFor(level, run.Terms.FirstJob) - Pacing.OpeningDelay;
+                if (Time.time < firstAt || Time.time < openingRetryAt) return;
+                if (openingRemaining < 0)
+                    openingRemaining = Mathf.Min(AliveCap, Pacing.OpeningCount + run.Terms.ExtraThreats + Pacing.OpeningExtras(level));
+                if (openingRemaining > 0 && Alive < AliveCap)
+                {
+                    Threat opened = Alive == 0 ? Spawn(Opening(runSeed)) : SpawnExtra(true);
+                    if (opened == null) { openingRetryAt = Time.time + Pacing.SpawnRetry; return; }
+                    openingRemaining--;
+                    openingRetryAt = Time.time + Pacing.OpeningStagger;
+                    if (openingRemaining > 0) return;
+                }
+                spawnAt = 0f;
+                nextArrival = Time.time + NextGap();
             }
-            if (spawnAt != 0f) return;
-            // Steady arrivals all job long (the danger tiers stop at the max level; this doesn't).
             if (Time.time >= nextArrival)
             {
-                nextArrival = Time.time + Pacing.NextGap(arrivals) * Pacing.GapScale(level);
-                SpawnExtra();
+                // A blocked point is retried soon; it cannot quietly lose a full arrival interval.
+                bool full = Alive >= AliveCap;
+                Threat arrived = full ? null : SpawnExtra();
+                nextArrival = Time.time + (full || arrived != null ? NextGap() : Pacing.SpawnRetry);
             }
-            while (spawnedTier < run.State.Danger)
+            if (spawnedTier < run.State.Danger && Alive < AliveCap)
             {
-                spawnedTier++;
-                SpawnExtra();
+                // Keep an unlocked wave pending if all fair spots are temporarily blocked.
+                if (Time.time < openingRetryAt) return;
+                Threat arrived = SpawnExtra();
+                openingRetryAt = Time.time + Pacing.SpawnRetry;
+                if (arrived != null) spawnedTier++;
             }
+            else if (Alive >= AliveCap) spawnedTier = run.State.Danger;
         }
+        private float NextGap() => Pacing.NextGap(arrivals) * Pacing.GapScale(Level);
         private void OnRunStarted(int seed)
         {
             if (!IsHost) return;
-            foreach (Threat t in Threat.All.ToList()) if (t != null && t.IsSpawned) t.NetworkObject.Despawn(true);
+            foreach (Threat t in Threat.All.ToList())
+                if (t != null && t.IsSpawned && t.NetworkManager == Manager) t.NetworkObject.Despawn(true);
             Schedule(seed);
         }
         private void Schedule(int seed)
         {
-            runSeed = seed; spawnedTier = 0; finalSpawned = false;
+            runSeed = seed; spawnedTier = 0; finalSpawned = false; openingRemaining = -1;
+            PlacementRetries = 0; openingRetryAt = 0f;
             arrivals = new System.Random(seed ^ 0x51ED);
+            points = FindObjectsByType<ThreatSpawnPoint>(FindObjectsSortMode.None)
+                .Where(p => p.gameObject.scene == gameObject.scene).OrderBy(p => p.name).ToArray();
             spawnAt = Time.time + Pacing.OpeningDelay;
         }
         public int Opening(int seed)
@@ -109,53 +124,51 @@ namespace Abandoned.Threats
             }
             return -1;
         }
-        // A LOW job never opens with a one-touch killer (the Hunter); it can still arrive later.
         private float OpeningWeight(int index)
         {
-            float weight = index < openingWeights.Length ? openingWeights[index] : 0f;
-            bool lethal = catalog != null && index < catalog.Definitions.Length && catalog.Definitions[index] != null && catalog.Definitions[index].LethalContact;
-            return lethal && Level == 0 && Pacing.LowSparesLethalOpener ? 0f : weight;
+            if (roster[index] == null) return 0f;
+            ThreatDefinition definition = DefinitionAt(index);
+            // Every opener can hurt the crew. One-touch killers arrive only after the opening wave.
+            if (definition != null && (definition.LethalContact || definition.Kind == ThreatKind.Collector || definition.FinalOnly)) return 0f;
+            return index < openingWeights.Length ? openingWeights[index] : 0f;
         }
-        public Threat SpawnExtra()
+        public Threat SpawnExtra() => SpawnExtra(false);
+        private Threat SpawnExtra(bool opening)
         {
             if (!IsHost || Alive >= AliveCap) return null;
             int danger = RunState.Current != null ? RunState.Current.State.Danger : 0;
-            int[] candidates = Enumerable.Range(0, roster.Length).Where(i => roster[i] != null && Eligible(i, danger)).ToArray();
+            int[] candidates = Enumerable.Range(0, roster.Length)
+                .Where(i => roster[i] != null && Eligible(i, danger) && (!opening || OpeningWeight(i) > 0f)).ToArray();
             if (candidates.Length == 0) return null;
-            // Newly unlocked silhouettes arrive first, so danger introduces different rules before duplicates.
-            int[] newKinds = candidates.Where(i => !Threat.All.Any(t => t != null && t.GetType() == roster[i].GetComponent<Threat>().GetType())).ToArray();
-            int[] pool = newKinds.Length > 0 ? newKinds : candidates;
-            return Spawn(pool[new System.Random(runSeed + Threat.All.Count * 7919 + spawnedTier).Next(pool.Length)]);
+            int[] novel = candidates.Where(i => !Threat.All.Any(t => t != null && t.IsSpawned && t.GetType() == roster[i].GetComponent<Threat>().GetType())).ToArray();
+            int[] pool = novel.Length > 0 ? novel : candidates;
+            return Spawn(pool[arrivals.Next(pool.Length)]);
         }
+        private ThreatDefinition DefinitionAt(int index) => catalog != null && index < catalog.Definitions.Length ? catalog.Definitions[index] : roster[index].GetComponent<Threat>()?.Definition;
         private bool Eligible(int index, int danger)
         {
-            if (catalog == null || index >= catalog.Definitions.Length) return !(roster[index].GetComponent<Threat>() is LastHunter);
-            ThreatDefinition definition = catalog.Definitions[index];
-            return definition != null && !definition.FinalOnly && definition.MinimumDanger <= danger;
+            ThreatDefinition definition = DefinitionAt(index);
+            if (definition == null) return !(roster[index].GetComponent<Threat>() is LastHunter);
+            if (definition.FinalOnly || definition.MinimumDanger > danger) return false;
+            int count = Threat.All.Count(t => t != null && t.IsSpawned && t.Definition != null && t.Definition.Kind == definition.Kind);
+            // Theft and instant-kill creatures supplement the damaging population; they cannot fill it.
+            int limit = definition.LethalContact || definition.Kind == ThreatKind.Collector || definition.Kind == ThreatKind.Weight ? 1
+                : definition.Kind == ThreatKind.Stalker || definition.Kind == ThreatKind.Thing ? 2 : 3;
+            return count < limit;
         }
-        /// <summary>
-        /// Host: a monster that has been far from everyone for minutes is replaced by the same kind at the
-        /// spawn point nearest the crew that nobody can see and nobody is too close to. Returns the new one.
-        /// </summary>
         public Threat Relocate(Threat threat)
         {
             if (!IsHost || threat == null || !threat.IsSpawned) return null;
             NetworkObject prefab = PrefabOf(threat);
-            if (prefab == null) return null;
-            ThreatSpawnPoint[] points = FindObjectsByType<ThreatSpawnPoint>(FindObjectsSortMode.None).OrderBy(p => p.name).ToArray();
-            Transform at = ChooseNearCrew(points);
-            if (at == null) return null;
-            string from = threat.transform.position.ToString("F0");
+            if (prefab == null || !TryPlacement(prefab, out Vector3 at, out Quaternion facing, out string marker)) return null;
+            string name = threat.DisplayName;
             threat.NetworkObject.Despawn(true);
-            NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at.position, rotation: at.rotation);
-            Debug.Log($"[Threat] The {threat.DisplayName} wandered off ({from}); it comes back at {at.name}.");
-            return spawned.GetComponent<Threat>();
+            NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at, rotation: facing);
+            Debug.Log($"[Threat] The {name} returns near the crew at {marker}.");
+            return spawned != null ? spawned.GetComponent<Threat>() : null;
         }
         private NetworkObject PrefabOf(Threat threat)
         {
-            if (catalog != null && threat.Definition != null)
-                for (int i = 0; i < catalog.Definitions.Length && i < roster.Length; i++)
-                    if (catalog.Definitions[i] == threat.Definition) return roster[i];
             foreach (NetworkObject prefab in roster)
                 if (prefab != null && prefab.GetComponent<Threat>() is Threat t && t.GetType() == threat.GetType()) return prefab;
             return null;
@@ -171,74 +184,27 @@ namespace Abandoned.Threats
         public Threat Spawn(int index) => index >= 0 && index < roster.Length ? Spawn(roster[index]) : null;
         public Threat SpawnOf<T>() where T : Threat
         {
-            foreach (NetworkObject prefab in roster) if (prefab != null && prefab.GetComponent<T>() != null) return Spawn(prefab);
+            foreach (NetworkObject prefab in roster)
+                if (prefab != null && prefab.GetComponent<T>() != null) return Spawn(prefab);
             return null;
+        }
+        private bool TryPlacement(NetworkObject prefab, out Vector3 at, out Quaternion facing, out string marker)
+        {
+            if (points.Length == 0) points = FindObjectsByType<ThreatSpawnPoint>(FindObjectsSortMode.None)
+                .Where(p => p.gameObject.scene == gameObject.scene).OrderBy(p => p.name).ToArray();
+            bool found = ThreatSpawnSelector.Choose(points, prefab, Manager, gameObject.scene, minSpawnDistance, arrivals, out at, out facing, out marker);
+            if (!found) PlacementRetries++;
+            return found;
         }
         private Threat Spawn(NetworkObject prefab)
         {
-            if (!IsHost || prefab == null) return null;
-            ThreatSpawnPoint[] points = FindObjectsByType<ThreatSpawnPoint>(FindObjectsSortMode.None).OrderBy(p => p.name).ToArray();
-            if (points.Length == 0) return null;
-            Transform at = ChooseSpawn(points, (int)((uint)(runSeed + Threat.All.Count) % (uint)points.Length));
-            NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at.position, rotation: at.rotation);
+            if (!IsHost || prefab == null || !TryPlacement(prefab, out Vector3 at, out Quaternion facing, out string marker)) return null;
+            NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at, rotation: facing);
+            if (spawned == null) return null;
             Threat threat = spawned.GetComponent<Threat>();
             if (threat is LastHunter final) final.SetHuntBounds(HuntBounds());
-            Debug.Log($"[Threat] The {threat.DisplayName} appears at {at.name}.");
+            Debug.Log($"[Threat] The {threat.DisplayName} appears at {marker}.");
             return threat;
-        }
-        // From the seeded pick, the first point no living player is near or can see; failing that, the one
-        // farthest from everyone. Same seed and same crew positions give the same choice.
-        private Transform ChooseSpawn(ThreatSpawnPoint[] points, int start)
-        {
-            int walls = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
-            Transform farthest = points[start].transform;
-            float farthestDistance = -1f;
-            for (int k = 0; k < points.Length; k++)
-            {
-                Transform t = points[(start + k) % points.Length].transform;
-                float nearest = float.MaxValue;
-                bool seen = false;
-                foreach (NetworkPlayer p in NetworkPlayer.All)
-                {
-                    if (p == null || p.IsDead || p.NetworkManager != Manager) continue;
-                    Vector3 eye = p.transform.position + Vector3.up * 1.6f;
-                    nearest = Mathf.Min(nearest, Vector3.Distance(eye, t.position));
-                    if (!Physics.Linecast(eye, t.position + Vector3.up * 1.2f, walls, QueryTriggerInteraction.Ignore)) seen = true;
-                }
-                if (nearest >= minSpawnDistance && !seen) return t;
-                if (nearest > farthestDistance) (farthest, farthestDistance) = (t, nearest);
-            }
-            return farthest;
-        }
-
-        // The nearest point to any living player that keeps the usual spawn rules (far enough, unseen).
-        private Transform ChooseNearCrew(ThreatSpawnPoint[] points)
-        {
-            Transform best = null;
-            float bestDistance = float.MaxValue;
-            foreach (ThreatSpawnPoint point in points)
-            {
-                Transform t = point.transform;
-                if (!FairSpot(t, out float nearest) || nearest >= bestDistance) continue;
-                best = t;
-                bestDistance = nearest;
-            }
-            return best;
-        }
-        private bool FairSpot(Transform t, out float nearest)
-        {
-            int walls = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
-            nearest = float.MaxValue;
-            bool any = false;
-            foreach (NetworkPlayer p in NetworkPlayer.All)
-            {
-                if (p == null || p.IsDead || p.NetworkManager != Manager) continue;
-                any = true;
-                Vector3 eye = p.transform.position + Vector3.up * 1.6f;
-                nearest = Mathf.Min(nearest, Vector3.Distance(eye, t.position));
-                if (!Physics.Linecast(eye, t.position + Vector3.up * 1.2f, walls, QueryTriggerInteraction.Ignore)) return false;
-            }
-            return any && nearest >= minSpawnDistance;
         }
         private static Bounds HuntBounds()
         {

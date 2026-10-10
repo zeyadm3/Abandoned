@@ -22,6 +22,10 @@ namespace Abandoned.Extraction
         [SerializeField] private Vector2 bayLamp = new(1.7f, 8f);
         [SerializeField] private Vector3 headlights = new(4f, 17f, 55f);
         [SerializeField, Range(0f, 1f)] private float idleVolume = 0.15f;
+        [SerializeField] private Transform leftRearDoor;
+        [SerializeField] private Transform rightRearDoor;
+        [SerializeField] private float leftClosedYaw;
+        [SerializeField] private float rightClosedYaw;
 
         private SoundLoop idle;
         private TruckCargo truck;
@@ -31,17 +35,19 @@ namespace Abandoned.Extraction
         private Transform doors;
         private Vector3 cameraHome;
         private bool leaving;
+        private Quaternion leftOpenRotation, rightOpenRotation;
 
         private void Awake()
         {
             truck = GetComponent<TruckCargo>();
             idle = GameAudio.Loop(SoundId.EngineIdle, transform, "EngineIdle", spatial: true);
-            AddLight(new Vector3(0f, 2.5f, 0f), new Color(1f, 0.65f, 0.29f), bayLamp.x, bayLamp.y);
-            foreach (float side in new[] { -0.9f, 0.9f })
+            AddLight(new Vector3(0f, 3.15f, 0f), new Color(1f, 0.65f, 0.29f), bayLamp.x, bayLamp.y);
+            foreach (float side in new[] { -0.89f, 0.89f })
             {
-                Light head = AddLight(new Vector3(side, 1.25f, 3.7f), new Color(1f, 0.78f, 0.43f), headlights.x, headlights.y);
+                Light head = AddLight(new Vector3(side, 1.17f, 5.22f), new Color(1f, 0.78f, 0.43f), headlights.x, headlights.y);
                 head.type = LightType.Spot;
                 head.spotAngle = headlights.z;
+                head.transform.localRotation = Quaternion.identity;
             }
             BuildDoors();
             BuildMirror();
@@ -49,9 +55,15 @@ namespace Abandoned.Extraction
 
         private void BuildDoors()
         {
+            if (leftRearDoor != null && rightRearDoor != null)
+            {
+                leftOpenRotation = leftRearDoor.localRotation;
+                rightOpenRotation = rightRearDoor.localRotation;
+                return;
+            }
             doors = new GameObject("DepartureDoors").transform;
             doors.SetParent(transform, false);
-            doors.localPosition = new Vector3(0f, 1.55f, -2.56f);
+            doors.localPosition = new Vector3(0f, 2.15f, -2.56f);
             GameObject panel = GameObject.CreatePrimitive(PrimitiveType.Cube);
             panel.transform.SetParent(doors, false);
             panel.transform.localScale = new Vector3(2.6f, 2.2f, 0.07f);
@@ -59,6 +71,22 @@ namespace Abandoned.Extraction
             if (doorMaterial != null) panel.GetComponent<Renderer>().sharedMaterial = doorMaterial;
             else if (Shader.Find("Universal Render Pipeline/Lit") is Shader lit) panel.GetComponent<Renderer>().material = new Material(lit) { color = new Color(0.18f, 0.2f, 0.18f) };
             doors.gameObject.SetActive(false);
+        }
+
+        private void SetDoorProgress(float progress)
+        {
+            if (leftRearDoor != null && rightRearDoor != null)
+            {
+                leftRearDoor.localRotation = Quaternion.Slerp(leftOpenRotation,
+                    Quaternion.Euler(0f, leftClosedYaw, 0f), progress);
+                rightRearDoor.localRotation = Quaternion.Slerp(rightOpenRotation,
+                    Quaternion.Euler(0f, rightClosedYaw, 0f), progress);
+            }
+            else if (doors != null)
+            {
+                doors.gameObject.SetActive(progress > 0f);
+                doors.localScale = new Vector3(Mathf.Max(0.02f, progress), 1f, 1f);
+            }
         }
 
         private void BuildMirror()
@@ -74,7 +102,7 @@ namespace Abandoned.Extraction
             reflection.Create();
             var cameraObject = new GameObject("RearMirrorCamera");
             cameraObject.transform.SetParent(transform, false);
-            cameraHome = new Vector3(0f, 2.8f, -3.0f);
+            cameraHome = new Vector3(0f, 3.50f, -3.0f);
             cameraObject.transform.localPosition = cameraHome;
             cameraObject.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
             mirrorCamera = cameraObject.AddComponent<Camera>();
@@ -91,8 +119,8 @@ namespace Abandoned.Extraction
             GameObject mirror = GameObject.CreatePrimitive(PrimitiveType.Quad);
             mirror.name = "RearViewMirror";
             mirror.transform.SetParent(transform, false);
-            mirror.transform.localPosition = new Vector3(0f, 2.6f, 2.38f);
-            mirror.transform.localScale = new Vector3(1.1f, 0.55f, 1f);
+            mirror.transform.localPosition = new Vector3(.85f, 2.95f, 2.38f);
+            mirror.transform.localScale = new Vector3(.32f, .16f, 1f);
             Destroy(mirror.GetComponent<Collider>());
             mirrorInstance = new Material(source) { mainTexture = reflection };
             mirror.GetComponent<Renderer>().sharedMaterial = mirrorInstance;
@@ -129,7 +157,7 @@ namespace Abandoned.Extraction
             {
                 leaving = false;
                 idle.Pitch = 1f;
-                doors.gameObject.SetActive(false);
+                SetDoorProgress(0f);
                 if (mirrorCamera != null) mirrorCamera.transform.localPosition = cameraHome;
                 return;
             }
@@ -140,11 +168,19 @@ namespace Abandoned.Extraction
                     leaving = true;
                     GameAudio.Play(SoundId.DoorSlam, transform.position, 0.9f);
                 }
-                doors.gameObject.SetActive(true);
                 float progress = 1f - run.HonkRemaining / 2f;
-                doors.localScale = new Vector3(Mathf.Max(0.02f, progress), 1f, 1f);
+                SetDoorProgress(progress);
                 if (mirrorCamera != null) mirrorCamera.transform.localPosition = cameraHome + Vector3.forward * progress * 8f;
                 idle.Pitch = 1f + progress;
+            }
+            else if (run.State.Phase == RunPhase.Departed) SetDoorProgress(1f);
+            else
+            {
+                // Cancelling departure returns the real hinges to their loading position.
+                leaving = false;
+                SetDoorProgress(0f);
+                idle.Pitch = 1f;
+                if (mirrorCamera != null) mirrorCamera.transform.localPosition = cameraHome;
             }
         }
 
@@ -163,6 +199,14 @@ namespace Abandoned.Extraction
         {
             doorMaterial = doorPanel;
             mirrorMaterial = mirrorSurface;
+        }
+
+        public void EditorSetupRearDoors(Transform left, Transform right, float leftYaw = 0f, float rightYaw = 0f)
+        {
+            leftRearDoor = left;
+            rightRearDoor = right;
+            leftClosedYaw = leftYaw;
+            rightClosedYaw = rightYaw;
         }
 #endif
     }

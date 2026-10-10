@@ -110,6 +110,7 @@ namespace Abandoned.EditorTools
             Set(networkLoot, "networkTransform", networkTransform);
             if (shared) root.AddComponent<NetworkSharedCarry>();
 
+            SalvageLootPrefabBuilder.Apply(root, definition);
             SetLayerRecursively(root, GameLayers.LootLayer);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPathFor(definition));
             Object.DestroyImmediate(root);

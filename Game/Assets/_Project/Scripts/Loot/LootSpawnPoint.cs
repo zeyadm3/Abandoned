@@ -18,19 +18,22 @@ namespace Abandoned.Loot
         [SerializeField] private string[] allowedDefinitionIds = System.Array.Empty<string>();
         [Tooltip("Shares the limited featured-site roll with jackpots, without changing the item's Jackpot flag.")]
         [SerializeField] private bool featured;
+        [Tooltip("Use this marker's authored rotation for wall-aligned salvage and long furniture.")]
+        [SerializeField] private bool useAuthoredRotation;
 
         public string Tag => spawnTag;
         public CarryClass MinClass => minClass;
         public CarryClass MaxClass => maxClass;
         public bool IsJackpot => jackpot;
         public bool IsFeatured => featured;
+        public bool UseAuthoredRotation => useAuthoredRotation;
 
         public bool Fits(LootDefinition d) =>
             d != null && d.Jackpot == jackpot && d.CarryClass >= minClass && d.CarryClass <= maxClass && d.HasSpawnTag(spawnTag)
             && (allowedDefinitionIds == null || allowedDefinitionIds.Length == 0 || System.Array.IndexOf(allowedDefinitionIds, d.Id) >= 0);
 
         public void EditorSetup(string spawnTagValue, CarryClass min, CarryClass max, bool isJackpot,
-            string[] allowedIds = null, bool isFeatured = false)
+            string[] allowedIds = null, bool isFeatured = false, bool useRotation = false)
         {
             spawnTag = spawnTagValue;
             minClass = min;
@@ -38,6 +41,7 @@ namespace Abandoned.Loot
             jackpot = isJackpot;
             allowedDefinitionIds = allowedIds ?? System.Array.Empty<string>();
             featured = isFeatured;
+            useAuthoredRotation = useRotation;
         }
 
         private void OnDrawGizmos()

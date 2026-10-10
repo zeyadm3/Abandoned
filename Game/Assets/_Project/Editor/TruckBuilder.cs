@@ -6,13 +6,13 @@ using static Abandoned.EditorTools.GreyboxFactory;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// The company truck (GDD 10), greybox: an open-backed cargo bay with a ramp at the rear, a cab at
-    /// the front, the ignition lever on the bay's front wall, a cargo trigger and the ride-along zone.
+    /// The company truck (GDD 10): a functional loading bay with original commercial truck art,
+    /// ignition on the bulkhead, a cargo trigger and the ride-along zone.
     /// Local +z runs from the rear (ramp) to the cab.
     /// </summary>
     public static class TruckBuilder
     {
-        public const float BayLength = 5f, BayWidth = 2.6f, FloorHeight = 0.4f, WallHeight = 2.2f, RampLength = 2f;
+        public const float BayLength = 5f, BayWidth = 2.6f, FloorHeight = 1.05f, WallHeight = 2.2f, RampLength = 4.4f;
 
         public static TruckCargo Build(Transform parent, Vector3 rearCenter, Vector3 forward)
         {
@@ -60,6 +60,7 @@ namespace Abandoned.EditorTools
             root.gameObject.AddComponent<TruckSanctuary>().EditorSetup(GetMaterial("Greybox_TruckDoors", new Color(0.18f, 0.2f, 0.18f)), TruckMirrorMaterial());
             cargo.EditorSetup(trigger, new Bounds(new Vector3(0f, 1.5f, 1f), new Vector3(BayWidth + 0.6f, 3.5f, BayLength + 3f)), ignition.transform);
             foreach (Transform piece in root) piece.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
+            CollectionTruck0157.Upgrade(root);
             return cargo;
         }
 

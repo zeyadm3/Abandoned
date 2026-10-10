@@ -98,6 +98,8 @@ namespace Abandoned.Structure
                 if (fixture != null && fixture.Lit) Consider(fixture.Lamp, eye, config);
             foreach (ShadowBudgetLight extra in ShadowBudgetLight.All)
                 if (extra != null && extra.Lamp != null && extra.Lamp.enabled) Consider(extra.Lamp, eye, config);
+            foreach (SalvageWorkLight work in SalvageWorkLight.All)
+                if (work != null && work.Lit) Consider(work.Lamp, eye, config);
             candidates.Sort((a, b) => a.Score.CompareTo(b.Score));
 
             foreach (Casting c in casting) c.Wanted = false;
@@ -229,8 +231,11 @@ namespace Abandoned.Structure
         private static void Unblock(Light light)
         {
             var fixture = light.GetComponentInParent<LightFixture>();
-            if (fixture == null) return;
-            foreach (Renderer renderer in fixture.GetComponentsInChildren<Renderer>(true))
+            var work = light.GetComponent<SalvageWorkLight>();
+            Transform housing = fixture != null ? fixture.transform
+                : work != null ? (work.Housing != null ? work.Housing : light.transform.parent) : null;
+            if (housing == null) return;
+            foreach (Renderer renderer in housing.GetComponentsInChildren<Renderer>(true))
                 if (renderer.shadowCastingMode == ShadowCastingMode.On) renderer.shadowCastingMode = ShadowCastingMode.Off;
         }
 
@@ -254,8 +259,10 @@ namespace Abandoned.Structure
             {
                 var fixture = light.GetComponentInParent<LightFixture>();
                 var extra = light.GetComponent<ShadowBudgetLight>();
+                var work = light.GetComponent<SalvageWorkLight>();
                 bool managed = (fixture != null && fixture.isActiveAndEnabled && fixture.Lamp == light) ||
-                               (extra != null && extra.isActiveAndEnabled);
+                               (extra != null && extra.isActiveAndEnabled) ||
+                               (work != null && work.isActiveAndEnabled && work.Lamp == light);
                 if (Find(light) == null)
                 {
                     if (managed) light.shadows = LightShadows.None;

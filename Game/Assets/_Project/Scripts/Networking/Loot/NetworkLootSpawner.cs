@@ -104,6 +104,8 @@ namespace Abandoned.Networking
                 Transform point = points[p.Point].transform;
                 Vector3 at = point.position + Vector3.up * (p.Definition.Size.y / 2f + 0.02f);
                 Quaternion yaw = Quaternion.Euler(0f, (float)random.NextDouble() * 360f, 0f);
+                // Still consume the seeded yaw roll so other points retain their established sequence.
+                if (points[p.Point].UseAuthoredRotation) yaw = point.rotation;
                 GameObject instance = Instantiate(prefab, at, yaw);
                 instance.GetComponent<LootItem>().Initialize(p.ValueSeed);
                 instance.GetComponent<NetworkObject>().Spawn(destroyWithScene: true);

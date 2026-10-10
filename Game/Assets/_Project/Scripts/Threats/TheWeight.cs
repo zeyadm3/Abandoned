@@ -17,6 +17,7 @@ namespace Abandoned.Threats
         public override ThreatMotion DesiredMotion => pressing.Value ? ThreatMotion.Special : ThreatMotion.Idle;
         protected override void HostTick()
         {
+            if (WarningRemaining > 0f) { Wander(); return; }
             if (pressing.Value)
             {
                 Stop();

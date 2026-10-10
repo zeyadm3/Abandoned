@@ -109,6 +109,50 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user, **0.15.7b collection truck replacement**, user tests): the user rejected the
+  0.15.7 truck's appearance. Replace it with a coherent original cab-over model: curved formed cab
+  panels, hollow glazed interior, open wheel arches, new radial tyres/dished rims, continuous cargo
+  panels and restrained PBR finishes. Correct the deck from 0.40 m (below the 0.96 m tyre top) to
+  1.05 m by raising the cargo body 0.65 m; box roof becomes 3.40 m. Retain cargo dimensions/capacity
+  and refit the ramp (4.4 m run, 1.05 m rise), trigger, display, ignition, lights and rear hinges.
+  Add the small upper-right rear-view monitor with its camera above the box. Preserve all pickups,
+  threats, mall and payout systems. Scene and Mac/Windows players saved as 0.15.7b.EEA.
+  No tests or verification; the user reviews afterward. Details:
+  Docs/TRUCK_REDO_0.15.7b.md. The old 0.15.7 truck design is superseded.
+- 2026-10-10 (user, **0.15.7 more recoverable salvage and realistic truck**, user tests): add more
+  actual pickable items and make the collection truck look realistic. Promote appropriate original
+  0.15.6 prop families to registered network loot, add fitted spawn pockets and increase ordinary
+  stock fill. Upgrade the saved functional truck with a detailed commercial cab, body, chassis,
+  tyres, worn materials and company markings. Preserve cargo, hauling ramp, ignition, haul display,
+  floodlights, extraction and 0.15.6 threat pressure. Rear hinges close on departure and reopen on
+  cancellation. Save scene/data and Mac/Windows players as 0.15.7.EEA. No tests or verification;
+  the user reviews afterward. Menu: Tools/Abandoned/Mall/More Pickups and Collection Truck (0.15.7).
+- 2026-10-10 (user, **0.15.6 threat pressure and continued construction**, user tests): monsters feel
+  absent and ineffective during salvage runs. Increase early and sustained population, fix inactive
+  patrol/pursuit and use fair, reachable spawn positions with short retries. Keep host authority,
+  monster identity, warning music, physical attack occlusion and learnable escape rules. Extend the
+  saved mall with new original prop families and surrounding buildings while retaining its approved
+  layout, both furniture floors, HQ and extraction. Save scene/data and Mac/Windows players as
+  0.15.6.EEA. Do not interrupt the user's running game. No tests, verification or QA runs: the user
+  reviews after construction. Menu: Tools/Abandoned/Mall/Finish Threat and Content Update (0.15.6).
+- 2026-10-10 (user, **0.15.5b mall density**, user tests): 0.15.5 feels too empty. Fill the existing
+  five-zone salvage mall with denser shelf stock, dismantled displays, packing remnants and staged
+  recovery clusters; keep both Nordic Habitat floors and protected hauling/spawn routes. Apply an
+  additive `_SALVAGE_DENSITY` layer to the saved mall, retaining the approved structure, district, HQ,
+  lighting and loot economy. Reuse original assets/materials; batch added art per supporting slab,
+  material and LOD, bind collapse and author collision/nav/culling. Build Mac/Windows as 0.15.5b.EEA.
+  Menu: Tools/Abandoned/Mall/Fill Salvage Mall (0.15.5b). The previous no-tests/no-verification direction
+  persists; the user will review afterward.
+- 2026-10-10 (user, **0.15.5 salvage asset construction**, user tests): build the complete five-zone
+  mall asset set now, with a structured breakdown and concept prompt for each item. Use original
+  procedural low-poly meshes and shared worn PBR maps; no new packs/packages. Nordic Habitat spans
+  both aligned front-right floors, upper offices are replaced by its office/sample department, and
+  closed administration occupies the former west upper furniture bay. Generate static dressing and
+  existing-system networked loot variants, author salvage operations/demolition cues, lights, dust,
+  colliders, spawns, navigation/culling and Mac/Windows players as 0.15.5.EEA. Preserve HQ, approved
+  district, structure, single front exit and payout. No tests or verification: the user performs them
+  after construction. Menu: Tools/Abandoned/Mall/Build Salvage Content (0.15.5). The separately planned
+  freelancer UI rework remains unimplemented and is outside this asset construction task.
 - 2026-10-10 (user, plan only): **Early Access is 0.25.0**, not 0.20.0, to allow more time and features.
   0.20, 0.21, 0.23 and 0.24 are numbered in Docs/ROADMAP_0.16-0.25.md and approved by the user. 0.25.0 stays fixes only.
 - 2026-10-10 (user, **0.22 total UI revamp**, plan only): the user's friend redoes the whole UI from a reference
