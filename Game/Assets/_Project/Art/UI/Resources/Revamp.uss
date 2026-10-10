@@ -1,2 +1,117 @@
 /* ABANDONED 0.22 UI revamp: "Company Issue" (Docs/UI_STYLE_GUIDE_0.22.md). Loaded after Menu.uss, so these
    rules win on equal specificity. Delete this file to return to the pre-0.22 look. */
+
+/* ==== 0.22.1 theme and kit ==== */
+
+:root, .menu-root {
+    --c-ink: rgb(10, 11, 12);
+    --c-panel: rgba(18, 21, 24, 0.97);
+    --c-panel-2: rgb(27, 31, 35);
+    --c-panel-3: rgb(40, 45, 50);
+    --c-line: rgba(242, 190, 40, 0.18);
+    --c-accent: rgb(242, 190, 40);
+    --c-accent-hot: rgb(255, 214, 92);
+    --c-accent-ink: rgb(18, 16, 8);
+    --c-text: rgb(232, 232, 226);
+    --c-dim: rgb(150, 156, 160);
+    --c-faint: rgba(214, 218, 220, 0.6);
+    --c-good: rgb(110, 200, 120);
+    --c-bad: rgb(232, 84, 60);
+    --c-money: rgb(150, 220, 140);
+    --c-paper: rgb(214, 206, 180);
+    --c-paper-ink: rgb(26, 28, 30);
+    --c-crt: rgb(240, 186, 60);
+    --c-crt-bg: rgb(12, 16, 14);
+}
+
+/* Panels: a yellow spine down the left and a rule on top; square. */
+.panel {
+    border-left-width: 6px;
+    border-left-color: var(--c-accent);
+    border-top-width: 2px;
+    border-top-color: var(--c-line);
+    border-radius: 0;
+}
+
+.backdrop { background-color: rgba(8, 10, 12, 0.55); }
+.backdrop--dim { background-color: rgba(8, 10, 12, 0.85); }
+
+/* Chips: square slate slabs with a yellow underline that fill yellow on hover or focus. */
+.menu-button--small {
+    border-radius: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-accent);
+    background-color: var(--c-panel-3);
+}
+
+.menu-button--small:hover, .menu-button--small:focus {
+    background-color: var(--c-accent);
+    color: var(--c-accent-ink);
+    border-bottom-color: var(--c-ink);
+}
+
+.menu-button--small:active { background-color: var(--c-accent-hot); }
+
+/* Big menu buttons keep the words-only look; focus also shows a yellow bar on the left (for the pad, 0.23). */
+.menu-button:focus { border-left-width: 4px; border-left-color: var(--c-accent); padding-left: 10px; }
+
+/* Fields and sliders. */
+.field > .unity-text-field__input, .field > .unity-base-text-field__input {
+    background-color: var(--c-panel-2);
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-accent);
+    border-radius: 0;
+}
+
+.setting { border-bottom-color: rgba(255, 255, 255, 0.06); }
+.setting__value { color: var(--c-accent); -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); }
+
+.setting__control.unity-base-slider--horizontal .unity-base-slider__tracker {
+    background-color: var(--c-panel-3);
+    height: 4px;
+    margin-top: -2px;
+}
+
+.setting__control.unity-base-slider--horizontal .unity-base-slider__dragger {
+    width: 10px;
+    height: 22px;
+    margin-top: -11px;
+    border-radius: 0;
+    border-width: 2px;
+    border-color: var(--c-ink);
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger { border-radius: 0; }
+
+/* Key caps: yellow outline boxes, readable on any background. */
+.keycap {
+    color: var(--c-accent);
+    background-color: rgba(10, 11, 12, 0.85);
+    border-radius: 0;
+    border-width: 2px;
+    border-color: var(--c-accent);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--c-accent);
+}
+
+.bar { border-radius: 0; border-color: rgba(242, 190, 40, 0.25); }
+.tag { border-radius: 0; }
+.stamp { border-radius: 0; }
+
+/* Toggles: a square box that fills yellow. */
+.unity-toggle__checkmark {
+    background-color: var(--c-panel-2);
+    border-color: var(--c-accent);
+    border-width: 2px;
+    border-radius: 0;
+    width: 22px;
+    height: 22px;
+}
+
+.unity-toggle > .unity-toggle__input:checked > .unity-toggle__checkmark {
+    background-color: var(--c-accent);
+    -unity-background-image-tint-color: var(--c-ink);
+}
+
+.hazard { height: 8px; }

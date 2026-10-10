@@ -395,3 +395,11 @@ Issue": hazard yellow on cool slate, square industrial shapes; the company talki
 icons, motion, the rules that stay, and the full screen list. The whole revamp lives in
 `Art/UI/Resources/Revamp.uss`, loaded by MenuUi after Menu.uss (empty at this step); deleting it brings the old
 look back. The friend can replace the direction and keep the token names.
+
+## 0.22.1 theme and kit
+Revamp.uss now redefines the colour tokens (hazard yellow #F2BE28 on cool slate; good/bad/money keep their
+meanings) on `:root, .menu-root`, so every screen built on them changes at once. Kit: panels get a 6 px yellow
+spine and square corners; chips are square slate slabs with a yellow underline that fill yellow on hover/focus;
+big menu buttons show a yellow left bar on focus (for 0.23's pad navigation); fields are slate with a yellow
+underline; sliders get a slim track and a square yellow handle; key caps are yellow-outlined boxes; toggles are
+square boxes that fill yellow; bars, tags and stamps lose their rounding.
