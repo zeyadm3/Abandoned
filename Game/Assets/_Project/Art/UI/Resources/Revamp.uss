@@ -228,3 +228,25 @@
 /* Chat. */
 .chat__log { border-left-width: 3px; border-left-color: var(--c-line); }
 .chat__field > .unity-text-field__input { background-color: var(--c-panel-2); border-width: 0; border-bottom-width: 2px; border-bottom-color: var(--c-accent); border-radius: 0; }
+
+/* ==== 0.22.4 damage and death ==== */
+
+/* The death card: the company's form for a lost employee. Red stamp title, slate slip for the cause. */
+.death-card { background-color: rgba(14, 6, 6, 0.6); }
+.death-card__title { color: var(--c-bad); letter-spacing: 14px; }
+.death-card__cause {
+    background-color: rgba(10, 11, 12, 0.85);
+    border-left-width: 6px;
+    border-left-color: var(--c-bad);
+    padding: 6px 18px 6px 18px;
+    -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf");
+}
+.death-card__note { color: var(--c-faint); }
+.ghost-bar, .hud-ghost { background-color: rgba(10, 11, 12, 0.7); border-bottom-width: 2px; border-bottom-color: rgba(150, 156, 160, 0.6); }
+
+/* The truck leaving: hazard yellow, the countdown in heavy monospace. */
+.truck-banner { background-color: rgba(10, 11, 12, 0.9); border-top-width: 3px; border-bottom-width: 3px; border-color: var(--c-accent); }
+.truck-banner__title { color: var(--c-accent); letter-spacing: 6px; }
+.truck-banner__count { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); color: var(--c-text); }
+.truck-banner__status { color: var(--c-bad); }
+.truck-banner__status--good { color: var(--c-good); }

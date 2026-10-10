@@ -417,3 +417,9 @@ Ping markers are now UI Toolkit world marks on HudLayer.World (a turned square a
 pinger's colour, fading out) instead of IMGUI. Revamp.uss: loot tags square with monospace values and condensed
 names; toasts are slate slips with a yellow spine (green for good, red for warnings) and condensed yellow
 titles; subtitles get a solid strip behind them; chat gets the slate field with a yellow underline.
+
+## 0.22.4 damage and death
+Revamp.uss: the death card is the company's "lost employee" form (red title, the cause on a slate slip with a red
+spine); the ghost bar gets a slate strip; the truck-leaving banner is hazard-ruled with a heavy monospace
+countdown. The ghost's HUD line now also says a crewmate can hire them back at the truck's radio while the
+agency still sends people (0.19.1). The low-health vignette and blood (art, PlayerHealthConfig) are unchanged.
