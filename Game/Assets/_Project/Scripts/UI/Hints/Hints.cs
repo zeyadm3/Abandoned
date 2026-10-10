@@ -63,6 +63,7 @@ namespace Abandoned.UI
                 HintId.Security => $"The security desk ({interact}). Whoever sits here sees the cameras and can talk the crew round the building, but they can't see what is behind them.",
                 HintId.Catalogue => $"The loot catalogue ({interact}). Every kind of salvage the company has sold gets a line; every jackpot gets a place on the trophy shelf.",
                 HintId.Hire => $"The agency radio ({interact}). A dead crewmate can come back as a new hire, standing in the truck. The fee comes out of the payout.",
+                HintId.Difficulty => $"The difficulty switch. Relaxed, Standard or Brutal: it moves the quota, how hard monsters hit, how often they come and how fast the building falls apart. Only the host turns it.",
                 // @@hinttext
                 _ => "",
             };

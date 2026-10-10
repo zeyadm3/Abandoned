@@ -56,7 +56,7 @@ namespace Abandoned.Threats
             if (spawnAt < 0f && run != null && run.IsSpawned) Schedule(run.State.Seed);
             if (run == null || run.State.Phase != RunPhase.Running) return;
             int level = run.Terms.ThreatLevel;
-            Threat.ContractDamageScale = Pacing.DamageScale(level);
+            Threat.ContractDamageScale = Pacing.DamageScale(level) * Core.DifficultyConfig.Current.MonsterDamage; // 0.19.4
             if (spawnAt > 0f)
             {
                 float firstAt = spawnAt + Pacing.OpeningDelayFor(level, run.Terms.FirstJob) - Pacing.OpeningDelay;
@@ -91,7 +91,7 @@ namespace Abandoned.Threats
             }
             else if (Alive >= AliveCap) spawnedTier = run.State.Danger;
         }
-        private float NextGap() => Pacing.NextGap(arrivals) * Pacing.GapScale(Level);
+        private float NextGap() => Pacing.NextGap(arrivals) * Pacing.GapScale(Level) * Core.DifficultyConfig.Current.MonsterGap; // 0.19.4
         private void OnRunStarted(int seed)
         {
             if (!IsHost) return;

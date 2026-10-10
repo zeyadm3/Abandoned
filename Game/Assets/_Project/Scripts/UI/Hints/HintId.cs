@@ -40,6 +40,8 @@ namespace Abandoned.UI
         Catalogue,
         // 0.19.1
         Hire,
+        // 0.19.4
+        Difficulty,
         // @@hints
     }
 }

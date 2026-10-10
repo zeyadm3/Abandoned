@@ -37,6 +37,8 @@ namespace Abandoned.Company
         public List<string> unlocks = new();
         /// <summary>0.18.7: every kind of loot the company has ever sold (the HQ loot catalogue and trophy shelf).</summary>
         public List<string> catalogue = new();
+        /// <summary>0.19.4: the host's preset (Core.Difficulty): 0 relaxed, 1 standard, 2 brutal.</summary>
+        public int difficulty = 1;
         // A job taken but not yet settled (quota > 0): the host quit or crashed mid-run.
         public int pendingQuota;
         public float pendingBonus;

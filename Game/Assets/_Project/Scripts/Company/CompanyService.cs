@@ -150,6 +150,7 @@ namespace Abandoned.Company
         {
             if (!IsServer || !IsSpawned) return;
             SyncCatalogue(); // 0.18.7: cheap when nothing changed
+            SyncDifficulty(); // 0.19.4
             // The Steam lobby takes joiners only while everyone is at the HQ.
             bool home = SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel;
             if (lobby == null && Time.unscaledTime >= nextLobbyLookup)

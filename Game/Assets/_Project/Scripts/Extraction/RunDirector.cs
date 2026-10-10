@@ -115,9 +115,11 @@ namespace Abandoned.Extraction
                     float cargo = company.UpgradeAmount(Company.TruckUpgradeKind.Cargo, 1f);
                     float honk = company.UpgradeAmount(Company.TruckUpgradeKind.Engine, 0f);
                     bool armored = company.HasUpgrade(Company.TruckUpgradeKind.Armor);
-                    RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff,
+                    // 0.19.4: the host's difficulty preset scales the quota and the building's decay.
+                    Core.DifficultyConfig difficulty = Core.DifficultyConfig.Current;
+                    RunState.TermsSource = () => new RunState.RunTerms(Mathf.RoundToInt(contract.Quota * difficulty.Quota / 50f) * 50, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff,
                         m != null && m.Night, m != null && m.Storm, m != null ? m.ExtraThreats : 0, m != null ? m.HearingMultiplier : 1f,
-                        m != null ? m.DecayMultiplier : 1f, cargo, honk, armored, m != null && m.Sealed, contract.ThreatLevel, company.State.Runs == 0);
+                        (m != null ? m.DecayMultiplier : 1f) * difficulty.Decay, cargo, honk, armored, m != null && m.Sealed, contract.ThreatLevel, company.State.Runs == 0);
                 }
                 else RunState.TermsSource = null;
                 BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);

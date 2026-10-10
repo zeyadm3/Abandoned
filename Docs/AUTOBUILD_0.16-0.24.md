@@ -230,3 +230,11 @@ acts. No monster noise from any of it. `UI/GhostActions` (ExtraScreens) reads th
 they last held that is aboard), Demolition Specialist (most broken), Gravity Tester (longest fall), else
 Deceased (unpaid), Missing, presumed lazy, or Present. The appraisal shows them as "WHO DID WHAT" above the
 employee awards. No editor step.
+
+## 0.19.4 host difficulty presets
+`Core.Difficulty` Relaxed / Standard / Brutal in `CompanySave.difficulty`, mirrored by CompanyService; a
+three-way switch on an HQ wall near dispatch (only the host can turn it). `DifficultyConfig`
+(Data/Core/Resources) scales quota ×0.8/1/1.25 and building decay ×0.7/1/1.4 (RunDirector's terms), monster
+damage ×0.7/1/1.3 and the gap between arrivals ×1.4/1/0.75 (ThreatDirector). Known gap: the contract board
+still prints the unscaled quota; the HUD, truck and payday use the scaled one.
+Menu: Tools/Abandoned/HQ/Add Difficulty Switch (0.19.4).
