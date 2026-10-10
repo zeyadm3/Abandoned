@@ -245,6 +245,7 @@ namespace Abandoned.Extraction
             RunResults results = RunResults.From(items, players, State.Quota, State.Seed, Time.time - startedAt);
             results.Wiped = wiped;
             if (RunStatsSource != null) results.Stats = RunStatsSource(results);
+            if (BlameSource != null) results.Blame = BlameSource(results);
             if (!wiped) AddBonuses(results, truck);
             if (wiped)
             {
@@ -288,6 +289,9 @@ namespace Abandoned.Extraction
         /// <summary>Host: funny stats for the appraisal (the run's stats tracker plugs in here, 5.4).</summary>
         public static Func<RunResults, string[]> RunStatsSource { get; set; }
 
+        /// <summary>Host (0.19.3): a job title per player for the appraisal.</summary>
+        public static Func<RunResults, string[]> BlameSource { get; set; }
+
         [Rpc(SendTo.Everyone)]
         private void ResultsRpc(RunResults results)
         {
@@ -301,6 +305,7 @@ namespace Abandoned.Extraction
             Current = null;
             SeedSource = null;
             RunStatsSource = null;
+            BlameSource = null;
             TermsSource = null;
             Settling = null;
         }

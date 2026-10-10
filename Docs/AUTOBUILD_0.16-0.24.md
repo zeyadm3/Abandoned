@@ -223,3 +223,10 @@ knock), F makes every light within 8 m of where the ghost camera looks stutter f
 (`LightFixture.DisturbHere`), jump nudges the nearest loose small item (pocket/one-hand, not held) within 1.6 m.
 `RunGhosts` (RunState) checks the sender is dead, the spot is within 30 m of a living player, and 3.5 s between
 acts. No monster noise from any of it. `UI/GhostActions` (ExtraScreens) reads the keys and shows the help line.
+
+## 0.19.3 post-run blame screen
+`RunResults.Blame` (new, serialized) holds one line per player; `RunStats.Blame` (wired as
+`RunState.BlameSource` by RunDirector) gives each the first title that fits: Employee of the Month (most value
+they last held that is aboard), Demolition Specialist (most broken), Gravity Tester (longest fall), else
+Deceased (unpaid), Missing, presumed lazy, or Present. The appraisal shows them as "WHO DID WHAT" above the
+employee awards. No editor step.

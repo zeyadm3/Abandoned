@@ -51,6 +51,7 @@ namespace Abandoned.Extraction
         {
             if (lootSpawner != null) lootSpawner.SpawnedRun += stats.Begin;
             RunState.RunStatsSource = stats.Lines;
+            RunState.BlameSource = stats.Blame;
         }
 
         private void OnDisable()
@@ -58,6 +59,7 @@ namespace Abandoned.Extraction
             if (lootSpawner != null) lootSpawner.SpawnedRun -= stats.Begin;
             stats.End();
             if (RunState.RunStatsSource == (Func<RunResults, string[]>)stats.Lines) RunState.RunStatsSource = null;
+            if (RunState.BlameSource == (Func<RunResults, string[]>)stats.Blame) RunState.BlameSource = null;
         }
 
         /// <summary>Host: start the next run right here.</summary>
@@ -122,6 +124,7 @@ namespace Abandoned.Extraction
             }
             RunState.SeedSource = () => lootSpawner != null ? lootSpawner.Seed : 0;
             RunState.RunStatsSource = stats.Lines;
+            RunState.BlameSource = stats.Blame;
             spawned = manager.SpawnManager.InstantiateAndSpawn(runStatePrefab);
         }
 

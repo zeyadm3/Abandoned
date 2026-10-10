@@ -68,6 +68,8 @@ namespace Abandoned.Extraction
         public string[] Stats = Array.Empty<string>();
         /// <summary>Pay on top of the haul (0.18+: boss requests, rush orders, sets, overtime); it doesn't count toward quota.</summary>
         public int Extra;
+        /// <summary>0.19.3: one line per player, a job title and why (the appraisal's "who did what").</summary>
+        public string[] Blame = Array.Empty<string>();
 
         public int Haul => Items.Sum(i => i.FinalValue);
         public int StartValue => Items.Sum(i => i.StartValue);
@@ -83,6 +85,10 @@ namespace Abandoned.Extraction
             SerializeArray(s, ref Items);
             SerializeArray(s, ref Players);
             s.SerializeValue(ref Extra);
+            int b = Blame.Length;
+            s.SerializeValue(ref b);
+            if (s.IsReader) Blame = new string[b];
+            for (int i = 0; i < b; i++) s.SerializeValue(ref Blame[i]);
             int n = Stats.Length;
             s.SerializeValue(ref n);
             if (s.IsReader) Stats = new string[n];

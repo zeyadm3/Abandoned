@@ -124,6 +124,38 @@ namespace Abandoned.Extraction
             return lines.ToArray();
         }
 
+        /// <summary>
+        /// 0.19.3: one job title per player, the first that fits them best: who brought the most home, who
+        /// broke the most, who fell furthest, who died; the rest were present.
+        /// </summary>
+        public string[] Blame(RunResults results)
+        {
+            var delivered = new Dictionary<ulong, int>();
+            TruckCargo truck = TruckCargo.Current;
+            foreach (NetworkLoot l in items)
+            {
+                if (l == null || !l.IsSpawned || l.Item.IsShattered || truck == null || !truck.Carries(l.transform.position)) continue;
+                if (lastHeld.TryGetValue(l.Item, out var h)) delivered[h.client] = delivered.GetValueOrDefault(h.client) + l.Item.CurrentValue;
+            }
+            var titles = new Dictionary<ulong, string>();
+            void Award(Dictionary<ulong, int> by, string title, string why)
+            {
+                foreach (var kv in by.OrderByDescending(kv => kv.Value))
+                    if (kv.Value > 0 && !titles.ContainsKey(kv.Key)) { titles[kv.Key] = $"{title} ({string.Format(why, kv.Value)})"; return; }
+            }
+            Award(delivered, "Employee of the Month", "brought home ${0:N0}");
+            Award(brokenValue, "Demolition Specialist", "broke ${0:N0} of stock");
+            Award(longestFall.ToDictionary(kv => kv.Key, kv => Mathf.RoundToInt(kv.Value)), "Gravity Tester", "fell {0} m");
+            var lines = new List<string>();
+            foreach (RunResults.Player p in results.Players)
+            {
+                string title = titles.TryGetValue(p.ClientId, out string t) ? t
+                    : p.Died ? "Deceased (unpaid)" : !p.Extracted ? "Missing, presumed lazy" : "Present";
+                lines.Add($"{p.Name}: {title}");
+            }
+            return lines.ToArray();
+        }
+
         private static string Name(ulong client) => NetworkPlayer.NameOf(client);
     }
 }

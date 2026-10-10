@@ -164,6 +164,12 @@ namespace Abandoned.Extraction
             foreach (RunResults.Player p in r.Players)
                 MenuKit.Text(side, p.Extracted ? $"<color=#7ee07e>\u25CF</color> {p.Name}: made it out" : p.Died ? $"<color=#ff5c4a>\u2716</color> {p.Name}: died in there" :
                     $"<color=#ff5c4a>\u25CB</color> {p.Name}: left behind{(p.PocketValueLost > 0 ? $" (lost ${p.PocketValueLost:N0} in their pockets)" : "")}");
+            if (r.Blame.Length > 0)
+            {
+                // 0.19.3: the blame sheet, a job title for everyone.
+                MenuKit.Text(side, "WHO DID WHAT", "section");
+                foreach (string line in r.Blame) MenuKit.Text(side, line, "text");
+            }
             if (r.Stats.Length > 0)
             {
                 MenuKit.Text(side, "EMPLOYEE AWARDS", "section");
