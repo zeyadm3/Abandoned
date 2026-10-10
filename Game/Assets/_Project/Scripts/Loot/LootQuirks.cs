@@ -19,11 +19,17 @@ namespace Abandoned.Loot
         private Grabbable grab;
         private Vector3 last;
         private float nextRattle, nextDrip, leakCarry, nextRingSound;
+        // The current ring window's roll: worked out once per window, not every frame.
+        private long ringPeriod = -1;
+        private bool ringsThisPeriod;
+        private double ringStart;
+        private NetworkObject netObject;
 
         private void Start()
         {
             item = GetComponent<LootItem>();
             grab = GetComponent<Grabbable>();
+            netObject = GetComponent<NetworkObject>();
             last = transform.position;
             // Its weight sits high: it falls over at a nudge.
             if (Has(LootQuirk.TopHeavy) && TryGetComponent(out Rigidbody body) && item.Definition != null)
@@ -73,9 +79,19 @@ namespace Abandoned.Loot
             if (net == null || !net.IsListening) return;
             double now = net.ServerTime.Time;
             long period = (long)(now / RingPeriod);
-            var roll = new System.Random(item.Seed ^ (int)period * 7919);
-            if (roll.NextDouble() > 0.6) return;
-            double start = period * RingPeriod + roll.NextDouble() * (RingPeriod - RingLength);
+            if (period != ringPeriod)
+            {
+                ringPeriod = period;
+                // Keyed by the network id, which every machine shares. The item's seed is only set on the
+                // host (clients get the rolled value, not the seed), so with it every ringing item on a
+                // client rang at the same moment, and never when the host's monsters heard it.
+                int key = netObject != null && netObject.IsSpawned ? (int)netObject.NetworkObjectId : item.Seed;
+                var roll = new System.Random(key ^ (int)period * 7919);
+                ringsThisPeriod = roll.NextDouble() <= 0.6;
+                ringStart = period * RingPeriod + roll.NextDouble() * (RingPeriod - RingLength);
+            }
+            if (!ringsThisPeriod) return;
+            double start = ringStart;
             if (now < start || now > start + RingLength || Time.time < nextRingSound) return;
             nextRingSound = Time.time + 1f;
             GameAudio.Play(SoundId.LootRing, transform.position, 1f);

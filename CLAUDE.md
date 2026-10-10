@@ -96,6 +96,10 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.7 (2026-10-11): static QA pass.** Fixes from reading the runtime code (pay, vent/drone/photo-mode
+states, the sound library's race, leaks); compiled, never played. What changed, what is left to decide
+and what to check first: QA_Resolution_Report.md. `Tools/unity.sh build` packages this version.
+
 **0.24.6b (2026-10-10): application logo.** Original fractured architectural A icon,
 Apple native light/dark appearances and Windows light-only icon. Unity import/settings
 authoring completed; `Tools/unity.sh build` packages this version. Native Mac icon
@@ -125,6 +129,18 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user: pasted "0 to 100" QA brief; **static QA pass over the runtime scripts**, fixes written and
+  compiled outside Unity, nothing played): what was found, fixed and left for the user is in
+  **QA_Resolution_Report.md** (repo root). Behaviour that changed and later work must keep:
+  - The difficulty preset scales the quota once, in `CompanyService.QuotaFor` (synced preset); RunDirector
+    scales decay only. The preset survives bankruptcy.
+  - The haul is tallied while the truck honks too. Rush orders never pay for items already aboard when the
+    rush was called. Overtime pays on what is aboard at departure.
+  - No drone launch while hiding; the drone and the security desk never hand controls back to a hidden or
+    knocked-down player. A respawn or a death always ends a vent crawl on the owner's machine first.
+  - Ringing loot is keyed by NetworkObjectId (the item seed exists only on the host).
+  - Compile check without opening Unity: `dotnet build` of the generated csproj files with obj/bin sent to a
+    scratch folder (no ILPP, so `Tools/unity.sh compile` is still the real check; not run in this pass).
 - 2026-10-10 (user: "do everything including the ui revamp, everything from 0.16.0 to 0.24.6, don't stop, full
   permission"): **autonomous build of the whole 0.16-0.24 roadmap**, one commit and one Mac + Windows build
   (zipped to ~/Documents/Abandoned-builds/dev/) per version, compiled and authored in batch mode, never played.

@@ -22,6 +22,8 @@ namespace Abandoned.Extraction
         private readonly NetworkVariable<int> bonus = new();
         private float callAt = -1f;
         private string toasted;
+        // Host: the wanted definition's whole id (the synced copy is cut to fit the wire).
+        private string wantFullId;
 
         public static RunRequests Current { get; private set; }
         public string WantName => wantName.Value.ToString();
@@ -72,16 +74,25 @@ namespace Abandoned.Extraction
             LootItem pick = pool[new System.Random(run.State.Seed ^ 0x0b0180).Next(pool.Count)];
             BonusConfig config = BonusConfig.Current;
             int pay = Mathf.Max(config.RequestMinBonus, Mathf.RoundToInt(pick.FullValue * config.RequestValueShare / 50f) * 50);
-            wantId.Value = pick.Definition.Id;
-            wantName.Value = pick.Definition.DisplayName;
+            wantFullId = pick.Definition.Id;
+            // Loot is data: a long id or name must be cut to fit, not throw (FixedString64 holds 61 bytes).
+            wantId.Value = Fit(pick.Definition.Id);
+            wantName.Value = Fit(pick.Definition.DisplayName);
             bonus.Value = pay;
             Debug.Log($"[Run] Boss request: {pick.Definition.DisplayName} for +${pay:N0}.");
+        }
+
+        private static FixedString64Bytes Fit(string text)
+        {
+            var fs = new FixedString64Bytes();
+            fs.CopyFromTruncated(text ?? "");
+            return fs;
         }
 
         private void Settle(IReadOnlyCollection<LootItem> aboard, List<(int pay, string line)> lines)
         {
             if (bonus.Value <= 0) return;
-            string id = wantId.Value.ToString();
+            string id = wantFullId ?? wantId.Value.ToString();
             bool brought = aboard.Any(i => i != null && i.Definition != null && i.Definition.Id == id && !i.IsShattered);
             lines.Add(brought ? (bonus.Value, $"BOSS REQUEST: the {WantName} made it. +${bonus.Value:N0}")
                 : (0, $"BOSS REQUEST missed: no {WantName}. The boss noticed."));

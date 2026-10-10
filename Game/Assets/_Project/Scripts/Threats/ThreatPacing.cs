@@ -27,6 +27,8 @@ namespace Abandoned.Threats
         private float nextTick;
         private System.Random random = new(7);
         private int drifting;
+        // One path for every route question (made on first use: it can't be built in a field initialiser).
+        private NavMeshPath routePath;
 
         private void Awake() => director = GetComponent<ThreatDirector>();
 
@@ -84,7 +86,7 @@ namespace Abandoned.Threats
         private float NearestRoute(Threat threat)
         {
             float best = float.MaxValue;
-            var path = new NavMeshPath();
+            NavMeshPath path = routePath ??= new NavMeshPath();
             foreach (NetworkPlayer p in alive)
             {
                 if (!NavMesh.SamplePosition(p.transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas)
@@ -103,7 +105,7 @@ namespace Abandoned.Threats
         // Somewhere walkable around one living player, never right on top of them.
         private Vector3? DriftPoint(Threat threat, float scatter)
         {
-            var path = new NavMeshPath();
+            NavMeshPath path = routePath ??= new NavMeshPath();
             for (int i = 0; i < 12; i++)
             {
                 NetworkPlayer p = alive[random.Next(alive.Count)];

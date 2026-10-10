@@ -42,7 +42,14 @@ namespace Abandoned.Networking
             // A padded quilt draped over the whole item, a little larger than its box.
             blanket = GameObject.CreatePrimitive(PrimitiveType.Cube);
             blanket.name = "MovingBlanket";
-            Destroy(blanket.GetComponent<Collider>());
+            // Destroy only takes effect at the end of the frame: switched off first, or the primitive's box
+            // (on the Default layer, bigger than the item) is part of the item's body for one physics step.
+            Collider box = blanket.GetComponent<Collider>();
+            if (box != null)
+            {
+                box.enabled = false;
+                Destroy(box);
+            }
             blanket.transform.SetParent(transform, false);
             blanket.transform.localScale = item.Definition.Size * 1.06f + Vector3.one * 0.02f;
             Material material = ToolConfig.Current.BlanketMaterial;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Abandoned.Equipment
@@ -57,14 +58,41 @@ namespace Abandoned.Equipment
         private static void Part(GameObject root, PrimitiveType type, Vector3 at, Vector3 size, Color colour, float tilt = 0f)
         {
             GameObject go = GameObject.CreatePrimitive(type);
-            Object.Destroy(go.GetComponent<Collider>());
+            // Off at once (Destroy waits for the end of the frame): a solid shape in a hand, in front of
+            // the eyes, is in the way of that frame's interaction ray and of whatever is carried.
+            Collider solid = go.GetComponent<Collider>();
+            if (solid != null)
+            {
+                solid.enabled = false;
+                Object.Destroy(solid);
+            }
             go.transform.SetParent(root.transform, false);
             go.transform.localPosition = at;
             go.transform.localScale = size;
             if (tilt != 0f) go.transform.localRotation = Quaternion.Euler(tilt, 0f, 0f);
             var r = go.GetComponent<Renderer>();
-            r.material.color = colour;
+            Material shared = MaterialFor(r, colour);
+            if (shared != null) r.sharedMaterial = shared;
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
+
+        // One material per colour, shared by every tool model. A model is rebuilt each time the gear in a
+        // hand changes (for every player, on every machine), and renderer.material made a new material
+        // for every part every time; destroying the model does not destroy those, so they piled up all session.
+        private static readonly Dictionary<int, Material> Materials = new();
+
+        private static Material MaterialFor(Renderer part, Color colour)
+        {
+            Color32 c = colour;
+            int key = (c.r << 24) | (c.g << 16) | (c.b << 8) | c.a;
+            if (Materials.TryGetValue(key, out Material material) && material != null) return material;
+            if (part.sharedMaterial == null) return null;
+            material = new Material(part.sharedMaterial) { name = "ToolPart", color = colour };
+            Materials[key] = material;
+            return material;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => Materials.Clear();
     }
 }

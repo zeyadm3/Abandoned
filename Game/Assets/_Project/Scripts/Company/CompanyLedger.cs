@@ -64,6 +64,9 @@ namespace Abandoned.Company
         {
             CompanySave fresh = CompanySave.New(save.bankruptcies + 1);
             fresh.companyName = save.companyName;
+            // The difficulty preset is the host's choice, not something the company earned: a bankruptcy
+            // must not quietly flip a Relaxed (or Brutal) host back to Standard.
+            fresh.difficulty = save.difficulty;
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(fresh), save);
         }
 

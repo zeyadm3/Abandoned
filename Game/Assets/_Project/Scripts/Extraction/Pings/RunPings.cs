@@ -20,7 +20,7 @@ namespace Abandoned.Extraction
 
         private readonly NetworkList<PingMark> marks = new();
         private RunState run;
-        private int lastCount;
+        private float nextBlip;
 
         public static RunPings Current { get; private set; }
         public NetworkList<PingMark> Marks => marks;
@@ -30,11 +30,22 @@ namespace Abandoned.Extraction
         {
             Current = this;
             run = GetComponent<RunState>();
+            marks.OnListChanged += OnMarksChanged;
         }
 
         public override void OnNetworkDespawn()
         {
+            marks.OnListChanged -= OnMarksChanged;
             if (Current == this) Current = null;
+        }
+
+        // Every machine: a blip per new mark. Counting the list missed every ping past a player's third,
+        // because the oldest mark leaves in the same update and the count stays the same.
+        private void OnMarksChanged(NetworkListEvent<PingMark> change)
+        {
+            if (change.Type != NetworkListEvent<PingMark>.EventType.Add || Time.unscaledTime < nextBlip) return;
+            nextBlip = Time.unscaledTime + 0.1f;
+            GameAudio.PlayUi(SoundId.PingBlip, 0.8f);
         }
 
         public void RequestPing(Vector3 eye, Vector3 direction) => PingRpc(eye, direction);
@@ -45,7 +56,9 @@ namespace Abandoned.Extraction
             ulong client = rpcParams.Receive.SenderClientId;
             NetworkObject player = NetworkManager.ConnectedClients.TryGetValue(client, out NetworkClient c) ? c.PlayerObject : null;
             if (player == null || !player.TryGetComponent(out NetworkPlayer np) || np.IsDead) return;
-            if (Vector3.Distance(eye, player.transform.position + Vector3.up * 1.5f) > 1.5f || direction.sqrMagnitude < 0.5f) return;
+            // Written so a NaN fails them (every comparison with NaN is false): a NaN ray must not reach physics.
+            if (!(Vector3.Distance(eye, player.transform.position + Vector3.up * 1.5f) <= 1.5f) || !(direction.sqrMagnitude >= 0.5f)
+                || float.IsInfinity(direction.sqrMagnitude)) return;
             int mask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Debris, "Ignore Raycast");
             if (!Physics.Raycast(eye, direction.normalized, out RaycastHit hit, Reach, mask, QueryTriggerInteraction.Ignore)) return;
             var mark = new PingMark { Position = hit.point, Seat = (byte)Mathf.Max(0, np.CrewSeat), Until = run.Now + Lifetime, Kind = PingKind.Here };
@@ -74,10 +87,7 @@ namespace Abandoned.Extraction
 
         private void Update()
         {
-            if (!IsSpawned) return;
-            if (marks.Count > lastCount && marks.Count > 0) GameAudio.PlayUi(SoundId.PingBlip, 0.8f);
-            lastCount = marks.Count;
-            if (!IsServer) return;
+            if (!IsSpawned || !IsServer) return;
             for (int i = marks.Count - 1; i >= 0; i--)
                 if (marks[i].Until <= run.Now) marks.RemoveAt(i);
         }

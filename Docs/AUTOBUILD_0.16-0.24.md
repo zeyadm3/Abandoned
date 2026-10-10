@@ -235,8 +235,10 @@ employee awards. No editor step.
 `Core.Difficulty` Relaxed / Standard / Brutal in `CompanySave.difficulty`, mirrored by CompanyService; a
 three-way switch on an HQ wall near dispatch (only the host can turn it). `DifficultyConfig`
 (Data/Core/Resources) scales quota ×0.8/1/1.25 and building decay ×0.7/1/1.4 (RunDirector's terms), monster
-damage ×0.7/1/1.3 and the gap between arrivals ×1.4/1/0.75 (ThreatDirector). Known gap: the contract board
-still prints the unscaled quota; the HUD, truck and payday use the scaled one.
+damage ×0.7/1/1.3 and the gap between arrivals ×1.4/1/0.75 (ThreatDirector). (2026-10-10 QA pass: the quota
+scale now lives in `CompanyService.QuotaFor`, from the synced preset, so the board, the van, the depot, the
+job and a quit job's penalty all use the same number; RunDirector only scales decay. The preset survives a
+bankruptcy.)
 Menu: Tools/Abandoned/HQ/Add Difficulty Switch (0.19.4).
 
 ## 0.19.5 emotes

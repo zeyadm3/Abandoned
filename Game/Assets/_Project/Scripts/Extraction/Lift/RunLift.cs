@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Abandoned.Audio;
 using Abandoned.Core;
 using Abandoned.Interaction;
@@ -46,7 +47,9 @@ namespace Abandoned.Extraction
             if (s.SnapTime > 0d && Now >= s.SnapTime)
             {
                 // Given way: from where it snapped, it falls freely to the bottom.
-                float at = Mathf.Lerp(s.From, s.To, Mathf.Clamp01((float)((s.SnapTime - s.Start) / config.TravelSeconds)));
+                // Eased like the ride itself: a straight lerp only meets the ride's curve at its midpoint, so
+                // with SnapAt off 0.5 the platform jumped at the moment it gave way.
+                float at = Mathf.Lerp(s.From, s.To, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((float)((s.SnapTime - s.Start) / config.TravelSeconds))));
                 float fallen = 0.5f * 9.81f * Mathf.Pow((float)(Now - s.SnapTime), 2f) / Mathf.Max(0.1f, FreightLift.Active != null ? FreightLift.Active.Rise : 4f);
                 moving = at - fallen > 0f;
                 return Mathf.Max(0f, at - fallen);
@@ -70,8 +73,11 @@ namespace Abandoned.Extraction
                 kg += p.TryGetComponent(out CarrierLoad load) && load.LoadWeight > 0f ? load.LoadWeight : 80f;
             }
             // Held loot is already in its carrier's weight; LoadWeight is what rests on the deck by itself.
-            foreach (LootItem item in FindObjectsByType<LootItem>(FindObjectsSortMode.None))
-                if (item != null && lift.OnDeck(item.transform.position)) kg += item.LoadWeight;
+            // From the load registry, not a scene search: the deck button's prompt asks this every frame
+            // someone looks at it, and FindObjectsByType over a mall of loot allocated and stalled each time.
+            IReadOnlyList<ILoadSource> sources = LoadSources.All;
+            for (int i = 0; i < sources.Count; i++)
+                if (sources[i] is LootItem item && item != null && lift.OnDeck(item.transform.position)) kg += item.LoadWeight;
             return kg;
         }
 

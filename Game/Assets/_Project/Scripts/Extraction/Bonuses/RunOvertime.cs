@@ -60,7 +60,12 @@ namespace Abandoned.Extraction
         private void Settle(IReadOnlyCollection<LootItem> aboard, List<(int pay, string line)> lines)
         {
             if (metAt.Value <= 0d || run == null) return;
-            float over = run.State.Haul - run.State.Quota;
+            // What is aboard as the truck leaves (the same items the appraisal counts), not the synced haul:
+            // that one is a tally a moment old, and loot thrown in during the honk would go unpaid.
+            int haul = 0;
+            foreach (LootItem item in aboard)
+                if (item != null && !item.IsShattered) haul += item.CurrentValue;
+            float over = haul - run.State.Quota;
             int pay = Mathf.RoundToInt(Mathf.Max(0f, over) * (Multiplier - 1f));
             if (pay > 0) lines.Add((pay, $"OVERTIME x{Multiplier:0.00} on ${over:N0} over quota. +${pay:N0}"));
         }

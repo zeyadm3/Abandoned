@@ -48,17 +48,36 @@ namespace Abandoned.Extraction
 
         public bool HiresLeft => hires.Value < BonusConfig.Current.HiresPerJob;
 
+        // Deaths are noted as they happen. Before, a death was only timed when somebody first looked at
+        // the radio (or the host got the request), so everyone dead by then shared one moment and "dead
+        // longest" was whoever came first in the player list.
+        private void Update()
+        {
+            if (IsSpawned) NoteDeaths();
+        }
+
+        private void NoteDeaths()
+        {
+            IReadOnlyList<NetworkPlayer> all = NetworkPlayer.All;
+            for (int i = 0; i < all.Count; i++)
+            {
+                NetworkPlayer p = all[i];
+                if (p == null || !p.IsSpawned) continue;
+                if (!p.IsDead) diedAt.Remove(p);
+                else if (!diedAt.ContainsKey(p)) diedAt[p] = Time.time;
+            }
+        }
+
         /// <summary>The crewmate a hire would replace: the one dead longest (every machine's view).</summary>
         public NetworkPlayer Replaces()
         {
+            NoteDeaths();
             NetworkPlayer best = null;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || !p.IsSpawned || !p.IsDead) continue;
-                if (!diedAt.ContainsKey(p)) diedAt[p] = Time.time;
                 if (best == null || diedAt[p] < diedAt[best]) best = p;
             }
-            foreach (NetworkPlayer p in NetworkPlayer.All) if (p != null && !p.IsDead) diedAt.Remove(p);
             return best;
         }
 

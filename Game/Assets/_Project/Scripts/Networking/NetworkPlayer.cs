@@ -225,7 +225,11 @@ namespace Abandoned.Networking
             // Out of the locker first: the body must not fall inside it.
             ServerLeaveHiding();
             // The cause first: it reaches the owner before (or with) the death itself.
-            deathCause.Value = new Unity.Collections.FixedString64Bytes(Truncate(cause ?? "Something got you.", 60));
+            // Cut to the wire's 61 UTF-8 bytes at a character: 60 characters of another script are more
+            // bytes than that, and the constructor throws rather than cuts.
+            var causeText = new Unity.Collections.FixedString64Bytes();
+            Unity.Collections.FixedStringMethods.CopyFromTruncated(ref causeText, Truncate(cause ?? "Something got you.", 60));
+            deathCause.Value = causeText;
             dead.Value = true;
             // GDD 11: a dead player's pocket loot drops where they died, for the others to recover: in a ring
             // around the body, not all in one spot where they'd fling each other apart (QA B-17).
@@ -258,6 +262,8 @@ namespace Abandoned.Networking
             {
                 // Killed in a locker: the death can reach this machine before the eviction does.
                 if (now) OwnerLeaveLocker(true);
+                // Killed mid-crawl (the total collapse): the body must fall at the grille, not 60 m under the level.
+                if (now) OwnerLeaveVent(true);
                 if (now) ragdoll.Enter(Vector3.zero);
                 ragdoll.HoldDown = now;
                 // Back alive while the body still lies there: getting up (Recover) switches these on when the
@@ -278,6 +284,9 @@ namespace Abandoned.Networking
         {
             // A new run can start while someone is still in a locker: this places them, not the locker's doorstep.
             OwnerLeaveLocker(false);
+            // The same for a vent: this RPC arrives before the hiding value clears, and without this the late
+            // "out of the vent" then moved the freshly respawned player to the duct's far grille.
+            OwnerLeaveVent(false);
             // A revive stands up on the ragdoll's own checked spot; the body's raw position can be
             // against a wall or inside a prop.
             if (whereBodyLies && ragdoll.IsRagdolled)

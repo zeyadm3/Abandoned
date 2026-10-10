@@ -58,7 +58,14 @@ namespace Abandoned.Core
             table = new Dictionary<string, string>();
             var asset = Resources.Load<TextAsset>($"Text/{Language}");
             if (asset == null) return;
-            File file = JsonUtility.FromJson<File>(asset.text);
+            File file;
+            // A broken translation file must fall back to the English in code, not throw into whatever asked.
+            try { file = JsonUtility.FromJson<File>(asset.text); }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[Text] Resources/Text/{Language} is not valid JSON ({e.Message}); using the built-in text.");
+                return;
+            }
             if (file?.entries == null) return;
             foreach (Entry e in file.entries) if (!string.IsNullOrEmpty(e.key)) table[e.key] = e.text;
         }

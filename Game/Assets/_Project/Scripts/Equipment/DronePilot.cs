@@ -48,7 +48,9 @@ namespace Abandoned.Equipment
             UI.HudCallout.Clear(this);
             if (lens != null) lens.enabled = false;
             if (mainCamera != null) mainCamera.enabled = true;
-            if (pilot != null && !pilot.IsDead) pilot.OwnerSetControl(true);
+            // Not to someone in a locker or a vent (they would walk off still counted as hidden, which no
+            // monster then sees), nor to a body on the floor (getting up switches the controls on itself).
+            if (pilot != null && !pilot.IsDead && !pilot.IsHiding && !pilot.Ragdoll.IsRagdolled) pilot.OwnerSetControl(true);
         }
 
         private void Update()
@@ -67,7 +69,9 @@ namespace Abandoned.Equipment
             if (!IsOwner || !flying || input == null) return;
             battery -= Time.deltaTime;
             PlayerInputFrame f = input.Current;
-            if (battery <= 0f || f.UsePressed || pilot == null || pilot.IsDead)
+            // Knocked down mid-flight: getting up hands the body its controls back, and one stick must not
+            // then steer the body and the drone together.
+            if (battery <= 0f || f.UsePressed || pilot == null || pilot.IsDead || pilot.Ragdoll.IsRagdolled)
             {
                 Land();
                 RecallRpc();

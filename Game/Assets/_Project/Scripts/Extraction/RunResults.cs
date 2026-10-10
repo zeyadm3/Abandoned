@@ -27,6 +27,9 @@ namespace Abandoned.Extraction
 
             public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
             {
+                // NGO can't write a null string, and a throw here would leave every machine on a truck that
+                // has "left" with no appraisal to end the job.
+                Name ??= "";
                 s.SerializeValue(ref Name);
                 Id ??= "";
                 s.SerializeValue(ref Id);
@@ -51,6 +54,7 @@ namespace Abandoned.Extraction
             public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
             {
                 s.SerializeValue(ref ClientId);
+                Name ??= "";
                 s.SerializeValue(ref Name);
                 s.SerializeValue(ref Extracted);
                 s.SerializeValue(ref Died);
@@ -85,19 +89,28 @@ namespace Abandoned.Extraction
             SerializeArray(s, ref Items);
             SerializeArray(s, ref Players);
             s.SerializeValue(ref Extra);
-            int b = Blame.Length;
-            s.SerializeValue(ref b);
-            if (s.IsReader) Blame = new string[b];
-            for (int i = 0; i < b; i++) s.SerializeValue(ref Blame[i]);
-            int n = Stats.Length;
+            SerializeLines(s, ref Blame);
+            SerializeLines(s, ref Stats);
+        }
+
+        // Null arrays and null lines are written as empty: the host fills these from several sources.
+        private static void SerializeLines<T>(BufferSerializer<T> s, ref string[] lines) where T : IReaderWriter
+        {
+            lines ??= Array.Empty<string>();
+            int n = lines.Length;
             s.SerializeValue(ref n);
-            if (s.IsReader) Stats = new string[n];
-            for (int i = 0; i < n; i++) s.SerializeValue(ref Stats[i]);
+            if (s.IsReader) lines = new string[n];
+            for (int i = 0; i < n; i++)
+            {
+                lines[i] ??= "";
+                s.SerializeValue(ref lines[i]);
+            }
         }
 
         private static void SerializeArray<T, TItem>(BufferSerializer<T> s, ref TItem[] array) where T : IReaderWriter
             where TItem : struct, INetworkSerializable
         {
+            array ??= Array.Empty<TItem>();
             int n = array.Length;
             s.SerializeValue(ref n);
             if (s.IsReader) array = new TItem[n];

@@ -43,6 +43,7 @@ namespace Abandoned.Extraction
             TruckWinch winch = TruckWinch.Active;
             NetworkObject player = NetworkManager.ConnectedClients.TryGetValue(rpcParams.Receive.SenderClientId, out NetworkClient c) ? c.PlayerObject : null;
             if (winch == null || player == null || CompanyService.Current == null || !CompanyService.Current.HasUpgrade(TruckUpgradeKind.Winch)) return;
+            if (player.TryGetComponent(out NetworkPlayer np) && np.IsDead) return;
             if (Vector3.Distance(player.transform.position, winch.Drum) > 6f) return;
             if (target.Value != 0)
             {
@@ -78,7 +79,14 @@ namespace Abandoned.Extraction
                 return;
             }
             Vector3 at = pulled.worldCenterOfMass;
-            if (!onRamp && Vector3.Distance(Flat(at), Flat(winch.RampFoot)) < 1f) onRamp = true;
+            if (!onRamp && Vector3.Distance(Flat(at), Flat(winch.RampFoot)) < 1f)
+            {
+                onRamp = true;
+                // A new leg to a farther waypoint: its distance starts above the best one of the leg before,
+                // so progress up the ramp never registered and the cable let go after StuckSeconds.
+                bestDistance = float.MaxValue;
+                lastProgressAt = Time.time;
+            }
             Vector3 waypoint = onRamp ? winch.Bay : winch.RampFoot + Vector3.up * (at.y - winch.RampFoot.y);
             Vector3 to = waypoint - at;
             pulled.linearVelocity = Vector3.MoveTowards(pulled.linearVelocity, to.normalized * Speed, 6f * Time.fixedDeltaTime);

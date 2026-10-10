@@ -130,7 +130,7 @@ namespace Abandoned.Player
         {
             if (!DebugView.Visible || player == null || !player.IsSpawned || !player.IsOwner || player.IsDead) return;
             float bpm = traumaTier > 0 ? PlayerHealthConfig.Pick(player.HealthConfig.HeartbeatBpm, traumaTier) : 0f;
-            GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f),
+            GUI.Label(new Rect(Screen.width - 360f, 252f, 350f, 22f),
                 $"TRAUMA tier {traumaTier}  {player.Health:0.0} HP  {bpm:0} BPM  muffle {ListenerSpace.MuffleNow:0} Hz  vision {severe:0.00}/{nearDeath:0.00}");
         }
 #endif

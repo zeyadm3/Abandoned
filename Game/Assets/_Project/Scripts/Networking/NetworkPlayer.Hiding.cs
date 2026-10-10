@@ -105,7 +105,7 @@ namespace Abandoned.Networking
             HidingChanged?.Invoke(this, was, now);
             if (!IsOwner) return;
             // 0.16.4: a vent crawl is hiding too, at VentBase + the duct.
-            if (was >= VentBase) OwnerLeaveVent(was - VentBase);
+            if (was >= VentBase) OwnerLeaveVent(true);
             if (now >= VentBase) OwnerEnterVent(now - VentBase);
             else if (now >= 0) OwnerEnterLocker(HidingLocker.ByIndex(now));
             else if (was < VentBase) OwnerLeaveLocker(true);

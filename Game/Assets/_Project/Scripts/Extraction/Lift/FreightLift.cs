@@ -9,6 +9,9 @@ namespace Abandoned.Extraction
     /// Players ride it through <see cref="MovingPlatform"/>; loot rides on its deck. Nothing here is
     /// networked itself.
     /// </summary>
+    // Before PlayerMotor's Update (as MovingPlatform's own order promises): the platform is placed here, and
+    // a rider adds this frame's move, not last frame's.
+    [DefaultExecutionOrder(-60)]
     public class FreightLift : MonoBehaviour
     {
         [SerializeField] private MovingPlatform platform;

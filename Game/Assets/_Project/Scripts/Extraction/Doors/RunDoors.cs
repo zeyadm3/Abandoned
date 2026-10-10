@@ -159,7 +159,7 @@ namespace Abandoned.Extraction
         private void OnGUI()
         {
             if (!DebugView.Visible || !IsSpawned) return;
-            GUI.Label(new Rect(Screen.width - 360f, 96f, 350f, 22f),
+            GUI.Label(new Rect(Screen.width - 360f, 274f, 350f, 22f),
                 $"DOORS shut {System.Convert.ToString((long)shut.Value, 2)} broken {System.Convert.ToString((long)broken.Value, 2)} ({SlidingDoor.All.Count} in level)");
         }
 #endif

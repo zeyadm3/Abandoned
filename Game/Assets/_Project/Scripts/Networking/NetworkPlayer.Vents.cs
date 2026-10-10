@@ -25,6 +25,9 @@ namespace Abandoned.Networking
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         private bool ventHere;
+        // Owner: the duct this machine put its player in, and where they stood when they went in.
+        private int ventDuctHere = -1;
+        private Vector3 ventEntryPoint;
         private float nextRattle;
 
         public bool InVent => hidingIn.Value >= VentBase;
@@ -84,6 +87,8 @@ namespace Abandoned.Networking
         {
             if (ventHere) return;
             ventHere = true;
+            ventDuctHere = duct;
+            ventEntryPoint = transform.position;
             if (hideInput == null) hideInput = GetComponent<Player.PlayerInputReader>();
             if (hideHud == null) hideHud = GetComponent<Interaction.InteractionHud>();
             SetHidingControl(false);
@@ -93,17 +98,30 @@ namespace Abandoned.Networking
             if (hideHud != null) hideHud.Override = "Crawling through the vent...";
         }
 
-        private void OwnerLeaveVent(int duct)
+        /// <summary>
+        /// Owner: out of the duct. <paramref name="stepOut"/> stands them at the far grille; a respawn that is
+        /// about to place them somewhere else passes false (as for lockers). The host's "out" and its
+        /// respawn or death arrive separately and in either order, so this runs once, from whichever is first.
+        /// </summary>
+        private void OwnerLeaveVent(bool stepOut)
         {
             if (!ventHere) return;
             ventHere = false;
+            int duct = ventDuctHere;
+            ventDuctHere = -1;
             if (hideHud != null) hideHud.Override = null;
-            VentGrille exit = VentGrille.Find(duct, 1 - ventFrom.Value);
-            if (exit != null)
+            if (stepOut)
             {
-                transform.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(exit.transform.forward, Vector3.up));
-                OwnerTeleport(exit.OutPoint);
-                if (look != null) look.SyncYawFromTransform();
+                VentGrille exit = VentGrille.Find(duct, 1 - ventFrom.Value);
+                if (exit != null)
+                {
+                    transform.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(exit.transform.forward, Vector3.up));
+                    OwnerTeleport(exit.OutPoint);
+                    if (look != null) look.SyncYawFromTransform();
+                }
+                // The grille is gone (its floor fell, the level changed): back where they went in, never
+                // left parked under the level with the controls on, falling for ever.
+                else OwnerTeleport(ventEntryPoint);
             }
             if (!dead.Value && !ragdoll.IsRagdolled) SetHidingControl(true);
         }

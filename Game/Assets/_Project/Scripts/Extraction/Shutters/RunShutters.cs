@@ -221,7 +221,7 @@ namespace Abandoned.Extraction
         private void OnGUI()
         {
             if (!DebugView.Visible || !IsSpawned) return;
-            GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f), $"SHUTTERS down {System.Convert.ToString(down.Value, 2)} ({RollerShutter.All.Count} in level)");
+            GUI.Label(new Rect(Screen.width - 360f, 230f, 350f, 22f), $"SHUTTERS down {System.Convert.ToString(down.Value, 2)} ({RollerShutter.All.Count} in level)");
         }
 #endif
 

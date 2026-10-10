@@ -101,7 +101,9 @@ namespace Abandoned.Extraction
                 .Where(d => d != null && !d.Jackpot && d.CarryClass <= CarryClass.OneHand)
                 .OrderByDescending(d => d.ValueMax).Take(8).ToList();
             if (picks.Count == 0) return;
-            int count = random.Next(config.Contents.x, config.Contents.y + 1);
+            // A mis-set range (max under min) must not throw as the door opens.
+            int least = Mathf.Max(0, config.Contents.x);
+            int count = random.Next(least, Mathf.Max(least, config.Contents.y) + 1);
             for (int i = 0; i < count; i++)
             {
                 LootDefinition d = picks[random.Next(picks.Count)];

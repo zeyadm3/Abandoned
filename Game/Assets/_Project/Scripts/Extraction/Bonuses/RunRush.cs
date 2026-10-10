@@ -19,6 +19,8 @@ namespace Abandoned.Extraction
         private readonly NetworkVariable<FixedString64Bytes> rushName = new();
         private readonly NetworkVariable<double> rushUntil = new();
         private readonly HashSet<LootItem> rushed = new();
+        // Already in the bay when the rush was called: they were not rushed there, so they don't pay.
+        private readonly HashSet<LootItem> aboardAtCall = new();
         private string rushId;
         private RunState run;
         private System.Random random;
@@ -64,7 +66,7 @@ namespace Abandoned.Extraction
             {
                 nextCheck = Time.time + 0.5f;
                 foreach (LootItem item in TruckCargo.Current.ItemsInside())
-                    if (item != null && item.Definition != null && item.Definition.Id == rushId) rushed.Add(item);
+                    if (item != null && item.Definition != null && item.Definition.Id == rushId && !aboardAtCall.Contains(item)) rushed.Add(item);
             }
         }
 
@@ -82,7 +84,14 @@ namespace Abandoned.Extraction
             if (kinds.Count == 0) return;
             LootDefinition pick = kinds[random.Next(kinds.Count)];
             rushId = pick.Id;
-            rushName.Value = pick.DisplayName;
+            // The kind is picked because one of it is still out there, but others of it may already be
+            // loaded: without this they'd be noted on the next check and paid double for nothing.
+            aboardAtCall.Clear();
+            foreach (LootItem item in inBay)
+                if (item != null && item.Definition != null && item.Definition.Id == rushId) aboardAtCall.Add(item);
+            var wireName = new FixedString64Bytes();
+            wireName.CopyFromTruncated(pick.DisplayName ?? ""); // a long name must not throw on the wire
+            rushName.Value = wireName;
             rushUntil.Value = run.Now + config.RushSeconds;
             Debug.Log($"[Run] Rush order: {pick.DisplayName} for {config.RushSeconds:0} s.");
         }
@@ -92,13 +101,19 @@ namespace Abandoned.Extraction
             if (rushed.Count == 0) return;
             float extra = BonusConfig.Current.RushMultiplier - 1f;
             int pay = 0, count = 0;
+            string kind = null;
+            bool mixed = false;
             foreach (LootItem item in rushed)
                 if (item != null && aboard.Contains(item) && !item.IsShattered)
                 {
                     pay += Mathf.RoundToInt(item.CurrentValue * extra);
                     count++;
+                    // Several rushes in one job pay together: only name the kind when it was the only one.
+                    string itemKind = item.Definition != null ? item.Definition.DisplayName : null;
+                    if (kind == null) kind = itemKind;
+                    else if (kind != itemKind) mixed = true;
                 }
-            if (count > 0) lines.Add((pay, $"RUSH ORDER: {count} x {rushName.Value} in time. +${pay:N0}"));
+            if (count > 0) lines.Add((pay, $"RUSH ORDER: {count} x {(mixed || kind == null ? "rushed items" : kind)} in time. +${pay:N0}"));
         }
     }
 }

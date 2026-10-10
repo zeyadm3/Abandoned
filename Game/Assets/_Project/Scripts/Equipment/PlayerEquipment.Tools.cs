@@ -22,7 +22,9 @@ namespace Abandoned.Equipment
                 case EquipmentKind.SprayChalk: return true; // drawn while held (TickHeldTool)
                 case EquipmentKind.Lockpick: return true;   // used on a shutter (E), not in the air
                 case EquipmentKind.ThermalCamera: return true; // switched on its owner's machine (ThermalCamera)
-                case EquipmentKind.Drone: LaunchDrone(); return true;
+                // Not from a locker or a vent: the pilot's controls are already off there, and landing would
+                // switch them back on with the player still hidden.
+                case EquipmentKind.Drone: if (!player.IsHiding) LaunchDrone(); return true;
                 // @@tools
                 default: return false;
             }
@@ -100,7 +102,9 @@ namespace Abandoned.Equipment
         {
             if (rpcParams.Receive.SenderClientId != OwnerClientId || player == null || player.IsDead) return;
             if (!Has(EquipmentKind.SprayChalk) || InHand == null || InHand.Kind != EquipmentKind.SprayChalk) return;
-            if (Vector3.Distance(eye, transform.position + Vector3.up * 1.5f) > 1.5f || direction.sqrMagnitude < 0.5f) return;
+            // Written so a NaN fails them (every comparison with NaN is false): a NaN ray must not reach physics.
+            if (!(Vector3.Distance(eye, transform.position + Vector3.up * 1.5f) <= 1.5f) || !(direction.sqrMagnitude >= 0.5f)
+                || float.IsInfinity(direction.sqrMagnitude)) return;
             if (!Physics.Raycast(eye, direction.normalized, out RaycastHit hit, ToolConfig.Current.ChalkReach, wallMask, QueryTriggerInteraction.Ignore)) return;
             Extraction.RunChalk.Current?.ServerAdd(hit.point, hit.normal, (byte)Mathf.Max(0, player.CrewSeat));
         }

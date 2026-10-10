@@ -27,7 +27,15 @@ namespace Abandoned.Company
         }
 
         /// <summary>The quota this crew owes on a board contract (M10.9): a short crew owes less.</summary>
-        public int QuotaFor(Contract c) => Mathf.Max(1000, Mathf.RoundToInt(c.Quota * contracts.CrewScale(CrewSize) / 1000f) * 1000);
+        public int QuotaFor(Contract c)
+        {
+            int forCrew = Mathf.Max(1000, Mathf.RoundToInt(c.Quota * contracts.CrewScale(CrewSize) / 1000f) * 1000);
+            // 0.19.4's difficulty preset is applied here, once, from the synced preset (same numbers as the run
+            // used before). It used to be applied only when the run started, so the board, the van and the
+            // depot printed a quota the job didn't have, and a job quit on purpose was penalised on the
+            // unscaled quota kept in the save.
+            return Mathf.RoundToInt(forCrew * DifficultyConfig.Current.QuotaAt(Difficulty) / 50f) * 50;
+        }
 
         /// <summary>The contract's modifier asset (null for none/unknown).</summary>
         public ContractModifier ModifierOf(Contract c)

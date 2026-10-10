@@ -168,8 +168,9 @@ namespace Abandoned.Extraction
             {
                 if (p == null || !p.IsSpawned || p.IsDead || p.NetworkManager != run.NetworkManager) continue;
                 Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
-                bool inside = RunHorrorDirector.Current != null ? RunHorrorDirector.Current.Inside(at)
-                    : fallback.Contains(at) && (TruckCargo.Current == null || !TruckCargo.Current.Carries(at));
+                // A vent crawl parks the player far under the level (NetworkPlayer.Vents): the ducts are inside.
+                bool inside = p.InVent || (RunHorrorDirector.Current != null ? RunHorrorDirector.Current.Inside(at)
+                    : fallback.Contains(at) && (TruckCargo.Current == null || !TruckCargo.Current.Carries(at)));
                 if (!inside) continue;
                 // Marked first: if that was everyone, the departure reads it as a lost job.
                 run.ServerMarkCrushed();
@@ -255,7 +256,7 @@ namespace Abandoned.Extraction
                 text = interval <= 0f ? $"DECAY starts at {config.Stages.FirstOrDefault().FromMinute:0}:00  run {run.Elapsed / 60f:0.0} min"
                     : $"DECAY every {interval:0}s  next {Mathf.Max(0f, nextFall - Time.time):0}s  cracking {pending.Count}  down {down}  total at {config.TotalCollapseMinute:0}:00";
             }
-            GUI.Label(new Rect(Screen.width - 360f, 118f, 350f, 22f), text);
+            GUI.Label(new Rect(Screen.width - 360f, 344f, 350f, 22f), text);
         }
 #endif
 

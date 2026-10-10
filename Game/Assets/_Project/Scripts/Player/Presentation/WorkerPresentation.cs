@@ -21,6 +21,7 @@ namespace Abandoned.Player
         private int shownSeat = -1;
         private GameObject heldTool;
         private Equipment.EquipmentDefinition shownTool;
+        private Equipment.PlayerEquipment gear;
 
         private void Awake()
         {
@@ -76,7 +77,7 @@ namespace Abandoned.Player
         // 0.21.1: the gear in this worker's hand, as the crew sees it (hidden on your own body, like the rest).
         private void HeldTool(bool holding)
         {
-            var gear = player != null ? player.GetComponent<Equipment.PlayerEquipment>() : null;
+            if (gear == null && player != null) gear = player.GetComponent<Equipment.PlayerEquipment>();
             Equipment.EquipmentDefinition inHand = !holding && gear != null && gear.IsSpawned ? gear.InHand : null;
             if (inHand != shownTool)
             {

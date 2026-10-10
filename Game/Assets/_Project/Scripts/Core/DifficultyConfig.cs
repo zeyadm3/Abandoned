@@ -26,6 +26,8 @@ namespace Abandoned.Core
 
         private static float At(float[] a) => a != null && (int)Active < a.Length ? a[(int)Active] : 1f;
         public float Quota => At(quota);
+        /// <summary>The quota scale of one preset: for every machine, which knows the preset from the company's synced state, not from <see cref="Active"/>.</summary>
+        public float QuotaAt(Difficulty preset) => quota != null && (int)preset < quota.Length ? quota[(int)preset] : 1f;
         public float MonsterDamage => At(monsterDamage);
         public float MonsterGap => At(monsterGap);
         public float Decay => At(decay);

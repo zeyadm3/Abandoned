@@ -64,6 +64,8 @@ namespace Abandoned.Player
             if (instance == this) instance = null;
             Freeze(false);
             UI.HudCallout.Clear(this);
+            // Leaving (F9) in the frame a photo was being taken ends its coroutine: the HUD comes back here.
+            RestoreHud();
         }
 
         // ---- 0.23.6 photo mode ----
@@ -78,17 +80,59 @@ namespace Abandoned.Player
             }
         }
 
+        // The HUD a photo in progress has hidden, and what to set it back to (null = none hidden).
+        private UnityEngine.UIElements.VisualElement photoHud;
+        private UnityEngine.UIElements.DisplayStyle photoHudShown;
+        private bool takingPhoto;
+
+        private void RestoreHud()
+        {
+            if (photoHud != null) photoHud.style.display = photoHudShown;
+            photoHud = null;
+            takingPhoto = false;
+        }
+
         private System.Collections.IEnumerator TakePhoto()
         {
+            // One at a time: a second photo started while the first had the HUD hidden remembered "hidden"
+            // as the state to restore, and the HUD never came back.
+            if (takingPhoto) yield break;
+            takingPhoto = true;
             UnityEngine.UIElements.VisualElement hud = UI.HudLayer.Root;
-            var shown = hud != null ? hud.resolvedStyle.display : UnityEngine.UIElements.DisplayStyle.Flex;
-            if (hud != null) hud.style.display = UnityEngine.UIElements.DisplayStyle.None;
+            if (hud != null)
+            {
+                photoHudShown = hud.resolvedStyle.display;
+                photoHud = hud;
+                hud.style.display = UnityEngine.UIElements.DisplayStyle.None;
+            }
             yield return new WaitForEndOfFrame();
-            System.IO.Directory.CreateDirectory(PhotoFolder);
-            string file = System.IO.Path.Combine(PhotoFolder, $"Abandoned_{System.DateTime.Now:yyyyMMdd_HHmmss}.png");
-            ScreenCapture.CaptureScreenshot(file);
+            // The Pictures folder can refuse us (macOS privacy, a read-only or redirected folder). That used
+            // to throw here, which ended this coroutine with the HUD still hidden; now the photo goes to the
+            // game's own folder instead, and the HUD is restored whatever happens.
+            string folder = PhotoFolder, file = null;
+            for (int attempt = 0; attempt < 2 && file == null; attempt++)
+            {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(folder);
+                    file = System.IO.Path.Combine(folder, $"Abandoned_{System.DateTime.Now:yyyyMMdd_HHmmss}.png");
+                    ScreenCapture.CaptureScreenshot(file);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"[Photo] Couldn't save to {folder} ({e.Message}).");
+                    file = null;
+                    folder = System.IO.Path.Combine(Application.persistentDataPath, "Photos");
+                }
+            }
             yield return null;
-            if (hud != null) hud.style.display = shown;
+            RestoreHud();
+            if (file == null)
+            {
+                Audio.GameAudio.PlayUi(Audio.SoundId.UiError, 0.8f);
+                UI.ToastFeed.Show("PHOTO", "Couldn't save the photo: no folder to write to.", null, UI.ToastFeed.Kind.Warn);
+                yield break;
+            }
             Audio.GameAudio.PlayUi(Audio.SoundId.UiConfirm, 0.8f);
             UI.ToastFeed.Show("PHOTO", $"Saved to {file}", null, UI.ToastFeed.Kind.Good);
         }

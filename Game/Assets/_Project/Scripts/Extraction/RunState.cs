@@ -145,7 +145,9 @@ namespace Abandoned.Extraction
             shownPhase = State.Phase;
             if (State.Phase == RunPhase.Honking) Honk();
             if (!IsServer) return;
-            if (State.Phase == RunPhase.Running && Time.time >= nextTally) Tally();
+            // Honking too: loot still goes in during the honk, and the truck's display, the HUD and the
+            // overtime bonus must show what is really aboard, not the haul from when the lever was pulled.
+            if ((State.Phase == RunPhase.Running || State.Phase == RunPhase.Honking) && Time.time >= nextTally) Tally();
             // Nobody left to drive: the run is over (the truck "leaves" with whatever is already in it).
             if (State.Phase == RunPhase.Running && EveryoneDead()) Depart();
             if (State.Phase == RunPhase.Honking && Now >= State.HonkEnd) Depart();
@@ -270,7 +272,10 @@ namespace Abandoned.Extraction
             var aboard = new HashSet<LootItem>(Cargo(truck));
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
-                if (p == null || p.IsDead || !truck.Carries(p.transform.position)) continue;
+                // The same test Depart uses for who made it (a knocked-down rider's body, not their root),
+                // or their pockets would count toward the haul but not toward the bonuses.
+                if (p == null || p.NetworkManager != NetworkManager || p.IsDead) continue;
+                if (!truck.Carries(p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position)) continue;
                 foreach (Grabbable g in p.Carrier.Inventory.Items)
                     if (g != null && g.TryGetComponent(out LootItem item)) aboard.Add(item);
             }

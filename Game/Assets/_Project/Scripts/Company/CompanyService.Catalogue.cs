@@ -38,7 +38,14 @@ namespace Abandoned.Company
         {
             if (!IsServer || !IsSpawned || save == null || catalogue.Count == save.catalogue.Count) return;
             catalogue.Clear();
-            foreach (string id in save.catalogue) catalogue.Add(new FixedString64Bytes(id));
+            foreach (string id in save.catalogue)
+            {
+                // Ids come from the save file: one too long for the wire (a hand-edited or damaged save) is
+                // cut, not thrown on, or this would throw from Update every frame and payday would never run.
+                var wire = new FixedString64Bytes();
+                wire.CopyFromTruncated(id ?? "");
+                catalogue.Add(wire);
+            }
         }
 
         private void HookCatalogue() => catalogue.OnListChanged += OnCatalogueChanged;

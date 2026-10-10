@@ -90,7 +90,7 @@ namespace Abandoned.Extraction
             int lit = 0, faulty = 0;
             foreach (LightFixture f in fixtures)
                 if (f != null && f.Lit) { lit++; if (f.Faulty) faulty++; }
-            GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
+            GUI.Label(new Rect(Screen.width - 360f, 208f, 350f, 22f),
                 $"POWER {(Powered ? "on" : "OFF")}{(IsNight ? "  NIGHT" : "")}  fixtures lit {lit}/{fixtures.Count} ({faulty} faulty)  fog {(RenderSettings.fog ? RenderSettings.fogDensity.ToString("0.000") : "off")}");
         }
 #endif

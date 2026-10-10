@@ -69,9 +69,16 @@ namespace Abandoned.Audio
                     if (!Application.isBatchMode) Warm();
                     return null;
                 }
+                // Claimed before rendering here, not after: the worker may be on this very sound (the first
+                // ones it renders are the first ones the menu plays), and it must see the claim when it finishes.
+                claimed[key] = 1;
                 samples = Render(key);
             }
             claimed[key] = 1;
+            // The worker's copy, if it landed while this thread rendered its own: left in `rendered` it was
+            // never freed, and Adopt, which takes the first entry it finds, met it every frame for the rest
+            // of the session and adopted nothing else.
+            rendered.TryRemove(key, out _);
             if (samples == null || samples.Data == null || samples.Data.Length < samples.Channels)
             {
                 missing.Add(key);
@@ -100,6 +107,12 @@ namespace Abandoned.Audio
             if (rendered.IsEmpty) return;
             foreach (KeyValuePair<int, SynthSamples> pair in rendered)
             {
+                // Already a clip (or known bad): a stale render, dropped so it can't block the queue.
+                if (clips.ContainsKey(pair.Key) || missing.Contains(pair.Key))
+                {
+                    rendered.TryRemove(pair.Key, out _);
+                    continue;
+                }
                 Clip(pair.Key, renderNow: false);
                 return;
             }

@@ -130,9 +130,12 @@ namespace Abandoned.Company
                 else File.Move(temp, path);
                 return true;
             }
-            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+            // Every failure, not only IO ones: File.Replace also throws PlatformNotSupported/Security/Argument
+            // errors on odd file systems, and an exception escaping here would stop payday before the
+            // crew is sent its outcome (the caller publishes state right after saving).
+            catch (Exception e)
             {
-                Debug.LogWarning($"[Save] Couldn't write {path} ({e.Message}); will try again at the next save.");
+                Debug.LogWarning($"[Save] Couldn't write {path} ({e.GetType().Name}: {e.Message}); will try again at the next save.");
                 return false;
             }
         }

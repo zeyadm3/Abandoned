@@ -32,7 +32,10 @@ namespace Abandoned.Core
         /// <summary>The platform under a point (feet), if any.</summary>
         public static MovingPlatform Under(Vector3 feet, float reach = 0.45f)
         {
-            if (!Physics.Raycast(feet + Vector3.up * 0.2f, Vector3.down, out RaycastHit hit, 0.2f + reach, ~0, QueryTriggerInteraction.Ignore))
+            // Not players or loot: the ray starts inside the rider's own body, and a crate between the feet
+            // and the deck would otherwise hide the platform and leave the rider behind.
+            int ground = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast");
+            if (!Physics.Raycast(feet + Vector3.up * 0.2f, Vector3.down, out RaycastHit hit, 0.2f + reach, ground, QueryTriggerInteraction.Ignore))
                 return null;
             return hit.collider.GetComponentInParent<MovingPlatform>();
         }

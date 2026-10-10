@@ -99,7 +99,7 @@ namespace Abandoned.Extraction
         private void OnGUI()
         {
             if (!DebugView.Visible || !IsSpawned) return;
-            GUI.Label(new Rect(Screen.width - 360f, 118f, 350f, 22f),
+            GUI.Label(new Rect(Screen.width - 360f, 322f, 350f, 22f),
                 $"BREAKERS lit {System.Convert.ToString(RestoredMask, 2)} ({BreakerPanel.All.Count} panels)");
         }
 #endif

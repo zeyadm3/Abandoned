@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Extraction;
 using Abandoned.Networking;
@@ -43,8 +44,32 @@ namespace Abandoned.Threats
         }
         private static ThreatPacingConfig Pacing => ThreatPacingConfig.Current;
         public float NextArrivalIn => spawnAt != 0f ? -1f : Mathf.Max(0f, nextArrival - Time.time);
-        public int Alive => Threat.All.Count(t => t != null && t.IsSpawned && t.NetworkManager == Manager && !(t is LastHunter));
-        public int AliveCap => Pacing.AliveCap(NetworkPlayer.All.Count(p => p != null && p.NetworkManager == Manager), Level);
+        // Plain loops: the host's Update reads these several times a frame, and the LINQ versions allocated
+        // an enumerator and a closure on every read for the whole job.
+        public int Alive
+        {
+            get
+            {
+                NetworkManager manager = Manager;
+                IReadOnlyList<Threat> all = Threat.All;
+                int n = 0;
+                for (int i = 0; i < all.Count; i++)
+                    if (all[i] != null && all[i].IsSpawned && all[i].NetworkManager == manager && !(all[i] is LastHunter)) n++;
+                return n;
+            }
+        }
+        public int AliveCap
+        {
+            get
+            {
+                NetworkManager manager = Manager;
+                IReadOnlyList<NetworkPlayer> all = NetworkPlayer.All;
+                int crew = 0;
+                for (int i = 0; i < all.Count; i++)
+                    if (all[i] != null && all[i].NetworkManager == manager) crew++;
+                return Pacing.AliveCap(crew, Level);
+            }
+        }
         private static int Level => RunState.Current != null ? RunState.Current.Terms.ThreatLevel : 1;
         private void OnDisable() { if (Current == this) Current = null; RunDirector.RunStarted -= OnRunStarted; }
         private NetworkManager Manager => NetworkBootstrap.Resolve(bootstrap) is NetworkBootstrap b ? b.Manager : null;

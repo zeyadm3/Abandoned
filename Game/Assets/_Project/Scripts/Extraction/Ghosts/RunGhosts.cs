@@ -40,6 +40,8 @@ namespace Abandoned.Extraction
             NetworkObject sender = NetworkManager.ConnectedClients.TryGetValue(client, out NetworkClient c) ? c.PlayerObject : null;
             if (sender == null || !sender.TryGetComponent(out NetworkPlayer ghost) || !ghost.IsDead) return;
             if (next.TryGetValue(client, out float ready) && Time.time < ready) return;
+            // From a client: a NaN here would be pushed into a rigidbody as a force, and PhysX never recovers that body.
+            if (!float.IsFinite(at.x + at.y + at.z) || !float.IsFinite(direction.x + direction.y + direction.z)) return;
             bool near = false;
             foreach (NetworkPlayer p in NetworkPlayer.All)
                 if (p != null && !p.IsDead && Vector3.Distance(p.transform.position, at) < NearLiving) near = true;

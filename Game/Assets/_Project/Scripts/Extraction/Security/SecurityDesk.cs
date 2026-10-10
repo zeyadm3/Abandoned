@@ -53,7 +53,8 @@ namespace Abandoned.Extraction
         private void Update()
         {
             if (!watching) return;
-            bool leave = watcher == null || watcher.IsDead || !Powered;
+            // Knocked down at the desk ends the viewing: the body gets its controls back by getting up.
+            bool leave = watcher == null || watcher.IsDead || watcher.Ragdoll.IsRagdolled || !Powered;
             if (!leave && input != null && Time.time > openedAt + 0.25f)
             {
                 PlayerInputFrame frame = input.Current;
@@ -97,7 +98,7 @@ namespace Abandoned.Extraction
                     cam.Lens.enabled = false;
                     cam.Lens.targetTexture = null;
                 }
-            if (watcher != null && !watcher.IsDead) watcher.OwnerSetControl(true);
+            if (watcher != null && !watcher.IsDead && !watcher.Ragdoll.IsRagdolled) watcher.OwnerSetControl(true);
             watcher = null;
         }
 
@@ -108,7 +109,10 @@ namespace Abandoned.Extraction
 
         private void OnDestroy()
         {
-            if (feed != null) feed.Release();
+            if (feed == null) return;
+            // Release frees the pixels; the texture object itself was left behind after every visit to the mall.
+            feed.Release();
+            Destroy(feed);
         }
 
         // The feed, full screen (0.22.8: UI Toolkit in the revamp's style, was IMGUI): the picture, the camera's

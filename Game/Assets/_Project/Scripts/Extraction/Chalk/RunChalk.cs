@@ -21,6 +21,11 @@ namespace Abandoned.Extraction
         private readonly NetworkList<ChalkDot> dots = new();
         private Mesh mesh;
         private GameObject drawn;
+        // Kept between rebuilds: the mesh is rebuilt on every new dot (about 16 a second while someone
+        // sprays), and three fresh lists of up to 800 dots each time was over a megabyte of garbage a second.
+        private readonly List<Vector3> verts = new();
+        private readonly List<Color> colours = new();
+        private readonly List<int> tris = new();
         private bool dirty;
         private float nextHiss;
 
@@ -38,6 +43,8 @@ namespace Abandoned.Extraction
             dots.OnListChanged -= OnChanged;
             if (Current == this) Current = null;
             if (drawn != null) Destroy(drawn);
+            // A mesh made in code isn't destroyed with the object that shows it: one was left behind per job.
+            if (mesh != null) Destroy(mesh);
         }
 
         private void OnChanged(NetworkListEvent<ChalkDot> change)
@@ -76,9 +83,9 @@ namespace Abandoned.Extraction
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             float half = ToolConfig.Current.ChalkDotSize * 0.5f;
-            var verts = new List<Vector3>(dots.Count * 4);
-            var colours = new List<Color>(dots.Count * 4);
-            var tris = new List<int>(dots.Count * 6);
+            verts.Clear();
+            colours.Clear();
+            tris.Clear();
             foreach (ChalkDot d in dots)
             {
                 Vector3 n = d.Normal.sqrMagnitude > 0.1f ? d.Normal.normalized : Vector3.up;

@@ -31,6 +31,9 @@ namespace Abandoned.Networking
         private UnityEngine.UIElements.Label deathCause;
         private string ghostShown;
         private readonly Dictionary<Threat, UnityEngine.UIElements.Label> threatMarks = new();
+        // Reused every frame (these ran as LINQ queries each frame, for the living as well).
+        private readonly List<NetworkPlayer> alive = new();
+        private readonly List<Threat> goneMarks = new();
 
         public bool Spectating { get; private set; }
         /// <summary>0.19.2: the ghost camera (where a ghost's knock, flicker and nudge aim).</summary>
@@ -53,8 +56,10 @@ namespace Abandoned.Networking
                 return;
             }
 
-            List<NetworkPlayer> alive = NetworkPlayer.All.Where(p => p != null && p != player && p.NetworkManager == player.NetworkManager && !p.IsDead)
-                .OrderBy(p => p.OwnerClientId).ToList();
+            alive.Clear();
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+                if (p != null && p != player && p.NetworkManager == player.NetworkManager && !p.IsDead) alive.Add(p);
+            alive.Sort((a, b) => a.OwnerClientId.CompareTo(b.OwnerClientId));
             PlayerInputFrame input = inputReader != null ? inputReader.Current : default;
             if (input.UsePressed) followIndex++;
             if (input.DropPressed) followIndex--;
@@ -141,7 +146,10 @@ namespace Abandoned.Networking
                 UI.MenuKit.Show(mark, on && cam != null);
                 if (on && cam != null) UI.HudLayer.Place(mark, t.transform.position + Vector3.up * 2.6f, cam);
             }
-            foreach (Threat gone in threatMarks.Keys.Where(k => k == null).ToList())
+            if (threatMarks.Count == 0) return;
+            goneMarks.Clear();
+            foreach (Threat marked in threatMarks.Keys) if (marked == null) goneMarks.Add(marked);
+            foreach (Threat gone in goneMarks)
             {
                 UI.HudLayer.Remove(threatMarks[gone]);
                 threatMarks.Remove(gone);
