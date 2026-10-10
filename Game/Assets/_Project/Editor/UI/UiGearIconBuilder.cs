@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
         {
             "flashlight", "radio", "hand_trolley", "medkit", "planks", "noise_maker", "stress_scanner", "crowbar",
             "backpack", "support_jack", "flatbed", "rope_pulley", "bolt_cutters", "motion_detector", "night_vision", "battery", "transport_van",
-            "sledgehammer", "crash_mat", "spray_chalk", "glow_sticks", "flares", // @@icons
+            "sledgehammer", "crash_mat", "spray_chalk", "glow_sticks", "flares", "moving_blanket", // @@icons
         };
 
         [MenuItem("Tools/Abandoned/UI/Create Gear Icons")]
@@ -124,6 +124,9 @@ namespace Abandoned.EditorTools
                     Line(0.35f, 0.2f, 0.62f, 0.8f, 0.06f); Ring(0.5f, 0.5f, 0.32f, 0.015f); break;
                 case "flares":
                     Line(0.4f, 0.15f, 0.55f, 0.65f, 0.055f); Disc(0.58f, 0.74f, 0.08f); Line(0.62f, 0.82f, 0.7f, 0.9f, 0.02f); Line(0.5f, 0.84f, 0.48f, 0.93f, 0.02f); break;
+                case "moving_blanket":
+                    Frame(0.18f, 0.22f, 0.64f, 0.56f, 0.05f); Line(0.18f, 0.4f, 0.82f, 0.4f, 0.02f); Line(0.18f, 0.6f, 0.82f, 0.6f, 0.02f);
+                    Line(0.4f, 0.22f, 0.4f, 0.78f, 0.02f); Line(0.6f, 0.22f, 0.6f, 0.78f, 0.02f); break;
                 // @@iconshapes
                 case "night_vision":
                     Ring(0.32f, 0.44f, 0.17f, 0.06f); Ring(0.68f, 0.44f, 0.17f, 0.06f);

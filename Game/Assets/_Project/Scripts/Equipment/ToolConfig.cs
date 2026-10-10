@@ -51,6 +51,16 @@ namespace Abandoned.Equipment
         public int ChalkMaxDots => chalkMaxDots;
         public Material ChalkMaterial => chalkMaterial;
 
+        [Header("Moving blanket (0.18.5)")]
+        [Tooltip("Share of an impact's speed a wrapped item feels.")]
+        [SerializeField, Range(0.05f, 1f)] private float blanketCushion = 0.4f;
+        [SerializeField, Min(0.5f)] private float blanketReach = 2.6f;
+        [SerializeField] private Material blanketMaterial;
+
+        public float BlanketCushion => blanketCushion;
+        public float BlanketReach => blanketReach;
+        public Material BlanketMaterial => blanketMaterial;
+
         // @@fields
 
         private static ToolConfig current;
@@ -68,6 +78,7 @@ namespace Abandoned.Equipment
 
 #if UNITY_EDITOR
         public void EditorSetChalkMaterial(Material material) => chalkMaterial = material;
+        public void EditorSetBlanketMaterial(Material material) => blanketMaterial = material;
 #endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

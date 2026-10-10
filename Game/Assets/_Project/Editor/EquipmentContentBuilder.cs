@@ -52,6 +52,8 @@ namespace Abandoned.EditorTools
                     EquipmentKind.GlowSticks, 150, 1, true, new Color(0.3f, 1f, 0.4f)),
                 Item("flares", "Flare", "Throw it (use): a fierce red light for a minute and a half. It hisses, and things hear it (single use).",
                     EquipmentKind.Flares, 350, 2, true, new Color(1f, 0.2f, 0.15f)),
+                Item("moving_blanket", "Moving Blanket", "Look at an item and use: wrapped, its knocks hurt it far less for the rest of the job (single use).",
+                    EquipmentKind.MovingBlanket, 600, 2, true, new Color(0.25f, 0.35f, 0.55f)),
                 // @@gear
             };
             CreateNoiseMaker();

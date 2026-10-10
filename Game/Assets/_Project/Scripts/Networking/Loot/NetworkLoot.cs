@@ -67,6 +67,7 @@ namespace Abandoned.Networking
             SyncPhysicsAuthority();
             item.CollisionImpact += OnCollisionImpact;
             hold.OnValueChanged += OnHoldChanged;
+            SpawnBlanket(); // 0.18.5
             if (IsServer)
             {
                 item.Remover = RemoveByDespawn;
@@ -86,6 +87,7 @@ namespace Abandoned.Networking
         {
             item.CollisionImpact -= OnCollisionImpact;
             hold.OnValueChanged -= OnHoldChanged;
+            DespawnBlanket();
             value.OnValueChanged -= OnValueChanged;
             item.ValueChanged -= WriteValue;
             item.Damaged -= OnDamaged;

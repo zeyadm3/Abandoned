@@ -27,6 +27,7 @@ namespace Abandoned.Equipment
         SprayChalk,
         GlowSticks,
         Flares,
+        MovingBlanket,
         // @@kinds
     }
 }

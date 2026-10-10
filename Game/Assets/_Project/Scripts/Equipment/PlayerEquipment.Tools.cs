@@ -33,6 +33,7 @@ namespace Abandoned.Equipment
                 case EquipmentKind.CrashMat: return LayMat();
                 case EquipmentKind.GlowSticks: return ThrowLight(EquipmentKind.GlowSticks, 0.7f);
                 case EquipmentKind.Flares: return ThrowLight(EquipmentKind.Flares, 1f);
+                case EquipmentKind.MovingBlanket: return Wrap();
                 // @@consumables
                 default: return false;
             }
@@ -110,6 +111,25 @@ namespace Abandoned.Equipment
             NetworkObject thrown = SpawnGear(kind, at, t.rotation);
             if (thrown == null) return false;
             thrown.GetComponent<ThrownLight>().Launch(Aim * throwSpeed.x * strength + Vector3.up * throwSpeed.y * 0.6f);
+            return true;
+        }
+
+        // Host (0.18.5): wrap the loot you're looking at (not one in someone's hands).
+        private bool Wrap()
+        {
+            int lootMask = LayerMask.GetMask(GameLayers.Loot);
+            Networking.NetworkLoot loot = Physics.Raycast(Eye, Aim, out RaycastHit hit, ToolConfig.Current.BlanketReach, lootMask, QueryTriggerInteraction.Ignore)
+                ? hit.collider.GetComponentInParent<Networking.NetworkLoot>() : null;
+            if (loot == null)
+            {
+                HintRpc("Look at the item you want to wrap");
+                return false;
+            }
+            if (!loot.ServerWrap())
+            {
+                HintRpc("That one is already wrapped");
+                return false;
+            }
             return true;
         }
 

@@ -181,3 +181,9 @@ rattles; in the bay, what's in the basket counts like anything else there. `RunC
 cart at each of 5 `CartBay` markers on the ground floor's concourse and food court 2 s into each job (through
 `NetworkLootSpawner.SpawnExtra`, so a re-roll clears them). Menu: Tools/Abandoned/Mall/Add Shopping Carts (0.18.4).
 Watch on the test: whether loot stays in the basket at drag speed, and how the drag hold point feels.
+
+## 0.18.5 moving blanket
+New consumable ($600, level 2): look at a loot item (2.6 m) and use. The host sets a new `NetworkLoot.Wrapped`
+flag (NetworkLoot.Blanket.cs); every machine drapes a quilt box over it and sets `LootItem.Cushion` to 0.4, so
+its impacts keep 40 % of their speed for the rest of the job (with a crash mat too, the two multiply).
+Menu: Tools/Abandoned/Content/Moving Blanket (0.18.5).
