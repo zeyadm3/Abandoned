@@ -165,6 +165,9 @@ namespace Abandoned.Audio
             Set(SoundId.LiftSnap, Fx, 30, 5f, 70f, Syn, Open, 1, "A LIFT CABLE SNAPS");
             // 0.16.4: vents (thin sheet metal knocked about, never a creak).
             Set(SoundId.VentCrawl, Fx, 100, 1.5f, 22f, Syn, Dull, 3, "something crawls in the vents", 0.8f);
+            // 0.16.5: store alarms (an electric bell; the cut is a snip).
+            Set(SoundId.AlarmBell, Fx, 34, 6f, 70f, Syn, Dull, 1, "AN ALARM BELL RINGS", 0.9f, 0f);
+            Set(SoundId.AlarmCut, Fx, 110, 1f, 12f, Syn, Wall, 1);
             // @@catalog
             return t;
         }

@@ -52,3 +52,11 @@ follows them in (`Threat.HiddenFromMe`), whatever it saw. The duct is not modell
 parked 60 m under the exit for the crawl (black screen with a countdown), then stands at the far grille.
 Crawl time = grille distance / 1.4 m/s (at least 4 s). The duct rattles (noise 0.3 every 2 s at its middle).
 Tunables: Data/Extraction/Resources/VentConfig. Menu: Tools/Abandoned/Mall/Add Vents (0.16.4).
+
+## 0.16.5 store alarms
+An alarm box on a wall inside each of the 8 stores, nearest its shopfront. `RunAlarms` (RunState) wires
+each store with 35 % chance per job (by shutter index, seeded), arming 5 s into the job. The first living
+player inside a wired store trips it once: an electric bell rings for 30 s (noise 1.0 every 2.5 s), the lamp
+flashes. Bolt cutters in a hand slot + E at the box disarm it, before or while it rings. Armed boxes blink
+red every 2 s; a disarmed or unwired box is dark. Tunables: Data/Extraction/Resources/AlarmConfig.
+Menu: Tools/Abandoned/Mall/Add Store Alarms (0.16.5).

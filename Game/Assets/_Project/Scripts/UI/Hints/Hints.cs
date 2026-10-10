@@ -58,6 +58,7 @@ namespace Abandoned.UI
                 HintId.Breaker => $"A breaker panel ({interact}). Throwing it lights this part of the building for two minutes, but the bang and the hum carry, and things come to see.",
                 HintId.Lift => $"The freight lift ({interact}) is slow and loud, and it needs power. Mind the weight on the deck: overloaded, it gives way halfway.",
                 HintId.Vent => $"A vent. Crouch and press {interact} to crawl through to wherever it comes out. Nothing follows you in there, but the duct rattles, and only what fits in your pockets comes with you.",
+                HintId.Alarm => $"An alarm box. A blinking lamp means this store is wired: walk in and the bell rings for half a minute, and everything that hears it comes. Bolt cutters ({interact} at the box) cut it.",
                 // @@hinttext
                 _ => "",
             };

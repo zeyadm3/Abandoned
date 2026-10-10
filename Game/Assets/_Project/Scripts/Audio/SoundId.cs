@@ -132,6 +132,9 @@ namespace Abandoned.Audio
         LiftSnap,
         // 0.16.4: vents (thin sheet metal knocked about, never a creak).
         VentCrawl,
+        // 0.16.5: store alarms (an electric bell; the cut is a snip).
+        AlarmBell,
+        AlarmCut,
         // @@ids
     }
 }

@@ -67,5 +67,25 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Fade(Synth.Noise(0.5f, 1652 + take, 2500f, 1200f, 0.05f, 4f), 0.05f, 0.15f), 0.25f, 0.3f);
             return SynthReverb.Apply(d, 0.5f, 0.35f);
         }
+
+        /// <summary>An old electric shop bell: a clapper hammering a gong about twenty times a second, for one second.</summary>
+        public static float[] AlarmBell()
+        {
+            float[] d = Synth.Buffer(1.15f);
+            for (int i = 0; i < 22; i++)
+                Patch.Layer(d, Synth.Modal(0.25f, 1180f, Patch.Bar, null, 14f), 0.5f + 0.1f * (i % 2), i * 0.048f);
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(1.1f, 2360f, 2360f, 0.01f, 0.2f, 1), 0.01f, 0.05f), 0.15f);
+            return Synth.Fade(d, 0.002f, 0.06f);
+        }
+
+        /// <summary>Bolt cutters through a wire: the squeeze and the snip.</summary>
+        public static float[] AlarmCut()
+        {
+            float[] d = Synth.Buffer(0.4f);
+            Patch.Layer(d, Synth.Noise(0.15f, 1661, 1800f, 900f, 0.05f, 10f), 0.3f);
+            Patch.Layer(d, Synth.Modal(0.12f, 3200f, Patch.Bar, null, 60f), 0.8f, 0.14f);
+            Patch.Layer(d, Synth.Noise(0.05f, 1662, 9000f, 4000f, 0.001f, 80f), 0.6f, 0.14f);
+            return d;
+        }
     }
 }

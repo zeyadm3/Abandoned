@@ -30,6 +30,8 @@ namespace Abandoned.UI
         Lift,
         // 0.16.4
         Vent,
+        // 0.16.5
+        Alarm,
         // @@hints
     }
 }
