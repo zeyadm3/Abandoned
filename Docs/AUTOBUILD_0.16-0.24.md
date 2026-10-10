@@ -423,3 +423,9 @@ Revamp.uss: the death card is the company's "lost employee" form (red title, the
 spine); the ghost bar gets a slate strip; the truck-leaving banner is hazard-ruled with a heavy monospace
 countdown. The ghost's HUD line now also says a crewmate can hire them back at the truck's radio while the
 agency still sends people (0.19.1). The low-health vignette and blood (art, PlayerHealthConfig) are unchanged.
+
+## 0.22.5 main menu and Play flow
+Revamp.uss: the title column's shade is slate with a yellow edge, condensed big buttons, the memo line in
+monospace; lit buttons take a yellow underline instead of the old orange glow; the Play screen's Solo / Host /
+Join cards are slate forms with a yellow top bar and yellow titles; the Early Access watermark is faint yellow
+monospace. The menu's overlay effects (grain, scratches, flicker) are unchanged and still obey Reduce menu effects.

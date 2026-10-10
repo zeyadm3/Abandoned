@@ -250,3 +250,33 @@
 .truck-banner__count { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf"); color: var(--c-text); }
 .truck-banner__status { color: var(--c-bad); }
 .truck-banner__status--good { color: var(--c-good); }
+
+/* ==== 0.22.5 main menu and Play ==== */
+
+.main__shade {
+    background-color: rgba(10, 11, 12, 0.78);
+    border-right-width: 4px;
+    border-right-color: var(--c-accent);
+}
+.main__logo { color: var(--c-text); letter-spacing: 6px; }
+.main__tape { height: 8px; }
+.main__button { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf"); letter-spacing: 2px; }
+.main__memo { color: var(--c-faint); -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf"); font-size: 14px; }
+
+/* Lit buttons: a yellow underline and no orange glow. */
+.menu-button { border-bottom-color: rgba(242, 190, 40, 0); }
+.menu-button--lit { border-bottom-color: var(--c-accent); color: var(--c-accent); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+.menu-button--pressed { color: var(--c-accent-hot); }
+
+/* Play cards: three company forms side by side. */
+.play__card {
+    background-color: var(--c-panel-2);
+    border-top-width: 4px;
+    border-top-color: var(--c-accent);
+    border-radius: 0;
+}
+.play__title { color: var(--c-accent); letter-spacing: 2px; }
+.play__blurb { color: var(--c-dim); }
+
+/* The Early Access notice and watermark. */
+.ea-watermark { color: rgba(242, 190, 40, 0.45); -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf"); }
