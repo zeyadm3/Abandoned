@@ -32,7 +32,7 @@ namespace Abandoned.EditorTools
             Material glass = SalvageMaterials.Get("Glass");
             foreach (StructuralSection s in mall.GetComponentsInChildren<StructuralSection>(true))
             {
-                if (!s.CanCollapse || (s.Type != SectionType.Floor && s.Type != SectionType.Walkway)) continue;
+                if (!s.CanCollapse || s.Type == SectionType.Stair || s.Type == SectionType.Ceiling) continue;
                 Vector3 at = Centre(s);
                 int floor = Mathf.RoundToInt(at.y / MallLayout.StoryHeight);
                 var tile = new Vector2Int(Mathf.FloorToInt(at.x / MallLayout.Tile), Mathf.FloorToInt(at.z / MallLayout.Tile));
