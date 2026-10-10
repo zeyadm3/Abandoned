@@ -449,3 +449,11 @@ RenderTexture as a CRT-green-tinted background, the camera's name and clock in V
 instead of IMGUI. Revamp.uss: the drive screen in black with a yellow title; the appraisal's side column (crew,
 WHO DID WHAT, awards) gets the slate panel and yellow spine, award icons tinted yellow; the receipt stays paper
 with a yellow header band. The truck's haul display is a texture panel and follows the tokens.
+
+## 0.22.9 consistency pass
+Revamp.uss: one focus highlight on everything focusable (buttons, toggles, sliders, fields, tiles, job sheets,
+guide entries: a yellow frame; settings rows tint), which 0.23.0's pad navigation relies on; long text wraps in
+panels, notes, toasts, tips and Play blurbs, while numbers, key caps and HUD callouts never wrap; crew and loot
+names clip with an ellipsis. Not done (needs eyes): checking every screen at 16:9 / 16:10 / ultrawide and UI
+scale 0.75–1.5×, and removing the pre-0.22 theme textures (left in place; Revamp.uss overrides them, and
+deleting it restores the old look). The 0.22 restyle was written without seeing it: look at it first.

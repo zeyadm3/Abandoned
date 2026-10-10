@@ -328,7 +328,7 @@
 
 /* The drive: a slate card with the company's yellow rule. */
 .travel { background-color: rgb(10, 11, 12); }
-.travel__title { color: var(--c-accent); letter-spacing: 6px; }
+.travel__where { color: var(--c-accent); }
 
 /* The appraisal: the receipt stays paper; the side column is the company's verdict. */
 .appraisal__side { border-left-width: 6px; border-left-color: var(--c-accent); background-color: var(--c-panel); }
@@ -362,3 +362,19 @@
     font-size: 19px;
     letter-spacing: 2px;
 }
+
+/* ==== 0.22.9 consistency ==== */
+
+/* One focus highlight everywhere (0.23.0 drives focus with a pad): a yellow frame on anything focusable. */
+.unity-button:focus, .unity-toggle:focus, .unity-slider:focus, .unity-text-field:focus, .tile:focus, .sheet:focus, .field-guide__entry:focus {
+    border-color: var(--c-accent);
+    border-width: 2px;
+}
+.unity-toggle:focus > .unity-toggle__input > .unity-toggle__checkmark { border-color: var(--c-accent-hot); }
+.setting:focus-within { background-color: rgba(242, 190, 40, 0.06); }
+
+/* Long text and long names (translations, Arabic, Cyrillic and CJK through the 0.19.9 fallbacks) wrap rather
+   than run off a panel; numbers and key caps never wrap. */
+.panel .text, .settings__note, .toast__body, .hud-hint, .play__blurb, .field-guide__body { white-space: normal; }
+.keycap, .run-haul__amount, .truck-banner__count, .hud-callout { white-space: nowrap; }
+.crew-row__name, .loot-tag__name { overflow: hidden; text-overflow: ellipsis; -unity-text-overflow-position: end; }
