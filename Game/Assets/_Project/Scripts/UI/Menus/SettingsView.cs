@@ -212,6 +212,26 @@ namespace Abandoned.UI
                 VoiceSettings.MicMuted = false;
             });
 
+            Add("Controls+", "Look speed, hold or toggle, and the mouse wheel.", () =>
+            {
+                Section("LOOK");
+                Note(MenuKit.Percent(body, "Horizontal look speed", GameSettings.LookX / 2f, v => GameSettings.LookX = v * 2f), "50 % is normal.");
+                Note(MenuKit.Percent(body, "Vertical look speed", GameSettings.LookY / 2f, v => GameSettings.LookY = v * 2f), "50 % is normal.");
+                Note(MenuKit.Percent(body, "Controller look speed", GameSettings.PadLookSpeed / 1800f, v => GameSettings.PadLookSpeed = Mathf.Max(100f, v * 1800f)), "The right stick at full tilt.");
+                Section("HOLD OR TOGGLE");
+                Note(Toggle("Toggle sprint", GameSettings.SprintToggle, v => GameSettings.SprintToggle = v), "Press once to run, again to walk.");
+                Note(Toggle("Toggle push to talk", GameSettings.TalkToggle, v => GameSettings.TalkToggle = v), "Press once to open your mic, again to close it.");
+                Note(Toggle("Toggle radio", GameSettings.RadioToggle, v => GameSettings.RadioToggle = v), "Press once to key the radio, again to let go.");
+                Section("HANDS");
+                Note(Toggle("Mouse wheel switches hand slots", GameSettings.WheelSwitchesSlots, v => GameSettings.WheelSwitchesSlots = v), "With empty hands. Hold Inventory and scroll to pick the pocket item Drop takes out.");
+            }, () =>
+            {
+                GameSettings.LookX = GameSettings.LookY = 1f;
+                GameSettings.PadLookSpeed = 900f;
+                GameSettings.SprintToggle = GameSettings.TalkToggle = GameSettings.RadioToggle = false;
+                GameSettings.WheelSwitchesSlots = true;
+            });
+
             Add("Accessibility", "Captions, colours and calmer effects.", () =>
             {
                 Section("CAPTIONS");

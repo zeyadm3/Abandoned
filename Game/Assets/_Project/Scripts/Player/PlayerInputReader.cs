@@ -15,6 +15,7 @@ namespace Abandoned.Player
         private InputAction ragdollDebugAction, giveGearAction, pingAction;
         private InputAction[] emoteActions;
         private InputAction padLook;
+        private bool sprintOn, talkOn, radioOn;
 
         public PlayerInputFrame Current { get; private set; }
 
@@ -96,10 +97,14 @@ namespace Abandoned.Player
                 return;
             }
             AbandonedInput.GameplayActions g = input.Gameplay;
+            // 0.23.2: hold or toggle.
+            if (g.Sprint.WasPressedThisFrame()) sprintOn = !sprintOn;
+            if (g.PushToTalk.WasPressedThisFrame()) talkOn = !talkOn;
+            if (g.Radio.WasPressedThisFrame()) radioOn = !radioOn;
             Current = new PlayerInputFrame(
                 g.Move.ReadValue<Vector2>(),
                 g.Look.ReadValue<Vector2>() + PadLook(),
-                g.Sprint.IsPressed(),
+                GameSettings.SprintToggle ? sprintOn : g.Sprint.IsPressed(),
                 g.Crouch.IsPressed(),
                 g.Crouch.WasPressedThisFrame(),
                 g.Jump.WasPressedThisFrame(),
@@ -110,8 +115,8 @@ namespace Abandoned.Player
                 g.Inventory.IsPressed(),
                 g.Pause.WasPressedThisFrame(),
                 ragdollDebugAction.WasPressedThisFrame() && DevTools.Enabled,
-                g.PushToTalk.IsPressed(),
-                g.Radio.IsPressed(),
+                GameSettings.TalkToggle ? talkOn : g.PushToTalk.IsPressed(),
+                GameSettings.RadioToggle ? radioOn : g.Radio.IsPressed(),
                 g.HandSlot1.WasPressedThisFrame(),
                 g.HandSlot2.WasPressedThisFrame(),
                 g.Flashlight.WasPressedThisFrame(),

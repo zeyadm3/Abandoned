@@ -18,7 +18,18 @@ namespace Abandoned.UI
             ["Use"] = "Use / throw", ["Drop"] = "Drop / hold to set down", ["Rotate"] = "Rotate held object", ["Scan"] = "Scan", ["Flashlight"] = "Flashlight", ["HandSlot1"] = "Hand slot 1",
             ["HandSlot2"] = "Hand slot 2", ["Inventory"] = "Inventory", ["PushToTalk"] = "Push to talk", ["Radio"] = "Radio",
             ["GiveGear"] = "Give gear / take a fallen crewmate's", ["Chat"] = "Text chat", ["PhotoCamera"] = "Free camera (photo)", ["HideHud"] = "Hide the HUD (clips)",
+            ["Ping"] = "Ping", ["EmotePoint"] = "Emote: point", ["EmoteWave"] = "Emote: wave", ["EmotePanic"] = "Emote: panic",
         };
+
+        // 0.23.2: an action's second key and its pad button are their own rows.
+        private static string Label(string name, InputBinding b)
+        {
+            string label = Names.TryGetValue(name, out string n) ? n : name;
+            if (b.isPartOfComposite) label += $" {b.name}";
+            if (b.groups != null && b.groups.Contains("Gamepad")) label += "  (pad)";
+            else if (b.name == "alt") label += "  (2nd key)";
+            return label;
+        }
 
         private readonly AbandonedInput editing = new();
         private readonly List<(InputAction action, int index, Button button)> rows = new();
@@ -52,7 +63,7 @@ namespace Abandoned.UI
                 {
                     InputBinding b = action.bindings[i];
                     if (b.isComposite) continue;
-                    string label = b.isPartOfComposite ? $"{Names[name]} {b.name}" : Names[name];
+                    string label = Label(name, b);
                     VisualElement row = MenuKit.Row(scroll);
                     row.AddToClassList("setting");
                     MenuKit.Text(row, label, "setting__label");
@@ -129,7 +140,10 @@ namespace Abandoned.UI
         private void Refresh()
         {
             foreach ((InputAction action, int index, Button button) in rows)
-                button.text = action.GetBindingDisplayString(index, InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
+            {
+                string shown = action.GetBindingDisplayString(index, InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
+                button.text = string.IsNullOrEmpty(shown) ? "-" : shown;
+            }
         }
     }
 }

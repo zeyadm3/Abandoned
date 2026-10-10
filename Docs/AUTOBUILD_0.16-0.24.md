@@ -475,3 +475,12 @@ the old switches' values). New switch "Low-health vision effects" (vignette, blu
 stay). The colourblind setting now also turns the whole UI's good/bad/money colours blue/orange (`.colorblind`
 on the menu root, `UI/ColorblindTheme`). Fewer jump scares and the heartbeat volume already existed. Note:
 CLAUDE.md's 2026-10-08 "subtitles off by default" is superseded by the roadmap's 0.23.1.
+
+## 0.23.2 control options
+New settings page "Controls+": separate horizontal and vertical look speed (multipliers on the sensitivity,
+applied in PlayerLook), controller look speed, toggle (instead of hold) for sprint, push-to-talk and radio
+(PlayerInputReader keeps the toggled state), and "mouse wheel switches hand slots" with empty hands (on by
+default). A second keyboard binding per action: an empty "alt" binding next to each rebindable action in
+AbandonedInput.inputactions, shown in Controls as "(2nd key)", and pad buttons as "(pad)". Choosing the pocket
+item to drop already existed (hold Inventory, scroll, Drop). Fixed: the Controls screen would have thrown on the
+Ping and emote actions (0.19.x) missing from its name table.

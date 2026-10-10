@@ -92,6 +92,7 @@ namespace Abandoned.Player
         public void ApplyLook(Vector2 delta)
         {
             float sensitivity = config.MouseSensitivity * GameSettings.Sensitivity;
+            delta = new Vector2(delta.x * GameSettings.LookX, delta.y * GameSettings.LookY); // 0.23.2
             yaw += delta.x * sensitivity;
             if (yawLimited) yaw = yawCentre + Mathf.Clamp(Mathf.DeltaAngle(yawCentre, yaw), -yawHalfAngle, yawHalfAngle);
             pitch = Mathf.Clamp(pitch - delta.y * sensitivity * (GameSettings.InvertY ? -1f : 1f), -config.MaxPitch, config.MaxPitch);

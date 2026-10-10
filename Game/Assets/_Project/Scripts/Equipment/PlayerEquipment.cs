@@ -154,6 +154,9 @@ namespace Abandoned.Equipment
             TickGiveGear(input);
             if (input.Slot1Pressed) SelectRpc(0);
             if (input.Slot2Pressed) SelectRpc(1);
+            // 0.23.2: the wheel flips between the hand slots while the hands are empty (and not sorting pockets).
+            if (GameSettings.WheelSwitchesSlots && input.Scroll != 0f && !input.InventoryHeld && !input.RotateHeld && carrier != null && carrier.Held == null)
+                SelectRpc(1 - state.Value.Active);
             if (input.FlashlightPressed && Has(EquipmentKind.Flashlight))
             {
                 if (HandsFreeForLight) LightRpc(!state.Value.LightOn);

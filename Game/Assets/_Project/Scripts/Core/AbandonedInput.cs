@@ -720,12 +720,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""594e1090-1039-4ced-b945-d07908df1199"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""d8ca408d-0c6f-48bd-a22a-669655c1836a"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""6bbfc20e-e074-4a64-bdf2-404a2a6cd371"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -742,12 +764,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""b7fa7c20-67b9-4d1b-a23d-ea6cb1c660ac"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""3811aeaa-a635-414a-b760-eeff91640463"",
                     ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Scan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""4ded4bbb-f0b2-4a0f-b738-fbb02d8e4282"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Scan"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -764,12 +808,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""973ece2e-aec8-417c-824a-6df3b77ab91a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""a74b9cf7-6abc-41dd-b227-74773fe5cb80"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Drop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""3b1bdad7-1cbb-4591-8342-21b78417e86d"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -786,12 +852,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""943d23f7-4d16-48d3-a71e-010261078338"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PushToTalk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""7640b8f2-6063-4424-8072-575ddd2157f4"",
                     ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Radio"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""2e454f8d-7625-4bed-a8c5-f9d3282e80e9"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Radio"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -808,12 +896,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""ee694b90-0fd4-4bfa-9cad-c7b801abadda"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""b4f79414-341d-41a1-b630-87a4c5b18dfb"",
                     ""path"": ""<Gamepad>/rightStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Ping"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""898f9ee0-9393-4d22-acd5-d8291993171b"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Ping"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -830,12 +940,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""dcd33b04-6477-4dad-83fa-09776bbfa28a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Flashlight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""d9e768ec-ecdb-434d-8763-7a79da461cfb"",
                     ""path"": ""<Gamepad>/dpad/left"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""HandSlot1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""06115f1e-bf6d-479f-99f0-1de9557b2d92"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""HandSlot1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -852,12 +984,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""e6a00c1a-0999-4db8-a9bb-b4e9e5be1017"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""HandSlot2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""ed70f41a-5b7f-4c55-bb77-f083a24ce7b3"",
                     ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""5ef42127-5ce0-403e-b392-9e6fabbfe2b9"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Inventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -885,12 +1039,34 @@ namespace Abandoned.Core
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""alt"",
+                    ""id"": ""e4c19ca5-0f0f-4407-90f1-d494ce09178d"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""GiveGear"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
                     ""name"": """",
                     ""id"": ""56d71604-f941-47cd-b412-bcab7d0ece2d"",
                     ""path"": ""<Gamepad>/select"",
                     ""interactions"": ""hold"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""alt"",
+                    ""id"": ""cd361759-ed43-42b9-96ab-1c3a0d79c441"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

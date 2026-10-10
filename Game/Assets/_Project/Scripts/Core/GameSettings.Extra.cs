@@ -52,6 +52,21 @@ namespace Abandoned.Core
             set => Set(ref lowHealthVision, "settings.lowhealthvision", value);
         }
 
+        private static float? lookX, lookY;
+        private static bool? sprintToggle, talkToggle, radioToggle, wheelSlots;
+
+        /// <summary>0.23.2: horizontal and vertical look speed, each a multiplier on the sensitivity.</summary>
+        public static float LookX { get => lookX ??= Prefs.GetFloat("settings.lookx", 1f); set => Set(ref lookX, "settings.lookx", value); }
+        public static float LookY { get => lookY ??= Prefs.GetFloat("settings.looky", 1f); set => Set(ref lookY, "settings.looky", value); }
+
+        /// <summary>0.23.2: press once to sprint / talk / use the radio, again to stop (else hold).</summary>
+        public static bool SprintToggle { get => sprintToggle ??= Prefs.GetInt("settings.sprinttoggle", 0) == 1; set => Set(ref sprintToggle, "settings.sprinttoggle", value); }
+        public static bool TalkToggle { get => talkToggle ??= Prefs.GetInt("settings.talktoggle", 0) == 1; set => Set(ref talkToggle, "settings.talktoggle", value); }
+        public static bool RadioToggle { get => radioToggle ??= Prefs.GetInt("settings.radiotoggle", 0) == 1; set => Set(ref radioToggle, "settings.radiotoggle", value); }
+
+        /// <summary>0.23.2: with empty hands the mouse wheel switches between the two hand slots.</summary>
+        public static bool WheelSwitchesSlots { get => wheelSlots ??= Prefs.GetInt("settings.wheelslots", 1) == 1; set => Set(ref wheelSlots, "settings.wheelslots", value); }
+
         // @@settings
     }
 }
