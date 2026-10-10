@@ -457,3 +457,12 @@ panels, notes, toasts, tips and Play blurbs, while numbers, key caps and HUD cal
 names clip with an ellipsis. Not done (needs eyes): checking every screen at 16:9 / 16:10 / ultrawide and UI
 scale 0.75–1.5×, and removing the pre-0.22 theme textures (left in place; Revamp.uss overrides them, and
 deleting it restores the old look). The 0.22 restyle was written without seeing it: look at it first.
+
+## 0.23.0 controller menu navigation
+There is no EventSystem and the legacy input axes are off, so UI Toolkit got no pad navigation. New
+`UI.PadMenuNavigator` (ExtraScreens): while a menu or screen holds the cursor and the pad is in use, the d-pad or
+left stick sends UI Toolkit navigation events to the focused element (0.4 s then 0.12 s repeat), so focus moves
+and sliders/choices step; A sends a submit (presses the button); when nothing visible has focus, the topmost
+screen's first button takes it. B closes screens (0.19.8) and Menu toggles pause. The yellow focus frame is
+0.22.9's. Removed an unsupported `:focus-within` rule. Steam's "full controller support" box can be ticked once
+this has been played through on a pad (and a Steam Deck).

@@ -25,6 +25,7 @@ namespace Abandoned.UI
             go.AddComponent<Equipment.ThermalCamera>(); // 0.20.4
             go.AddComponent<Player.FirstPersonHands>(); // 0.21.0
             go.AddComponent<Player.PlayerShove>(); // 0.21.2
+            go.AddComponent<PadMenuNavigator>(); // 0.23.0
             // @@screens
         }
     }
