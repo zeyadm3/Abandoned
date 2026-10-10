@@ -23,6 +23,7 @@ namespace Abandoned.UI
             go.AddComponent<AchievementWatcher>(); // 0.19.10
             go.AddComponent<ChargeIndicator>(); // 0.20.2
             go.AddComponent<Equipment.ThermalCamera>(); // 0.20.4
+            go.AddComponent<Player.FirstPersonHands>(); // 0.21.0
             // @@screens
         }
     }

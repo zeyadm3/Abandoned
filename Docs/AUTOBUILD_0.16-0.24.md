@@ -352,3 +352,10 @@ in the truck-upgrade shop, $9,000, level 3, `TruckUpgradeKind.Forecast`). With i
 monster on site, worked out at the HQ from the contract's seed with the same catalog weights and roll as the
 mall's ThreatDirector (`Threats.ThreatForecast`, Data/Threats/Resources). Later arrivals are not forecast.
 If the director's opening rule ever changes, change ThreatForecast.Opening with it.
+
+## 0.21.0 first-person hands
+`Player.FirstPersonHands` (on ExtraScreens, local player only, no prefab change): two orange coverall sleeves
+with dark gloves hung from the camera pivot. Empty-handed they sit low at the bottom of the view and swing
+with the walk; carrying, each hand reaches to its side of the held item's box and grips it, shaking with the
+carried weight (full shake at 70 kg); with gear in hand the right hand comes up to hold it. Hidden when dead,
+hiding, knocked down, or flying the drone. Code-built shapes (an artist's rig would replace them; needs approval).
