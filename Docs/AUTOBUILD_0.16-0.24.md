@@ -289,3 +289,10 @@ requests), Express Delivery (rush order), Under New Management (come back as a n
 (100 pings), Workaholic (overtime). Counted on each player's own machine (`UI/AchievementWatcher`, from what
 they did and the departure's bonus lines). The achievements screen lists every stat under STATS.
 Steam's partner site needs the 10 new API names (0.24.6).
+
+## 0.19.11 rich presence
+`Networking.SteamPresence` (made at start-up, off in batch mode) sets Steam rich presence every 5 s while Steam
+runs: "status" (plain text) and "steam_display" #Status_Menu / #Status_HQ (crew size) / #Status_Job (haul of
+quota), plus "steam_player_group" = the crew's Steam lobby so friends see the crew together. Needs the game's
+own App ID: upload Tools/Steam/rich_presence_english.vdf on the partner site (Rich Presence localization).
+Under App ID 480 Steam shows nothing; untested against Steam.
