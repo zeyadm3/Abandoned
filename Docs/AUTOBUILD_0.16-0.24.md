@@ -429,3 +429,9 @@ Revamp.uss: the title column's shade is slate with a yellow edge, condensed big 
 monospace; lit buttons take a yellow underline instead of the old orange glow; the Play screen's Solo / Host /
 Join cards are slate forms with a yellow top bar and yellow titles; the Early Access watermark is faint yellow
 monospace. The menu's overlay effects (grain, scratches, flicker) are unchanged and still obey Reduce menu effects.
+
+## 0.22.6 pause, crew and settings
+Revamp.uss: the pause title in yellow; the crew panel is slate with the yellow spine, names condensed, pings in
+monospace, a yellow "talking" mark and square volume handles; settings pages run down the left as folder tabs
+with the open page's tab filled yellow, page titles in yellow, choice arrows yellow. Rows for 0.23's new
+options are added to the same tabs, so they pick this up.

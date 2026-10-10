@@ -280,3 +280,32 @@
 
 /* The Early Access notice and watermark. */
 .ea-watermark { color: rgba(242, 190, 40, 0.45); -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf"); }
+
+/* ==== 0.22.6 pause, crew and settings ==== */
+
+.pause__left .title { color: var(--c-accent); }
+.pause__crew {
+    background-color: var(--c-panel);
+    border-left-width: 6px;
+    border-left-color: var(--c-accent);
+    border-radius: 0;
+}
+.crew-row { border-bottom-width: 1px; border-bottom-color: rgba(255, 255, 255, 0.06); border-radius: 0; }
+.crew-row__name { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); font-size: 22px; }
+.crew-row__ping { -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf"); color: var(--c-dim); }
+.crew-row__talking--on { background-color: var(--c-accent); }
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__dragger { border-radius: 0; background-color: var(--c-accent); }
+.mic-meter { border-radius: 0; }
+
+/* Settings: page names down the left as tabbed folders; the open one carries the yellow tab. */
+.settings__nav { border-right-color: var(--c-accent); }
+.settings__nav-button { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); }
+.settings__nav-button--open {
+    color: var(--c-accent-ink);
+    background-color: var(--c-accent);
+    padding-left: 10px;
+}
+.settings__page-title { color: var(--c-accent); }
+.choice__arrow { color: var(--c-accent); }
+.choice__value { -unity-font-definition: url("../../ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); }
+.tab { border-radius: 0; }
