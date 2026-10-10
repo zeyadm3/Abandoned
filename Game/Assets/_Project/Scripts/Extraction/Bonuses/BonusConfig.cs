@@ -22,6 +22,19 @@ namespace Abandoned.Extraction
         public int RequestMinBonus => requestMinBonus;
         public float RequestDelay => requestDelay;
 
+        [Header("Rush orders (0.18.1)")]
+        [Tooltip("Seconds into the job before the first rush order, then between rush orders (rolled between).")]
+        [SerializeField, Min(0f)] private float rushFirst = 300f;
+        [SerializeField] private Vector2 rushGap = new(360f, 540f);
+        [Tooltip("Seconds a rush order lasts: what reaches the truck in that time pays this many times its value.")]
+        [SerializeField, Min(10f)] private float rushSeconds = 180f;
+        [SerializeField, Min(1f)] private float rushMultiplier = 2f;
+
+        public float RushFirst => rushFirst;
+        public Vector2 RushGap => rushGap;
+        public float RushSeconds => rushSeconds;
+        public float RushMultiplier => rushMultiplier;
+
         // @@bonusfields
 
         private static BonusConfig current;

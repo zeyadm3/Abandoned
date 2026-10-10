@@ -150,3 +150,9 @@ not (it never counts toward quota). Lines go at the top of the appraisal's stats
 the haul on the scan HUD. Boss request (`RunRequests` on RunState): 6 s in, the boss names one of the Huge
 (else Heavy, else two-hand) items actually spawned this job, seeded; a toast says "Bring me the X". Any
 unshattered item of that kind aboard pays max($1,500, 80 % of its value). Tunables: BonusConfig.
+
+## 0.18.1 rush orders
+`RunRush` (RunState): 5 min in, then every 6–9 min after the last one ends, dispatch calls a rush on one kind of
+item still out in the building (seeded): toast, radio line, and a HUD goal with a countdown. For 3 min the
+host notes each item of that kind that lands in the truck bay; those still aboard and whole at departure pay
+×2 (the extra value on top, through `RunState.Settling`). Tunables: BonusConfig.

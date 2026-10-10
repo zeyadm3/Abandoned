@@ -1,0 +1,104 @@
+using System.Collections.Generic;
+using System.Linq;
+using Abandoned.Loot;
+using Abandoned.Networking;
+using Abandoned.UI;
+using Unity.Collections;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace Abandoned.Extraction
+{
+    /// <summary>
+    /// Rush orders (0.18.1), on the run state's object. Mid-job, dispatch radios a rush: one kind of item
+    /// still in the building pays double if it reaches the truck in the next few minutes. The host notes each
+    /// item of that kind that lands in the bay during the window; those still aboard at departure pay extra.
+    /// </summary>
+    public class RunRush : NetworkBehaviour
+    {
+        private readonly NetworkVariable<FixedString64Bytes> rushName = new();
+        private readonly NetworkVariable<double> rushUntil = new();
+        private readonly HashSet<LootItem> rushed = new();
+        private string rushId;
+        private RunState run;
+        private System.Random random;
+        private float nextRush = -1f, nextCheck;
+        private double toastedUntil;
+
+        public override void OnNetworkSpawn()
+        {
+            run = GetComponent<RunState>();
+            RunGoals.Add(Goal);
+            if (!IsServer) return;
+            nextRush = Time.time + BonusConfig.Current.RushFirst;
+            RunState.Settling += Settle;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            RunGoals.Remove(Goal);
+            RunState.Settling -= Settle;
+        }
+
+        private float Left => run != null ? Mathf.Max(0f, (float)(rushUntil.Value - run.Now)) : 0f;
+
+        private string Goal()
+        {
+            float left = Left;
+            return left > 0f ? $"RUSH: {rushName.Value} pays x{BonusConfig.Current.RushMultiplier:0.#} for {(int)left / 60}:{(int)left % 60:00}" : null;
+        }
+
+        private void Update()
+        {
+            if (!IsSpawned || run == null) return;
+            if (rushUntil.Value > toastedUntil && Left > 0f)
+            {
+                toastedUntil = rushUntil.Value;
+                ToastFeed.Show("RUSH ORDER", $"Any {rushName.Value} in the truck in the next {BonusConfig.Current.RushSeconds / 60f:0.#} minutes pays x{BonusConfig.Current.RushMultiplier:0.#}.", null, ToastFeed.Kind.Info);
+                RunHorrorDirector.Say($"RUSH ORDER / {rushName.Value}", 6f);
+            }
+            if (!IsServer || run.State.Phase != RunPhase.Running) return;
+            random ??= new System.Random(run.State.Seed ^ 0x0b0181);
+            if (nextRush >= 0f && Time.time >= nextRush) Call();
+            if (Left > 0f && Time.time >= nextCheck && TruckCargo.Current != null)
+            {
+                nextCheck = Time.time + 0.5f;
+                foreach (LootItem item in TruckCargo.Current.ItemsInside())
+                    if (item != null && item.Definition != null && item.Definition.Id == rushId) rushed.Add(item);
+            }
+        }
+
+        private void Call()
+        {
+            BonusConfig config = BonusConfig.Current;
+            nextRush = Time.time + config.RushSeconds + Mathf.Lerp(config.RushGap.x, config.RushGap.y, (float)random.NextDouble());
+            NetworkLootSpawner spawner = NetworkLootSpawner.Current;
+            TruckCargo truck = TruckCargo.Current;
+            if (spawner == null) return;
+            // Something still out there: not already in the bay.
+            var inBay = truck != null ? new HashSet<LootItem>(truck.ItemsInside()) : new HashSet<LootItem>();
+            var kinds = spawner.Spawned.Where(l => l != null && l.Item != null && l.Item.Definition != null && !l.Item.IsShattered && !inBay.Contains(l.Item))
+                .Select(l => l.Item.Definition).Distinct().OrderBy(d => d.Id).ToList();
+            if (kinds.Count == 0) return;
+            LootDefinition pick = kinds[random.Next(kinds.Count)];
+            rushId = pick.Id;
+            rushName.Value = pick.DisplayName;
+            rushUntil.Value = run.Now + config.RushSeconds;
+            Debug.Log($"[Run] Rush order: {pick.DisplayName} for {config.RushSeconds:0} s.");
+        }
+
+        private void Settle(IReadOnlyCollection<LootItem> aboard, List<(int pay, string line)> lines)
+        {
+            if (rushed.Count == 0) return;
+            float extra = BonusConfig.Current.RushMultiplier - 1f;
+            int pay = 0, count = 0;
+            foreach (LootItem item in rushed)
+                if (item != null && aboard.Contains(item) && !item.IsShattered)
+                {
+                    pay += Mathf.RoundToInt(item.CurrentValue * extra);
+                    count++;
+                }
+            if (count > 0) lines.Add((pay, $"RUSH ORDER: {count} x {rushName.Value} in time. +${pay:N0}"));
+        }
+    }
+}
