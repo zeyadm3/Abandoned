@@ -29,5 +29,14 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Fade(Synth.Resonant(0.65f, 1902 + take, 400f, 1400f, 2f, 0.2f, 3f), 0.1f, 0.2f), 0.6f);
             return SynthReverb.Apply(d, 1.2f, 0.4f);
         }
+
+        /// <summary>A little rising arpeggio for a score in the break room.</summary>
+        public static float[] ToyScore()
+        {
+            float[] d = Synth.Buffer(0.6f);
+            float[] notes = { 523f, 659f, 784f, 1047f };
+            for (int i = 0; i < notes.Length; i++) Patch.Layer(d, Synth.Sweep(0.18f, notes[i], notes[i], 0.004f, 12f, 1), 0.4f, i * 0.07f);
+            return d;
+        }
     }
 }

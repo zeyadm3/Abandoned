@@ -173,6 +173,8 @@ namespace Abandoned.Audio
         // 0.19.2: ghosts (not the Stalker's knock: a ghost raps softly, three times, on wood).
         GhostKnock,
         GhostWhoosh,
+        // 0.19.6: the HQ toys.
+        ToyScore,
         // @@ids
     }
 }

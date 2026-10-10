@@ -59,6 +59,8 @@ namespace Abandoned.Audio
                 // 0.19.2: ghosts (not the Stalker's knock: a ghost raps softly, three times, on wood).
                 case SoundId.GhostKnock: return Patch.Mono(id, take, CrewPatches.GhostKnock(take), 0.8f);
                 case SoundId.GhostWhoosh: return Patch.Mono(id, take, CrewPatches.GhostWhoosh(take), 0.6f);
+                // 0.19.6: the HQ toys.
+                case SoundId.ToyScore: return Patch.Mono(id, take, CrewPatches.ToyScore(), 0.6f);
                 // @@cases
                 default: return null;
             }

@@ -206,6 +206,8 @@ namespace Abandoned.Audio
             // 0.19.2: ghosts (not the Stalker's knock: a ghost raps softly, three times, on wood).
             Set(SoundId.GhostKnock, Fx, 70, 2f, 28f, Syn, Dull, 2, "a soft rap, rap, rap");
             Set(SoundId.GhostWhoosh, Fx, 120, 1f, 14f, Syn, Wall, 2, null, 0.7f);
+            // 0.19.6: the HQ toys.
+            Set(SoundId.ToyScore, Menu, 90, 1f, 10f, Syn, Open, 1, null, 0.7f, 0f);
             // @@catalog
             return t;
         }

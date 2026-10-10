@@ -245,3 +245,11 @@ emote and its start time into two owner-written NetworkVariables on NetworkPlaye
 every machine's `WorkerPresentation` lays a 2.6 s procedural pose over the gait (point: right arm forward;
 wave: right arm up and waving; panic: both arms flailing, torso twisting), only with empty hands. Your own
 body is hidden in first person, so you see crewmates' emotes, not yours. No editor step.
+
+## 0.19.6 HQ break-room toys
+A basketball and darts are zero-value utility loot (one-hand, never planned): carried and thrown like
+anything else. In the saved HQ's crew wing: a wall hoop (rim 3.05 m) whose net trigger scores a ball dropping
+through it, and a dartboard (bull 50, rings 25/15/10/5; a scoring dart sticks for 3 s) over a crate holding
+three darts. `Company.HqToys` (host) stands the toys at their places, puts back any that are gone every 5 s,
+and remembers who last held each; scores go to everyone as a toast with a jingle (`CompanyService.Toys`).
+Menu: Tools/Abandoned/HQ/Add Break-Room Toys (0.19.6).
