@@ -46,7 +46,7 @@ namespace Abandoned.Company
         private void Update()
         {
             if (lamp != null) lamp.enabled = HasNew && Mathf.Repeat(Time.time, 1f) < 0.5f;
-            if (open && (CompanyService.Current == null || UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame))
+            if (open && (CompanyService.Current == null || Core.PadInput.BackPressed))
                 open = false;
             CursorOwner.Set(this, open);
             if (screen == null)

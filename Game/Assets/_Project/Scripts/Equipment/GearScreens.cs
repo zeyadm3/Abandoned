@@ -23,7 +23,7 @@ namespace Abandoned.Equipment
         private void Update()
         {
             bool open = ShopTerminal.Open || GearRack.Open;
-            if (open && (CompanyService.Current == null || Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame))
+            if (open && (CompanyService.Current == null || Core.PadInput.BackPressed))
                 ShopTerminal.Open = GearRack.Open = false;
             open = ShopTerminal.Open || GearRack.Open;
             CursorOwner.Set(this, open);

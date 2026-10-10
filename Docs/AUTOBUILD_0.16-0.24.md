@@ -260,3 +260,13 @@ bobbing grit lumps scurry in their place; behaviour unchanged; `Threats.Arachnop
 CrawlerSwarm) and a PRIVACY section with "Streamer mode" (`NetworkPlayer.DisplayName` reads "Crewmate N" for
 everyone but you, the pause menu hides your LAN port, the join field on the Play screen is masked). New
 settings live in `Core/GameSettings.Extra.cs` (GameSettings is now partial). No editor step.
+
+## 0.19.8 controller, first tier
+A Gamepad control scheme and pad bindings in AbandonedInput.inputactions (Xbox names): left stick move, right
+stick look (new `LookPad` action; the reader turns tilt into a turn rate, curved, `GameSettings.PadLookSpeed`
+900), A jump, B crouch, X interact, Y scan, RT use, LT drop/throw, RB talk, LB radio, L3 sprint, R3 ping, d-pad
+up flashlight, left/right hand slots, down inventory, Menu pause, View give gear (hold View: rotate item).
+Keyboard-only on a pad for now: chat, photo camera, hide HUD, emotes. `Core.PadInput` notes the device used
+last; HUD prompts (`InputBindings.Display`) then show pad buttons as text ("X", "RT"). The eight screens that
+closed on a hard-coded Escape now use `PadInput.BackPressed` (Esc or pad B; the menu also takes Menu).
+Menu navigation with a pad is 0.23.0. Glyph images were not added (text names; a glyph pack needs approval).

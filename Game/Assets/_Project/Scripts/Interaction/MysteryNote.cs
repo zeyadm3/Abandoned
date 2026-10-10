@@ -20,7 +20,7 @@ namespace Abandoned.Interaction
         private void Update()
         {
             var keyboard = UnityEngine.InputSystem.Keyboard.current;
-            if (open && keyboard != null && keyboard.escapeKey.wasPressedThisFrame) open = false;
+            if (open && Core.PadInput.BackPressed) open = false;
             CursorOwner.Set(this, open);
             if (screen == null)
             {

@@ -245,7 +245,7 @@ namespace Abandoned.UI
             if (!demoEndShown && !paused && !CursorOwner.UiActive) OpenDemoEnd();
         }
 
-        private static bool EscapePressed() => Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        private static bool EscapePressed() => Core.PadInput.BackPressed || (UnityEngine.InputSystem.Gamepad.current != null && UnityEngine.InputSystem.Gamepad.current.startButton.wasPressedThisFrame);
 
 #if UNITY_EDITOR
         public void EditorSetup(UIDocument doc, NetworkBootstrap networkBootstrap, SteamLobby steamLobby, Font body, Font title, TextAsset creditLines)

@@ -14,6 +14,7 @@ namespace Abandoned.Player
         private AbandonedInput input;
         private InputAction ragdollDebugAction, giveGearAction, pingAction;
         private InputAction[] emoteActions;
+        private InputAction padLook;
 
         public PlayerInputFrame Current { get; private set; }
 
@@ -22,6 +23,17 @@ namespace Abandoned.Player
 
         /// <summary>0.19.0: the ping key this frame (read by the ping marker, outside the frame struct).</summary>
         public bool PingPressed => isActiveAndEnabled && !Override.HasValue && pingAction != null && pingAction.WasPressedThisFrame();
+
+        // 0.19.8: a stick is a rate, the mouse a distance: turn the stick into the mouse movement that would
+        // turn the view as fast (full tilt = GameSettings.PadLookSpeed "pixels" a second).
+        private Vector2 PadLook()
+        {
+            if (padLook == null) return Vector2.zero;
+            Vector2 stick = padLook.ReadValue<Vector2>();
+            // A gentle curve: fine aim near the centre, full speed at the edge.
+            stick = stick.normalized * Mathf.Pow(stick.magnitude, 1.6f);
+            return stick * GameSettings.PadLookSpeed * Time.deltaTime;
+        }
 
         /// <summary>0.19.5: the emote pressed this frame (1 point, 2 wave, 3 panic), or 0.</summary>
         public int EmotePressed
@@ -45,6 +57,7 @@ namespace Abandoned.Player
             ragdollDebugAction = input.asset.FindAction("Debug/ToggleRagdoll", true);
             giveGearAction = input.asset.FindAction("Gameplay/GiveGear", true);
             pingAction = input.asset.FindAction("Gameplay/Ping", false); // 0.19.0
+            padLook = input.asset.FindAction("Gameplay/LookPad", false); // 0.19.8: the right stick
             emoteActions = new[] // 0.19.5: point, wave, panic
             {
                 input.asset.FindAction("Gameplay/EmotePoint", false), input.asset.FindAction("Gameplay/EmoteWave", false),
@@ -85,7 +98,7 @@ namespace Abandoned.Player
             AbandonedInput.GameplayActions g = input.Gameplay;
             Current = new PlayerInputFrame(
                 g.Move.ReadValue<Vector2>(),
-                g.Look.ReadValue<Vector2>(),
+                g.Look.ReadValue<Vector2>() + PadLook(),
                 g.Sprint.IsPressed(),
                 g.Crouch.IsPressed(),
                 g.Crouch.WasPressedThisFrame(),

@@ -95,7 +95,7 @@ namespace Abandoned.Company
                         : company == null || company.LastOutcome.Run <= 0 ? "DEPOT READY\n0.0 kg\nNO LOAD ON FILE"
                         : $"LAST LOAD\n{(company.LastLoadedWeight >= 0f ? $"{company.LastLoadedWeight:0.0} kg" : "WEIGHT N/A")}\n${company.LastOutcome.Haul:N0}";
             }
-            if (open && (company == null || Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)) open = false;
+            if (open && (company == null || Core.PadInput.BackPressed)) open = false;
             CursorOwner.Set(this, open);
             if (screen == null || screen.Root.panel == null)
             {

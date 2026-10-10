@@ -22,7 +22,7 @@ namespace Abandoned.Company
         private void Update()
         {
             if (ContractBoard.Open && CompanyService.Current == null) ContractBoard.Open = false;
-            if (ContractBoard.Open && UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (ContractBoard.Open && Core.PadInput.BackPressed)
                 ContractBoard.Open = false;
             CursorOwner.Set(this, ContractBoard.Open);
 

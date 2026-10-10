@@ -19,6 +19,15 @@ namespace Abandoned.Core
             set => Set(ref streamerMode, "settings.streamer", value);
         }
 
+        private static float? padLookSpeed;
+
+        /// <summary>0.19.8: how fast the right stick turns the view at full tilt (mouse-pixels a second).</summary>
+        public static float PadLookSpeed
+        {
+            get => padLookSpeed ??= Prefs.GetFloat("settings.padlook", 900f);
+            set => Set(ref padLookSpeed, "settings.padlook", value);
+        }
+
         // @@settings
     }
 }

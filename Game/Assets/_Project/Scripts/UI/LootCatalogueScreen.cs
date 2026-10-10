@@ -19,7 +19,7 @@ namespace Abandoned.UI
 
         private void Update()
         {
-            if (LootCatalogueBook.Open && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) LootCatalogueBook.Open = false;
+            if (LootCatalogueBook.Open && PadInput.BackPressed) LootCatalogueBook.Open = false;
             bool open = LootCatalogueBook.Open;
             CursorOwner.Set(this, open);
             if (screen == null || screen.Root.panel == null)

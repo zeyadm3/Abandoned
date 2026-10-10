@@ -50,7 +50,14 @@ namespace Abandoned.Core
                 Apply(display.asset);
             }
             InputAction a = display.asset.FindAction($"Gameplay/{action}");
-            return a != null ? a.GetBindingDisplayString() : action;
+            if (a == null) return action;
+            // 0.19.8: the prompt follows the device last used; pad buttons in Xbox terms.
+            if (PadInput.UsingPad)
+            {
+                foreach (InputBinding b in a.bindings)
+                    if (b.groups != null && b.groups.Contains("Gamepad") && !b.isComposite) return PadInput.Glyph(b.effectivePath);
+            }
+            return a.GetBindingDisplayString(InputBinding.MaskByGroup("Keyboard&Mouse"));
         }
 
         public static string Json => Prefs.GetString(Key, string.Empty);

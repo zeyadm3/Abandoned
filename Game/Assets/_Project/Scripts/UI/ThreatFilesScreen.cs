@@ -18,7 +18,7 @@ namespace Abandoned.UI
 
         private void Update()
         {
-            if (ThreatFilesTerminal.Open && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (ThreatFilesTerminal.Open && PadInput.BackPressed)
                 ThreatFilesTerminal.Open = false;
             bool open = ThreatFilesTerminal.Open;
             CursorOwner.Set(this, open);
