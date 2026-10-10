@@ -95,7 +95,8 @@ namespace Abandoned.Player
                               + beat * Mathf.Lerp(config.VignettePulse.x, config.VignettePulse.y, sinkDeath);
             float ring = Mathf.Lerp(severeRing, deathRing, nearDeath) * severe;
 
-            volume.weight = Mathf.Clamp01(Mathf.Max(damageFlash, severe));
+            // 0.23.1: the low-health vision can be switched off (the hit flash stays).
+            volume.weight = Mathf.Clamp01(Mathf.Max(damageFlash, GameSettings.LowHealthVision ? severe : 0f));
             vignette.intensity.value = Mathf.Clamp01(Mathf.Max(damageFlash * config.DamageVignette, ring));
             vignette.smoothness.value = Mathf.Lerp(config.TraumaVignetteSmoothness.x, config.TraumaVignetteSmoothness.y, nearDeath);
             fringe.intensity.value = Mathf.Clamp01(

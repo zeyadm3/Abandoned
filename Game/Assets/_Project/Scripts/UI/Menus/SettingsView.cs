@@ -215,7 +215,7 @@ namespace Abandoned.UI
             Add("Accessibility", "Captions, colours and calmer effects.", () =>
             {
                 Section("CAPTIONS");
-                Note(Toggle("Subtitles", GameSettings.Subtitles, v => GameSettings.Subtitles = v), "Accessibility only: names warning and monster sounds. Off by default; the game is meant to keep you guessing.");
+                Note(Toggle("Subtitles", GameSettings.Subtitles, v => GameSettings.Subtitles = v), "Names warning and monster sounds, and who makes them (never where from).");
                 MenuKit.Choice(body, "Subtitle size", GameSettings.SubtitleSizeNames, GameSettings.SubtitleSize, i => GameSettings.SubtitleSize = i);
                 Section("COLOUR AND MOTION");
                 Note(Toggle("Colourblind-safe scanner", GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v), "Blue / orange / vermilion stress colours.");
@@ -225,13 +225,16 @@ namespace Abandoned.UI
                 Note(Toggle("Arachnophobia mode", GameSettings.Arachnophobia, v => GameSettings.Arachnophobia = v), "The Crawlers look like scurrying lumps of grit, with no legs. They behave the same.");
                 Section("PRIVACY");
                 Note(Toggle("Streamer mode", GameSettings.StreamerMode, v => GameSettings.StreamerMode = v), "Crewmates show as \"Crewmate 1-4\" on your screen, and your address and port are hidden.");
-                Note(Toggle("Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v), "Also on the Gameplay page.");
-                Note(Toggle("Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v), "Also on the Gameplay page.");
+                Note(MenuKit.Percent(body, "Camera shake", GameSettings.ShakeAmount, v => GameSettings.ShakeAmount = v), "0 turns it off.");
+                Note(MenuKit.Percent(body, "Head bob and landing dip", GameSettings.BobAmount, v => GameSettings.BobAmount = v), "0 turns it off.");
+                Note(Toggle("Low-health vision effects", GameSettings.LowHealthVision, v => GameSettings.LowHealthVision = v), "The closing vignette, blur and warp at low health. The heartbeat and the blood stay.");
                 Section("SOUND");
                 Note(MenuKit.Percent(body, "Heartbeat and breathing", GameSettings.VitalsVolume, v => GameSettings.VitalsVolume = v), "Your own heartbeat and breath during a job. 0 turns them off.");
             }, () =>
             {
-                GameSettings.Subtitles = false;
+                GameSettings.Subtitles = true;
+                GameSettings.ShakeAmount = GameSettings.BobAmount = 1f;
+                GameSettings.LowHealthVision = true;
                 GameSettings.VitalsVolume = 1f;
                 GameSettings.ColorblindScanner = GameSettings.ReduceMenuEffects = GameSettings.ReduceFlashing = GameSettings.FewerJumpScares = false;
                 GameSettings.SubtitleSize = 1;

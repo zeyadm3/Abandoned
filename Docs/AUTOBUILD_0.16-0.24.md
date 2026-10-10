@@ -466,3 +466,12 @@ and sliders/choices step; A sends a submit (presses the button); when nothing vi
 screen's first button takes it. B closes screens (0.19.8) and Menu toggles pause. The yellow focus frame is
 0.22.9's. Removed an unsupported `:focus-within` rule. Steam's "full controller support" box can be ticked once
 this has been played through on a pad (and a Steam Deck).
+
+## 0.23.1 accessibility options
+Subtitles are on by default now (the roadmap's approved change; a new Prefs key, so everyone starts with them on)
+and name who makes a sound, never where: "[MONSTER: a roar]", "[BUILDING: floor groans]"; the solid strip behind
+them is 0.22.3's. Camera shake and head bob/landing dip are percentage sliders (`ShakeAmount`, `BobAmount`, from
+the old switches' values). New switch "Low-health vision effects" (vignette, blur, warp; the heartbeat and blood
+stay). The colourblind setting now also turns the whole UI's good/bad/money colours blue/orange (`.colorblind`
+on the menu root, `UI/ColorblindTheme`). Fewer jump scares and the heartbeat volume already existed. Note:
+CLAUDE.md's 2026-10-08 "subtitles off by default" is superseded by the roadmap's 0.23.1.

@@ -377,3 +377,10 @@
 .panel .text, .settings__note, .toast__body, .hud-hint, .play__blurb, .field-guide__body { white-space: normal; }
 .keycap, .run-haul__amount, .truck-banner__count, .hud-callout { white-space: nowrap; }
 .crew-row__name, .loot-tag__name { overflow: hidden; text-overflow: ellipsis; -unity-text-overflow-position: end; }
+
+/* ==== 0.23.1 colourblind-safe tags and warnings ==== */
+.colorblind {
+    --c-good: rgb(86, 160, 255);
+    --c-money: rgb(120, 180, 255);
+    --c-bad: rgb(255, 140, 30);
+}

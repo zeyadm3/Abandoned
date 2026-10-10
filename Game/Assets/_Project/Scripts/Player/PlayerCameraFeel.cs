@@ -50,7 +50,7 @@ namespace Abandoned.Player
             if (!GameSettings.CameraShake) Trauma = 0f;
             Trauma = Mathf.Max(0f, Trauma - settings.ShakeDecay * dt);
 
-            eye.localPosition = BobOffset + Vector3.down * Dip;
+            eye.localPosition = BobOffset + Vector3.down * (Dip * GameSettings.BobAmount);
             eye.localRotation = ShakeRotation(dt);
         }
 
@@ -68,14 +68,14 @@ namespace Abandoned.Player
 
             // Side-to-side once per cycle, up-and-down twice (once per step).
             BobOffset = new Vector3(Mathf.Sin(bobPhase) * settings.BobHorizontal,
-                -Mathf.Abs(Mathf.Sin(bobPhase)) * settings.BobVertical, 0f) * bobWeight;
+                -Mathf.Abs(Mathf.Sin(bobPhase)) * settings.BobVertical, 0f) * bobWeight * GameSettings.BobAmount; // 0.23.1
         }
 
         private Quaternion ShakeRotation(float dt)
         {
             if (Trauma <= 0f) return Quaternion.identity;
             noiseTime += dt * settings.ShakeFrequency;
-            float amount = Trauma * Trauma * settings.ShakeMaxAngle; // squared: small hits stay subtle
+            float amount = Trauma * Trauma * settings.ShakeMaxAngle * GameSettings.ShakeAmount; // squared: small hits stay subtle; 0.23.1 slider
             return Quaternion.Euler(
                 (Mathf.PerlinNoise(noiseTime, 0.1f) * 2f - 1f) * amount,
                 (Mathf.PerlinNoise(0.7f, noiseTime) * 2f - 1f) * amount,

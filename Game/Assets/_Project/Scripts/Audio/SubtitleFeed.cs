@@ -27,7 +27,10 @@ namespace Abandoned.Audio
                 Camera ear = Camera.main;
                 if (ear == null || (position - ear.transform.position).magnitude > maxDistance) return;
             }
-            Heard($"[{caption}]");
+            // 0.23.1: who's making it (never where).
+            SoundInfo info = SoundCatalog.Info(id);
+            string who = info.Bus == AudioBus.Threats ? "MONSTER: " : info.Bus == AudioBus.Structure ? "BUILDING: " : "";
+            Heard($"[{who}{caption}]");
         }
 
         /// <summary>" - left", " - behind" ... from the listener's facing; nothing when it's right here.</summary>

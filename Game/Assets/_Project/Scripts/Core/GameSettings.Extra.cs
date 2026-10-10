@@ -28,6 +28,30 @@ namespace Abandoned.Core
             set => Set(ref padLookSpeed, "settings.padlook", value);
         }
 
+        private static float? shakeAmount, bobAmount;
+        private static bool? lowHealthVision;
+
+        /// <summary>0.23.1: how strong camera shake is (0 = none, 1 = full). The old switch is "above 0".</summary>
+        public static float ShakeAmount
+        {
+            get => shakeAmount ??= Prefs.GetFloat("settings.shakeamount", CameraShake ? 1f : 0f);
+            set => Set(ref shakeAmount, "settings.shakeamount", value);
+        }
+
+        /// <summary>0.23.1: how strong head bob and the landing dip are (0 = none, 1 = full).</summary>
+        public static float BobAmount
+        {
+            get => bobAmount ??= Prefs.GetFloat("settings.bobamount", HeadBob ? 1f : 0f);
+            set => Set(ref bobAmount, "settings.bobamount", value);
+        }
+
+        /// <summary>0.23.1: the low-health vignette, blur and warp (the heartbeat and the blood stay).</summary>
+        public static bool LowHealthVision
+        {
+            get => lowHealthVision ??= Prefs.GetInt("settings.lowhealthvision", 1) == 1;
+            set => Set(ref lowHealthVision, "settings.lowhealthvision", value);
+        }
+
         // @@settings
     }
 }

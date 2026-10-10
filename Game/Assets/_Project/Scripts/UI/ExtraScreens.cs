@@ -26,6 +26,7 @@ namespace Abandoned.UI
             go.AddComponent<Player.FirstPersonHands>(); // 0.21.0
             go.AddComponent<Player.PlayerShove>(); // 0.21.2
             go.AddComponent<PadMenuNavigator>(); // 0.23.0
+            go.AddComponent<ColorblindTheme>(); // 0.23.1
             // @@screens
         }
     }

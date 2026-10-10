@@ -61,8 +61,9 @@ namespace Abandoned.Core
         /// </summary>
         public static bool Subtitles
         {
-            get => subtitles ??= Prefs.GetInt(SubtitlesKey, 0) == 1;
-            set => Set(ref subtitles, SubtitlesKey, value);
+            // 0.23.1 (roadmap, user-approved 2026-10-10): on by default, with speaker labels and a background.
+            get => subtitles ??= Prefs.GetInt(SubtitlesKey + ".v2", 1) == 1;
+            set => Set(ref subtitles, SubtitlesKey + ".v2", value);
         }
 
         /// <summary>The stress scanner uses a colourblind-safe palette (blue / orange / vermilion).</summary>
