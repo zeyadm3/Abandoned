@@ -223,6 +223,8 @@ namespace Abandoned.Audio
             Set(SoundId.ThreatFlinch, Monsters, 60, 2f, 30f, Syn, Dull, 2, "something snarls");
             // 0.21.4: the cab's toot (not the departure horn: two short, higher blips).
             Set(SoundId.CabToot, Fx, 40, 6f, 90f, Syn, Open, 1, "a short toot of the truck's horn");
+            // 0.24.1: the menu's own music (never pitched, never positioned).
+            Set(SoundId.MusicMenu, Song, 10, 1f, 5f, pitch: 0f, flat: true, loop: true);
             // @@catalog
             return t;
         }

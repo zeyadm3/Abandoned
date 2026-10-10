@@ -525,3 +525,11 @@ the old StructurePatches/ThreatPatches versions are kept, unused, for comparison
   as if played backwards; Crawlers = bursts of tiny hard feet; Last Hunter = a slow double pound.
 No new audio files (original synthesis), so nothing to add to ASSET_CREDITS. Listen and tune first: these were
 written by ear-less maths.
+
+## 0.24.1 music tracks
+Still made in code (`Audio/Synth/MusicPatches2.cs`, nothing to license). The main menu now has its own track
+(new `SoundId.MusicMenu`, `MusicPlayer` mood Menu): 64 s in D minor at 45 bpm, bowed chords, a slow music-box
+tune from the fifth bar, tape hiss. The HQ track is now 64 s with an A section and a B section (Dm–Am–E–Am, a
+bowed line over it) instead of a 32 s loop; the drive is a 40 s road groove at 96 bpm (kick, soft snare from
+bar 5, bass ostinato, keys in the second half). Jobs still have no music of their own; monster songs are
+unchanged. The old MusicPatches versions stay in the file, unused.

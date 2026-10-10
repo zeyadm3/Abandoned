@@ -76,6 +76,8 @@ namespace Abandoned.Audio
                 case SoundId.ThreatFlinch: return Patch.Mono(id, take, CrewPatches.Flinch(take), 0.85f);
                 // 0.21.4: the cab's toot (not the departure horn: two short, higher blips).
                 case SoundId.CabToot: return Patch.Mono(id, take, GearPatches2.CabToot(), 0.9f);
+                // 0.24.1: the menu's own music (never pitched, never positioned).
+                case SoundId.MusicMenu: return MusicPatches2.Menu();
                 // @@cases
                 default: return null;
             }

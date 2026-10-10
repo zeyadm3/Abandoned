@@ -17,7 +17,7 @@ namespace Abandoned.Audio
         private const string HomeScene = "HQ";
         private const float ThemeLevel = 0.3f, StingLevel = 0.45f, ThreatLevel = 0.6f, ThreatCrossfade = 1.5f;
 
-        private enum Mood { Quiet, Hq, Drive, Departure }
+        private enum Mood { Quiet, Hq, Drive, Departure, Menu }
 
         private static MusicPlayer instance;
         private AudioSource theme, sting, threat, threatOld;
@@ -173,6 +173,7 @@ namespace Abandoned.Audio
                 {
                     Mood.Hq => SoundId.MusicHq,
                     Mood.Drive => SoundId.MusicDrive,
+                    Mood.Menu => SoundId.MusicMenu, // 0.24.1
                     _ => SoundId.MusicDeparture,
                 });
                 if (theme.clip == null) target = 0f; // still rendering: it fades in when it arrives
@@ -229,7 +230,7 @@ namespace Abandoned.Audio
             UI.MenuUi menu = UI.MenuUi.Current;
             bool offlineMenu = menu != null && (int)menu.Showing >= 0 && menu.Bootstrap != null &&
                                (menu.Bootstrap.Manager == null || !menu.Bootstrap.Manager.IsListening);
-            return AtHq || offlineMenu ? Mood.Hq : Mood.Quiet;
+            return AtHq ? Mood.Hq : offlineMenu ? Mood.Menu : Mood.Quiet; // 0.24.1: the menu has its own track
         }
 
         private void OnDestroy()

@@ -190,6 +190,8 @@ namespace Abandoned.Audio
         ThreatFlinch,
         // 0.21.4: the cab's toot (not the departure horn: two short, higher blips).
         CabToot,
+        // 0.24.1: the menu's own music (never pitched, never positioned).
+        MusicMenu,
         // @@ids
     }
 }

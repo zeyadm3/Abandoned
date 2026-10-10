@@ -109,8 +109,8 @@ namespace Abandoned.Audio
                 case SoundId.UiClose: return Patch.Mono(id, take, UiPatches.Whoosh(false), 0.5f);
 
                 // Music.
-                case SoundId.MusicHq: return MusicPatches.Hq();
-                case SoundId.MusicDrive: return MusicPatches.Drive();
+                case SoundId.MusicHq: return MusicPatches2.Hq(); // 0.24.1
+                case SoundId.MusicDrive: return MusicPatches2.Drive(); // 0.24.1
                 case SoundId.MusicDeparture: return MusicPatches.Departure();
                 case SoundId.StingPayday:
                 case SoundId.StingQuotaMissed:
