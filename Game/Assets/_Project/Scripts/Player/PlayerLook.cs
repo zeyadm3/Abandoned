@@ -15,6 +15,9 @@ namespace Abandoned.Player
         [SerializeField] private PlayerInputReader inputReader;
         [SerializeField] private Transform cameraRoot;
 
+        /// <summary>The camera's pivot: where this player's eyes are and which way they look.</summary>
+        public Transform EyeRoot => cameraRoot;
+
         private float yaw;
         private float pitch;
         private PlayerCarrier carrier;

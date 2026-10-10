@@ -45,6 +45,8 @@ namespace Abandoned.Audio
                 // 0.17.5: live water (mains hum and arcing; never a creak).
                 case SoundId.WaterBuzz: return Patch.Mono(id, take, HazardPatches.WaterBuzz(take), 0.6f);
                 case SoundId.WaterZap: return Patch.Mono(id, take, HazardPatches.WaterZap(take), 0.9f);
+                // 0.17.6: spray chalk.
+                case SoundId.ChalkSpray: return Patch.Mono(id, take, HazardPatches.Spray(take), 0.6f);
                 // @@cases
                 default: return null;
             }

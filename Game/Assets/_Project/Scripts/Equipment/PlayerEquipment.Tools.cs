@@ -19,6 +19,7 @@ namespace Abandoned.Equipment
             switch (d.Kind)
             {
                 case EquipmentKind.Sledgehammer: Smash(); return true;
+                case EquipmentKind.SprayChalk: return true; // drawn while held (TickHeldTool)
                 // @@tools
                 default: return false;
             }
@@ -71,6 +72,30 @@ namespace Abandoned.Equipment
                 return false;
             }
             return SpawnGear(EquipmentKind.CrashMat, floor.point, Quaternion.Euler(0f, transform.eulerAngles.y, 0f)) != null;
+        }
+
+        private float nextHeldTool;
+
+        // Owner (0.17.6+): tools that act every few frames while the button is held.
+        private void TickHeldTool(Player.PlayerInputFrame input)
+        {
+            if (!input.UseHeld || Time.time < nextHeldTool || carrier == null || carrier.Held != null || carrier.IsRagdolled) return;
+            EquipmentDefinition d = InHand;
+            if (d == null || d.Kind != EquipmentKind.SprayChalk || look == null || look.EyeRoot == null) return;
+            nextHeldTool = Time.time + ToolConfig.Current.ChalkInterval;
+            Transform eye = look.EyeRoot;
+            SprayRpc(eye.position, eye.forward);
+        }
+
+        // Host: a dot of chalk where the owner's eye ray meets a surface (checked from the host's own physics).
+        [Rpc(SendTo.Server)]
+        private void SprayRpc(Vector3 eye, Vector3 direction, RpcParams rpcParams = default)
+        {
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || player == null || player.IsDead) return;
+            if (!Has(EquipmentKind.SprayChalk) || InHand == null || InHand.Kind != EquipmentKind.SprayChalk) return;
+            if (Vector3.Distance(eye, transform.position + Vector3.up * 1.5f) > 1.5f || direction.sqrMagnitude < 0.5f) return;
+            if (!Physics.Raycast(eye, direction.normalized, out RaycastHit hit, ToolConfig.Current.ChalkReach, wallMask, QueryTriggerInteraction.Ignore)) return;
+            Extraction.RunChalk.Current?.ServerAdd(hit.point, hit.normal, (byte)Mathf.Max(0, player.CrewSeat));
         }
 
         /// <summary>Host: spawn one of the newer gear's network objects.</summary>

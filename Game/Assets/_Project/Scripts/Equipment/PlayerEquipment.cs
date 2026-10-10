@@ -161,6 +161,7 @@ namespace Abandoned.Equipment
             }
             // Single-use gear: the left mouse button with empty hands.
             if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar || d.Kind >= EquipmentKind.Sledgehammer)) UseRpc(state.Value.Active);
+            TickHeldTool(input); // 0.17.6+: tools that work while the button is held
         }
 
         // Like the interactor: clicks on a screen (gear rack, shop, pause) and the click that

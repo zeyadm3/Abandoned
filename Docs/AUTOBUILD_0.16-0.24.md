@@ -124,3 +124,13 @@ the mains are on and the danger hasn't cut the sector; the lift and the security
 check). Live water buzzes and spits (heard by everyone nearby); standing in it zaps each 0.5 s and the
 host deals 22 HP/s ("Electrocuted in live water"). So a thrown breaker lights a sector and arms its water.
 Tunables: GroundConfig. Menu: Tools/Abandoned/Mall/Add Flooded Areas (0.17.5).
+(Changed in the 0.17.6 commit: only the flooded areas are live, not the small 0.17.3 puddles; with the mains
+on most jobs, live puddles everywhere would have made the whole building a hazard from the first second.)
+
+## 0.17.6 spray chalk
+New gear ($400, level 1, never runs out). Hold use: every 0.06 s the owner sends its eye ray, the host
+raycasts it (3.5 m) and adds a dot to `RunChalk` (RunState; a NetworkList, newest 800 kept, cleared each run).
+Every machine draws all dots as one mesh of 11 cm quads in the sprayer's crew-seat colour (orange, green,
+blue, pink) with an unlit Particles material (Art/Greybox/ChalkMarks.mat), so marks read in the dark. A
+hiss plays as dots appear. Marks on a section that falls stay where they were (known gap).
+Menu: Tools/Abandoned/Content/Spray Chalk (0.17.6).

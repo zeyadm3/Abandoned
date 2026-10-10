@@ -148,5 +148,14 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Noise(0.45f, 1753 + take, 6000f, 3000f, 0.01f, 7f, 1500f), 0.35f, 0.05f);
             return d;
         }
+
+        /// <summary>A spray can's hiss, with the rattle of its ball now and then.</summary>
+        public static float[] Spray(int take)
+        {
+            float[] d = Synth.Buffer(0.3f);
+            Patch.Layer(d, Synth.Fade(Synth.Noise(0.28f, 1761 + take, 9000f, 8000f, 0.01f, 3f, 3000f), 0.02f, 0.06f), 0.6f);
+            if (take == 0) Patch.Layer(d, Synth.Modal(0.06f, 2400f, Patch.Bar, null, 90f), 0.25f, 0.02f);
+            return d;
+        }
     }
 }

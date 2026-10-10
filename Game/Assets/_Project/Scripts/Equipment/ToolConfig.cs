@@ -35,6 +35,22 @@ namespace Abandoned.Equipment
         public float MatCushion => matCushion;
         public float MatDepth => matDepth;
 
+        [Header("Spray chalk (0.17.6)")]
+        [SerializeField, Min(0.5f)] private float chalkReach = 3.5f;
+        [Tooltip("Seconds between dots while the button is held (a line is a run of dots).")]
+        [SerializeField, Min(0.02f)] private float chalkInterval = 0.06f;
+        [SerializeField, Min(0.02f)] private float chalkDotSize = 0.11f;
+        [Tooltip("Dots kept per job; the oldest go first.")]
+        [SerializeField, Range(50, 2000)] private int chalkMaxDots = 800;
+        [Tooltip("Unlit material the marks are drawn with (made by the 0.17.6 step).")]
+        [SerializeField] private Material chalkMaterial;
+
+        public float ChalkReach => chalkReach;
+        public float ChalkInterval => chalkInterval;
+        public float ChalkDotSize => chalkDotSize;
+        public int ChalkMaxDots => chalkMaxDots;
+        public Material ChalkMaterial => chalkMaterial;
+
         // @@fields
 
         private static ToolConfig current;
@@ -49,6 +65,10 @@ namespace Abandoned.Equipment
                 return current;
             }
         }
+
+#if UNITY_EDITOR
+        public void EditorSetChalkMaterial(Material material) => chalkMaterial = material;
+#endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => current = null;

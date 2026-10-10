@@ -192,6 +192,8 @@ namespace Abandoned.Audio
             // 0.17.5: live water (mains hum and arcing; never a creak).
             Set(SoundId.WaterBuzz, Fx, 90, 1f, 14f, Syn, Wall, 3, "live water buzzes", 0.7f);
             Set(SoundId.WaterZap, Fx, 50, 1f, 25f, Syn, Dull, 3, "an electric crack");
+            // 0.17.6: spray chalk.
+            Set(SoundId.ChalkSpray, Fx, 150, 1f, 10f, Syn, Wall, 3, null, 0.6f);
             // @@catalog
             return t;
         }

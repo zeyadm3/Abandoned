@@ -94,6 +94,7 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Extraction.RunAlarms),     // 0.16.5
             typeof(Abandoned.Extraction.RunVault),      // 0.16.6
             typeof(Abandoned.Extraction.RunAftershocks), // 0.17.4
+            typeof(Abandoned.Extraction.RunChalk),      // 0.17.6
             // @@runstate
         };
 

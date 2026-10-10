@@ -159,6 +159,8 @@ namespace Abandoned.Audio
         // 0.17.5: live water (mains hum and arcing; never a creak).
         WaterBuzz,
         WaterZap,
+        // 0.17.6: spray chalk.
+        ChalkSpray,
         // @@ids
     }
 }

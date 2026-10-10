@@ -27,7 +27,7 @@ namespace Abandoned.Extraction
         private float nextBuzz;
 
         /// <summary>Water with power in its sector (0.17.5): it shocks whoever stands in it.</summary>
-        public bool IsLive => kind == GroundKind.Puddle && SectorPower.Live(sector);
+        public bool IsLive => kind == GroundKind.Puddle && halfSize.x > 1.2f && SectorPower.Live(sector); // floods only, not puddles
 
         public static IReadOnlyList<NoisyGround> All => Live;
         public GroundKind Kind => kind;

@@ -24,6 +24,7 @@ namespace Abandoned.Equipment
         // 0.17+ (append only)
         Sledgehammer,
         CrashMat,
+        SprayChalk,
         // @@kinds
     }
 }
