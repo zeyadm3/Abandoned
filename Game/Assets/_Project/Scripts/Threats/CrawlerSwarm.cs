@@ -13,7 +13,12 @@ namespace Abandoned.Threats
         private float scatterUntil, nextKnock;
         private Vector3 fleeFrom;
         private Light[] areaLights;
-        protected override void Awake() { base.Awake(); areaLights = FindObjectsByType<Light>(FindObjectsSortMode.None); }
+        protected override void Awake()
+        {
+            base.Awake();
+            areaLights = FindObjectsByType<Light>(FindObjectsSortMode.None);
+            gameObject.AddComponent<ArachnophobiaSwap>(); // 0.19.7
+        }
         public override string DisplayName => "Crawlers";
         public override string DeathLine => "The Crawlers dragged you down.";
         public override ThreatMotion DesiredMotion => motion.Value;

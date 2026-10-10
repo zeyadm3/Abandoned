@@ -222,6 +222,9 @@ namespace Abandoned.UI
                 Note(Toggle("Reduce flashing lights", GameSettings.ReduceFlashing, v => GameSettings.ReduceFlashing = v), "Lights in the game dim and recover smoothly instead of flickering or strobing.");
                 Note(Toggle("Reduce menu effects", GameSettings.ReduceMenuEffects, v => GameSettings.ReduceMenuEffects = v), "No flicker, glitches, jitter or static in the menus.");
                 Note(Toggle("Fewer jump scares", GameSettings.FewerJumpScares, v => GameSettings.FewerJumpScares = v), "The building stops showing you sudden figures. Sounds and monsters stay.");
+                Note(Toggle("Arachnophobia mode", GameSettings.Arachnophobia, v => GameSettings.Arachnophobia = v), "The Crawlers look like scurrying lumps of grit, with no legs. They behave the same.");
+                Section("PRIVACY");
+                Note(Toggle("Streamer mode", GameSettings.StreamerMode, v => GameSettings.StreamerMode = v), "Crewmates show as \"Crewmate 1-4\" on your screen, and your address and port are hidden.");
                 Note(Toggle("Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v), "Also on the Gameplay page.");
                 Note(Toggle("Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v), "Also on the Gameplay page.");
                 Section("SOUND");

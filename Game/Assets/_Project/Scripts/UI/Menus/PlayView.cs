@@ -62,6 +62,7 @@ namespace Abandoned.UI
             joinHow = MenuKit.Text(join, "", "text");
             joinHow.AddToClassList("text--small");
             address = new TextField { value = b.Config != null ? $"{b.Config.DefaultJoinAddress}:{b.Config.Port}" : "" };
+            address.isPasswordField = Core.GameSettings.StreamerMode; // 0.19.7: never show an address on stream
             address.AddToClassList("field");
             join.Add(address);
             MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, important: true);

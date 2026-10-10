@@ -253,3 +253,10 @@ through it, and a dartboard (bull 50, rings 25/15/10/5; a scoring dart sticks fo
 three darts. `Company.HqToys` (host) stands the toys at their places, puts back any that are gone every 5 s,
 and remembers who last held each; scores go to everyone as a toast with a jingle (`CompanyService.Toys`).
 Menu: Tools/Abandoned/HQ/Add Break-Room Toys (0.19.6).
+
+## 0.19.7 arachnophobia and streamer modes
+Settings > Accessibility: "Arachnophobia mode" (the Crawlers' renderers are hidden on this machine and six
+bobbing grit lumps scurry in their place; behaviour unchanged; `Threats.ArachnophobiaSwap`, added by
+CrawlerSwarm) and a PRIVACY section with "Streamer mode" (`NetworkPlayer.DisplayName` reads "Crewmate N" for
+everyone but you, the pause menu hides your LAN port, the join field on the Play screen is masked). New
+settings live in `Core/GameSettings.Extra.cs` (GameSettings is now partial). No editor step.

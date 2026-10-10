@@ -152,7 +152,8 @@ namespace Abandoned.UI
             crewTitle.text = $"CREW  {count}/{max}";
             MenuKit.Show(invite, isHost && flow != null && flow.InLobby);
             joinHint.text = flow != null && flow.InLobby ? $"Steam lobby: {flow.Members.Count}/{max} - friends join from the overlay or your profile."
-                : isHost && b.HostPort != 0 ? $"Friends join at your LAN address, port {b.HostPort}. Players join at the HQ only." : "";
+                : isHost && b.HostPort != 0 ? (GameSettings.StreamerMode ? "Friends join at your LAN address (hidden: streamer mode). Players join at the HQ only."
+                    : $"Friends join at your LAN address, port {b.HostPort}. Players join at the HQ only.") : "";
             bool midJob = isHost && Company.CompanyService.Current != null && Company.CompanyService.Current.JobInProgress;
             leave.text = !isHost ? "Leave game" : midJob ? "End game (job counts as failed)" : "End game for everyone";
         }

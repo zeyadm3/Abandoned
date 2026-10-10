@@ -8,7 +8,7 @@ namespace Abandoned.Core
     /// accessibility. Kept in PlayerPrefs and cached; <see cref="Changed"/> lets live objects re-apply.
     /// Designer tunables stay in ScriptableObject configs; these only scale or switch them.
     /// </summary>
-    public static class GameSettings
+    public static partial class GameSettings
     {
         public const float MinSensitivity = 0.25f, MaxSensitivity = 3f;
         public const float MinFov = 60f, MaxFov = 100f, DefaultFov = 75f;
