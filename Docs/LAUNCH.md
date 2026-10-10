@@ -3,11 +3,26 @@
 Everything that has to happen outside the code, in order. The game side is done (M3–M10); see
 Docs/PROGRESS.md "Needs you" for the playtests that come first.
 
+## 0.24.6: what's ready, and what only you can do (2026-10-10)
+Ready in the repo:
+- `Tools/unity.sh set-app-id <id>` puts the game's own App ID in NetworkConfig (and the demo's store target)
+  and rewrites Game/steam_appid.txt; after it, `Tools/unity.sh build-release` builds MacRelease/WindowsRelease.
+- Tools/Steam/achievements.csv: all 22 achievements (API name, name, description) and their icon pairs in
+  Tools/Steam/AchievementIcons (256 px, achieved and locked).
+- Tools/Steam/rich_presence_english.vdf (0.19.11): upload under Rich Presence localization.
+- Tools/Steam/steampipe/*.vdf and Tools/Steam/upload.sh <app> <win depot> <mac depot> <login>: SteamPipe upload
+  (install steamcmd first); it sets the build live on a "beta" branch, not the default.
+- Docs/StoreArt: draft capsules at the current sizes, six screenshots, trailer_draft.mp4 (0.24.4/0.24.5).
+- The daily job's leaderboards (`daily_YYYYMMDD`) are created by the game on first upload; nothing to set up.
+Only you: pay the Steam Direct fee, create the app (and its two depots: Windows, macOS), run set-app-id, enter
+the achievements and icons, Auto-Cloud (paths in Docs/STEAM_SETUP.md), the store page, capture a real trailer,
+submit the build and the page for review.
+
 ## 1. Before the store page
 - [ ] Pay the Steam Direct fee; create the app (and a demo app if you keep the demo).
 - [ ] Put the App ID in `Data/Networking/NetworkConfig.asset` (SteamAppId) and the demo's
       `Data/Core/Resources/DemoConfig.asset` (StoreAppId = the full game). Run `Tools/unity.sh rebuild`.
-- [ ] Docs/STEAM_SETUP.md: achievements (12 API names), Auto-Cloud paths, depots.
+- [ ] Docs/STEAM_SETUP.md: achievements (22 API names: Tools/Steam/achievements.csv), Auto-Cloud paths, depots.
 
 ## 2. Store page
 - [ ] Copy from Docs/STORE_PAGE.md; capsules (header 920x430, small 462x174, main 1232x706, vertical 748x896,

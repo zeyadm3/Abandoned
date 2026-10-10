@@ -95,6 +95,11 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
+**0.24.6 (2026-10-10): the autonomous 0.16–0.24 build is done** (Docs/AUTOBUILD_0.16-0.24.md, one commit and
+one Mac + Windows build per version in ~/Documents/Abandoned-builds/dev/). Nothing from 0.16.0 on has been
+played. Next: the user's full test pass, then the Steam app (Docs/LAUNCH.md "0.24.6"), then 0.25.0 = fixes only.
+
+Earlier:
 Feel/presentation pass: the user's 2026-10-07 answers are captured in Docs/POLISH.md.
 Latest instruction: **build everything first; the user will test afterward**. Compile, regenerate
 content and make builds; no gameplay, EditMode/PlayMode/nettest or QA screenshots during this pass.

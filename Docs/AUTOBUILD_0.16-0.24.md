@@ -572,3 +572,19 @@ WAIT", then ABANDONED / WISHLIST ON STEAM), encoded by the editor's own MediaEnc
 or download) to Docs/StoreArt/trailer_draft.mp4 (LFS). The real trailer still follows Docs/TRAILER.md's shot
 list with captured play (F9 photo mode, F10 clip mode, OBS) and music. Menu: Tools/Abandoned/Store/Render
 Draft Trailer (0.24.5).
+
+## 0.24.6 Steam app and release build
+The Steam Direct fee, creating the app and its depots, the partner site and the reviews need you, so
+`build-release` can't run yet (it refuses App ID 480, on purpose). Prepared: `Tools/unity.sh set-app-id <id>`
+(NetworkConfig, the demo's store target, steam_appid.txt), Tools/Steam/achievements.csv (22) beside the icon
+pairs, SteamPipe templates and Tools/Steam/upload.sh, the rich presence tokens (0.19.11), the credits screen
+regenerated from Docs/ASSET_CREDITS.md (Noto fonts, voices), and Docs/LAUNCH.md's new "0.24.6" section listing
+exactly what's left. This version's builds are the usual shareable ones (App ID 480).
+
+## Where to look first when testing (all unplayed)
+1. Anything that moves players: the freight lift (0.16.3), vents (0.16.4), the drone (0.20.5), shoving (0.21.2).
+2. The UI revamp (0.22): written blind, check every screen; deleting Art/UI/Resources/Revamp.uss reverts it.
+3. Pad support (0.19.8, 0.23.0) on a real controller.
+4. Money: bonus lines and fees on the appraisal and in the company's money (0.18.x, 0.19.1).
+5. Sounds and music rebuilt in code (0.24.0, 0.24.1): tune by ear.
+6. Mall placements found by code (breakers, vents, alarms, safe, cameras, carts, floods): look for odd spots.
