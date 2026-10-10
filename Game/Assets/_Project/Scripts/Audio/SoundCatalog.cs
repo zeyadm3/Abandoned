@@ -183,6 +183,10 @@ namespace Abandoned.Audio
             Set(SoundId.TimberFloorFail, Building, 38, 3f, 50f, Syn, Open, 2, "floorboards give way");
             Set(SoundId.TileFloorCrack, Building, 42, 3f, 40f, Syn, Open, 3, "floor tiles pop");
             Set(SoundId.TileFloorFail, Building, 38, 3f, 50f, Syn, Open, 2, "the tiled floor buckles");
+            // 0.17.3: noisy ground underfoot (footsteps bus).
+            Set(SoundId.GlassCrunch, Steps, 120, 1f, 22f, Syn, Wall, 4, "glass crunches");
+            Set(SoundId.TileClack, Steps, 125, 1f, 18f, Syn, Wall, 4);
+            Set(SoundId.PuddleSplash, Steps, 125, 1f, 16f, Syn, Wall, 4);
             // @@catalog
             return t;
         }

@@ -101,3 +101,11 @@ is tile, the cinema and toy archive upstairs are timber; the rest stays concrete
 one warning of their own when they start Cracking (glass ticks and spiders, tiles pop, boards split) and
 fail with their own sound in place of the concrete snap. All are Structure-bus floor sounds that walls never
 hide; none is a creak. Menu: Tools/Abandoned/Mall/Set Floor Types (0.17.2).
+
+## 0.17.3 noisy ground
+24 patches (seeded, 6 m apart, on free floor found by MallSites): broken glass mostly in stores, puddles mostly
+in the food court and basement, loose tiles anywhere. Every machine plays a crunch / clack / splash per 0.9 m
+walked through a patch for any player (from synced positions); the host turns each step into monster noise
+(glass 0.55, tiles 0.4, puddle 0.3; crouching 15 % of that). Art is flat and walk-through, merged per patch,
+bound to its floor section. Tunables: Data/Extraction/Resources/GroundConfig. Menu: Tools/Abandoned/Mall/Add
+Noisy Ground (0.17.3).

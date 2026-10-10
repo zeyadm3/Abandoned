@@ -150,6 +150,10 @@ namespace Abandoned.Audio
         TimberFloorFail,
         TileFloorCrack,
         TileFloorFail,
+        // 0.17.3: noisy ground underfoot (footsteps bus).
+        GlassCrunch,
+        TileClack,
+        PuddleSplash,
         // @@ids
     }
 }

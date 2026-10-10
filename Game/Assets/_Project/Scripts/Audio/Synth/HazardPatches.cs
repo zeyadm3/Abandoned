@@ -88,5 +88,35 @@ namespace Abandoned.Audio
             Patch.Pings(d, 1720 + take, 10, 0f, 1f, 1300f, 2400f, Patch.Hollow, 35f, 0.35f);
             return SynthReverb.Apply(Patch.Heavy(d, 1.2f), 1f, 0.25f);
         }
+
+        /// <summary>A boot on broken glass: a grinding crunch of many tiny shards.</summary>
+        public static float[] GlassCrunch(int take)
+        {
+            float[] d = Synth.Buffer(0.4f);
+            Patch.Layer(d, Synth.Noise(0.25f, 1731 + take, 9000f, 4000f, 0.005f, 14f, 2000f), 0.5f);
+            Patch.Pings(d, 1732 + take, 9, 0f, 0.22f, 3500f, 8000f, Patch.Glass, 90f, 0.4f, 1f);
+            return d;
+        }
+
+        /// <summary>A loose tile rocking on its bed: a hollow clack.</summary>
+        public static float[] TileClack(int take)
+        {
+            float[] d = Synth.Buffer(0.35f);
+            var rng = new Rng(1733 + take);
+            Patch.Layer(d, Synth.Modal(0.2f, rng.Range(900f, 1400f), Patch.Hollow, null, 30f), 0.7f);
+            Patch.Layer(d, Synth.Modal(0.15f, rng.Range(900f, 1400f), Patch.Hollow, null, 35f), 0.45f, rng.Range(0.05f, 0.09f));
+            Patch.Layer(d, Synth.Noise(0.05f, 1734 + take, 5000f, 2000f, 0.001f, 60f), 0.3f);
+            return d;
+        }
+
+        /// <summary>A foot in standing water.</summary>
+        public static float[] Splash(int take)
+        {
+            float[] d = Synth.Buffer(0.5f);
+            Patch.Layer(d, Synth.Noise(0.35f, 1735 + take, 3000f, 900f, 0.01f, 9f, 300f), 0.6f);
+            Patch.Layer(d, Synth.Sweep(0.12f, 700f + take * 40f, 1400f, 0.005f, 30f), 0.15f, 0.04f);
+            Patch.Layer(d, Synth.Sweep(0.1f, 900f, 1800f, 0.005f, 35f), 0.1f, 0.11f);
+            return d;
+        }
     }
 }

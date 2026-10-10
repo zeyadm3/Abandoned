@@ -36,6 +36,10 @@ namespace Abandoned.Audio
                 case SoundId.TimberFloorFail: return Patch.Mono(id, take, HazardPatches.TimberFail(take), 0.95f);
                 case SoundId.TileFloorCrack: return Patch.Mono(id, take, HazardPatches.TileCrack(take), 0.85f);
                 case SoundId.TileFloorFail: return Patch.Mono(id, take, HazardPatches.TileFail(take), 0.95f);
+                // 0.17.3: noisy ground underfoot (footsteps bus).
+                case SoundId.GlassCrunch: return Patch.Mono(id, take, HazardPatches.GlassCrunch(take), 0.8f);
+                case SoundId.TileClack: return Patch.Mono(id, take, HazardPatches.TileClack(take), 0.75f);
+                case SoundId.PuddleSplash: return Patch.Mono(id, take, HazardPatches.Splash(take), 0.7f);
                 // @@cases
                 default: return null;
             }
