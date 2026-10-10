@@ -491,3 +491,10 @@ meter use), open-mic threshold (a multiplier on VoiceConfig.OpenMicThreshold), r
 voice volume, RadioPlayback), voice chat off (nothing sent, nobody heard), text chat off (the chat key does
 nothing, no lines show). Per-crewmate volume was already remembered by Steam identity (VoiceSettings). Not
 done: choosing the audio output device (Unity has no runtime API for it; the system default is used).
+
+## 0.23.4 video options
+Video page: a monitor picker (with more than one display; `Screen.MoveMainWindowTo`) and "Show FPS" (a small
+yellow counter, top left). Graphics page: texture detail Full/Half/Quarter (global mipmap limit) and an EFFECTS
+section with switches for fog, bloom, film grain and all post-processing. `Core.VideoExtras` (made at start-up)
+keeps them true every frame against each level's own atmosphere (fog forced off; a top-priority volume zeroes
+bloom/grain; the main camera's post-processing flag). Field of view now goes to 120 (was 100).

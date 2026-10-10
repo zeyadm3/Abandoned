@@ -149,6 +149,12 @@ namespace Abandoned.UI
                 string[] names = sizes.Select(r => r == Vector2Int.zero ? "Desktop" : $"{r.x} x {r.y}").ToArray();
                 MenuKit.Choice(body, "Resolution", names, Mathf.Max(0, sizes.IndexOf(VideoSettings.Resolution)), i => VideoSettings.Resolution = sizes[i]);
                 NoteLast("Window and resolution apply to the built game; the editor's Game view keeps its own size.");
+                // 0.23.4
+                var displays = new List<DisplayInfo>();
+                Screen.GetDisplayLayout(displays);
+                if (displays.Count > 1)
+                    MenuKit.Choice(body, "Monitor", displays.Select((d, i) => $"{i + 1}: {d.name}").ToArray(), Mathf.Clamp(VideoSettings.Monitor, 0, displays.Count - 1), i => VideoSettings.Monitor = i);
+                Note(Toggle("Show FPS", VideoSettings.ShowFps, v => VideoSettings.ShowFps = v), "A small frame counter in the corner.");
                 Section("FRAME RATE");
                 Note(Toggle("VSync", VideoSettings.VSync, v => VideoSettings.VSync = v), "Matches your monitor's refresh: no tearing, a little more input delay.");
                 MenuKit.Choice(body, "Frame cap", VideoSettings.FrameCaps.Select(c => c == 0 ? "Unlimited" : $"{c} fps").ToArray(),
@@ -173,6 +179,12 @@ namespace Abandoned.UI
                 if (quality.Length > 1)
                     MenuKit.Choice(body, "Preset", quality, VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
                 MenuKit.Choice(body, "Shadows", VideoSettings.ShadowNames, VideoSettings.Shadows, i => VideoSettings.Shadows = i);
+                MenuKit.Choice(body, "Textures", VideoSettings.TextureNames, VideoSettings.TextureQuality, i => VideoSettings.TextureQuality = i);
+                Section("EFFECTS");
+                Note(Toggle("Fog", VideoSettings.Fog, v => VideoSettings.Fog = v), "Off: see further. The building is meant to be murky.");
+                Note(Toggle("Bloom", VideoSettings.Bloom, v => VideoSettings.Bloom = v), "The glow round bright lights.");
+                Note(Toggle("Film grain", VideoSettings.Grain, v => VideoSettings.Grain = v), "Off also calms night vision's noise.");
+                Note(Toggle("Post-processing", VideoSettings.PostProcessing, v => VideoSettings.PostProcessing = v), "Everything above, plus colour grading, brightness, and the low-health and night-vision looks. Off is fastest.");
                 NoteLast("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6).");
                 Note(MenuKit.Percent(body, "Render scale", Mathf.InverseLerp(VideoSettings.MinRenderScale, 1f, VideoSettings.RenderScale),
                     v => VideoSettings.RenderScale = Mathf.Lerp(VideoSettings.MinRenderScale, 1f, v)), "Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp.");

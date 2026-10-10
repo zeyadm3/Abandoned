@@ -11,7 +11,7 @@ namespace Abandoned.Core
     public static partial class GameSettings
     {
         public const float MinSensitivity = 0.25f, MaxSensitivity = 3f;
-        public const float MinFov = 60f, MaxFov = 100f, DefaultFov = 75f;
+        public const float MinFov = 60f, MaxFov = 120f, DefaultFov = 75f; // 0.23.4: up to 120
 
         private const string SensitivityKey = "settings.sensitivity", FovKey = "settings.fov", BobKey = "settings.headbob",
             ShakeKey = "settings.shake", SubtitlesKey = "settings.captions", ColorblindKey = "settings.colorblind", UiScaleKey = "settings.uiscale",

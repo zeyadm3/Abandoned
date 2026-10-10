@@ -8,7 +8,7 @@ namespace Abandoned.Core
     /// shadow distance, brightness. Kept in Prefs and applied by <see cref="VideoApplier"/> at startup and
     /// whenever they change. Nothing here touches project assets, so the editor stays clean.
     /// </summary>
-    public static class VideoSettings
+    public static partial class VideoSettings
     {
         public static readonly int[] FrameCaps = { 0, 30, 60, 90, 120, 144, 240 };
         public static readonly string[] ShadowNames = { "Off", "Low", "Medium", "High" };
