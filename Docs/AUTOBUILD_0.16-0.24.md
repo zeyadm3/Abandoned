@@ -561,3 +561,14 @@ logo 1280×720 on transparent, page background 1438×810), the title in Saira St
 each scene. A small exposure lift is used for these only. Treat them as drafts: the staged crew stand in their
 rest pose, and real gameplay captures (F9 photo mode, 0.23.6) will look better. Menu: Tools/Abandoned/Store/
 Render Store Art and Screenshots (0.24.4).
+
+## 0.24.5 trailer
+The roadmap cuts the trailer from captured play, which needs people playing, so this is a draft:
+`Editor/Releases/Release0245` renders a 35 s, 1080p30 animatic from the saved mall (slow camera moves through
+staged shots: the dark atrium with the Hunter, the piano on the glass bridge, the floor under it from below,
+the Stalker in a dark store, the crew at the truck) with stencil title cards between them ("THE COMPANY NEEDS
+SALVAGE", "SOME OF IT WEIGHS A TON", "THE FLOORS DON'T LIKE IT", "SOMETHING HEARS YOU", "THE TRUCK WON'T
+WAIT", then ABANDONED / WISHLIST ON STEAM), encoded by the editor's own MediaEncoder (H.264, silent; no ffmpeg
+or download) to Docs/StoreArt/trailer_draft.mp4 (LFS). The real trailer still follows Docs/TRAILER.md's shot
+list with captured play (F9 photo mode, F10 clip mode, OBS) and music. Menu: Tools/Abandoned/Store/Render
+Draft Trailer (0.24.5).

@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release0244
     {
-        private readonly struct Shot
+        internal readonly struct Shot
         {
             public readonly string Name;
             public readonly Vector3 Eye, Target;
@@ -144,9 +144,9 @@ namespace Abandoned.EditorTools
 
         public static void AuthorAndExit() => ReleaseKit.RunAndExit(Author);
 
-        private const int TitleLayer = 5; // UI: nothing in the mall is on it
+        internal const int TitleLayer = 5; // UI: nothing in the mall is on it
 
-        private static void Stage(Shot shot, List<GameObject> staged)
+        internal static void Stage(Shot shot, List<GameObject> staged)
         {
             foreach ((string prefab, Vector3 at, float yaw) in shot.Props)
             {
@@ -158,14 +158,14 @@ namespace Abandoned.EditorTools
             }
         }
 
-        private static void Clear(List<GameObject> staged)
+        internal static void Clear(List<GameObject> staged)
         {
             foreach (GameObject go in staged) if (go != null) Object.DestroyImmediate(go);
             staged.Clear();
         }
 
         // "ABANDONED" in the stencil face, with a drop shadow, floating in front of the lens.
-        private static GameObject Title(Camera camera, int w, int h, bool alone)
+        internal static GameObject Title(Camera camera, int w, int h, bool alone, string words = "ABANDONED", float scale = 1f)
         {
             var font = AssetDatabase.LoadAssetAtPath<Font>(UiContentBuilder.TitleFontPath);
             var root = new GameObject("StoreTitle") { layer = TitleLayer };
@@ -174,14 +174,14 @@ namespace Abandoned.EditorTools
             float distance = 3f;
             float halfHeight = Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * distance, halfWidth = halfHeight * aspect;
             root.transform.SetPositionAndRotation(cam.position + cam.forward * distance + (alone ? Vector3.zero : -cam.up * halfHeight * 0.55f), cam.rotation);
-            float size = Mathf.Min(halfWidth * 1.7f / 9f, halfHeight * 0.5f);
+            float size = Mathf.Min(halfWidth * 1.7f / Mathf.Max(9, words.Length), halfHeight * 0.5f) * scale;
             for (int layerIndex = 0; layerIndex < 2; layerIndex++)
             {
                 var text = new GameObject(layerIndex == 0 ? "Shadow" : "Face") { layer = TitleLayer };
                 text.transform.SetParent(root.transform, false);
                 text.transform.localPosition = layerIndex == 0 ? new Vector3(size * 0.06f, -size * 0.06f, 0.01f) : Vector3.zero;
                 var mesh = text.AddComponent<TextMesh>();
-                mesh.text = "ABANDONED";
+                mesh.text = words;
                 mesh.font = font;
                 mesh.fontSize = 120;
                 mesh.characterSize = size / 12f;
@@ -193,7 +193,7 @@ namespace Abandoned.EditorTools
             return root;
         }
 
-        private static Texture2D Grab(Camera camera, int w, int h, bool alpha)
+        internal static Texture2D Grab(Camera camera, int w, int h, bool alpha)
         {
             var target = new RenderTexture(w, h, 24, RenderTextureFormat.ARGB32);
             target.Create();
@@ -218,7 +218,7 @@ namespace Abandoned.EditorTools
         }
 
         // The title over the scene by its alpha (or alone, keeping its alpha, for the transparent logo).
-        private static Texture2D Over(Texture2D scene, Texture2D words, int w, int h)
+        internal static Texture2D Over(Texture2D scene, Texture2D words, int w, int h)
         {
             var result = new Texture2D(w, h, TextureFormat.RGBA32, false);
             Color[] under = scene != null ? scene.GetPixels() : null, over = words != null ? words.GetPixels() : null;
