@@ -66,5 +66,9 @@ namespace Abandoned.EditorTools
                 EditorApplication.Exit(1);
             }
         }
+
+
+        /// <summary>Batch: only stamp the version into Player Settings (a step with no content of its own).</summary>
+        public static void ApplySettingsAndExit() => RunAndExit(BuildScript.ApplyPlayerSettings);
     }
 }
