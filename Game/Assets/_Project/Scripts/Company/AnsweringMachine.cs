@@ -41,6 +41,30 @@ namespace Abandoned.Company
             open = true;
             GameAudio.Play(SoundId.VoicemailBeep, transform.position, 1f);
             GameAudio.Play(SoundId.RadioStatic, transform.position, 0.4f);
+            Speak(text);
+        }
+
+        // 0.24.2: the boss's own voice on the tape (Art/Audio/Voicemail, named by a hash of the line's text).
+        private AudioSource tapeVoice;
+
+        private void Speak(string line)
+        {
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            byte[] hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(line));
+            string name = "vm_" + System.BitConverter.ToString(hash, 0, 4).Replace("-", "").ToLowerInvariant();
+            AudioClip clip = Resources.Load<AudioClip>("Voicemail/" + name);
+            if (clip == null) return; // a line edited since the recordings were made: the text still shows
+            if (tapeVoice == null)
+            {
+                tapeVoice = gameObject.AddComponent<AudioSource>();
+                tapeVoice.playOnAwake = false;
+                tapeVoice.spatialBlend = 0.6f;
+                tapeVoice.minDistance = 1.5f;
+                tapeVoice.maxDistance = 14f;
+            }
+            tapeVoice.clip = clip;
+            tapeVoice.volume = Audio.AudioMix.Gain(Audio.AudioBus.Effects);
+            tapeVoice.PlayDelayed(0.7f);
         }
 
         private void Update()
@@ -48,6 +72,7 @@ namespace Abandoned.Company
             if (lamp != null) lamp.enabled = HasNew && Mathf.Repeat(Time.time, 1f) < 0.5f;
             if (open && (CompanyService.Current == null || Core.PadInput.BackPressed))
                 open = false;
+            if (!open && tapeVoice != null && tapeVoice.isPlaying) tapeVoice.Stop();
             CursorOwner.Set(this, open);
             if (screen == null)
             {

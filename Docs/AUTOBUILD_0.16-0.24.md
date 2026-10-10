@@ -533,3 +533,12 @@ tune from the fifth bar, tape hiss. The HQ track is now 64 s with an A section a
 bowed line over it) instead of a 32 s loop; the drive is a 40 s road groove at 96 bpm (kick, soft snare from
 bar 5, bass ostinato, keys in the second half). Jobs still have no music of their own; monster songs are
 unchanged. The old MusicPatches versions stay in the file, unused.
+
+## 0.24.2 voices for the boss and dispatch
+Dispatch already had spoken lines (0.14.5). The boss's 21 voicemail lines (CompanyMessages: welcome, quota
+met, big haul, missed, last warning, bankrupt, level up) are now spoken too: `Tools/Audio/generate_boss_voicemails.py`
+reads them from the asset, speaks each with the installed macOS voice "Ralph" and runs it through an
+answering-machine tape (narrow band, wow and flutter, hiss) into Art/Audio/Voicemail/Resources/Voicemail,
+each file named by an MD5 of its text. The answering machine plays the matching clip after its beep (Effects
+bus volume) and stops it when you hang up; an edited line with no clip still shows its text. Re-run the script
+after editing the lines. Credited in Docs/ASSET_CREDITS.md (no third-party audio).
