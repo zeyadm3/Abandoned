@@ -83,6 +83,12 @@ namespace Abandoned.Extraction
             Debug.Log($"[Run] {NetworkPlayer.NameOf(client)} started the truck; leaving in {HonkSeconds:0} s.");
         }
 
+        /// <summary>
+        /// Host, as the truck leaves (0.18+): each bonus adds pay on top of the haul and a line for the appraisal,
+        /// given what is aboard. Not called for a wiped crew (no bonus then).
+        /// </summary>
+        public static event Action<IReadOnlyCollection<LootItem>, List<(int pay, string line)>> Settling;
+
         private RunPhase shownPhase;
 
         private void Honk()

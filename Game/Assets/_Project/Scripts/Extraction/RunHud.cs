@@ -13,7 +13,7 @@ namespace Abandoned.Extraction
         private static readonly Color GainColor = new(0.5f, 1f, 0.5f);
 
         private VisualElement top, haulBar, clock, leaving;
-        private Label amount, quota, cargo, met, time, leavingCount, leavingStatus;
+        private Label amount, quota, cargo, met, time, leavingCount, leavingStatus, goals;
         private RunState shownRun;
         private int shownHaul;
         private bool metShown;
@@ -49,6 +49,9 @@ namespace Abandoned.Extraction
             }
             SetText(cargo, s.Overloaded ? $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3  -  OVERLOADED" : $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3");
             cargo.EnableInClassList("run-haul__cargo--bad", s.Overloaded);
+            string goalText = RunGoals.Text();
+            SetText(goals, goalText);
+            MenuKit.Show(goals, goalText.Length > 0);
             float w = run.WindowRemaining;
             SetText(time, run.WindowClosed ? "WINDOW CLOSED" : $"{(int)w / 60}:{(int)w % 60:00}");
             clock.EnableInClassList("run-clock--late", run.WindowClosed);
@@ -102,6 +105,7 @@ namespace Abandoned.Extraction
             quota = Text(row, "", "run-haul__quota");
             haulBar = UiKit.Bar(top, "run-haul__bar");
             cargo = Text(top, "", "run-haul__cargo");
+            goals = Text(top, "", "run-haul__cargo"); // 0.18+: boss request, rush order, sets, overtime
             met = UiKit.Tag(top, "QUOTA MET");
             met.AddToClassList("run-haul__met");
             clock = HudLayer.Add(new VisualElement(), "run-clock");

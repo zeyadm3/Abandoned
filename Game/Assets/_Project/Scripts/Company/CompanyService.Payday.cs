@@ -22,7 +22,7 @@ namespace Abandoned.Company
             lastLoadedItems.Value = results.Items.Length;
             intakeItems.Value = 0;
             intakeWeight.Value = 0f;
-            RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, results.Wiped ? 0f : active.Value.PayoutBonus);
+            RunOutcome o = CompanyLedger.Apply(save, config, results.Haul, results.Quota, results.Wiped ? 0f : active.Value.PayoutBonus, results.Extra);
             save.pendingQuota = 0;
             save.pendingBonus = 0f;
             save.pendingLeftOnPurpose = false;

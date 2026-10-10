@@ -245,6 +245,7 @@ namespace Abandoned.Extraction
             RunResults results = RunResults.From(items, players, State.Quota, State.Seed, Time.time - startedAt);
             results.Wiped = wiped;
             if (RunStatsSource != null) results.Stats = RunStatsSource(results);
+            if (!wiped) AddBonuses(results, truck);
             if (wiped)
             {
                 var stats = new List<string>(results.Stats ?? Array.Empty<string>());
@@ -259,6 +260,29 @@ namespace Abandoned.Extraction
             Debug.Log($"[Run] Truck left: {items.Count} items, haul ${results.Haul:N0} / quota ${results.Quota:N0}, " +
                       $"{players.FindAll(p => p.Extracted).Count}/{players.Count} players aboard.");
             ResultsRpc(results);
+        }
+
+        // 0.18+: what's aboard (the bay, the hands and pockets of those who made it) settles the bonuses.
+        private void AddBonuses(RunResults results, TruckCargo truck)
+        {
+            if (Settling == null || truck == null) return;
+            var aboard = new HashSet<LootItem>(Cargo(truck));
+            foreach (NetworkPlayer p in NetworkPlayer.All)
+            {
+                if (p == null || p.IsDead || !truck.Carries(p.transform.position)) continue;
+                foreach (Grabbable g in p.Carrier.Inventory.Items)
+                    if (g != null && g.TryGetComponent(out LootItem item)) aboard.Add(item);
+            }
+            var lines = new List<(int pay, string line)>();
+            Settling.Invoke(aboard, lines);
+            var stats = new List<string>();
+            foreach ((int pay, string line) in lines)
+            {
+                results.Extra += Mathf.Max(0, pay);
+                stats.Add(line);
+            }
+            stats.AddRange(results.Stats ?? Array.Empty<string>());
+            results.Stats = stats.ToArray();
         }
 
         /// <summary>Host: funny stats for the appraisal (the run's stats tracker plugs in here, 5.4).</summary>
@@ -278,6 +302,7 @@ namespace Abandoned.Extraction
             SeedSource = null;
             RunStatsSource = null;
             TermsSource = null;
+            Settling = null;
         }
     }
 }

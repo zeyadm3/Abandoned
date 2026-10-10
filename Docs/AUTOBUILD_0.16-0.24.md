@@ -141,3 +141,12 @@ level 2: red, range 14 m, 90 s, flickers, hisses, noise 0.2 every 3 s). Use thro
 (host-simulated, NetworkTransform). No shadows, so the 0.14.0 shadow atlas is untouched; the light reaches
 every storey layer (`LevelStoreys.LightEverything`). Prefabs: Prefabs/Equipment/GlowStick, Flare (GearPrefabs).
 Menu: Tools/Abandoned/Content/Glow Sticks and Flares (0.17.7).
+
+## 0.18.0 boss requests
+New money plumbing for all of 0.18: `RunState.Settling` (host, as the truck leaves, not for a wiped crew) lets
+each bonus add pay and an appraisal line from what is aboard (bay, held, and the pockets of those who made
+it); `RunResults.Extra` carries the pay and `CompanyLedger.Apply` adds it on top of the payout, quota met or
+not (it never counts toward quota). Lines go at the top of the appraisal's stats. `RunGoals` lines show under
+the haul on the scan HUD. Boss request (`RunRequests` on RunState): 6 s in, the boss names one of the Huge
+(else Heavy, else two-hand) items actually spawned this job, seeded; a toast says "Bring me the X". Any
+unshattered item of that kind aboard pays max($1,500, 80 % of its value). Tunables: BonusConfig.
