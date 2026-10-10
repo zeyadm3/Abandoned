@@ -14,6 +14,8 @@ namespace Abandoned.Threats
         public override string DisplayName => "The Thing";
         public override string DeathLine => "You showed the Thing where you were.";
         public override ThreatMotion DesiredMotion => motion.Value;
+        // Awake and coming for this player: it can watch them climb into a locker (0.16.0).
+        protected override bool Pursuing(NetworkPlayer p) => fixation == p && motion.Value == ThreatMotion.Chase;
         protected override void HostTick()
         {
             NetworkPlayer lit = null;
@@ -39,7 +41,7 @@ namespace Abandoned.Threats
                 return;
             }
             motion.Value = ThreatMotion.Chase;
-            Move(PositionOf(fixation), ChaseSpeed);
+            Move(SpotOf(fixation), ChaseSpeed);
             if (DamageWithinReach(Reach, 70f) != null) { fixation = null; exposure = 0f; }
         }
         private bool Illuminates(NetworkPlayer p)

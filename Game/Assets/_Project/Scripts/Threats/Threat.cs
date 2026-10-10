@@ -19,6 +19,8 @@ namespace Abandoned.Threats
         private float nextAttack;
         private float attackReadyAt;
         private NavMeshPath patrolPath;
+        // Host (0.16.0): the players it watched climb into a locker (client ids), until they come out.
+        private readonly HashSet<ulong> watchedHide = new();
         public float WarningRemaining => Mathf.Max(0f, attackReadyAt - Time.time);
         public ThreatDefinition Definition => definition;
         public virtual ThreatMotion DesiredMotion => ThreatMotion.Idle;
@@ -54,12 +56,63 @@ namespace Abandoned.Threats
         {
             Spawned.Add(this);
             attackReadyAt = Time.time + (definition != null ? definition.SpawnWarningSeconds : 0f);
+            if (IsServer) NetworkPlayer.HidingChanged += OnHidingChanged;
         }
 
-        public override void OnNetworkDespawn() => Spawned.Remove(this);
+        public override void OnNetworkDespawn()
+        {
+            Spawned.Remove(this);
+            NetworkPlayer.HidingChanged -= OnHidingChanged;
+        }
+
+        public override void OnDestroy()
+        {
+            // Destroyed without a despawn (session torn down): don't leave a dead listener behind.
+            NetworkPlayer.HidingChanged -= OnHidingChanged;
+            base.OnDestroy();
+        }
 
         /// <summary>Where a living or downed player is (the body when ragdolled).</summary>
         protected static Vector3 PositionOf(NetworkPlayer p) => p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
+
+        // ---- Lockers (0.16.0): a hidden player is safe from anything that didn't watch them climb in ----
+
+        // Host: a player climbed in (raised before they moved) or out.
+        private void OnHidingChanged(NetworkPlayer p, int was, int now)
+        {
+            if (p == null || p.NetworkManager != NetworkManager) return;
+            if (now < 0) watchedHide.Remove(p.OwnerClientId);
+            else if (WatchesHide(p)) watchedHide.Add(p.OwnerClientId);
+        }
+
+        /// <summary>Host: is it after this player right now (charging, rushing, fixed on them)? Only then can it watch them hide.</summary>
+        protected virtual bool Pursuing(NetworkPlayer p) => false;
+
+        // It was after them, near enough, and had them in sight as they went in.
+        private bool WatchesHide(NetworkPlayer p)
+        {
+            if (!Pursuing(p)) return false;
+            Vector3 at = PositionOf(p);
+            if (Vector3.Distance(at, transform.position) > Extraction.DoorConfig.Current.WitnessRange) return false;
+            return LineOfSight(transform.position + Vector3.up * 1.5f, at + Vector3.up * 1.2f);
+        }
+
+        /// <summary>Host: does it know where this hiding player is? By default only if it watched them climb in.</summary>
+        protected virtual bool FindsHider(NetworkPlayer p) => watchedHide.Contains(p.OwnerClientId);
+
+        /// <summary>Host: hiding in a locker, and this threat has no idea.</summary>
+        protected bool HiddenFromMe(NetworkPlayer p) => p.IsHiding && !FindsHider(p);
+
+        /// <summary>
+        /// Where to go for a player and reach them from: for one in a locker, the floor in front of its door
+        /// (they stand inside something solid).
+        /// </summary>
+        protected static Vector3 SpotOf(NetworkPlayer p)
+        {
+            if (!p.IsHiding) return PositionOf(p);
+            Extraction.HidingLocker locker = Extraction.HidingLocker.ByIndex(p.HidingIn);
+            return locker != null ? locker.ExitPoint : PositionOf(p);
+        }
 
         /// <summary>Host: kills the first living player within reach it can actually touch; returns them or null.</summary>
         protected NetworkPlayer KillWithinReach(float range) => DamageWithinReach(range, 1000f, true);
@@ -71,12 +124,16 @@ namespace Abandoned.Threats
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || !p.IsSpawned || p.NetworkManager != NetworkManager || p.IsDead) continue;
+                if (HiddenFromMe(p)) continue;
                 if (senses != null && !senses(p)) continue;
-                Vector3 at = PositionOf(p);
+                // Someone it knows is in a locker is reached at the locker's door, and dragged out.
+                bool hiding = p.IsHiding;
+                Vector3 at = SpotOf(p);
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;
                 if (Sheltered(at)) continue;
                 if (!LineOfSight(transform.position + Vector3.up * 1.3f, at + Vector3.up * 0.8f)) continue;
+                if (hiding) p.ServerLeaveHiding();
                 float damage = lethal || definition != null && definition.LethalContact ? p.MaxHealth : (definition != null ? definition.Damage : fallbackDamage) * Mathf.Min(Aggression, 1.4f) * ContractDamageScale;
                 p.DealDamage(damage, DeathLine);
                 if (p.IsDead) Kills++;

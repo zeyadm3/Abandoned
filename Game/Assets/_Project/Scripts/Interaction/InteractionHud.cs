@@ -23,6 +23,12 @@ namespace Abandoned.Interaction
         /// <summary>Tests: the prompt under the crosshair (null when none).</summary>
         public string Prompt { get; private set; }
 
+        /// <summary>
+        /// Shown instead of everything else while set: the player is somewhere the usual prompts don't apply
+        /// (hiding in a locker, where the only thing to do is climb out).
+        /// </summary>
+        public string Override { get; set; }
+
         private void Update()
         {
             Prompt = BuildPrompt(out bool hint);
@@ -75,6 +81,7 @@ namespace Abandoned.Interaction
         {
             hint = false;
             string interact = InputBindings.Display("Interact"), use = InputBindings.Display("Use"), drop = InputBindings.Display("Drop"), rotate = InputBindings.Display("Rotate");
+            if (!string.IsNullOrEmpty(Override)) return Override;
             if (carrier.HintVisible) { hint = true; return carrier.Hint; }
             if (interactor.IsPlacing)
             {

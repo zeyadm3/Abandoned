@@ -93,6 +93,8 @@ namespace Abandoned.UI
             if (carrier != null && carrier.Inventory.Count > 0 && Unseen(HintId.Pockets) is HintId pockets) return pockets;
             if (carrier != null && carrier.Held != null && carrier.Held.Shared == null && !carrier.IsDragging && Unseen(HintId.Throw) is HintId toss) return toss;
             if (interactor != null && interactor.UseTarget is RollerShutter shutter && shutter.IsDown && Unseen(HintId.LockedShutter) is HintId locked) return locked;
+            if (interactor != null && interactor.UseTarget is SlidingDoor && Unseen(HintId.Door) is HintId door) return door;
+            if (interactor != null && interactor.UseTarget is HidingLocker && Unseen(HintId.Locker) is HintId locker) return locker;
             if (interactor != null && interactor.Target != null)
             {
                 bool heavy = interactor.Target.Shared != null || interactor.Target.CarryClass >= CarryClass.Heavy;

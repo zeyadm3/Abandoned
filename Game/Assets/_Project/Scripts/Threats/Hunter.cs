@@ -13,10 +13,12 @@ namespace Abandoned.Threats
     /// The Hunter (GDD 9): patrols, chases whoever it sees, kills on contact. Counterplay: break line of
     /// sight, crouch to hide, outrun it while your stamina lasts, or lure it onto a weak floor: it's
     /// heavy (a load source on the structure), and when its floor gives way it falls and lies stunned.
+    /// 0.16.0: a shut door stops it seeing you, and it breaks down one shut between it and where it last
+    /// saw you (a few loud blows); a locker hides you unless it watched you climb in.
     /// Host only; its state and heavy footsteps reach every machine.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
-    public class Hunter : Threat, ILoadSource
+    public partial class Hunter : Threat, ILoadSource
     {
         [SerializeField] private HunterConfig config;
 
@@ -32,7 +34,9 @@ namespace Abandoned.Threats
         public override string DisplayName => "Hunter";
         public override string DeathLine => "The Hunter ran you down.";
         public HunterState State => state.Value;
-        public override ThreatMotion DesiredMotion => State == HunterState.Chase ? ThreatMotion.Chase : State == HunterState.Stunned ? ThreatMotion.Special : ThreatMotion.Idle;
+        // At a door it stands and swings (each blow plays the attack); on its way to one it is still charging.
+        public override ThreatMotion DesiredMotion => State == HunterState.Chase || State == HunterState.Breach && !atDoor ? ThreatMotion.Chase
+            : State == HunterState.Stunned ? ThreatMotion.Special : ThreatMotion.Idle;
         public NetworkPlayer Target => target;
         public HunterConfig Config => config;
         /// <summary>Tests/F1: the section it last stood on.</summary>
@@ -82,15 +86,22 @@ namespace Abandoned.Threats
             if (seen != null)
             {
                 target = seen;
-                lastSeen = PositionOf(seen);
+                lastSeen = SpotOf(seen);
                 lostAt = Time.time;
-                Set(HunterState.Chase);
+                if (state.Value != HunterState.Breach) Set(HunterState.Chase);
             }
             switch (state.Value)
             {
                 case HunterState.Chase:
-                    agent.isStopped = false;
+                case HunterState.Breach:
                     agent.speed = config.ChaseSpeed * SpeedScale;
+                    if (AtShutDoor())
+                    {
+                        Set(HunterState.Breach);
+                        break;
+                    }
+                    Set(HunterState.Chase);
+                    agent.isStopped = false;
                     Steer(agent, lastSeen);
                     if (KillWithinReach(config.AttackRange) != null) { target = null; Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
                     else if (seen == null && Time.time - lostAt > config.LoseAfter * Mathf.Min(Aggression, 1.8f)) { Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
@@ -126,6 +137,14 @@ namespace Abandoned.Threats
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || p.NetworkManager != NetworkManager || p.IsDead || !p.IsSpawned || Sheltered(PositionOf(p))) continue;
+                if (p.IsHiding)
+                {
+                    // In a locker: only if it watched them climb in, and then it knows exactly where they are.
+                    if (!FindsHider(p)) continue;
+                    float away = Vector3.Distance(transform.position, SpotOf(p));
+                    if (away < bestDistance) { best = p; bestDistance = away; }
+                    continue;
+                }
                 Vector3 at = PositionOf(p) + Vector3.up * 1.2f;
                 Vector3 to = at - eye;
                 float distance = to.magnitude;
@@ -224,7 +243,8 @@ namespace Abandoned.Threats
         private void Footsteps()
         {
             HunterState s = state.Value;
-            if (s == HunterState.Stunned || Time.time < nextStep) return;
+            // At a door the blows speak for it.
+            if (s == HunterState.Stunned || s == HunterState.Breach || Time.time < nextStep) return;
             nextStep = Time.time + (s == HunterState.Chase ? 0.32f : 0.62f);
             Audio.GameAudio.Play(Audio.SoundId.HunterStep, transform.position, s == HunterState.Chase ? 1f : 0.75f);
         }

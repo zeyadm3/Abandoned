@@ -165,6 +165,9 @@ namespace Abandoned.Threats
         // not talking) can slip past within arm's reach; one sound there and they're fair game.
         private const float HeardNearRadius = 3f, HeardWithinSeconds = 2f;
 
+        // A locker hides nothing from it: it never saw anyone anyway. Whoever it has just heard in one is fair game.
+        protected override bool FindsHider(NetworkPlayer p) => HeardRecently(p);
+
         private bool HeardRecently(NetworkPlayer p)
         {
             Vector3 at = PositionOf(p);

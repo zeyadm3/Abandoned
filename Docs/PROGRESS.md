@@ -4,6 +4,33 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.16.0.EEA: closable doors and hiding lockers (2026-10-10; written, not compiled or run)
+
+Roadmap 0.16.0, the Hunter's missing counterplay (GDD 9). Ten sliding doors stand in openings the mall
+already has (a pair of panels in each of the eight store doorways, on the store's side of the shutter,
+and one steel panel across the service corridor's mouth on each floor), and up to 27 steel lockers stand
+against bare walls in 15 banks. No wall was cut and nothing existing was moved, so the NavMesh and
+occlusion bakes stay valid: a shut door carves its doorway at run time like a shutter, and each locker
+carves its own footprint.
+
+E slides a door; a shut one blocks movement, sight, thrown loot and (dulled) sound. Monsters cannot open
+doors. The Hunter breaks down a door shut between it and where it last saw someone (3 blows, about 4 s,
+heard across the building), and that door hangs open for the rest of the job; the Last Hunter breaks any
+shut door near it. E at a locker with empty hands hides one player: nothing that hunts by sight finds
+them unless it was after them and watched them climb in. The Blind One strikes a hider it has just heard,
+Crawlers get in, the Last Hunter knows. Threat files, the Hunter tip and two new tips say so.
+
+Door state is two host-written masks on `RunDoors` (RunState prefab, beside `RunShutters`); hiding is one
+host-written value on the player (`NetworkPlayer.Hiding.cs`), with the owner's machine moving its own
+player. Tunables: `Data/Extraction/Resources/DoorConfig`. Six synthesised sounds, none of them a creak.
+
+**To do in Unity:** let it compile, then **Tools > Abandoned > Mall > Add Doors and Lockers (0.16.0)**
+(batch: `Abandoned.EditorTools.MallRooms0160.AuthorAndExit`). It creates the config asset, adds `RunDoors`
+to the RunState prefab, adds the sound rows, places and saves; no bakes, no builds. Check the Console for
+lockers left out. `rebuild-horror` places them too. Written but not run: `Tests/EditMode/DoorTests` and
+the nettest scenario `rooms`. Player Settings version is 0.16.0.EEA. Details and what to look at first:
+`Docs/DOORS_AND_LOCKERS_0.16.0.md`.
+
 ## 0.15.8c.EEA: readable artwork orientation (2026-10-10)
 
 Correct horizontal UV direction for the shared fascia, paper and fabric meshes: their printed face

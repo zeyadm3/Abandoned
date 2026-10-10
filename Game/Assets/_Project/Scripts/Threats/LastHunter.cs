@@ -22,6 +22,8 @@ namespace Abandoned.Threats
         public override string DisplayName => "The Last Hunter";
         public override string DeathLine => "You stayed too long.";
         public override ThreatMotion DesiredMotion => hunting.Value ? ThreatMotion.Chase : ThreatMotion.Special;
+        // It knows where every living crew member is: a locker hides no one, and no door holds it (0.16.0).
+        protected override bool FindsHider(NetworkPlayer p) => true;
         protected override void HostTick()
         {
             if (Time.time < wakesAt) { hunting.Value = false; Stop(); return; }
@@ -35,7 +37,8 @@ namespace Abandoned.Threats
             }
             hunting.Value = prey != null;
             if (prey == null) { Stop(); return; }
-            Move(PositionOf(prey), ChaseSpeed);
+            Move(SpotOf(prey), ChaseSpeed);
+            Extraction.RunDoors.Current?.ServerBreakNear(transform.position, Extraction.DoorConfig.Current.LastHunterBreakRadius);
             KillWithinReach(Reach);
             if (Time.time < nextRupture) return;
             nextRupture = Time.time + Interval;

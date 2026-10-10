@@ -55,6 +55,14 @@ namespace Abandoned.Audio
                 case SoundId.ShutterOpen: return Patch.Mono(id, take, TruckPatches.ShutterOpen());
                 case SoundId.ShutterSlam: return Patch.Mono(id, take, TruckPatches.ShutterSlam(), 0.95f);
 
+                // Doors and lockers (0.16.0).
+                case SoundId.DoorSlide: return Patch.Mono(id, take, DoorPatches.Slide(take, false), 0.8f);
+                case SoundId.DoorShut: return Patch.Mono(id, take, DoorPatches.Slide(take, true), 0.9f);
+                case SoundId.DoorBash: return Patch.Mono(id, take, DoorPatches.Bash(take), 0.95f);
+                case SoundId.DoorBreak: return Patch.Mono(id, take, DoorPatches.Break(), 0.95f);
+                case SoundId.LockerOpen: return Patch.Mono(id, take, DoorPatches.Locker(take, false), 0.7f);
+                case SoundId.LockerShut: return Patch.Mono(id, take, DoorPatches.Locker(take, true), 0.8f);
+
                 // Gear and loot.
                 case SoundId.ScanPing: return Patch.Mono(id, take, GearPatches.ScanPing(), 0.8f);
                 case SoundId.NoiseMakerShriek: return Patch.Mono(id, take, GearPatches.NoiseMakerShriek());

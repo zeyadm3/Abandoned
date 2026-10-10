@@ -116,5 +116,13 @@ namespace Abandoned.Audio
         DispatchBriefingPowerOff,
         DispatchBriefingHighThreat,
         DispatchBriefingSealed,
+
+        // 0.16.0: sliding doors and hiding lockers.
+        DoorSlide,
+        DoorShut,
+        DoorBash,
+        DoorBreak,
+        LockerOpen,
+        LockerShut,
     }
 }

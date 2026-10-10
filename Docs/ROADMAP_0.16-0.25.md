@@ -1,7 +1,7 @@
 # ABANDONED — feature roadmap, 0.16 to 0.25.0 Early Access
 
 Written 2026-10-09; Early Access moved from 0.20.0 to 0.25.0 on 2026-10-10 (user: more time, more
-features). **Plan only: nothing here is built.** 0.15 (the mall remodel) is planned separately
+features). **Plan only: nothing here is built, except 0.16.0 (written 2026-10-10, untested).** 0.15 (the mall remodel) is planned separately
 and is not in this file. Nothing here needs a second map.
 
 - Each feature has its own version number, in the order to build them.
@@ -53,6 +53,8 @@ include the spaces, or the mall gets rebuilt twice.
 | 0.16.7 | Security office | Camera screens so one player can guide the crew | Medium–large |
 
 Notes:
+- **0.16.0 is written (2026-10-10), not yet compiled or played:** Docs/DOORS_AND_LOCKERS_0.16.0.md. The
+  doors are sliding ones in the existing doorways; hinged back doors were left out.
 - Doors and lockers touch monster AI and the NavMesh, so they go first and get the most time.
 - The freight lift is the hardest networking item in this roadmap: players own their own movement, and
   riding a moving platform is where that is most likely to jitter.

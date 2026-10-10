@@ -79,6 +79,8 @@ namespace Abandoned.EditorTools
             MallSurfaceBuilder.Assign(mall);
             BakeNavMesh(mall);
             MallShutters.Place(mall);
+            // 0.16.0: sliding doors in the existing doorways and hiding lockers on bare walls (they carve the NavMesh themselves).
+            MallRooms0160.Build(mall);
             MeridianLightLayers.Apply(mall);
             ShadowCasterPass.Apply(mall, "Mall");
             PlayerSettings.bundleVersion = BuildScript.Version;

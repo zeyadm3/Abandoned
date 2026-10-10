@@ -92,12 +92,15 @@ namespace Abandoned.EditorTools
             if (existing != null && existing.GetComponent<Abandoned.Extraction.RunState>() != null)
             {
                 // M10.4: the run's shutters ride on the same object (keeps the prefab and its network hash).
-                if (existing.GetComponent<Abandoned.Extraction.RunShutters>() == null)
+                // 0.16.0: so do its doors. Added after whatever is already there, so existing behaviours keep their order.
+                if (existing.GetComponent<Abandoned.Extraction.RunShutters>() == null || existing.GetComponent<Abandoned.Extraction.RunDoors>() == null)
                 {
                     GameObject contents = PrefabUtility.LoadPrefabContents(RunStatePrefabPath);
-                    contents.AddComponent<Abandoned.Extraction.RunShutters>();
+                    if (contents.GetComponent<Abandoned.Extraction.RunShutters>() == null) contents.AddComponent<Abandoned.Extraction.RunShutters>();
+                    if (contents.GetComponent<Abandoned.Extraction.RunDoors>() == null) contents.AddComponent<Abandoned.Extraction.RunDoors>();
                     PrefabUtility.SaveAsPrefabAsset(contents, RunStatePrefabPath);
                     PrefabUtility.UnloadPrefabContents(contents);
+                    existing = AssetDatabase.LoadAssetAtPath<GameObject>(RunStatePrefabPath);
                 }
                 return existing;
             }
@@ -107,6 +110,7 @@ namespace Abandoned.EditorTools
             networkObject.SynchronizeTransform = false;
             SerializedWiring.Set(root.AddComponent<Abandoned.Extraction.RunState>(), "config", config);
             root.AddComponent<Abandoned.Extraction.RunShutters>();
+            root.AddComponent<Abandoned.Extraction.RunDoors>();
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, RunStatePrefabPath);
             Object.DestroyImmediate(root);
             NetworkObjectIds.StampPrefab(prefab);

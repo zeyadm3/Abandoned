@@ -69,7 +69,7 @@ namespace Abandoned.Threats
             NetworkPlayer best = null;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
-                if (p == null || !p.IsSpawned || p.NetworkManager != NetworkManager || p.IsDead || Sheltered(PositionOf(p))) continue;
+                if (p == null || !p.IsSpawned || p.NetworkManager != NetworkManager || p.IsDead || Sheltered(PositionOf(p)) || HiddenFromMe(p)) continue;
                 float d = Vector3.Distance(PositionOf(p), transform.position);
                 if (d < range) { best = p; range = d; }
             }

@@ -49,10 +49,12 @@ namespace Abandoned.UI
                 HintId.Stalker => "Something is watching you. The Stalker only moves when nobody looks at it: keep an eye on it, and don't wander off alone.",
                 HintId.Collector => "Something wants your loot. The Collector steals what's left lying around and runs; chase it and it drops it.",
                 HintId.Ghost => "You died. Watch your crew as a ghost; the living can't hear you. A nearby crewmate with a medkit can revive you.",
-                HintId.Hunter => $"Something big is patrolling. If it sees you it charges: break line of sight, crouch ({crouch}) to hide, or sprint. It's heavy, and weak floors don't hold it.",
+                HintId.Hunter => $"Something big is patrolling. If it sees you it charges: break line of sight, slide a door shut behind you, hide in a locker, or sprint. It's heavy, and weak floors don't hold it.",
                 HintId.TruckLeaving => "The truck is leaving! Get in the bay before the honking stops, or you're left behind.",
                 HintId.LockedShutter => "A locked store. What's behind a shutter is worth more. Bolt cutters open it quietly; a crowbar opens it loudly (both from the HQ shop).",
                 HintId.Voicemail => "The answering machine is blinking: the boss left you a message.",
+                HintId.Door => $"Doors slide ({interact}). A shut door blocks sight, and most things can't open one. The Hunter breaks down a door it saw you go through: that takes it a few blows, and everyone hears them.",
+                HintId.Locker => $"You can hide in a locker ({interact}, hands empty). Nothing that hunts by sight finds you in there, unless it watched you climb in. Sound still carries.",
                 _ => "",
             };
         }

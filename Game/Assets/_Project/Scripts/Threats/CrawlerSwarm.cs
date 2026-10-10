@@ -17,6 +17,8 @@ namespace Abandoned.Threats
         public override string DisplayName => "Crawlers";
         public override string DeathLine => "The Crawlers dragged you down.";
         public override ThreatMotion DesiredMotion => motion.Value;
+        // Small enough to pour in through the slats: a locker is no shelter from them (0.16.0).
+        protected override bool FindsHider(NetworkPlayer p) => true;
         protected override void HostTick()
         {
             foreach (NetworkPlayer p in NetworkPlayer.All)
@@ -42,7 +44,7 @@ namespace Abandoned.Threats
             NetworkPlayer prey = Nearest(SenseRange);
             if (prey == null || BrightAt(transform.position)) { motion.Value = ThreatMotion.Idle; Wander(); return; }
             motion.Value = ThreatMotion.Chase;
-            Move(PositionOf(prey), ChaseSpeed);
+            Move(SpotOf(prey), ChaseSpeed);
             if (Time.time < nextKnock) return;
             NetworkPlayer bitten = DamageWithinReach(Reach, 8f);
             if (bitten == null) return;

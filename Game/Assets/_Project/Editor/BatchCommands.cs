@@ -74,6 +74,7 @@ namespace Abandoned.EditorTools
             ThreatContentBuilder.CreateBlindOne(); ThreatContentBuilder.CreateOthers();
             NewThreatContentBuilder.Create();
             RunPressureContentBuilder.CreateMissing(); // monster pacing + building decay tunables (2026-10-08)
+            RoomsContentBuilder.CreateMissing(); // door and locker tunables, the run's door state (0.16.0)
             NetworkContentBuilder.RegisterNetworkPrefabs();
             SoundBankBuilder.CreateMissing(); // only adds cues it doesn't have yet (QA: the shutter slam)
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing(); MenuEffectsBuilder.Create();

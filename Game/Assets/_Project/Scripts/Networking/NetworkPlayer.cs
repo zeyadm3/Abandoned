@@ -67,6 +67,7 @@ namespace Abandoned.Networking
             Spawned.Add(this);
             SpawnHealth();
             SpawnName();
+            SpawnHiding();
             if (IsServer)
             {
                 SpawnSlots seats = NetworkBootstrap.Resolve(null)?.Slots;
@@ -112,6 +113,7 @@ namespace Abandoned.Networking
             health.OnValueChanged -= OnHealthChanged;
             state.OnValueChanged -= OnStateChanged;
             dead.OnValueChanged -= OnDeadChanged;
+            DespawnHiding();
             if (!IsOwner) return;
             motor.Landed -= OnOwnerLanded;
             ragdoll.Ended -= OnOwnerGotUp;
@@ -128,11 +130,13 @@ namespace Abandoned.Networking
         private void LateUpdate()
         {
             if (IsSpawned) TrackServerFall();
+            if (IsSpawned && IsServer) TickServerHiding();
             if (!IsSpawned || !IsOwner) return;
             // NetworkVariable only sends when the value actually changed.
             state.Value = PlayerNetState.From(motor.IsGrounded, motor.IsSprinting, motor.IsCrouching,
                 ragdoll.IsRagdolled, ragdoll.IsBodyResting, ragdoll.BodyPosition, look != null ? look.Pitch : 0f);
             TickDevHurt();
+            TickOwnerHiding();
         }
 
         private void OnStateChanged(PlayerNetState previous, PlayerNetState current) => ApplyRemote(current);
@@ -188,6 +192,7 @@ namespace Abandoned.Networking
         public void ServerRespawn(Pose pose)
         {
             if (!IsServer) return;
+            ServerLeaveHiding();
             ResetHealth();
             dead.Value = false;
             RespawnRpc(pose.position, pose.rotation, false);
@@ -214,6 +219,8 @@ namespace Abandoned.Networking
         private void Die(string cause)
         {
             if (!IsServer || dead.Value) return;
+            // Out of the locker first: the body must not fall inside it.
+            ServerLeaveHiding();
             // The cause first: it reaches the owner before (or with) the death itself.
             deathCause.Value = new Unity.Collections.FixedString64Bytes(Truncate(cause ?? "Something got you.", 60));
             dead.Value = true;
@@ -246,6 +253,8 @@ namespace Abandoned.Networking
         {
             if (IsOwner)
             {
+                // Killed in a locker: the death can reach this machine before the eviction does.
+                if (now) OwnerLeaveLocker(true);
                 if (now) ragdoll.Enter(Vector3.zero);
                 ragdoll.HoldDown = now;
                 // Back alive while the body still lies there: getting up (Recover) switches these on when the
@@ -264,6 +273,8 @@ namespace Abandoned.Networking
         [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
         private void RespawnRpc(Vector3 position, Quaternion rotation, bool whereBodyLies)
         {
+            // A new run can start while someone is still in a locker: this places them, not the locker's doorstep.
+            OwnerLeaveLocker(false);
             // A revive stands up on the ragdoll's own checked spot; the body's raw position can be
             // against a wall or inside a prop.
             if (whereBodyLies && ragdoll.IsRagdolled)
@@ -295,6 +306,7 @@ namespace Abandoned.Networking
             LocalPlayerSpawned = null;
             DeathChanged = null;
             HealthChanged = null;
+            HidingChanged = null;
         }
     }
 }

@@ -104,11 +104,40 @@ Use existing/free assets and original code-built low-poly art. New paid packs/pa
 `Tools/unity.sh rebuild-horror` finishes clean (the user asked for that run; the standing rule is still not to run
 anything unasked). Not play-tested beyond the user's first listen, after which the base volume was halved.
 
+0.16.0 (2026-10-10): closable doors and hiding lockers are written (Docs/DOORS_AND_LOCKERS_0.16.0.md) but
+have not been compiled, run or tested, and the Mall scene does not hold them until the user runs
+**Tools > Abandoned > Mall > Add Doors and Lockers (0.16.0)**. Next on the roadmap: 0.16.1 breaker rooms.
+
 Milestones 0–10 are built (autonomous build merged into main on 2026-10-07; the separate
 autobuild-2 worktree is gone, everything lives in this one folder). Next: the user's full test pass.
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-10 (user: "build all of 0.16.0"; **closable doors and hiding lockers**, written, not compiled
+  or run; user tests): details in Docs/DOORS_AND_LOCKERS_0.16.0.md.
+  - Doors are SLIDING and stand only in openings the mall already has: a pair of panels in each store's
+    four-metre doorway (store side of the shutter, 24 cm inside the wall plane) and one steel panel across
+    the service corridor's mouth on each floor. No wall is cut and nothing is rebaked: a shut door carves
+    the NavMesh at run time like a shutter. Store doorways stay four metres wide, so Huge loot still fits.
+    Hinged doors and new back doors between stores were left out on purpose (they need NavMesh and
+    occlusion rebakes, and those walls are lined with dressing merged per floor tile).
+  - Doors and lockers are scene objects on every machine, never NetworkObjects. Door state is two
+    host-written masks on `RunDoors` (RunState prefab, like `RunShutters`); a new run resets them. A door
+    never shuts on a player or loot standing in it. Each job a seeded few start shut (DoorConfig).
+  - Monsters cannot open doors. The Hunter breaks down a door shut between it and where it last saw
+    someone (3 blows, about 4 s, heard building-wide; `HunterState.Breach`, appended); a broken door hangs
+    open for the rest of the job. The Last Hunter breaks any shut door near it. Nothing else gets through.
+  - Hiding is one host-written value on the player (`NetworkPlayer.HidingIn`); the owner's machine moves
+    its own player in and out. Hands must be empty (pockets are fine); one player per locker. A locker is
+    one solid box, so sight stops at it. A monster finds a hider only if it was after them and watched them
+    climb in (`Threat.Pursuing` / `FindsHider`); exceptions: the Blind One strikes a hider it has just
+    heard, Crawlers always get in, the Last Hunter always knows. The Collector ignores hidden players.
+  - Lockers stand on wall runs found bare in the saved 0.15.8c scene; each is checked again when built
+    and left out (with a Console warning) rather than forced in. They carve the NavMesh themselves.
+  - Door and locker sounds are synthesised rolls, thuds and sheet metal. Never a creak.
+  - Tunables: Data/Extraction/Resources/DoorConfig (code defaults until the menu creates the asset).
+  - Menu: Tools/Abandoned/Mall/Add Doors and Lockers (0.16.0); the full mall builder calls the same code.
+    Version 0.16.0.EEA. No builds were made.
 - 2026-10-10 (user, **0.15.8c artwork orientation**, efficient immediate commit): fix mirrored or
   wrong-facing generated store artwork by correcting shared print UV direction and front/back
   orientation. Save existing scene/assets and version, then commit all. No tests, QA, regeneration

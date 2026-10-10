@@ -21,5 +21,8 @@ namespace Abandoned.UI
         // M10 (append only: seen flags are stored by name, but keep the order anyway)
         LockedShutter,
         Voicemail,
+        // 0.16.0
+        Door,
+        Locker,
     }
 }

@@ -148,6 +148,15 @@ namespace Abandoned.Audio
                 caption: "dispatch: high threat job", pitch: 0f);
             Set(SoundId.DispatchBriefingSealed, Fx, 72, 3f, 18f, Lib, Open,
                 caption: "dispatch: bring bolt cutters or a crowbar", pitch: 0f);
+
+            // 0.16.0: doors and lockers. A door is a roll and a thud, never a creak (a creak only ever means
+            // the floor). The Hunter at a door is dulled by walls but never hidden: the crew is meant to hear it.
+            Set(SoundId.DoorSlide, Fx, 96, 2f, 26f, Syn, Wall, 2, "a door slides open", 0.9f);
+            Set(SoundId.DoorShut, Fx, 90, 2f, 30f, Syn, Wall, 2, "a door slides shut");
+            Set(SoundId.DoorBash, Monsters, 38, 5f, 60f, Syn, Dull, 3, "something pounds on a door");
+            Set(SoundId.DoorBreak, Monsters, 32, 6f, 75f, Syn, Dull, 1, "A DOOR IS BROKEN DOWN");
+            Set(SoundId.LockerOpen, Fx, 110, 1f, 14f, Syn, Wall, 2, volume: 0.8f);
+            Set(SoundId.LockerShut, Fx, 110, 1f, 16f, Syn, Wall, 2, volume: 0.85f);
             return t;
         }
     }

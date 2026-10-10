@@ -82,7 +82,8 @@ namespace Abandoned.Threats
                 return;
             }
 
-            Vector3 at = PositionOf(target);
+            // A prey it watched climb into a locker is reached at the locker's door.
+            Vector3 at = SpotOf(target);
             brain.Config = config;
             // Dread only builds while it has eyes on its prey: behind walls or a floor away it just follows.
             brain.Tick(IsWatchedBy(target), IsIsolated(target) && Sees(target), Time.deltaTime * Aggression);
@@ -101,8 +102,10 @@ namespace Abandoned.Threats
                     // Hang back: walk to a point FollowDistance short of them.
                     Vector3 away = Flat(transform.position - at).normalized;
                     if (away.sqrMagnitude < 0.01f) away = -target.transform.forward;
+                    // Its prey is in a locker and it doesn't know which: it waits where it stands until they show themselves.
+                    if (HiddenFromMe(target)) agent.isStopped = true;
                     // Follow through the doorway first. An offset across a wall can strand it forever.
-                    if (!Sees(target)) Steer(agent, at);
+                    else if (!Sees(target)) Steer(agent, at);
                     else if (Flat(transform.position - at).magnitude <= config.FollowDistance) agent.isStopped = true;
                     else Steer(agent, at + away * config.FollowDistance);
                     break;
@@ -136,6 +139,9 @@ namespace Abandoned.Threats
         }
 
         private bool Sees(NetworkPlayer p) => LineOfSight(transform.position + Vector3.up * 1.5f, PositionOf(p) + Vector3.up * 1.2f);
+
+        // Already rushing this player: it can watch them climb into a locker, and then it reaches in (0.16.0).
+        protected override bool Pursuing(NetworkPlayer p) => target == p && brain != null && brain.State == StalkerState.Rush;
 
         private bool IsIsolated(NetworkPlayer p) =>
             !NetworkPlayer.All.Any(o => o != null && o != p && o.NetworkManager == NetworkManager && !o.IsDead

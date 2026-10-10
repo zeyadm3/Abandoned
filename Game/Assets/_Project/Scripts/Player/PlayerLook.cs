@@ -20,6 +20,9 @@ namespace Abandoned.Player
         private PlayerCarrier carrier;
         // Only the look that captured the cursor may free it: a remote player leaving mustn't unlock ours.
         private bool ownsCursor;
+        // Hiding in a locker (0.16.0): the head turns only so far either side of the door.
+        private bool yawLimited;
+        private float yawCentre, yawHalfAngle;
 
         public float Pitch => pitch;
 
@@ -46,6 +49,16 @@ namespace Abandoned.Player
 
         /// <summary>Takes yaw from the body's current facing, e.g. after a network spawn placed it.</summary>
         public void SyncYawFromTransform() => yaw = transform.eulerAngles.y;
+
+        /// <summary>Keeps the view within <paramref name="halfAngle"/> degrees either side of <paramref name="centre"/> until cleared.</summary>
+        public void LimitYaw(float centre, float halfAngle)
+        {
+            yawLimited = true;
+            yawCentre = centre;
+            yawHalfAngle = Mathf.Abs(halfAngle);
+        }
+
+        public void ClearYawLimit() => yawLimited = false;
 
         // Re-read yaw (the body may have been moved, e.g. by ragdoll recovery) but keep pitch, and
         // never touch the cursor here: being disabled while ragdolled is not pausing.
@@ -77,6 +90,7 @@ namespace Abandoned.Player
         {
             float sensitivity = config.MouseSensitivity * GameSettings.Sensitivity;
             yaw += delta.x * sensitivity;
+            if (yawLimited) yaw = yawCentre + Mathf.Clamp(Mathf.DeltaAngle(yawCentre, yaw), -yawHalfAngle, yawHalfAngle);
             pitch = Mathf.Clamp(pitch - delta.y * sensitivity * (GameSettings.InvertY ? -1f : 1f), -config.MaxPitch, config.MaxPitch);
 
             transform.rotation = Quaternion.Euler(0f, yaw, 0f);

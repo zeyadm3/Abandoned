@@ -17,6 +17,7 @@ namespace Abandoned.Threats
     /// in anyone's hands) and takes it to its nest, one place far from the truck for the whole run, where
     /// the hoard tinkles now and then (QA D-08: stolen loot can be found again). Get close and it drops what
     /// it has and flees. Counterplay: guard the loot pile, carry things straight to the truck, raid the nest.
+    /// Someone hiding in a locker doesn't count as near: it steals in front of them (0.16.0).
     /// Host only; the nest's place and size are replicated so everyone can hear it.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
@@ -239,7 +240,7 @@ namespace Abandoned.Threats
         }
 
         private bool Unattended(Vector3 at) =>
-            !NetworkPlayer.All.Any(p => p != null && p.NetworkManager == NetworkManager && !p.IsDead && Vector3.Distance(PositionOf(p), at) < config.GuardRadius);
+            !NetworkPlayer.All.Any(p => p != null && p.NetworkManager == NetworkManager && !p.IsDead && !HiddenFromMe(p) && Vector3.Distance(PositionOf(p), at) < config.GuardRadius);
 
         private float NearestPlayer() => Vector3.Distance(NearestPlayerPosition(), transform.position);
 
@@ -247,7 +248,7 @@ namespace Abandoned.Threats
         {
             Vector3 best = transform.position + Vector3.one * 1000f;
             foreach (NetworkPlayer p in NetworkPlayer.All)
-                if (p != null && p.NetworkManager == NetworkManager && !p.IsDead && Vector3.Distance(PositionOf(p), transform.position) < Vector3.Distance(best, transform.position))
+                if (p != null && p.NetworkManager == NetworkManager && !p.IsDead && !HiddenFromMe(p) && Vector3.Distance(PositionOf(p), transform.position) < Vector3.Distance(best, transform.position))
                     best = PositionOf(p);
             return best;
         }
