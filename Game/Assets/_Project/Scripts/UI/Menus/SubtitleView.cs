@@ -15,6 +15,7 @@ namespace Abandoned.UI
         private const float Seconds = 2.5f;
 
         private readonly List<(Label label, float until)> lines = new();
+        private float placedBottom = -1f;
 
         public VisualElement Root { get; }
 
@@ -35,7 +36,7 @@ namespace Abandoned.UI
             }
             var label = new Label(text) { pickingMode = PickingMode.Ignore };
             label.style.whiteSpace = WhiteSpace.Normal;
-            label.style.maxWidth = Length.Percent(86f);
+            label.style.maxWidth = Length.Percent(100f);
             label.style.flexShrink = 0;
             label.AddToClassList("subtitle-line");
             Root.Add(label);
@@ -44,6 +45,7 @@ namespace Abandoned.UI
 
         public void Tick()
         {
+            HudLayer.FitCenterLane(Root, Root.parent);
             int size = Core.GameSettings.SubtitleSize;
             Root.EnableInClassList("subtitles--small", size == 0);
             Root.EnableInClassList("subtitles--large", size == 2);
@@ -53,6 +55,17 @@ namespace Abandoned.UI
                 lines[i].label.RemoveFromHierarchy();
                 lines.RemoveAt(i);
             }
+        }
+
+        /// <summary>Keep sound captions above dispatch, rather than drawing both records over each other.</summary>
+        public void PlaceAbove(VisualElement record, bool shown, float bottom)
+        {
+            float height = record != null ? record.layout.height : 0f;
+            if (!HudLayer.Finite(height)) height = 80f;
+            float wanted = shown ? bottom + Mathf.Max(60f, height) + 14f : 28f;
+            if (Mathf.Abs(placedBottom - wanted) < .5f) return;
+            placedBottom = wanted;
+            Root.style.bottom = wanted;
         }
 
         public int Count => lines.Count;

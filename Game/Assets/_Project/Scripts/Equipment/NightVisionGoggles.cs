@@ -4,6 +4,7 @@ using Abandoned.Player;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 namespace Abandoned.Equipment
 {
@@ -98,10 +99,31 @@ namespace Abandoned.Equipment
                 if (panel != null) UI.MenuKit.Show(panel, false);
                 return;
             }
-            if (panel == null && (panel = UI.HudLayer.Label("hud-panel", "hud-nightvision")) == null) return;
+            if (panel == null || panel.panel == null)
+            {
+                UI.HudLayer.Remove(panel);
+                panel = UI.HudLayer.Label("hud-panel", "hud-nightvision", "instrument-hud");
+                if (panel == null) return;
+            }
             string s = $"NIGHT VISION {(on ? "ON" : "OFF")}  {Battery01:P0}\n<color=#999999>{Core.InputBindings.Display("Use")}: switch</color>";
             UI.MenuKit.Show(panel, true);
             if (panel.text != s) panel.text = s;
+            PositionBattery();
+        }
+
+        private void PositionBattery()
+        {
+            VisualElement hud = UI.HudLayer.Root;
+            if (!UI.HudLayer.TryLocalRect(hud, hud, out Rect area)) return;
+            bool found = UI.HudLayer.TryLocalRect(hud.Q(className: "h-inventory"), hud, out Rect anchor);
+            if (UI.HudLayer.TryLocalRect(hud.Q(className: "h-inspection"), hud, out Rect inspection) && (!found || inspection.yMin < anchor.yMin))
+            {
+                anchor = inspection;
+                found = true;
+            }
+            panel.style.top = StyleKeyword.Auto;
+            panel.style.right = found ? Mathf.Max(0f, area.width - anchor.xMax) : 28f;
+            panel.style.bottom = found ? Mathf.Max(28f, area.height - anchor.yMin + 12f) : 28f;
         }
 
         private void OnDisable()

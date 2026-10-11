@@ -28,7 +28,7 @@ namespace Abandoned.Company
 
             CompanyService company = CompanyService.Current;
             bool open = ContractBoard.Open && company != null;
-            if (screen == null)
+            if (screen == null || screen.Root.panel == null)
             {
                 if (!open) return;
                 screen = ScreenPanel.Create(wide: true);
@@ -39,6 +39,7 @@ namespace Abandoned.Company
                 screen.Panel.style.maxWidth = Length.Percent(96f);
                 StyleSheet stationStyles = Resources.Load<StyleSheet>("HqStations");
                 if (stationStyles != null) screen.Panel.styleSheets.Add(stationStyles);
+                screen.ApplyArchiveStyles();
             }
             screen.Show(open);
             if (!open)

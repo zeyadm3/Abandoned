@@ -53,9 +53,10 @@ namespace Abandoned.UI
             VisualElement left = new();
             left.AddToClassList("pause__left");
             columns.Add(left);
+            MenuKit.Text(left, "RECOVERY IN PROGRESS", "pause__eyebrow");
             MenuKit.Text(left, "PAUSED", "title");
-            MenuKit.Text(left, "The game keeps running.", "subtitle");
-            MenuKit.Button(left, "Resume", menu.Resume, SoundId.UiConfirm);
+            MenuKit.Text(left, "The game keeps running. The building does not wait.", "subtitle").AddToClassList("pause__warning");
+            MenuKit.Button(left, "Resume", menu.Resume, SoundId.UiConfirm).AddToClassList("pause__resume");
             MenuKit.Button(left, "Settings", () => menu.Push(MenuScreen.Settings));
             MenuKit.Button(left, "How to play", () => menu.Push(MenuScreen.HowToPlay));
             MenuKit.Button(left, "Achievements", () => menu.Push(MenuScreen.Achievements));
@@ -79,6 +80,8 @@ namespace Abandoned.UI
             // One scrolling body under the title: the crew rows get the room they need and the host's rules sit
             // below them inside the panel, never spilling out of it.
             VisualElement right = MenuKit.Panel(columns);
+            right.style.width = StyleKeyword.Null;
+            right.style.maxWidth = StyleKeyword.Null;
             right.style.height = 600f;
             right.style.minHeight = 300f;
             right.style.maxHeight = 640f;
@@ -162,31 +165,36 @@ namespace Abandoned.UI
         {
             var row = new Row { Root = new VisualElement() };
             row.Root.AddToClassList("crew-row");
+            VisualElement identity = MenuKit.Row(row.Root);
+            identity.AddToClassList("crew-row__identity");
             row.Swatch = new VisualElement();
             row.Swatch.AddToClassList("crew-row__swatch");
             PlayerCosmetics look = p.GetComponent<PlayerCosmetics>();
             CosmeticDefinition suit = look != null && look.Catalog != null ? look.Catalog.Coverall(look.Choice.Coverall) : null;
             if (suit != null) row.Swatch.style.backgroundColor = suit.Color;
-            row.Root.Add(row.Swatch);
+            identity.Add(row.Swatch);
 
             var who = new VisualElement();
             who.AddToClassList("crew-row__who");
-            row.Root.Add(who);
+            identity.Add(who);
             row.Name = MenuKit.Text(who, p.DisplayName, "crew-row__name");
             row.Tags = MenuKit.Text(who, "", "crew-row__tags");
             row.Talking = new VisualElement();
             row.Talking.AddToClassList("crew-row__talking");
-            row.Root.Add(row.Talking);
-            row.Ping = MenuKit.Text(row.Root, "", "crew-row__ping");
+            identity.Add(row.Talking);
+            row.Ping = MenuKit.Text(identity, "", "crew-row__ping");
 
             if (!p.IsOwner)
             {
+                VisualElement controls = MenuKit.Row(row.Root);
+                controls.AddToClassList("crew-row__controls");
+                controls.style.flexWrap = Wrap.Wrap;
                 ulong id = p.OwnerClientId;
                 var slider = new Slider(0f, 2f) { value = VoiceSettings.PlayerVolume(id) };
                 slider.AddToClassList("crew-row__volume");
                 slider.RegisterValueChangedCallback(e => VoiceSettings.SetPlayerVolume(id, e.newValue));
-                row.Root.Add(slider);
-                row.Mute = MenuKit.Button(row.Root, VoiceSettings.PlayerMuted(id) ? "Muted" : "Mute", () =>
+                controls.Add(slider);
+                row.Mute = MenuKit.Button(controls, VoiceSettings.PlayerMuted(id) ? "Muted" : "Mute", () =>
                 {
                     VoiceSettings.SetPlayerMuted(id, !VoiceSettings.PlayerMuted(id));
                     row.Mute.text = VoiceSettings.PlayerMuted(id) ? "Muted" : "Mute";
@@ -198,7 +206,7 @@ namespace Abandoned.UI
                     // Two presses, so a stray click doesn't throw a friend out (QA B-24).
                     Button kick = null;
                     float armedUntil = -1f;
-                    kick = MenuKit.Button(row.Root, "Kick", () =>
+                    kick = MenuKit.Button(controls, "Kick", () =>
                     {
                         if (Time.unscaledTime > armedUntil)
                         {

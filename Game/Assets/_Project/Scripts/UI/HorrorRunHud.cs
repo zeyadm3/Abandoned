@@ -36,7 +36,7 @@ namespace Abandoned.UI
                 pending.Clear();
                 readUntil = 0f;
             }
-            MenuKit.Show(clock, active && me != null && !me.IsDead);
+            MenuKit.Show(clock, active && me != null && !me.IsDead && run.State.Phase != RunPhase.Honking);
             if (active)
             {
                 bool final = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase || run.TotalCollapse;
@@ -66,7 +66,11 @@ namespace Abandoned.UI
                              (MenuUi.Current == null || !MenuUi.Current.ClipMode);
             MenuKit.Show(radio, showRadio);
             bool menuOpen = MenuUi.Current != null && MenuUi.Current.Showing != MenuScreen.None;
-            radio.style.bottom = menuOpen ? 12f : 56f;
+            // The centre is left open by the corner instruments; captions stack above this record.
+            float bottom = menuOpen ? 12f : 28f;
+            radio.style.bottom = bottom;
+            HudLayer.FitCenterLane(radio, radio.parent);
+            MenuUi.Current?.Subtitles?.PlaceAbove(radio, showRadio, bottom);
             radio.EnableInClassList("horror-radio--urgent", urgent);
         }
 
@@ -92,13 +96,14 @@ namespace Abandoned.UI
             {
                 marks[i] = new VisualElement { pickingMode = PickingMode.Ignore };
                 marks[i].AddToClassList("horror-danger__mark");
+                marks[i].EnableInClassList("horror-danger__mark--last", i == marks.Length - 1);
                 row.Add(marks[i]);
             }
             progress = UiKit.Bar(clock, "horror-danger__progress");
             radio = new VisualElement { pickingMode = PickingMode.Ignore };
             radio.style.position = Position.Absolute;
-            radio.style.left = Length.Percent(23f);
-            radio.style.right = Length.Percent(23f);
+            radio.style.left = Length.Percent(31f);
+            radio.style.right = Length.Percent(31f);
             radio.style.minWidth = 0;
             radio.style.flexDirection = FlexDirection.Column;
             radio.AddToClassList("horror-radio");

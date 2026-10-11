@@ -21,41 +21,89 @@ namespace Abandoned.Voice
         private readonly List<NetworkVoice> gone = new();
         private GUIStyle style;
         private Label own;
+        private VisualElement hud, vitals;
+
+        private const float LayoutGap = 12f, ScreenInset = 24f, MaxWidth = 440f;
 
         /// <summary>Tests: our own voice line.</summary>
         public string OwnLine { get; private set; }
 
         private void Update()
         {
-            if (transmitter == null) return;
-            OwnLine = OwnState();
-            if (own == null)
+            VisualElement layer = UI.HudLayer.Root;
+            if (transmitter == null || layer == null)
             {
-                if (UI.HudLayer.Root == null) return;
-                own = UI.HudLayer.Label("hud-voice");
+                ReleaseHud();
+                return;
             }
+            OwnLine = OwnState();
+            if (own == null || own.parent != layer || hud != layer)
+            {
+                ReleaseHud();
+                hud = layer;
+                hud.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+                own = UI.HudLayer.Label("hud-voice", "crew-voice");
+                own.enableRichText = false;
+            }
+            BindVitals();
             UI.MenuKit.Show(own, true);
+            own.EnableInClassList("crew-voice--transmitting", transmitter.Transmitting);
+            own.EnableInClassList("crew-voice--radio", transmitter.OnRadio);
+            own.EnableInClassList("crew-voice--fault", VoiceSettings.MicMuted || transmitter.Capture != null && transmitter.Capture.Problem.Length > 0);
             if (own.text != OwnLine) own.text = OwnLine;
+            PositionOwn();
             UpdateSpeakers();
         }
 
-        private void OnDisable()
+        private void BindVitals()
         {
-            if (own != null) UI.MenuKit.Show(own, false);
+            VisualElement next = hud.Q(className: "h-vitals");
+            if (vitals == next) return;
+            vitals?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            vitals = next;
+            vitals?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        }
+
+        private void OnGeometryChanged(GeometryChangedEvent _) => PositionOwn();
+
+        private void PositionOwn()
+        {
+            if (own == null || !UI.HudLayer.TryLocalRect(hud, hud, out Rect area) || area.height <= ScreenInset + LayoutGap) return;
+            bool anchored = UI.HudLayer.TryLocalRect(vitals, hud, out Rect monitor);
+            float left = anchored ? monitor.xMin : ScreenInset;
+            left = Mathf.Clamp(left, 0f, Mathf.Max(0f, area.width - ScreenInset));
+            float width = Mathf.Min(MaxWidth, Mathf.Max(280f, area.width * .3f), area.width - left - ScreenInset);
+            if (!UI.HudLayer.Finite(width) || width <= 0f) return;
+            // Anchor the lower edge to the live monitor's top, so LIGHT/LOAD and compact mode cannot cover it.
+            own.style.top = StyleKeyword.Auto;
+            own.style.bottom = anchored ? Mathf.Clamp(area.height - monitor.yMin + LayoutGap, ScreenInset, area.height - LayoutGap) : ScreenInset;
+            own.style.left = left;
+            own.style.width = width;
+            own.style.maxWidth = width;
+        }
+
+        private void ReleaseHud()
+        {
+            hud?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            vitals?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            UI.HudLayer.Remove(own);
+            own = null;
+            hud = vitals = null;
             foreach (VisualElement l in marks.Values) UI.HudLayer.Remove(l);
             marks.Clear();
         }
 
-        private void OnDestroy() => UI.HudLayer.Remove(own);
+        private void OnDisable() => ReleaseHud();
+        private void OnDestroy() => ReleaseHud();
 
         private string OwnState()
         {
             IVoiceCapture capture = transmitter.Capture;
             string talk = InputBindings.Display("PushToTalk"), radio = InputBindings.Display("Radio");
-            if (VoiceSettings.MicMuted) return "<color=#ff7766>MIC MUTED</color>";
-            if (capture != null && capture.Problem.Length > 0) return $"<color=#ff7766>VOICE: {capture.Problem}</color>";
-            if (transmitter.Transmitting) return transmitter.OnRadio ? "<color=#ffc21a>\u25CF ON THE RADIO</color>" : "<color=#7ee07e>\u25CF TALKING</color>";
-            return VoiceSettings.Mode == VoiceMode.PushToTalk ? $"<color=#a5a196>HOLD {talk} TO TALK  -  {radio} FOR THE RADIO</color>" : "<color=#a5a196>OPEN MIC</color>";
+            if (VoiceSettings.MicMuted) return "MIC / MUTED";
+            if (capture != null && capture.Problem.Length > 0) return $"VOICE / {capture.Problem}";
+            if (transmitter.Transmitting) return transmitter.OnRadio ? "\u25CF RADIO TRANSMITTING" : "\u25CF VOICE TRANSMITTING";
+            return VoiceSettings.Mode == VoiceMode.PushToTalk ? $"HOLD {talk} TO TALK  /  {radio} RADIO" : "MIC / OPEN";
         }
 
         private void UpdateSpeakers()

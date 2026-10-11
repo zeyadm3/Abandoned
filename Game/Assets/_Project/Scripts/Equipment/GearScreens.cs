@@ -29,7 +29,7 @@ namespace Abandoned.Equipment
             CursorOwner.Set(this, open);
 
             CompanyService company = CompanyService.Current;
-            if (screen == null)
+            if (screen == null || screen.Root.panel == null)
             {
                 if (!open || company == null) return;
                 if ((screen = ScreenPanel.Create(wide: true)) == null) return;

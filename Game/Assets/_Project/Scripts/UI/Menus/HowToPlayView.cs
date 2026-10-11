@@ -16,6 +16,7 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
+            MenuKit.Text(panel, "RECOVERY MANUAL / READ BEFORE ENTRY", "menu-record");
             MenuKit.Text(panel, "HOW TO PLAY", "heading");
             var scroll = MenuKit.Scroll(panel);
             MenuKit.Text(scroll, "THE JOB", "section");

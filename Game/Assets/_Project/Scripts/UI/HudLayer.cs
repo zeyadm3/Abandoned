@@ -34,6 +34,58 @@ namespace Abandoned.UI
 
         public static Label Label(params string[] classes) => Add(new Label(), classes);
 
+        /// <summary>The visible border box in an ancestor's coordinates, after layout has settled.</summary>
+        public static bool TryLocalRect(VisualElement element, VisualElement ancestor, out Rect rect)
+        {
+            rect = default;
+            if (element == null || ancestor == null || element.panel == null || element.panel != ancestor.panel) return false;
+            VisualElement parent = element;
+            while (parent != null)
+            {
+                if (parent.resolvedStyle.display == DisplayStyle.None) return false;
+                if (parent == ancestor) break;
+                parent = parent.parent;
+            }
+            if (parent != ancestor) return false;
+            rect = element.ChangeCoordinatesTo(ancestor, new Rect(Vector2.zero, element.layout.size));
+            return Finite(rect.x) && Finite(rect.y) && Finite(rect.width) && Finite(rect.height) &&
+                   rect.width > 0f && rect.height > 0f;
+        }
+
+        public static bool Finite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
+        /// <summary>HQ notes follow the ledger's actual height, including wrapped assignment text.</summary>
+        public static void PlaceFieldNote(VisualElement note)
+        {
+            VisualElement hud = Root;
+            if (note == null || hud == null) return;
+            float top = 110f;
+            if (TryLocalRect(hud.Q(className: "hq-brief"), hud, out Rect ledger))
+                top = Mathf.Max(top, ledger.yMax + 12f);
+            note.style.top = top;
+        }
+
+        /// <summary>Align central records to the space between the measured corner instruments.</summary>
+        public static void FitCenterLane(VisualElement element, VisualElement surface, float maxWidth = 640f)
+        {
+            if (element == null || surface == null || !Finite(surface.layout.width) || surface.layout.width <= 0f) return;
+            float width = surface.layout.width;
+            float left = 28f, right = width - 28f;
+            VisualElement hud = Root;
+            if (hud != null && hud.panel == surface.panel)
+            {
+                if (TryLocalRect(hud.Q(className: "h-vitals"), hud, out Rect vitals))
+                    left = Mathf.Max(left, hud.ChangeCoordinatesTo(surface, vitals).xMax + 16f);
+                if (TryLocalRect(hud.Q(className: "h-inventory"), hud, out Rect inventory))
+                    right = Mathf.Min(right, hud.ChangeCoordinatesTo(surface, inventory).xMin - 16f);
+            }
+            float available = Mathf.Max(0f, right - left);
+            float inset = Mathf.Max(0f, (available - maxWidth) * 0.5f);
+            element.style.left = left + inset;
+            element.style.right = width - right + inset;
+            element.style.minWidth = 0f;
+        }
+
         private static VisualElement world;
 
         /// <summary>A layer under the rest of the HUD for world-anchored marks (value tags), so they never cover prompts.</summary>

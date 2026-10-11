@@ -31,23 +31,27 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--dim");
             Root.AddToClassList("backdrop--center");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
-            Label title = MenuKit.Text(panel, "THANKS FOR PLAYING", "title");
+            ScrollView body = MenuKit.Scroll(panel, "demo-end__body");
+            MenuKit.Text(body, "RECOVERY RECORD / DEMO COMPLETE", "menu-record");
+            Label title = MenuKit.Text(body, "THANKS FOR PLAYING", "title");
             if (menu.TitleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(menu.TitleFont);
-            title.style.fontSize = 56;
-            MenuKit.Text(panel, "That's the end of the ABANDONED demo.", "subtitle");
-            stats = MenuKit.Text(panel, "");
-            MenuKit.Text(panel, "The full game has more buildings, more threats, more loot and a lot more floors to fall through. " +
+            MenuKit.Text(body, "That's the end of the ABANDONED demo.", "subtitle");
+            stats = MenuKit.Text(body, "");
+            MenuKit.Text(body, "The full game has more buildings, more threats, more loot and a lot more floors to fall through. " +
                                 "Wishlisting on Steam is the best way to help a solo developer.");
-            MenuKit.Button(panel, "Wishlist on Steam", Wishlist, SoundId.UiConfirm);
-            restart = MenuKit.Button(panel, "Start over as a new hire", () =>
+            MenuKit.Button(body, "Wishlist on Steam", Wishlist, SoundId.UiConfirm);
+            restart = MenuKit.Button(body, "Start over as a new hire", () =>
             {
                 CompanyService.Current?.RestartDemo();
                 menu.Back();
             });
-            waiting = MenuKit.Text(panel, "The host can start over to play again.");
+            waiting = MenuKit.Text(body, "The host can start over to play again.");
             waiting.AddToClassList("text--small");
-            MenuKit.Button(panel, "Back to the HQ", menu.Back, SoundId.UiBack);
-            MenuKit.Button(panel, "Quit", menu.Quit, SoundId.UiBack);
+            VisualElement footer = MenuKit.Row(panel);
+            footer.AddToClassList("demo-end__footer");
+            footer.style.flexWrap = Wrap.Wrap;
+            MenuKit.Button(footer, "Back to the HQ", menu.Back, SoundId.UiBack);
+            MenuKit.Button(footer, "Quit", menu.Quit, SoundId.UiBack);
         }
 
         public void Refresh()

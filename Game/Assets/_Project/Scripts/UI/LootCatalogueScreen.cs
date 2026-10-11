@@ -27,10 +27,12 @@ namespace Abandoned.UI
                 if (!open) return;
                 if ((screen = ScreenPanel.Create(wide: true)) == null) return;
                 screen.Panel.AddToClassList("field-guide");
+                screen.Panel.AddToClassList("salvage-catalogue");
                 screen.Panel.style.width = 1160f;
                 screen.Panel.style.maxWidth = Length.Percent(94f);
                 StyleSheet styles = Resources.Load<StyleSheet>("HqStations");
                 if (styles != null) screen.Panel.styleSheets.Add(styles);
+                screen.ApplyArchiveStyles();
             }
             screen.Show(open);
             if (!open) return;
@@ -45,9 +47,10 @@ namespace Abandoned.UI
             var all = catalog != null ? catalog.Entries.Select(e => e.definition).Where(d => d != null && !d.Utility)
                 .OrderByDescending(d => d.Jackpot).ThenByDescending(d => d.ValueMax).ToList() : new System.Collections.Generic.List<LootDefinition>();
             int found = company != null ? all.Count(d => company.Catalogued(d.Id)) : 0;
-            Text(panel, "LOOT CATALOGUE", "field-guide__cover-title");
-            Text(panel, $"{found} of {all.Count} kinds of salvage sold. Jackpots go on the trophy shelf.", "field-guide__cover-note");
+            Text(panel, "SALVAGE ARCHIVE", "field-guide__cover-title");
+            Text(panel, $"RECOVERED {found:00} / {all.Count:00}  —  Sale records unlock identification. Jackpots go on the trophy shelf.", "field-guide__cover-note");
             var grid = new VisualElement();
+            grid.AddToClassList("salvage-catalogue__grid");
             grid.style.flexDirection = FlexDirection.Row;
             grid.style.flexWrap = Wrap.Wrap;
             panel.Add(grid);
@@ -56,19 +59,24 @@ namespace Abandoned.UI
                 bool known = company != null && company.Catalogued(d.Id);
                 var cell = new VisualElement();
                 cell.AddToClassList("field-guide__entry");
+                cell.AddToClassList("salvage-catalogue__item");
                 cell.EnableInClassList("field-guide__entry--locked", !known);
-                cell.style.width = Length.Percent(32f);
-                cell.style.flexDirection = FlexDirection.Row;
-                cell.style.alignItems = Align.Center;
-                if (known) UiKit.Icon(cell, $"loot/{d.Id}", "small");
-                Text(cell, known ? $"{(d.Jackpot ? "★ " : "")}{d.DisplayName}   ${d.ValueMin:N0}-{d.ValueMax:N0}" : "— not yet found —", "field-guide__entry-name");
+                cell.EnableInClassList("salvage-catalogue__item--jackpot", known && d.Jackpot);
+                var visual = new VisualElement { pickingMode = PickingMode.Ignore };
+                visual.AddToClassList("salvage-catalogue__visual");
+                cell.Add(visual);
+                if (known) UiKit.Icon(visual, $"loot/{d.Id}", "large");
+                else Text(visual, "?", "salvage-catalogue__unknown");
+                Text(cell, known ? d.DisplayName.ToUpperInvariant() : "UNIDENTIFIED SALVAGE", "field-guide__entry-name");
+                Text(cell, known ? $"${d.ValueMin:N0} — ${d.ValueMax:N0}" : "NO SALE RECORD", "salvage-catalogue__value");
+                Text(cell, known ? d.Jackpot ? "HIGH VALUE / TROPHY RECORD" : $"{d.CarryClass.ToString().ToUpperInvariant()} / RECOVERED" : "RECOVER AND SELL TO IDENTIFY", "salvage-catalogue__status");
                 grid.Add(cell);
             }
             var close = new Button(() =>
             {
                 GameAudio.PlayUi(SoundId.UiBack);
                 LootCatalogueBook.Open = false;
-            }) { text = "Close the catalogue" };
+            }) { text = "Seal archive" };
             close.AddToClassList("field-guide__close");
             panel.Add(close);
         }
@@ -86,6 +94,9 @@ namespace Abandoned.UI
         {
             CursorOwner.Set(this, false);
             LootCatalogueBook.Open = false;
+            screen?.Show(false);
         }
+
+        private void OnDestroy() => screen?.Remove();
     }
 }

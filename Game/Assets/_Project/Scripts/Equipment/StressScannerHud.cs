@@ -1,5 +1,6 @@
 using Abandoned.Structure;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Abandoned.Equipment
 {
@@ -14,7 +15,9 @@ namespace Abandoned.Equipment
         [SerializeField] private Transform eye;
         [SerializeField] private float range = 8f;
 
-        private UnityEngine.UIElements.Label panel;
+        private VisualElement panel, condition;
+        private VisualElement layoutHud, lower;
+        private Label status, load;
         private readonly RaycastHit[] hits = new RaycastHit[8];
 
         public StructuralSection Target { get; private set; }
@@ -36,25 +39,87 @@ namespace Abandoned.Equipment
             if (Target == null)
             {
                 if (panel != null) UI.MenuKit.Show(panel, false);
+                ReleaseLayout();
                 return;
             }
-            if (panel == null && (panel = UI.HudLayer.Label("hud-panel", "hud-scanner")) == null) return;
+            if (panel == null || panel.panel == null)
+            {
+                UI.HudLayer.Remove(panel);
+                panel = UI.HudLayer.Add(new VisualElement(), "hud-panel", "hud-scanner", "instrument-hud", "instrument-hud--structure", "instrument-hud--stress");
+                if (panel == null) return;
+                UI.MenuKit.Text(panel, "STRUCTURE SCAN", "instrument-hud__title");
+                UI.MenuKit.Text(panel, "SURFACE / LOAD DIAGNOSTIC", "instrument-hud__meta");
+                status = UI.MenuKit.Text(panel, "", "instrument-hud__readout");
+                condition = UI.UiKit.Segments(panel, 12, "instrument-hud__signal");
+                load = UI.MenuKit.Text(panel, "", "instrument-hud__count");
+            }
             float health = Target.HealthFraction;
             // Colourblind-safe: blue / orange / vermilion (Okabe-Ito) instead of green / yellow / red.
             string color = Core.GameSettings.ColorblindScanner
                 ? health > 0.6f ? "#56b4e9" : health > 0.3f ? "#e69f00" : "#d55e00"
                 : health > 0.6f ? "#7dff7d" : health > 0.3f ? "#ffd24d" : "#ff5544";
-            string load = Target.Capacity > 0f ? $"{Target.Load:0} / {Target.Capacity:0} KG" : "-";
-            string text = $"<color={color}>{Target.Stage.ToString().ToUpperInvariant()}  {health:P0}</color>\nLOAD {load}";
+            string weight = Target.Capacity > 0f ? $"{Target.Load:0} / {Target.Capacity:0} KG" : "-";
+            string text = $"{Target.Stage.ToString().ToUpperInvariant()} / {health:P0}";
             UI.MenuKit.Show(panel, true);
-            if (panel.text != text) panel.text = text;
+            if (status.text != text) status.text = text;
+            load.text = "LOAD / " + weight;
+            if (ColorUtility.TryParseHtmlString(color, out Color tint))
+            {
+                status.style.color = tint;
+                UI.UiKit.SetSegments(condition, health, tint);
+            }
+            Position();
+        }
+
+        private void Position()
+        {
+            VisualElement hud = UI.HudLayer.Root;
+            if (Target == null || panel == null || !UI.HudLayer.TryLocalRect(hud, hud, out Rect area) || area.height <= 36f) return;
+            VisualElement anchor = hud.Q(className: "h-inventory");
+            bool found = UI.HudLayer.TryLocalRect(anchor, hud, out Rect bounds);
+            VisualElement inspection = hud.Q(className: "h-inspection");
+            if (UI.HudLayer.TryLocalRect(inspection, hud, out Rect inspected) && (!found || inspected.yMin < bounds.yMin))
+            {
+                anchor = inspection;
+                bounds = inspected;
+                found = true;
+            }
+            BindLayout(hud, anchor);
+            panel.style.left = StyleKeyword.Auto;
+            panel.style.right = found ? Mathf.Max(0f, area.width - bounds.xMax) : 28f;
+            panel.style.top = found ? new StyleLength(StyleKeyword.Auto) : new StyleLength(Length.Percent(48f));
+            panel.style.bottom = found ? new StyleLength(Mathf.Clamp(area.height - bounds.yMin + 12f, 24f, area.height - 12f)) : new StyleLength(StyleKeyword.Auto);
+        }
+
+        private void BindLayout(VisualElement hud, VisualElement anchor)
+        {
+            if (layoutHud == hud && lower == anchor) return;
+            ReleaseLayout();
+            layoutHud = hud;
+            lower = anchor;
+            layoutHud?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            lower?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        }
+
+        private void OnGeometryChanged(GeometryChangedEvent _) => Position();
+
+        private void ReleaseLayout()
+        {
+            layoutHud?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            lower?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            layoutHud = lower = null;
         }
 
         private void OnDisable()
         {
             if (panel != null) UI.MenuKit.Show(panel, false);
+            ReleaseLayout();
         }
 
-        private void OnDestroy() => UI.HudLayer.Remove(panel);
+        private void OnDestroy()
+        {
+            ReleaseLayout();
+            UI.HudLayer.Remove(panel);
+        }
     }
 }

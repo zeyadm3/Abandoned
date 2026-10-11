@@ -106,7 +106,7 @@ namespace Abandoned.UI
         }
 
         /// <summary>Flicker, glitches, jitter, shakes and static cuts are off when the player asked for calm menus.</summary>
-        public static bool Calm => Core.GameSettings.ReduceMenuEffects;
+        public static bool Calm => Core.GameSettings.ReduceMenuEffects || Core.GameSettings.ReduceFlashing;
 
         public static float Range(Vector2 range) => UnityEngine.Random.Range(range.x, Mathf.Max(range.x, range.y));
 

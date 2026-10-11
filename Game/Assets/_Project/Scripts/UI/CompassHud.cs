@@ -21,7 +21,8 @@ namespace Abandoned.UI
         private const float WarnFrom = 0.35f, EdgeDegrees = 86f;
         private static readonly string[] Points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
 
-        private VisualElement strip, tape, threat;
+        private VisualElement strip, tape, threat, window;
+        private Label bearing, direction;
 
         private void Update()
         {
@@ -38,8 +39,13 @@ namespace Abandoned.UI
             MenuKit.Show(strip, show);
             if (!show) return;
             float heading = Mathf.Repeat(view.transform.eulerAngles.y, 360f);
+            string degrees = $"{Mathf.RoundToInt(heading) % 360:000}\u00b0";
+            if (bearing.text != degrees) bearing.text = degrees;
+            string point = Points[Mathf.RoundToInt(heading / 45f) % Points.Length];
+            if (direction.text != point) direction.text = point;
             // Translate, not left: sliding the tape every frame must not re-run layout.
-            tape.style.translate = new Translate(Width * 0.5f - (heading - TapeStart) * PixelsPerDegree, 0f);
+            float visibleWidth = window.layout.width > 0f ? window.layout.width : Width;
+            tape.style.translate = new Translate(visibleWidth * 0.5f - (heading - TapeStart) * PixelsPerDegree, 0f);
 
             // Looking at a Stalker is the counter, so tell its prey which way to look.
             Stalker stalker = Stalker.PressingOn(me);
@@ -47,18 +53,34 @@ namespace Abandoned.UI
             MenuKit.Show(threat, warn);
             if (!warn) return;
             Vector3 to = stalker.transform.position - view.transform.position;
-            float off = Mathf.Clamp(Mathf.DeltaAngle(heading, Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg), -EdgeDegrees, EdgeDegrees);
+            float edge = Mathf.Min(EdgeDegrees, Mathf.Max(0f, (visibleWidth * .5f - 6f) / PixelsPerDegree));
+            float off = Mathf.Clamp(Mathf.DeltaAngle(heading, Mathf.Atan2(to.x, to.z) * Mathf.Rad2Deg), -edge, edge);
             threat.style.translate = new Translate(off * PixelsPerDegree, 0f);
         }
 
         private void Build()
         {
             HudLayer.Remove(strip);
-            strip = HudLayer.Add(new VisualElement(), "compass");
+            strip = HudLayer.Add(new VisualElement(), "compass", "h-navigation");
             strip.style.width = Width;
+            var readout = new VisualElement { pickingMode = PickingMode.Ignore };
+            readout.AddToClassList("h-navigation__readout");
+            strip.Add(readout);
+            var caption = new Label("BEARING") { pickingMode = PickingMode.Ignore };
+            caption.AddToClassList("h-micro");
+            readout.Add(caption);
+            direction = new Label("N") { pickingMode = PickingMode.Ignore };
+            direction.AddToClassList("h-navigation__direction");
+            readout.Add(direction);
+            bearing = new Label("000\u00b0") { pickingMode = PickingMode.Ignore };
+            bearing.AddToClassList("h-navigation__bearing");
+            readout.Add(bearing);
+            window = new VisualElement { pickingMode = PickingMode.Ignore };
+            window.AddToClassList("h-navigation__window");
+            strip.Add(window);
             tape = new VisualElement { pickingMode = PickingMode.Ignore };
             tape.AddToClassList("compass__tape");
-            strip.Add(tape);
+            window.Add(tape);
             for (int degrees = TapeStart; degrees <= TapeEnd; degrees += Step)
             {
                 int bearing = (degrees % 360 + 360) % 360;
@@ -72,10 +94,10 @@ namespace Abandoned.UI
             }
             var needle = new VisualElement { pickingMode = PickingMode.Ignore };
             needle.AddToClassList("compass__needle");
-            strip.Add(needle);
+            window.Add(needle);
             threat = new VisualElement { pickingMode = PickingMode.Ignore };
             threat.AddToClassList("compass__threat");
-            strip.Add(threat);
+            window.Add(threat);
             MenuKit.Show(threat, false);
         }
 

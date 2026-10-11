@@ -1,5 +1,6 @@
 using System.Collections;
 using Abandoned.Company;
+using Abandoned.Contracts;
 using Abandoned.Core;
 using Abandoned.Equipment;
 using Abandoned.UI;
@@ -19,7 +20,7 @@ namespace Abandoned.Tests
             yield return new WaitUntil(() => CompanyService.Current != null && CompanyService.Current.IsSpawned);
             yield return null;
             HqHud hud = Object.FindAnyObjectByType<HqHud>();
-            StringAssert.StartsWith("NO JOB YET", hud.JobText);
+            Assert.AreEqual("READ THE CONTRACT BOARD", hud.JobText);
             yield return MenuTests.Capture(MenuUi.Current, "M8_hq_hud");
 
             ContractBoard.Open = true;
@@ -30,7 +31,9 @@ namespace Abandoned.Tests
             CompanyService.Current.Select(1);
             yield return null;
             yield return null;
-            StringAssert.StartsWith("JOB:", hud.JobText, "the HUD names the job");
+            Contract selected = CompanyService.Current.Board[1];
+            Assert.AreEqual($"{selected.ModifierName.ToUpperInvariant()} / {selected.Location.ToUpperInvariant()}",
+                hud.JobText, "the HUD names the selected job and location");
             ContractBoard.Open = false;
 
             ShopTerminal.Open = true;

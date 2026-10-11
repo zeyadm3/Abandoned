@@ -31,6 +31,7 @@ namespace Abandoned.UI
                 screen.Panel.style.maxWidth = Length.Percent(94f);
                 StyleSheet styles = Resources.Load<StyleSheet>("HqStations");
                 if (styles != null) screen.Panel.styleSheets.Add(styles);
+                screen.ApplyArchiveStyles();
             }
             screen.Show(open);
             if (!open) return;
@@ -46,8 +47,8 @@ namespace Abandoned.UI
 
         private void Fill(VisualElement panel)
         {
-            Text(panel, "FIELD GUIDE", "field-guide__cover-title");
-            Text(panel, $"{Company.CompanySave.DefaultName.ToUpperInvariant()} / MONSTER MANUAL", "field-guide__cover-note");
+            Text(panel, "THREAT ARCHIVE", "field-guide__cover-title");
+            Text(panel, $"{Company.CompanySave.DefaultName.ToUpperInvariant()} / FIELD OBSERVATIONS", "field-guide__cover-note");
             var columns = new VisualElement();
             columns.AddToClassList("field-guide__spread");
             panel.Add(columns);
@@ -58,7 +59,7 @@ namespace Abandoned.UI
             file.AddToClassList("field-guide__page");
             columns.Add(file);
 
-            Text(list, "CONTENTS", "field-guide__section");
+            Text(list, "SUBJECT INDEX", "field-guide__section");
             Text(list, $"{ThreatFiles.MetCount} of {ThreatFiles.Order.Length} subjects observed", "field-guide__note");
             Text(list, "Notes appear after your first encounter. Unseen subjects stay unidentified.", "field-guide__body");
 
@@ -94,8 +95,9 @@ namespace Abandoned.UI
             else
             {
                 Text(file, $"OBSERVATION {selected + 1:00}", "field-guide__note");
-                Text(file, "NO ENCOUNTER RECORDED", "field-guide__title");
-                Text(file, "This page is blank. The company does not pay for rumours. Come back when you have seen it.", "field-guide__body");
+                Text(file, "IDENTITY UNKNOWN", "field-guide__title");
+                Text(file, "No first-hand account on file. Survive an encounter to recover this record.", "field-guide__body");
+                Text(file, "NO OBSERVATION / NO SURVIVAL NOTES", "field-guide__redacted");
             }
 
             var paging = MenuKit.Row(file);
@@ -108,7 +110,7 @@ namespace Abandoned.UI
             {
                 GameAudio.PlayUi(SoundId.UiBack);
                 ThreatFilesTerminal.Open = false;
-            }) { text = "Close the book" };
+            }) { text = "Seal archive" };
             close.AddToClassList("field-guide__close");
             panel.Add(close);
         }

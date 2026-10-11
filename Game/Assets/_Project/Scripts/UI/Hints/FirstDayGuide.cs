@@ -73,7 +73,7 @@ namespace Abandoned.UI
             Show(visible);
             if (!visible) return;
             if (advanced) GameAudio.PlayUi(SoundId.UiConfirm, 0.4f);
-            Set(title, $"FIRST DAY  {(int)step + 1}/{(int)Step.Count}");
+            Set(title, $"SURVIVAL INDUCTION  {(int)step + 1:00}/{(int)Step.Count:00}");
             Set(text, TextFor(company));
             UiKit.SetSegments(progress, (float)step / (int)Step.Count);
         }
@@ -147,8 +147,8 @@ namespace Abandoned.UI
             if (box == null || box.panel == null)
             {
                 HudLayer.Remove(box);
-                box = HudLayer.Add(new VisualElement(), "hud-panel", "hud-hint", "first-day");
-                title = MenuKit.Text(box, "FIRST DAY", "section");
+                box = HudLayer.Add(new VisualElement(), "hud-panel", "hud-hint", "first-day", "field-note");
+                title = MenuKit.Text(box, "SURVIVAL INDUCTION", "section");
                 title.pickingMode = PickingMode.Ignore;
                 text = MenuKit.Text(box, "", "text");
                 text.pickingMode = PickingMode.Ignore;
@@ -156,6 +156,7 @@ namespace Abandoned.UI
                 progress = UiKit.Segments(box, (int)Step.Count);
             }
             MenuKit.Show(box, true);
+            HudLayer.PlaceFieldNote(box);
         }
 
         private static void Set(Label label, string value)

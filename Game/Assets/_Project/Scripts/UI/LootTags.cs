@@ -120,11 +120,21 @@ namespace Abandoned.UI
             focusTag.Root.EnableInClassList("loot-tag--held", held);
             if (held)
             {
-                focusTag.Root.style.left = StyleKeyword.Null;
-                focusTag.Root.style.top = StyleKeyword.Null;
+                // A held tag is a central record; leave the measured inventory and survival columns clear.
+                HudLayer.FitCenterLane(focusTag.Root, HudLayer.World, 400f);
+                float top = HudLayer.Root.layout.height * 0.65f;
+                if (HudLayer.TryLocalRect(HudLayer.Root.Q(className: "h-interaction"), HudLayer.Root, out Rect prompt))
+                    top = Mathf.Max(top, prompt.yMax + 12f);
+                if (HudLayer.TryLocalRect(HudLayer.Root.Q(className: "h-throw"), HudLayer.Root, out Rect meter))
+                    top = Mathf.Max(top, meter.yMax + 12f);
+                focusTag.Root.style.top = top;
                 MenuKit.Show(focusTag.Root, true);
             }
-            else Place(focusTag, g.GetBounds(), camera);
+            else
+            {
+                focusTag.Root.style.right = StyleKeyword.Null;
+                Place(focusTag, g.GetBounds(), camera);
+            }
         }
 
         // ---- Tags ----
@@ -177,12 +187,22 @@ namespace Abandoned.UI
             UiKit.Tag(t.Meta, carry).AddToClassList("tag--dim");
             if (d.Fragility >= Fragility.High) UiKit.Tag(t.Meta, d.Fragility == Fragility.Extreme ? "VERY FRAGILE" : "FRAGILE").AddToClassList("tag--warn");
             if (d.Jackpot) UiKit.Tag(t.Meta, "JACKPOT");
+            if (item.FullValue > 0 && value < item.FullValue * 0.5f)
+                UiKit.Tag(t.Meta, "DAMAGED").AddToClassList("tag--warn");
         }
 
         private static void Place(Tag t, Bounds bounds, Camera camera)
         {
             MenuKit.Show(t.Root, true);
             HudLayer.Place(t.Root, bounds.center + Vector3.up * (bounds.extents.y + 0.12f), camera);
+            VisualElement world = HudLayer.World;
+            if (world == null || !HudLayer.Finite(t.Root.layout.width) || !HudLayer.Finite(t.Root.layout.height)) return;
+            // World tags translate by half their width and their full height; keep the resulting box inside the view.
+            float half = t.Root.layout.width * 0.5f;
+            float x = t.Root.style.left.value.value, y = t.Root.style.top.value.value;
+            if (!HudLayer.Finite(x) || !HudLayer.Finite(y)) return;
+            t.Root.style.left = Mathf.Clamp(x, half + 12f, Mathf.Max(half + 12f, world.layout.width - half - 12f));
+            t.Root.style.top = Mathf.Clamp(y, t.Root.layout.height + 12f, Mathf.Max(t.Root.layout.height + 12f, world.layout.height - 12f));
         }
 
         private static void Hide(Tag t)

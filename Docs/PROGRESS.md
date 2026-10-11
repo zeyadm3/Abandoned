@@ -4,6 +4,19 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.24.7b: horror UI redesign and alignment fixes (2026-10-12)
+
+The full interface now uses worn bone, rust, dark metal and the logo's Saira Stencil One lettering.
+Menus, survival instruments, inventory, compass, interactions, communication and HQ records share
+the identity. Pockets stay in one row; HUD panels use measured anchors; menus and record columns
+adapt to available space. The latest HQ status boxes are one compact ledger with contained contract
+text and field notes beneath it. Details: `Docs/UI_HORROR_REDESIGN.md`.
+
+The user requested saving and committing every current change and packaging Mac + Windows as
+**0.24.7b**. `BuildScript.Version` and Player Settings are synchronised before the source commit so
+the shareable players carry a clean commit stamp. Packaging uses `Tools/unity.sh build` and writes
+zips to `~/Documents/Abandoned-builds/dev/`. Gameplay remains for the user's review.
+
 ## 0.24.6b: desktop logo and native Apple appearances (2026-10-10)
 
 Original fractured concrete A emblem generated with built-in `image_gen`, with matching

@@ -47,9 +47,9 @@ namespace Abandoned.Extraction
         private void Build(VisualElement root)
         {
             root.AddToClassList("truck-display");
-            if (font != null) root.style.unityFontDefinition = FontDefinition.FromFont(font);
+            UiThemeAssets.Apply(root);
             UiKit.Hazard(root);
-            state = Text(root, "HAUL", "truck-display__label");
+            state = Text(root, "RECOVERY MANIFEST", "truck-display__label");
             amount = Text(root, "$0", "truck-display__amount");
             quota = Text(root, "QUOTA $0", "truck-display__quota");
             bar = UiKit.Bar(root, "truck-display__bar");
@@ -67,6 +67,7 @@ namespace Abandoned.Extraction
         private void Update()
         {
             if (document == null) return;
+            document.rootVisualElement.EnableInClassList("colorblind", Abandoned.Core.GameSettings.ColorblindScanner);
             RunState run = RunState.Current;
             if (run == null || !run.IsSpawned) return;
             RunNetState s = run.State;
@@ -80,14 +81,14 @@ namespace Abandoned.Extraction
             UiKit.SetBar(bar, s.Quota > 0 ? (float)s.Haul / s.Quota : 1f, met ? "good" : null);
             cargo.text = s.Overloaded ? $"OVERLOADED  {s.CargoVolume:0.0} / {s.CargoCapacity:0} m³" : $"CARGO  {s.CargoVolume:0.0} / {s.CargoCapacity:0} m³";
             cargo.EnableInClassList("truck-display__cargo--bad", s.Overloaded);
-            state.text = s.Phase == RunPhase.Honking ? "LEAVING!" : "HAUL";
+            state.text = s.Phase == RunPhase.Honking ? "EVACUATING" : "RECOVERY MANIFEST";
         }
 
         private void OnDestroy()
         {
             if (document != null) Destroy(document.gameObject);
             if (panel != null) Destroy(panel);
-            if (texture != null) texture.Release();
+            if (texture != null) { texture.Release(); Destroy(texture); }
         }
 
 #if UNITY_EDITOR

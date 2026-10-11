@@ -46,15 +46,16 @@ namespace Abandoned.UI
             panel.style.width = 1360f;
             panel.style.maxWidth = Length.Percent(96f);
 
+            MenuKit.Text(panel, "PERSONAL RECORD / FIELD CONFIGURATION", "menu-record");
             MenuKit.Text(panel, "SETTINGS", "heading");
             MenuKit.Text(panel, "Changes apply straight away and are saved when you leave this screen.", "subtitle");
             var columns = new VisualElement();
             columns.AddToClassList("settings__columns");
             panel.Add(columns);
 
-            var list = new VisualElement();
-            list.AddToClassList("settings__nav");
-            columns.Add(list);
+            ScrollView list = MenuKit.Scroll(columns, "settings__nav");
+            list.style.flexGrow = 0;
+            list.style.flexShrink = 0;
             var page = new VisualElement();
             page.AddToClassList("settings__page");
             columns.Add(page);
@@ -73,6 +74,7 @@ namespace Abandoned.UI
 
             VisualElement footer = MenuKit.Row(panel);
             footer.AddToClassList("settings__footer");
+            footer.style.flexWrap = Wrap.Wrap;
             MenuKit.Button(footer, "Back", () =>
             {
                 VoiceSettings.Flush();
@@ -101,6 +103,7 @@ namespace Abandoned.UI
                 VisualElement nameRow = Row("Your name");
                 var nameField = new TextField { value = GameSettings.PlayerName, maxLength = Networking.NetworkPlayer.MaxNameLength };
                 nameField.AddToClassList("field");
+                nameField.AddToClassList("setting__input");
                 nameField.RegisterValueChangedCallback(e => GameSettings.PlayerName = e.newValue);
                 nameRow.Add(nameField);
                 Note(nameRow, "What the crew sees when you play without Steam (Steam uses your Steam name). Applies from the next game.");

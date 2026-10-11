@@ -5,9 +5,8 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The UI overhaul's widgets (step 1), on top of <see cref="MenuKit"/>: key caps for the player's own
-    /// bindings, icons, progress bars, rubber stamps, tags, hazard tape, and the little animations that make
-    /// the screens feel like R.E.P.O.-style physical things (a jolt, a slam). Styles in Art/UI/Menu.uss.
+    /// Shared field equipment, key caps, meters and stamped records. The horror theme layers skin
+    /// these widgets consistently on menus, the HUD and in-world displays.
     /// </summary>
     public static class UiKit
     {
@@ -212,7 +211,7 @@ namespace Abandoned.UI
             return tag;
         }
 
-        /// <summary>A strip of yellow-and-black hazard tape.</summary>
+        /// <summary>A damaged warning stripe, drawn at the actual width without hundreds of child elements.</summary>
         public static VisualElement Hazard(VisualElement parent)
         {
             var tape = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -222,12 +221,23 @@ namespace Abandoned.UI
             tape.style.flexDirection = FlexDirection.Row;
             tape.style.overflow = Overflow.Hidden;
             tape.AddToClassList("hazard");
-            for (int i = 0; i < 160; i++) // enough for an ultrawide screen
+            tape.generateVisualContent += context =>
             {
-                var bar = new VisualElement { pickingMode = PickingMode.Ignore };
-                bar.AddToClassList("hazard__bar");
-                tape.Add(bar);
-            }
+                Rect bounds = tape.contentRect;
+                if (bounds.width <= 0f || bounds.height <= 0f) return;
+                var painter = context.painter2D;
+                painter.fillColor = new Color(0.055f, 0.05f, 0.045f, 0.9f);
+                for (float x = -bounds.height; x < bounds.width + bounds.height; x += 28f)
+                {
+                    painter.BeginPath();
+                    painter.MoveTo(new Vector2(x, 0f));
+                    painter.LineTo(new Vector2(x + 12f, 0f));
+                    painter.LineTo(new Vector2(x + 12f + bounds.height, bounds.height));
+                    painter.LineTo(new Vector2(x + bounds.height, bounds.height));
+                    painter.ClosePath();
+                    painter.Fill();
+                }
+            };
             parent?.Add(tape);
             return tape;
         }
@@ -235,6 +245,7 @@ namespace Abandoned.UI
         /// <summary>A quick wobble (a button being hovered, a value changing): rotation only, so layout and transitions stay put.</summary>
         public static void Jolt(VisualElement e)
         {
+            if (e == null || MenuEffectsConfig.Calm) return;
             float[] steps = { -0.45f, 0.3f, -0.1f, 0f };
             for (int i = 0; i < steps.Length; i++)
             {

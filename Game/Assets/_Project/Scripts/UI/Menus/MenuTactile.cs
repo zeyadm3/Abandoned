@@ -15,7 +15,7 @@ namespace Abandoned.UI
     public static class MenuTactile
     {
         private const string Lit = "menu-button--lit", Pressed = "menu-button--pressed", Glitch = "menu-button--glitch";
-        private static readonly Color GlowTint = new(1f, 0.62f, 0.3f, 0f);
+        private static readonly Color GlowTint = new(0.57f, 0.22f, 0.15f, 0f);
 
         public static void Attach(Button button, bool small)
         {

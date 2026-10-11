@@ -3,6 +3,7 @@ using System.Text;
 using Abandoned.Networking;
 using Abandoned.Threats;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Abandoned.Equipment
 {
@@ -23,7 +24,10 @@ namespace Abandoned.Equipment
         private readonly Dictionary<Transform, Vector3> last = new();
         private readonly List<(float distance, string text)> contacts = new();
         private readonly StringBuilder text = new();
-        private UnityEngine.UIElements.Label panel;
+        private static readonly string[] LowerPanels = { "h-inspection", "instrument-hud--stress" };
+        private VisualElement panel, signal;
+        private VisualElement layoutHud, lower;
+        private Label readout, count;
         private float nextSample, nextTick;
 
         public int Contacts => contacts.Count;
@@ -37,6 +41,7 @@ namespace Abandoned.Equipment
                 last.Clear();
                 contacts.Clear();
                 if (panel != null) UI.MenuKit.Show(panel, false);
+                ReleaseLayout();
                 return;
             }
             if (Time.time >= nextSample) Sample(Time.time - (nextSample - sampleInterval));
@@ -102,20 +107,83 @@ namespace Abandoned.Equipment
 
         private void Show()
         {
-            if (panel == null && (panel = UI.HudLayer.Label("hud-panel", "hud-motion")) == null) return;
-            text.Clear().Append("MOTION");
-            if (contacts.Count == 0) text.Append("\n<color=#888888>NOTHING MOVING</color>");
-            for (int i = 0; i < contacts.Count && i < 4; i++) text.Append('\n').Append(contacts[i].text);
+            if (panel == null || panel.panel == null)
+            {
+                UI.HudLayer.Remove(panel);
+                panel = UI.HudLayer.Add(new VisualElement(), "hud-panel", "hud-motion", "instrument-hud", "instrument-hud--motion");
+                if (panel == null) return;
+                UI.MenuKit.Text(panel, "MOTION SENSOR", "instrument-hud__title");
+                UI.MenuKit.Text(panel, $"PASSIVE / RANGE {range:0} M", "instrument-hud__meta");
+                signal = UI.UiKit.Segments(panel, 12, "instrument-hud__signal");
+                count = UI.MenuKit.Text(panel, "", "instrument-hud__count");
+                readout = UI.MenuKit.Text(panel, "", "instrument-hud__readout");
+            }
+            text.Clear();
+            if (contacts.Count == 0) text.Append("NO MOVEMENT DETECTED");
+            for (int i = 0; i < contacts.Count && i < 4; i++)
+            {
+                if (i > 0) text.Append('\n');
+                text.Append(i + 1).Append(" / ").Append(contacts[i].text);
+            }
             string s = text.ToString();
             UI.MenuKit.Show(panel, true);
-            if (panel.text != s) panel.text = s;
+            panel.EnableInClassList("instrument-hud--contact", contacts.Count > 0);
+            count.text = $"MOVING CONTACTS / {contacts.Count:00}";
+            UI.UiKit.SetSegments(signal, contacts.Count > 0 ? 1f - contacts[0].distance / range : 0f);
+            if (readout.text != s) readout.text = s;
+            Position();
+        }
+
+        private void Position()
+        {
+            VisualElement hud = UI.HudLayer.Root;
+            if (!Active || panel == null || !UI.HudLayer.TryLocalRect(hud, hud, out Rect area) || area.height <= 36f) return;
+            VisualElement anchor = hud.Q(className: "h-inventory");
+            bool found = UI.HudLayer.TryLocalRect(anchor, hud, out Rect bounds);
+            foreach (string cls in LowerPanels)
+            {
+                VisualElement candidate = hud.Q(className: cls);
+                if (!UI.HudLayer.TryLocalRect(candidate, hud, out Rect rect) || found && rect.yMin >= bounds.yMin) continue;
+                anchor = candidate;
+                bounds = rect;
+                found = true;
+            }
+            BindLayout(hud, anchor);
+            panel.style.left = StyleKeyword.Auto;
+            panel.style.right = found ? Mathf.Max(0f, area.width - bounds.xMax) : 28f;
+            panel.style.top = found ? new StyleLength(StyleKeyword.Auto) : new StyleLength(Length.Percent(48f));
+            panel.style.bottom = found ? new StyleLength(Mathf.Clamp(area.height - bounds.yMin + 12f, 24f, area.height - 12f)) : new StyleLength(StyleKeyword.Auto);
+        }
+
+        private void BindLayout(VisualElement hud, VisualElement anchor)
+        {
+            if (layoutHud == hud && lower == anchor) return;
+            ReleaseLayout();
+            layoutHud = hud;
+            lower = anchor;
+            layoutHud?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            lower?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        }
+
+        private void OnGeometryChanged(GeometryChangedEvent _) => Position();
+
+        private void ReleaseLayout()
+        {
+            layoutHud?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            lower?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            layoutHud = lower = null;
         }
 
         private void OnDisable()
         {
             if (panel != null) UI.MenuKit.Show(panel, false);
+            ReleaseLayout();
         }
 
-        private void OnDestroy() => UI.HudLayer.Remove(panel);
+        private void OnDestroy()
+        {
+            ReleaseLayout();
+            UI.HudLayer.Remove(panel);
+        }
     }
 }

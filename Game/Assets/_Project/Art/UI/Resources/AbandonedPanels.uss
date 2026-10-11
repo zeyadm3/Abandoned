@@ -1,0 +1,808 @@
+/* Recovered records, failed instruments and transport manifests.
+   Loaded after the common theme; station panels attach this after HqStations as well. */
+
+.archive-backdrop.backdrop {
+    background-color: rgba(3, 4, 4, 0.91);
+}
+
+.archive-panel.panel {
+    --archive-bone: rgb(215, 207, 185);
+    --archive-dim: rgb(151, 144, 125);
+    --archive-rust: rgb(147, 66, 49);
+    --archive-amber: rgb(180, 150, 94);
+    --archive-paper: rgb(197, 187, 160);
+    background-color: rgb(16, 17, 15);
+    background-image: url("../HorrorGrime.png");
+    border-width: 1px;
+    border-color: rgb(67, 65, 54);
+    border-left-width: 3px;
+    border-left-color: var(--archive-rust);
+    border-top-width: 1px;
+    border-top-color: rgb(115, 103, 80);
+    border-radius: 0;
+    padding: 22px 26px 22px 26px;
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    color: var(--archive-bone);
+}
+
+.archive-panel__masthead {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(197, 187, 160, 0.22);
+}
+
+.archive-panel__brand {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: var(--archive-bone);
+    margin-right: 20px;
+}
+
+.archive-panel__classification {
+    flex-shrink: 1;
+    min-width: 0;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--archive-dim);
+    white-space: normal;
+}
+
+.archive-panel .heading, .archive-panel .title {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 42px;
+    letter-spacing: 3px;
+    color: var(--archive-bone);
+    margin-bottom: 10px;
+}
+
+.archive-panel .section {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: var(--archive-amber);
+}
+
+.archive-panel .text, .archive-panel .subtitle {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 18px;
+    color: var(--archive-bone);
+    white-space: normal;
+}
+
+.archive-panel .subtitle, .archive-panel .text--small {
+    font-size: 16px;
+    color: var(--archive-dim);
+}
+
+.archive-panel .text--error { color: var(--c-bad); }
+.archive-panel .text--good, .archive-panel .text--money { color: var(--c-good); }
+.archive-panel .screen-panel__scroll { padding-right: 12px; }
+.archive-panel .menu-button {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 25px;
+    color: var(--archive-bone);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(197, 187, 160, 0.2);
+}
+.archive-panel .menu-button--small {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 18px;
+    background-color: rgb(29, 28, 23);
+    border-width: 2px;
+    border-color: rgb(79, 71, 54);
+    border-bottom-width: 2px;
+    border-bottom-color: var(--archive-rust);
+    padding: 9px 12px 9px 12px;
+}
+.archive-panel .menu-button--small:hover, .archive-panel .menu-button--small:focus,
+.archive-panel .menu-button--on {
+    background-color: rgb(63, 47, 35);
+    border-color: var(--archive-amber);
+    color: rgb(236, 225, 197);
+}
+.archive-panel .unity-button:focus {
+    border-width: 2px;
+    border-color: var(--archive-amber);
+}
+
+/* Dispatch sheets retain all quota/forecast facts as legible carbon-copy paperwork. */
+.archive-panel .board__cork {
+    background-color: rgb(22, 22, 18);
+    background-image: none;
+    border-width: 1px;
+    border-color: rgb(72, 64, 47);
+    padding: 16px 8px 16px 8px;
+}
+.archive-panel .board__cork .sheet {
+    background-color: var(--archive-paper);
+    background-image: url("../HorrorPaper.png");
+    border-width: 1px;
+    border-color: rgb(94, 82, 60);
+    border-top-width: 3px;
+    border-top-color: var(--archive-rust);
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(73, 63, 44);
+    padding: 18px 16px 16px 16px;
+    margin: 0 7px 0 7px;
+    min-width: 0;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+.archive-panel .sheet__pin { display: none; }
+.archive-panel .sheet__place {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: rgb(75, 64, 45);
+    white-space: normal;
+}
+.archive-panel .sheet__job {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 30px;
+    color: rgb(43, 40, 31);
+    letter-spacing: 1px;
+    margin-top: 6px;
+    white-space: normal;
+}
+.archive-panel .sheet__quip, .archive-panel .sheet__text {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 16px;
+    color: rgb(63, 56, 42);
+    -unity-font-style: normal;
+}
+.archive-panel .sheet .sheet__fact {
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(75, 64, 45, 0.19);
+    padding: 5px 0 5px 0;
+}
+.archive-panel .sheet .sheet__fact-label {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 15px;
+    color: rgb(73, 65, 48);
+    width: 104px;
+    white-space: normal;
+}
+.archive-panel .sheet .sheet__fact-value {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 17px;
+    color: rgb(36, 36, 29);
+}
+.archive-panel .sheet .sheet__fact-value--warn { color: rgb(125, 44, 32); }
+.archive-panel .sheet__fact-note { font-size: 15px; color: rgb(91, 75, 52); margin-top: 3px; }
+.archive-panel .sheet__take { letter-spacing: 0; }
+.archive-panel .sheet__stamp {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    color: rgb(84, 88, 66);
+    border-color: rgb(84, 88, 66);
+    background-color: rgba(67, 63, 44, 0.08);
+    font-size: 26px;
+}
+.archive-panel .dispatch-briefing {
+    background-color: rgb(24, 24, 19);
+    border-width: 1px;
+    border-color: rgb(66, 60, 45);
+    border-left-width: 3px;
+    border-left-color: var(--archive-rust);
+    padding: 14px 18px 16px 18px;
+}
+
+/* Threat records: worn folder shell, dark index, recovered ivory observation leaf. */
+.archive-panel.field-guide {
+    background-color: rgb(18, 18, 15);
+    border-width: 1px;
+    border-color: rgb(66, 62, 48);
+    border-left-width: 3px;
+    border-left-color: var(--archive-rust);
+    border-radius: 0;
+}
+.archive-panel .field-guide__cover-title, .archive-panel .field-guide__title {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    -unity-font-style: normal;
+    letter-spacing: 3px;
+    white-space: normal;
+}
+.archive-panel .field-guide__cover-title { font-size: 40px; color: var(--archive-bone); }
+.archive-panel .field-guide__cover-note {
+    font-size: 15px;
+    color: var(--archive-dim);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+.archive-panel .field-guide__spread {
+    background-color: var(--archive-paper);
+    border-width: 1px;
+    border-color: rgb(86, 76, 53);
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(54, 47, 32);
+}
+.archive-panel .field-guide__contents {
+    width: 33%;
+    background-color: rgb(28, 28, 23);
+    border-right-width: 3px;
+    border-right-color: var(--archive-rust);
+    padding: 18px 16px 18px 16px;
+}
+.archive-panel .field-guide__page {
+    background-image: url("../HorrorPaper.png");
+    border-left-width: 1px;
+    border-left-color: rgb(101, 88, 57);
+    padding: 24px 26px 22px 26px;
+}
+.archive-panel .field-guide__title { color: rgb(46, 40, 28); font-size: 36px; }
+.archive-panel .field-guide__section {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 24px;
+    -unity-font-style: normal;
+    color: rgb(118, 51, 35);
+    border-bottom-color: rgba(105, 73, 42, 0.28);
+}
+.archive-panel .field-guide__body {
+    font-size: 18px;
+    color: rgb(52, 47, 36);
+    margin-bottom: 12px;
+    white-space: normal;
+}
+.archive-panel .field-guide__note {
+    font-size: 15px;
+    -unity-font-style: normal;
+    color: rgb(111, 89, 59);
+    letter-spacing: 1px;
+}
+.archive-panel .field-guide__contents .field-guide__section { color: var(--archive-amber); }
+.archive-panel .field-guide__contents .field-guide__note { color: var(--archive-dim); }
+.archive-panel .field-guide__contents .field-guide__body { font-size: 16px; color: var(--archive-dim); }
+.archive-panel .field-guide__entry {
+    background-color: rgb(34, 32, 26);
+    border-width: 2px;
+    border-color: rgb(58, 54, 43);
+    border-left-width: 3px;
+    border-left-color: rgb(68, 59, 42);
+    border-radius: 0;
+    min-height: 48px;
+    padding: 10px 8px 10px 8px;
+    margin: 3px 0 3px 0;
+}
+.archive-panel .field-guide__entry-name {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 17px;
+    color: var(--archive-bone);
+    white-space: normal;
+    min-width: 0;
+    flex-shrink: 1;
+}
+.archive-panel .field-guide__entry--locked .field-guide__entry-name {
+    color: var(--archive-dim);
+    -unity-font-style: normal;
+}
+.archive-panel .field-guide__entry:hover, .archive-panel .field-guide__entry:focus,
+.archive-panel .field-guide__entry--selected {
+    background-color: rgb(59, 43, 32);
+    border-left-color: var(--archive-amber);
+}
+.archive-panel .field-guide__entry:focus { border-left-width: 3px; }
+.archive-panel .field-guide__redacted {
+    color: rgb(185, 170, 137);
+    background-color: rgb(49, 44, 33);
+    font-size: 16px;
+    padding: 12px 14px 12px 14px;
+    margin-top: 20px;
+    letter-spacing: 1px;
+    white-space: normal;
+}
+.archive-panel .field-guide__page-number { font-size: 16px; color: rgb(82, 68, 44); }
+.archive-panel .field-guide__paging { flex-wrap: wrap; justify-content: space-between; }
+.archive-panel .field-guide__turn {
+    font-size: 16px;
+    color: rgb(75, 43, 28);
+    border-width: 2px;
+    border-color: rgb(125, 103, 68);
+    border-radius: 0;
+    padding: 9px 11px 9px 11px;
+    white-space: normal;
+    max-width: 100%;
+}
+.archive-panel .field-guide__turn:hover, .archive-panel .field-guide__turn:focus {
+    color: rgb(40, 35, 25);
+    background-color: rgb(169, 152, 111);
+}
+.archive-panel .field-guide__close {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 24px;
+    color: var(--archive-bone);
+    background-color: rgb(35, 30, 23);
+    border-width: 2px;
+    border-color: rgb(101, 73, 49);
+    border-left-width: 3px;
+    border-left-color: var(--archive-rust);
+    border-radius: 0;
+    padding: 11px 20px 11px 20px;
+    letter-spacing: 1px;
+}
+.archive-panel .field-guide__close:hover, .archive-panel .field-guide__close:focus {
+    background-color: rgb(82, 47, 31);
+    color: rgb(237, 222, 188);
+}
+.archive-panel .field-guide__close:focus { border-left-width: 3px; }
+
+/* Catalogue items have their own illustrated evidence bays instead of a line of tiny names. */
+.archive-panel .salvage-catalogue__grid { justify-content: space-between; }
+.archive-panel .salvage-catalogue__item {
+    width: 32%;
+    max-width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-width: 190px;
+    min-height: 234px;
+    margin-bottom: 14px;
+    padding: 14px 16px 14px 16px;
+}
+.archive-panel .salvage-catalogue__visual {
+    height: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(9, 11, 9, 0.47);
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(64, 60, 43);
+    margin-bottom: 14px;
+}
+.archive-panel .salvage-catalogue__visual .icon {
+    width: 76px;
+    height: 76px;
+    -unity-background-image-tint-color: var(--archive-bone);
+}
+.archive-panel .salvage-catalogue__unknown {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 46px;
+    color: rgb(102, 95, 71);
+}
+.archive-panel .salvage-catalogue__value { color: var(--archive-amber); font-size: 19px; margin-top: 8px; }
+.archive-panel .salvage-catalogue__status {
+    font-size: 15px;
+    color: var(--archive-dim);
+    white-space: normal;
+    margin-top: 8px;
+}
+.archive-panel .salvage-catalogue__item--jackpot { border-top-width: 3px; border-top-color: var(--archive-amber); }
+
+/* The supply machine is an ageing monochrome instrument inside the same archive frame. */
+.archive-panel.crt { background-color: rgb(24, 24, 18); border-radius: 0; padding: 22px 26px 22px 26px; }
+.archive-panel .crt__screen {
+    background-color: rgb(8, 11, 9);
+    border-width: 1px;
+    border-color: rgb(77, 75, 49);
+    border-radius: 0;
+    padding: 18px 20px 18px 20px;
+}
+.archive-panel .crt__screen > .row { flex-wrap: wrap; }
+.archive-panel .crt__title, .archive-panel .crt__line, .archive-panel .crt__rule,
+.archive-panel .crt__name, .archive-panel .crt__note, .archive-panel .crt__price,
+.archive-panel .crt__about, .archive-panel .crt__cursor, .archive-panel .crt__button {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    color: rgb(184, 159, 103);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+.archive-panel .crt__title {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 28px;
+    letter-spacing: 1px;
+    white-space: normal;
+}
+.archive-panel .crt__line { font-size: 18px; white-space: normal; }
+.archive-panel .crt__rule { color: rgb(100, 89, 55); font-size: 16px; }
+.archive-panel .crt__row {
+    background-color: rgba(37, 36, 23, 0.3);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(154, 132, 77, 0.23);
+    min-height: 55px;
+    padding: 10px 8px 10px 8px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+.archive-panel .crt__name, .archive-panel .crt__price { font-size: 19px; }
+.archive-panel .crt__note { color: rgb(144, 127, 86); font-size: 16px; }
+.archive-panel .crt__about { font-size: 17px; border-top-width: 1px; border-top-color: rgb(71, 67, 42); padding-top: 15px; }
+.archive-panel .crt__button { font-size: 17px; padding: 9px 12px 9px 12px; border-width: 2px; border-color: rgb(103, 88, 50); }
+.archive-panel .crt__button { min-width: 0; max-width: 100%; white-space: normal; flex-shrink: 0; }
+.archive-panel .crt__button:hover, .archive-panel .crt__button:focus, .archive-panel .crt__button--on {
+    background-color: rgb(156, 134, 81);
+    color: rgb(8, 11, 9);
+}
+.archive-panel .crt__row:hover, .archive-panel .crt__row:focus { background-color: rgb(70, 60, 33); }
+.archive-panel .crt__row:hover .crt__name, .archive-panel .crt__row:hover .crt__note,
+.archive-panel .crt__row:hover .crt__price, .archive-panel .crt__row:focus .crt__name,
+.archive-panel .crt__row:focus .crt__price { color: rgb(231, 207, 153); }
+.archive-panel .crt__row--locked .crt__name, .archive-panel .crt__row--locked .crt__price { color: rgb(107, 104, 79); }
+.archive-panel .crt__row--cant .crt__price { color: rgb(143, 118, 81); }
+.archive-panel .crt__scanlines { opacity: 0.3; }
+.archive-panel .rack__item { min-height: 68px; margin: 5px 8px 5px 0; }
+.archive-panel .rack__icon { width: 38px; height: 38px; -unity-background-image-tint-color: var(--archive-bone); }
+.archive-panel .rack__name { font-size: 17px; color: var(--archive-bone); }
+.archive-panel .tile { background-color: rgb(30, 28, 22); border-color: rgb(81, 68, 46); }
+.archive-panel .tile__text { color: var(--archive-bone); font-size: 18px; }
+
+/* Appraisal keeps its real receipt and wraps side-by-side records at smaller panel sizes. */
+.archive-panel .receipt {
+    background-color: var(--archive-paper);
+    border-width: 1px;
+    border-color: rgb(89, 76, 49);
+    border-top-width: 3px;
+    border-top-color: var(--archive-rust);
+    border-bottom-width: 4px;
+    border-bottom-color: rgb(75, 64, 39);
+    rotate: 0deg;
+}
+.archive-panel .receipt__head {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    color: rgb(52, 42, 27);
+    font-size: 27px;
+    white-space: normal;
+}
+.archive-panel .receipt__small, .archive-panel .receipt__rule, .archive-panel .receipt__was { font-size: 15px; color: rgb(92, 78, 48); }
+.archive-panel .receipt__line, .archive-panel .receipt__line-value,
+.archive-panel .receipt__total-label, .archive-panel .receipt__total-value { color: rgb(44, 39, 28); }
+.archive-panel .receipt__line-value--damaged { color: rgb(125, 44, 32); }
+.archive-panel .receipt__stamp { font-size: 27px; border-color: rgb(111, 52, 34); color: rgb(111, 52, 34); }
+.archive-panel .appraisal__side { background-color: rgb(24, 24, 19); border-left-width: 3px; border-left-color: var(--archive-rust); }
+.archive-panel .award { border-bottom-color: rgb(63, 58, 43); }
+.archive-panel .award__icon { -unity-background-image-tint-color: var(--archive-amber); }
+.archive-panel .tally__label, .archive-panel .tally__value {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 17px;
+    color: var(--archive-bone);
+    white-space: normal;
+}
+.archive-panel .tally__value.text--money, .archive-panel .tally__value.text--good { color: var(--c-good); }
+.archive-panel .tally__value.text--error { color: var(--c-bad); }
+.archive-panel.scrap-depot { border-top-color: var(--archive-rust); }
+
+/* Travel is a quiet transfer manifest: no cartoon van or bounce. */
+.abandoned-transfer.travel {
+    background-color: rgb(7, 9, 8);
+    background-image: url("../HorrorGrime.png");
+    padding: 5% 7% 4% 7%;
+    align-items: flex-start;
+    justify-content: center;
+}
+.transfer__brand {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 34px;
+    letter-spacing: 7px;
+    color: rgb(117, 114, 98);
+    margin-bottom: 28px;
+}
+.abandoned-transfer .unity-label { min-width: 0; max-width: 100%; white-space: normal; }
+.abandoned-transfer .transfer__dossier {
+    width: 940px;
+    max-width: 100%;
+    flex-grow: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-left-width: 3px;
+    border-left-color: rgb(151, 63, 45);
+    padding: 4px 0 4px 28px;
+}
+.transfer__direction, .transfer__status, .transfer__footer {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: rgb(161, 141, 102);
+}
+.abandoned-transfer .travel__where {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 62px;
+    color: rgb(219, 210, 182);
+    letter-spacing: 3px;
+    margin: 18px 0 20px 0;
+    max-width: 100%;
+}
+.abandoned-transfer .travel__terms {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 19px;
+    color: rgb(167, 160, 138);
+    letter-spacing: 1px;
+    margin: 0 0 25px 0;
+}
+.transfer__progress.bar {
+    width: 420px;
+    max-width: 88%;
+    height: 3px;
+    border-width: 0;
+    background-color: rgb(39, 39, 29);
+    margin-bottom: 14px;
+}
+.transfer__progress .bar__fill { background-color: rgb(160, 128, 77); }
+.transfer__status { color: rgb(136, 137, 117); white-space: normal; }
+.abandoned-transfer .travel__tip {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 17px;
+    color: rgb(156, 152, 129);
+    -unity-text-align: middle-left;
+    margin: 28px 0 16px 0;
+    max-width: 840px;
+}
+.transfer__footer { font-size: 15px; color: rgb(86, 89, 76); }
+
+/* Field instructions and communication remain readable over the world. */
+.field-note.hud-hint {
+    left: 28px;
+    top: 110px;
+    width: 350px;
+    max-width: 26%;
+    background-color: rgba(12, 15, 12, 0.92);
+    border-width: 1px;
+    border-color: rgb(61, 64, 48);
+    border-left-width: 2px;
+    border-left-color: rgb(147, 66, 49);
+    padding: 14px 17px 14px 17px;
+}
+.field-note.hud-hint .section {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: rgb(180, 151, 98);
+    margin: 0 0 8px 0;
+}
+.field-note.hud-hint .text {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 16px;
+    color: rgb(203, 199, 174);
+    white-space: normal;
+}
+.field-note.first-day { top: 110px; }
+.field-note.first-day .section { white-space: normal; }
+.field-note.first-day .segments { margin-top: 14px; height: 3px; }
+.field-note.first-day .segment { border-width: 0; margin-right: 3px; background-color: rgb(44, 44, 31); }
+.field-note.first-day .segment__fill { background-color: rgb(159, 132, 80); }
+.crew-transmissions.chat {
+    /* Runtime anchors above the measured voice/vitals rectangles. */
+    left: 24px;
+    bottom: 24px;
+    width: 440px;
+    max-width: 30%;
+}
+.crew-transmissions__heading, .crew-transmissions__keys {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 15px;
+    color: rgb(150, 141, 109);
+    letter-spacing: 1px;
+    padding: 4px 10px 4px 10px;
+    background-color: rgba(8, 11, 9, 0.78);
+}
+.crew-transmissions__keys { margin-top: 5px; color: rgb(144, 151, 127); }
+.crew-transmissions .chat__log {
+    border-width: 0;
+    border-left-width: 1px;
+    border-left-color: rgb(89, 76, 53);
+    padding: 0 0 0 8px;
+}
+.crew-transmissions .chat__line {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    color: rgb(214, 209, 183);
+    font-size: 16px;
+    padding: 4px 7px 4px 7px;
+    background-color: rgba(8, 11, 9, 0.74);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+    margin-top: 4px;
+}
+.crew-transmissions .chat__line--ghost { border-left-width: 2px; border-left-color: rgb(112, 121, 111); }
+.crew-transmissions.chat--open .chat__log { background-color: rgba(10, 13, 10, 0.9); padding: 8px 10px 8px 10px; }
+.crew-transmissions .chat__field > .unity-text-field__input,
+.crew-transmissions .chat__field > .unity-base-text-field__input {
+    background-color: rgb(21, 23, 18);
+    color: rgb(225, 216, 184);
+    border-width: 1px;
+    border-color: rgb(126, 98, 63);
+    border-left-width: 3px;
+    border-left-color: rgb(161, 80, 53);
+    padding: 10px 12px 10px 12px;
+    font-size: 17px;
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+}
+.crew-voice.hud-voice {
+    /* Runtime anchors above the measured survival monitor. */
+    left: 24px;
+    bottom: 24px;
+    max-width: 30%;
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 15px;
+    color: rgb(144, 149, 125);
+    white-space: normal;
+    padding: 5px 9px 5px 9px;
+    background-color: rgba(9, 12, 9, 0.78);
+    border-left-width: 1px;
+    border-left-color: rgb(66, 71, 53);
+}
+.crew-voice--transmitting.hud-voice { color: rgb(218, 213, 186); border-left-color: var(--c-good); }
+.crew-voice--radio.hud-voice { color: rgb(198, 170, 109); border-left-color: rgb(154, 121, 70); }
+.crew-voice--fault.hud-voice { color: var(--c-bad); border-left-color: var(--c-bad); }
+.speaker-mark {
+    background-color: rgba(9, 12, 9, 0.89);
+    border-width: 1px;
+    border-color: rgb(98, 104, 78);
+    padding: 5px 9px 5px 9px;
+}
+.speaker-mark__name {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Bold.ttf");
+    font-size: 15px;
+    color: rgb(211, 211, 183);
+}
+.speaker-mark--radio { border-color: rgb(159, 127, 75); }
+.speaker-mark--radio .icon { -unity-background-image-tint-color: rgb(183, 154, 97); }
+
+/* Readings on damaged field instruments, outside the interaction centre. */
+.instrument-hud.hud-panel {
+    width: 294px;
+    max-width: 25%;
+    background-color: rgba(10, 15, 11, 0.94);
+    border-width: 1px;
+    border-color: rgb(79, 83, 55);
+    border-top-width: 3px;
+    border-top-color: rgb(149, 128, 78);
+    border-left-width: 1px;
+    padding: 15px 17px 16px 17px;
+}
+.instrument-hud--motion.hud-motion { right: 28px; top: 48%; }
+.instrument-hud--structure.hud-scanner { left: auto; right: 28px; top: 48%; }
+.instrument-hud__title {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 25px;
+    letter-spacing: 2px;
+    color: rgb(203, 194, 157);
+    white-space: normal;
+}
+.instrument-hud__meta, .instrument-hud__count, .instrument-hud__readout {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    font-size: 16px;
+    color: rgb(156, 171, 129);
+    white-space: normal;
+}
+.instrument-hud__meta { font-size: 15px; color: rgb(140, 142, 107); margin: 4px 0 12px 0; }
+.instrument-hud__count { color: rgb(163, 148, 99); margin-top: 10px; margin-bottom: 8px; }
+.instrument-hud__readout { font-size: 17px; color: rgb(177, 193, 145); }
+.instrument-hud__signal { height: 8px; margin: 5px 0 4px 0; }
+.instrument-hud__signal .segment { background-color: rgb(27, 33, 19); border-width: 1px; border-color: rgb(55, 64, 36); margin-right: 3px; }
+.instrument-hud__signal .segment__fill { background-color: rgb(158, 179, 106); }
+.instrument-hud--contact.hud-panel { border-top-color: rgb(188, 162, 92); }
+.horror-hud .hud-nightvision { right: 28px; width: 294px; max-width: 25%; }
+
+/* One worn ledger, with painted values and a separate next-step line. */
+.horror-hud .hq-brief {
+    position: absolute;
+    top: 24px;
+    left: 28px;
+    right: 28px;
+    max-width: 620px;
+    min-width: 0;
+    flex-direction: column;
+    padding: 10px 14px 11px 14px;
+    background-color: var(--h-ink);
+    background-image: url("../HorrorGrime.png");
+    border-width: 0;
+    border-left-width: 2px;
+    border-left-color: var(--h-amber);
+    border-top-width: 1px;
+    border-top-color: var(--h-faint);
+}
+.horror-hud .hq-brief__metrics {
+    flex-direction: row;
+    align-items: stretch;
+    margin-bottom: 8px;
+}
+.horror-hud .hq-brief__metric {
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    padding-left: 14px;
+    border-left-width: 1px;
+    border-left-color: var(--h-faint);
+}
+.horror-hud .hq-brief__account { flex-grow: 1.35; padding-left: 0; border-left-width: 0; padding-right: 12px; }
+.horror-hud .hq-brief__clearance { flex-grow: 1.2; padding-right: 12px; }
+.horror-hud .hq-brief__caption,
+.horror-hud .hq-brief__experience,
+.horror-hud .hq-brief__job,
+.horror-hud .hq-brief__departure {
+    -unity-font-definition: url("../../ThirdParty/Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf");
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    flex-shrink: 0;
+    white-space: normal;
+    color: var(--h-muted);
+    letter-spacing: 0;
+}
+.horror-hud .hq-brief__caption { font-size: 13px; letter-spacing: 1px; margin-bottom: 2px; }
+.horror-hud .hq-brief__value {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 30px;
+    color: var(--h-bone);
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    flex-shrink: 0;
+    white-space: normal;
+}
+.horror-hud .hq-brief__metric--warning .hq-brief__value { color: var(--h-rust); }
+.horror-hud .hq-brief__progress { flex-direction: row; flex-wrap: wrap; align-items: flex-end; }
+.horror-hud .hq-brief__experience { font-size: 13px; margin: 0 0 6px 10px; }
+.horror-hud .hq-brief__assignment {
+    flex-direction: row;
+    align-items: flex-start;
+    padding-top: 8px;
+    border-top-width: 1px;
+    border-top-color: var(--h-faint);
+}
+.horror-hud .hq-brief__dispatch-caption {
+    -unity-font-definition: url("../../ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf");
+    font-size: 16px;
+    color: var(--h-amber);
+    letter-spacing: 1px;
+    width: 96px;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0 12px 0 0;
+}
+.horror-hud .hq-brief__detail {
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+}
+.horror-hud .hq-brief__job { font-size: 15px; color: var(--h-bone); }
+.horror-hud .hq-brief__departure { font-size: 13px; color: var(--h-amber); margin-top: 3px; }
+.horror-hud .hq-brief--compact .hq-brief__metric { padding-left: 10px; }
+.horror-hud .hq-brief--compact .hq-brief__account { padding-left: 0; padding-right: 8px; }
+.horror-hud .hq-brief--compact .hq-brief__clearance { padding-right: 8px; }
+.horror-hud .hq-brief--compact .hq-brief__caption { font-size: 12px; letter-spacing: 0; }
+.horror-hud .hq-brief--compact .hq-brief__value { font-size: 26px; }
+.horror-hud .hq-brief--compact .hq-brief__progress { flex-direction: column; align-items: flex-start; }
+.horror-hud .hq-brief--compact .hq-brief__experience { margin: 0; }
+.horror-hud .hq-brief--compact .hq-brief__assignment { flex-direction: column; }
+.horror-hud .hq-brief--compact .hq-brief__dispatch-caption { margin-bottom: 3px; }
+.horror-hud .hq-brief--compact .hq-brief__detail { flex-basis: auto; flex-grow: 0; flex-shrink: 0; width: 100%; }
+
+.archive-panel.archive-panel--compact { padding: 16px 18px 16px 18px; }
+.archive-panel--compact .archive-panel__masthead { margin-bottom: 14px; }
+.archive-panel--compact .archive-panel__classification { flex-basis: 100%; margin-top: 7px; }
+.archive-panel.archive-panel--compact .board__cork .sheet { margin: 0 5px 0 5px; padding: 14px 12px 14px 12px; }
+.archive-panel.archive-panel--compact .sheet__job { font-size: 26px; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact { flex-direction: column; align-items: flex-start; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact-label { width: 100%; min-width: 0; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact-cell { width: 100%; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact-value { width: 100%; }
+.archive-panel.archive-panel--compact .salvage-catalogue__item { width: 48%; min-width: 0; }
+.archive-panel.archive-panel--compact .crt__note { width: 90px; min-width: 70px; }
+.archive-panel.archive-panel--compact .crt__price { width: 100px; min-width: 90px; }
+.archive-panel.archive-panel--compact .crt__name { font-size: 17px; }
+.archive-panel.archive-panel--compact .receipt { width: 100%; flex-basis: 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; }
+.archive-panel.archive-panel--compact .appraisal__side { flex-basis: 100%; }
+.archive-panel.archive-panel--narrow .board__cork { flex-direction: column; }
+.archive-panel.archive-panel--narrow .board__cork .sheet { width: 100%; flex-basis: auto; margin: 0 0 14px 0; }
+.archive-panel.archive-panel--narrow .field-guide__spread { flex-direction: column; min-height: 0; }
+.archive-panel.archive-panel--narrow .field-guide__contents { width: 100%; border-right-width: 0; border-bottom-width: 2px; border-bottom-color: var(--archive-rust); }
+.archive-panel.archive-panel--narrow .field-guide__page { border-left-width: 0; padding: 18px 20px 18px 20px; }
+.archive-panel.archive-panel--narrow .field-guide__title { font-size: 30px; }
+.archive-panel.archive-panel--narrow .field-guide__paging { justify-content: flex-start; }
+.archive-panel.archive-panel--narrow .field-guide__turn { margin: 4px 10px 4px 0; }
+.archive-panel.archive-panel--narrow .salvage-catalogue__item { width: 100%; }
+.archive-panel.archive-panel--narrow .crt__screen { padding: 14px 12px 14px 12px; }
+.archive-panel.archive-panel--narrow .crt__row { flex-wrap: wrap; }
+.archive-panel.archive-panel--narrow .crt__name { flex-basis: 100%; width: 100%; margin-bottom: 7px; }
+.archive-panel.archive-panel--narrow .crt__note { flex-grow: 1; flex-basis: 0; min-width: 0; width: auto; -unity-text-align: middle-left; }
+.archive-panel.archive-panel--narrow .crt__price { min-width: 0; width: auto; margin-left: 12px; }
+.archive-panel.archive-panel--short .crt__list { min-height: 100px; max-height: 300px; }
+.menu-compact .abandoned-transfer .travel__where { font-size: 46px; }
+.menu-short .field-note.hud-hint { padding: 10px 12px; }
+.menu-short .field-note.hud-hint .section { font-size: 14px; letter-spacing: 1px; margin-bottom: 6px; }
+.menu-short .field-note.hud-hint .text { font-size: 15px; }
+.menu-short .field-note.first-day .segments { margin-top: 8px; }

@@ -1,5 +1,9 @@
 # ABANDONED: UI style guide and brief (0.22.0)
 
+**Superseded by the user's full horror redesign, 2026-10-11.** The current identity, implementation and
+editor review steps are in [UI_HORROR_REDESIGN.md](UI_HORROR_REDESIGN.md). The old yellow Company Issue
+sheet is retained as a layout/compatibility layer; the current horror sheets load after it.
+
 Written 2026-10-10 during the autonomous 0.16–0.24 build. The roadmap planned the 0.22 revamp from a
 reference the user has in mind and their friend's work; that reference was not available, so this guide is
 a stand-in direction the friend can keep, change or throw away. Everything it drives lives in ONE stylesheet,

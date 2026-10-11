@@ -10,10 +10,10 @@ namespace Abandoned.Extraction
     /// </summary>
     public class RunHud : MonoBehaviour
     {
-        private static readonly Color GainColor = new(0.5f, 1f, 0.5f);
+        private static readonly Color GainColor = new(0.76f, 0.65f, 0.45f);
 
         private VisualElement top, haulBar, clock, leaving;
-        private Label amount, quota, cargo, met, time, leavingCount, leavingStatus, goals;
+        private Label amount, quota, cargo, met, time, leavingCount, leavingStatus, goals, clockState, haulState;
         private RunState shownRun;
         private int shownHaul;
         private bool metShown;
@@ -22,13 +22,17 @@ namespace Abandoned.Extraction
         {
             RunState run = RunState.Current;
             bool showing = run != null && run.IsSpawned && run.State.Phase != RunPhase.Departed;
-            if (top == null)
+            if (top == null || top.panel == null)
             {
                 if (!showing || HudLayer.Root == null) return;
                 Build();
             }
-            MenuKit.Show(top, showing && LootTags.ValuesVisible);
-            MenuKit.Show(clock, showing && LootTags.ValuesVisible);
+            // The inspection ledger and tool readouts share this corner; the haul returns when it closes.
+            bool inspecting = HudLayer.TryLocalRect(HudLayer.Root?.Q(className: "h-inspection"), HudLayer.Root, out _);
+            MenuKit.Show(top, showing && LootTags.ValuesVisible && !inspecting);
+            MenuKit.Show(clock, showing && LootTags.ValuesVisible && !inspecting);
+            if (HudLayer.Root != null)
+                top.EnableInClassList("h-recovery--compact", Mathf.Min(340f, HudLayer.Root.layout.width * .28f) < 320f);
             if (!showing)
             {
                 MenuKit.Show(leaving, false);
@@ -38,6 +42,7 @@ namespace Abandoned.Extraction
             RunNetState s = run.State;
             HaulGain(run, s.Haul);
             bool quotaMet = s.Haul >= s.Quota;
+            SetText(haulState, quotaMet ? "TARGET RECOVERED" : "RECOVERY TARGET");
             SetText(amount, $"${s.Haul:N0}");
             SetText(quota, $"/ ${s.Quota:N0}");
             UiKit.SetBar(haulBar, s.Quota > 0 ? (float)s.Haul / s.Quota : 1f, quotaMet ? "good" : null);
@@ -47,13 +52,15 @@ namespace Abandoned.Extraction
                 met.EnableInClassList("run-haul__met--on", quotaMet);
                 if (quotaMet && LootTags.ValuesVisible) UiKit.Jolt(met);
             }
-            SetText(cargo, s.Overloaded ? $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3  -  OVERLOADED" : $"CARGO {s.CargoVolume:0.0} / {s.CargoCapacity:0} m\u00b3");
+            MenuKit.Show(met, quotaMet);
+            SetText(cargo, s.Overloaded ? $"CARGO / {s.CargoVolume:0.0} : {s.CargoCapacity:0} m\u00b3 / OVERLOADED" : $"CARGO / {s.CargoVolume:0.0} : {s.CargoCapacity:0} m\u00b3");
             cargo.EnableInClassList("run-haul__cargo--bad", s.Overloaded);
             string goalText = RunGoals.Text();
             SetText(goals, goalText);
             MenuKit.Show(goals, goalText.Length > 0);
             float w = run.WindowRemaining;
-            SetText(time, run.WindowClosed ? "WINDOW CLOSED" : $"{(int)w / 60}:{(int)w % 60:00}");
+            SetText(time, run.WindowClosed ? "+00:00" : $"{(int)w / 60:00}:{(int)w % 60:00}");
+            SetText(clockState, run.WindowClosed ? "RECOVERY WINDOW CLOSED" : "RECOVERY WINDOW");
             clock.EnableInClassList("run-clock--late", run.WindowClosed);
 
             // The dead don't need the countdown (their death card and ghost bar have the screen).
@@ -71,7 +78,7 @@ namespace Abandoned.Extraction
             bool aboard = me != null && TruckCargo.Current != null &&
                           TruckCargo.Current.Carries(me.Ragdoll.IsRagdolled ? me.Ragdoll.BodyPosition : me.transform.position);
             bool dead = me == null || me.IsDead;
-            SetText(leavingStatus, dead ? "" : aboard ? "YOU'RE ON BOARD" : "GET IN THE TRUCK!");
+            SetText(leavingStatus, dead ? "" : aboard ? "ABOARD / HOLD POSITION" : "GET TO THE TRUCK");
             leavingStatus.EnableInClassList("truck-banner__status--good", aboard);
             MenuKit.Show(leavingStatus, !dead);
         }
@@ -96,27 +103,33 @@ namespace Abandoned.Extraction
 
         private void Build()
         {
-            top = HudLayer.Add(new VisualElement(), "run-haul");
+            HudLayer.Remove(top);
+            HudLayer.Remove(clock);
+            HudLayer.Remove(leaving);
+            top = HudLayer.Add(new VisualElement(), "run-haul", "h-recovery");
+            haulState = Text(top, "RECOVERY TARGET", "h-instrument-title");
             VisualElement row = new() { pickingMode = PickingMode.Ignore };
             row.AddToClassList("run-haul__row");
             top.Add(row);
-            Text(row, "HAUL", "run-haul__label");
             amount = Text(row, "", "run-haul__amount");
             quota = Text(row, "", "run-haul__quota");
             haulBar = UiKit.Bar(top, "run-haul__bar");
             cargo = Text(top, "", "run-haul__cargo");
-            goals = Text(top, "", "run-haul__cargo"); // 0.18+: boss request, rush order, sets, overtime
-            met = UiKit.Tag(top, "QUOTA MET");
+            goals = Text(top, "", "h-recovery__goals"); // 0.18+: boss request, rush order, sets, overtime
+            met = UiKit.Tag(top, "QUOTA MET / RETURN TO THE TRUCK");
             met.AddToClassList("run-haul__met");
-            clock = HudLayer.Add(new VisualElement(), "run-clock");
-            UiKit.Icon(clock, "board/hourglass", "small");
+            clock = new VisualElement { pickingMode = PickingMode.Ignore };
+            clock.AddToClassList("run-clock");
+            clock.AddToClassList("h-window");
+            top.Add(clock);
+            clockState = Text(clock, "RECOVERY WINDOW", "h-micro");
             time = Text(clock, "", "run-clock__time");
-            leaving = HudLayer.Add(new VisualElement(), "truck-banner");
-            UiKit.Hazard(leaving);
+            leaving = HudLayer.Add(new VisualElement(), "truck-banner", "h-departure");
+            Text(leaving, "EVACUATION", "h-instrument-title");
             Text(leaving, "THE TRUCK IS LEAVING", "truck-banner__title");
             leavingCount = Text(leaving, "", "truck-banner__count");
+            Text(leaving, "SECONDS TO DEPARTURE", "h-micro");
             leavingStatus = Text(leaving, "", "truck-banner__status");
-            UiKit.Hazard(leaving);
         }
 
         private static Label Text(VisualElement parent, string text, string cls)

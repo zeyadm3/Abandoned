@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Abandoned.UI
@@ -18,6 +19,15 @@ namespace Abandoned.UI
         {
             Root = root;
             Panel = panel;
+            Panel.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        }
+
+        private void OnGeometryChanged(GeometryChangedEvent changed)
+        {
+            // Station panels have different widths from menus, so use their own measured space.
+            Panel.EnableInClassList("archive-panel--compact", changed.newRect.width < 1000f);
+            Panel.EnableInClassList("archive-panel--narrow", changed.newRect.width < 680f);
+            Panel.EnableInClassList("archive-panel--short", changed.newRect.height < 640f);
         }
 
         /// <summary>Null when there's no HUD (bare test rigs).</summary>
@@ -33,10 +43,23 @@ namespace Abandoned.UI
             root.style.alignItems = Align.Center;
             root.style.justifyContent = Justify.Center;
             root.style.display = DisplayStyle.None;
-            foreach (string c in new[] { "backdrop", "backdrop--dim", "backdrop--center" }) root.AddToClassList(c);
+            foreach (string c in new[] { "backdrop", "backdrop--dim", "backdrop--center", "archive-backdrop" }) root.AddToClassList(c);
             hud.parent.Insert(hud.parent.IndexOf(hud) + 1, root);
             root.pickingMode = PickingMode.Position; // the panel's buttons take the clicks
-            return new ScreenPanel(root, MenuKit.Panel(root, wide));
+            var panel = MenuKit.Panel(root, wide);
+            panel.AddToClassList("archive-panel");
+            var screen = new ScreenPanel(root, panel);
+            screen.ApplyArchiveStyles();
+            return screen;
+        }
+
+        /// <summary>Keep the archive finish after any station-specific book or terminal rules.</summary>
+        public void ApplyArchiveStyles()
+        {
+            StyleSheet styles = Resources.Load<StyleSheet>("AbandonedPanels");
+            if (styles == null) return;
+            if (Panel.styleSheets.Contains(styles)) Panel.styleSheets.Remove(styles);
+            Panel.styleSheets.Add(styles);
         }
 
         public void Show(bool visible)
@@ -51,12 +74,20 @@ namespace Abandoned.UI
             if (key == builtFor) return;
             builtFor = key;
             Panel.Clear();
+            var head = MenuKit.Row(Panel);
+            head.AddToClassList("archive-panel__masthead");
+            MenuKit.Text(head, "ABANDONED", "archive-panel__brand").pickingMode = PickingMode.Ignore;
+            MenuKit.Text(head, "SALVAGE DIVISION / RECOVERED RECORDS", "archive-panel__classification").pickingMode = PickingMode.Ignore;
             ScrollView scroll = MenuKit.Scroll(Panel, "screen-panel__scroll");
             scroll.contentContainer.style.width = Length.Percent(100f);
             build(scroll.contentContainer);
             foreach (VisualElement sheet in scroll.Query<VisualElement>(className: "sheet").ToList()) sheet.style.rotate = new Rotate(0f);
         }
 
-        public void Remove() => Root.RemoveFromHierarchy();
+        public void Remove()
+        {
+            Panel.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            Root.RemoveFromHierarchy();
+        }
     }
 }

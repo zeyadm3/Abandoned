@@ -52,6 +52,7 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
+            MenuKit.Text(panel, "FIELD CONTROLS / PERSONAL BINDINGS", "menu-record");
             MenuKit.Text(panel, "CONTROLS", "heading");
             MenuKit.Text(panel, "Click a key, then press the new one. Esc cancels.", "subtitle");
             var scroll = MenuKit.Scroll(panel);
@@ -69,7 +70,7 @@ namespace Abandoned.UI
                     MenuKit.Text(row, label, "setting__label");
                     int index = i;
                     Button button = MenuKit.Button(row, "", () => Listen(action, index), SoundId.UiClick, small: true);
-                    button.style.minWidth = 220;
+                    button.AddToClassList("controls__binding");
                     rows.Add((action, index, button));
                 }
             }
@@ -77,6 +78,8 @@ namespace Abandoned.UI
             warning.AddToClassList("text--error");
 
             VisualElement buttons = MenuKit.Row(panel);
+            buttons.AddToClassList("controls__footer");
+            buttons.style.flexWrap = Wrap.Wrap;
             MenuKit.Button(buttons, "Reset to defaults", () =>
             {
                 Cancel();
@@ -91,7 +94,6 @@ namespace Abandoned.UI
                 menu.Back();
             }, SoundId.UiBack);
             back.AddToClassList("grow");
-            back.style.marginLeft = 10;
             Refresh();
         }
 

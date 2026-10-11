@@ -28,10 +28,16 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--center");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             panel.AddToClassList("panel--xwide");
+            panel.AddToClassList("play");
+            panel.style.width = 1240f;
+            panel.style.maxWidth = Length.Percent(96f);
+            MenuKit.Text(panel, "RECOVERY ASSIGNMENT / CREW ACCESS", "menu-record");
             MenuKit.Text(panel, "PLAY", "heading");
             ScrollView body = MenuKit.Scroll(panel, "play__body");
 
             VisualElement over = MenuKit.Row(body);
+            over.AddToClassList("play__transport");
+            over.style.flexWrap = Wrap.Wrap;
             MenuKit.Text(over, "Play over", "setting__label");
             steam = MenuKit.Button(over, "Steam", () => b.SelectTransport(TransportMode.Steam), SoundId.UiClick, small: true);
             directIp = MenuKit.Button(over, "Direct IP", () => b.SelectTransport(TransportMode.UnityTransport), SoundId.UiClick, small: true);
@@ -43,20 +49,19 @@ namespace Abandoned.UI
             cards.style.minWidth = 0;
             cards.AddToClassList("hud-cards");
             cards.AddToClassList("play__cards");
-            body.Add(cards);
-
             // QA B-24: up to three saves on this machine; hosting (or solo) plays the chosen one.
             var slots = new string[Company.SaveStore.Slots];
             for (int i = 0; i < slots.Length; i++) slots[i] = $"{i + 1}: {Company.SaveStore.Describe(i + 1)}";
             MenuKit.Choice(body, "Save", slots, Company.SaveStore.Slot - 1, i => Company.SaveStore.Slot = i + 1);
+            body.Add(cards);
 
-            VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "Just you and the building. Hard, not impossible: the trolley helps. Friends can still join you at the HQ.");
-            MenuKit.Button(solo, "Start", () => b.StartHost(), SoundId.UiConfirm, important: true);
+            VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "One worker. An unstable building. Use the trolley for heavy salvage. Friends can still join you at the HQ.");
+            MenuKit.Button(Actions(solo), "Start", () => b.StartHost(), SoundId.UiConfirm, important: true);
 
             VisualElement host = Card(cards, "HOST A CREW", "icon/multiplayer", "Lead a crew of up to four for the company. Friends join you at the HQ between jobs.");
             hostHow = MenuKit.Text(host, "", "text");
             hostHow.AddToClassList("text--small");
-            hostButton = MenuKit.Button(host, "Host", () => b.StartHost(), SoundId.UiConfirm, important: true);
+            hostButton = MenuKit.Button(Actions(host), "Host", () => b.StartHost(), SoundId.UiConfirm, important: true);
 
             VisualElement join = Card(cards, "JOIN", "icon/exitRight", "Join a friend's crew.");
             joinHow = MenuKit.Text(join, "", "text");
@@ -65,17 +70,26 @@ namespace Abandoned.UI
             address.isPasswordField = Core.GameSettings.StreamerMode; // 0.19.7: never show an address on stream
             address.AddToClassList("field");
             join.Add(address);
-            MenuKit.Button(join, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, important: true);
+            VisualElement joinActions = Actions(join);
+            MenuKit.Button(joinActions, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, important: true);
             // 0.23.5: back to the crew you were last with (they must be at the HQ).
             string last = Core.Prefs.GetString(NetworkPlayer.LastJoinKey, "");
             if (!string.IsNullOrEmpty(last))
-                MenuKit.Button(join, "Rejoin your last crew", () => b.StartClient(last), SoundId.UiConfirm, small: true);
+                MenuKit.Button(joinActions, "Rejoin your last crew", () => b.StartClient(last), SoundId.UiConfirm, small: true);
 
             status = MenuKit.Text(body, "", "text");
             status.AddToClassList("text--small");
             error = MenuKit.Text(body, "", "text");
             error.AddToClassList("text--error");
             MenuKit.Button(panel, "Back", menu.Back, SoundId.UiBack);
+        }
+
+        private static VisualElement Actions(VisualElement card)
+        {
+            var actions = new VisualElement();
+            actions.AddToClassList("play__actions");
+            card.Add(actions);
+            return actions;
         }
 
         private static VisualElement Card(VisualElement parent, string title, string icon, string text)
@@ -99,6 +113,7 @@ namespace Abandoned.UI
         public void Refresh()
         {
             NetworkBootstrap b = menu.Bootstrap;
+            address.isPasswordField = Core.GameSettings.StreamerMode;
             bool overSteam = b.Transport == TransportMode.Steam;
             steam.EnableInClassList("menu-button--on", overSteam);
             directIp.EnableInClassList("menu-button--on", !overSteam);

@@ -16,9 +16,9 @@ namespace Abandoned.UI
 
         public HintView()
         {
-            box = HudLayer.Add(new VisualElement(), "hud-panel", "hud-hint");
+            box = HudLayer.Add(new VisualElement(), "hud-panel", "hud-hint", "field-note");
             if (box == null) return;
-            Label title = MenuKit.Text(box, "TIP", "section");
+            Label title = MenuKit.Text(box, "FIELD NOTE", "section");
             title.pickingMode = PickingMode.Ignore;
             text = MenuKit.Text(box, "", "text");
             text.pickingMode = PickingMode.Ignore;
@@ -33,10 +33,12 @@ namespace Abandoned.UI
             until = Time.time + Seconds;
             text.text = message;
             MenuKit.Show(box, true);
+            HudLayer.PlaceFieldNote(box);
         }
 
         public void Tick()
         {
+            if (Showing != null) HudLayer.PlaceFieldNote(box);
             if (Showing == null || Time.time < until) return;
             Showing = null;
             MenuKit.Show(box, false);

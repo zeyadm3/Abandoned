@@ -4,14 +4,14 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The worn ABANDONED logo: stencil letters over faint red and cyan ghosts (a tired CRT's fringing),
+    /// The worn ABANDONED logo: stencil letters over rust and faded bone ghosts,
     /// with scratches and a water stain laid over the paint. Now and then the signal slips: the layers
     /// tear sideways for a couple of frames and the logo dims. "Reduce menu effects" holds it still.
     /// </summary>
     public class MenuTitle
     {
         private readonly MenuEffectsConfig config;
-        private readonly Label face, red, cyan;
+        private readonly Label face, rust, ghost;
         private readonly VisualElement wear;
         private float nextGlitch, glitchUntil = -1f;
 
@@ -23,8 +23,8 @@ namespace Abandoned.UI
             Root = new VisualElement { pickingMode = PickingMode.Ignore };
             Root.AddToClassList("menu-title");
             parent.Add(Root);
-            red = Layer("menu-title__ghost", new Color(0.75f, 0.12f, 0.08f, config.ChromaticOpacity));
-            cyan = Layer("menu-title__ghost", new Color(0.2f, 0.62f, 0.66f, config.ChromaticOpacity * 0.8f));
+            rust = Layer("menu-title__ghost", new Color(0.56f, 0.19f, 0.15f, config.ChromaticOpacity));
+            ghost = Layer("menu-title__ghost", new Color(0.66f, 0.62f, 0.52f, config.ChromaticOpacity * 0.45f));
             face = Layer("menu-title__face", default);
             face.style.position = Position.Relative;
             wear = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -78,16 +78,16 @@ namespace Abandoned.UI
                 return;
             }
             float shift = config.TitleGlitchShift;
-            red.style.translate = new Translate(-config.ChromaticOffset - Random.Range(0f, shift), Random.Range(-1f, 1f));
-            cyan.style.translate = new Translate(config.ChromaticOffset + Random.Range(0f, shift), Random.Range(-1f, 1f));
+            rust.style.translate = new Translate(-config.ChromaticOffset - Random.Range(0f, shift), Random.Range(-1f, 1f));
+            ghost.style.translate = new Translate(config.ChromaticOffset + Random.Range(0f, shift), Random.Range(-1f, 1f));
             face.style.translate = new Translate(Random.Range(-shift, shift) * 0.4f, 0f);
             face.style.opacity = Random.value < 0.5f ? 0.55f : 0.9f;
         }
 
         private void Settle()
         {
-            red.style.translate = new Translate(-config.ChromaticOffset, 0f);
-            cyan.style.translate = new Translate(config.ChromaticOffset, 0f);
+            rust.style.translate = new Translate(-config.ChromaticOffset, 0f);
+            ghost.style.translate = new Translate(config.ChromaticOffset, 0f);
             face.style.translate = StyleKeyword.Null;
             face.style.opacity = StyleKeyword.Null;
         }

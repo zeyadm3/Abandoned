@@ -26,8 +26,8 @@ namespace Abandoned.UI
             "Locked stores hold the good stock.",
         };
 
-        private VisualElement root;
-        private Label where, terms, status, tip;
+        private VisualElement root, progress;
+        private Label where, terms, status, tip, direction;
         private int seenTravel = -1;
         private float until;
         private Audio.SoundLoop rumble;
@@ -64,9 +64,13 @@ namespace Abandoned.UI
                 seenTravel = id;
                 Begin(travel.Level);
             }
-            if (Showing && root == null) Refresh(travel.Level);
+            if (Showing && (root == null || root.panel == null)) Refresh(travel.Level);
             Set(Showing && (Time.unscaledTime < until || !SessionTravel.LevelReady || !Loaded(travel.Level)));
-            if (Showing && status != null) status.text = Status(travel);
+            if (Showing && status != null)
+            {
+                status.text = Status(travel);
+                UiKit.SetBar(progress, travel.LoadProgress);
+            }
         }
 
         // QA B-04/B-05: what's holding the drive up, so a long wait isn't a mystery.
@@ -74,7 +78,7 @@ namespace Abandoned.UI
         {
             if (!Loaded(travel.Level) || travel.LoadProgress < 1f) return $"LOADING  {travel.LoadProgress:P0}";
             string waiting = travel.WaitingFor;
-            return string.IsNullOrEmpty(waiting) ? "" : $"WAITING FOR {waiting.ToUpperInvariant()}";
+            return string.IsNullOrEmpty(waiting) ? "MANIFEST VERIFIED / ARRIVING" : $"WAITING FOR {waiting.ToUpperInvariant()}";
         }
 
         private static bool Loaded(string level) => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == level;
@@ -88,17 +92,18 @@ namespace Abandoned.UI
 
         private void Refresh(string level)
         {
-            if (root == null && !Build()) return;
+            if ((root == null || root.panel == null) && !Build()) return;
             bool home = level == CompanyService.HomeLevel;
-            where.text = home ? "HEADING BACK TO THE HQ" : $"DRIVING TO: {Location(level)}";
+            direction.text = home ? "RETURN TRANSFER / CREW RECOVERY" : "OUTBOUND TRANSFER / SALVAGE DETAIL";
+            where.text = home ? "HEADQUARTERS" : Location(level);
             CompanyService company = CompanyService.Current;
             if (!home && company != null && company.Active.IsValid)
             {
                 Contracts.Contract c = company.Active;
-                terms.text = $"{c.ModifierName.ToUpperInvariant()}  -  QUOTA ${c.Quota:N0}  -  STABILITY {c.Stability:P0}  -  POWER {(c.PowerOff ? "OFF" : "ON")}  -  {c.WindowSeconds / 60f:0} MIN";
+                terms.text = $"{c.ModifierName.ToUpperInvariant()}\nQUOTA ${company.QuotaFor(c):N0}   /   STABILITY {c.Stability:P0}\nPOWER {(c.PowerOff ? "OFF" : "ON")}   /   DEPARTURE WINDOW {c.WindowSeconds / 60f:0} MIN";
             }
-            else terms.text = home ? "Payday's on the answering machine." : "";
-            tip.text = "TIP: " + Tips[Random.Range(0, Tips.Length)];
+            else terms.text = home ? "CREW RETURN IN PROGRESS\nPayday is on the answering machine." : "AWAITING DISPATCH RECORD";
+            tip.text = "FIELD NOTE / " + Tips[Random.Range(0, Tips.Length)];
             Set(true);
         }
 
@@ -108,30 +113,26 @@ namespace Abandoned.UI
         {
             VisualElement top = HudLayer.Root?.parent;
             if (top == null) return false;
+            root?.RemoveFromHierarchy();
             root = new VisualElement { pickingMode = PickingMode.Ignore };
             UiKit.FillScreen(root);
             root.style.flexDirection = FlexDirection.Column;
             root.AddToClassList("travel");
+            root.AddToClassList("abandoned-transfer");
             top.Add(root);
-            UiKit.Hazard(root).AddToClassList("travel__tape");
+            Text(root, "ABANDONED", "transfer__brand");
             var middle = new VisualElement { pickingMode = PickingMode.Ignore };
             middle.AddToClassList("travel__middle");
+            middle.AddToClassList("transfer__dossier");
             root.Add(middle);
-            var van = new VisualElement { pickingMode = PickingMode.Ignore };
-            van.AddToClassList("travel__van");
-            UiKit.Icon(van, "item/transport_van", "large");
-            middle.Add(van);
+            direction = Text(middle, "transfer__direction");
             where = Text(middle, "travel__where");
             terms = Text(middle, "travel__terms");
-            status = Text(middle, "travel__terms");
+            progress = UiKit.Bar(middle, "transfer__progress");
+            status = Text(middle, "transfer__status");
             status.enableRichText = false;
-            var road = new VisualElement { pickingMode = PickingMode.Ignore };
-            road.AddToClassList("travel__road");
-            middle.Add(road);
             tip = Text(root, "travel__tip");
-            UiKit.Hazard(root).AddToClassList("travel__tape");
-            // The van bounces along while it's up.
-            van.schedule.Execute(() => van.style.translate = new Translate(0, Mathf.Sin(Time.unscaledTime * 9f) * 3f + Mathf.Sin(Time.unscaledTime * 23f) * 1f)).Every(30);
+            Text(root, "ABANDONED SALVAGING / PERSONNEL TRANSPORT", "transfer__footer");
             return true;
         }
 
@@ -139,11 +140,18 @@ namespace Abandoned.UI
         {
             var l = new Label { pickingMode = PickingMode.Ignore };
             l.style.whiteSpace = WhiteSpace.Normal;
-            l.style.maxWidth = Length.Percent(88f);
+            l.style.minWidth = 0f;
             l.style.flexShrink = 0;
             l.AddToClassList(cls);
             parent.Add(l);
             return l;
+        }
+
+        private static Label Text(VisualElement parent, string value, string cls)
+        {
+            Label label = Text(parent, cls);
+            label.text = value;
+            return label;
         }
 
         private void Set(bool on)

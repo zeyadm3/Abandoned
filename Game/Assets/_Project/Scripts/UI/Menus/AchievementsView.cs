@@ -17,6 +17,8 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
+            panel.AddToClassList("achievements");
+            MenuKit.Text(panel, "RECOVERED RECORDS / WORKER HISTORY", "menu-record");
             MenuKit.Text(panel, "ACHIEVEMENTS", "heading");
             summary = MenuKit.Text(panel, "", "subtitle");
             var scroll = MenuKit.Scroll(panel);
@@ -37,13 +39,19 @@ namespace Abandoned.UI
                 if (unlocked) got++;
                 VisualElement row = MenuKit.Row(list);
                 row.AddToClassList("hud-row");
+                row.AddToClassList("achievement-row");
+                row.EnableInClassList("achievement-row--earned", unlocked);
                 // 0.24.3: its icon, grey until earned.
                 VisualElement icon = UiKit.Icon(row, $"achievement/{a.Id}", "large");
+                icon.AddToClassList("achievement-row__icon");
                 if (!unlocked) icon.style.unityBackgroundImageTintColor = new UnityEngine.Color(0.45f, 0.45f, 0.45f, 0.7f);
-                Label name = MenuKit.Text(row, $"<b>{(unlocked ? "<color=#7dff7d>" + a.DisplayName + "</color>" : a.DisplayName)}</b>\n{a.Description}", "text");
-                name.AddToClassList("hud-cell--name");
+                var details = new VisualElement();
+                details.AddToClassList("achievement-row__details");
+                row.Add(details);
+                MenuKit.Text(details, a.DisplayName, "achievement-row__name");
+                MenuKit.Text(details, a.Description, "text");
                 long progress = System.Math.Min(Achievements.Stat(a.Stat), a.Threshold);
-                MenuKit.Text(row, unlocked ? "DONE" : a.Threshold > 1 ? $"{progress:N0} / {a.Threshold:N0}" : "-", "hud-cell");
+                MenuKit.Text(row, unlocked ? "EARNED" : a.Threshold > 1 ? $"{progress:N0} / {a.Threshold:N0}" : "LOCKED", "hud-cell").AddToClassList("achievement-row__status");
             }
             summary.text = $"{got} / {catalog.Items.Count} UNLOCKED";
             // 0.19.10: the stats page, below the list.

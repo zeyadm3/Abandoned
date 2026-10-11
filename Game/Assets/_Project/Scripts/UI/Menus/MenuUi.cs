@@ -83,13 +83,10 @@ namespace Abandoned.UI
             root.style.overflow = Overflow.Hidden;
             root.AddToClassList("menu-root");
             root.pickingMode = PickingMode.Ignore;
+            UiThemeAssets.Apply(root);
             UiThemeAssets theme = Resources.Load<UiThemeAssets>(UiThemeAssets.ResourcePath);
             if (theme != null)
             {
-                if (theme.Styles != null && !root.styleSheets.Contains(theme.Styles)) root.styleSheets.Add(theme.Styles);
-                // 0.22: the revamp sits on top of the base sheet (Docs/UI_STYLE_GUIDE_0.22.md).
-                StyleSheet revamp = Resources.Load<StyleSheet>("Revamp");
-                if (revamp != null && !root.styleSheets.Contains(revamp)) root.styleSheets.Add(revamp);
                 if (theme.BodyFont != null) font = theme.BodyFont;
                 if (theme.TitleFont != null) titleFont = theme.TitleFont;
             }
@@ -118,8 +115,11 @@ namespace Abandoned.UI
             views[MenuScreen.DemoEnd] = demoEnd.Root;
             achievements = new AchievementsView(this);
             views[MenuScreen.Achievements] = achievements.Root;
-            foreach (VisualElement v in views.Values)
+            foreach (KeyValuePair<MenuScreen, VisualElement> screen in views)
             {
+                VisualElement v = screen.Value;
+                v.AddToClassList("menu-screen");
+                v.AddToClassList("menu-screen--" + screen.Key.ToString().ToLowerInvariant());
                 UiKit.FillScreen(v);
                 v.style.flexDirection = FlexDirection.Column;
                 v.style.justifyContent = Justify.Center;
@@ -169,6 +169,7 @@ namespace Abandoned.UI
         {
             VisualElement root = document.rootVisualElement;
             root.EnableInClassList("menu-compact", changed.newRect.width < 1350f);
+            root.EnableInClassList("menu-narrow", changed.newRect.width < 1050f);
             root.EnableInClassList("menu-short", changed.newRect.height < 850f);
         }
 
@@ -203,9 +204,9 @@ namespace Abandoned.UI
                 crtTwitchUntil = Time.unscaledTime + 0.07f;
                 nextCrtTwitch = Time.unscaledTime + Random.Range(9f, 17f);
             }
-            document.rootVisualElement.EnableInClassList("crt-twitch", menuVisible && Time.unscaledTime < crtTwitchUntil);
-            // During a game the menu needs the mouse; offline there's no player holding it anyway.
-            CursorOwner.Set(this, running && top != MenuScreen.None);
+            document.rootVisualElement.EnableInClassList("crt-twitch", menuVisible && !MenuEffectsConfig.Calm && Time.unscaledTime < crtTwitchUntil);
+            // Offline menus also claim the cursor: controller navigation uses the same UI-active signal.
+            CursorOwner.Set(this, top != MenuScreen.None);
             if (!running && Cursor.lockState != CursorLockMode.None)
             {
                 Cursor.lockState = CursorLockMode.None;

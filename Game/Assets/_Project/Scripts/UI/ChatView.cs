@@ -25,8 +25,12 @@ namespace Abandoned.UI
 
         private readonly List<Line> lines = new();
         private VisualElement root, log;
+        private Label heading, keys;
         private TextField field;
         private PlayerInputReader frozen;
+        private VisualElement layoutParent, voice, vitals;
+
+        private const float LayoutGap = 12f, ScreenInset = 24f, MaxWidth = 440f;
 
         /// <summary>Typing: the menus ignore Esc (it closes the chat) and the player stands still.</summary>
         public static bool Typing { get; private set; }
@@ -37,6 +41,8 @@ namespace Abandoned.UI
         {
             NetworkChat.Received -= Add;
             Close();
+            ReleaseLayout();
+            if (root != null) MenuKit.Show(root, false);
         }
 
         private void Update()
@@ -48,17 +54,36 @@ namespace Abandoned.UI
             if (inGame && !Typing && !Voice.VoiceSettings.TextChatOff && Core.InputBindings.WasPressed("Chat") && !Core.CursorOwner.UiActive) Open();
             else if (Typing && k != null && k.escapeKey.wasPressedThisFrame) Close();
             else if (Typing && k != null && (k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame)) Send();
+            if (root != null) Build();
             Fade(inGame);
+            if (root != null)
+            {
+                BindLayout();
+                PositionChat();
+            }
         }
 
         private bool Build()
         {
-            if (root != null) return true;
             VisualElement hud = HudLayer.Root;
-            if (hud == null) return false;
+            if (hud == null || hud.parent == null) return false;
+            if (root != null)
+            {
+                if (root.parent != hud.parent)
+                {
+                    Close();
+                    ReleaseLayout();
+                    hud.parent.Add(root);
+                }
+                return true;
+            }
             root = new VisualElement { pickingMode = PickingMode.Ignore };
             root.AddToClassList("chat");
+            root.AddToClassList("crew-transmissions");
+            root.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
             hud.parent.Add(root); // beside the HUD, so it stays while typing
+            heading = MenuKit.Text(root, "CREW TRANSMISSIONS", "crew-transmissions__heading");
+            heading.pickingMode = PickingMode.Ignore;
             log = MenuKit.Scroll(root, "chat__log");
             log.style.maxHeight = 260f;
             log.style.flexGrow = 0;
@@ -66,8 +91,67 @@ namespace Abandoned.UI
             field.AddToClassList("field");
             field.AddToClassList("chat__field");
             root.Add(field);
+            field.tooltip = "Message the crew. Enter sends; Escape closes.";
+            keys = MenuKit.Text(root, "ENTER  SEND    /    ESC  CLOSE", "crew-transmissions__keys");
+            keys.pickingMode = PickingMode.Ignore;
             MenuKit.Show(field, false);
+            MenuKit.Show(keys, false);
             return true;
+        }
+
+        private void BindLayout()
+        {
+            VisualElement hud = HudLayer.Root;
+            VisualElement parent = hud?.parent;
+            if (parent != layoutParent)
+            {
+                ReleaseLayout();
+                layoutParent = parent;
+                layoutParent?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            }
+            VisualElement nextVoice = hud?.Q(className: "crew-voice");
+            VisualElement nextVitals = hud?.Q(className: "h-vitals");
+            if (nextVoice != voice)
+            {
+                voice?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+                voice = nextVoice;
+                voice?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            }
+            if (nextVitals != vitals)
+            {
+                vitals?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+                vitals = nextVitals;
+                vitals?.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            }
+        }
+
+        private void OnGeometryChanged(GeometryChangedEvent _) => PositionChat();
+
+        private void PositionChat()
+        {
+            if (root == null || !HudLayer.TryLocalRect(layoutParent, layoutParent, out Rect area) || area.height <= ScreenInset + LayoutGap) return;
+            bool anchored = HudLayer.TryLocalRect(voice, layoutParent, out Rect anchor);
+            if (!anchored) anchored = HudLayer.TryLocalRect(vitals, layoutParent, out anchor);
+            float left = anchored ? anchor.xMin : ScreenInset;
+            left = Mathf.Clamp(left, 0f, Mathf.Max(0f, area.width - ScreenInset));
+            float width = Mathf.Min(MaxWidth, Mathf.Max(280f, area.width * .3f), area.width - left - ScreenInset);
+            if (!HudLayer.Finite(width) || width <= 0f) return;
+            float bottom = anchored ? Mathf.Clamp(area.height - anchor.yMin + LayoutGap, ScreenInset, area.height - LayoutGap) : ScreenInset;
+            root.style.top = StyleKeyword.Auto;
+            root.style.bottom = bottom;
+            root.style.left = left;
+            root.style.width = width;
+            root.style.maxWidth = width;
+            // The log scrolls instead of expanding above the viewport on a short display.
+            root.style.maxHeight = Mathf.Max(1f, area.height - bottom - ScreenInset);
+        }
+
+        private void ReleaseLayout()
+        {
+            layoutParent?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            voice?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            vitals?.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            layoutParent = voice = vitals = null;
         }
 
         private void Open()
@@ -76,6 +160,7 @@ namespace Abandoned.UI
             Typing = true;
             field.value = "";
             MenuKit.Show(field, true);
+            MenuKit.Show(keys, true);
             root.AddToClassList("chat--open");
             // Stand still while typing (W, A, S, D are letters now).
             frozen = NetworkPlayer.Local != null ? NetworkPlayer.Local.GetComponent<PlayerInputReader>() : null;
@@ -89,6 +174,7 @@ namespace Abandoned.UI
             if (!Typing) return;
             Typing = false;
             if (field != null) MenuKit.Show(field, false);
+            if (keys != null) MenuKit.Show(keys, false);
             root?.RemoveFromClassList("chat--open");
             if (frozen != null) frozen.Override = null;
             frozen = null;
@@ -109,6 +195,7 @@ namespace Abandoned.UI
             if (Voice.VoiceSettings.TextChatOff || !Build()) return; // 0.23.3
             var label = new Label { pickingMode = PickingMode.Ignore, enableRichText = true };
             label.AddToClassList("chat__line");
+            label.EnableInClassList("chat__line--ghost", ghost);
             // The sender's name in their coverall colour; the text as plain words (no markup from players).
             Color color = Color.white;
             foreach (NetworkPlayer p in NetworkPlayer.All)
@@ -137,6 +224,7 @@ namespace Abandoned.UI
         {
             if (root == null) return;
             MenuKit.Show(root, inGame);
+            bool anyVisible = Typing;
             for (int i = 0; i < lines.Count; i++)
             {
                 Line l = lines[i];
@@ -145,9 +233,16 @@ namespace Abandoned.UI
                 float alpha = Typing ? (recent ? 1f : 0f) : recent ? Mathf.Clamp01((LineSeconds - age) / 1.5f) : 0f;
                 l.Label.style.opacity = alpha;
                 l.Label.style.display = alpha > 0f ? DisplayStyle.Flex : DisplayStyle.None;
+                anyVisible |= alpha > 0f;
             }
+            MenuKit.Show(heading, anyVisible);
+            root.EnableInClassList("crew-transmissions--active", anyVisible);
         }
 
-        private void OnDestroy() => root?.RemoveFromHierarchy();
+        private void OnDestroy()
+        {
+            ReleaseLayout();
+            root?.RemoveFromHierarchy();
+        }
     }
 }

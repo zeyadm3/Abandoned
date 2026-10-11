@@ -20,8 +20,8 @@ namespace Abandoned.EditorTools
         public const string ThemePath = "Assets/_Project/Art/UI/MenuTheme.tss";
         public const string StylePath = "Assets/_Project/Art/UI/Menu.uss";
         public const string ThemeAssetsPath = Folder + "/Resources/UiThemeAssets.asset";
-        // UI overhaul: Barlow for everything small (readable), Saira Stencil One only for big titles (OFL).
-        public const string FontPath = ThirdPartyModelImport.Root + "Fonts/Barlow/Barlow-Medium.ttf";
+        // The same stencil as the logo for signs; field records and small data use typewriter lettering.
+        public const string FontPath = ThirdPartyModelImport.Root + "Fonts/IBMPlexMono/IBMPlexMono-Regular.ttf";
         public const string TitleFontPath = ThirdPartyModelImport.Root + "Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf";
         public const string IconsPath = Folder + "/Resources/UiIcons.asset";
 

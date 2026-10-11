@@ -102,6 +102,7 @@ namespace Abandoned.Company
                 if (!open || (screen = ScreenPanel.Create(wide: false)) == null) return;
                 StyleSheet styles = Resources.Load<StyleSheet>("HqStations");
                 if (styles != null) screen.Panel.styleSheets.Add(styles);
+                screen.ApplyArchiveStyles();
                 screen.Panel.AddToClassList("scrap-depot");
             }
             screen.Show(open);

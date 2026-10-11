@@ -21,11 +21,13 @@ namespace Abandoned.UI
         {
             public VisualElement Root;
             public float Until;
+            public float Height = 100f;
         }
 
         private static readonly Queue<(string title, string body, string icon, Kind kind)> Waiting = new();
         private readonly List<Toast> shown = new();
         private readonly HashSet<ulong> crew = new();
+        private readonly List<Vector2> blocked = new();
         private VisualElement stack;
         private bool crewKnown;
 
@@ -43,6 +45,15 @@ namespace Abandoned.UI
         private void Update()
         {
             Crew();
+            VisualElement hud = HudLayer.Root;
+            if (stack != null && stack.parent != hud)
+            {
+                HudLayer.Remove(stack);
+                stack = null;
+                shown.Clear();
+            }
+            bool compact = hud != null && (hud.layout.width < 1180f || hud.layout.height < 740f);
+            PlaceStack(hud, compact);
             for (int i = shown.Count - 1; i >= 0; i--)
             {
                 Toast t = shown[i];
@@ -52,7 +63,8 @@ namespace Abandoned.UI
                 root.schedule.Execute(() => root.RemoveFromHierarchy()).StartingIn(220);
                 shown.RemoveAt(i);
             }
-            while (Waiting.Count > 0 && shown.Count < MaxShown)
+            int limit = compact ? 1 : MaxShown;
+            while (Waiting.Count > 0 && shown.Count < limit)
             {
                 if (stack == null && (stack = HudLayer.Add(new VisualElement(), "toast-stack")) == null) return;
                 (string title, string body, string icon, Kind kind) = Waiting.Dequeue();
@@ -60,6 +72,76 @@ namespace Abandoned.UI
                 stack.BringToFront(); // over banners
                 Audio.GameAudio.PlayUi(kind == Kind.Good ? Audio.SoundId.UiConfirm : Audio.SoundId.UiToast, kind == Kind.Good ? 0.6f : 1f);
             }
+            PlaceStack(hud, compact, false);
+        }
+
+        private void PlaceStack(VisualElement hud, bool compact, bool pauseHidden = true)
+        {
+            if (stack == null || hud == null || !HudLayer.Finite(hud.layout.width) || !HudLayer.Finite(hud.layout.height)) return;
+            float right = compact ? 20f : 28f, left = compact ? 20f : 28f;
+            if (HudLayer.TryLocalRect(hud.Q(className: "h-recovery"), hud, out Rect recovery))
+                right = hud.layout.width - recovery.xMax;
+            else if (HudLayer.TryLocalRect(hud.Q(className: "h-inventory"), hud, out Rect inventory))
+                right = hud.layout.width - inventory.xMax;
+            if (HudLayer.TryLocalRect(hud.Q(className: "h-vitals"), hud, out Rect vitals)) left = vitals.xMin;
+            float width = Mathf.Min(330f, hud.layout.width * 0.28f);
+            Vector2 rightRoom = FreeSpace(hud, hud.layout.width - right - width, width);
+            Vector2 leftRoom = FreeSpace(hud, left, width);
+            float needed = 0f;
+            foreach (Toast notice in shown)
+            {
+                if (notice.Root.resolvedStyle.display != DisplayStyle.None && HudLayer.Finite(notice.Root.layout.height) && notice.Root.layout.height > 0f)
+                    notice.Height = notice.Root.layout.height + 8f;
+                needed += notice.Height;
+            }
+            bool useLeft = rightRoom.y - rightRoom.x < needed && leftRoom.y - leftRoom.x > rightRoom.y - rightRoom.x;
+            Vector2 room = useLeft ? leftRoom : rightRoom;
+            stack.style.top = room.x;
+            stack.style.left = useLeft ? new StyleLength(left) : new StyleLength(StyleKeyword.Auto);
+            stack.style.right = useLeft ? new StyleLength(StyleKeyword.Auto) : new StyleLength(right);
+            stack.style.width = width;
+            float remaining = room.y - room.x;
+            foreach (Toast notice in shown)
+            {
+                bool visible = hud.resolvedStyle.display != DisplayStyle.None && remaining >= notice.Height;
+                MenuKit.Show(notice.Root, visible);
+                if (visible) remaining -= notice.Height;
+                else if (pauseHidden) notice.Until += Time.deltaTime;
+            }
+        }
+
+        private Vector2 FreeSpace(VisualElement hud, float left, float width)
+        {
+            blocked.Clear();
+            foreach (VisualElement item in hud.Children())
+            {
+                if (!(item.ClassListContains("h-recovery") || item.ClassListContains("h-inventory") ||
+                      item.ClassListContains("h-inspection") || item.ClassListContains("instrument-hud") ||
+                      item.ClassListContains("crew-voice") || item.ClassListContains("crew-transmissions") ||
+                      item.ClassListContains("field-note") || item.ClassListContains("hq-brief"))) continue;
+                if (HudLayer.TryLocalRect(item, hud, out Rect rect) && rect.xMin < left + width && rect.xMax > left)
+                    blocked.Add(new Vector2(rect.yMin - 12f, rect.yMax + 12f));
+            }
+            // Chat sits beside the HUD to retain keyboard focus while typing.
+            VisualElement parent = hud.parent;
+            VisualElement chat = parent?.Q(className: "crew-transmissions");
+            if (HudLayer.TryLocalRect(chat, parent, out Rect chatRect))
+            {
+                chatRect = parent.ChangeCoordinatesTo(hud, chatRect);
+                if (chatRect.xMin < left + width && chatRect.xMax > left)
+                    blocked.Add(new Vector2(chatRect.yMin - 12f, chatRect.yMax + 12f));
+            }
+            blocked.Sort((a, b) => a.x.CompareTo(b.x));
+            float start = 28f, end = hud.layout.height - 40f;
+            Vector2 best = new(start, start);
+            foreach (Vector2 interval in blocked)
+            {
+                float stop = Mathf.Min(end, interval.x);
+                if (stop - start > best.y - best.x) best = new Vector2(start, stop);
+                start = Mathf.Max(start, interval.y);
+            }
+            if (end - start > best.y - best.x) best = new Vector2(start, end);
+            return best;
         }
 
         private VisualElement Build(string title, string body, string icon, Kind kind)

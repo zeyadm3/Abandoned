@@ -96,6 +96,18 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.7b (2026-10-12): full horror UI redesign.** The user's R.E.P.O./Lethal Company references now drive an
+original worn bone/rust/amber identity across menus, survival/compass/inventory, records and alerts.
+Prominent lettering shares the logo's Saira Stencil One; small records use IBM Plex Mono. This supersedes
+the 0.22 yellow Company Issue direction. Runtime UI updates need no scene rebuild. Unity compilation
+and USS imports passed; no gameplay/tests/screenshots or player builds. Details and review steps:
+Docs/UI_HORROR_REDESIGN.md. Keep UiThemeAssets.Apply's four horror sheets after the legacy styles.
+Alignment follow-up: pocket cards stay in one row; voice/chat, inspection and sensors use measured
+anchors. Menus and archive records now adapt their columns, scrolling and focus frames consistently.
+HQ follow-up (2026-10-12): the status chips are one compact ledger with stencil values, contained
+assignment text and measured anchors for the field notes/first-day guide beneath it.
+The user requested saving/committing all changes and shareable Mac + Windows builds as 0.24.7b.
+
 **0.24.7 (2026-10-11): static QA pass.** Fixes from reading the runtime code (pay, vent/drone/photo-mode
 states, the sound library's race, leaks); compiled, never played. What changed, what is left to decide
 and what to check first: QA_Resolution_Report.md. `Tools/unity.sh build` packages this version.

@@ -41,8 +41,10 @@ namespace Abandoned.UI
             panel.style.width = 1500f;
             panel.style.maxWidth = Length.Percent(96f);
 
+            MenuKit.Text(panel, "WORKER KIT / ISSUE AND IDENTIFICATION", "menu-record");
             VisualElement header = MenuKit.Row(panel);
             header.AddToClassList("wardrobe__header");
+            header.style.flexWrap = Wrap.Wrap;
             MenuKit.Text(header, "WARDROBE", "heading").AddToClassList("wardrobe__title");
             var money = new VisualElement();
             money.AddToClassList("wardrobe__money");
@@ -52,6 +54,8 @@ namespace Abandoned.UI
 
             VisualElement columns = MenuKit.Row(panel);
             columns.AddToClassList("wardrobe__body");
+            columns.style.flexShrink = 1;
+            columns.style.alignItems = Align.Stretch;
             var stage = new VisualElement();
             stage.AddToClassList("wardrobe__stage");
             columns.Add(stage);
@@ -66,6 +70,7 @@ namespace Abandoned.UI
             columns.Add(shelf);
             VisualElement bar = MenuKit.Row(shelf);
             bar.AddToClassList("wardrobe__tabs");
+            bar.style.flexWrap = Wrap.Wrap;
             for (int i = 0; i < Tabs.Length; i++)
             {
                 int index = i;
@@ -80,12 +85,13 @@ namespace Abandoned.UI
             var detail = new VisualElement();
             detail.AddToClassList("wardrobe__detail");
             columns.Add(detail);
+            ScrollView detailBody = MenuKit.Scroll(detail, "wardrobe__detail-body");
             swatch = new VisualElement();
             swatch.AddToClassList("wardrobe__detail-swatch");
-            detail.Add(swatch);
-            title = MenuKit.Text(detail, "", "wardrobe__detail-name");
-            about = MenuKit.Text(detail, "", "wardrobe__detail-about");
-            unlock = MenuKit.Text(detail, "", "wardrobe__detail-unlock");
+            detailBody.Add(swatch);
+            title = MenuKit.Text(detailBody, "", "wardrobe__detail-name");
+            about = MenuKit.Text(detailBody, "", "wardrobe__detail-about");
+            unlock = MenuKit.Text(detailBody, "", "wardrobe__detail-unlock");
             action = MenuKit.Button(detail, "", Act, SoundId.UiConfirm);
             action.AddToClassList("wardrobe__action");
 
