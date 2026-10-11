@@ -107,6 +107,8 @@ anchors. Menus and archive records now adapt their columns, scrolling and focus 
 HQ follow-up (2026-10-12): the status chips are one compact ledger with stencil values, contained
 assignment text and measured anchors for the field notes/first-day guide beneath it.
 The user requested saving/committing all changes and shareable Mac + Windows builds as 0.24.7b.
+Completed from clean source commit e6ad8cad: Mac universal and Windows x64 ZIPs, matching build
+stamps, Mac signature verification and ZIP CRC checks passed. Gameplay remains untested.
 
 **0.24.7 (2026-10-11): static QA pass.** Fixes from reading the runtime code (pay, vent/drone/photo-mode
 states, the sound library's race, leaks); compiled, never played. What changed, what is left to decide

@@ -109,7 +109,7 @@ resolve, stylesheet braces/metadata are valid, and `git diff --check` passes. No
 No gameplay, automated gameplay tests or QA screenshots were run, following the existing project
 preference that the user reviews gameplay. The visual composition and live interaction flows remain
 for the user's play review; compilation does not prove those layouts in motion. Player binaries were
-not rebuilt in this UI source pass.
+not rebuilt in the initial UI source pass; the later 0.24.7b packages are recorded below.
 
 1. Open the **Game** project in Unity; let it import the new styles.
 2. Open **HQ**, enter Play mode, and review the opening notice and menu; use Play to start a session.
@@ -118,3 +118,16 @@ not rebuilt in this UI source pass.
    haul/evacuation and the truck display. Check the UI scale and reduced-effects settings.
 
 Suggested commit: `Redesign Abandoned menus and gameplay UI with worn horror identity`.
+
+## 0.24.7b packages — 2026-10-12
+
+At the user's request, all current UI changes were saved and committed as **e6ad8cad**, with the
+version synchronised to **0.24.7b**. `Tools/unity.sh build` passed for Mac universal and Windows x64.
+Both packages carry the same clean commit and UTC timestamp, the Mac signature/native icons passed
+verification, and both ZIPs passed CRC checks. No gameplay was run. The working tree was clean after
+Unity restored its temporary build stamp and removed generated build resources.
+
+ZIPs in `~/Documents/Abandoned-builds/dev/`:
+
+- `Abandoned-0.24.7b-e6ad8cad-Mac.zip`
+- `Abandoned-0.24.7b-e6ad8cad-Windows.zip`

@@ -17,6 +17,18 @@ The user requested saving and committing every current change and packaging Mac 
 the shareable players carry a clean commit stamp. Packaging uses `Tools/unity.sh build` and writes
 zips to `~/Documents/Abandoned-builds/dev/`. Gameplay remains for the user's review.
 
+**Builds passed:** Mac universal (Intel + Apple Silicon) and Windows x64 shareable players from
+clean source commit **e6ad8cad**, version **0.24.7b**, matching UTC stamp **2026-10-11T20:30:58Z**.
+Mac signature/native icon checks passed; both ZIP archives passed CRC verification. Unity restored
+the BuildInfo asset to editor defaults, and the working tree stayed clean after packaging.
+
+- `Abandoned-0.24.7b-e6ad8cad-Mac.zip`
+- `Abandoned-0.24.7b-e6ad8cad-Windows.zip`
+
+These packages contain the horror redesign and all alignment/HQ follow-ups. No gameplay, automated
+gameplay tests or QA screenshots were run. The build notes are saved in a subsequent documentation
+commit; the players remain stamped with the source commit above.
+
 ## 0.24.6b: desktop logo and native Apple appearances (2026-10-10)
 
 Original fractured concrete A emblem generated with built-in `image_gen`, with matching
