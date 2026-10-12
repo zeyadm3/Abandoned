@@ -22,7 +22,8 @@ Steamworks -> App Admin -> Cloud -> Steam Cloud Settings: quota e.g. 1 MB / 10 f
 | macOS | MacHome | `Library/Application Support/Zeyad Games/Abandoned` | `company*.json` |
 
 (macOS: add it as a Root Override of the Windows root, OS = macOS, as the partner site describes.)
-`company.json` is the full game's company, `company_demo.json` the demo's. A save from a newer build is
+`company.json` is the full game's company (save slot 1), `company_2.json` and `company_3.json` slots 2 and 3,
+`company_demo.json` the demo's; the pattern covers all four. A save from a newer build is
 never overwritten by an older one (SaveStore refuses), and Steam shows its own conflict dialog.
 Not synced: settings, key bindings, cosmetics picks and achievement stats (PlayerPrefs, per machine).
 
@@ -31,18 +32,32 @@ Create these on Steamworks -> Stats & Achievements (API name = what the game sen
 
 | API name | Name | Unlocks when |
 |---|---|---|
-| ACH_FIRST_JOB | First Day on the Job | finish a run |
-| ACH_MADE_IT_OUT | Made It Out | get on the truck before it leaves |
-| ACH_CAREER_SALVAGER | Career Salvager | make it out of 25 runs |
-| ACH_QUOTA_CRUSHER | Quota Crusher | meet the quota 10 times |
-| ACH_SIX_FIGURES | Six Figures | haul $100,000 over your career |
-| ACH_MILLIONAIRE | Millionaire | haul $1,000,000 over your career |
-| ACH_THE_GREED_ITEM | The Greed Item | get a jackpot out |
-| ACH_GRAVITY_WINS | Gravity Wins | be there when 10 floors give way |
-| ACH_OCCUPATIONAL_HAZARD | Occupational Hazard | die on the job |
-| ACH_MEDIC | Medic | revive a crewmate |
-| ACH_TIMBER | Timber! | watch the Hunter fall through a floor |
-| ACH_LIGHTS_OUT | Lights Out | make it out of a power-off or night job |
+| ACH_FIRST_JOB | First Day on the Job | Finish a run |
+| ACH_MADE_IT_OUT | Made It Out | Get on the truck before it leaves |
+| ACH_CAREER_SALVAGER | Career Salvager | Make it out of 25 runs |
+| ACH_QUOTA_CRUSHER | Quota Crusher | Meet the quota 10 times |
+| ACH_SIX_FIGURES | Six Figures | Haul $100,000 over your career |
+| ACH_MILLIONAIRE | Millionaire | Haul $1,000,000 over your career |
+| ACH_THE_GREED_ITEM | The Greed Item | Get a jackpot out of a building |
+| ACH_GRAVITY_WINS | Gravity Wins | Be there when 10 floors give way |
+| ACH_OCCUPATIONAL_HAZARD | Occupational Hazard | Die on the job |
+| ACH_MEDIC | Medic | Get a downed crewmate back on their feet |
+| ACH_TIMBER | Timber! | Watch the Hunter fall through a floor |
+| ACH_LIGHTS_OUT | Lights Out | Make it out of a job with the power off or after dark |
+| ACH_LET_THERE_BE_LIGHT | Let There Be Light | Throw a breaker |
+| ACH_SAFECRACKER | Safecracker | Be there when the vault drill gets through |
+| ACH_GOING_UP | Going Up | Ride the freight lift 10 times |
+| ACH_DUCTWORK | Ductwork | Crawl through 5 vents |
+| ACH_MATCHING_SET | Matching Set | Bring a complete loot set home |
+| ACH_TEACHERS_PET | Teacher's Pet | Bring the boss what they asked for 3 times |
+| ACH_EXPRESS_DELIVERY | Express Delivery | Deliver a rush order in time |
+| ACH_UNDER_NEW_MANAGEMENT | Under New Management | Come back as a replacement worker |
+| ACH_LOOK_OVER_THERE | Look Over There | Ping 100 things |
+| ACH_WORKAHOLIC | Workaholic | Get paid overtime |
+
+All 22 (0.19.10 added the last ten), from `Tools/Steam/achievements.csv`, which is written from the
+game's own catalog and also names each icon pair in `Tools/Steam/AchievementIcons/`. If the two disagree, the
+CSV is right.
 
 The definitions live in `Game/Assets/_Project/Data/Core/Achievements/` (thresholds are data). The game
 calls Steam while it runs, and re-sends every local unlock when Steam starts (offline unlocks catch up).

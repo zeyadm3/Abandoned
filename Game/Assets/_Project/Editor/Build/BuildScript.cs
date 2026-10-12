@@ -20,12 +20,17 @@ namespace Abandoned.EditorTools
     {
         public const string ProductName = "Abandoned";
         /// <summary>0.&lt;milestone being built&gt;.&lt;patch&gt;; bump the middle number when a milestone starts.</summary>
-        public const string Version = "0.24.7b";
+        public const string Version = "0.24.7c";
         public const string CompanyName = "Zeyad Games";
         public const string BundleId = "com.zeyadgames.abandoned";
         public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";
         public const string BuildsFolder = "Builds";
         public const string InfoFileName = "BUILD.txt";
+        /// <summary>
+        /// Present while the dispatch and voicemail clips are still the ones spoken by macOS system voices
+        /// (Tools/Audio/*.py). Relative to the project folder, like every other path here.
+        /// </summary>
+        public const string SystemVoicesMarker = "../Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md";
         private const string Menu = "Tools/Abandoned/Build/";
 
         [MenuItem(Menu + "Mac")]
@@ -45,7 +50,8 @@ namespace Abandoned.EditorTools
 
         /// <summary>
         /// The Steam release (M10.11): both platforms, no steam_appid.txt, Game/Builds/MacRelease and
-        /// WindowsRelease, ready to upload as depots. Refuses while the App ID is still Spacewar (480).
+        /// WindowsRelease, ready to upload as depots. Refuses while the App ID is still Spacewar (480), and
+        /// while the voice clips are ones that may not be sold.
         /// </summary>
         public static bool BuildRelease()
         {
@@ -54,6 +60,14 @@ namespace Abandoned.EditorTools
             {
                 Debug.LogError("[Build] A release build needs the game's real Steam App ID in Data/Networking/NetworkConfig " +
                                "(still 480, Spacewar). See Docs/STEAM_SETUP.md and Docs/LAUNCH.md.");
+                return false;
+            }
+            if (File.Exists(SystemVoicesMarker))
+            {
+                // Apple licenses its system voices for personal, non-commercial use only (macOS licence, "Voices").
+                Debug.LogError("[Build] The dispatch and voicemail clips were spoken by macOS system voices, which can't be " +
+                               "in a build that is sold. Replace or delete the clips, then delete " +
+                               "Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md (it lists the files and the ways out).");
                 return false;
             }
             string builtAtUtc = BuildInfoAsset.Now();

@@ -18,6 +18,26 @@ Only you: pay the Steam Direct fee, create the app (and its two depots: Windows,
 the achievements and icons, Auto-Cloud (paths in Docs/STEAM_SETUP.md), the store page, capture a real trailer,
 submit the build and the page for review.
 
+## 0.24.7c: found in the readiness review (2026-10-12), all still open
+- [ ] **Voices.** The 25 dispatch and voicemail clips were spoken by macOS system voices, which Apple licenses
+      for personal, non-commercial use only. `build-release` refuses to build until they are replaced or
+      removed: Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md lists the files and three ways out. A Steam demo
+      needs the same done first.
+- [ ] **The play pass.** Nothing from 0.16.0 on has been played, the automated tests have not run since M10,
+      and four-player host performance is unmeasured. Docs/AUTOBUILD_0.16-0.24.md ends with where to look first.
+- [ ] **Real Steam** (App ID 480, two machines): lobbies, invites, the relay, Steam voice, achievements, cloud.
+      Rich presence and the daily leaderboard can only be checked with the game's own App ID.
+- [ ] **The name.** Other games on Steam are called "Abandoned" (Docs/STORE_PAGE.md "Name").
+- [ ] **AI disclosure** in Steam's content survey: draft in Docs/STORE_PAGE.md.
+- [ ] **Real screenshots and trailer**: Docs/StoreArt holds editor renders and a silent animatic.
+- [ ] **Mac depot**: the app is signed ad hoc, not notarized. Install it through Steam on a second Mac.
+- [ ] **Studio name.** "Zeyad Games" fixes the save folder and the Auto-Cloud paths; change it before
+      release or never.
+- [ ] Merge `game-called-abandoned` into `main` and tag the release commit.
+- [ ] Four rule decisions from QA_Resolution_Report.md section 5: the total-collapse penalty was decided on
+      2026-10-12 (kept; see CLAUDE.md). Still yours: the truck can be overloaded during the honk, bankruptcy
+      clears the catalogue and trophy shelf, gear other than the drone works while hiding.
+
 ## 1. Before the store page
 - [ ] Pay the Steam Direct fee; create the app (and a demo app if you keep the demo).
 - [ ] Put the App ID in `Data/Networking/NetworkConfig.asset` (SteamAppId) and the demo's
@@ -32,8 +52,12 @@ submit the build and the page for review.
 
 ## 3. Community
 - [ ] Create the Discord (channels: announcements, bug-reports, looking-for-crew, clips, suggestions).
-- [ ] Put the invite in `Data/Core/Resources/LaunchConfig.asset` (DiscordUrl) and a feedback form or the Steam
-      discussions URL in FeedbackUrl. Empty fields hide their buttons, so do this before the release build.
+- [ ] Put the invite in `Data/Core/Resources/LaunchConfig.asset` (DiscordUrl). Empty fields hide their
+      buttons, so do this before the release build.
+- [ ] Feedback (0.24.7c): the Steam builds (release and demo) never use FeedbackUrl, which holds the private
+      address friends' builds show. They use ReleaseFeedbackUrl (a form, or a public support address as
+      `mailto:...`); left empty, the Feedback button, "Report a problem" and the launch notice open the game's
+      Steam discussions, from the App ID `set-app-id` wrote. The launch notice shows once per version there.
 
 ## 4. Builds
 - [ ] Playtest the release candidate: `Tools/unity.sh build` (zips with steam_appid.txt 480 for friends).

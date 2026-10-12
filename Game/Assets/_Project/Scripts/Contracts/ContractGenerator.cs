@@ -55,6 +55,23 @@ namespace Abandoned.Contracts
 
         public const string DailyId = "daily";
 
+        /// <summary>
+        /// The UTC day whose daily job this contract is (null = not a daily job, or not a recent one). The
+        /// board is rolled when the crew reaches the HQ, so a job taken or finished after midnight still
+        /// belongs to the day it was rolled for; the day before and after cover clocks that disagree.
+        /// </summary>
+        public static string DailyDay(ContractConfig c, Contract contract, DateTime utcNow)
+        {
+            if (c == null || contract.ModifierId != DailyId) return null;
+            for (int back = -1; back <= 3; back++)
+            {
+                DateTime day = utcNow.AddDays(-back);
+                // The run seed comes from the date alone (the loot estimate only fills the board's text).
+                if (Daily(c, 0, day).Seed == contract.Seed) return DayId(day);
+            }
+            return null;
+        }
+
         private static Contract Roll(ContractConfig c, ContractModifier m, int level, System.Random random, int lootEstimate)
         {
             float stability = Mathf.Clamp(Lerp(c.StabilityMin, c.StabilityMax, random) + (m != null ? m.StabilityDelta : 0f), 0.2f, 1f);

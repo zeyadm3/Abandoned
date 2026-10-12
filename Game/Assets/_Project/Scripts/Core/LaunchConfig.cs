@@ -13,7 +13,11 @@ namespace Abandoned.Core
 
         [field: Tooltip("Discord invite (https://discord.gg/...).")]
         [field: SerializeField] public string DiscordUrl { get; private set; } = "";
-        [field: Tooltip("Bug report / feedback form (Steam discussions, a Google form...).")]
+        [field: Tooltip("Feedback link in the builds shared with friends (a form, or mailto:you@example.com). " +
+                        "Never used in the builds Steam sells.")]
         [field: SerializeField] public string FeedbackUrl { get; private set; } = "";
+        [field: Tooltip("Feedback link in the Steam builds (release and demo): a form, or a public support address " +
+                        "as mailto:... Empty = the game's Steam discussions.")]
+        [field: SerializeField] public string ReleaseFeedbackUrl { get; private set; } = "";
     }
 }

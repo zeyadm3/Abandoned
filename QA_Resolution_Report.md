@@ -117,6 +117,8 @@ broken translation file falls back to English (`Core/Text/TextTable.cs:62`).
    lost (haul 0, save untouched)", but payday runs the ledger with a haul of 0: penalty, a strike toward
    bankruptcy and a counted job. If "save untouched" was meant literally, it is a three-line change in
    `Company/CompanyService.Payday.cs`.
+   **Decided 2026-10-12 (0.24.7c): kept as coded.** Left untouched, a crew short of quota could wait inside
+   for the collapse and skip the penalty and the strike.
 2. **The truck can be overloaded during the honk.** Capacity is only checked when the lever is pulled. With
    the haul now live during the honk, the display will say OVERLOADED and the truck still leaves.
 3. **Bankruptcy clears the loot catalogue and trophy shelf.** Consistent with GDD 13, but worth a conscious yes.

@@ -4,6 +4,33 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.24.7c: pre-launch fixes from the readiness review (2026-10-12; compiled outside Unity, not played)
+
+The user asked what still stands between the game and Steam, then: "do whatever you think is best, save
+everything to 0.24.7c". No features were added. The open list is Docs/LAUNCH.md "0.24.7c".
+
+- **Feedback contact.** The private e-mail address was hard-coded in the launch notice and shown on every
+  launch of every build. It now comes from `Core.Launch`: friends' builds use LaunchConfig.FeedbackUrl as
+  before; the Steam builds (release, demo) use the new ReleaseFeedbackUrl, or the game's Steam discussions
+  when that is empty, and show the notice once per version instead of every launch.
+- **Voice clips.** Apple's licence allows macOS system voices for personal, non-commercial use only, and all 25
+  dispatch and voicemail clips were made with them. Nothing was deleted: `build-release` now refuses while
+  Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md exists (it lists the files and three ways out).
+- **Daily leaderboard.** A job that finished after midnight UTC posted to the next day's board. The day is now
+  the one the job's seed was rolled for (`ContractGenerator.DailyDay`, `CompanyService.ActiveDailyDay`).
+- **HUD.** The survival panel's health, breath, battery and load labels rebuild their text only when the
+  figure changes. The pocket strip's change key still builds a string each frame.
+- **Docs.** STORE_PAGE.md matches the game (you work for the company, 8 threats, over 100 loot items, 26
+  gear, 22 achievements; the name clash on Steam; an AI-content disclosure draft). STEAM_SETUP.md lists all 22
+  achievements and the three save slots. ASSET_CREDITS.md marks the voices as not cleared for sale.
+- **Decided:** a job lost to the total collapse keeps its penalty and strike (CLAUDE.md, 2026-10-12).
+- **Left alone on purpose:** the five `NetworkList` fields created at declaration, host rate limits for spray
+  and ping, and the other three rule decisions in QA_Resolution_Report.md section 5.
+
+Check: `dotnet build` of the four generated projects into a scratch folder, 0 errors (no Netcode code
+generation; `Tools/unity.sh compile` is still the real check and was not run). No Unity run, no tests, no
+player builds. Version 0.24.7c in BuildScript and Player Settings.
+
 ## 0.24.7b: horror UI redesign and alignment fixes (2026-10-12)
 
 The full interface now uses worn bone, rust, dark metal and the logo's Saira Stencil One lettering.

@@ -37,6 +37,9 @@ namespace Abandoned.Company
             return Mathf.RoundToInt(forCrew * DifficultyConfig.Current.QuotaAt(Difficulty) / 50f) * 50;
         }
 
+        /// <summary>0.19.12: the UTC day the job in hand is the daily job of (null when it isn't one).</summary>
+        public string ActiveDailyDay => ContractGenerator.DailyDay(contracts, Active, DateTime.UtcNow);
+
         /// <summary>The contract's modifier asset (null for none/unknown).</summary>
         public ContractModifier ModifierOf(Contract c)
         {

@@ -32,6 +32,9 @@ namespace Abandoned.UI
         private readonly StringBuilder key = new();
         private string shownKey;
         private float nextTrace, lastBreath;
+        // What the number labels last showed, so their text is only rebuilt when a figure changes.
+        private const int Unshown = int.MinValue;
+        private int shownHealth = Unshown, shownMax = Unshown, shownBreath = Unshown, shownBattery = Unshown, shownLoad = Unshown;
 
         // Original recovery-crew silhouette, filled from the feet up as health drains.
         private static readonly Vector2[] BodyContour =
@@ -66,15 +69,17 @@ namespace Abandoned.UI
             LayoutInventory(compact);
 
             PlayerHealthConfig config = player.HealthConfig;
-            Set(healthValue, Mathf.CeilToInt(player.Health).ToString("000"));
-            Set(healthMax, $"/ {Mathf.CeilToInt(config.MaxHealth):000}");
+            int health = Mathf.CeilToInt(player.Health), max = Mathf.CeilToInt(config.MaxHealth);
+            if (health != shownHealth) Set(healthValue, (shownHealth = health).ToString("000"));
+            if (max != shownMax) Set(healthMax, $"/ {shownMax = max:000}");
             bool critical = player.Health <= config.CriticalHp;
             bool warning = player.Health <= config.WarningHp;
             vitals.EnableInClassList("h-vitals--warning", warning);
             vitals.EnableInClassList("h-vitals--critical", critical);
             Set(healthState, player.Health <= config.NearDeathHp ? "FAILING" : critical ? "CRITICAL" : warning ? "WOUNDED" : "STABLE");
             float reserve = stamina.Max > 0f ? Mathf.Clamp01(stamina.Current / stamina.Max) : 1f;
-            Set(breathValue, $"{Mathf.CeilToInt(reserve * 100f):00}%");
+            int breathPercent = Mathf.CeilToInt(reserve * 100f);
+            if (breathPercent != shownBreath) Set(breathValue, $"{shownBreath = breathPercent:00}%");
             Set(breathState, stamina.IsExhausted ? "EXHAUSTED" : reserve >= .999f ? "STEADY" : stamina.Current > lastBreath + .01f ? "RECOVERING" : "STRAINED");
             breath.EnableInClassList("h-breath--exhausted", stamina.IsExhausted);
             UiKit.SetBar(breathBar, reserve, stamina.IsExhausted ? "bad" : null);
@@ -83,7 +88,9 @@ namespace Abandoned.UI
             MenuKit.Show(batteryRow, light);
             if (light)
             {
-                Set(batteryValue, equipment.Battery01 <= 0f ? "NO POWER" : $"{Mathf.CeilToInt(equipment.Battery01 * 100f):00}%");
+                // Rounded up, so 0 only ever means a flat battery.
+                int battery = equipment.Battery01 <= 0f ? 0 : Mathf.CeilToInt(equipment.Battery01 * 100f);
+                if (battery != shownBattery) Set(batteryValue, (shownBattery = battery) == 0 ? "NO POWER" : $"{battery:00}%");
                 batteryRow.EnableInClassList("h-power--low", equipment.Battery01 < .25f);
                 UiKit.SetBar(batteryBar, equipment.Battery01, equipment.Battery01 < .25f ? "bad" : null);
             }
@@ -106,6 +113,7 @@ namespace Abandoned.UI
             HudLayer.Remove(details);
             pockets.Clear();
             shownKey = null;
+            shownHealth = shownMax = shownBreath = shownBattery = shownLoad = Unshown;
             vitals = HudLayer.Add(new VisualElement(), "player-stamina", "h-vitals");
             Text(vitals, "SURVIVAL", "h-instrument-title");
             VisualElement row = Element(vitals, "h-vitals__row");
@@ -172,10 +180,15 @@ namespace Abandoned.UI
         private void Load()
         {
             float weight = carrier.CarriedWeight;
+            bool slowed = weight > .5f && carrier.Config.SpeedMultiplierFor(weight) < .85f;
+            // Everything the line shows, in one number: the weight to a tenth, how it is held, and the flags.
+            int state = ((Mathf.RoundToInt(weight * 10f) * 2 + (weight > .5f ? 1 : 0)) * 4 +
+                         (carrier.IsSharing ? 2 : carrier.IsDragging ? 1 : 0)) * 2 + (slowed ? 1 : 0);
+            if (state == shownLoad) return;
+            shownLoad = state;
             string text = carrier.IsSharing ? $"SHARED LOAD / {weight:0.#} KG"
                 : carrier.IsDragging ? $"DRAGGING / {weight:0.#} KG"
                 : weight > .5f ? $"LOAD / {weight:0.#} KG" : "";
-            bool slowed = weight > .5f && carrier.Config.SpeedMultiplierFor(weight) < .85f;
             Set(load, text + (slowed ? " / SLOWED" : ""));
             load.EnableInClassList("h-vitals__load--heavy", slowed);
             MenuKit.Show(load, text.Length > 0);

@@ -37,8 +37,11 @@ namespace Abandoned.Networking
         private static void OnDeparted(RunResults results)
         {
             CompanyService company = CompanyService.Current;
-            if (company == null || results == null || results.Wiped || company.Active.ModifierId != ContractGenerator.DailyId) return;
-            string day = ContractGenerator.DayId(DateTime.UtcNow);
+            if (company == null || results == null || results.Wiped) return;
+            // The day the job was rolled for, not today's: a job that runs past midnight UTC still carries
+            // yesterday's seed and belongs on yesterday's board.
+            string day = company.ActiveDailyDay;
+            if (day == null) return;
             string key = $"daily.best.{day}";
             if (results.Haul > Core.Prefs.GetInt(key, 0)) Core.Prefs.SetInt(key, results.Haul);
             Submit(day, results.Haul);

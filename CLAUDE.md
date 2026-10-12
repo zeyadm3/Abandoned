@@ -96,6 +96,12 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.7c (2026-10-12): pre-launch fixes.** From a readiness review before 0.25.0; no features. The feedback
+contact comes from `Core.Launch` (never a hard-coded address), `build-release` refuses while the system-voice
+clips are in the project, the daily leaderboard uses the job's own day, and the store and Steam docs match the
+game. Compiled outside Unity only; not played, no builds. What is still open before Steam: Docs/LAUNCH.md
+"0.24.7c". Next is still the user's full test pass, then 0.25.0 = fixes only.
+
 **0.24.7b (2026-10-12): full horror UI redesign.** The user's R.E.P.O./Lethal Company references now drive an
 original worn bone/rust/amber identity across menus, survival/compass/inventory, records and alerts.
 Prominent lettering shares the logo's Saira Stencil One; small records use IBM Plex Mono. This supersedes
@@ -143,6 +149,19 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-12 (user: "do whatever you think is best, save everything to 0.24.7c"; calls made under that brief,
+  the user can reverse any of them):
+  - **Voices are not cleared for sale.** The dispatch and voicemail clips were spoken by macOS system voices,
+    which Apple licenses for personal, non-commercial use only. They stay for friends' builds; `build-release`
+    refuses while Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md exists. Never make new shipped audio with `say`.
+    A replacement voice needs the user's choice (their own recording, or a download they approve).
+  - **No private contact in a Steam build.** Release and Demo builds (`Launch.IsPublicBuild`) ignore
+    LaunchConfig.FeedbackUrl and use ReleaseFeedbackUrl, else the game's Steam discussions (App ID from
+    DemoConfig.StoreAppId, which `set-app-id` writes). Never hard-code an address in code.
+  - **A job lost to the total collapse keeps its penalty and strike.** This settles the 2026-10-08 "save
+    untouched" wording: untouched, waiting inside for the collapse would be a way to skip a missed quota.
+  - The daily job's leaderboard day is the day its seed was rolled for (`ContractGenerator.DailyDay`), not
+    the date at departure.
 - 2026-10-10 (user: pasted "0 to 100" QA brief; **static QA pass over the runtime scripts**, fixes written and
   compiled outside Unity, nothing played): what was found, fixed and left for the user is in
   **QA_Resolution_Report.md** (repo root). Behaviour that changed and later work must keep:

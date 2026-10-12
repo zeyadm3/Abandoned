@@ -88,6 +88,9 @@ or paid assets were added; the existing PBR textures and vehicle/font credits co
 Voice lines (0.14.5 dispatch, 0.24.2 boss voicemails) are original text spoken by the installed macOS system voices
 (default voice; "Ralph") through Tools/Audio/*.py and processed into telephone/tape sound; no voice pack, paid service
 or recording of a real person.
+**Not cleared for sale (2026-10-12):** Apple licenses macOS system voices for personal, non-commercial use only,
+so these clips must be replaced or removed before the Steam release; `build-release` refuses until then
+(Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md). Rewrite this paragraph when they are.
 
 The ABANDONED desktop emblem (0.24.6b, 2026-10-10) is original project artwork generated
 with the built-in `image_gen` tool: fractured architectural A with light and dark concrete
