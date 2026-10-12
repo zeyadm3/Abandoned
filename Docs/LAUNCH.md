@@ -21,7 +21,8 @@ submit the build and the page for review.
 ## 0.24.7c: found in the readiness review (2026-10-12)
 - [x] **Voices** (done 2026-10-12). The 25 dispatch and voicemail clips were spoken by macOS system voices,
       which Apple licenses for personal, non-commercial use only. They were regenerated with the Kokoro-82M
-      model (Apache-2.0); Tools/Audio/README.md has the set-up and how to try other voices. Listen to them.
+      model (Apache-2.0) in several voices, mixed on purpose; Tools/Audio/README.md has the set-up and how to
+      try other voices.
 - [ ] **The play pass.** Nothing from 0.16.0 on has been played, the automated tests have not run since M10,
       and four-player host performance is unmeasured. Docs/AUTOBUILD_0.16-0.24.md ends with where to look first.
 - [ ] **Real Steam** (App ID 480, two machines): lobbies, invites, the relay, Steam voice, achievements, cloud.

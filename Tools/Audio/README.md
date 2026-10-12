@@ -3,10 +3,18 @@
 The spoken lines in the game (4 dispatch briefings, 21 boss voicemails) are made here and saved as WAVs
 in the Unity project. Nothing in this folder ships with the game.
 
-| Script | Makes | Voice |
+| Script | Makes | Voices |
 |---|---|---|
-| `generate_hq_dispatch.py` | `Game/Assets/_Project/Art/Audio/HQDispatch/dispatch_*.wav` (telephone line) | `af_heart` |
-| `generate_boss_voicemails.py` | `Game/Assets/_Project/Art/Audio/Voicemail/Resources/Voicemail/vm_*.wav` (answering-machine tape) | `am_michael` |
+| `generate_hq_dispatch.py` | `Game/Assets/_Project/Art/Audio/HQDispatch/dispatch_*.wav` (telephone line) | `af_heart`, `af_bella`, `bf_emma` |
+| `generate_boss_voicemails.py` | `Game/Assets/_Project/Art/Audio/Voicemail/Resources/Voicemail/vm_*.wav` (answering-machine tape) | `am_michael`, `am_fenrir`, `am_onyx`, `bm_george` |
+
+The voices are mixed on purpose (user, 2026-10-12: "keep it random, sometimes it's that person, sometimes
+it's another one"):
+- **Dispatch:** every briefing is recorded by all three operators (`dispatch_routine.wav`, `_2.wav`, `_3.wav`)
+  and the game plays one at random each time the phone is used. All of a briefing's clips are listed in the
+  sound bank; a fourth operator needs **Tools > Abandoned > HQ > Author Dispatch Audio** in Unity once.
+- **Voicemails:** the lines take turns through the four voices, so messages come from different people. One
+  message keeps one voice, so playing it again sounds the same.
 
 Both speak through `kokoro_voice.py`: the Kokoro-82M speech model (Apache-2.0 weights,
 https://huggingface.co/hexgrad/Kokoro-82M) run on this machine by the `kokoro-onnx` package (MIT).
@@ -35,8 +43,8 @@ python3 Tools/Audio/generate_hq_dispatch.py --voice bf_emma --out Tools/Audio/.t
 With `--out`, nothing in the game is touched. Names start with the accent and gender: `am_` American male
 (`am_michael`, `am_fenrir`, `am_onyx`, `am_adam`, `am_eric`...), `af_` American female (`af_heart`,
 `af_bella`, `af_sarah`...), `bm_` British male (`bm_george`, `bm_lewis`...), `bf_` British female (`bf_emma`...).
-An unknown name prints the whole list. To change the game's voice, edit `VOICE` at the top of the script and
-run it without `--out`.
+An unknown name prints the whole list. To change the game's voices, edit `VOICES` at the top of the script
+and run it without `--out`.
 
 ## Setting the tools up again (about 510 MB in `Tools/Audio/.tts/`, git-ignored, plus Python)
 

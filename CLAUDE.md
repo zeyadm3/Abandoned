@@ -155,8 +155,12 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
     macOS system voices, which Apple licenses for personal, non-commercial use only. The user chose a
     synthetic replacement and approved the download: Tools/Audio/*.py now speak through Kokoro-82M
     (Apache-2.0) in a private, git-ignored environment (Tools/Audio/.tts; set-up in Tools/Audio/README.md).
-    Same file names, so no Unity reference changed. Voices: `af_heart` dispatch, `am_michael` boss (the user
-    may pick others). Re-run the voicemail script after editing a line; AI speech is in the Steam disclosure.
+    Same file names, so no Unity reference changed. Re-run the voicemail script after editing a line; AI
+    speech is in the Steam disclosure.
+  - **The voices are mixed** (user: "keep it random, sometimes it's that person, sometimes it's another one").
+    Dispatch: each briefing is recorded by three operators and its sound-bank cue plays one at random.
+    Voicemails: the lines take turns through four voices; one message keeps one voice so a replay matches.
+    Do not go back to a single voice per role.
   - **No private contact in a Steam build.** Release and Demo builds (`Launch.IsPublicBuild`) ignore
     LaunchConfig.FeedbackUrl and use ReleaseFeedbackUrl, else the game's Steam discussions (App ID from
     DemoConfig.StoreAppId, which `set-app-id` writes). Never hard-code an address in code.

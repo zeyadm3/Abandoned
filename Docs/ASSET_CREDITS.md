@@ -88,8 +88,9 @@ or paid assets were added; the existing PBR textures and vehicle/font credits co
 
 Voice lines (0.14.5 dispatch, 0.24.2 boss voicemails; voice replaced 2026-10-12) are original text spoken by the
 Kokoro-82M speech model (row above; Apache-2.0 weights) on the developer's machine through Tools/Audio/*.py and
-processed into telephone/tape sound: voice `af_heart` for dispatch, `am_michael` for the boss. No paid service and no
-recording of a real person. The first clips used macOS system voices, which Apple licenses for personal,
+processed into telephone/tape sound. Voices `af_heart`, `af_bella` and `bf_emma` answer the dispatch telephone (one at
+random per call); the voicemails take turns through `am_michael`, `am_fenrir`, `am_onyx` and `bm_george`. No paid
+service and no recording of a real person. The first clips used macOS system voices, which Apple licenses for personal,
 non-commercial use only; they are gone from the project and `say` must not be used for shipped audio.
 
 The ABANDONED desktop emblem (0.24.6b, 2026-10-10) is original project artwork generated

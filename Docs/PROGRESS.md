@@ -16,8 +16,10 @@ everything to 0.24.7c". No features were added. The open list is Docs/LAUNCH.md 
 - **Voice clips.** Apple's licence allows macOS system voices for personal, non-commercial use only, and all 25
   dispatch and voicemail clips were made with them. The user chose a synthetic voice that may be sold and
   approved the download: the clips were regenerated under the same file names with Kokoro-82M (Apache-2.0;
-  `af_heart` for dispatch, `am_michael` for the boss), so every Unity reference holds. Tools, set-up and how
-  to try other voices: Tools/Audio/README.md. Not listened to from this side: the user's ears decide.
+  three operators for dispatch, four voices for the voicemails), so every Unity reference holds. After hearing
+  the trial clips the user asked to "keep it random": each dispatch briefing has one clip per operator in its
+  sound-bank cue (8 new WAVs with script-written metas, played at random), and the voicemail lines take turns
+  through the four voices. Tools, set-up and how to try other voices: Tools/Audio/README.md.
 - **Daily leaderboard.** A job that finished after midnight UTC posted to the next day's board. The day is now
   the one the job's seed was rolled for (`ContractGenerator.DailyDay`, `CompanyService.ActiveDailyDay`).
 - **HUD.** The survival panel's health, breath, battery and load labels rebuild their text only when the

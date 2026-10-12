@@ -5,6 +5,9 @@ Reads every voicemail line from Game/Assets/_Project/Data/Company/CompanyMessage
 through an answering-machine tape (narrow band, wow and flutter, hiss). Each file is named by the first 8 hex
 digits of the MD5 of the line's text (UTF-8), which is how AnsweringMachine finds it at run time.
 
+The lines take turns through VOICES, so the messages are left by different people (user, 2026-10-12: "keep it
+random"); one message always has the same voice, so playing it again sounds the same.
+
     python3 Tools/Audio/generate_boss_voicemails.py                    # every line, into the game
     python3 Tools/Audio/generate_boss_voicemails.py --voice bm_george --out /tmp/try --limit 3   # a trial
 """
@@ -23,7 +26,7 @@ import kokoro_voice
 REPO = Path(__file__).resolve().parents[2]
 SOURCE = REPO / "Game/Assets/_Project/Data/Company/CompanyMessages.asset"
 DESTINATION = REPO / "Game/Assets/_Project/Art/Audio/Voicemail/Resources/Voicemail"
-VOICE, SPEED, RATE = "am_michael", 0.95, 22050
+VOICES, SPEED, RATE = ["am_michael", "am_fenrir", "am_onyx", "bm_george"], 0.95, 22050
 KINDS = ["Welcome", "QuotaMet", "BigHaul", "QuotaMissed", "LastWarning", "Bankrupt", "LevelUp"]
 
 
@@ -79,27 +82,33 @@ def tape(raw_file, seed):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--voice", default=VOICE, help="Kokoro voice name (default %(default)s)")
+    parser.add_argument("--voice", help="try one Kokoro voice for every line (use with --out)")
     parser.add_argument("--out", type=Path, default=DESTINATION, help="folder to write to (default: the game's)")
     parser.add_argument("--limit", type=int, default=0, help="only the first N lines (a trial)")
     options = parser.parse_args()
+    if options.out == DESTINATION and (options.voice or options.limit > 0):
+        parser.error("--voice and --limit are for trials: give --out a folder outside the game")
     options.out.mkdir(parents=True, exist_ok=True)
     readme = ["# The boss's voicemails (0.24.2; voice replaced in 0.24.7c)", "",
-              "Spoken on this machine by the Kokoro-82M speech model (Apache-2.0 weights, voice '%s') through" % options.voice,
+              "Spoken on this machine by the Kokoro-82M speech model (Apache-2.0 weights) through",
               "Tools/Audio/generate_boss_voicemails.py and run through an answering-machine tape. No paid service and",
               "no recording of a real person. The first clips used the macOS voice 'Ralph', which Apple does not",
-              "license for commercial use; never go back to `say`.", ""]
+              "license for commercial use; never go back to `say`.", "",
+              "The messages are left by different people: the lines take turns through " + ", ".join(VOICES) + ".", ""]
     texts = lines()[:options.limit] if options.limit > 0 else lines()
     names = ["vm_" + hashlib.md5(text.encode("utf-8")).hexdigest()[:8] for text in texts]
+    # In turn, so the lines of one kind (which the game chooses between) never share a voice with their neighbour.
+    voices = [options.voice or VOICES[i % len(VOICES)] for i in range(len(texts))]
     with tempfile.TemporaryDirectory(prefix="abandoned_voicemail_") as directory:
         raws = [Path(directory) / (name + ".wav") for name in names]
-        kokoro_voice.speak(list(zip(raws, texts)), options.voice, SPEED, RATE)
+        for voice in sorted(set(voices)):
+            kokoro_voice.speak([(raws[i], texts[i]) for i in range(len(texts)) if voices[i] == voice], voice, SPEED, RATE)
         for i, (name, text) in enumerate(zip(names, texts)):
             rate, frames = tape(raws[i], i)
             with wave.open(str(options.out / (name + ".wav")), "wb") as w:
                 w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate); w.writeframes(frames)
-            readme.extend(["## " + name, "", text, ""])
-            print("Authored", name, text[:50])
+            readme.extend(["## %s (%s)" % (name, voices[i]), "", text, ""])
+            print("Authored", name, voices[i], text[:50])
     if options.out == DESTINATION and options.limit <= 0:
         (DESTINATION.parent.parent / "README.md").write_text("\n".join(readme), encoding="utf-8")
 

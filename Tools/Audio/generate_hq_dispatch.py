@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Author the HQ dispatch WAVs: Kokoro speech (kokoro_voice.py) put through a copper telephone line.
 
-    python3 Tools/Audio/generate_hq_dispatch.py                      # the game's four clips
-    python3 Tools/Audio/generate_hq_dispatch.py --voice bf_emma --out /tmp/try   # hear another voice first
+Every briefing is recorded once per operator in VOICES; the game picks one of them each time the phone is
+used, so the same job can be read out by a different person (user, 2026-10-12: "keep it random").
+
+    python3 Tools/Audio/generate_hq_dispatch.py                      # the game's clips, every operator
+    python3 Tools/Audio/generate_hq_dispatch.py --voice bm_lewis --out /tmp/try   # hear another voice first
 """
 
 from pathlib import Path
 import argparse
+import hashlib
 import math
 import struct
 import tempfile
@@ -18,7 +22,9 @@ import kokoro_voice
 REPO = Path(__file__).resolve().parents[2]
 DESTINATION = REPO / "Game/Assets/_Project/Art/Audio/HQDispatch"
 RATE = 24000
-VOICE, SPEED = "af_heart", 0.92
+# The operators. The first keeps the original file names (dispatch_routine.wav); the others add _2, _3...
+# Adding one here also needs its clips in the sound bank: Tools > Abandoned > HQ > Author Dispatch Audio.
+VOICES, SPEED = ["af_heart", "af_bella", "bf_emma"], 0.92
 LINES = {
     "dispatch_routine": (
         "Abandoned Salvaging dispatch. Review the job sheet before departure. "
@@ -64,32 +70,56 @@ def telephone_frames(raw_file):
     return rate, struct.pack("<%dh" % len(output), *output)
 
 
+def ensure_meta(clip, base):
+    """A new operator's clip gets the first operator's import settings and an id of its own, fixed by its name,
+    so the sound bank's reference to it survives on any machine. Unity never has to invent one."""
+    meta = clip.with_name(clip.name + ".meta")
+    base_meta = base.with_name(base.name + ".meta")
+    if meta.exists() or not base_meta.exists():
+        return
+    lines = base_meta.read_text(encoding="utf-8").splitlines()
+    guid = hashlib.md5(("abandoned/" + clip.name).encode("utf-8")).hexdigest()
+    meta.write_text("\n".join("guid: " + guid if line.startswith("guid: ") else line for line in lines) + "\n",
+                    encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--voice", default=VOICE, help="Kokoro voice name (default %(default)s)")
+    parser.add_argument("--voice", help="try one Kokoro voice (use with --out)")
     parser.add_argument("--out", type=Path, default=DESTINATION, help="folder to write to (default: the game's)")
     options = parser.parse_args()
+    trial = options.out != DESTINATION or options.voice is not None
+    if trial and options.out == DESTINATION:
+        parser.error("--voice is for trying a voice: give --out a folder outside the game")
+    voices = [options.voice] if options.voice else VOICES
     options.out.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="abandoned_dispatch_author_") as directory:
-        raw_files = {name: Path(directory) / (name + ".wav") for name in LINES}
-        kokoro_voice.speak([(raw_files[name], transcript) for name, transcript in LINES.items()],
-                           options.voice, SPEED, RATE)
-        for name in LINES:
-            rate, frames = telephone_frames(raw_files[name])
-            with wave.open(str(options.out / (name + ".wav")), "wb") as authored:
-                authored.setnchannels(1)
-                authored.setsampwidth(2)
-                authored.setframerate(rate)
-                authored.writeframes(frames)
-            print("Authored " + name + ".wav")
-    if options.out != DESTINATION:
+        for index, voice in enumerate(voices):
+            suffix = "" if index == 0 else "_%d" % (index + 1)
+            raw_files = {name: Path(directory) / (name + suffix + ".wav") for name in LINES}
+            kokoro_voice.speak([(raw_files[name], transcript) for name, transcript in LINES.items()],
+                               voice, SPEED, RATE)
+            for name in LINES:
+                rate, frames = telephone_frames(raw_files[name])
+                clip = options.out / (name + suffix + ".wav")
+                with wave.open(str(clip), "wb") as authored:
+                    authored.setnchannels(1)
+                    authored.setsampwidth(2)
+                    authored.setframerate(rate)
+                    authored.writeframes(frames)
+                if not trial:
+                    ensure_meta(clip, DESTINATION / (name + ".wav"))
+                print("Authored " + clip.name + " (" + voice + ")")
+    if trial:
         return  # a trial of another voice: the game's notes stay as they are
     documentation = [
         "# HQ dispatch recordings (0.14.5; voice replaced in 0.24.7c)", "",
         "Original Abandoned Salvaging dialogue for the dispatch telephone, spoken by the Kokoro-82M speech model",
-        "(Apache-2.0 weights, voice '%s') on this machine and processed into a copper-line telephone sound by" % options.voice,
+        "(Apache-2.0 weights) on this machine and processed into a copper-line telephone sound by",
         "Tools/Audio/generate_hq_dispatch.py. No paid service and no recording of a real person. The first clips",
         "used a macOS system voice, which Apple does not license for commercial use; never go back to `say`.", "",
+        "Each briefing exists once per operator and the game plays one at random: " +
+        ", ".join("%s%s" % (voice, " (name.wav)" if i == 0 else " (name_%d.wav)" % (i + 1)) for i, voice in enumerate(VOICES)) + ".", "",
         "Runtime terms and crew-scaled quota remain in the selected job's visible transcript; these fixed clips",
         "speak safety warnings only. The telephone shows their exact spoken words even with sound muted.", "",
     ]
