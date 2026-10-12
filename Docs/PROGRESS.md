@@ -26,7 +26,7 @@ everything to 0.24.7c". No features were added. The open list is Docs/LAUNCH.md 
   figure changes. The pocket strip's change key still builds a string each frame.
 - **Docs.** STORE_PAGE.md matches the game (you work for the company, 8 threats, over 100 loot items, 26
   gear, 22 achievements; the name clash on Steam; an AI-content disclosure draft). STEAM_SETUP.md lists all 22
-  achievements and the three save slots. ASSET_CREDITS.md credits the speech model (the in-game credits pick it up at the next content rebuild).
+  achievements and the three save slots. ASSET_CREDITS.md credits the speech model, and the in-game credits text lists it.
 - **Decided:** a job lost to the total collapse keeps its penalty and strike (CLAUDE.md, 2026-10-12).
 - **Left alone on purpose:** the five `NetworkList` fields created at declaration, host rate limits for spray
   and ping, and the other three rule decisions in QA_Resolution_Report.md section 5.
