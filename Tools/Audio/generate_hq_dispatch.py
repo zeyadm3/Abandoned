@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
-"""Author original HQ dispatch WAVs using the installed macOS system voice; no downloaded content."""
+"""Author the HQ dispatch WAVs: Kokoro speech (kokoro_voice.py) put through a copper telephone line.
+
+    python3 Tools/Audio/generate_hq_dispatch.py                      # the game's four clips
+    python3 Tools/Audio/generate_hq_dispatch.py --voice bf_emma --out /tmp/try   # hear another voice first
+"""
 
 from pathlib import Path
+import argparse
 import math
 import struct
-import subprocess
 import tempfile
 import wave
+
+import kokoro_voice
 
 
 REPO = Path(__file__).resolve().parents[2]
 DESTINATION = REPO / "Game/Assets/_Project/Art/Audio/HQDispatch"
 RATE = 24000
+VOICE, SPEED = "af_heart", 0.92
 LINES = {
     "dispatch_routine": (
         "Abandoned Salvaging dispatch. Review the job sheet before departure. "
@@ -58,28 +65,31 @@ def telephone_frames(raw_file):
 
 
 def main():
-    DESTINATION.mkdir(parents=True, exist_ok=True)
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--voice", default=VOICE, help="Kokoro voice name (default %(default)s)")
+    parser.add_argument("--out", type=Path, default=DESTINATION, help="folder to write to (default: the game's)")
+    options = parser.parse_args()
+    options.out.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="abandoned_dispatch_author_") as directory:
-        for name, transcript in LINES.items():
-            raw_file = Path(directory) / (name + ".wav")
-            # No voice download or setup: say uses the machine's already-installed default speech voice.
-            subprocess.run([
-                "/usr/bin/say", "-r", "158", "--file-format=WAVE", "--data-format=LEI16@24000",
-                "--channels=1", "-o", str(raw_file), transcript,
-            ], check=True)
-            rate, frames = telephone_frames(raw_file)
-            with wave.open(str(DESTINATION / (name + ".wav")), "wb") as authored:
+        raw_files = {name: Path(directory) / (name + ".wav") for name in LINES}
+        kokoro_voice.speak([(raw_files[name], transcript) for name, transcript in LINES.items()],
+                           options.voice, SPEED, RATE)
+        for name in LINES:
+            rate, frames = telephone_frames(raw_files[name])
+            with wave.open(str(options.out / (name + ".wav")), "wb") as authored:
                 authored.setnchannels(1)
                 authored.setsampwidth(2)
                 authored.setframerate(rate)
                 authored.writeframes(frames)
             print("Authored " + name + ".wav")
+    if options.out != DESTINATION:
+        return  # a trial of another voice: the game's notes stay as they are
     documentation = [
-        "# Original HQ dispatch recordings (0.14.5)", "",
-        "Original Abandoned Salvaging dialogue authored for the dispatch telephone. Speech was rendered locally",
-        "with the installed macOS system voice and processed into a copper-line telephone sound using the",
-        "standard-library authoring script at Tools/Audio/generate_hq_dispatch.py. No audio pack, sample,",
-        "voice download, paid service, or recording of a real person was used.", "",
+        "# HQ dispatch recordings (0.14.5; voice replaced in 0.24.7c)", "",
+        "Original Abandoned Salvaging dialogue for the dispatch telephone, spoken by the Kokoro-82M speech model",
+        "(Apache-2.0 weights, voice '%s') on this machine and processed into a copper-line telephone sound by" % options.voice,
+        "Tools/Audio/generate_hq_dispatch.py. No paid service and no recording of a real person. The first clips",
+        "used a macOS system voice, which Apple does not license for commercial use; never go back to `say`.", "",
         "Runtime terms and crew-scaled quota remain in the selected job's visible transcript; these fixed clips",
         "speak safety warnings only. The telephone shows their exact spoken words even with sound muted.", "",
     ]

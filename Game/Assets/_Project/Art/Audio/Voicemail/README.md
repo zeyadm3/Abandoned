@@ -1,7 +1,9 @@
-# The boss's voicemails (0.24.2)
+# The boss's voicemails (0.24.2; voice replaced in 0.24.7c)
 
-Spoken locally with the installed macOS voice 'Ralph' by Tools/Audio/generate_boss_voicemails.py and run
-through an answering-machine tape. No download, paid service or recording of a real person.
+Spoken on this machine by the Kokoro-82M speech model (Apache-2.0 weights, voice 'am_michael') through
+Tools/Audio/generate_boss_voicemails.py and run through an answering-machine tape. No paid service and
+no recording of a real person. The first clips used the macOS voice 'Ralph', which Apple does not
+license for commercial use; never go back to `say`.
 
 ## vm_d53809e8
 

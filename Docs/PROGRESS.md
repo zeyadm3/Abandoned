@@ -14,22 +14,25 @@ everything to 0.24.7c". No features were added. The open list is Docs/LAUNCH.md 
   before; the Steam builds (release, demo) use the new ReleaseFeedbackUrl, or the game's Steam discussions
   when that is empty, and show the notice once per version instead of every launch.
 - **Voice clips.** Apple's licence allows macOS system voices for personal, non-commercial use only, and all 25
-  dispatch and voicemail clips were made with them. Nothing was deleted: `build-release` now refuses while
-  Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md exists (it lists the files and three ways out).
+  dispatch and voicemail clips were made with them. The user chose a synthetic voice that may be sold and
+  approved the download: the clips were regenerated under the same file names with Kokoro-82M (Apache-2.0;
+  `af_heart` for dispatch, `am_michael` for the boss), so every Unity reference holds. Tools, set-up and how
+  to try other voices: Tools/Audio/README.md. Not listened to from this side: the user's ears decide.
 - **Daily leaderboard.** A job that finished after midnight UTC posted to the next day's board. The day is now
   the one the job's seed was rolled for (`ContractGenerator.DailyDay`, `CompanyService.ActiveDailyDay`).
 - **HUD.** The survival panel's health, breath, battery and load labels rebuild their text only when the
   figure changes. The pocket strip's change key still builds a string each frame.
 - **Docs.** STORE_PAGE.md matches the game (you work for the company, 8 threats, over 100 loot items, 26
   gear, 22 achievements; the name clash on Steam; an AI-content disclosure draft). STEAM_SETUP.md lists all 22
-  achievements and the three save slots. ASSET_CREDITS.md marks the voices as not cleared for sale.
+  achievements and the three save slots. ASSET_CREDITS.md credits the speech model (the in-game credits pick it up at the next content rebuild).
 - **Decided:** a job lost to the total collapse keeps its penalty and strike (CLAUDE.md, 2026-10-12).
 - **Left alone on purpose:** the five `NetworkList` fields created at declaration, host rate limits for spray
   and ping, and the other three rule decisions in QA_Resolution_Report.md section 5.
 
-Check: `dotnet build` of the four generated projects into a scratch folder, 0 errors (no Netcode code
-generation; `Tools/unity.sh compile` is still the real check and was not run). No Unity run, no tests, no
-player builds. Version 0.24.7c in BuildScript and Player Settings.
+Check: `dotnet build` of the four generated projects into a scratch folder, 0 errors, and the user then ran
+`Tools/unity.sh compile` on the first 0.24.7c commit: OK. The voice follow-up changed WAVs, tool scripts and
+docs only (plus removing a build-script guard added in the same version). No tests, no play, no player
+builds. Version 0.24.7c in BuildScript and Player Settings.
 
 ## 0.24.7b: horror UI redesign and alignment fixes (2026-10-12)
 

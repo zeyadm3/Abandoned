@@ -97,9 +97,9 @@ How we work: Docs/PLAYBOOK.md.
 ## Current milestone
 
 **0.24.7c (2026-10-12): pre-launch fixes.** From a readiness review before 0.25.0; no features. The feedback
-contact comes from `Core.Launch` (never a hard-coded address), `build-release` refuses while the system-voice
-clips are in the project, the daily leaderboard uses the job's own day, and the store and Steam docs match the
-game. Compiled outside Unity only; not played, no builds. What is still open before Steam: Docs/LAUNCH.md
+contact comes from `Core.Launch` (never a hard-coded address), the 25 voice clips were regenerated with a voice
+that may be sold (Kokoro-82M), the daily leaderboard uses the job's own day, and the store and Steam docs match
+the game. `Tools/unity.sh compile` passed (the user ran it); not played, no builds. What is still open before Steam: Docs/LAUNCH.md
 "0.24.7c". Next is still the user's full test pass, then 0.25.0 = fixes only.
 
 **0.24.7b (2026-10-12): full horror UI redesign.** The user's R.E.P.O./Lethal Company references now drive an
@@ -151,10 +151,12 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
 ## Decisions log
 - 2026-10-12 (user: "do whatever you think is best, save everything to 0.24.7c"; calls made under that brief,
   the user can reverse any of them):
-  - **Voices are not cleared for sale.** The dispatch and voicemail clips were spoken by macOS system voices,
-    which Apple licenses for personal, non-commercial use only. They stay for friends' builds; `build-release`
-    refuses while Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md exists. Never make new shipped audio with `say`.
-    A replacement voice needs the user's choice (their own recording, or a download they approve).
+  - **Voices come from Kokoro-82M, never from `say`.** The first dispatch and voicemail clips were spoken by
+    macOS system voices, which Apple licenses for personal, non-commercial use only. The user chose a
+    synthetic replacement and approved the download: Tools/Audio/*.py now speak through Kokoro-82M
+    (Apache-2.0) in a private, git-ignored environment (Tools/Audio/.tts; set-up in Tools/Audio/README.md).
+    Same file names, so no Unity reference changed. Voices: `af_heart` dispatch, `am_michael` boss (the user
+    may pick others). Re-run the voicemail script after editing a line; AI speech is in the Steam disclosure.
   - **No private contact in a Steam build.** Release and Demo builds (`Launch.IsPublicBuild`) ignore
     LaunchConfig.FeedbackUrl and use ReleaseFeedbackUrl, else the game's Steam discussions (App ID from
     DemoConfig.StoreAppId, which `set-app-id` writes). Never hard-code an address in code.

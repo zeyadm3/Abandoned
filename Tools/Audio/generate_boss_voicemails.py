@@ -1,24 +1,29 @@
 #!/usr/bin/env python3
-"""0.24.2: author the boss's voicemails with an installed macOS system voice; no downloaded content.
+"""0.24.2: author the boss's voicemails: Kokoro speech (kokoro_voice.py) on an answering-machine tape.
 
-Reads every voicemail line from Game/Assets/_Project/Data/Company/CompanyMessages.asset, speaks it with `say`,
-and runs it through an answering-machine tape (narrow band, wow and flutter, hiss). Each file is named by the
-first 8 hex digits of the MD5 of the line's text (UTF-8), which is how AnsweringMachine finds it at run time.
+Reads every voicemail line from Game/Assets/_Project/Data/Company/CompanyMessages.asset, speaks it, and runs it
+through an answering-machine tape (narrow band, wow and flutter, hiss). Each file is named by the first 8 hex
+digits of the MD5 of the line's text (UTF-8), which is how AnsweringMachine finds it at run time.
+
+    python3 Tools/Audio/generate_boss_voicemails.py                    # every line, into the game
+    python3 Tools/Audio/generate_boss_voicemails.py --voice bm_george --out /tmp/try --limit 3   # a trial
 """
 
 from pathlib import Path
 import hashlib
 import math
 import random
+import argparse
 import struct
-import subprocess
 import tempfile
 import wave
+
+import kokoro_voice
 
 REPO = Path(__file__).resolve().parents[2]
 SOURCE = REPO / "Game/Assets/_Project/Data/Company/CompanyMessages.asset"
 DESTINATION = REPO / "Game/Assets/_Project/Art/Audio/Voicemail/Resources/Voicemail"
-VOICE, RATE_WPM, RATE = "Ralph", "168", 22050
+VOICE, SPEED, RATE = "am_michael", 0.95, 22050
 KINDS = ["Welcome", "QuotaMet", "BigHaul", "QuotaMissed", "LastWarning", "Bankrupt", "LevelUp"]
 
 
@@ -73,22 +78,30 @@ def tape(raw_file, seed):
 
 
 def main():
-    DESTINATION.mkdir(parents=True, exist_ok=True)
-    readme = ["# The boss's voicemails (0.24.2)", "",
-              "Spoken locally with the installed macOS voice '%s' by Tools/Audio/generate_boss_voicemails.py and run" % VOICE,
-              "through an answering-machine tape. No download, paid service or recording of a real person.", ""]
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--voice", default=VOICE, help="Kokoro voice name (default %(default)s)")
+    parser.add_argument("--out", type=Path, default=DESTINATION, help="folder to write to (default: the game's)")
+    parser.add_argument("--limit", type=int, default=0, help="only the first N lines (a trial)")
+    options = parser.parse_args()
+    options.out.mkdir(parents=True, exist_ok=True)
+    readme = ["# The boss's voicemails (0.24.2; voice replaced in 0.24.7c)", "",
+              "Spoken on this machine by the Kokoro-82M speech model (Apache-2.0 weights, voice '%s') through" % options.voice,
+              "Tools/Audio/generate_boss_voicemails.py and run through an answering-machine tape. No paid service and",
+              "no recording of a real person. The first clips used the macOS voice 'Ralph', which Apple does not",
+              "license for commercial use; never go back to `say`.", ""]
+    texts = lines()[:options.limit] if options.limit > 0 else lines()
+    names = ["vm_" + hashlib.md5(text.encode("utf-8")).hexdigest()[:8] for text in texts]
     with tempfile.TemporaryDirectory(prefix="abandoned_voicemail_") as directory:
-        for i, text in enumerate(lines()):
-            name = "vm_" + hashlib.md5(text.encode("utf-8")).hexdigest()[:8]
-            raw = Path(directory) / (name + ".wav")
-            subprocess.run(["/usr/bin/say", "-v", VOICE, "-r", RATE_WPM, "--file-format=WAVE", "--data-format=LEI16@%d" % RATE,
-                            "--channels=1", "-o", str(raw), text], check=True)
-            rate, frames = tape(raw, i)
-            with wave.open(str(DESTINATION / (name + ".wav")), "wb") as w:
+        raws = [Path(directory) / (name + ".wav") for name in names]
+        kokoro_voice.speak(list(zip(raws, texts)), options.voice, SPEED, RATE)
+        for i, (name, text) in enumerate(zip(names, texts)):
+            rate, frames = tape(raws[i], i)
+            with wave.open(str(options.out / (name + ".wav")), "wb") as w:
                 w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate); w.writeframes(frames)
             readme.extend(["## " + name, "", text, ""])
             print("Authored", name, text[:50])
-    (DESTINATION.parent.parent / "README.md").write_text("\n".join(readme), encoding="utf-8")
+    if options.out == DESTINATION and options.limit <= 0:
+        (DESTINATION.parent.parent / "README.md").write_text("\n".join(readme), encoding="utf-8")
 
 
 if __name__ == "__main__":

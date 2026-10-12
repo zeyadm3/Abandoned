@@ -1,9 +1,9 @@
-# Original HQ dispatch recordings (0.14.5)
+# HQ dispatch recordings (0.14.5; voice replaced in 0.24.7c)
 
-Original Abandoned Salvaging dialogue authored for the dispatch telephone. Speech was rendered locally
-with the installed macOS system voice and processed into a copper-line telephone sound using the
-standard-library authoring script at Tools/Audio/generate_hq_dispatch.py. No audio pack, sample,
-voice download, paid service, or recording of a real person was used.
+Original Abandoned Salvaging dialogue for the dispatch telephone, spoken by the Kokoro-82M speech model
+(Apache-2.0 weights, voice 'af_heart') on this machine and processed into a copper-line telephone sound by
+Tools/Audio/generate_hq_dispatch.py. No paid service and no recording of a real person. The first clips
+used a macOS system voice, which Apple does not license for commercial use; never go back to `say`.
 
 Runtime terms and crew-scaled quota remain in the selected job's visible transcript; these fixed clips
 speak safety warnings only. The telephone shows their exact spoken words even with sound muted.

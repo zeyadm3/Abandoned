@@ -74,14 +74,14 @@ Post-apocalyptic. (Not "Extraction Shooter": there's no shooting.)
 Draft for the "pre-generated" box, to trim against the form's current wording:
 
 > Some artwork was made with an AI image generator and then chosen and placed by the developer: the
-> application icon, and the fictional store logos and sale posters inside the mall. The game was programmed
-> with the help of an AI coding assistant. All other models, textures, sounds and music are original work
-> made by the developer's own tools, or free CC0/OFL assets listed in the credits.
+> application icon, and the fictional store logos and sale posters inside the mall. The boss's voicemails
+> and the dispatch telephone are spoken by an AI speech model (Kokoro-82M) reading lines the developer
+> wrote. The game was programmed with the help of an AI coding assistant. All other models, textures, sounds
+> and music are original work made by the developer's own tools, or free CC0/OFL assets listed in the credits.
 
 What it covers in the project: the 0.24.6b emblem (Docs/APP_LOGO_0.24.6b.md) and the ten 0.15.8 logo and
-campaign images (Docs/MALL_BRANDING_0.15.8.md). The spoken voice clips are synthetic speech too; they have to
-be replaced before release anyway (Tools/Audio/SYSTEM_VOICES_NOT_FOR_SALE.md), so describe whatever replaces
-them. Nothing is generated while the game runs, so the "live-generated" box is No.
+campaign images (Docs/MALL_BRANDING_0.15.8.md), and the 25 voice clips (Tools/Audio/README.md). Nothing is
+generated while the game runs, so the "live-generated" box is No.
 
 ## Screenshots and trailer
 Docs/StoreArt holds drafts rendered from the editor with staged figures, and a silent animatic. Steam asks
