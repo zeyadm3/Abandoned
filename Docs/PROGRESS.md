@@ -36,6 +36,15 @@ Check: `dotnet build` of the four generated projects into a scratch folder, 0 er
 docs only (plus removing a build-script guard added in the same version). No tests, no play, no player
 builds. Version 0.24.7c in BuildScript and Player Settings.
 
+**Builds (user: "commit all and make the win and mac builds for 0.24.7c").** `Tools/unity.sh build` passed
+from clean source commit **f753b3f9**: Mac universal (Intel + Apple Silicon) and Windows x64 shareable
+players, version **0.24.7c**, both stamped **2026-10-12T15:45:26Z**. Unity imported the eight new dispatch
+clips under the ids the script wrote and left the working tree clean. The Mac signature (ad hoc) verifies and
+both ZIPs pass their CRC check. Not launched or played from this side.
+
+- `~/Documents/Abandoned-builds/dev/Abandoned-0.24.7c-f753b3f9-Mac.zip`
+- `~/Documents/Abandoned-builds/dev/Abandoned-0.24.7c-f753b3f9-Windows.zip`
+
 ## 0.24.7b: horror UI redesign and alignment fixes (2026-10-12)
 
 The full interface now uses worn bone, rust, dark metal and the logo's Saira Stencil One lettering.

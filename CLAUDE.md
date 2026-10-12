@@ -99,7 +99,8 @@ How we work: Docs/PLAYBOOK.md.
 **0.24.7c (2026-10-12): pre-launch fixes.** From a readiness review before 0.25.0; no features. The feedback
 contact comes from `Core.Launch` (never a hard-coded address), the 25 voice clips were regenerated with a voice
 that may be sold (Kokoro-82M), the daily leaderboard uses the job's own day, and the store and Steam docs match
-the game. `Tools/unity.sh compile` passed (the user ran it); not played, no builds. What is still open before Steam: Docs/LAUNCH.md
+the game. `Tools/unity.sh compile` passed (the user ran it). Mac + Windows shareable builds were made from clean
+commit f753b3f9 at the user's request (zips in ~/Documents/Abandoned-builds/dev/); not played. What is still open before Steam: Docs/LAUNCH.md
 "0.24.7c". Next is still the user's full test pass, then 0.25.0 = fixes only.
 
 **0.24.7b (2026-10-12): full horror UI redesign.** The user's R.E.P.O./Lethal Company references now drive an
