@@ -252,8 +252,8 @@ namespace Abandoned.Extraction
             if (wiped)
             {
                 var stats = new List<string>(results.Stats ?? Array.Empty<string>());
-                stats.Insert(0, jobLost ? "THE MALL CAME DOWN WITH THE CREW INSIDE. Job lost: nothing from this job counts."
-                    : $"NOBODY MADE IT. The truck was towed home; {Mathf.RoundToInt((1f - kept) * 100f)}% of the load went missing on the way. No bonus.");
+                stats.Insert(0, jobLost ? Core.Loc.Mark("THE MALL CAME DOWN WITH THE CREW INSIDE. Job lost: nothing from this job counts.")
+                    : Core.Loc.Wire("NOBODY MADE IT. The truck was towed home; {0}% of the load went missing on the way. No bonus.", Mathf.RoundToInt((1f - kept) * 100f)));
                 results.Stats = stats.ToArray();
             }
             RunNetState s = State;

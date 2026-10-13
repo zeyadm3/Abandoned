@@ -1,0 +1,1035 @@
+# During a job: the run HUD, the truck, dispatch's radio lines, and everything a worker can use in the building
+# (Extraction/*.cs). Prompts follow "[E]" and should stay one short line.
+
+en: RECOVERY TARGET
+zh-CN: 回收目标
+ja: 回収目標
+ko: 회수 목표
+es: OBJETIVO DE RECUPERACIÓN
+pt-BR: META DE RECUPERAÇÃO
+de: BERGUNGSZIEL
+fr: OBJECTIF DE RÉCUPÉRATION
+ru: ПЛАН ВЫВОЗА
+pl: CEL ODZYSKU
+
+en: TARGET RECOVERED
+zh-CN: 目标已达成
+ja: 目標達成
+ko: 목표 달성
+es: OBJETIVO CUMPLIDO
+pt-BR: META ATINGIDA
+de: ZIEL ERREICHT
+fr: OBJECTIF ATTEINT
+ru: ПЛАН ВЫПОЛНЕН
+pl: CEL OSIĄGNIĘTY
+
+en: CARGO / {0:0.0} : {1:0} m³ / OVERLOADED
+zh-CN: 货物 / {0:0.0} : {1:0} m³ / 超载
+ja: 積荷 / {0:0.0} : {1:0} m³ / 過積載
+ko: 화물 / {0:0.0} : {1:0} m³ / 과적
+es: CARGA / {0:0.0} : {1:0} m³ / SOBRECARGADO
+pt-BR: CARGA / {0:0.0} : {1:0} m³ / SOBRECARREGADO
+de: FRACHT / {0:0.0} : {1:0} m³ / ÜBERLADEN
+fr: CARGAISON / {0:0.0} : {1:0} m³ / SURCHARGÉ
+ru: ГРУЗ / {0:0.0} : {1:0} м³ / ПЕРЕГРУЗ
+pl: ŁADUNEK / {0:0.0} : {1:0} m³ / PRZEŁADOWANA
+
+en: CARGO / {0:0.0} : {1:0} m³
+zh-CN: 货物 / {0:0.0} : {1:0} m³
+ja: 積荷 / {0:0.0} : {1:0} m³
+ko: 화물 / {0:0.0} : {1:0} m³
+es: CARGA / {0:0.0} : {1:0} m³
+pt-BR: CARGA / {0:0.0} : {1:0} m³
+de: FRACHT / {0:0.0} : {1:0} m³
+fr: CARGAISON / {0:0.0} : {1:0} m³
+ru: ГРУЗ / {0:0.0} : {1:0} м³
+pl: ŁADUNEK / {0:0.0} : {1:0} m³
+
+en: RECOVERY WINDOW
+zh-CN: 回收时限
+ja: 回収期限
+ko: 회수 시한
+es: PLAZO DE RECUPERACIÓN
+pt-BR: JANELA DE RECUPERAÇÃO
+de: BERGUNGSFENSTER
+fr: FENÊTRE DE RÉCUPÉRATION
+ru: ОКНО ВЫВОЗА
+pl: OKNO ODZYSKU
+
+en: RECOVERY WINDOW CLOSED
+zh-CN: 回收时限已过
+ja: 回収期限切れ
+ko: 회수 시한 종료
+es: PLAZO DE RECUPERACIÓN CERRADO
+pt-BR: JANELA DE RECUPERAÇÃO FECHADA
+de: BERGUNGSFENSTER GESCHLOSSEN
+fr: FENÊTRE DE RÉCUPÉRATION FERMÉE
+ru: ОКНО ВЫВОЗА ЗАКРЫТО
+pl: OKNO ODZYSKU ZAMKNIĘTE
+
+en: ABOARD / HOLD POSITION
+zh-CN: 已上车 / 原地待命
+ja: 乗車済み / そのまま待機
+ko: 탑승 완료 / 자리 유지
+es: A BORDO / MANTÉN LA POSICIÓN
+pt-BR: A BORDO / FIQUE ONDE ESTÁ
+de: AN BORD / POSITION HALTEN
+fr: À BORD / RESTEZ EN PLACE
+ru: НА БОРТУ / ОСТАВАЙТЕСЬ НА МЕСТЕ
+pl: NA POKŁADZIE / ZOSTAŃ NA MIEJSCU
+
+en: GET TO THE TRUCK
+zh-CN: 快去卡车
+ja: トラックへ急げ
+ko: 트럭으로 가라
+es: VE AL CAMIÓN
+pt-BR: VÁ PARA O CAMINHÃO
+de: ZUM LASTER
+fr: REJOIGNEZ LE CAMION
+ru: К ГРУЗОВИКУ
+pl: DO CIĘŻARÓWKI
+
+en: QUOTA MET / RETURN TO THE TRUCK
+zh-CN: 定额已达成 / 返回卡车
+ja: ノルマ達成 / トラックへ戻れ
+ko: 할당량 달성 / 트럭으로 복귀
+es: CUOTA CUMPLIDA / VUELVE AL CAMIÓN
+pt-BR: COTA BATIDA / VOLTE AO CAMINHÃO
+de: SOLL ERFÜLLT / ZURÜCK ZUM LASTER
+fr: QUOTA ATTEINT / RETOUR AU CAMION
+ru: НОРМА ВЫПОЛНЕНА / ВОЗВРАЩАЙТЕСЬ К ГРУЗОВИКУ
+pl: NORMA WYROBIONA / WRACAJ DO CIĘŻARÓWKI
+
+en: EVACUATION
+zh-CN: 撤离
+ja: 撤収
+ko: 철수
+es: EVACUACIÓN
+pt-BR: EVACUAÇÃO
+de: EVAKUIERUNG
+fr: ÉVACUATION
+ru: ЭВАКУАЦИЯ
+pl: EWAKUACJA
+
+en: THE TRUCK IS LEAVING
+zh-CN: 卡车要开走了
+ja: トラックが出発する
+ko: 트럭이 떠납니다
+es: EL CAMIÓN SE VA
+pt-BR: O CAMINHÃO ESTÁ SAINDO
+de: DER LASTER FÄHRT AB
+fr: LE CAMION S'EN VA
+ru: ГРУЗОВИК УЕЗЖАЕТ
+pl: CIĘŻARÓWKA ODJEŻDŻA
+
+en: SECONDS TO DEPARTURE
+zh-CN: 距出发的秒数
+ja: 出発までの秒数
+ko: 출발까지 남은 초
+es: SEGUNDOS PARA LA SALIDA
+pt-BR: SEGUNDOS PARA A PARTIDA
+de: SEKUNDEN BIS ZUR ABFAHRT
+fr: SECONDES AVANT LE DÉPART
+ru: СЕКУНД ДО ОТЪЕЗДА
+pl: SEKUND DO ODJAZDU
+
+en: HAUL {0} {1}
+zh-CN: 收获 {0} {1}
+ja: 回収額 {0} {1}
+ko: 수확 {0} {1}
+es: CARGA {0} {1}
+pt-BR: CARGA {0} {1}
+de: AUSBEUTE {0} {1}
+fr: CHARGEMENT {0} {1}
+ru: УЛОВ {0} {1}
+pl: UROBEK {0} {1}
+
+# The truck's board and ignition
+
+en: RECOVERY MANIFEST
+zh-CN: 回收清单
+ja: 回収目録
+ko: 회수 목록
+es: MANIFIESTO DE RECUPERACIÓN
+pt-BR: MANIFESTO DE RECUPERAÇÃO
+de: BERGUNGSLISTE
+fr: MANIFESTE DE RÉCUPÉRATION
+ru: МАНИФЕСТ ВЫВОЗА
+pl: MANIFEST ODZYSKU
+
+en: QUOTA $0
+zh-CN: 定额 $0
+ja: ノルマ $0
+ko: 할당량 $0
+es: CUOTA $0
+pt-BR: COTA $0
+de: SOLL $0
+fr: QUOTA $0
+ru: НОРМА $0
+pl: NORMA $0
+
+en: QUOTA ${0:N0}  -  MET
+zh-CN: 定额 ${0:N0}  -  已达成
+ja: ノルマ ${0:N0}  -  達成
+ko: 할당량 ${0:N0}  -  달성
+es: CUOTA ${0:N0}  -  CUMPLIDA
+pt-BR: COTA ${0:N0}  -  BATIDA
+de: SOLL ${0:N0}  -  ERFÜLLT
+fr: QUOTA ${0:N0}  -  ATTEINT
+ru: НОРМА ${0:N0}  -  ВЫПОЛНЕНА
+pl: NORMA ${0:N0}  -  WYROBIONA
+
+en: QUOTA ${0:N0}  -  ${1:N0} TO GO
+zh-CN: 定额 ${0:N0}  -  还差 ${1:N0}
+ja: ノルマ ${0:N0}  -  あと ${1:N0}
+ko: 할당량 ${0:N0}  -  ${1:N0} 남음
+es: CUOTA ${0:N0}  -  FALTAN ${1:N0}
+pt-BR: COTA ${0:N0}  -  FALTAM ${1:N0}
+de: SOLL ${0:N0}  -  NOCH ${1:N0}
+fr: QUOTA ${0:N0}  -  RESTE ${1:N0}
+ru: НОРМА ${0:N0}  -  ОСТАЛОСЬ ${1:N0}
+pl: NORMA ${0:N0}  -  BRAKUJE ${1:N0}
+
+en: OVERLOADED  {0:0.0} / {1:0} m³
+zh-CN: 超载  {0:0.0} / {1:0} m³
+ja: 過積載  {0:0.0} / {1:0} m³
+ko: 과적  {0:0.0} / {1:0} m³
+es: SOBRECARGADO  {0:0.0} / {1:0} m³
+pt-BR: SOBRECARREGADO  {0:0.0} / {1:0} m³
+de: ÜBERLADEN  {0:0.0} / {1:0} m³
+fr: SURCHARGÉ  {0:0.0} / {1:0} m³
+ru: ПЕРЕГРУЗ  {0:0.0} / {1:0} м³
+pl: PRZEŁADOWANA  {0:0.0} / {1:0} m³
+
+en: CARGO  {0:0.0} / {1:0} m³
+zh-CN: 货物  {0:0.0} / {1:0} m³
+ja: 積荷  {0:0.0} / {1:0} m³
+ko: 화물  {0:0.0} / {1:0} m³
+es: CARGA  {0:0.0} / {1:0} m³
+pt-BR: CARGA  {0:0.0} / {1:0} m³
+de: FRACHT  {0:0.0} / {1:0} m³
+fr: CARGAISON  {0:0.0} / {1:0} m³
+ru: ГРУЗ  {0:0.0} / {1:0} м³
+pl: ŁADUNEK  {0:0.0} / {1:0} m³
+
+en: EVACUATING
+zh-CN: 撤离中
+ja: 撤収中
+ko: 철수 중
+es: EVACUANDO
+pt-BR: EVACUANDO
+de: EVAKUIERUNG LÄUFT
+fr: ÉVACUATION EN COURS
+ru: ЭВАКУАЦИЯ
+pl: EWAKUACJA TRWA
+
+en: Stop the truck (leaving in {0:0} s)
+zh-CN: 让卡车停下（{0:0} 秒后出发）
+ja: トラックを止める（{0:0} 秒後に出発）
+ko: 트럭 멈추기({0:0}초 후 출발)
+es: Detener el camión (sale en {0:0} s)
+pt-BR: Parar o caminhão (sai em {0:0} s)
+de: Laster anhalten (Abfahrt in {0:0} s)
+fr: Arrêter le camion (départ dans {0:0} s)
+ru: Остановить грузовик (отъезд через {0:0} с)
+pl: Zatrzymaj ciężarówkę (odjazd za {0:0} s)
+
+en: Overloaded ({0:0.0}/{1:0} m³) - unload something
+zh-CN: 超载（{0:0.0}/{1:0} m³）- 卸下一些东西
+ja: 過積載（{0:0.0}/{1:0} m³）- 何か降ろそう
+ko: 과적 ({0:0.0}/{1:0} m³) - 무언가 내리세요
+es: Sobrecargado ({0:0.0}/{1:0} m³) - descarga algo
+pt-BR: Sobrecarregado ({0:0.0}/{1:0} m³) - descarregue algo
+de: Überladen ({0:0.0}/{1:0} m³) - lad etwas ab
+fr: Surchargé ({0:0.0}/{1:0} m³) - déchargez quelque chose
+ru: Перегруз ({0:0.0}/{1:0} м³) - выгрузите что-нибудь
+pl: Przeładowana ({0:0.0}/{1:0} m³) - wyładuj coś
+
+en: BELOW QUOTA (${0:N0} / ${1:N0}): pull again to leave anyway
+zh-CN: 未达定额（${0:N0} / ${1:N0}）：再拉一次即可照样离开
+ja: ノルマ未達（${0:N0} / ${1:N0}）：もう一度引けばそのまま出発
+ko: 할당량 미달 (${0:N0} / ${1:N0}): 다시 당기면 그래도 떠납니다
+es: BAJO LA CUOTA (${0:N0} / ${1:N0}): tira otra vez para irte igualmente
+pt-BR: ABAIXO DA COTA (${0:N0} / ${1:N0}): puxe de novo para sair mesmo assim
+de: UNTER DEM SOLL (${0:N0} / ${1:N0}): noch einmal ziehen, um trotzdem abzufahren
+fr: SOUS LE QUOTA (${0:N0} / ${1:N0}) : tirez encore pour partir quand même
+ru: НИЖЕ НОРМЫ (${0:N0} / ${1:N0}): потяните ещё раз, чтобы всё равно уехать
+pl: PONIŻEJ NORMY (${0:N0} / ${1:N0}): pociągnij jeszcze raz, żeby mimo to odjechać
+
+en: Start the truck: it leaves in {0:0} s (haul ${1:N0} / quota ${2:N0})
+zh-CN: 发动卡车：{0:0} 秒后出发（收获 ${1:N0} / 定额 ${2:N0}）
+ja: トラックを始動：{0:0} 秒後に出発（回収額 ${1:N0} / ノルマ ${2:N0}）
+ko: 트럭 시동: {0:0}초 후 출발 (수확 ${1:N0} / 할당량 ${2:N0})
+es: Arrancar el camión: sale en {0:0} s (carga ${1:N0} / cuota ${2:N0})
+pt-BR: Dar partida no caminhão: ele sai em {0:0} s (carga ${1:N0} / cota ${2:N0})
+de: Laster starten: Abfahrt in {0:0} s (Ausbeute ${1:N0} / Soll ${2:N0})
+fr: Démarrer le camion : départ dans {0:0} s (chargement ${1:N0} / quota ${2:N0})
+ru: Завести грузовик: отъезд через {0:0} с (улов ${1:N0} / норма ${2:N0})
+pl: Odpal ciężarówkę: odjeżdża za {0:0} s (urobek ${1:N0} / norma ${2:N0})
+
+en: Toot the horn (calls the crew, and anything else)
+zh-CN: 按喇叭（召唤队友，还有别的东西）
+ja: クラクションを鳴らす（クルーを呼ぶ。それ以外のものも）
+ko: 경적 울리기(팀을 부릅니다. 다른 것들도요)
+es: Tocar el claxon (llama al equipo, y a lo que sea)
+pt-BR: Tocar a buzina (chama a equipe, e o que mais ouvir)
+de: Hupen (ruft das Team und alles andere)
+fr: Klaxonner (appelle l'équipe, et tout le reste)
+ru: Посигналить (зовёт бригаду и всех остальных)
+pl: Zatrąb (woła ekipę i wszystko inne)
+
+en: Unhook the winch
+zh-CN: 解开绞盘
+ja: ウインチを外す
+ko: 윈치 풀기
+es: Desenganchar el cabrestante
+pt-BR: Desengatar o guincho
+de: Winde aushaken
+fr: Décrocher le treuil
+ru: Отцепить лебёдку
+pl: Odczep wyciągarkę
+
+en: Run the winch out to the nearest heavy item
+zh-CN: 把绞盘拉到最近的重物上
+ja: ウインチを一番近い重量物まで伸ばす
+ko: 가장 가까운 무거운 물건까지 윈치 풀기
+es: Tender el cabrestante al objeto pesado más cercano
+pt-BR: Levar o guincho até o item pesado mais próximo
+de: Winde zum nächsten schweren Gegenstand ausfahren
+fr: Dérouler le treuil jusqu'à l'objet lourd le plus proche
+ru: Протянуть лебёдку к ближайшему тяжёлому предмету
+pl: Rozwiń wyciągarkę do najbliższego ciężkiego przedmiotu
+
+# Dispatch on the radio
+
+en: DISPATCH: Don't stay past dark. Last crew didn't.
+zh-CN: 调度：天黑以后别逗留。上一支队伍就没走成。
+ja: 配車係：暗くなる前に出ろ。前のクルーは残った。そして戻らなかった。
+ko: 배차: 어두워진 뒤까지 남지 마세요. 지난 팀은 못 돌아왔습니다.
+es: CENTRAL: No os quedéis hasta que oscurezca. El último equipo no salió.
+pt-BR: DESPACHO: Não fiquem depois de escurecer. A última equipe não saiu.
+de: ZENTRALE: Bleibt nicht bis nach Einbruch der Dunkelheit. Das letzte Team kam nicht raus.
+fr: DISPATCH : Ne restez pas après la tombée de la nuit. La dernière équipe n'est pas ressortie.
+ru: ДИСПЕТЧЕР: Не оставайтесь до темноты. Прошлая бригада не вернулась.
+pl: DYSPOZYTOR: Nie zostawajcie po zmroku. Poprzednia ekipa nie wyszła.
+
+en: DISPATCH: That building won't last two more minutes. Get out.
+zh-CN: 调度：那栋楼撑不过两分钟了。快出来。
+ja: 配車係：その建物はあと2分ももたない。外へ出ろ。
+ko: 배차: 그 건물은 2분도 못 버팁니다. 나오세요.
+es: CENTRAL: Ese edificio no aguanta ni dos minutos más. Salid.
+pt-BR: DESPACHO: Esse prédio não aguenta mais dois minutos. Saiam.
+de: ZENTRALE: Das Gebäude hält keine zwei Minuten mehr. Raus da.
+fr: DISPATCH : Ce bâtiment ne tiendra pas deux minutes de plus. Sortez.
+ru: ДИСПЕТЧЕР: Здание не простоит и двух минут. Уходите.
+pl: DYSPOZYTOR: Ten budynek nie postoi nawet dwóch minut. Wychodźcie.
+
+en: LOCKDOWN / IT IS HERE / GET TO THE TRUCK
+zh-CN: 封锁 / 它来了 / 快去卡车
+ja: 封鎖 / あれが来た / トラックへ急げ
+ko: 봉쇄 / 놈이 왔다 / 트럭으로 가라
+es: CIERRE TOTAL / YA ESTÁ AQUÍ / VE AL CAMIÓN
+pt-BR: BLOQUEIO / ELE CHEGOU / VÁ PARA O CAMINHÃO
+de: ABRIEGELUNG / ES IST DA / ZUM LASTER
+fr: CONFINEMENT / IL EST LÀ / REJOIGNEZ LE CAMION
+ru: БЛОКИРОВКА / ОНО ЗДЕСЬ / К ГРУЗОВИКУ
+pl: BLOKADA / ONO TU JEST / DO CIĘŻARÓWKI
+
+en: DOORS SHUT. HOLD ON.
+zh-CN: 车门已关。抓稳了。
+ja: ドア閉鎖。つかまれ。
+ko: 문 닫힘. 꽉 잡으세요.
+es: PUERTAS CERRADAS. AGÁRRATE.
+pt-BR: PORTAS FECHADAS. SEGURE-SE.
+de: TÜREN ZU. FESTHALTEN.
+fr: PORTES FERMÉES. ACCROCHEZ-VOUS.
+ru: ДВЕРИ ЗАКРЫТЫ. ДЕРЖИТЕСЬ.
+pl: DRZWI ZAMKNIĘTE. TRZYMAJ SIĘ.
+
+en: SIGNAL FAILING / LEAVE
+zh-CN: 信号衰减 / 快离开
+ja: 信号途絶 / 退去せよ
+ko: 신호 불안정 / 떠나라
+es: SEÑAL PERDIÉNDOSE / SAL
+pt-BR: SINAL FALHANDO / SAIA
+de: SIGNAL BRICHT AB / RAUS
+fr: SIGNAL DÉFAILLANT / PARTEZ
+ru: СИГНАЛ ПРОПАДАЕТ / УХОДИТЕ
+pl: SYGNAŁ ZANIKA / WYJDŹ
+
+en: BUILDING STATUS {0} / deteriorating
+zh-CN: 建筑状态 {0} / 正在恶化
+ja: 建物の状態 {0} / 悪化中
+ko: 건물 상태 {0} / 악화 중
+es: ESTADO DEL EDIFICIO {0} / empeorando
+pt-BR: ESTADO DO PRÉDIO {0} / piorando
+de: GEBÄUDEZUSTAND {0} / verschlechtert sich
+fr: ÉTAT DU BÂTIMENT {0} / en dégradation
+ru: СОСТОЯНИЕ ЗДАНИЯ {0} / ухудшается
+pl: STAN BUDYNKU {0} / pogarsza się
+
+en: STRUCTURE FAILING / GET OUT NOW / {0} s
+zh-CN: 结构即将垮塌 / 立刻撤离 / {0} 秒
+ja: 構造崩壊 / 今すぐ出ろ / {0} 秒
+ko: 구조물 붕괴 / 지금 나가라 / {0}초
+es: LA ESTRUCTURA CEDE / SAL YA / {0} s
+pt-BR: ESTRUTURA CEDENDO / SAIA AGORA / {0} s
+de: STRUKTUR VERSAGT / SOFORT RAUS / {0} s
+fr: STRUCTURE EN RUPTURE / SORTEZ MAINTENANT / {0} s
+ru: КОНСТРУКЦИЯ РУШИТСЯ / УХОДИТЕ СЕЙЧАС / {0} с
+pl: KONSTRUKCJA SIĘ WALI / WYJDŹ NATYCHMIAST / {0} s
+
+en: TREMOR / brace yourselves
+zh-CN: 震动 / 站稳了
+ja: 揺れ / 踏ん張れ
+ko: 진동 / 버텨라
+es: TEMBLOR / agarraos
+pt-BR: TREMOR / segurem-se
+de: ERSCHÜTTERUNG / festhalten
+fr: SECOUSSE / tenez bon
+ru: ТОЛЧОК / держитесь
+pl: WSTRZĄS / trzymajcie się
+
+# Bonuses on the HUD
+
+en: OVERTIME x{0:0.00} on everything over quota
+zh-CN: 加班 x{0:0.00}，适用于超出定额的全部部分
+ja: 残業 x{0:0.00}：ノルマ超過分すべてに適用
+ko: 초과 근무 x{0:0.00}: 할당량 초과분 전체에 적용
+es: HORAS EXTRA x{0:0.00} sobre todo lo que supere la cuota
+pt-BR: HORA EXTRA x{0:0.00} em tudo acima da cota
+de: ÜBERSTUNDEN x{0:0.00} auf alles über dem Soll
+fr: HEURES SUP x{0:0.00} sur tout ce qui dépasse le quota
+ru: СВЕРХУРОЧНЫЕ x{0:0.00} на всё сверх нормы
+pl: NADGODZINY x{0:0.00} za wszystko ponad normę
+
+en: QUOTA MET
+zh-CN: 定额已达成
+ja: ノルマ達成
+ko: 할당량 달성
+es: CUOTA CUMPLIDA
+pt-BR: COTA BATIDA
+de: SOLL ERFÜLLT
+fr: QUOTA ATTEINT
+ru: НОРМА ВЫПОЛНЕНА
+pl: NORMA WYROBIONA
+
+en: Overtime from here: the longer you stay, the more everything over quota pays.
+zh-CN: 从现在起算加班：待得越久，超出定额的部分付得越多。
+ja: ここからは残業。長く残るほど、ノルマ超過分の支払いが増える。
+ko: 지금부터는 초과 근무입니다. 오래 남을수록 할당량 초과분의 지급액이 커집니다.
+es: Horas extra desde ahora: cuanto más te quedes, más paga todo lo que supere la cuota.
+pt-BR: Hora extra a partir de agora: quanto mais você ficar, mais paga tudo o que passar da cota.
+de: Ab jetzt Überstunden: Je länger du bleibst, desto mehr bringt alles über dem Soll.
+fr: Heures sup à partir de maintenant : plus vous restez, plus tout ce qui dépasse le quota rapporte.
+ru: Дальше — сверхурочные: чем дольше вы остаётесь, тем дороже всё, что сверх нормы.
+pl: Od teraz nadgodziny: im dłużej zostaniesz, tym więcej płacą za wszystko ponad normę.
+
+en: BOSS WANTS: the {0} (+${1:N0})
+zh-CN: 老板想要：{0}（+${1:N0}）
+ja: ボスのご所望：{0}（+${1:N0}）
+ko: 사장의 요구: {0} (+${1:N0})
+es: EL JEFE QUIERE: {0} (+${1:N0})
+pt-BR: O CHEFE QUER: {0} (+${1:N0})
+de: DER CHEF WILL: {0} (+${1:N0})
+fr: LE PATRON VEUT : {0} (+${1:N0})
+ru: НАЧАЛЬНИК ХОЧЕТ: {0} (+${1:N0})
+pl: SZEF CHCE: {0} (+${1:N0})
+
+en: BOSS REQUEST
+zh-CN: 老板的要求
+ja: ボスの要望
+ko: 사장의 요청
+es: ENCARGO DEL JEFE
+pt-BR: PEDIDO DO CHEFE
+de: CHEFWUNSCH
+fr: DEMANDE DU PATRON
+ru: ПРОСЬБА НАЧАЛЬНИКА
+pl: PROŚBA SZEFA
+
+en: "Bring me the {0}." +${1:N0} on top of quota.
+zh-CN: “把{0}给我带回来。”定额之外再加 +${1:N0}。
+ja: 「{0}を持ってこい。」ノルマとは別に +${1:N0}。
+ko: "{0}, 그거 가져와." 할당량과 별도로 +${1:N0}.
+es: «Tráeme esto: {0}». +${1:N0} además de la cuota.
+pt-BR: "Traga isto para mim: {0}." +${1:N0} além da cota.
+de: „Bring mir das hier mit: {0}.“ +${1:N0} zusätzlich zum Soll.
+fr: « Rapportez-moi ceci : {0}. » +${1:N0} en plus du quota.
+ru: «Привезите мне вот это: {0}». +${1:N0} сверх нормы.
+pl: „Przywieź mi to: {0}”. +${1:N0} ponad normę.
+
+en: RUSH: {0} pays x{1:0.#} for {2}:{3:00}
+zh-CN: 加急：{0} 的价格 x{1:0.#}，剩余 {2}:{3:00}
+ja: 急ぎ：{0} は x{1:0.#}、残り {2}:{3:00}
+ko: 긴급: {0} x{1:0.#}, 남은 시간 {2}:{3:00}
+es: URGENTE: {0} paga x{1:0.#} durante {2}:{3:00}
+pt-BR: URGENTE: {0} paga x{1:0.#} por {2}:{3:00}
+de: EILAUFTRAG: {0} bringt x{1:0.#} für {2}:{3:00}
+fr: URGENT : {0} rapporte x{1:0.#} pendant {2}:{3:00}
+ru: СРОЧНО: {0} — оплата x{1:0.#}, осталось {2}:{3:00}
+pl: PILNE: {0} płaci x{1:0.#} przez {2}:{3:00}
+
+en: RUSH ORDER
+zh-CN: 加急订单
+ja: 急ぎの注文
+ko: 긴급 주문
+es: PEDIDO URGENTE
+pt-BR: PEDIDO URGENTE
+de: EILAUFTRAG
+fr: COMMANDE URGENTE
+ru: СРОЧНЫЙ ЗАКАЗ
+pl: PILNE ZAMÓWIENIE
+
+en: Any {0} in the truck in the next {1:0.#} minutes pays x{2:0.#}.
+zh-CN: 接下来 {1:0.#} 分钟内装上卡车的任何“{0}”都按 x{2:0.#} 付款。
+ja: これから {1:0.#} 分以内にトラックに積んだ「{0}」は、すべて x{2:0.#} で支払われる。
+ko: 앞으로 {1:0.#}분 안에 트럭에 실은 "{0}"은(는) 모두 x{2:0.#}로 지급됩니다.
+es: Cualquier «{0}» que esté en el camión en los próximos {1:0.#} minutos paga x{2:0.#}.
+pt-BR: Qualquer "{0}" no caminhão nos próximos {1:0.#} minutos paga x{2:0.#}.
+de: Jedes Stück „{0}“, das in den nächsten {1:0.#} Minuten im Laster landet, bringt x{2:0.#}.
+fr: Tout « {0} » chargé dans le camion dans les {1:0.#} prochaines minutes rapporte x{2:0.#}.
+ru: Любой предмет «{0}», попавший в грузовик за ближайшие {1:0.#} мин, оплачивается x{2:0.#}.
+pl: Każdy przedmiot „{0}”, który trafi do ciężarówki w ciągu {1:0.#} min, płaci x{2:0.#}.
+
+en: RUSH ORDER / {0}
+zh-CN: 加急订单 / {0}
+ja: 急ぎの注文 / {0}
+ko: 긴급 주문 / {0}
+es: PEDIDO URGENTE / {0}
+pt-BR: PEDIDO URGENTE / {0}
+de: EILAUFTRAG / {0}
+fr: COMMANDE URGENTE / {0}
+ru: СРОЧНЫЙ ЗАКАЗ / {0}
+pl: PILNE ZAMÓWIENIE / {0}
+
+en: SET COMPLETE: {0} (+${1:N0})
+zh-CN: 套装已集齐：{0}（+${1:N0}）
+ja: セット完成：{0}（+${1:N0}）
+ko: 세트 완성: {0} (+${1:N0})
+es: CONJUNTO COMPLETO: {0} (+${1:N0})
+pt-BR: CONJUNTO COMPLETO: {0} (+${1:N0})
+de: SET KOMPLETT: {0} (+${1:N0})
+fr: SÉRIE COMPLÈTE : {0} (+${1:N0})
+ru: НАБОР СОБРАН: {0} (+${1:N0})
+pl: ZESTAW SKOMPLETOWANY: {0} (+${1:N0})
+
+en: SET: {0} {1}/{2}
+zh-CN: 套装：{0} {1}/{2}
+ja: セット：{0} {1}/{2}
+ko: 세트: {0} {1}/{2}
+es: CONJUNTO: {0} {1}/{2}
+pt-BR: CONJUNTO: {0} {1}/{2}
+de: SET: {0} {1}/{2}
+fr: SÉRIE : {0} {1}/{2}
+ru: НАБОР: {0} {1}/{2}
+pl: ZESTAW: {0} {1}/{2}
+
+en: NEW HIRE
+zh-CN: 新雇员
+ja: 新人
+ko: 신입
+es: NUEVO EMPLEADO
+pt-BR: NOVO CONTRATADO
+de: NEULING
+fr: NOUVELLE RECRUE
+ru: НОВИЧОК
+pl: NOWY PRACOWNIK
+
+en: The agency sent a replacement for {0}. ${1:N0} comes off the payout.
+zh-CN: 中介派来了接替 {0} 的人。${1:N0} 将从报酬中扣除。
+ja: 派遣会社が {0} の代わりをよこした。${1:N0} が報酬から引かれる。
+ko: 인력 사무소가 {0}의 대체 인력을 보냈습니다. ${1:N0}이(가) 지급액에서 빠집니다.
+es: La agencia ha enviado un sustituto para {0}. Se descuentan ${1:N0} del pago.
+pt-BR: A agência mandou um substituto para {0}. ${1:N0} saem do pagamento.
+de: Die Agentur hat Ersatz für {0} geschickt. ${1:N0} gehen von der Auszahlung ab.
+fr: L'agence a envoyé un remplaçant pour {0}. ${1:N0} sont déduits de la paie.
+ru: Агентство прислало замену для {0}. ${1:N0} вычтут из выручки.
+pl: Agencja przysłała zastępstwo za: {0}. ${1:N0} schodzi z wypłaty.
+
+# Things to use in the building
+
+en: Slide the door open
+zh-CN: 拉开门
+ja: ドアを開ける
+ko: 문 열기
+es: Abrir la puerta corredera
+pt-BR: Abrir a porta
+de: Tür aufschieben
+fr: Ouvrir la porte
+ru: Отодвинуть дверь
+pl: Odsuń drzwi
+
+en: Slide the door shut
+zh-CN: 拉上门
+ja: ドアを閉める
+ko: 문 닫기
+es: Cerrar la puerta corredera
+pt-BR: Fechar a porta
+de: Tür zuschieben
+fr: Fermer la porte
+ru: Задвинуть дверь
+pl: Zasuń drzwi
+
+en: Something is in the doorway
+zh-CN: 门口有东西挡着
+ja: 戸口に何かある
+ko: 문간에 무언가 있습니다
+es: Hay algo en el umbral
+pt-BR: Há algo na passagem
+de: Etwas steht in der Tür
+fr: Quelque chose bloque le passage
+ru: В проёме что-то есть
+pl: Coś stoi w drzwiach
+
+en: Hide in the locker
+zh-CN: 躲进储物柜
+ja: ロッカーに隠れる
+ko: 사물함에 숨기
+es: Esconderse en el casillero
+pt-BR: Esconder-se no armário
+de: Im Spind verstecken
+fr: Se cacher dans le casier
+ru: Спрятаться в шкафчике
+pl: Schowaj się w szafce
+
+en: Climb out
+zh-CN: 爬出来
+ja: 外に出る
+ko: 나오기
+es: Salir
+pt-BR: Sair
+de: Herausklettern
+fr: Sortir
+ru: Вылезти
+pl: Wyjdź
+
+en: Someone is hiding in here
+zh-CN: 里面已经躲着人了
+ja: 誰かがここに隠れている
+ko: 누군가 여기 숨어 있습니다
+es: Alguien se esconde aquí
+pt-BR: Alguém está escondido aqui
+de: Hier versteckt sich schon jemand
+fr: Quelqu'un se cache ici
+ru: Здесь уже кто-то прячется
+pl: Ktoś się tu chowa
+
+en: Put that down to hide in the locker
+zh-CN: 把手里的东西放下才能躲进储物柜
+ja: それを置かないとロッカーに隠れられない
+ko: 그걸 내려놓아야 사물함에 숨을 수 있습니다
+es: Deja eso para esconderte en el casillero
+pt-BR: Largue isso para se esconder no armário
+de: Leg das ab, um dich im Spind zu verstecken
+fr: Posez ça pour vous cacher dans le casier
+ru: Положите это, чтобы спрятаться в шкафчике
+pl: Odłóż to, żeby schować się w szafce
+
+en: Throw the breaker (lights this sector, loudly)
+zh-CN: 合上电闸（点亮这片区域，声音很大）
+ja: ブレーカーを入れる（この区画が明るくなる。大きな音がする）
+ko: 차단기 올리기(이 구역에 불이 들어옵니다. 시끄럽습니다)
+es: Accionar el interruptor (ilumina este sector, con ruido)
+pt-BR: Ligar o disjuntor (ilumina este setor, com barulho)
+de: Sicherung umlegen (beleuchtet diesen Bereich, laut)
+fr: Enclencher le disjoncteur (éclaire ce secteur, bruyamment)
+ru: Включить щиток (осветит этот сектор, громко)
+pl: Przełącz bezpiecznik (oświetla ten sektor, głośno)
+
+en: Breaker on ({0:0} s left)
+zh-CN: 电闸已合上（剩余 {0:0} 秒）
+ja: ブレーカー作動中（残り {0:0} 秒）
+ko: 차단기 켜짐({0:0}초 남음)
+es: Interruptor activo (quedan {0:0} s)
+pt-BR: Disjuntor ligado (restam {0:0} s)
+de: Sicherung an (noch {0:0} s)
+fr: Disjoncteur enclenché ({0:0} s restantes)
+ru: Щиток включён (осталось {0:0} с)
+pl: Bezpiecznik włączony (zostało {0:0} s)
+
+en: Breaker cooling down ({0:0} s)
+zh-CN: 电闸冷却中（{0:0} 秒）
+ja: ブレーカー冷却中（{0:0} 秒）
+ko: 차단기 냉각 중({0:0}초)
+es: Interruptor enfriándose ({0:0} s)
+pt-BR: Disjuntor esfriando ({0:0} s)
+de: Sicherung kühlt ab ({0:0} s)
+fr: Disjoncteur en refroidissement ({0:0} s)
+ru: Щиток остывает ({0:0} с)
+pl: Bezpiecznik stygnie ({0:0} s)
+
+en: Call the lift
+zh-CN: 呼叫货梯
+ja: リフトを呼ぶ
+ko: 승강기 부르기
+es: Llamar al montacargas
+pt-BR: Chamar o elevador
+de: Aufzug rufen
+fr: Appeler le monte-charge
+ru: Вызвать лифт
+pl: Wezwij windę
+
+en: Send the lift up
+zh-CN: 让货梯上行
+ja: リフトを上げる
+ko: 승강기 올려 보내기
+es: Enviar el montacargas arriba
+pt-BR: Mandar o elevador para cima
+de: Aufzug hochschicken
+fr: Envoyer le monte-charge en haut
+ru: Отправить лифт вверх
+pl: Wyślij windę w górę
+
+en: Send the lift down
+zh-CN: 让货梯下行
+ja: リフトを下げる
+ko: 승강기 내려 보내기
+es: Enviar el montacargas abajo
+pt-BR: Mandar o elevador para baixo
+de: Aufzug runterschicken
+fr: Envoyer le monte-charge en bas
+ru: Отправить лифт вниз
+pl: Wyślij windę w dół
+
+en: The lift is here
+zh-CN: 货梯已到
+ja: リフトはここにある
+ko: 승강기가 여기 있습니다
+es: El montacargas está aquí
+pt-BR: O elevador está aqui
+de: Der Aufzug ist hier
+fr: Le monte-charge est ici
+ru: Лифт здесь
+pl: Winda jest tutaj
+
+en: The lift is moving
+zh-CN: 货梯正在运行
+ja: リフトは動いている
+ko: 승강기가 움직이는 중입니다
+es: El montacargas está en marcha
+pt-BR: O elevador está em movimento
+de: Der Aufzug fährt
+fr: Le monte-charge est en mouvement
+ru: Лифт движется
+pl: Winda jedzie
+
+en: The lift has given way
+zh-CN: 货梯已经垮了
+ja: リフトは落ちてしまった
+ko: 승강기가 내려앉았습니다
+es: El montacargas ha cedido
+pt-BR: O elevador cedeu
+de: Der Aufzug hat nachgegeben
+fr: Le monte-charge a lâché
+ru: Лифт обрушился
+pl: Winda się zawaliła
+
+en: No power to the lift (throw its breaker)
+zh-CN: 货梯没有电（合上它的电闸）
+ja: リフトに電気が来ていない（ブレーカーを入れよう）
+ko: 승강기에 전력이 없습니다(차단기를 올리세요)
+es: El montacargas no tiene corriente (acciona su interruptor)
+pt-BR: O elevador está sem energia (ligue o disjuntor dele)
+de: Kein Strom am Aufzug (leg seine Sicherung um)
+fr: Le monte-charge n'a pas de courant (enclenchez son disjoncteur)
+ru: Лифт обесточен (включите его щиток)
+pl: Winda nie ma prądu (przełącz jej bezpiecznik)
+
+en: {0}  OVERLOADED {1:0} / {2:0} kg
+zh-CN: {0}  超载 {1:0} / {2:0} 公斤
+ja: {0}  過積載 {1:0} / {2:0} kg
+ko: {0}  과적 {1:0} / {2:0} kg
+es: {0}  SOBRECARGADO {1:0} / {2:0} kg
+pt-BR: {0}  SOBRECARREGADO {1:0} / {2:0} kg
+de: {0}  ÜBERLADEN {1:0} / {2:0} kg
+fr: {0}  SURCHARGÉ {1:0} / {2:0} kg
+ru: {0}  ПЕРЕГРУЗ {1:0} / {2:0} кг
+pl: {0}  PRZEŁADOWANA {1:0} / {2:0} kg
+
+en: {0}  {1:0} / {2:0} kg
+zh-CN: {0}  {1:0} / {2:0} 公斤
+ja: {0}  {1:0} / {2:0} kg
+ko: {0}  {1:0} / {2:0} kg
+es: {0}  {1:0} / {2:0} kg
+pt-BR: {0}  {1:0} / {2:0} kg
+de: {0}  {1:0} / {2:0} kg
+fr: {0}  {1:0} / {2:0} kg
+ru: {0}  {1:0} / {2:0} кг
+pl: {0}  {1:0} / {2:0} kg
+
+en: Cut the padlock (quiet)
+zh-CN: 剪断挂锁（安静）
+ja: 南京錠を切る（静か）
+ko: 자물쇠 자르기(조용함)
+es: Cortar el candado (en silencio)
+pt-BR: Cortar o cadeado (silencioso)
+de: Vorhängeschloss aufschneiden (leise)
+fr: Couper le cadenas (discret)
+ru: Перекусить замок (тихо)
+pl: Przetnij kłódkę (cicho)
+
+en: Pick the lock (silent, {0:0} s)
+zh-CN: 撬锁（无声，{0:0} 秒）
+ja: 鍵を開ける（無音、{0:0} 秒）
+ko: 자물쇠 따기(무음, {0:0}초)
+es: Forzar la cerradura (sin ruido, {0:0} s)
+pt-BR: Abrir a fechadura (sem som, {0:0} s)
+de: Schloss knacken (lautlos, {0:0} s)
+fr: Crocheter la serrure (silencieux, {0:0} s)
+ru: Вскрыть замок (бесшумно, {0:0} с)
+pl: Otwórz zamek wytrychem (bezgłośnie, {0:0} s)
+
+en: Pry the shutter up (loud, a few goes)
+zh-CN: 撬起卷帘门（很吵，要撬几次）
+ja: シャッターをこじ開ける（うるさい。数回かかる）
+ko: 셔터 들어 올리기(시끄럽고, 몇 번 해야 함)
+es: Forzar la persiana (ruidoso, varios intentos)
+pt-BR: Forçar a porta de enrolar (barulhento, algumas tentativas)
+de: Rolltor aufhebeln (laut, mehrere Anläufe)
+fr: Forcer le rideau (bruyant, en plusieurs fois)
+ru: Поддеть рольставни (громко, в несколько приёмов)
+pl: Podważ roletę (głośno, kilka podejść)
+
+en: Heaving it up...
+zh-CN: 正在往上抬...
+ja: 持ち上げている...
+ko: 들어 올리는 중...
+es: Levantándola...
+pt-BR: Levantando...
+de: Wird hochgestemmt...
+fr: En train de le soulever...
+ru: Поднимаем...
+pl: Dźwiganie...
+
+en: Heave the shutter up from inside (slow, loud)
+zh-CN: 从里面把卷帘门抬起来（很慢，很吵）
+ja: 内側からシャッターを持ち上げる（遅く、うるさい）
+ko: 안쪽에서 셔터 들어 올리기(느리고 시끄러움)
+es: Levantar la persiana desde dentro (lento, ruidoso)
+pt-BR: Levantar a porta de enrolar por dentro (lento, barulhento)
+de: Rolltor von innen hochstemmen (langsam, laut)
+fr: Soulever le rideau de l'intérieur (lent, bruyant)
+ru: Поднять рольставни изнутри (медленно, громко)
+pl: Dźwignij roletę od środka (powoli, głośno)
+
+en: Shuttered. Bolt cutters or a crowbar would get you in
+zh-CN: 卷帘门已拉下。断线钳或撬棍能让你进去
+ja: シャッターが降りている。ボルトカッターかバールがあれば入れる
+ko: 셔터가 내려져 있습니다. 볼트 커터나 쇠지렛대가 있으면 들어갈 수 있습니다
+es: Persiana bajada. Con cizalla o palanca podrías entrar
+pt-BR: Fechada. Um alicate de corte ou pé de cabra colocaria você lá dentro
+de: Verrammelt. Mit Bolzenschneider oder Brecheisen kämst du rein
+fr: Rideau baissé. Un coupe-boulons ou un pied-de-biche vous ferait entrer
+ru: Рольставни опущены. Болторез или лом помогли бы войти
+pl: Roleta opuszczona. Nożyce do metalu albo łom pozwoliłyby wejść
+
+en: Locked. Bolt cutters or a crowbar would open it
+zh-CN: 已上锁。断线钳或撬棍能打开它
+ja: 鍵がかかっている。ボルトカッターかバールがあれば開く
+ko: 잠겨 있습니다. 볼트 커터나 쇠지렛대로 열 수 있습니다
+es: Cerrado. Una cizalla o una palanca lo abrirían
+pt-BR: Trancado. Um alicate de corte ou pé de cabra abriria
+de: Verschlossen. Bolzenschneider oder Brecheisen würden es öffnen
+fr: Verrouillé. Un coupe-boulons ou un pied-de-biche l'ouvrirait
+ru: Заперто. Болторез или лом открыли бы
+pl: Zamknięte. Nożyce do metalu albo łom by to otworzyły
+
+en: Alarm ringing (bolt cutters cut it)
+zh-CN: 警报正在响（断线钳可以剪断）
+ja: 警報が鳴っている（ボルトカッターで切断できる）
+ko: 경보가 울리는 중(볼트 커터로 끊을 수 있음)
+es: Alarma sonando (la cizalla la corta)
+pt-BR: Alarme tocando (o alicate de corte desliga)
+de: Alarm schrillt (Bolzenschneider kappt ihn)
+fr: Alarme en cours (le coupe-boulons la neutralise)
+ru: Сигнализация звенит (болторез её отключит)
+pl: Alarm dzwoni (nożyce do metalu go odetną)
+
+en: Wired alarm (bolt cutters cut it)
+zh-CN: 已布线的警报（断线钳可以剪断）
+ja: 警報装置あり（ボルトカッターで切断できる）
+ko: 설치된 경보(볼트 커터로 끊을 수 있음)
+es: Alarma conectada (la cizalla la corta)
+pt-BR: Alarme armado (o alicate de corte desliga)
+de: Scharfer Alarm (Bolzenschneider kappt ihn)
+fr: Alarme câblée (le coupe-boulons la neutralise)
+ru: Сигнализация под охраной (болторез её отключит)
+pl: Uzbrojony alarm (nożyce do metalu go odetną)
+
+en: Cut the alarm wires
+zh-CN: 剪断警报线
+ja: 警報の配線を切る
+ko: 경보 전선 자르기
+es: Cortar los cables de la alarma
+pt-BR: Cortar os fios do alarme
+de: Alarmkabel durchtrennen
+fr: Couper les fils de l'alarme
+ru: Перекусить провода сигнализации
+pl: Przetnij przewody alarmu
+
+en: Set the drill on the safe ({0:0} s, very loud)
+zh-CN: 把钻机架到保险箱上（{0:0} 秒，非常吵）
+ja: 金庫にドリルを据える（{0:0} 秒、非常にうるさい）
+ko: 금고에 드릴 설치({0:0}초, 매우 시끄러움)
+es: Montar el taladro en la caja fuerte ({0:0} s, muy ruidoso)
+pt-BR: Instalar a furadeira no cofre ({0:0} s, muito barulhento)
+de: Bohrer am Tresor ansetzen ({0:0} s, sehr laut)
+fr: Installer la perceuse sur le coffre ({0:0} s, très bruyant)
+ru: Установить дрель на сейф ({0:0} с, очень громко)
+pl: Zamontuj wiertarkę na sejfie ({0:0} s, bardzo głośno)
+
+en: Drilling... {0:0}%
+zh-CN: 正在钻孔... {0:0}%
+ja: 穿孔中... {0:0}%
+ko: 드릴 작업 중... {0:0}%
+es: Taladrando... {0:0}%
+pt-BR: Furando... {0:0}%
+de: Bohrt... {0:0}%
+fr: Perçage... {0:0}%
+ru: Сверление... {0:0}%
+pl: Wiercenie... {0:0}%
+
+en: The drill has jammed: free it ({0:0}%)
+zh-CN: 钻机卡住了：把它弄通（{0:0}%）
+ja: ドリルが詰まった：直そう（{0:0}%）
+ko: 드릴이 걸렸습니다: 풀어 주세요({0:0}%)
+es: El taladro se ha atascado: libéralo ({0:0}%)
+pt-BR: A furadeira travou: destrave ({0:0}%)
+de: Der Bohrer klemmt: lös ihn ({0:0}%)
+fr: La perceuse est bloquée : débloquez-la ({0:0}%)
+ru: Дрель заело: освободите её ({0:0}%)
+pl: Wiertarka się zacięła: odblokuj ją ({0:0}%)
+
+en: Crawl into the vent
+zh-CN: 爬进通风管
+ja: ダクトに入る
+ko: 환풍구로 기어 들어가기
+es: Meterse en el conducto
+pt-BR: Entrar no duto
+de: In den Schacht kriechen
+fr: Ramper dans le conduit
+ru: Залезть в вентиляцию
+pl: Wczołgaj się do szybu
+
+en: Crouch to crawl into the vent
+zh-CN: 蹲下才能爬进通风管
+ja: しゃがむとダクトに入れる
+ko: 웅크려야 환풍구로 들어갈 수 있습니다
+es: Agáchate para meterte en el conducto
+pt-BR: Agache para entrar no duto
+de: Duck dich, um in den Schacht zu kriechen
+fr: Accroupissez-vous pour entrer dans le conduit
+ru: Присядьте, чтобы залезть в вентиляцию
+pl: Kucnij, żeby wczołgać się do szybu
+
+en: Crouch ({0}) to fit into the vent
+zh-CN: 蹲下（{0}）才能钻进通风管
+ja: しゃがむ（{0}）とダクトに入れる
+ko: 웅크려야({0}) 환풍구에 들어갈 수 있습니다
+es: Agáchate ({0}) para caber en el conducto
+pt-BR: Agache ({0}) para caber no duto
+de: Duck dich ({0}), um in den Schacht zu passen
+fr: Accroupissez-vous ({0}) pour passer dans le conduit
+ru: Присядьте ({0}), чтобы пролезть в вентиляцию
+pl: Kucnij ({0}), żeby zmieścić się w szybie
+
+en: Too big to take through the vent
+zh-CN: 太大了，带不进通风管
+ja: 大きすぎてダクトを通せない
+ko: 너무 커서 환풍구로 가져갈 수 없습니다
+es: Demasiado grande para pasar por el conducto
+pt-BR: Grande demais para levar pelo duto
+de: Zu groß für den Schacht
+fr: Trop gros pour passer par le conduit
+ru: Слишком большое, в вентиляцию не пролезет
+pl: Za duże, żeby przenieść przez szyb
+
+en: Watch the security cameras
+zh-CN: 查看监控摄像头
+ja: 監視カメラを見る
+ko: 보안 카메라 보기
+es: Mirar las cámaras de seguridad
+pt-BR: Ver as câmeras de segurança
+de: Überwachungskameras ansehen
+fr: Regarder les caméras de sécurité
+ru: Смотреть камеры наблюдения
+pl: Oglądaj kamery ochrony
+
+en: The monitors are dead (no power here)
+zh-CN: 监视器没反应（这里没电）
+ja: モニターは消えている（ここは電気が来ていない）
+ko: 모니터가 꺼져 있습니다(이곳에 전력 없음)
+es: Los monitores están apagados (aquí no hay corriente)
+pt-BR: Os monitores estão apagados (sem energia aqui)
+de: Die Monitore sind tot (hier ist kein Strom)
+fr: Les écrans sont éteints (pas de courant ici)
+ru: Мониторы не работают (здесь нет электричества)
+pl: Monitory nie działają (nie ma tu prądu)
+
+en: A / D or click   next camera          {0}   get up
+zh-CN: A / D 或点击   下一个摄像头          {0}   起身
+ja: A / D またはクリック   次のカメラ          {0}   立ち上がる
+ko: A / D 또는 클릭   다음 카메라          {0}   일어나기
+es: A / D o clic   siguiente cámara          {0}   levantarse
+pt-BR: A / D ou clique   próxima câmera          {0}   levantar
+de: A / D oder Klick   nächste Kamera          {0}   aufstehen
+fr: A / D ou clic   caméra suivante          {0}   se lever
+ru: A / D или щелчок   следующая камера          {0}   встать
+pl: A / D lub kliknięcie   następna kamera          {0}   wstań
+
+en: The agency won't send anyone else today
+zh-CN: 中介今天不会再派人来了
+ja: 派遣会社は今日はもう誰もよこさない
+ko: 인력 사무소가 오늘은 더 이상 사람을 보내지 않습니다
+es: La agencia no enviará a nadie más hoy
+pt-BR: A agência não manda mais ninguém hoje
+de: Die Agentur schickt heute niemanden mehr
+fr: L'agence n'enverra plus personne aujourd'hui
+ru: Сегодня агентство больше никого не пришлёт
+pl: Agencja nikogo więcej dziś nie przyśle
+
+en: Hire a replacement for {0} (-${1:N0})
+zh-CN: 雇人接替 {0}（-${1:N0}）
+ja: {0} の代わりを雇う（-${1:N0}）
+ko: {0}의 대체 인력 고용(-${1:N0})
+es: Contratar un sustituto para {0} (-${1:N0})
+pt-BR: Contratar um substituto para {0} (-${1:N0})
+de: Ersatz für {0} anheuern (-${1:N0})
+fr: Embaucher un remplaçant pour {0} (-${1:N0})
+ru: Нанять замену для {0} (-${1:N0})
+pl: Zatrudnij zastępstwo za: {0} (-${1:N0})
+
+# Death causes written by the building (shown under YOU DIED)
+
+en: The mall came down on you.
+zh-CN: 商场塌在了你身上。
+ja: モールがあなたの上に崩れ落ちた。
+ko: 쇼핑몰이 당신 위로 무너졌습니다.
+es: El centro comercial se te vino encima.
+pt-BR: O shopping desabou em cima de você.
+de: Das Einkaufszentrum ist über dir eingestürzt.
+fr: Le centre commercial s'est effondré sur vous.
+ru: Торговый центр обрушился на вас.
+pl: Galeria zawaliła się na ciebie.
+
+en: Electrocuted in live water
+zh-CN: 在带电的水中触电身亡
+ja: 帯電した水で感電した
+ko: 전기가 흐르는 물에 감전됨
+es: Electrocutado en agua con corriente
+pt-BR: Eletrocutado em água energizada
+de: Stromschlag in stromführendem Wasser
+fr: Électrocuté dans une eau sous tension
+ru: Удар током в воде под напряжением
+pl: Porażenie prądem w wodzie pod napięciem
+
+en: fell with the freight lift
+zh-CN: 随货梯一起坠落
+ja: 貨物リフトと一緒に落ちた
+ko: 화물 승강기와 함께 추락함
+es: cayó con el montacargas
+pt-BR: caiu com o elevador de carga
+de: mit dem Lastenaufzug abgestürzt
+fr: a chuté avec le monte-charge
+ru: падение вместе с грузовым лифтом
+pl: runął razem z windą towarową

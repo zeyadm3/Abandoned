@@ -1,0 +1,1161 @@
+# Picking up, carrying and throwing (Interaction/*.cs), and the gear a worker carries (Equipment/*.cs).
+# Refusals are short: they flash under the crosshair.
+
+en: RECOVER
+zh-CN: 回收
+ja: 回収
+ko: 회수
+es: RECOGER
+pt-BR: PEGAR
+de: BERGEN
+fr: RÉCUPÉRER
+ru: ЗАБРАТЬ
+pl: ZABIERZ
+
+en: THROW / 00%
+zh-CN: 投掷 / 00%
+ja: 投げる / 00%
+ko: 던지기 / 00%
+es: LANZAR / 00%
+pt-BR: ARREMESSAR / 00%
+de: WERFEN / 00%
+fr: LANCER / 00%
+ru: БРОСОК / 00%
+pl: RZUT / 00%
+
+en: THROW / {0:00}%
+zh-CN: 投掷 / {0:00}%
+ja: 投げる / {0:00}%
+ko: 던지기 / {0:00}%
+es: LANZAR / {0:00}%
+pt-BR: ARREMESSAR / {0:00}%
+de: WERFEN / {0:00}%
+fr: LANCER / {0:00}%
+ru: БРОСОК / {0:00}%
+pl: RZUT / {0:00}%
+
+en: OBSTRUCTED
+zh-CN: 被挡住
+ja: 障害物あり
+ko: 막힘
+es: OBSTRUIDO
+pt-BR: OBSTRUÍDO
+de: BLOCKIERT
+fr: OBSTRUÉ
+ru: ЗАГОРОЖЕНО
+pl: ZABLOKOWANE
+
+en: INTERACT
+zh-CN: 互动
+ja: 調べる
+ko: 상호작용
+es: INTERACTUAR
+pt-BR: INTERAGIR
+de: INTERAGIEREN
+fr: INTERAGIR
+ru: ДЕЙСТВИЕ
+pl: INTERAKCJA
+
+en: SET DOWN
+zh-CN: 放下
+ja: 置く
+ko: 내려놓기
+es: DEJAR
+pt-BR: POUSAR
+de: ABSETZEN
+fr: POSER
+ru: ПОСТАВИТЬ
+pl: ODŁÓŻ
+
+en: ORIENT
+zh-CN: 调整朝向
+ja: 向きを変える
+ko: 방향 맞추기
+es: ORIENTAR
+pt-BR: ORIENTAR
+de: AUSRICHTEN
+fr: ORIENTER
+ru: ПОВЕРНУТЬ
+pl: USTAW
+
+en: CARRY
+zh-CN: 搬运
+ja: 運ぶ
+ko: 운반
+es: LLEVAR
+pt-BR: CARREGAR
+de: TRAGEN
+fr: PORTER
+ru: НЕСТИ
+pl: NIEŚ
+
+en: No support / release [{0}] to reposition
+zh-CN: 没有支撑 / 松开 [{0}] 重新调整位置
+ja: 置き場がない / [{0}] を離して位置を変える
+ko: 받침 없음 / [{0}]을 놓고 위치 조정
+es: Sin apoyo / suelta [{0}] para recolocar
+pt-BR: Sem apoio / solte [{0}] para reposicionar
+de: Kein Untergrund / [{0}] loslassen und neu ansetzen
+fr: Pas d'appui / relâchez [{0}] pour repositionner
+ru: Нет опоры / отпустите [{0}], чтобы сменить место
+pl: Brak podparcia / puść [{0}], żeby zmienić miejsce
+
+en: [{0}] hold to place / release to cancel
+zh-CN: [{0}] 按住放置 / 松开取消
+ja: [{0}] 長押しで置く / 離してキャンセル
+ko: [{0}] 누르고 있으면 놓기 / 떼면 취소
+es: [{0}] mantener para colocar / soltar para cancelar
+pt-BR: [{0}] segure para colocar / solte para cancelar
+de: [{0}] halten zum Platzieren / loslassen zum Abbrechen
+fr: [{0}] maintenir pour poser / relâcher pour annuler
+ru: [{0}] удерживать — поставить / отпустить — отмена
+pl: [{0}] przytrzymaj, by odłożyć / puść, by anulować
+
+en: [{0}] hold + mouse / rotate   release / look
+zh-CN: [{0}] 按住 + 鼠标 / 旋转   松开 / 观察
+ja: [{0}] 長押し＋マウス / 回転   離す / 視点
+ko: [{0}] 누르기 + 마우스 / 돌리기   떼기 / 둘러보기
+es: [{0}] mantener + ratón / girar   soltar / mirar
+pt-BR: [{0}] segurar + mouse / girar   soltar / olhar
+de: [{0}] halten + Maus / drehen   loslassen / umsehen
+fr: [{0}] maintenir + souris / tourner   relâcher / regarder
+ru: [{0}] удерживать + мышь / вращать   отпустить / осмотреться
+pl: [{0}] przytrzymaj + mysz / obracaj   puść / rozglądaj się
+
+en: [{0}] Grab {1} - {2}
+zh-CN: [{0}] 抓住 {1} - {2}
+ja: [{0}] {1} をつかむ - {2}
+ko: [{0}] {1} 잡기 - {2}
+es: [{0}] Agarrar {1} - {2}
+pt-BR: [{0}] Agarrar {1} - {2}
+de: [{0}] {1} greifen - {2}
+fr: [{0}] Saisir {1} - {2}
+ru: [{0}] Взяться: {1} - {2}
+pl: [{0}] Złap: {1} - {2}
+
+en: [{0}] Pick up {1}
+zh-CN: [{0}] 拾取 {1}
+ja: [{0}] {1} を拾う
+ko: [{0}] {1} 줍기
+es: [{0}] Recoger {1}
+pt-BR: [{0}] Pegar {1}
+de: [{0}] {1} aufheben
+fr: [{0}] Ramasser {1}
+ru: [{0}] Подобрать: {1}
+pl: [{0}] Podnieś: {1}
+
+en: {0}: {1}   [{2}] let go
+zh-CN: {0}：{1}   [{2}] 松手
+ja: {0}：{1}   [{2}] 手を離す
+ko: {0}: {1}   [{2}] 놓기
+es: {0}: {1}   [{2}] soltar
+pt-BR: {0}: {1}   [{2}] soltar
+de: {0}: {1}   [{2}] loslassen
+fr: {0} : {1}   [{2}] lâcher
+ru: {0}: {1}   [{2}] отпустить
+pl: {0}: {1}   [{2}] puść
+
+en: Dragging {0}   [{1}] let go
+zh-CN: 正在拖动 {0}   [{1}] 松手
+ja: {0} を引きずり中   [{1}] 手を離す
+ko: {0} 끄는 중   [{1}] 놓기
+es: Arrastrando {0}   [{1}] soltar
+pt-BR: Arrastando {0}   [{1}] soltar
+de: Ziehe {0}   [{1}] loslassen
+fr: Traction : {0}   [{1}] lâcher
+ru: Волоком: {0}   [{1}] отпустить
+pl: Ciągniesz: {0}   [{1}] puść
+
+en: [{0}] hold / throw   [{1}] tap / drop, hold / place   [{2}] rotate
+zh-CN: [{0}] 按住 / 投掷   [{1}] 轻按 / 丢下，按住 / 放置   [{2}] 旋转
+ja: [{0}] 長押し / 投げる   [{1}] 短押し / 落とす、長押し / 置く   [{2}] 回転
+ko: [{0}] 길게 / 던지기   [{1}] 짧게 / 떨어뜨리기, 길게 / 놓기   [{2}] 돌리기
+es: [{0}] mantener / lanzar   [{1}] pulsar / soltar, mantener / colocar   [{2}] girar
+pt-BR: [{0}] segurar / arremessar   [{1}] tocar / soltar, segurar / colocar   [{2}] girar
+de: [{0}] halten / werfen   [{1}] tippen / fallen lassen, halten / platzieren   [{2}] drehen
+fr: [{0}] maintenir / lancer   [{1}] appui / lâcher, maintenir / poser   [{2}] tourner
+ru: [{0}] удерживать / бросок   [{1}] нажать / бросить, удерживать / поставить   [{2}] вращать
+pl: [{0}] przytrzymaj / rzuć   [{1}] naciśnij / upuść, przytrzymaj / odłóż   [{2}] obracaj
+
+en: {0} ({1:0.#} kg)
+zh-CN: {0}（{1:0.#} 公斤）
+ja: {0}（{1:0.#} kg）
+ko: {0} ({1:0.#} kg)
+es: {0} ({1:0.#} kg)
+pt-BR: {0} ({1:0.#} kg)
+de: {0} ({1:0.#} kg)
+fr: {0} ({1:0.#} kg)
+ru: {0} ({1:0.#} кг)
+pl: {0} ({1:0.#} kg)
+
+en: Read {0}
+zh-CN: 阅读{0}
+ja: {0}を読む
+ko: {0} 읽기
+es: Leer {0}
+pt-BR: Ler {0}
+de: {0} lesen
+fr: Lire {0}
+ru: Прочитать: {0}
+pl: Przeczytaj: {0}
+
+en: Fold it away
+zh-CN: 折好收起
+ja: たたんでしまう
+ko: 접어 넣기
+es: Guardarla
+pt-BR: Guardar
+de: Wegstecken
+fr: La replier
+ru: Убрать
+pl: Schowaj
+
+# Refusals
+
+en: Nothing to pick up
+zh-CN: 没有可拾取的东西
+ja: 拾える物がない
+ko: 주울 것이 없습니다
+es: Nada que recoger
+pt-BR: Nada para pegar
+de: Nichts zum Aufheben
+fr: Rien à ramasser
+ru: Нечего подбирать
+pl: Nie ma czego podnieść
+
+en: Grab one of its handles
+zh-CN: 抓住它的一个把手
+ja: 取っ手のひとつをつかもう
+ko: 손잡이 중 하나를 잡으세요
+es: Agarra una de sus asas
+pt-BR: Segure uma das alças
+de: Pack einen der Griffe
+fr: Saisissez l'une de ses poignées
+ru: Возьмитесь за одну из ручек
+pl: Złap za jeden z uchwytów
+
+en: You're down
+zh-CN: 你倒下了
+ja: 倒れている
+ko: 쓰러져 있습니다
+es: Estás en el suelo
+pt-BR: Você está caído
+de: Du liegst am Boden
+fr: Vous êtes à terre
+ru: Вы сбиты с ног
+pl: Leżysz
+
+en: Someone else has it
+zh-CN: 别人拿着它
+ja: 他の誰かが持っている
+ko: 다른 사람이 들고 있습니다
+es: Lo tiene otra persona
+pt-BR: Outra pessoa está com isso
+de: Jemand anderes hat es
+fr: Quelqu'un d'autre le tient
+ru: Это уже у кого-то
+pl: Ktoś inny to trzyma
+
+en: Too far away
+zh-CN: 太远了
+ja: 遠すぎる
+ko: 너무 멉니다
+es: Demasiado lejos
+pt-BR: Longe demais
+de: Zu weit weg
+fr: Trop loin
+ru: Слишком далеко
+pl: Za daleko
+
+en: Too heavy — needs 3–4 people or a trolley and ramp
+zh-CN: 太重了 — 需要 3–4 人，或者手推车加坡道
+ja: 重すぎる — 3〜4人、または台車とスロープが必要
+ko: 너무 무겁습니다 — 3~4명 또는 수레와 경사로가 필요합니다
+es: Demasiado pesado — hacen falta 3–4 personas o una carretilla y rampa
+pt-BR: Pesado demais — precisa de 3–4 pessoas ou de um carrinho e rampa
+de: Zu schwer — braucht 3–4 Leute oder Karre und Rampe
+fr: Trop lourd — il faut 3–4 personnes ou un diable et une rampe
+ru: Слишком тяжело — нужны 3–4 человека или тележка и пандус
+pl: Za ciężkie — potrzeba 3–4 osób albo wózka i rampy
+
+en: Too heavy — needs 2 people or a hand trolley
+zh-CN: 太重了 — 需要 2 人或一辆手推车
+ja: 重すぎる — 2人、または台車が必要
+ko: 너무 무겁습니다 — 2명 또는 손수레가 필요합니다
+es: Demasiado pesado — hacen falta 2 personas o una carretilla
+pt-BR: Pesado demais — precisa de 2 pessoas ou de um carrinho
+de: Zu schwer — braucht 2 Leute oder eine Sackkarre
+fr: Trop lourd — il faut 2 personnes ou un diable
+ru: Слишком тяжело — нужны 2 человека или тележка
+pl: Za ciężkie — potrzeba 2 osób albo wózka
+
+en: Pockets full
+zh-CN: 口袋满了
+ja: ポケットがいっぱい
+ko: 주머니가 가득 찼습니다
+es: Bolsillos llenos
+pt-BR: Bolsos cheios
+de: Taschen voll
+fr: Poches pleines
+ru: Карманы полны
+pl: Kieszenie pełne
+
+en: Hands full
+zh-CN: 手里拿满了
+ja: 手がふさがっている
+ko: 손이 가득 찼습니다
+es: Manos ocupadas
+pt-BR: Mãos ocupadas
+de: Hände voll
+fr: Mains pleines
+ru: Руки заняты
+pl: Ręce zajęte
+
+en: You're already holding it
+zh-CN: 你已经拿着它了
+ja: すでに持っている
+ko: 이미 들고 있습니다
+es: Ya lo estás sujetando
+pt-BR: Você já está segurando
+de: Du hältst es schon
+fr: Vous le tenez déjà
+ru: Вы уже это держите
+pl: Już to trzymasz
+
+en: No free handhold
+zh-CN: 没有空着的把手
+ja: 空いている取っ手がない
+ko: 빈 손잡이가 없습니다
+es: No queda asa libre
+pt-BR: Nenhuma alça livre
+de: Kein Griff frei
+fr: Aucune poignée libre
+ru: Нет свободной ручки
+pl: Brak wolnego uchwytu
+
+en: Pockets empty
+zh-CN: 口袋是空的
+ja: ポケットは空
+ko: 주머니가 비어 있습니다
+es: Bolsillos vacíos
+pt-BR: Bolsos vazios
+de: Taschen leer
+fr: Poches vides
+ru: Карманы пусты
+pl: Kieszenie puste
+
+en: Moved too far from the item
+zh-CN: 离物品太远了
+ja: 物から離れすぎた
+ko: 물건에서 너무 멀어졌습니다
+es: Te has alejado demasiado del objeto
+pt-BR: Você se afastou demais do item
+de: Zu weit vom Gegenstand entfernt
+fr: Vous vous êtes trop éloigné de l'objet
+ru: Вы отошли слишком далеко от предмета
+pl: Za bardzo oddaliłeś się od przedmiotu
+
+# Carrying together
+
+en: Carrying {0}/{1} - lifted
+zh-CN: 搬运 {0}/{1} - 已抬起
+ja: 運搬 {0}/{1} - 持ち上げた
+ko: 운반 {0}/{1} - 들어 올림
+es: Llevando {0}/{1} - levantado
+pt-BR: Carregando {0}/{1} - levantado
+de: Tragen {0}/{1} - angehoben
+fr: Portage {0}/{1} - soulevé
+ru: Несут {0}/{1} - поднято
+pl: Niosą {0}/{1} - podniesione
+
+en: Carrying {0}/{1} - {2}
+zh-CN: 搬运 {0}/{1} - {2}
+ja: 運搬 {0}/{1} - {2}
+ko: 운반 {0}/{1} - {2}
+es: Llevando {0}/{1} - {2}
+pt-BR: Carregando {0}/{1} - {2}
+de: Tragen {0}/{1} - {2}
+fr: Portage {0}/{1} - {2}
+ru: Несут {0}/{1} - {2}
+pl: Niosą {0}/{1} - {2}
+
+en: needs {0} more person | needs {0} more people
+zh-CN: 还需要 {0} 人
+ja: あと {0} 人必要
+ko: {0}명 더 필요
+es: falta {0} persona más | faltan {0} personas más
+pt-BR: precisa de mais {0} pessoa | precisa de mais {0} pessoas
+de: braucht noch {0} Person | braucht noch {0} Personen
+fr: il faut {0} personne de plus | il faut {0} personnes de plus
+ru: нужен ещё {0} человек | нужны ещё {0} человека | нужно ещё {0} человек
+pl: potrzeba jeszcze {0} osoby | potrzeba jeszcze {0} osób | potrzeba jeszcze {0} osób
+
+en: needs {0} person | needs {0} people
+zh-CN: 需要 {0} 人
+ja: {0} 人必要
+ko: {0}명 필요
+es: hace falta {0} persona | hacen falta {0} personas
+pt-BR: precisa de {0} pessoa | precisa de {0} pessoas
+de: braucht {0} Person | braucht {0} Personen
+fr: il faut {0} personne | il faut {0} personnes
+ru: нужен {0} человек | нужны {0} человека | нужно {0} человек
+pl: potrzeba {0} osoby | potrzeba {0} osób | potrzeba {0} osób
+
+en: {0} (dragging)
+zh-CN: {0}（拖行中）
+ja: {0}（引きずり中）
+ko: {0} (끄는 중)
+es: {0} (arrastrando)
+pt-BR: {0} (arrastando)
+de: {0} (wird gezogen)
+fr: {0} (traîné)
+ru: {0} (волоком)
+pl: {0} (ciągnięte)
+
+en: {0} (barely budges)
+zh-CN: {0}（几乎挪不动）
+ja: {0}（ほとんど動かない）
+ko: {0} (거의 안 움직임)
+es: {0} (apenas se mueve)
+pt-BR: {0} (mal se mexe)
+de: {0} (rührt sich kaum)
+fr: {0} (bouge à peine)
+ru: {0} (едва сдвигается)
+pl: {0} (ledwo drgnie)
+
+en: {0}/{1} holding
+zh-CN: {0}/{1} 人抓着
+ja: {0}/{1} 人が保持
+ko: {0}/{1}명이 잡는 중
+es: {0}/{1} sujetando
+pt-BR: {0}/{1} segurando
+de: {0}/{1} halten
+fr: {0}/{1} en prise
+ru: держат: {0}/{1}
+pl: trzyma: {0}/{1}
+
+# Gear: the supply terminal and the gear rack
+
+en: Shop for gear
+zh-CN: 购买装备
+ja: 装備を買う
+ko: 장비 구매
+es: Comprar equipo
+pt-BR: Comprar equipamento
+de: Ausrüstung kaufen
+fr: Acheter du matériel
+ru: Купить снаряжение
+pl: Kup sprzęt
+
+en: Take gear (hand slots 1 and 2)
+zh-CN: 领取装备（手持栏位 1 和 2）
+ja: 装備を取る（手のスロット1と2）
+ko: 장비 챙기기(손 슬롯 1, 2)
+es: Coger equipo (ranuras de mano 1 y 2)
+pt-BR: Pegar equipamento (espaços de mão 1 e 2)
+de: Ausrüstung nehmen (Handplätze 1 und 2)
+fr: Prendre du matériel (emplacements de main 1 et 2)
+ru: Взять снаряжение (слоты рук 1 и 2)
+pl: Weź sprzęt (sloty rąk 1 i 2)
+
+en: {0} - SUPPLY TERMINAL v2.1
+zh-CN: {0} - 补给终端 v2.1
+ja: {0} - 補給端末 v2.1
+ko: {0} - 보급 단말기 v2.1
+es: {0} - TERMINAL DE SUMINISTROS v2.1
+pt-BR: {0} - TERMINAL DE SUPRIMENTOS v2.1
+de: {0} - VERSORGUNGSTERMINAL v2.1
+fr: {0} - TERMINAL D'APPROVISIONNEMENT v2.1
+ru: {0} - ТЕРМИНАЛ СНАБЖЕНИЯ v2.1
+pl: {0} - TERMINAL ZAOPATRZENIA v2.1
+
+en: FUNDS {0}     CLEARANCE LEVEL {1}
+zh-CN: 资金 {0}     权限等级 {1}
+ja: 資金 {0}     権限レベル {1}
+ko: 자금 {0}     권한 레벨 {1}
+es: FONDOS {0}     NIVEL DE ACCESO {1}
+pt-BR: CAIXA {0}     NÍVEL DE ACESSO {1}
+de: KASSE {0}     FREIGABESTUFE {1}
+fr: FONDS {0}     NIVEAU D'HABILITATION {1}
+ru: СРЕДСТВА {0}     УРОВЕНЬ ДОПУСКА {1}
+pl: FUNDUSZE {0}     POZIOM DOSTĘPU {1}
+
+en: -${0:N0} (DEBT)
+zh-CN: -${0:N0}（负债）
+ja: -${0:N0}（負債）
+ko: -${0:N0} (부채)
+es: -${0:N0} (DEUDA)
+pt-BR: -${0:N0} (DÍVIDA)
+de: -${0:N0} (SCHULDEN)
+fr: -${0:N0} (DETTE)
+ru: -${0:N0} (ДОЛГ)
+pl: -${0:N0} (DŁUG)
+
+en: GEAR
+zh-CN: 装备
+ja: 装備
+ko: 장비
+es: EQUIPO
+pt-BR: EQUIPAMENTO
+de: AUSRÜSTUNG
+fr: MATÉRIEL
+ru: СНАРЯЖЕНИЕ
+pl: SPRZĘT
+
+en: TRUCK
+zh-CN: 卡车
+ja: トラック
+ko: 트럭
+es: CAMIÓN
+pt-BR: CAMINHÃO
+de: LASTER
+fr: CAMION
+ru: ГРУЗОВИК
+pl: CIĘŻARÓWKA
+
+en: [ LOG OFF ]
+zh-CN: [ 注销 ]
+ja: [ ログオフ ]
+ko: [ 로그오프 ]
+es: [ CERRAR SESIÓN ]
+pt-BR: [ SAIR ]
+de: [ ABMELDEN ]
+fr: [ DÉCONNEXION ]
+ru: [ ВЫЙТИ ]
+pl: [ WYLOGUJ ]
+
+en: > POINT AT AN ITEM FOR ITS SPEC SHEET.
+zh-CN: > 指向一件物品以查看其规格表。
+ja: > 品目にカーソルを合わせると仕様書を表示。
+ko: > 항목을 가리키면 사양서가 표시됩니다.
+es: > APUNTA A UN ARTÍCULO PARA VER SU FICHA.
+pt-BR: > APONTE PARA UM ITEM PARA VER A FICHA.
+de: > AUF EINEN ARTIKEL ZEIGEN FÜR DAS DATENBLATT.
+fr: > POINTEZ UN ARTICLE POUR VOIR SA FICHE.
+ru: > НАВЕДИТЕ НА ТОВАР, ЧТОБЫ УВИДЕТЬ ОПИСАНИЕ.
+pl: > WSKAŻ PRZEDMIOT, ŻEBY ZOBACZYĆ JEGO KARTĘ.
+
+en: {0} (1 USE)
+zh-CN: {0}（一次性）
+ja: {0}（1回限り）
+ko: {0} (1회용)
+es: {0} (1 USO)
+pt-BR: {0} (1 USO)
+de: {0} (1 EINSATZ)
+fr: {0} (1 USAGE)
+ru: {0} (1 РАЗ)
+pl: {0} (1 UŻYCIE)
+
+en: LEVEL {0}
+zh-CN: 等级 {0}
+ja: レベル {0}
+ko: 레벨 {0}
+es: NIVEL {0}
+pt-BR: NÍVEL {0}
+de: STUFE {0}
+fr: NIVEAU {0}
+ru: УРОВЕНЬ {0}
+pl: POZIOM {0}
+
+en: OWNED {0}
+zh-CN: 已有 {0}
+ja: 所持 {0}
+ko: 보유 {0}
+es: EN PROPIEDAD {0}
+pt-BR: EM ESTOQUE {0}
+de: VORHANDEN {0}
+fr: EN STOCK {0}
+ru: ЕСТЬ {0}
+pl: POSIADANE {0}
+
+en: FITTED
+zh-CN: 已安装
+ja: 装着済み
+ko: 장착됨
+es: INSTALADO
+pt-BR: INSTALADO
+de: EINGEBAUT
+fr: INSTALLÉ
+ru: УСТАНОВЛЕНО
+pl: ZAMONTOWANE
+
+en: UPGRADE
+zh-CN: 升级
+ja: アップグレード
+ko: 업그레이드
+es: MEJORA
+pt-BR: MELHORIA
+de: UPGRADE
+fr: AMÉLIORATION
+ru: УЛУЧШЕНИЕ
+pl: ULEPSZENIE
+
+en: GEAR RACK
+zh-CN: 装备架
+ja: 装備ラック
+ko: 장비 거치대
+es: ESTANTE DE EQUIPO
+pt-BR: ESTANTE DE EQUIPAMENTOS
+de: AUSRÜSTUNGSREGAL
+fr: RÂTELIER DE MATÉRIEL
+ru: СТЕЛЛАЖ СО СНАРЯЖЕНИЕМ
+pl: STOJAK ZE SPRZĘTEM
+
+en: Fill your two hand slots from what the company owns.
+zh-CN: 用公司现有的装备填满你的两个手持栏位。
+ja: 会社の備品で、2つの手のスロットを埋めよう。
+ko: 회사가 가진 장비로 손 슬롯 두 칸을 채우세요.
+es: Llena tus dos ranuras de mano con lo que tiene la empresa.
+pt-BR: Preencha seus dois espaços de mão com o que a empresa tem.
+de: Füll deine zwei Handplätze mit dem, was die Firma besitzt.
+fr: Remplissez vos deux emplacements de main avec ce que possède l'entreprise.
+ru: Заполните два слота рук тем, что есть у компании.
+pl: Zapełnij dwa sloty rąk tym, co ma firma.
+
+en: HAND SLOT {0} ({1}): {2}
+zh-CN: 手持栏位 {0}（{1}）：{2}
+ja: 手のスロット{0}（{1}）：{2}
+ko: 손 슬롯 {0} ({1}): {2}
+es: RANURA DE MANO {0} ({1}): {2}
+pt-BR: ESPAÇO DE MÃO {0} ({1}): {2}
+de: HANDPLATZ {0} ({1}): {2}
+fr: EMPLACEMENT DE MAIN {0} ({1}) : {2}
+ru: СЛОТ РУКИ {0} ({1}): {2}
+pl: SLOT RĘKI {0} ({1}): {2}
+
+en: empty
+zh-CN: 空
+ja: 空
+ko: 비어 있음
+es: vacía
+pt-BR: vazio
+de: leer
+fr: vide
+ru: пусто
+pl: pusty
+
+en: {0}: flashlight. Hold {1}: radio. Single-use gear is used with {2} when your hands are empty.
+zh-CN: {0}：手电筒。按住 {1}：对讲机。一次性装备在空手时用 {2} 使用。
+ja: {0}：懐中電灯。{1} 長押し：無線。使い切りの装備は、手が空のとき {2} で使う。
+ko: {0}: 손전등. {1} 길게: 무전기. 일회용 장비는 빈손일 때 {2}로 사용합니다.
+es: {0}: linterna. Mantén {1}: radio. El equipo de un solo uso se usa con {2} con las manos vacías.
+pt-BR: {0}: lanterna. Segure {1}: rádio. Equipamento de uso único é usado com {2} quando suas mãos estão vazias.
+de: {0}: Taschenlampe. {1} halten: Funk. Einweg-Ausrüstung benutzt du mit {2}, wenn deine Hände leer sind.
+fr: {0} : lampe torche. Maintenez {1} : radio. Le matériel à usage unique s'utilise avec {2}, mains vides.
+ru: {0}: фонарик. Удерживайте {1}: рация. Одноразовое снаряжение используется клавишей {2} с пустыми руками.
+pl: {0}: latarka. Przytrzymaj {1}: radio. Sprzętu jednorazowego używasz klawiszem {2}, gdy masz puste ręce.
+
+# Tools in use
+
+en: DRONE  {0:0} s      {1}  bring it home      {2} / {3}  up / down
+zh-CN: 无人机  {0:0} 秒      {1}  召回      {2} / {3}  上升 / 下降
+ja: ドローン  {0:0} 秒      {1}  帰還させる      {2} / {3}  上昇 / 下降
+ko: 드론  {0:0}초      {1}  복귀시키기      {2} / {3}  상승 / 하강
+es: DRON  {0:0} s      {1}  traerlo de vuelta      {2} / {3}  subir / bajar
+pt-BR: DRONE  {0:0} s      {1}  trazer de volta      {2} / {3}  subir / descer
+de: DROHNE  {0:0} s      {1}  zurückholen      {2} / {3}  hoch / runter
+fr: DRONE  {0:0} s      {1}  le ramener      {2} / {3}  monter / descendre
+ru: ДРОН  {0:0} с      {1}  вернуть      {2} / {3}  вверх / вниз
+pl: DRON  {0:0} s      {1}  sprowadź z powrotem      {2} / {3}  w górę / w dół
+
+en: THERMAL  {0:0} s
+zh-CN: 热成像  {0:0} 秒
+ja: サーマル  {0:0} 秒
+ko: 열화상  {0:0}초
+es: TÉRMICA  {0:0} s
+pt-BR: TÉRMICA  {0:0} s
+de: WÄRMEBILD  {0:0} s
+fr: THERMIQUE  {0:0} s
+ru: ТЕПЛОВИЗОР  {0:0} с
+pl: TERMOWIZJA  {0:0} s
+
+en: NIGHT VISION {0}  {1:P0}\n<color=#999999>{2}: switch</color>
+zh-CN: 夜视 {0}  {1:P0}\n<color=#999999>{2}：切换</color>
+ja: 暗視 {0}  {1:P0}\n<color=#999999>{2}：切り替え</color>
+ko: 야간 투시 {0}  {1:P0}\n<color=#999999>{2}: 전환</color>
+es: VISIÓN NOCTURNA {0}  {1:P0}\n<color=#999999>{2}: cambiar</color>
+pt-BR: VISÃO NOTURNA {0}  {1:P0}\n<color=#999999>{2}: alternar</color>
+de: NACHTSICHT {0}  {1:P0}\n<color=#999999>{2}: umschalten</color>
+fr: VISION NOCTURNE {0}  {1:P0}\n<color=#999999>{2} : basculer</color>
+ru: НОЧНОЕ ВИДЕНИЕ {0}  {1:P0}\n<color=#999999>{2}: переключить</color>
+pl: NOKTOWIZJA {0}  {1:P0}\n<color=#999999>{2}: przełącz</color>
+
+en: MOTION SENSOR
+zh-CN: 动作感应器
+ja: 動体センサー
+ko: 동작 감지기
+es: SENSOR DE MOVIMIENTO
+pt-BR: SENSOR DE MOVIMENTO
+de: BEWEGUNGSSENSOR
+fr: DÉTECTEUR DE MOUVEMENT
+ru: ДАТЧИК ДВИЖЕНИЯ
+pl: CZUJNIK RUCHU
+
+en: PASSIVE / RANGE {0:0} M
+zh-CN: 被动 / 范围 {0:0} 米
+ja: パッシブ / 範囲 {0:0} M
+ko: 수동 / 범위 {0:0} M
+es: PASIVO / ALCANCE {0:0} M
+pt-BR: PASSIVO / ALCANCE {0:0} M
+de: PASSIV / REICHWEITE {0:0} M
+fr: PASSIF / PORTÉE {0:0} M
+ru: ПАССИВНЫЙ / ДАЛЬНОСТЬ {0:0} М
+pl: PASYWNY / ZASIĘG {0:0} M
+
+en: NO MOVEMENT DETECTED
+zh-CN: 未检测到动静
+ja: 動きは検知されていない
+ko: 감지된 움직임 없음
+es: SIN MOVIMIENTO DETECTADO
+pt-BR: NENHUM MOVIMENTO DETECTADO
+de: KEINE BEWEGUNG ERKANNT
+fr: AUCUN MOUVEMENT DÉTECTÉ
+ru: ДВИЖЕНИЕ НЕ ОБНАРУЖЕНО
+pl: NIE WYKRYTO RUCHU
+
+en: MOVING CONTACTS / {0:00}
+zh-CN: 移动目标 / {0:00}
+ja: 動体反応 / {0:00}
+ko: 이동 물체 / {0:00}
+es: CONTACTOS EN MOVIMIENTO / {0:00}
+pt-BR: CONTATOS EM MOVIMENTO / {0:00}
+de: BEWEGTE KONTAKTE / {0:00}
+fr: CONTACTS EN MOUVEMENT / {0:00}
+ru: ДВИЖУЩИЕСЯ ЦЕЛИ / {0:00}
+pl: RUCHOME OBIEKTY / {0:00}
+
+en: ABOVE
+zh-CN: 上方
+ja: 上
+ko: 위
+es: ARRIBA
+pt-BR: ACIMA
+de: OBEN
+fr: AU-DESSUS
+ru: ВЫШЕ
+pl: WYŻEJ
+
+en: BELOW
+zh-CN: 下方
+ja: 下
+ko: 아래
+es: ABAJO
+pt-BR: ABAIXO
+de: UNTEN
+fr: EN DESSOUS
+ru: НИЖЕ
+pl: NIŻEJ
+
+en: AHEAD
+zh-CN: 前方
+ja: 前方
+ko: 앞
+es: DELANTE
+pt-BR: À FRENTE
+de: VORAUS
+fr: DEVANT
+ru: ВПЕРЕДИ
+pl: Z PRZODU
+
+en: AHEAD-RIGHT
+zh-CN: 右前方
+ja: 右前方
+ko: 오른쪽 앞
+es: DELANTE-DERECHA
+pt-BR: FRENTE-DIREITA
+de: VORN RECHTS
+fr: DEVANT-DROITE
+ru: ВПЕРЕДИ СПРАВА
+pl: Z PRZODU Z PRAWEJ
+
+en: RIGHT
+zh-CN: 右侧
+ja: 右
+ko: 오른쪽
+es: DERECHA
+pt-BR: DIREITA
+de: RECHTS
+fr: DROITE
+ru: СПРАВА
+pl: Z PRAWEJ
+
+en: BEHIND-RIGHT
+zh-CN: 右后方
+ja: 右後方
+ko: 오른쪽 뒤
+es: DETRÁS-DERECHA
+pt-BR: ATRÁS-DIREITA
+de: HINTEN RECHTS
+fr: DERRIÈRE-DROITE
+ru: СЗАДИ СПРАВА
+pl: Z TYŁU Z PRAWEJ
+
+en: AHEAD-LEFT
+zh-CN: 左前方
+ja: 左前方
+ko: 왼쪽 앞
+es: DELANTE-IZQUIERDA
+pt-BR: FRENTE-ESQUERDA
+de: VORN LINKS
+fr: DEVANT-GAUCHE
+ru: ВПЕРЕДИ СЛЕВА
+pl: Z PRZODU Z LEWEJ
+
+en: LEFT
+zh-CN: 左侧
+ja: 左
+ko: 왼쪽
+es: IZQUIERDA
+pt-BR: ESQUERDA
+de: LINKS
+fr: GAUCHE
+ru: СЛЕВА
+pl: Z LEWEJ
+
+en: BEHIND-LEFT
+zh-CN: 左后方
+ja: 左後方
+ko: 왼쪽 뒤
+es: DETRÁS-IZQUIERDA
+pt-BR: ATRÁS-ESQUERDA
+de: HINTEN LINKS
+fr: DERRIÈRE-GAUCHE
+ru: СЗАДИ СЛЕВА
+pl: Z TYŁU Z LEWEJ
+
+en: BEHIND
+zh-CN: 后方
+ja: 後方
+ko: 뒤
+es: DETRÁS
+pt-BR: ATRÁS
+de: HINTEN
+fr: DERRIÈRE
+ru: СЗАДИ
+pl: Z TYŁU
+
+en: STRUCTURE SCAN
+zh-CN: 结构扫描
+ja: 構造スキャン
+ko: 구조 스캔
+es: ESCÁNER ESTRUCTURAL
+pt-BR: VARREDURA ESTRUTURAL
+de: STRUKTURSCAN
+fr: SCAN DE STRUCTURE
+ru: СКАН КОНСТРУКЦИИ
+pl: SKAN KONSTRUKCJI
+
+en: SURFACE / LOAD DIAGNOSTIC
+zh-CN: 表面 / 负载诊断
+ja: 表面 / 荷重診断
+ko: 표면 / 하중 진단
+es: SUPERFICIE / DIAGNÓSTICO DE CARGA
+pt-BR: SUPERFÍCIE / DIAGNÓSTICO DE CARGA
+de: OBERFLÄCHE / LASTDIAGNOSE
+fr: SURFACE / DIAGNOSTIC DE CHARGE
+ru: ПОВЕРХНОСТЬ / ДИАГНОСТИКА НАГРУЗКИ
+pl: POWIERZCHNIA / DIAGNOSTYKA OBCIĄŻENIA
+
+en: {0:0} / {1:0} KG
+zh-CN: {0:0} / {1:0} 公斤
+ja: {0:0} / {1:0} KG
+ko: {0:0} / {1:0} KG
+es: {0:0} / {1:0} KG
+pt-BR: {0:0} / {1:0} KG
+de: {0:0} / {1:0} KG
+fr: {0:0} / {1:0} KG
+ru: {0:0} / {1:0} КГ
+pl: {0:0} / {1:0} KG
+
+en: LOAD / {0}
+zh-CN: 负载 / {0}
+ja: 荷重 / {0}
+ko: 하중 / {0}
+es: CARGA / {0}
+pt-BR: CARGA / {0}
+de: LAST / {0}
+fr: CHARGE / {0}
+ru: НАГРУЗКА / {0}
+pl: OBCIĄŻENIE / {0}
+
+key: stage.Stable
+en: Stable
+zh-CN: 稳定
+ja: 安定
+ko: 안정
+es: Estable
+pt-BR: Estável
+de: Stabil
+fr: Stable
+ru: Устойчиво
+pl: Stabilna
+
+key: stage.Stressed
+en: Stressed
+zh-CN: 受压
+ja: 負荷あり
+ko: 하중 받음
+es: Bajo carga
+pt-BR: Sob tensão
+de: Belastet
+fr: Sous contrainte
+ru: Под нагрузкой
+pl: Obciążona
+
+key: stage.Cracking
+en: Cracking
+zh-CN: 开裂中
+ja: ひび割れ
+ko: 균열 중
+es: Agrietándose
+pt-BR: Rachando
+de: Reißt
+fr: Fissuration
+ru: Трескается
+pl: Pęka
+
+key: stage.Failing
+en: Failing
+zh-CN: 即将失效
+ja: 崩落寸前
+ko: 붕괴 직전
+es: Cediendo
+pt-BR: Cedendo
+de: Versagt
+fr: Rupture imminente
+ru: Не выдерживает
+pl: Ustępuje
+
+key: stage.Collapsed
+en: Collapsed
+zh-CN: 已坍塌
+ja: 崩落
+ko: 붕괴됨
+es: Derrumbado
+pt-BR: Desabado
+de: Eingestürzt
+fr: Effondré
+ru: Обрушено
+pl: Zawalona
+
+# Tool refusals
+
+en: Keep a flashlight in your other slot; a fresh cell replaces a used battery.
+zh-CN: 请在另一个栏位里带着手电筒；新电池会替换用过的电池。
+ja: もう一方のスロットに懐中電灯を入れておこう。新しい電池が使用済みのものと入れ替わる。
+ko: 다른 슬롯에 손전등을 넣어 두세요. 새 전지가 다 쓴 배터리를 교체합니다.
+es: Lleva una linterna en la otra ranura; una pila nueva sustituye a la gastada.
+pt-BR: Mantenha uma lanterna no outro espaço; uma pilha nova substitui a bateria usada.
+de: Halt eine Taschenlampe im anderen Platz bereit; eine frische Zelle ersetzt den verbrauchten Akku.
+fr: Gardez une lampe torche dans l'autre emplacement ; une pile neuve remplace la batterie usée.
+ru: Держите фонарик в другом слоте; новый элемент заменит севшую батарею.
+pl: Miej latarkę w drugim slocie; nowe ogniwo zastąpi zużytą baterię.
+
+en: Face a crewmate to hand them your gear, or a fallen one to take theirs.
+zh-CN: 面向一名队友可以把装备递给他，面向倒下的队友可以拿走他的装备。
+ja: 仲間のほうを向けば装備を渡せる。倒れた仲間に向けば装備を受け取れる。
+ko: 동료를 바라보면 장비를 건넬 수 있고, 쓰러진 동료를 바라보면 장비를 가져올 수 있습니다.
+es: Mira a un compañero para darle tu equipo, o a uno caído para coger el suyo.
+pt-BR: Fique de frente para um colega para entregar seu equipamento, ou para um caído para pegar o dele.
+de: Dreh dich zu einem Kollegen, um ihm Ausrüstung zu geben, oder zu einem gefallenen, um seine zu nehmen.
+fr: Faites face à un coéquipier pour lui donner votre matériel, ou à un coéquipier à terre pour prendre le sien.
+ru: Повернитесь к напарнику, чтобы передать снаряжение, или к павшему, чтобы забрать его снаряжение.
+pl: Stań przodem do kolegi, żeby dać mu sprzęt, albo do poległego, żeby zabrać jego sprzęt.
+
+en: Nothing in your hand to give. Pick a slot with 1 or 2.
+zh-CN: 手里没有可以递出的东西。用 1 或 2 选择一个栏位。
+ja: 渡せる物を手に持っていない。1か2でスロットを選ぼう。
+ko: 손에 건넬 것이 없습니다. 1 또는 2로 슬롯을 고르세요.
+es: No tienes nada en la mano para dar. Elige una ranura con 1 o 2.
+pt-BR: Nada na mão para entregar. Escolha um espaço com 1 ou 2.
+de: Nichts in der Hand zum Weitergeben. Wähl mit 1 oder 2 einen Platz.
+fr: Rien en main à donner. Choisissez un emplacement avec 1 ou 2.
+ru: В руке нечего отдать. Выберите слот клавишей 1 или 2.
+pl: Nie masz w ręce nic do oddania. Wybierz slot klawiszem 1 lub 2.
+
+en: Their hands are full.
+zh-CN: 对方的手已经拿满了。
+ja: 相手の手がふさがっている。
+ko: 상대의 손이 가득 찼습니다.
+es: Tiene las manos ocupadas.
+pt-BR: As mãos da pessoa estão ocupadas.
+de: Die Hände sind voll.
+fr: Ses mains sont pleines.
+ru: У напарника заняты руки.
+pl: Ma zajęte ręce.
+
+en: You took their gear.
+zh-CN: 你拿走了对方的装备。
+ja: 相手の装備を受け取った。
+ko: 상대의 장비를 가져왔습니다.
+es: Has cogido su equipo.
+pt-BR: Você pegou o equipamento da pessoa.
+de: Du hast die Ausrüstung genommen.
+fr: Vous avez pris son matériel.
+ru: Вы забрали снаряжение.
+pl: Zabrałeś jego sprzęt.
+
+en: They had nothing on them.
+zh-CN: 对方身上什么也没有。
+ja: 相手は何も持っていなかった。
+ko: 상대는 아무것도 갖고 있지 않았습니다.
+es: No llevaba nada encima.
+pt-BR: A pessoa não tinha nada.
+de: Da war nichts zu holen.
+fr: Il n'avait rien sur lui.
+ru: У него ничего не было.
+pl: Nie miał nic przy sobie.
+
+en: Your hands are full.
+zh-CN: 你的手已经拿满了。
+ja: 手がふさがっている。
+ko: 손이 가득 찼습니다.
+es: Tienes las manos ocupadas.
+pt-BR: Suas mãos estão ocupadas.
+de: Deine Hände sind voll.
+fr: Vos mains sont pleines.
+ru: У вас заняты руки.
+pl: Masz zajęte ręce.
+
+en: Nothing gives here: this floor won't break
+zh-CN: 这里没什么可塌的：这块地板不会坏
+ja: ここは崩れない。この床は壊れない
+ko: 여기는 무너질 게 없습니다. 이 바닥은 부서지지 않습니다
+es: Aquí no cede nada: este suelo no se rompe
+pt-BR: Nada cede aqui: este piso não quebra
+de: Hier gibt nichts nach: Dieser Boden bricht nicht
+fr: Rien ne cède ici : ce sol ne cassera pas
+ru: Здесь ничего не рухнет: этот пол не сломается
+pl: Tu nic nie ustąpi: ta podłoga się nie zawali
+
+en: No room to lay the mat here
+zh-CN: 这里没有地方铺垫子
+ja: ここにはマットを敷く場所がない
+ko: 여기에는 매트를 깔 자리가 없습니다
+es: No hay sitio para poner la colchoneta aquí
+pt-BR: Não há espaço para pôr o colchonete aqui
+de: Kein Platz, um die Matte hier auszulegen
+fr: Pas de place pour poser le tapis ici
+ru: Здесь негде расстелить мат
+pl: Nie ma tu miejsca na matę
+
+en: Look at the item you want to wrap
+zh-CN: 看向你想包裹的物品
+ja: 包みたい物に視線を合わせよう
+ko: 포장할 물건을 바라보세요
+es: Mira el objeto que quieres envolver
+pt-BR: Olhe para o item que você quer embrulhar
+de: Sieh den Gegenstand an, den du einwickeln willst
+fr: Regardez l'objet que vous voulez emballer
+ru: Посмотрите на предмет, который хотите обернуть
+pl: Spójrz na przedmiot, który chcesz owinąć
+
+en: That one is already wrapped
+zh-CN: 那件已经包好了
+ja: それはもう包んである
+ko: 그건 이미 포장되어 있습니다
+es: Ese ya está envuelto
+pt-BR: Esse já está embrulhado
+de: Der ist schon eingewickelt
+fr: Celui-là est déjà emballé
+ru: Этот предмет уже обёрнут
+pl: Ten jest już owinięty
+
+en: No room to stand the floodlight here
+zh-CN: 这里没有地方架设泛光灯
+ja: ここには投光器を立てる場所がない
+ko: 여기에는 투광등을 세울 자리가 없습니다
+es: No hay sitio para colocar el foco aquí
+pt-BR: Não há espaço para armar o holofote aqui
+de: Kein Platz, um den Strahler hier aufzustellen
+fr: Pas de place pour installer le projecteur ici
+ru: Здесь негде поставить прожектор
+pl: Nie ma tu miejsca na reflektor
+
+en: No room to launch the drone here
+zh-CN: 这里没有地方放飞无人机
+ja: ここにはドローンを飛ばす場所がない
+ko: 여기에는 드론을 띄울 자리가 없습니다
+es: No hay sitio para lanzar el dron aquí
+pt-BR: Não há espaço para lançar o drone aqui
+de: Kein Platz, um die Drohne hier zu starten
+fr: Pas de place pour lancer le drone ici
+ru: Здесь негде запустить дрон
+pl: Nie ma tu miejsca na start drona
+
+en: No room to lay the planks here
+zh-CN: 这里没有地方铺木板
+ja: ここには板を渡す場所がない
+ko: 여기에는 널빤지를 놓을 자리가 없습니다
+es: No hay sitio para poner los tablones aquí
+pt-BR: Não há espaço para pôr as tábuas aqui
+de: Kein Platz, um die Bohlen hier auszulegen
+fr: Pas de place pour poser les planches ici
+ru: Здесь негде положить доски
+pl: Nie ma tu miejsca na deski
+
+en: Face a hole in the floor (a drop of 2 m or more) to rig the pulley
+zh-CN: 面向地板上的洞（落差 2 米或以上）才能架设滑轮
+ja: 床の穴（落差2m以上）に向かうと滑車を取り付けられる
+ko: 바닥의 구멍(낙차 2m 이상)을 바라봐야 도르래를 설치할 수 있습니다
+es: Mira hacia un agujero en el suelo (caída de 2 m o más) para montar la polea
+pt-BR: Fique de frente para um buraco no piso (queda de 2 m ou mais) para montar a roldana
+de: Dreh dich zu einem Loch im Boden (2 m Fallhöhe oder mehr), um den Flaschenzug anzubringen
+fr: Faites face à un trou dans le sol (2 m de chute ou plus) pour installer la poulie
+ru: Встаньте лицом к дыре в полу (перепад от 2 м), чтобы закрепить блок
+pl: Stań przodem do dziury w podłodze (spadek 2 m lub więcej), żeby zamontować bloczek
+
+en: This floor is already braced
+zh-CN: 这块地板已经加固过了
+ja: この床はすでに補強されている
+ko: 이 바닥은 이미 보강되어 있습니다
+es: Este suelo ya está apuntalado
+pt-BR: Este piso já está escorado
+de: Dieser Boden ist schon abgestützt
+fr: Ce sol est déjà étayé
+ru: Этот пол уже укреплён
+pl: Ta podłoga jest już podparta
+
+en: Stand on a floor that could give way to brace it
+zh-CN: 站到一块可能塌陷的地板上才能加固它
+ja: 崩れそうな床の上に立つと補強できる
+ko: 무너질 수 있는 바닥 위에 서야 보강할 수 있습니다
+es: Ponte sobre un suelo que pueda ceder para apuntalarlo
+pt-BR: Fique sobre um piso que possa ceder para escorá-lo
+de: Stell dich auf einen Boden, der nachgeben könnte, um ihn abzustützen
+fr: Tenez-vous sur un sol qui risque de céder pour l'étayer
+ru: Встаньте на пол, который может провалиться, чтобы укрепить его
+pl: Stań na podłodze, która może się zawalić, żeby ją podeprzeć
+
+en: Nothing below to brace it against
+zh-CN: 下方没有可以支撑的东西
+ja: 下に支えになる物がない
+ko: 아래에 받칠 것이 없습니다
+es: No hay nada debajo donde apuntalarlo
+pt-BR: Nada embaixo para escorar
+de: Darunter ist nichts zum Abstützen
+fr: Rien en dessous pour l'étayer
+ru: Внизу не во что упереть
+pl: Pod spodem nie ma o co jej oprzeć
+
+en: No injury to treat. Aim at an injured crewmate, or use the medkit when hurt.
+zh-CN: 没有需要处理的伤势。请对准受伤的队友，或者在自己受伤时使用急救包。
+ja: 治療する傷がない。負傷した仲間に向けるか、自分が傷ついたときに救急キットを使おう。
+ko: 치료할 부상이 없습니다. 다친 동료를 조준하거나, 다쳤을 때 구급상자를 사용하세요.
+es: No hay heridas que tratar. Apunta a un compañero herido o usa el botiquín cuando estés herido.
+pt-BR: Nenhum ferimento para tratar. Mire num colega ferido ou use o kit médico quando estiver machucado.
+de: Keine Verletzung zu behandeln. Ziel auf einen verletzten Kollegen oder nutz den Verbandskasten, wenn du verletzt bist.
+fr: Aucune blessure à soigner. Visez un coéquipier blessé, ou utilisez la trousse quand vous êtes blessé.
+ru: Нечего лечить. Наведитесь на раненого напарника или используйте аптечку, когда ранены сами.
+pl: Nie ma czego opatrywać. Wyceluj w rannego kolegę albo użyj apteczki, gdy sam jesteś ranny.
+
+en: Your hands are full. Set the loot down to use your flashlight.
+zh-CN: 你的手已经拿满了。放下战利品才能使用手电筒。
+ja: 手がふさがっている。回収品を置いてから懐中電灯を使おう。
+ko: 손이 가득 찼습니다. 전리품을 내려놓아야 손전등을 쓸 수 있습니다.
+es: Tienes las manos ocupadas. Deja el botín para usar la linterna.
+pt-BR: Suas mãos estão ocupadas. Largue o saque para usar a lanterna.
+de: Deine Hände sind voll. Leg die Beute ab, um die Taschenlampe zu benutzen.
+fr: Vos mains sont pleines. Posez le butin pour utiliser votre lampe torche.
+ru: У вас заняты руки. Положите добычу, чтобы воспользоваться фонариком.
+pl: Masz zajęte ręce. Odłóż łupy, żeby użyć latarki.

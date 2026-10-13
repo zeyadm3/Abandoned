@@ -129,7 +129,7 @@ namespace Abandoned.Networking
                 look.SyncYawFromTransform();
                 look.LimitYaw(transform.eulerAngles.y, DoorConfig.Current.HideLookAngle);
             }
-            if (hideHud != null) hideHud.Override = $"[{InputBindings.Display("Interact")}] Climb out";
+            if (hideHud != null) hideHud.Override = Loc.T("[{0}] Climb out", InputBindings.Display("Interact"));
         }
 
         /// <summary>

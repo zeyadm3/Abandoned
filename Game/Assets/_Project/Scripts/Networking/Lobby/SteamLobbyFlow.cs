@@ -168,7 +168,7 @@ namespace Abandoned.Networking
             }
             catch (Exception e)
             {
-                Fail($"Couldn't join the Steam lobby ({e.Message}).");
+                Fail(Core.Loc.Wire("Couldn't join the Steam lobby ({0}).", e.Message));
             }
         }
 

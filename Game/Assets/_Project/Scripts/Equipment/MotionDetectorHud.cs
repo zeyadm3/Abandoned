@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using System.Text;
 using Abandoned.Networking;
@@ -78,22 +79,22 @@ namespace Abandoned.Equipment
 
         private static string Direction(Transform view, Vector3 d)
         {
-            string level = d.y > 2.5f ? " ABOVE" : d.y < -2.5f ? " BELOW" : "";
+            string level = d.y > 2.5f ? Loc.T("ABOVE") : d.y < -2.5f ? Loc.T("BELOW") : "";
             Vector3 flat = Vector3.ProjectOnPlane(d, Vector3.up);
-            if (flat.sqrMagnitude < 1f) return level.Length > 0 ? level.Trim() : "HERE";
+            if (flat.sqrMagnitude < 1f) return level.Length > 0 ? level : Loc.T("HERE");
             float angle = Vector3.SignedAngle(Vector3.ProjectOnPlane(view.forward, Vector3.up), flat, Vector3.up);
             string side = angle switch
             {
-                > -22.5f and <= 22.5f => "AHEAD",
-                > 22.5f and <= 67.5f => "AHEAD-RIGHT",
-                > 67.5f and <= 112.5f => "RIGHT",
-                > 112.5f and <= 157.5f => "BEHIND-RIGHT",
-                < -22.5f and >= -67.5f => "AHEAD-LEFT",
-                < -67.5f and >= -112.5f => "LEFT",
-                < -112.5f and >= -157.5f => "BEHIND-LEFT",
-                _ => "BEHIND",
+                > -22.5f and <= 22.5f => Loc.T("AHEAD"),
+                > 22.5f and <= 67.5f => Loc.T("AHEAD-RIGHT"),
+                > 67.5f and <= 112.5f => Loc.T("RIGHT"),
+                > 112.5f and <= 157.5f => Loc.T("BEHIND-RIGHT"),
+                < -22.5f and >= -67.5f => Loc.T("AHEAD-LEFT"),
+                < -67.5f and >= -112.5f => Loc.T("LEFT"),
+                < -112.5f and >= -157.5f => Loc.T("BEHIND-LEFT"),
+                _ => Loc.T("BEHIND"),
             };
-            return side + level;
+            return level.Length > 0 ? side + " " + level : side;
         }
 
         // The tick speeds up as the nearest contact closes in.
@@ -112,14 +113,14 @@ namespace Abandoned.Equipment
                 UI.HudLayer.Remove(panel);
                 panel = UI.HudLayer.Add(new VisualElement(), "hud-panel", "hud-motion", "instrument-hud", "instrument-hud--motion");
                 if (panel == null) return;
-                UI.MenuKit.Text(panel, "MOTION SENSOR", "instrument-hud__title");
-                UI.MenuKit.Text(panel, $"PASSIVE / RANGE {range:0} M", "instrument-hud__meta");
+                UI.MenuKit.Text(panel, Loc.T("MOTION SENSOR"), "instrument-hud__title");
+                UI.MenuKit.Text(panel, Loc.T("PASSIVE / RANGE {0:0} M", range), "instrument-hud__meta");
                 signal = UI.UiKit.Segments(panel, 12, "instrument-hud__signal");
                 count = UI.MenuKit.Text(panel, "", "instrument-hud__count");
                 readout = UI.MenuKit.Text(panel, "", "instrument-hud__readout");
             }
             text.Clear();
-            if (contacts.Count == 0) text.Append("NO MOVEMENT DETECTED");
+            if (contacts.Count == 0) text.Append(Loc.T("NO MOVEMENT DETECTED"));
             for (int i = 0; i < contacts.Count && i < 4; i++)
             {
                 if (i > 0) text.Append('\n');
@@ -128,7 +129,7 @@ namespace Abandoned.Equipment
             string s = text.ToString();
             UI.MenuKit.Show(panel, true);
             panel.EnableInClassList("instrument-hud--contact", contacts.Count > 0);
-            count.text = $"MOVING CONTACTS / {contacts.Count:00}";
+            count.text = Loc.T("MOVING CONTACTS / {0:00}", contacts.Count);
             UI.UiKit.SetSegments(signal, contacts.Count > 0 ? 1f - contacts[0].distance / range : 0f);
             if (readout.text != s) readout.text = s;
             Position();

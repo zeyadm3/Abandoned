@@ -10,7 +10,7 @@ namespace Abandoned.Company
         public static bool FromTelephone { get; set; }
 
         public virtual string UsePrompt(GameObject user) => CompanyService.Current == null ? null
-            : CompanyService.Current.DemoOver ? "The demo is over - thanks for playing!" : "Read the contract board";
+            : CompanyService.Current.DemoOver ? Loc.T("The demo is over - thanks for playing!") : Loc.T("Read the contract board");
 
         public virtual void Use(GameObject user)
         {

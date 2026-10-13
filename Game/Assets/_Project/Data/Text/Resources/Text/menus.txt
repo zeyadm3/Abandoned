@@ -1,0 +1,765 @@
+# Main menu, play screen and pause menu (UI/Menus/MainMenuView.cs, PlayView.cs, PauseMenuView.cs, MenuKit.cs).
+# ABANDONED (the game) and Abandoned Salvaging (the company) are never translated.
+
+en: ABANDONED SALVAGING / RECOVERY DIVISION
+zh-CN: ABANDONED SALVAGING / 回收部
+ja: ABANDONED SALVAGING / 回収部門
+ko: ABANDONED SALVAGING / 회수 부서
+es: ABANDONED SALVAGING / DIVISIÓN DE RECUPERACIÓN
+pt-BR: ABANDONED SALVAGING / DIVISÃO DE RECUPERAÇÃO
+de: ABANDONED SALVAGING / BERGUNGSABTEILUNG
+fr: ABANDONED SALVAGING / DIVISION RÉCUPÉRATION
+ru: ABANDONED SALVAGING / ОТДЕЛ ВЫВОЗА
+pl: ABANDONED SALVAGING / DZIAŁ ODZYSKU
+
+en: DEMO / {0} JOBS AT THE ABANDONED MALL
+zh-CN: 试玩版 / 废弃商场的 {0} 份任务
+ja: 体験版 / 廃モールでの仕事 {0} 件
+ko: 데모 / 버려진 쇼핑몰 작업 {0}건
+es: DEMO / {0} TRABAJOS EN EL CENTRO COMERCIAL ABANDONADO
+pt-BR: DEMO / {0} TRABALHOS NO SHOPPING ABANDONADO
+de: DEMO / {0} AUFTRÄGE IM VERLASSENEN EINKAUFSZENTRUM
+fr: DÉMO / {0} MISSIONS DANS LE CENTRE COMMERCIAL ABANDONNÉ
+ru: ДЕМО / {0} ЗАКАЗОВ В ЗАБРОШЕННОМ ТОРГОВОМ ЦЕНТРЕ
+pl: DEMO / {0} ZLECEŃ W OPUSZCZONEJ GALERII HANDLOWEJ
+
+en: TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN.
+zh-CN: 拿走剩下的。趁还能走，赶紧走。
+ja: 残り物を持ち出せ。出られるうちに出ろ。
+ko: 남은 것을 챙겨라. 나갈 수 있을 때 나가라.
+es: LLÉVATE LO QUE QUEDA. SAL MIENTRAS PUEDAS.
+pt-BR: LEVE O QUE SOBROU. SAIA ENQUANTO PODE.
+de: NIMM, WAS ÜBRIG IST. GEH, SOLANGE DU KANNST.
+fr: PRENEZ CE QUI RESTE. PARTEZ TANT QUE VOUS LE POUVEZ.
+ru: ЗАБЕРИ, ЧТО ОСТАЛОСЬ. УХОДИ, ПОКА МОЖЕШЬ.
+pl: BIERZ, CO ZOSTAŁO. WYJDŹ, PÓKI MOŻESZ.
+
+en: OK
+zh-CN: 确定
+ja: OK
+ko: 확인
+es: OK
+pt-BR: OK
+de: OK
+fr: OK
+ru: ОК
+pl: OK
+
+en: Play
+zh-CN: 开始游戏
+ja: プレイ
+ko: 플레이
+es: Jugar
+pt-BR: Jogar
+de: Spielen
+fr: Jouer
+ru: Играть
+pl: Graj
+
+en: Settings
+zh-CN: 设置
+ja: 設定
+ko: 설정
+es: Ajustes
+pt-BR: Configurações
+de: Einstellungen
+fr: Paramètres
+ru: Настройки
+pl: Ustawienia
+
+en: Achievements
+zh-CN: 成就
+ja: 実績
+ko: 도전 과제
+es: Logros
+pt-BR: Conquistas
+de: Erfolge
+fr: Succès
+ru: Достижения
+pl: Osiągnięcia
+
+en: Credits
+zh-CN: 制作人员
+ja: クレジット
+ko: 크레딧
+es: Créditos
+pt-BR: Créditos
+de: Mitwirkende
+fr: Crédits
+ru: Авторы
+pl: Autorzy
+
+en: Quit
+zh-CN: 退出
+ja: 終了
+ko: 종료
+es: Salir
+pt-BR: Sair
+de: Beenden
+fr: Quitter
+ru: Выход
+pl: Wyjdź
+
+en: Feedback
+zh-CN: 反馈
+ja: フィードバック
+ko: 피드백
+es: Comentarios
+pt-BR: Feedback
+de: Feedback
+fr: Retours
+ru: Отзыв
+pl: Opinie
+
+en: Open logs
+zh-CN: 打开日志
+ja: ログを開く
+ko: 로그 열기
+es: Abrir registros
+pt-BR: Abrir logs
+de: Logs öffnen
+fr: Ouvrir les journaux
+ru: Открыть логи
+pl: Otwórz logi
+
+en: STRUCTURE\nCOMPROMISED
+zh-CN: 结构\n已受损
+ja: 構造\n損傷
+ko: 구조물\n손상
+es: ESTRUCTURA\nCOMPROMETIDA
+pt-BR: ESTRUTURA\nCOMPROMETIDA
+de: STRUKTUR\nBESCHÄDIGT
+fr: STRUCTURE\nCOMPROMISE
+ru: КОНСТРУКЦИЯ\nПОВРЕЖДЕНА
+pl: KONSTRUKCJA\nNARUSZONA
+
+en: RECOVERY NOTICE / The building is abandoned. You are not alone.
+zh-CN: 回收通知 / 这栋楼已被废弃。你并不孤单。
+ja: 回収通知 / この建物は廃墟だ。だが、あなたは一人ではない。
+ko: 회수 공지 / 이 건물은 버려졌습니다. 하지만 당신은 혼자가 아닙니다.
+es: AVISO DE RECUPERACIÓN / El edificio está abandonado. No estás solo.
+pt-BR: AVISO DE RECUPERAÇÃO / O prédio está abandonado. Você não está sozinho.
+de: BERGUNGSHINWEIS / Das Gebäude ist verlassen. Du bist nicht allein.
+fr: AVIS DE RÉCUPÉRATION / Le bâtiment est abandonné. Vous n'êtes pas seul.
+ru: УВЕДОМЛЕНИЕ О ВЫВОЗЕ / Здание заброшено. Но вы здесь не одни.
+pl: KOMUNIKAT O ODZYSKU / Budynek jest opuszczony. Nie jesteś sam.
+
+en: STRUCTURAL WARNING / Listen to the floor. Weight has consequences.
+zh-CN: 结构警告 / 听听地板的声音。重量是有后果的。
+ja: 構造警告 / 床の音に耳を澄ませ。重さには代償がある。
+ko: 구조 경고 / 바닥 소리에 귀를 기울이세요. 무게에는 대가가 따릅니다.
+es: AVISO ESTRUCTURAL / Escucha el suelo. El peso tiene consecuencias.
+pt-BR: AVISO ESTRUTURAL / Escute o piso. O peso tem consequências.
+de: STRUKTURWARNUNG / Hör auf den Boden. Gewicht hat Folgen.
+fr: ALERTE STRUCTURELLE / Écoutez le sol. Le poids a des conséquences.
+ru: ПРЕДУПРЕЖДЕНИЕ О КОНСТРУКЦИИ / Слушайте пол. У веса есть последствия.
+pl: OSTRZEŻENIE KONSTRUKCYJNE / Słuchaj podłogi. Ciężar ma konsekwencje.
+
+en: EXTRACTION NOTICE / The truck will leave. Make it back before it does.
+zh-CN: 撤离通知 / 卡车会开走。在那之前赶回来。
+ja: 撤収通知 / トラックは出発する。その前に戻れ。
+ko: 철수 공지 / 트럭은 떠납니다. 그 전에 돌아오세요.
+es: AVISO DE SALIDA / El camión se irá. Vuelve antes de que lo haga.
+pt-BR: AVISO DE SAÍDA / O caminhão vai embora. Volte antes disso.
+de: ABFAHRTSHINWEIS / Der Laster fährt ab. Sei vorher zurück.
+fr: AVIS DE DÉPART / Le camion partira. Revenez avant.
+ru: УВЕДОМЛЕНИЕ ОБ ОТЪЕЗДЕ / Грузовик уедет. Успейте вернуться.
+pl: KOMUNIKAT O ODJEŹDZIE / Ciężarówka odjedzie. Wróć, zanim to zrobi.
+
+en: SALVAGE RECORD / Take what's left. Leave while you can.
+zh-CN: 回收记录 / 拿走剩下的。趁还能走，赶紧走。
+ja: 回収記録 / 残り物を持ち出せ。出られるうちに出ろ。
+ko: 회수 기록 / 남은 것을 챙기세요. 나갈 수 있을 때 나가세요.
+es: REGISTRO DE RECUPERACIÓN / Llévate lo que queda. Sal mientras puedas.
+pt-BR: REGISTRO DE RECUPERAÇÃO / Leve o que sobrou. Saia enquanto pode.
+de: BERGUNGSPROTOKOLL / Nimm, was übrig ist. Geh, solange du kannst.
+fr: REGISTRE DE RÉCUPÉRATION / Prenez ce qui reste. Partez tant que vous le pouvez.
+ru: ЖУРНАЛ ВЫВОЗА / Заберите, что осталось. Уходите, пока можете.
+pl: REJESTR ODZYSKU / Bierz, co zostało. Wyjdź, póki możesz.
+
+en: On
+zh-CN: 开
+ja: オン
+ko: 켬
+es: Activado
+pt-BR: Ligado
+de: An
+fr: Activé
+ru: Вкл.
+pl: Wł.
+
+en: Off
+zh-CN: 关
+ja: オフ
+ko: 끔
+es: Desactivado
+pt-BR: Desligado
+de: Aus
+fr: Désactivé
+ru: Выкл.
+pl: Wył.
+
+# Play screen
+
+en: RECOVERY ASSIGNMENT / CREW ACCESS
+zh-CN: 回收任务 / 队伍通道
+ja: 回収任務 / クルー受付
+ko: 회수 배정 / 팀 출입
+es: ASIGNACIÓN DE RECUPERACIÓN / ACCESO DEL EQUIPO
+pt-BR: DESIGNAÇÃO DE RECUPERAÇÃO / ACESSO DA EQUIPE
+de: BERGUNGSEINSATZ / TEAMZUGANG
+fr: AFFECTATION DE RÉCUPÉRATION / ACCÈS ÉQUIPE
+ru: НАРЯД НА ВЫВОЗ / ДОСТУП БРИГАДЫ
+pl: PRZYDZIAŁ ODZYSKU / DOSTĘP EKIPY
+
+en: PLAY
+zh-CN: 开始游戏
+ja: プレイ
+ko: 플레이
+es: JUGAR
+pt-BR: JOGAR
+de: SPIELEN
+fr: JOUER
+ru: ИГРАТЬ
+pl: GRAJ
+
+en: Play over
+zh-CN: 连接方式
+ja: 接続方法
+ko: 연결 방식
+es: Jugar por
+pt-BR: Jogar por
+de: Spielen über
+fr: Jouer via
+ru: Играть через
+pl: Graj przez
+
+en: Direct IP
+zh-CN: 直连 IP
+ja: IP直接接続
+ko: IP 직접 연결
+es: IP directa
+pt-BR: IP direto
+de: Direkte IP
+fr: IP directe
+ru: Прямой IP
+pl: Bezpośrednie IP
+
+en: Save
+zh-CN: 存档
+ja: セーブ
+ko: 저장 슬롯
+es: Partida guardada
+pt-BR: Jogo salvo
+de: Spielstand
+fr: Sauvegarde
+ru: Сохранение
+pl: Zapis
+
+en: SOLO
+zh-CN: 单人
+ja: ソロ
+ko: 솔로
+es: EN SOLITARIO
+pt-BR: SOLO
+de: SOLO
+fr: SOLO
+ru: В ОДИНОЧКУ
+pl: SOLO
+
+en: One worker. An unstable building. Use the trolley for heavy salvage. Friends can still join you at the HQ.
+zh-CN: 一名工人。一栋不稳的楼。重物用手推车搬。朋友仍然可以在总部加入你。
+ja: 作業員は一人。建物は不安定。重い回収品には台車を使おう。フレンドは本部でいつでも合流できる。
+ko: 작업자 한 명. 불안정한 건물. 무거운 회수품은 손수레를 쓰세요. 친구들은 본부에서 언제든 합류할 수 있습니다.
+es: Un trabajador. Un edificio inestable. Usa la carretilla para lo pesado. Tus amigos pueden unirse en la central.
+pt-BR: Um trabalhador. Um prédio instável. Use o carrinho para o que for pesado. Amigos ainda podem entrar com você no QG.
+de: Ein Arbeiter. Ein instabiles Gebäude. Nimm die Sackkarre für schweres Bergungsgut. Freunde können in der Zentrale trotzdem dazustoßen.
+fr: Un seul ouvrier. Un bâtiment instable. Utilisez le diable pour le matériel lourd. Vos amis peuvent toujours vous rejoindre au QG.
+ru: Один рабочий. Неустойчивое здание. Тяжёлое возите на тележке. Друзья всё равно могут присоединиться к вам на базе.
+pl: Jeden pracownik. Niestabilny budynek. Do ciężkich rzeczy używaj wózka. Znajomi nadal mogą dołączyć do ciebie w bazie.
+
+en: Start
+zh-CN: 开始
+ja: 開始
+ko: 시작
+es: Empezar
+pt-BR: Começar
+de: Starten
+fr: Commencer
+ru: Начать
+pl: Start
+
+en: HOST A CREW
+zh-CN: 创建队伍
+ja: クルーをホスト
+ko: 팀 호스트
+es: CREAR UN EQUIPO
+pt-BR: HOSPEDAR UMA EQUIPE
+de: EIN TEAM HOSTEN
+fr: HÉBERGER UNE ÉQUIPE
+ru: СОБРАТЬ БРИГАДУ
+pl: ZAŁÓŻ EKIPĘ
+
+en: Lead a crew of up to four for the company. Friends join you at the HQ between jobs.
+zh-CN: 为公司带领最多四人的队伍。朋友可以在两次任务之间到总部加入你。
+ja: 会社のために最大4人のクルーを率いる。フレンドは仕事の合間に本部で合流する。
+ko: 회사를 위해 최대 4명의 팀을 이끕니다. 친구들은 작업 사이에 본부에서 합류합니다.
+es: Dirige un equipo de hasta cuatro para la empresa. Tus amigos se unen en la central entre trabajos.
+pt-BR: Lidere uma equipe de até quatro para a empresa. Amigos entram com você no QG entre os trabalhos.
+de: Führe für die Firma ein Team von bis zu vier Leuten. Freunde stoßen zwischen den Aufträgen in der Zentrale dazu.
+fr: Dirigez une équipe de quatre au maximum pour l'entreprise. Vos amis vous rejoignent au QG entre deux missions.
+ru: Возглавьте бригаду до четырёх человек. Друзья присоединяются на базе между заказами.
+pl: Poprowadź dla firmy ekipę maksymalnie czterech osób. Znajomi dołączają w bazie między zleceniami.
+
+en: Host
+zh-CN: 创建
+ja: ホスト
+ko: 호스트
+es: Crear
+pt-BR: Hospedar
+de: Hosten
+fr: Héberger
+ru: Создать
+pl: Załóż
+
+en: JOIN
+zh-CN: 加入
+ja: 参加
+ko: 참가
+es: UNIRSE
+pt-BR: ENTRAR
+de: BEITRETEN
+fr: REJOINDRE
+ru: ПРИСОЕДИНИТЬСЯ
+pl: DOŁĄCZ
+
+en: Join a friend's crew.
+zh-CN: 加入朋友的队伍。
+ja: フレンドのクルーに参加する。
+ko: 친구의 팀에 참가합니다.
+es: Únete al equipo de un amigo.
+pt-BR: Entre na equipe de um amigo.
+de: Tritt dem Team eines Freundes bei.
+fr: Rejoignez l'équipe d'un ami.
+ru: Присоединитесь к бригаде друга.
+pl: Dołącz do ekipy znajomego.
+
+en: Join
+zh-CN: 加入
+ja: 参加
+ko: 참가
+es: Unirse
+pt-BR: Entrar
+de: Beitreten
+fr: Rejoindre
+ru: Войти
+pl: Dołącz
+
+en: Rejoin your last crew
+zh-CN: 重新加入上次的队伍
+ja: 前回のクルーに再参加
+ko: 지난번 팀에 다시 참가
+es: Volver a tu último equipo
+pt-BR: Voltar à sua última equipe
+de: Deinem letzten Team wieder beitreten
+fr: Rejoindre votre dernière équipe
+ru: Вернуться в прошлую бригаду
+pl: Wróć do ostatniej ekipy
+
+en: Host a Steam lobby
+zh-CN: 创建 Steam 大厅
+ja: Steamロビーをホスト
+ko: Steam 로비 호스트
+es: Crear una sala de Steam
+pt-BR: Hospedar um lobby do Steam
+de: Steam-Lobby hosten
+fr: Héberger un salon Steam
+ru: Создать лобби Steam
+pl: Załóż lobby Steam
+
+en: Friends-only Steam lobby: invite them from the pause menu (Steam overlay), or they join from your profile.
+zh-CN: 仅限好友的 Steam 大厅：从暂停菜单（Steam 界面）邀请他们，或者让他们从你的个人资料加入。
+ja: フレンド限定のSteamロビー。ポーズメニュー（Steamオーバーレイ）から招待するか、プロフィールから参加してもらおう。
+ko: 친구 전용 Steam 로비입니다. 일시정지 메뉴(Steam 오버레이)에서 초대하거나, 친구가 내 프로필에서 참가할 수 있습니다.
+es: Sala de Steam solo para amigos: invítalos desde el menú de pausa (interfaz de Steam) o que se unan desde tu perfil.
+pt-BR: Lobby do Steam só para amigos: convide pelo menu de pausa (painel do Steam) ou eles entram pelo seu perfil.
+de: Steam-Lobby nur für Freunde: Lade sie über das Pausenmenü ein (Steam-Overlay), oder sie treten über dein Profil bei.
+fr: Salon Steam réservé aux amis : invitez-les depuis le menu pause (overlay Steam), ou ils rejoignent depuis votre profil.
+ru: Лобби Steam только для друзей: пригласите их из меню паузы (оверлей Steam), или они зайдут через ваш профиль.
+pl: Lobby Steam tylko dla znajomych: zaproś ich z menu pauzy (nakładka Steam) albo dołączą z twojego profilu.
+
+en: Friends on your network join your LAN address, port {0}.
+zh-CN: 同一网络中的朋友通过你的局域网地址加入，端口 {0}。
+ja: 同じネットワークのフレンドは、あなたのLANアドレスのポート {0} に参加する。
+ko: 같은 네트워크의 친구는 내 LAN 주소, 포트 {0}으로 참가합니다.
+es: Los amigos de tu red se unen a tu dirección LAN, puerto {0}.
+pt-BR: Amigos na sua rede entram pelo seu endereço LAN, porta {0}.
+de: Freunde in deinem Netzwerk verbinden sich mit deiner LAN-Adresse, Port {0}.
+fr: Les amis sur votre réseau se connectent à votre adresse LAN, port {0}.
+ru: Друзья в вашей сети подключаются по вашему LAN-адресу, порт {0}.
+pl: Znajomi w twojej sieci dołączają pod twój adres LAN, port {0}.
+
+en: Accept their invite in Steam, or paste their SteamID64 here:
+zh-CN: 在 Steam 中接受对方的邀请，或者把对方的 SteamID64 粘贴到这里：
+ja: Steamで招待を受けるか、相手のSteamID64をここに貼り付けよう：
+ko: Steam에서 초대를 수락하거나, 상대의 SteamID64를 여기에 붙여 넣으세요:
+es: Acepta su invitación en Steam o pega aquí su SteamID64:
+pt-BR: Aceite o convite no Steam ou cole aqui o SteamID64 da pessoa:
+de: Nimm die Einladung in Steam an oder füge hier die SteamID64 ein:
+fr: Acceptez son invitation dans Steam, ou collez son SteamID64 ici :
+ru: Примите приглашение в Steam или вставьте сюда SteamID64 друга:
+pl: Przyjmij zaproszenie na Steamie albo wklej tutaj SteamID64 znajomego:
+
+en: Their address and port (address:port):
+zh-CN: 对方的地址和端口（地址:端口）：
+ja: 相手のアドレスとポート（アドレス:ポート）：
+ko: 상대의 주소와 포트(주소:포트):
+es: Su dirección y puerto (dirección:puerto):
+pt-BR: O endereço e a porta da pessoa (endereço:porta):
+de: Adresse und Port des Hosts (Adresse:Port):
+fr: Son adresse et son port (adresse:port) :
+ru: Адрес и порт хоста (адрес:порт):
+pl: Adres i port hosta (adres:port):
+
+# Pause menu
+
+en: RECOVERY IN PROGRESS
+zh-CN: 回收进行中
+ja: 回収作業中
+ko: 회수 진행 중
+es: RECUPERACIÓN EN CURSO
+pt-BR: RECUPERAÇÃO EM ANDAMENTO
+de: BERGUNG LÄUFT
+fr: RÉCUPÉRATION EN COURS
+ru: ИДЁТ ВЫВОЗ
+pl: ODZYSK W TOKU
+
+en: PAUSED
+zh-CN: 已暂停
+ja: ポーズ中
+ko: 일시정지
+es: EN PAUSA
+pt-BR: PAUSADO
+de: PAUSE
+fr: EN PAUSE
+ru: ПАУЗА
+pl: PAUZA
+
+en: The game keeps running. The building does not wait.
+zh-CN: 游戏仍在继续。这栋楼可不会等你。
+ja: ゲームは止まらない。建物は待ってくれない。
+ko: 게임은 계속 진행됩니다. 건물은 기다려 주지 않습니다.
+es: El juego sigue en marcha. El edificio no espera.
+pt-BR: O jogo continua rodando. O prédio não espera.
+de: Das Spiel läuft weiter. Das Gebäude wartet nicht.
+fr: Le jeu continue de tourner. Le bâtiment n'attend pas.
+ru: Игра продолжается. Здание ждать не будет.
+pl: Gra toczy się dalej. Budynek nie czeka.
+
+en: Resume
+zh-CN: 继续
+ja: 再開
+ko: 계속하기
+es: Continuar
+pt-BR: Continuar
+de: Weiter
+fr: Reprendre
+ru: Продолжить
+pl: Wznów
+
+en: How to play
+zh-CN: 玩法说明
+ja: 遊び方
+ko: 플레이 방법
+es: Cómo jugar
+pt-BR: Como jogar
+de: Spielanleitung
+fr: Comment jouer
+ru: Как играть
+pl: Jak grać
+
+en: Invite friends
+zh-CN: 邀请好友
+ja: フレンドを招待
+ko: 친구 초대
+es: Invitar amigos
+pt-BR: Convidar amigos
+de: Freunde einladen
+fr: Inviter des amis
+ru: Пригласить друзей
+pl: Zaproś znajomych
+
+en: Leave game
+zh-CN: 离开游戏
+ja: ゲームを抜ける
+ko: 게임 나가기
+es: Abandonar partida
+pt-BR: Sair da partida
+de: Spiel verlassen
+fr: Quitter la partie
+ru: Покинуть игру
+pl: Opuść grę
+
+en: Quit to desktop
+zh-CN: 退出到桌面
+ja: デスクトップに戻る
+ko: 바탕 화면으로 나가기
+es: Salir al escritorio
+pt-BR: Sair para a área de trabalho
+de: Zum Desktop beenden
+fr: Quitter vers le bureau
+ru: Выйти на рабочий стол
+pl: Wyjdź do pulpitu
+
+en: Report a problem
+zh-CN: 报告问题
+ja: 問題を報告
+ko: 문제 신고
+es: Informar de un problema
+pt-BR: Relatar um problema
+de: Problem melden
+fr: Signaler un problème
+ru: Сообщить о проблеме
+pl: Zgłoś problem
+
+en: Opens your log folder (attach Player.log) and the feedback page.
+zh-CN: 打开你的日志文件夹（请附上 Player.log）和反馈页面。
+ja: ログフォルダ（Player.logを添付）とフィードバックページを開く。
+ko: 로그 폴더(Player.log 첨부)와 피드백 페이지를 엽니다.
+es: Abre tu carpeta de registros (adjunta Player.log) y la página de comentarios.
+pt-BR: Abre a sua pasta de logs (anexe o Player.log) e a página de feedback.
+de: Öffnet deinen Log-Ordner (Player.log anhängen) und die Feedback-Seite.
+fr: Ouvre votre dossier de journaux (joignez Player.log) et la page de retours.
+ru: Открывает папку с логами (приложите Player.log) и страницу отзывов.
+pl: Otwiera folder z logami (dołącz Player.log) i stronę opinii.
+
+en: CREW
+zh-CN: 队伍
+ja: クルー
+ko: 팀
+es: EQUIPO
+pt-BR: EQUIPE
+de: TEAM
+fr: ÉQUIPE
+ru: БРИГАДА
+pl: EKIPA
+
+en: Voice volume and mute only change what you hear.
+zh-CN: 语音音量和静音只影响你自己听到的声音。
+ja: 声の音量とミュートは、自分に聞こえる音だけを変える。
+ko: 음성 음량과 음소거는 내가 듣는 소리만 바꿉니다.
+es: El volumen de voz y el silencio solo cambian lo que tú oyes.
+pt-BR: O volume de voz e o silenciar só mudam o que você ouve.
+de: Sprachlautstärke und Stummschalten ändern nur, was du hörst.
+fr: Le volume des voix et la sourdine ne changent que ce que vous entendez.
+ru: Громкость голоса и отключение звука меняют только то, что слышите вы.
+pl: Głośność głosu i wyciszenie zmieniają tylko to, co słyszysz ty.
+
+en: HOST RULES: THE CREW MAY
+zh-CN: 房主规则：队员可以
+ja: ホストのルール：クルーに許可すること
+ko: 호스트 규칙: 팀원에게 허용
+es: REGLAS DEL ANFITRIÓN: EL EQUIPO PUEDE
+pt-BR: REGRAS DO ANFITRIÃO: A EQUIPE PODE
+de: HOST-REGELN: DAS TEAM DARF
+fr: RÈGLES DE L'HÔTE : L'ÉQUIPE PEUT
+ru: ПРАВИЛА ХОСТА: БРИГАДЕ МОЖНО
+pl: ZASADY HOSTA: EKIPA MOŻE
+
+en: Buy gear on the company account
+zh-CN: 用公司账户购买装备
+ja: 会社の経費で装備を買う
+ko: 회사 계정으로 장비 구매
+es: Comprar equipo a cuenta de la empresa
+pt-BR: Comprar equipamento na conta da empresa
+de: Ausrüstung auf Firmenkosten kaufen
+fr: Acheter du matériel sur le compte de l'entreprise
+ru: Покупать снаряжение за счёт компании
+pl: Kupować sprzęt na konto firmy
+
+en: Start the van
+zh-CN: 发动厢式车
+ja: バンを出発させる
+ko: 밴 출발시키기
+es: Arrancar la furgoneta
+pt-BR: Dar partida na van
+de: Den Transporter starten
+fr: Démarrer la camionnette
+ru: Заводить фургон
+pl: Odpalać furgonetkę
+
+en: Pull the truck lever
+zh-CN: 拉下卡车拉杆
+ja: トラックのレバーを引く
+ko: 트럭 레버 당기기
+es: Tirar de la palanca del camión
+pt-BR: Puxar a alavanca do caminhão
+de: Den Hebel am Laster ziehen
+fr: Tirer le levier du camion
+ru: Тянуть рычаг грузовика
+pl: Ciągnąć dźwignię ciężarówki
+
+en: CREW  {0}/{1}
+zh-CN: 队伍  {0}/{1}
+ja: クルー  {0}/{1}
+ko: 팀  {0}/{1}
+es: EQUIPO  {0}/{1}
+pt-BR: EQUIPE  {0}/{1}
+de: TEAM  {0}/{1}
+fr: ÉQUIPE  {0}/{1}
+ru: БРИГАДА  {0}/{1}
+pl: EKIPA  {0}/{1}
+
+en: Steam lobby: {0}/{1} - friends join from the overlay or your profile.
+zh-CN: Steam 大厅：{0}/{1} - 好友可从 Steam 界面或你的个人资料加入。
+ja: Steamロビー：{0}/{1} - フレンドはオーバーレイかプロフィールから参加できる。
+ko: Steam 로비: {0}/{1} - 친구는 오버레이나 내 프로필에서 참가합니다.
+es: Sala de Steam: {0}/{1} - los amigos se unen desde la interfaz o tu perfil.
+pt-BR: Lobby do Steam: {0}/{1} - amigos entram pelo painel ou pelo seu perfil.
+de: Steam-Lobby: {0}/{1} - Freunde treten über das Overlay oder dein Profil bei.
+fr: Salon Steam : {0}/{1} - les amis rejoignent depuis l'overlay ou votre profil.
+ru: Лобби Steam: {0}/{1} - друзья заходят через оверлей или ваш профиль.
+pl: Lobby Steam: {0}/{1} - znajomi dołączają z nakładki albo z twojego profilu.
+
+en: Friends join at your LAN address (hidden: streamer mode). Players join at the HQ only.
+zh-CN: 好友通过你的局域网地址加入（已隐藏：主播模式）。玩家只能在总部加入。
+ja: フレンドはあなたのLANアドレスに参加する（非表示：配信者モード）。参加できるのは本部でだけだ。
+ko: 친구는 내 LAN 주소로 참가합니다(숨김: 스트리머 모드). 플레이어는 본부에서만 참가할 수 있습니다.
+es: Los amigos se unen a tu dirección LAN (oculta: modo streamer). Solo se puede entrar en la central.
+pt-BR: Amigos entram pelo seu endereço LAN (oculto: modo streamer). Só dá para entrar no QG.
+de: Freunde verbinden sich mit deiner LAN-Adresse (verborgen: Streamer-Modus). Beitreten geht nur in der Zentrale.
+fr: Les amis se connectent à votre adresse LAN (masquée : mode streamer). On ne rejoint qu'au QG.
+ru: Друзья подключаются по вашему LAN-адресу (скрыт: режим стримера). Присоединиться можно только на базе.
+pl: Znajomi dołączają pod twój adres LAN (ukryty: tryb streamera). Dołączyć można tylko w bazie.
+
+en: Friends join at your LAN address, port {0}. Players join at the HQ only.
+zh-CN: 好友通过你的局域网地址加入，端口 {0}。玩家只能在总部加入。
+ja: フレンドはあなたのLANアドレスのポート {0} に参加する。参加できるのは本部でだけだ。
+ko: 친구는 내 LAN 주소, 포트 {0}으로 참가합니다. 플레이어는 본부에서만 참가할 수 있습니다.
+es: Los amigos se unen a tu dirección LAN, puerto {0}. Solo se puede entrar en la central.
+pt-BR: Amigos entram pelo seu endereço LAN, porta {0}. Só dá para entrar no QG.
+de: Freunde verbinden sich mit deiner LAN-Adresse, Port {0}. Beitreten geht nur in der Zentrale.
+fr: Les amis se connectent à votre adresse LAN, port {0}. On ne rejoint qu'au QG.
+ru: Друзья подключаются по вашему LAN-адресу, порт {0}. Присоединиться можно только на базе.
+pl: Znajomi dołączają pod twój adres LAN, port {0}. Dołączyć można tylko w bazie.
+
+en: End game (job counts as failed)
+zh-CN: 结束游戏（任务按失败计算）
+ja: ゲームを終了（仕事は失敗扱い）
+ko: 게임 끝내기(작업은 실패로 처리)
+es: Terminar partida (el trabajo cuenta como fallido)
+pt-BR: Encerrar partida (o trabalho conta como fracassado)
+de: Spiel beenden (Auftrag gilt als gescheitert)
+fr: Terminer la partie (la mission compte comme un échec)
+ru: Завершить игру (заказ считается проваленным)
+pl: Zakończ grę (zlecenie liczy się jako nieudane)
+
+en: End game for everyone
+zh-CN: 为所有人结束游戏
+ja: 全員のゲームを終了
+ko: 모두의 게임 끝내기
+es: Terminar la partida para todos
+pt-BR: Encerrar a partida para todos
+de: Spiel für alle beenden
+fr: Terminer la partie pour tout le monde
+ru: Завершить игру для всех
+pl: Zakończ grę dla wszystkich
+
+en: Muted
+zh-CN: 已静音
+ja: ミュート中
+ko: 음소거됨
+es: Silenciado
+pt-BR: Silenciado
+de: Stumm
+fr: Muet
+ru: Без звука
+pl: Wyciszony
+
+en: Mute
+zh-CN: 静音
+ja: ミュート
+ko: 음소거
+es: Silenciar
+pt-BR: Silenciar
+de: Stummschalten
+fr: Couper
+ru: Заглушить
+pl: Wycisz
+
+en: Kick
+zh-CN: 踢出
+ja: キック
+ko: 추방
+es: Expulsar
+pt-BR: Expulsar
+de: Rauswerfen
+fr: Expulser
+ru: Выгнать
+pl: Wyrzuć
+
+en: Sure?
+zh-CN: 确定吗？
+ja: 本当に？
+ko: 정말요?
+es: ¿Seguro?
+pt-BR: Certeza?
+de: Sicher?
+fr: Sûr ?
+ru: Точно?
+pl: Na pewno?
+
+en: HOST
+zh-CN: 房主
+ja: ホスト
+ko: 호스트
+es: ANFITRIÓN
+pt-BR: ANFITRIÃO
+de: HOST
+fr: HÔTE
+ru: ХОСТ
+pl: HOST
+
+en: GHOST
+zh-CN: 幽灵
+ja: 幽霊
+ko: 유령
+es: FANTASMA
+pt-BR: FANTASMA
+de: GEIST
+fr: FANTÔME
+ru: ПРИЗРАК
+pl: DUCH
+
+en: {0} ms
+zh-CN: {0} 毫秒
+ja: {0} ms
+ko: {0} ms
+es: {0} ms
+pt-BR: {0} ms
+de: {0} ms
+fr: {0} ms
+ru: {0} мс
+pl: {0} ms
+
+en: Mobile
+zh-CN: 移动端
+ja: モバイル
+ko: 모바일
+es: Móvil
+pt-BR: Móvel
+de: Mobil
+fr: Mobile
+ru: Мобильный
+pl: Mobilne
+
+en: PC
+zh-CN: PC
+ja: PC
+ko: PC
+es: PC
+pt-BR: PC
+de: PC
+fr: PC
+ru: ПК
+pl: PC

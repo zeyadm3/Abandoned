@@ -14,7 +14,7 @@ namespace Abandoned.UI
     /// </summary>
     public class EarlyAccessNotice
     {
-        public const string Tag = "VERY EARLY ACCESS - GAMEPLAY WORK IN PROGRESS";
+        public const string Tag = "VERY EARLY ACCESS - GAMEPLAY WORK IN PROGRESS"; // @loc
         private const string SeenKey = "launchNotice.version";
 
         private static bool dismissed;
@@ -45,25 +45,25 @@ namespace Abandoned.UI
             panel.style.maxWidth = Length.Percent(90f);
             panel.style.height = StyleKeyword.Auto;
             panel.style.maxHeight = Length.Percent(90f);
-            MenuKit.Text(panel, "BEFORE YOU ENTER / EARLY ACCESS RECORD", "menu-record");
+            MenuKit.Text(panel, Loc.T("BEFORE YOU ENTER / EARLY ACCESS RECORD"), "menu-record");
             Label title = MenuKit.Text(panel, "ABANDONED", "title");
             title.AddToClassList("launch-notice__title");
             if (titleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(titleFont);
-            MenuKit.Text(panel, "TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN.", "launch-notice__warning");
-            MenuKit.Text(panel, Tag, "subtitle");
+            MenuKit.Text(panel, Loc.T("TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN."), "launch-notice__warning");
+            MenuKit.Text(panel, Loc.T(Tag), "subtitle");
             ScrollView body = MenuKit.Scroll(panel, "launch-notice__body");
-            MenuKit.Text(body, "You're playing a very early build of ABANDONED. The gameplay is a work in progress: " +
-                                "expect bugs, rough edges and things that change between versions.");
+            MenuKit.Text(body, Loc.T("You're playing a very early build of ABANDONED. The gameplay is a work in progress: " +
+                                "expect bugs, rough edges and things that change between versions."));
             email = Launch.FeedbackEmail;
             bool page = email.Length == 0 && Launch.HasFeedback;
             if (email.Length > 0)
             {
-                MenuKit.Text(body, "Send feedback, feature wishes and problem reports to:");
+                MenuKit.Text(body, Loc.T("Send feedback, feature wishes and problem reports to:"));
                 MenuKit.Text(body, email, "launch-notice__email");
             }
             else if (page || Launch.HasDiscord)
             {
-                MenuKit.Text(body, "Send feedback, feature wishes and problem reports with the buttons below.");
+                MenuKit.Text(body, Loc.T("Send feedback, feature wishes and problem reports with the buttons below."));
             }
             copied = MenuKit.Text(body, "", "text");
             copied.AddToClassList("text--small");
@@ -73,16 +73,16 @@ namespace Abandoned.UI
             buttons.style.flexWrap = Wrap.Wrap;
             if (email.Length > 0)
             {
-                MenuKit.Button(buttons, "Email feedback", OpenEmail, SoundId.UiConfirm, small: true);
-                MenuKit.Button(buttons, "Copy email", CopyEmail, small: true);
+                MenuKit.Button(buttons, Loc.T("Email feedback"), OpenEmail, SoundId.UiConfirm, small: true);
+                MenuKit.Button(buttons, Loc.T("Copy email"), CopyEmail, small: true);
             }
             else if (page)
             {
                 bool steam = Launch.FeedbackUrl.Contains("steamcommunity.com");
-                MenuKit.Button(buttons, steam ? "Steam discussions" : "Send feedback", Launch.OpenFeedback, SoundId.UiConfirm, small: true);
+                MenuKit.Button(buttons, steam ? Loc.T("Steam discussions") : Loc.T("Send feedback"), Launch.OpenFeedback, SoundId.UiConfirm, small: true);
             }
             if (Launch.HasDiscord) MenuKit.Button(buttons, "Discord", Launch.OpenDiscord, small: true);
-            MenuKit.Button(buttons, "Continue", Dismiss, SoundId.UiConfirm, small: true).AddToClassList("launch-notice__continue");
+            MenuKit.Button(buttons, Loc.T("Continue"), Dismiss, SoundId.UiConfirm, small: true).AddToClassList("launch-notice__continue");
             MenuKit.Show(overlay, !dismissed);
         }
 
@@ -95,7 +95,7 @@ namespace Abandoned.UI
         private void CopyEmail()
         {
             GUIUtility.systemCopyBuffer = email;
-            copied.text = "Copied.";
+            copied.text = Loc.T("Copied.");
         }
 
         private void Dismiss()

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using Abandoned.Extraction;
 using Abandoned.Networking;
@@ -43,7 +44,7 @@ namespace Abandoned.UI
                 int danger = Mathf.Clamp(run.State.Danger, 0, marks.Length);
                 for (int i = 0; i < marks.Length; i++) marks[i].EnableInClassList("horror-danger__mark--on", i < danger);
                 clock.EnableInClassList("horror-danger--final", final);
-                string text = run.TotalCollapse ? $"COLLAPSE {Mathf.CeilToInt(run.CollapseRemaining)}s" : final ? "LOCKDOWN" : run.WindowClosed ? "OVERSTAY" : "BUILDING SIGNAL";
+                string text = run.TotalCollapse ? Loc.T("COLLAPSE {0}s", Mathf.CeilToInt(run.CollapseRemaining)) : final ? Loc.T("LOCKDOWN") : run.WindowClosed ? Loc.T("OVERSTAY") : Loc.T("BUILDING SIGNAL");
                 if (status.text != text) status.text = text;
                 float elapsed = run.State.Window > 0f ? 1f - run.WindowRemaining / run.State.Window : 1f;
                 UiKit.SetBar(progress, elapsed, run.WindowClosed || final ? "bad" : null);
@@ -86,7 +87,7 @@ namespace Abandoned.UI
             HudLayer.Remove(clock);
             HudLayer.Remove(radio);
             clock = HudLayer.Add(new VisualElement(), "horror-danger");
-            status = new Label("BUILDING SIGNAL") { pickingMode = PickingMode.Ignore };
+            status = new Label(Loc.T("BUILDING SIGNAL")) { pickingMode = PickingMode.Ignore };
             status.AddToClassList("horror-danger__label");
             clock.Add(status);
             var row = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -107,7 +108,7 @@ namespace Abandoned.UI
             radio.style.minWidth = 0;
             radio.style.flexDirection = FlexDirection.Column;
             radio.AddToClassList("horror-radio");
-            var caption = new Label("DISPATCH / CH. 04") { pickingMode = PickingMode.Ignore };
+            var caption = new Label(Loc.T("DISPATCH / CH. 04")) { pickingMode = PickingMode.Ignore };
             caption.AddToClassList("horror-radio__caption");
             radio.Add(caption);
             line = new Label() { pickingMode = PickingMode.Ignore };

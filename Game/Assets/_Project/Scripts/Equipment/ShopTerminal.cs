@@ -8,7 +8,7 @@ namespace Abandoned.Equipment
     {
         public static bool Open { get; set; }
 
-        public string UsePrompt(GameObject user) => Company.CompanyService.Current == null ? null : "Shop for gear";
+        public string UsePrompt(GameObject user) => Company.CompanyService.Current == null ? null : Loc.T("Shop for gear");
 
         public void Use(GameObject user) => Open = true;
 

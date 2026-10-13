@@ -32,26 +32,26 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--center");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             ScrollView body = MenuKit.Scroll(panel, "demo-end__body");
-            MenuKit.Text(body, "RECOVERY RECORD / DEMO COMPLETE", "menu-record");
-            Label title = MenuKit.Text(body, "THANKS FOR PLAYING", "title");
+            MenuKit.Text(body, Loc.T("RECOVERY RECORD / DEMO COMPLETE"), "menu-record");
+            Label title = MenuKit.Text(body, Loc.T("THANKS FOR PLAYING"), "title");
             if (menu.TitleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(menu.TitleFont);
-            MenuKit.Text(body, "That's the end of the ABANDONED demo.", "subtitle");
+            MenuKit.Text(body, Loc.T("That's the end of the ABANDONED demo."), "subtitle");
             stats = MenuKit.Text(body, "");
-            MenuKit.Text(body, "The full game has more buildings, more threats, more loot and a lot more floors to fall through. " +
-                                "Wishlisting on Steam is the best way to help a solo developer.");
-            MenuKit.Button(body, "Wishlist on Steam", Wishlist, SoundId.UiConfirm);
-            restart = MenuKit.Button(body, "Start over as a new hire", () =>
+            MenuKit.Text(body, Loc.T("The full game has more buildings, more threats, more loot and a lot more floors to fall through. " +
+                                "Wishlisting on Steam is the best way to help a solo developer."));
+            MenuKit.Button(body, Loc.T("Wishlist on Steam"), Wishlist, SoundId.UiConfirm);
+            restart = MenuKit.Button(body, Loc.T("Start over as a new hire"), () =>
             {
                 CompanyService.Current?.RestartDemo();
                 menu.Back();
             });
-            waiting = MenuKit.Text(body, "The host can start over to play again.");
+            waiting = MenuKit.Text(body, Loc.T("The host can start over to play again."));
             waiting.AddToClassList("text--small");
             VisualElement footer = MenuKit.Row(panel);
             footer.AddToClassList("demo-end__footer");
             footer.style.flexWrap = Wrap.Wrap;
-            MenuKit.Button(footer, "Back to the HQ", menu.Back, SoundId.UiBack);
-            MenuKit.Button(footer, "Quit", menu.Quit, SoundId.UiBack);
+            MenuKit.Button(footer, Loc.T("Back to the HQ"), menu.Back, SoundId.UiBack);
+            MenuKit.Button(footer, Loc.T("Quit"), menu.Quit, SoundId.UiBack);
         }
 
         public void Refresh()
@@ -62,7 +62,7 @@ namespace Abandoned.UI
             MenuKit.Show(waiting, !host);
             if (company == null) return;
             CompanyNetState s = company.State;
-            stats.text = $"JOBS {s.Runs}   BEST HAUL ${s.BestHaul:N0}   COMPANY {(s.Money < 0 ? $"DEBT ${-s.Money:N0}" : $"${s.Money:N0}")}   LEVEL {s.Level}";
+            stats.text = Loc.T("JOBS {0}   BEST HAUL ${1:N0}   COMPANY {2}   LEVEL {3}", s.Runs, s.BestHaul, (s.Money < 0 ? Loc.T("DEBT ${0:N0}", -s.Money) : $"${s.Money:N0}"), s.Level);
         }
 
         private static void Wishlist()

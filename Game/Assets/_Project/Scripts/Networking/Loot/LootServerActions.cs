@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Unity.Netcode;
 using UnityEngine;
@@ -68,7 +69,7 @@ namespace Abandoned.Networking
             Grabbable item = loot.Grabbable;
             if (carrier == null || !item.IsPocketed || item.PocketHolder != carrier)
             {
-                reason = "That's not in your pockets";
+                reason = Loc.Mark("That's not in your pockets");
                 return false;
             }
             if (!PickupRules.CanDropFromPocket(carrier, out reason)) return false;

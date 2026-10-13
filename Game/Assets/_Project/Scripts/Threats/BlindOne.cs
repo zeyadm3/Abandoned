@@ -38,8 +38,8 @@ namespace Abandoned.Threats
         /// <summary>Just the Blind Ones (Threat.All has every threat).</summary>
         public static new readonly List<BlindOne> All = new();
 
-        public override string DisplayName => "Blind One";
-        public override string DeathLine => "The Blind One heard you.";
+        public override string DisplayName => Loc.Mark("Blind One");
+        public override string DeathLine => Loc.Mark("The Blind One heard you.");
 
         public BlindOneState State => state.Value;
         public override ThreatMotion DesiredMotion => State == BlindOneState.Attack ? ThreatMotion.Attack : State == BlindOneState.Hunt ? ThreatMotion.Chase : State == BlindOneState.Investigate ? ThreatMotion.Special : ThreatMotion.Idle;

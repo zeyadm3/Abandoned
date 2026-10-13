@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,9 +15,9 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
-            MenuKit.Text(panel, "ARCHIVE / THOSE BEHIND THE BUILDING", "menu-record");
-            MenuKit.Text(panel, "CREDITS", "heading");
-            MenuKit.Text(panel, "A game by Zeyad Games.", "subtitle");
+            MenuKit.Text(panel, Loc.T("ARCHIVE / THOSE BEHIND THE BUILDING"), "menu-record");
+            MenuKit.Text(panel, Loc.T("CREDITS"), "heading");
+            MenuKit.Text(panel, Loc.T("A game by Zeyad Games."), "subtitle");
             var scroll = MenuKit.Scroll(panel);
             string text = credits != null ? credits.text : "";
             foreach (string line in text.Split('\n'))
@@ -26,7 +27,7 @@ namespace Abandoned.UI
                 bool header = t.StartsWith("#");
                 MenuKit.Text(scroll, header ? t.TrimStart('#', ' ') : t, header ? "section" : "text");
             }
-            MenuKit.Button(panel, "Back", menu.Back, Audio.SoundId.UiBack);
+            MenuKit.Button(panel, Loc.T("Back"), menu.Back, Audio.SoundId.UiBack);
         }
     }
 }

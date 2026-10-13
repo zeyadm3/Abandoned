@@ -212,8 +212,8 @@ namespace Abandoned.Extraction
         {
             RunDoors run = RunDoors.Current;
             if (run == null || !run.Ready || run.IsBroken(index)) return null;
-            if (run.IsShut(index)) return "Slide the door open";
-            return SlotBlocked() ? "Something is in the doorway" : "Slide the door shut";
+            if (run.IsShut(index)) return Loc.T("Slide the door open");
+            return SlotBlocked() ? Loc.T("Something is in the doorway") : Loc.T("Slide the door shut");
         }
 
         public void Use(GameObject user) => RunDoors.Current?.RequestToggle(index);

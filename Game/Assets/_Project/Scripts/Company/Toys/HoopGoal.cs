@@ -20,7 +20,7 @@ namespace Abandoned.Company
             if (scoredAt.TryGetValue(ball, out float t) && Time.time - t < 1.5f) return;
             scoredAt[ball] = Time.time;
             string who = HqToys.Current != null ? HqToys.Current.Thrower(ball) : null;
-            CompanyService.Current?.ServerToyScore($"{who ?? "Someone"} sinks a basket!");
+            CompanyService.Current?.ServerToyScore(Core.Loc.Wire("{0} sinks a basket!", who ?? "Someone"));
         }
     }
 }

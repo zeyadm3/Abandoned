@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using Abandoned.Loot;
 using Abandoned.Networking;
@@ -106,11 +107,11 @@ namespace Abandoned.Extraction
 
         [Rpc(SendTo.Everyone)]
         private void HiredRpc(string name, int fee) =>
-            ToastFeed.Show("NEW HIRE", $"The agency sent a replacement for {name}. ${fee:N0} comes off the payout.", null, ToastFeed.Kind.Warn);
+            ToastFeed.Show(Loc.T("NEW HIRE"), Loc.T("The agency sent a replacement for {0}. ${1:N0} comes off the payout.", name, fee), null, ToastFeed.Kind.Warn);
 
         private void Settle(IReadOnlyCollection<LootItem> aboard, List<(int pay, string line)> lines)
         {
-            foreach (int fee in fees) lines.Add((-fee, $"AGENCY FEE: a replacement worker. -${fee:N0}"));
+            foreach (int fee in fees) lines.Add((-fee, Loc.Wire("AGENCY FEE: a replacement worker. -${0}", fee.ToString("N0"))));
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

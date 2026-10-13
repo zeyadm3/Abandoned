@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Equipment;
 using Abandoned.Interaction;
 using Abandoned.Networking;
@@ -19,8 +20,8 @@ namespace Abandoned.Threats
             areaLights = FindObjectsByType<Light>(FindObjectsSortMode.None);
             gameObject.AddComponent<ArachnophobiaSwap>(); // 0.19.7
         }
-        public override string DisplayName => "Crawlers";
-        public override string DeathLine => "The Crawlers dragged you down.";
+        public override string DisplayName => Loc.Mark("Crawlers");
+        public override string DeathLine => Loc.Mark("The Crawlers dragged you down.");
         public override ThreatMotion DesiredMotion => motion.Value;
         // Small enough to pour in through the slats: a locker is no shelter from them (0.16.0).
         protected override bool FindsHider(NetworkPlayer p) => true;

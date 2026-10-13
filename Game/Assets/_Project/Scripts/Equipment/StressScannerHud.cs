@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Structure;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -47,8 +48,8 @@ namespace Abandoned.Equipment
                 UI.HudLayer.Remove(panel);
                 panel = UI.HudLayer.Add(new VisualElement(), "hud-panel", "hud-scanner", "instrument-hud", "instrument-hud--structure", "instrument-hud--stress");
                 if (panel == null) return;
-                UI.MenuKit.Text(panel, "STRUCTURE SCAN", "instrument-hud__title");
-                UI.MenuKit.Text(panel, "SURFACE / LOAD DIAGNOSTIC", "instrument-hud__meta");
+                UI.MenuKit.Text(panel, Loc.T("STRUCTURE SCAN"), "instrument-hud__title");
+                UI.MenuKit.Text(panel, Loc.T("SURFACE / LOAD DIAGNOSTIC"), "instrument-hud__meta");
                 status = UI.MenuKit.Text(panel, "", "instrument-hud__readout");
                 condition = UI.UiKit.Segments(panel, 12, "instrument-hud__signal");
                 load = UI.MenuKit.Text(panel, "", "instrument-hud__count");
@@ -58,11 +59,12 @@ namespace Abandoned.Equipment
             string color = Core.GameSettings.ColorblindScanner
                 ? health > 0.6f ? "#56b4e9" : health > 0.3f ? "#e69f00" : "#d55e00"
                 : health > 0.6f ? "#7dff7d" : health > 0.3f ? "#ffd24d" : "#ff5544";
-            string weight = Target.Capacity > 0f ? $"{Target.Load:0} / {Target.Capacity:0} KG" : "-";
-            string text = $"{Target.Stage.ToString().ToUpperInvariant()} / {health:P0}";
+            string weight = Target.Capacity > 0f ? Loc.T("{0:0} / {1:0} KG", Target.Load, Target.Capacity) : "-";
+            // The stage as the enum names it. @loc:stage "Stable", "Stressed", "Cracking", "Failing", "Collapsed"
+            string text = $"{Loc.C("stage", Target.Stage.ToString()).ToUpperInvariant()} / {health:P0}";
             UI.MenuKit.Show(panel, true);
             if (status.text != text) status.text = text;
-            load.text = "LOAD / " + weight;
+            load.text = Loc.T("LOAD / {0}", weight);
             if (ColorUtility.TryParseHtmlString(color, out Color tint))
             {
                 status.style.color = tint;

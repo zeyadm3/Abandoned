@@ -21,14 +21,15 @@ namespace Abandoned.Extraction
             FreightLift lift = FreightLift.Active;
             if (run == null || lift == null || !run.IsSpawned) return null;
             LiftNetState s = run.State;
-            if (s.Broken) return "The lift has given way";
-            if (run.Moving) return "The lift is moving";
-            if (!run.Powered(lift)) return "No power to the lift (throw its breaker)";
+            if (s.Broken) return Loc.T("The lift has given way");
+            if (run.Moving) return Loc.T("The lift is moving");
+            if (!run.Powered(lift)) return Loc.T("No power to the lift (throw its breaker)");
             int target = Target(s);
-            if (target < 0) return "The lift is here";
+            if (target < 0) return Loc.T("The lift is here");
             float load = RunLift.LoadOn(lift), limit = LiftConfig.Current.LoadLimit;
-            string weight = load > limit ? $"  OVERLOADED {load:0} / {limit:0} kg" : $"  {load:0} / {limit:0} kg";
-            return (floor < 0 ? (target == 1 ? "Send the lift up" : "Send the lift down") : "Call the lift") + (floor < 0 ? weight : "");
+            if (floor >= 0) return Loc.T("Call the lift");
+            string send = target == 1 ? Loc.T("Send the lift up") : Loc.T("Send the lift down");
+            return load > limit ? Loc.T("{0}  OVERLOADED {1:0} / {2:0} kg", send, load, limit) : Loc.T("{0}  {1:0} / {2:0} kg", send, load, limit);
         }
 
         // The floor this press would send the lift to, or -1 when it's already there.

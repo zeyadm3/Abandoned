@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,7 +19,7 @@ namespace Abandoned.UI
         {
             box = HudLayer.Add(new VisualElement(), "hud-panel", "hud-hint", "field-note");
             if (box == null) return;
-            Label title = MenuKit.Text(box, "FIELD NOTE", "section");
+            Label title = MenuKit.Text(box, Loc.T("FIELD NOTE"), "section");
             title.pickingMode = PickingMode.Ignore;
             text = MenuKit.Text(box, "", "text");
             text.pickingMode = PickingMode.Ignore;

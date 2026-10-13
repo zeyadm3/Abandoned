@@ -31,8 +31,8 @@ namespace Abandoned.Threats
         private Vector3 lastFooting;
         private StructuralSection standingOn;
 
-        public override string DisplayName => "Hunter";
-        public override string DeathLine => "The Hunter ran you down.";
+        public override string DisplayName => Loc.Mark("Hunter");
+        public override string DeathLine => Loc.Mark("The Hunter ran you down.");
         public HunterState State => state.Value;
         // At a door it stands and swings (each blow plays the attack); on its way to one it is still charging.
         public override ThreatMotion DesiredMotion => State == HunterState.Chase || State == HunterState.Breach && !atDoor ? ThreatMotion.Chase

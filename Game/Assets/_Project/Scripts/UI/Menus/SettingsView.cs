@@ -46,9 +46,9 @@ namespace Abandoned.UI
             panel.style.width = 1360f;
             panel.style.maxWidth = Length.Percent(96f);
 
-            MenuKit.Text(panel, "PERSONAL RECORD / FIELD CONFIGURATION", "menu-record");
-            MenuKit.Text(panel, "SETTINGS", "heading");
-            MenuKit.Text(panel, "Changes apply straight away and are saved when you leave this screen.", "subtitle");
+            MenuKit.Text(panel, Loc.T("PERSONAL RECORD / FIELD CONFIGURATION"), "menu-record");
+            MenuKit.Text(panel, Loc.T("SETTINGS"), "heading");
+            MenuKit.Text(panel, Loc.T("Changes apply straight away and are saved when you leave this screen."), "subtitle");
             var columns = new VisualElement();
             columns.AddToClassList("settings__columns");
             panel.Add(columns);
@@ -75,13 +75,13 @@ namespace Abandoned.UI
             VisualElement footer = MenuKit.Row(panel);
             footer.AddToClassList("settings__footer");
             footer.style.flexWrap = Wrap.Wrap;
-            MenuKit.Button(footer, "Back", () =>
+            MenuKit.Button(footer, Loc.T("Back"), () =>
             {
                 VoiceSettings.Flush();
                 Prefs.Save();
                 menu.Back();
             }, SoundId.UiBack).AddToClassList("settings__back");
-            MenuKit.Button(footer, "Restore this page's defaults", () =>
+            MenuKit.Button(footer, Loc.T("Restore this page's defaults"), () =>
             {
                 pages[open].Reset();
                 Show(open);
@@ -91,30 +91,43 @@ namespace Abandoned.UI
 
         private void Define()
         {
-            Add("Gameplay", "How the game looks and feels while you play.", () =>
+            Add(Loc.T("Gameplay"), Loc.T("How the game looks and feels while you play."), () =>
             {
-                Section("VIEW");
-                Note(MenuKit.Range(body, "Field of view", GameSettings.MinFov, GameSettings.MaxFov, GameSettings.FieldOfView, "0",
-                    v => GameSettings.FieldOfView = Mathf.Round(v)), "Wider shows more of the building; narrower feels closer.");
-                Note(Toggle("Head bob", GameSettings.HeadBob, v => GameSettings.HeadBob = v), "The camera sways as you walk.");
-                Note(Toggle("Camera shake", GameSettings.CameraShake, v => GameSettings.CameraShake = v), "Collapses, landings and big hits shake the view.");
-                Note(Toggle("Crosshair", GameSettings.ShowCrosshair, v => GameSettings.ShowCrosshair = v), "Off hides the dot; the ring still shows on things you can use.");
-                Section("YOU");
-                VisualElement nameRow = Row("Your name");
+                // 0.24.8. First on the first page and each name in its own script, so it can be found in a
+                // language the player can't read; the menus are rebuilt on a pick and open here again.
+                Section(Loc.T("LANGUAGE"));
+                VisualElement languages = MenuKit.Row(body);
+                languages.AddToClassList("language-list");
+                foreach (LanguageInfo language in Languages.Offered)
+                {
+                    LanguageInfo pick = language;
+                    Button button = MenuKit.Button(languages, language.NativeName, () => Languages.Choose(pick.Code), small: true);
+                    button.AddToClassList("language-list__button");
+                    button.EnableInClassList("language-list__button--current", language == Languages.Current);
+                }
+                NoteLast(Loc.T("Menus, the HUD and captions. Spoken lines stay in English. Every player picks their own."));
+                Section(Loc.T("VIEW"));
+                Note(MenuKit.Range(body, Loc.T("Field of view"), GameSettings.MinFov, GameSettings.MaxFov, GameSettings.FieldOfView, "0",
+                    v => GameSettings.FieldOfView = Mathf.Round(v)), Loc.T("Wider shows more of the building; narrower feels closer."));
+                Note(Toggle(Loc.T("Head bob"), GameSettings.HeadBob, v => GameSettings.HeadBob = v), Loc.T("The camera sways as you walk."));
+                Note(Toggle(Loc.T("Camera shake"), GameSettings.CameraShake, v => GameSettings.CameraShake = v), Loc.T("Collapses, landings and big hits shake the view."));
+                Note(Toggle(Loc.T("Crosshair"), GameSettings.ShowCrosshair, v => GameSettings.ShowCrosshair = v), Loc.T("Off hides the dot; the ring still shows on things you can use."));
+                Section(Loc.T("YOU"));
+                VisualElement nameRow = Row(Loc.T("Your name"));
                 var nameField = new TextField { value = GameSettings.PlayerName, maxLength = Networking.NetworkPlayer.MaxNameLength };
                 nameField.AddToClassList("field");
                 nameField.AddToClassList("setting__input");
                 nameField.RegisterValueChangedCallback(e => GameSettings.PlayerName = e.newValue);
                 nameRow.Add(nameField);
-                Note(nameRow, "What the crew sees when you play without Steam (Steam uses your Steam name). Applies from the next game.");
-                Section("INTERFACE");
+                Note(nameRow, Loc.T("What the crew sees when you play without Steam (Steam uses your Steam name). Applies from the next game."));
+                Section(Loc.T("INTERFACE"));
                 // Applied when the slider is let go: resizing the whole UI under the pointer mid-drag is unusable.
-                Slider scale = MenuKit.Range(body, "UI scale", GameSettings.MinUiScale, GameSettings.MaxUiScale, GameSettings.UiScale, "0.00x", _ => { });
+                Slider scale = MenuKit.Range(body, Loc.T("UI scale"), GameSettings.MinUiScale, GameSettings.MaxUiScale, GameSettings.UiScale, "0.00x", _ => { });
                 scale.RegisterCallback<PointerCaptureOutEvent>(_ => GameSettings.UiScale = Mathf.Round(scale.value * 20f) / 20f);
-                Note(scale, "Menus and HUD size. Applies when you let go of the slider.");
-                Note(Toggle("Tips", Hints.Enabled, v => Hints.Enabled = v), "The guided first job and short first-time tips during play.");
-                VisualElement again = Row("Seen tips");
-                MenuKit.Button(again, "Show them again", Hints.ResetSeen, small: true);
+                Note(scale, Loc.T("Menus and HUD size. Applies when you let go of the slider."));
+                Note(Toggle(Loc.T("Tips"), Hints.Enabled, v => Hints.Enabled = v), Loc.T("The guided first job and short first-time tips during play."));
+                VisualElement again = Row(Loc.T("Seen tips"));
+                MenuKit.Button(again, Loc.T("Show them again"), Hints.ResetSeen, small: true);
             }, () =>
             {
                 GameSettings.FieldOfView = GameSettings.DefaultFov;
@@ -123,49 +136,49 @@ namespace Abandoned.UI
                 Hints.Enabled = true;
             });
 
-            Add("Controls", "Mouse and movement. Every key can be rebound.", () =>
+            Add(Loc.T("Controls"), Loc.T("Mouse and movement. Every key can be rebound."), () =>
             {
-                Section("MOUSE");
-                Note(MenuKit.Range(body, "Mouse sensitivity", GameSettings.MinSensitivity, GameSettings.MaxSensitivity, GameSettings.Sensitivity, "0.00x",
-                    v => GameSettings.Sensitivity = v), "How far the view turns for a given mouse movement.");
-                Note(Toggle("Invert vertical look", GameSettings.InvertY, v => GameSettings.InvertY = v), "Push the mouse forward to look down.");
-                Section("MOVEMENT");
-                MenuKit.Switch(body, "Crouch", GameSettings.CrouchToggle, "Toggle", "Hold", v => GameSettings.CrouchToggle = v);
-                NoteLast("Toggle: press once to crouch, again to stand.");
-                Section("KEYS");
-                VisualElement keys = Row("Key bindings");
-                MenuKit.Button(keys, "Change keys", () => menu.Push(MenuScreen.Controls), small: true);
+                Section(Loc.T("MOUSE"));
+                Note(MenuKit.Range(body, Loc.T("Mouse sensitivity"), GameSettings.MinSensitivity, GameSettings.MaxSensitivity, GameSettings.Sensitivity, "0.00x",
+                    v => GameSettings.Sensitivity = v), Loc.T("How far the view turns for a given mouse movement."));
+                Note(Toggle(Loc.T("Invert vertical look"), GameSettings.InvertY, v => GameSettings.InvertY = v), Loc.T("Push the mouse forward to look down."));
+                Section(Loc.T("MOVEMENT"));
+                MenuKit.Switch(body, Loc.T("Crouch"), GameSettings.CrouchToggle, Loc.T("Toggle"), Loc.T("Hold"), v => GameSettings.CrouchToggle = v);
+                NoteLast(Loc.T("Toggle: press once to crouch, again to stand."));
+                Section(Loc.T("KEYS"));
+                VisualElement keys = Row(Loc.T("Key bindings"));
+                MenuKit.Button(keys, Loc.T("Change keys"), () => menu.Push(MenuScreen.Controls), small: true);
             }, () =>
             {
                 GameSettings.Sensitivity = 1f;
                 GameSettings.InvertY = GameSettings.CrouchToggle = false;
             });
 
-            Add("Video", "The window and how often it's drawn.", () =>
+            Add(Loc.T("Video"), Loc.T("The window and how often it's drawn."), () =>
             {
-                Section("DISPLAY");
-                var modes = new[] { (FullScreenMode.FullScreenWindow, "Borderless fullscreen"), (FullScreenMode.ExclusiveFullScreen, "Fullscreen"), (FullScreenMode.Windowed, "Windowed") };
-                MenuKit.Choice(body, "Window mode", modes.Select(m => m.Item2).ToArray(), Array.FindIndex(modes, m => m.Item1 == VideoSettings.WindowMode),
+                Section(Loc.T("DISPLAY"));
+                var modes = new[] { (FullScreenMode.FullScreenWindow, Loc.T("Borderless fullscreen")), (FullScreenMode.ExclusiveFullScreen, Loc.T("Fullscreen")), (FullScreenMode.Windowed, Loc.T("Windowed")) };
+                MenuKit.Choice(body, Loc.T("Window mode"), modes.Select(m => m.Item2).ToArray(), Array.FindIndex(modes, m => m.Item1 == VideoSettings.WindowMode),
                     i => VideoSettings.WindowMode = modes[i].Item1);
                 List<Vector2Int> sizes = Screen.resolutions.Select(r => new Vector2Int(r.width, r.height)).Distinct().OrderByDescending(r => r.x * r.y).ToList();
                 sizes.Insert(0, Vector2Int.zero);
-                string[] names = sizes.Select(r => r == Vector2Int.zero ? "Desktop" : $"{r.x} x {r.y}").ToArray();
-                MenuKit.Choice(body, "Resolution", names, Mathf.Max(0, sizes.IndexOf(VideoSettings.Resolution)), i => VideoSettings.Resolution = sizes[i]);
-                NoteLast("Window and resolution apply to the built game; the editor's Game view keeps its own size.");
+                string[] names = sizes.Select(r => r == Vector2Int.zero ? Loc.T("Desktop") : $"{r.x} x {r.y}").ToArray();
+                MenuKit.Choice(body, Loc.T("Resolution"), names, Mathf.Max(0, sizes.IndexOf(VideoSettings.Resolution)), i => VideoSettings.Resolution = sizes[i]);
+                NoteLast(Loc.T("Window and resolution apply to the built game; the editor's Game view keeps its own size."));
                 // 0.23.4
                 var displays = new List<DisplayInfo>();
                 Screen.GetDisplayLayout(displays);
                 if (displays.Count > 1)
-                    MenuKit.Choice(body, "Monitor", displays.Select((d, i) => $"{i + 1}: {d.name}").ToArray(), Mathf.Clamp(VideoSettings.Monitor, 0, displays.Count - 1), i => VideoSettings.Monitor = i);
-                Note(Toggle("Show FPS", VideoSettings.ShowFps, v => VideoSettings.ShowFps = v), "A small frame counter in the corner.");
-                Section("FRAME RATE");
-                Note(Toggle("VSync", VideoSettings.VSync, v => VideoSettings.VSync = v), "Matches your monitor's refresh: no tearing, a little more input delay.");
-                MenuKit.Choice(body, "Frame cap", VideoSettings.FrameCaps.Select(c => c == 0 ? "Unlimited" : $"{c} fps").ToArray(),
+                    MenuKit.Choice(body, Loc.T("Monitor"), displays.Select((d, i) => $"{i + 1}: {d.name}").ToArray(), Mathf.Clamp(VideoSettings.Monitor, 0, displays.Count - 1), i => VideoSettings.Monitor = i);
+                Note(Toggle(Loc.T("Show FPS"), VideoSettings.ShowFps, v => VideoSettings.ShowFps = v), Loc.T("A small frame counter in the corner."));
+                Section(Loc.T("FRAME RATE"));
+                Note(Toggle(Loc.T("VSync"), VideoSettings.VSync, v => VideoSettings.VSync = v), Loc.T("Matches your monitor's refresh: no tearing, a little more input delay."));
+                MenuKit.Choice(body, Loc.T("Frame cap"), VideoSettings.FrameCaps.Select(c => c == 0 ? Loc.T("Unlimited") : Loc.T("{0} fps", c)).ToArray(),
                     Mathf.Max(0, Array.IndexOf(VideoSettings.FrameCaps, VideoSettings.FrameCap)), i => VideoSettings.FrameCap = VideoSettings.FrameCaps[i]);
-                NoteLast("Only used while VSync is off.");
-                Section("PICTURE");
-                Note(MenuKit.Range(body, "Brightness", -1f, 1.5f, VideoSettings.Brightness, "+0.0;-0.0;0", v => VideoSettings.Brightness = v),
-                    "Raise it if Power Off jobs are too dark to read on your screen.");
+                NoteLast(Loc.T("Only used while VSync is off."));
+                Section(Loc.T("PICTURE"));
+                Note(MenuKit.Range(body, Loc.T("Brightness"), -1f, 1.5f, VideoSettings.Brightness, "+0.0;-0.0;0", v => VideoSettings.Brightness = v),
+                    Loc.T("Raise it if Power Off jobs are too dark to read on your screen."));
             }, () =>
             {
                 VideoSettings.WindowMode = FullScreenMode.FullScreenWindow;
@@ -175,24 +188,24 @@ namespace Abandoned.UI
                 VideoSettings.Brightness = 0f;
             });
 
-            Add("Graphics", "Detail against speed. Lower these first on a slow machine.", () =>
+            Add(Loc.T("Graphics"), Loc.T("Detail against speed. Lower these first on a slow machine."), () =>
             {
-                Section("QUALITY");
-                string[] quality = QualitySettings.names;
+                Section(Loc.T("QUALITY"));
+                string[] quality = QualitySettings.names; // the project's quality levels. @loc "Mobile", "PC"
                 if (quality.Length > 1)
-                    MenuKit.Choice(body, "Preset", quality, VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
-                MenuKit.Choice(body, "Shadows", VideoSettings.ShadowNames, VideoSettings.Shadows, i => VideoSettings.Shadows = i);
-                MenuKit.Choice(body, "Textures", VideoSettings.TextureNames, VideoSettings.TextureQuality, i => VideoSettings.TextureQuality = i);
-                Section("EFFECTS");
-                Note(Toggle("Fog", VideoSettings.Fog, v => VideoSettings.Fog = v), "Off: see further. The building is meant to be murky.");
-                Note(Toggle("Bloom", VideoSettings.Bloom, v => VideoSettings.Bloom = v), "The glow round bright lights.");
-                Note(Toggle("Film grain", VideoSettings.Grain, v => VideoSettings.Grain = v), "Off also calms night vision's noise.");
-                Note(Toggle("Post-processing", VideoSettings.PostProcessing, v => VideoSettings.PostProcessing = v), "Everything above, plus colour grading, brightness, and the low-health and night-vision looks. Off is fastest.");
-                NoteLast("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6).");
-                Note(MenuKit.Percent(body, "Render scale", Mathf.InverseLerp(VideoSettings.MinRenderScale, 1f, VideoSettings.RenderScale),
-                    v => VideoSettings.RenderScale = Mathf.Lerp(VideoSettings.MinRenderScale, 1f, v)), "Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp.");
-                MenuKit.Choice(body, "Anti-aliasing", VideoSettings.AntiAliasingNames, VideoSettings.AntiAliasing, i => VideoSettings.AntiAliasing = i);
-                NoteLast("Smooths jagged edges. 4x costs the most.");
+                    MenuKit.Choice(body, Loc.T("Preset"), Words(quality), VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
+                MenuKit.Choice(body, Loc.T("Shadows"), Words(VideoSettings.ShadowNames, "quality"), VideoSettings.Shadows, i => VideoSettings.Shadows = i);
+                MenuKit.Choice(body, Loc.T("Textures"), Words(VideoSettings.TextureNames), VideoSettings.TextureQuality, i => VideoSettings.TextureQuality = i);
+                Section(Loc.T("EFFECTS"));
+                Note(Toggle(Loc.T("Fog"), VideoSettings.Fog, v => VideoSettings.Fog = v), Loc.T("Off: see further. The building is meant to be murky."));
+                Note(Toggle(Loc.T("Bloom"), VideoSettings.Bloom, v => VideoSettings.Bloom = v), Loc.T("The glow round bright lights."));
+                Note(Toggle(Loc.T("Film grain"), VideoSettings.Grain, v => VideoSettings.Grain = v), Loc.T("Off also calms night vision's noise."));
+                Note(Toggle(Loc.T("Post-processing"), VideoSettings.PostProcessing, v => VideoSettings.PostProcessing = v), Loc.T("Everything above, plus colour grading, brightness, and the low-health and night-vision looks. Off is fastest."));
+                NoteLast(Loc.T("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6)."));
+                Note(MenuKit.Percent(body, Loc.T("Render scale"), Mathf.InverseLerp(VideoSettings.MinRenderScale, 1f, VideoSettings.RenderScale),
+                    v => VideoSettings.RenderScale = Mathf.Lerp(VideoSettings.MinRenderScale, 1f, v)), Loc.T("Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp."));
+                MenuKit.Choice(body, Loc.T("Anti-aliasing"), Words(VideoSettings.AntiAliasingNames, "quality"), VideoSettings.AntiAliasing, i => VideoSettings.AntiAliasing = i);
+                NoteLast(Loc.T("Smooths jagged edges. 4x costs the most."));
             }, () =>
             {
                 VideoSettings.Quality = -1;
@@ -201,17 +214,17 @@ namespace Abandoned.UI
                 VideoSettings.AntiAliasing = 1;
             });
 
-            Add("Audio", "Volume of everything except voice chat.", () =>
+            Add(Loc.T("Audio"), Loc.T("Volume of everything except voice chat."), () =>
             {
-                Section("VOLUME");
-                MenuKit.Percent(body, "Master", AudioLevels.Master, v => AudioLevels.Master = v);
-                MenuKit.Percent(body, "Effects", AudioLevels.Sfx, v => AudioLevels.Sfx = v);
-                NoteLast("Footsteps, loot, creaks, the monsters.");
-                MenuKit.Percent(body, "Ambience", AudioLevels.Ambience, v => AudioLevels.Ambience = v);
-                MenuKit.Percent(body, "Music", AudioLevels.Music, v => AudioLevels.Music = v);
-                Section("WINDOW");
-                Note(Toggle("Mute when in the background", GameSettings.MuteWhenUnfocused, v => GameSettings.MuteWhenUnfocused = v),
-                    "Silences the game while you're in another window.");
+                Section(Loc.T("VOLUME"));
+                MenuKit.Percent(body, Loc.T("Master"), AudioLevels.Master, v => AudioLevels.Master = v);
+                MenuKit.Percent(body, Loc.T("Effects"), AudioLevels.Sfx, v => AudioLevels.Sfx = v);
+                NoteLast(Loc.T("Footsteps, loot, creaks, the monsters."));
+                MenuKit.Percent(body, Loc.T("Ambience"), AudioLevels.Ambience, v => AudioLevels.Ambience = v);
+                MenuKit.Percent(body, Loc.T("Music"), AudioLevels.Music, v => AudioLevels.Music = v);
+                Section(Loc.T("WINDOW"));
+                Note(Toggle(Loc.T("Mute when in the background"), GameSettings.MuteWhenUnfocused, v => GameSettings.MuteWhenUnfocused = v),
+                    Loc.T("Silences the game while you're in another window."));
             }, () =>
             {
                 AudioLevels.Master = AudioLevels.Sfx = AudioLevels.Ambience = 1f;
@@ -219,7 +232,7 @@ namespace Abandoned.UI
                 GameSettings.MuteWhenUnfocused = false;
             });
 
-            Add("Voice", "Proximity voice chat and your microphone.", Voice, () =>
+            Add(Loc.T("Voice"), Loc.T("Proximity voice chat and your microphone."), Voice, () =>
             {
                 VoiceSettings.Volume = 1f;
                 VoiceSettings.MicDevice = "";
@@ -227,18 +240,18 @@ namespace Abandoned.UI
                 VoiceSettings.MicMuted = false;
             });
 
-            Add("Controls+", "Look speed, hold or toggle, and the mouse wheel.", () =>
+            Add(Loc.T("Controls+"), Loc.T("Look speed, hold or toggle, and the mouse wheel."), () =>
             {
-                Section("LOOK");
-                Note(MenuKit.Percent(body, "Horizontal look speed", GameSettings.LookX / 2f, v => GameSettings.LookX = v * 2f), "50 % is normal.");
-                Note(MenuKit.Percent(body, "Vertical look speed", GameSettings.LookY / 2f, v => GameSettings.LookY = v * 2f), "50 % is normal.");
-                Note(MenuKit.Percent(body, "Controller look speed", GameSettings.PadLookSpeed / 1800f, v => GameSettings.PadLookSpeed = Mathf.Max(100f, v * 1800f)), "The right stick at full tilt.");
-                Section("HOLD OR TOGGLE");
-                Note(Toggle("Toggle sprint", GameSettings.SprintToggle, v => GameSettings.SprintToggle = v), "Press once to run, again to walk.");
-                Note(Toggle("Toggle push to talk", GameSettings.TalkToggle, v => GameSettings.TalkToggle = v), "Press once to open your mic, again to close it.");
-                Note(Toggle("Toggle radio", GameSettings.RadioToggle, v => GameSettings.RadioToggle = v), "Press once to key the radio, again to let go.");
-                Section("HANDS");
-                Note(Toggle("Mouse wheel switches hand slots", GameSettings.WheelSwitchesSlots, v => GameSettings.WheelSwitchesSlots = v), "With empty hands. Hold Inventory and scroll to pick the pocket item Drop takes out.");
+                Section(Loc.T("LOOK"));
+                Note(MenuKit.Percent(body, Loc.T("Horizontal look speed"), GameSettings.LookX / 2f, v => GameSettings.LookX = v * 2f), Loc.T("50 % is normal."));
+                Note(MenuKit.Percent(body, Loc.T("Vertical look speed"), GameSettings.LookY / 2f, v => GameSettings.LookY = v * 2f), Loc.T("50 % is normal."));
+                Note(MenuKit.Percent(body, Loc.T("Controller look speed"), GameSettings.PadLookSpeed / 1800f, v => GameSettings.PadLookSpeed = Mathf.Max(100f, v * 1800f)), Loc.T("The right stick at full tilt."));
+                Section(Loc.T("HOLD OR TOGGLE"));
+                Note(Toggle(Loc.T("Toggle sprint"), GameSettings.SprintToggle, v => GameSettings.SprintToggle = v), Loc.T("Press once to run, again to walk."));
+                Note(Toggle(Loc.T("Toggle push to talk"), GameSettings.TalkToggle, v => GameSettings.TalkToggle = v), Loc.T("Press once to open your mic, again to close it."));
+                Note(Toggle(Loc.T("Toggle radio"), GameSettings.RadioToggle, v => GameSettings.RadioToggle = v), Loc.T("Press once to key the radio, again to let go."));
+                Section(Loc.T("HANDS"));
+                Note(Toggle(Loc.T("Mouse wheel switches hand slots"), GameSettings.WheelSwitchesSlots, v => GameSettings.WheelSwitchesSlots = v), Loc.T("With empty hands. Hold Inventory and scroll to pick the pocket item Drop takes out."));
             }, () =>
             {
                 GameSettings.LookX = GameSettings.LookY = 1f;
@@ -247,24 +260,24 @@ namespace Abandoned.UI
                 GameSettings.WheelSwitchesSlots = true;
             });
 
-            Add("Accessibility", "Captions, colours and calmer effects.", () =>
+            Add(Loc.T("Accessibility"), Loc.T("Captions, colours and calmer effects."), () =>
             {
-                Section("CAPTIONS");
-                Note(Toggle("Subtitles", GameSettings.Subtitles, v => GameSettings.Subtitles = v), "Names warning and monster sounds, and who makes them (never where from).");
-                MenuKit.Choice(body, "Subtitle size", GameSettings.SubtitleSizeNames, GameSettings.SubtitleSize, i => GameSettings.SubtitleSize = i);
-                Section("COLOUR AND MOTION");
-                Note(Toggle("Colourblind-safe scanner", GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v), "Blue / orange / vermilion stress colours.");
-                Note(Toggle("Reduce flashing lights", GameSettings.ReduceFlashing, v => GameSettings.ReduceFlashing = v), "Lights in the game dim and recover smoothly instead of flickering or strobing.");
-                Note(Toggle("Reduce menu effects", GameSettings.ReduceMenuEffects, v => GameSettings.ReduceMenuEffects = v), "No flicker, glitches, jitter or static in the menus.");
-                Note(Toggle("Fewer jump scares", GameSettings.FewerJumpScares, v => GameSettings.FewerJumpScares = v), "The building stops showing you sudden figures. Sounds and monsters stay.");
-                Note(Toggle("Arachnophobia mode", GameSettings.Arachnophobia, v => GameSettings.Arachnophobia = v), "The Crawlers look like scurrying lumps of grit, with no legs. They behave the same.");
-                Section("PRIVACY");
-                Note(Toggle("Streamer mode", GameSettings.StreamerMode, v => GameSettings.StreamerMode = v), "Crewmates show as \"Crewmate 1-4\" on your screen, and your address and port are hidden.");
-                Note(MenuKit.Percent(body, "Camera shake", GameSettings.ShakeAmount, v => GameSettings.ShakeAmount = v), "0 turns it off.");
-                Note(MenuKit.Percent(body, "Head bob and landing dip", GameSettings.BobAmount, v => GameSettings.BobAmount = v), "0 turns it off.");
-                Note(Toggle("Low-health vision effects", GameSettings.LowHealthVision, v => GameSettings.LowHealthVision = v), "The closing vignette, blur and warp at low health. The heartbeat and the blood stay.");
-                Section("SOUND");
-                Note(MenuKit.Percent(body, "Heartbeat and breathing", GameSettings.VitalsVolume, v => GameSettings.VitalsVolume = v), "Your own heartbeat and breath during a job. 0 turns them off.");
+                Section(Loc.T("CAPTIONS"));
+                Note(Toggle(Loc.T("Subtitles"), GameSettings.Subtitles, v => GameSettings.Subtitles = v), Loc.T("Names warning and monster sounds, and who makes them (never where from)."));
+                MenuKit.Choice(body, Loc.T("Subtitle size"), Words(GameSettings.SubtitleSizeNames, "size"), GameSettings.SubtitleSize, i => GameSettings.SubtitleSize = i);
+                Section(Loc.T("COLOUR AND MOTION"));
+                Note(Toggle(Loc.T("Colourblind-safe scanner"), GameSettings.ColorblindScanner, v => GameSettings.ColorblindScanner = v), Loc.T("Blue / orange / vermilion stress colours."));
+                Note(Toggle(Loc.T("Reduce flashing lights"), GameSettings.ReduceFlashing, v => GameSettings.ReduceFlashing = v), Loc.T("Lights in the game dim and recover smoothly instead of flickering or strobing."));
+                Note(Toggle(Loc.T("Reduce menu effects"), GameSettings.ReduceMenuEffects, v => GameSettings.ReduceMenuEffects = v), Loc.T("No flicker, glitches, jitter or static in the menus."));
+                Note(Toggle(Loc.T("Fewer jump scares"), GameSettings.FewerJumpScares, v => GameSettings.FewerJumpScares = v), Loc.T("The building stops showing you sudden figures. Sounds and monsters stay."));
+                Note(Toggle(Loc.T("Arachnophobia mode"), GameSettings.Arachnophobia, v => GameSettings.Arachnophobia = v), Loc.T("The Crawlers look like scurrying lumps of grit, with no legs. They behave the same."));
+                Section(Loc.T("PRIVACY"));
+                Note(Toggle(Loc.T("Streamer mode"), GameSettings.StreamerMode, v => GameSettings.StreamerMode = v), Loc.T("Crewmates show as \"Crewmate 1-4\" on your screen, and your address and port are hidden."));
+                Note(MenuKit.Percent(body, Loc.T("Camera shake"), GameSettings.ShakeAmount, v => GameSettings.ShakeAmount = v), Loc.T("0 turns it off."));
+                Note(MenuKit.Percent(body, Loc.T("Head bob and landing dip"), GameSettings.BobAmount, v => GameSettings.BobAmount = v), Loc.T("0 turns it off."));
+                Note(Toggle(Loc.T("Low-health vision effects"), GameSettings.LowHealthVision, v => GameSettings.LowHealthVision = v), Loc.T("The closing vignette, blur and warp at low health. The heartbeat and the blood stay."));
+                Section(Loc.T("SOUND"));
+                Note(MenuKit.Percent(body, Loc.T("Heartbeat and breathing"), GameSettings.VitalsVolume, v => GameSettings.VitalsVolume = v), Loc.T("Your own heartbeat and breath during a job. 0 turns them off."));
             }, () =>
             {
                 GameSettings.Subtitles = true;
@@ -278,24 +291,24 @@ namespace Abandoned.UI
 
         private void Voice()
         {
-            Section("HEARING");
-            Note(MenuKit.Percent(body, "Voices", VoiceSettings.Volume, v => VoiceSettings.Volume = v), "Everyone's voice; per-player volume is in the pause menu's crew list.");
-            Section("MICROPHONE");
+            Section(Loc.T("HEARING"));
+            Note(MenuKit.Percent(body, Loc.T("Voices"), VoiceSettings.Volume, v => VoiceSettings.Volume = v), Loc.T("Everyone's voice; per-player volume is in the pause menu's crew list."));
+            Section(Loc.T("MICROPHONE"));
             // 0.23.3
-            Note(MenuKit.Percent(body, "Microphone gain", VoiceSettings.MicGain / 3f, v => VoiceSettings.MicGain = v * 3f), "How loud your mic counts for the open-mic gate (33 % is normal).");
-            Note(MenuKit.Percent(body, "Open mic threshold", VoiceSettings.OpenMicThreshold / 4f, v => VoiceSettings.OpenMicThreshold = v * 4f), "Higher: you must speak louder before open mic sends (25 % is normal).");
-            Note(MenuKit.Percent(body, "Radio volume", VoiceSettings.RadioVolume, v => VoiceSettings.RadioVolume = v), "The walkie-talkie, on top of the voice volume.");
-            Note(Toggle("Voice chat off", VoiceSettings.VoiceOff, v => VoiceSettings.VoiceOff = v), "Send nothing and hear nobody. Per-crewmate volumes are in the pause menu and are remembered.");
-            Note(Toggle("Text chat off", VoiceSettings.TextChatOff, v => VoiceSettings.TextChatOff = v), "The chat key does nothing and nobody's lines show.");
-            var options = new List<string> { "System default" };
+            Note(MenuKit.Percent(body, Loc.T("Microphone gain"), VoiceSettings.MicGain / 3f, v => VoiceSettings.MicGain = v * 3f), Loc.T("How loud your mic counts for the open-mic gate (33 % is normal)."));
+            Note(MenuKit.Percent(body, Loc.T("Open mic threshold"), VoiceSettings.OpenMicThreshold / 4f, v => VoiceSettings.OpenMicThreshold = v * 4f), Loc.T("Higher: you must speak louder before open mic sends (25 % is normal)."));
+            Note(MenuKit.Percent(body, Loc.T("Radio volume"), VoiceSettings.RadioVolume, v => VoiceSettings.RadioVolume = v), Loc.T("The walkie-talkie, on top of the voice volume."));
+            Note(Toggle(Loc.T("Voice chat off"), VoiceSettings.VoiceOff, v => VoiceSettings.VoiceOff = v), Loc.T("Send nothing and hear nobody. Per-crewmate volumes are in the pause menu and are remembered."));
+            Note(Toggle(Loc.T("Text chat off"), VoiceSettings.TextChatOff, v => VoiceSettings.TextChatOff = v), Loc.T("The chat key does nothing and nobody's lines show."));
+            var options = new List<string> { Loc.T("System default") };
             options.AddRange(Microphone.devices);
-            MenuKit.Choice(body, "Input device", options.ToArray(), Mathf.Max(0, options.IndexOf(VoiceSettings.MicDevice)),
+            MenuKit.Choice(body, Loc.T("Input device"), options.ToArray(), Mathf.Max(0, options.IndexOf(VoiceSettings.MicDevice)),
                 i => VoiceSettings.MicDevice = i == 0 ? "" : options[i]);
-            NoteLast("Steam voice always uses the system default; this applies from the next game.");
-            MenuKit.Switch(body, "Talk", VoiceSettings.Mode == VoiceMode.PushToTalk, $"Push to talk ({InputBindings.Display("PushToTalk")})", "Open mic",
+            NoteLast(Loc.T("Steam voice always uses the system default; this applies from the next game."));
+            MenuKit.Switch(body, Loc.T("Talk"), VoiceSettings.Mode == VoiceMode.PushToTalk, Loc.T("Push to talk ({0})", InputBindings.Display("PushToTalk")), Loc.T("Open mic"),
                 ptt => VoiceSettings.Mode = ptt ? VoiceMode.PushToTalk : VoiceMode.OpenMic);
-            Note(Toggle("Mute my microphone", VoiceSettings.MicMuted, m => VoiceSettings.MicMuted = m), "Nobody hears you, in any mode.");
-            VisualElement meter = Row("Mic level");
+            Note(Toggle(Loc.T("Mute my microphone"), VoiceSettings.MicMuted, m => VoiceSettings.MicMuted = m), Loc.T("Nobody hears you, in any mode."));
+            VisualElement meter = Row(Loc.T("Mic level"));
             micBar = UiKit.Bar(meter, "mic-meter");
             Label status = MenuKit.Text(body, "", "settings__note");
             VisualElement bar = micBar;
@@ -303,8 +316,8 @@ namespace Abandoned.UI
             {
                 VoiceTransmitter me = NetworkPlayer.Local != null ? NetworkPlayer.Local.GetComponent<VoiceTransmitter>() : null;
                 UiKit.SetBar(bar, me != null ? Mathf.Clamp01(me.Level * 4f) : 0f, me != null && me.Transmitting ? "good" : null);
-                status.text = me == null ? "Join or host a game to see your level."
-                    : me.Transmitting ? "Sending: your crew hears you." : $"Not sending. Hold {InputBindings.Display("PushToTalk")} to talk, or switch to open mic.";
+                status.text = me == null ? Loc.T("Join or host a game to see your level.")
+                    : me.Transmitting ? Loc.T("Sending: your crew hears you.") : Loc.T("Not sending. Hold {0} to talk, or switch to open mic.", InputBindings.Display("PushToTalk"));
             }).Every(60);
         }
 
@@ -324,6 +337,11 @@ namespace Abandoned.UI
         }
 
         private void Section(string title) => MenuKit.Text(body, title, "section");
+
+        // Option names kept in English where they are defined (static lists), worded here. A context keeps
+        // "Medium" the size apart from "Medium" the quality.
+        private static string[] Words(string[] english, string context = null) =>
+            english.Select(e => context != null ? Loc.C(context, e) : Loc.T(e)).ToArray();
 
         private VisualElement Toggle(string label, bool value, Action<bool> commit)
         {

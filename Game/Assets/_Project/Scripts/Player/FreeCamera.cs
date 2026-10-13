@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -130,11 +131,11 @@ namespace Abandoned.Player
             if (file == null)
             {
                 Audio.GameAudio.PlayUi(Audio.SoundId.UiError, 0.8f);
-                UI.ToastFeed.Show("PHOTO", "Couldn't save the photo: no folder to write to.", null, UI.ToastFeed.Kind.Warn);
+                UI.ToastFeed.Show(Loc.T("PHOTO"), Loc.T("Couldn't save the photo: no folder to write to."), null, UI.ToastFeed.Kind.Warn);
                 yield break;
             }
             Audio.GameAudio.PlayUi(Audio.SoundId.UiConfirm, 0.8f);
-            UI.ToastFeed.Show("PHOTO", $"Saved to {file}", null, UI.ToastFeed.Kind.Good);
+            UI.ToastFeed.Show(Loc.T("PHOTO"), Loc.T("Saved to {0}", file), null, UI.ToastFeed.Kind.Good);
         }
 
         // Every player on this machine stands still while we fly (only ours reads devices anyway).
@@ -158,7 +159,7 @@ namespace Abandoned.Player
             }
             transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
             if (k == null) return;
-            UI.HudCallout.Set(this, "PHOTO MODE   WASD / Q E fly   wheel speed   Z / X zoom   Enter take a photo   F9 leave");
+            UI.HudCallout.Set(this, Loc.T("PHOTO MODE   WASD / Q E fly   wheel speed   Z / X zoom   Enter take a photo   F9 leave"));
             if (k.zKey.isPressed) cam.Lens.FieldOfView = Mathf.Max(15f, cam.Lens.FieldOfView - 30f * Time.unscaledDeltaTime);
             if (k.xKey.isPressed) cam.Lens.FieldOfView = Mathf.Min(110f, cam.Lens.FieldOfView + 30f * Time.unscaledDeltaTime);
             if (k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame) StartCoroutine(TakePhoto());

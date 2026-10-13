@@ -56,7 +56,7 @@ namespace Abandoned.Extraction
         [field: SerializeField, Min(10f)] public float TotalCollapseSeconds { get; private set; } = 60f;
         [Tooltip("Share of the countdown spent bringing sections down (top floor first); the rest is the last dash.")]
         [field: SerializeField, Range(0.3f, 1f)] public float TotalCollapseSpread { get; private set; } = 0.9f;
-        [field: SerializeField] public string CrushedLine { get; private set; } = "The mall came down on you.";
+        [field: SerializeField] public string CrushedLine { get; private set; } = "The mall came down on you."; // @loc
 
         public IReadOnlyList<Stage> Stages => stages;
 

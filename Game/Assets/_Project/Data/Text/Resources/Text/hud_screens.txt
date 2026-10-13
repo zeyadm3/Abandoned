@@ -1,0 +1,718 @@
+# The guided first job, the travel screen, the salvage archive and the threat archive
+# (UI/Hints/FirstDayGuide.cs, UI/TravelScreen.cs, UI/LootCatalogueScreen.cs, UI/ThreatFilesScreen.cs, UI/ScreenPanel.cs).
+
+en: SURVIVAL INDUCTION
+zh-CN: 生存培训
+ja: サバイバル研修
+ko: 생존 교육
+es: INDUCCIÓN DE SUPERVIVENCIA
+pt-BR: TREINAMENTO DE SOBREVIVÊNCIA
+de: ÜBERLEBENSEINWEISUNG
+fr: FORMATION DE SURVIE
+ru: ИНСТРУКТАЖ ПО ВЫЖИВАНИЮ
+pl: SZKOLENIE Z PRZETRWANIA
+
+en: SURVIVAL INDUCTION  {0:00}/{1:00}
+zh-CN: 生存培训  {0:00}/{1:00}
+ja: サバイバル研修  {0:00}/{1:00}
+ko: 생존 교육  {0:00}/{1:00}
+es: INDUCCIÓN DE SUPERVIVENCIA  {0:00}/{1:00}
+pt-BR: TREINAMENTO DE SOBREVIVÊNCIA  {0:00}/{1:00}
+de: ÜBERLEBENSEINWEISUNG  {0:00}/{1:00}
+fr: FORMATION DE SURVIE  {0:00}/{1:00}
+ru: ИНСТРУКТАЖ ПО ВЫЖИВАНИЮ  {0:00}/{1:00}
+pl: SZKOLENIE Z PRZETRWANIA  {0:00}/{1:00}
+
+en: FIRST DAY DONE
+zh-CN: 第一天结束
+ja: 初日完了
+ko: 첫날 완료
+es: PRIMER DÍA COMPLETADO
+pt-BR: PRIMEIRO DIA CONCLUÍDO
+de: ERSTER TAG GESCHAFFT
+fr: PREMIER JOUR TERMINÉ
+ru: ПЕРВЫЙ ДЕНЬ ПОЗАДИ
+pl: PIERWSZY DZIEŃ ZA TOBĄ
+
+en: That's the job. Tips can be replayed from Settings > Gameplay.
+zh-CN: 工作就是这样。提示可以在“设置 > 游戏”中重新播放。
+ja: これが仕事だ。ヒントは「設定 > ゲームプレイ」からもう一度見られる。
+ko: 이게 바로 일입니다. 도움말은 설정 > 게임플레이에서 다시 볼 수 있습니다.
+es: Así es el trabajo. Los consejos pueden repetirse en Ajustes > Juego.
+pt-BR: Esse é o trabalho. As dicas podem ser repetidas em Configurações > Jogabilidade.
+de: Das ist der Job. Tipps lassen sich unter Einstellungen > Spiel erneut anzeigen.
+fr: Voilà le métier. Les astuces peuvent être rejouées dans Paramètres > Jeu.
+ru: Вот и вся работа. Подсказки можно показать снова в «Настройки > Игра».
+pl: Tak wygląda ta robota. Podpowiedzi można odtworzyć ponownie w Ustawienia > Rozgrywka.
+
+en: Wait for the host to take a job at the dispatch telephone.
+zh-CN: 等待房主在调度电话那里接下任务。
+ja: ホストが配車電話で仕事を受けるのを待とう。
+ko: 호스트가 배차 전화로 작업을 받을 때까지 기다리세요.
+es: Espera a que el anfitrión acepte un trabajo en el teléfono de despacho.
+pt-BR: Espere o anfitrião aceitar um trabalho no telefone de despacho.
+de: Warte, bis der Host am Einsatztelefon einen Auftrag annimmt.
+fr: Attendez que l'hôte accepte une mission au téléphone du dispatch.
+ru: Дождитесь, пока хост возьмёт заказ по диспетчерскому телефону.
+pl: Poczekaj, aż host przyjmie zlecenie przez telefon dyspozytora.
+
+en: Walk to the telephone on the central dispatch bench, press {0} and take a job.
+zh-CN: 走到中央调度台上的电话旁，按 {0} 接下一份任务。
+ja: 中央の配車台にある電話まで歩き、{0} を押して仕事を受けよう。
+ko: 중앙 배차대의 전화기로 걸어가 {0} 키를 눌러 작업을 받으세요.
+es: Ve hasta el teléfono del banco de despacho central, pulsa {0} y acepta un trabajo.
+pt-BR: Vá até o telefone na bancada central de despacho, aperte {0} e aceite um trabalho.
+de: Geh zum Telefon auf dem mittleren Einsatztisch, drück {0} und nimm einen Auftrag an.
+fr: Allez jusqu'au téléphone de l'établi central, appuyez sur {0} et acceptez une mission.
+ru: Подойдите к телефону на центральном диспетчерском столе, нажмите {0} и возьмите заказ.
+pl: Podejdź do telefonu na środkowym stole dyspozytora, naciśnij {0} i przyjmij zlecenie.
+
+en: Job taken. Get in the van ({0}) to drive there. Gear is at the maintenance bench; the field guide is beside the phone.
+zh-CN: 任务已接下。上厢式车（{0}）前往现场。装备在维修台；现场手册在电话旁边。
+ja: 仕事を受けた。バンに乗って（{0}）現場へ向かおう。装備は整備台に、フィールドガイドは電話の隣にある。
+ko: 작업을 맡았습니다. 밴에 타서({0}) 현장으로 가세요. 장비는 정비대에, 현장 안내서는 전화기 옆에 있습니다.
+es: Trabajo aceptado. Sube a la furgoneta ({0}) para ir. El equipo está en el banco de mantenimiento; la guía de campo, junto al teléfono.
+pt-BR: Trabalho aceito. Entre na van ({0}) para ir até lá. O equipamento fica na bancada de manutenção; o guia de campo, ao lado do telefone.
+de: Auftrag angenommen. Steig in den Transporter ({0}), um hinzufahren. Ausrüstung gibt es an der Werkbank; das Feldhandbuch liegt neben dem Telefon.
+fr: Mission acceptée. Montez dans la camionnette ({0}) pour vous y rendre. Le matériel est à l'établi ; le guide de terrain est à côté du téléphone.
+ru: Заказ принят. Садитесь в фургон ({0}), чтобы поехать на место. Снаряжение — на верстаке, полевой справочник — рядом с телефоном.
+pl: Zlecenie przyjęte. Wsiądź do furgonetki ({0}), żeby tam pojechać. Sprzęt jest na stole warsztatowym, a przewodnik terenowy obok telefonu.
+
+en: Turn your flashlight on ({0}). Health and breath are bottom left; the compass is up top.
+zh-CN: 打开手电筒（{0}）。生命和气息在左下角；指南针在顶部。
+ja: 懐中電灯をつけよう（{0}）。体力と息は左下、コンパスは上にある。
+ko: 손전등을 켜세요({0}). 생명력과 호흡은 왼쪽 아래에, 나침반은 위쪽에 있습니다.
+es: Enciende la linterna ({0}). La salud y el aliento están abajo a la izquierda; la brújula, arriba.
+pt-BR: Ligue a lanterna ({0}). A vida e o fôlego ficam embaixo à esquerda; a bússola, no topo.
+de: Schalte deine Taschenlampe ein ({0}). Leben und Atem stehen unten links, der Kompass oben.
+fr: Allumez votre lampe torche ({0}). La santé et le souffle sont en bas à gauche ; la boussole est en haut.
+ru: Включите фонарик ({0}). Здоровье и дыхание — слева внизу, компас — вверху.
+pl: Włącz latarkę ({0}). Zdrowie i oddech są w lewym dolnym rogu, kompas u góry.
+
+en: Scan ({0}) to see what things are worth and how much you have hauled.
+zh-CN: 扫描（{0}）可以查看东西的价值，以及你已经运回了多少。
+ja: スキャン（{0}）で物の値段と、これまでの回収額がわかる。
+ko: 스캔({0})하면 물건의 가치와 지금까지의 수확을 볼 수 있습니다.
+es: Escanea ({0}) para ver cuánto valen las cosas y cuánto llevas cargado.
+pt-BR: Escaneie ({0}) para ver quanto as coisas valem e quanto você já carregou.
+de: Scanne ({0}), um zu sehen, was Dinge wert sind und wie viel du schon geborgen hast.
+fr: Scannez ({0}) pour voir la valeur des objets et ce que vous avez déjà chargé.
+ru: Сканируйте ({0}), чтобы узнать цену вещей и сколько вы уже вывезли.
+pl: Skanuj ({0}), żeby zobaczyć, ile rzeczy są warte i ile już wywiozłeś.
+
+en: Pick something up ({0}). Heavy things slow you down; fragile things lose value when they hit anything.
+zh-CN: 捡起一样东西（{0}）。重物会拖慢你；易碎品撞到任何东西都会贬值。
+ja: 何か拾ってみよう（{0}）。重い物は足を鈍らせ、壊れやすい物は何かに当たると値が下がる。
+ko: 물건을 하나 주워 보세요({0}). 무거운 물건은 발을 느리게 하고, 깨지기 쉬운 물건은 부딪히면 값이 떨어집니다.
+es: Recoge algo ({0}). Lo pesado te frena; lo frágil pierde valor cuando choca con cualquier cosa.
+pt-BR: Pegue alguma coisa ({0}). Coisas pesadas deixam você lento; coisas frágeis perdem valor quando batem em qualquer coisa.
+de: Heb etwas auf ({0}). Schweres macht dich langsam; Zerbrechliches verliert an Wert, wenn es irgendwo anstößt.
+fr: Ramassez un objet ({0}). Les objets lourds vous ralentissent ; les objets fragiles perdent de la valeur au moindre choc.
+ru: Подберите что-нибудь ({0}). Тяжёлое замедляет, а хрупкое теряет в цене от любого удара.
+pl: Podnieś coś ({0}). Ciężkie rzeczy cię spowalniają, a kruche tracą na wartości, gdy w cokolwiek uderzą.
+
+en: Carry it out to the truck in the loading bay and put it in the cargo bay ({0} drops it).
+zh-CN: 把它搬到装卸区的卡车那里，放进货厢（按 {0} 放下）。
+ja: 搬入口のトラックまで運び、荷台に置こう（{0} で降ろす）。
+ko: 하역장의 트럭까지 옮겨 짐칸에 넣으세요({0} 키로 내려놓기).
+es: Llévalo al camión del muelle de carga y déjalo en la caja ({0} lo suelta).
+pt-BR: Leve até o caminhão na doca de carga e coloque no baú ({0} solta).
+de: Trag es zum Laster an der Laderampe und leg es in den Laderaum ({0} legt es ab).
+fr: Portez-le jusqu'au camion du quai de chargement et déposez-le dans la benne ({0} le lâche).
+ru: Отнесите это к грузовику на погрузочной площадке и положите в кузов ({0} — бросить).
+pl: Zanieś to do ciężarówki przy rampie załadunkowej i włóż na pakę ({0} upuszcza).
+
+en: Floors have a load limit. Creaks and cracks mean too much weight: spread out, or get off before it gives way.
+zh-CN: 地板有承重上限。嘎吱声和裂缝说明太重了：散开，或者在它塌掉之前离开。
+ja: 床には荷重の限界がある。きしみやひびは重すぎる印だ。散らばるか、抜ける前に離れよう。
+ko: 바닥에는 하중 한계가 있습니다. 삐걱임과 균열은 무게가 너무 많다는 뜻입니다. 흩어지거나, 무너지기 전에 벗어나세요.
+es: Los suelos tienen un límite de carga. Crujidos y grietas significan demasiado peso: separaos o salid antes de que ceda.
+pt-BR: Os pisos têm um limite de carga. Rangidos e rachaduras significam peso demais: espalhem-se ou saiam antes que ceda.
+de: Böden haben eine Traglast. Knarzen und Risse bedeuten zu viel Gewicht: Verteilt euch oder geht runter, bevor er nachgibt.
+fr: Les sols ont une charge limite. Craquements et fissures signifient trop de poids : dispersez-vous, ou partez avant qu'il ne cède.
+ru: У полов есть предел нагрузки. Скрип и трещины означают, что вес слишком велик: разойдитесь или уйдите, пока пол не провалился.
+pl: Podłogi mają limit obciążenia. Skrzypienie i pęknięcia oznaczają za duży ciężar: rozejdźcie się albo zejdźcie, zanim się zawali.
+
+en: You are not alone in here. Noise draws things: crouch ({0}) and don't run when something is close.
+zh-CN: 这里不止你一个。噪音会引来东西：有东西靠近时蹲下（{0}），别跑。
+ja: ここにいるのは自分だけではない。音は何かを引き寄せる。近くに何かいるときはしゃがみ（{0}）、走らないこと。
+ko: 이곳에는 당신만 있는 게 아닙니다. 소음은 무언가를 끌어들입니다. 무언가 가까이 있으면 웅크리고({0}) 뛰지 마세요.
+es: No estás solo aquí dentro. El ruido atrae cosas: agáchate ({0}) y no corras cuando haya algo cerca.
+pt-BR: Você não está sozinho aqui dentro. Barulho atrai coisas: agache ({0}) e não corra quando houver algo por perto.
+de: Du bist hier drin nicht allein. Lärm lockt Dinge an: Duck dich ({0}) und renn nicht, wenn etwas in der Nähe ist.
+fr: Vous n'êtes pas seul ici. Le bruit attire des choses : accroupissez-vous ({0}) et ne courez pas quand quelque chose est proche.
+ru: Вы здесь не одни. Шум привлекает тварей: присядьте ({0}) и не бегите, когда что-то рядом.
+pl: Nie jesteś tu sam. Hałas przyciąga różne rzeczy: kucnij ({0}) i nie biegaj, gdy coś jest blisko.
+
+en: Keep hauling until the quota is met. The truck's board shows it, and so does a scan.
+zh-CN: 继续搬运，直到达到定额。卡车的显示板会显示进度，扫描也能看到。
+ja: ノルマに届くまで運び続けよう。トラックのボードとスキャンで確認できる。
+ko: 할당량을 채울 때까지 계속 옮기세요. 트럭의 전광판에 표시되며, 스캔으로도 볼 수 있습니다.
+es: Sigue cargando hasta cumplir la cuota. La muestra el panel del camión, y también un escaneo.
+pt-BR: Continue carregando até bater a cota. O painel do caminhão mostra, e um escaneamento também.
+de: Schlepp weiter, bis das Soll erfüllt ist. Die Anzeige am Laster zeigt es, ein Scan auch.
+fr: Continuez à charger jusqu'à atteindre le quota. Le panneau du camion l'affiche, un scan aussi.
+ru: Возите добычу, пока не выполните норму. Её показывает табло грузовика и сканирование.
+pl: Noś dalej, aż wyrobisz normę. Pokazuje ją tablica ciężarówki, a także skan.
+
+en: Pull the yellow lever on the truck to leave, and stay in the cargo bay until it goes.
+zh-CN: 拉下卡车上的黄色拉杆即可离开，并待在货厢里直到它开走。
+ja: トラックの黄色いレバーを引いて出発し、発車するまで荷台にいること。
+ko: 트럭의 노란 레버를 당겨 떠나고, 출발할 때까지 짐칸에 있으세요.
+es: Tira de la palanca amarilla del camión para irte y quédate en la caja hasta que arranque.
+pt-BR: Puxe a alavanca amarela do caminhão para ir embora e fique no baú até ele sair.
+de: Zieh den gelben Hebel am Laster, um abzufahren, und bleib im Laderaum, bis er losfährt.
+fr: Tirez le levier jaune du camion pour partir, et restez dans la benne jusqu'au départ.
+ru: Потяните жёлтый рычаг на грузовике, чтобы уехать, и оставайтесь в кузове до отправления.
+pl: Pociągnij żółtą dźwignię na ciężarówce, żeby odjechać, i zostań na pace, aż ruszy.
+
+# Travel screen
+
+en: LOADING  {0:P0}
+zh-CN: 加载中  {0:P0}
+ja: 読み込み中  {0:P0}
+ko: 불러오는 중  {0:P0}
+es: CARGANDO  {0:P0}
+pt-BR: CARREGANDO  {0:P0}
+de: LÄDT  {0:P0}
+fr: CHARGEMENT  {0:P0}
+ru: ЗАГРУЗКА  {0:P0}
+pl: WCZYTYWANIE  {0:P0}
+
+en: MANIFEST VERIFIED / ARRIVING
+zh-CN: 清单已核对 / 即将到达
+ja: 積荷目録確認済み / まもなく到着
+ko: 적하 목록 확인 / 도착 중
+es: MANIFIESTO VERIFICADO / LLEGANDO
+pt-BR: MANIFESTO VERIFICADO / CHEGANDO
+de: LADELISTE GEPRÜFT / ANKUNFT
+fr: MANIFESTE VÉRIFIÉ / ARRIVÉE
+ru: МАНИФЕСТ ПРОВЕРЕН / ПРИБЫТИЕ
+pl: MANIFEST SPRAWDZONY / DOJAZD
+
+en: WAITING FOR {0}
+zh-CN: 正在等待 {0}
+ja: {0} を待機中
+ko: {0} 기다리는 중
+es: ESPERANDO A {0}
+pt-BR: ESPERANDO {0}
+de: WARTEN AUF {0}
+fr: EN ATTENTE DE {0}
+ru: ОЖИДАНИЕ: {0}
+pl: CZEKAMY NA: {0}
+
+en: RETURN TRANSFER / CREW RECOVERY
+zh-CN: 返程运输 / 队伍撤回
+ja: 帰還輸送 / クルー回収
+ko: 복귀 이송 / 팀 회수
+es: TRASLADO DE VUELTA / RECOGIDA DEL EQUIPO
+pt-BR: TRANSPORTE DE VOLTA / RESGATE DA EQUIPE
+de: RÜCKTRANSPORT / TEAMABHOLUNG
+fr: TRANSFERT RETOUR / RÉCUPÉRATION DE L'ÉQUIPE
+ru: ОБРАТНЫЙ РЕЙС / ВЫВОЗ БРИГАДЫ
+pl: TRANSPORT POWROTNY / ODBIÓR EKIPY
+
+en: OUTBOUND TRANSFER / SALVAGE DETAIL
+zh-CN: 出发运输 / 回收小队
+ja: 出発輸送 / 回収班
+ko: 출발 이송 / 회수 작업반
+es: TRASLADO DE IDA / CUADRILLA DE RECUPERACIÓN
+pt-BR: TRANSPORTE DE IDA / TURMA DE RECUPERAÇÃO
+de: HINTRANSPORT / BERGUNGSTRUPP
+fr: TRANSFERT ALLER / ÉQUIPE DE RÉCUPÉRATION
+ru: РЕЙС НА ОБЪЕКТ / БРИГАДА ВЫВОЗА
+pl: TRANSPORT NA MIEJSCE / BRYGADA ODZYSKU
+
+en: HEADQUARTERS
+zh-CN: 总部
+ja: 本部
+ko: 본부
+es: LA CENTRAL
+pt-BR: QUARTEL-GENERAL
+de: ZENTRALE
+fr: QUARTIER GÉNÉRAL
+ru: БАЗА
+pl: BAZA
+
+en: {0}\nQUOTA ${1:N0}   /   STABILITY {2:P0}\nPOWER {3}   /   DEPARTURE WINDOW {4:0} MIN
+zh-CN: {0}\n定额 ${1:N0}   /   稳定度 {2:P0}\n电力 {3}   /   撤离时限 {4:0} 分钟
+ja: {0}\nノルマ ${1:N0}   /   安定度 {2:P0}\n電力 {3}   /   出発期限 {4:0} 分
+ko: {0}\n할당량 ${1:N0}   /   안정도 {2:P0}\n전력 {3}   /   출발 시한 {4:0}분
+es: {0}\nCUOTA ${1:N0}   /   ESTABILIDAD {2:P0}\nCORRIENTE {3}   /   PLAZO DE SALIDA {4:0} MIN
+pt-BR: {0}\nCOTA ${1:N0}   /   ESTABILIDADE {2:P0}\nENERGIA {3}   /   JANELA DE SAÍDA {4:0} MIN
+de: {0}\nSOLL ${1:N0}   /   STABILITÄT {2:P0}\nSTROM {3}   /   ABFAHRTSFENSTER {4:0} MIN
+fr: {0}\nQUOTA ${1:N0}   /   STABILITÉ {2:P0}\nCOURANT {3}   /   FENÊTRE DE DÉPART {4:0} MIN
+ru: {0}\nНОРМА ${1:N0}   /   ПРОЧНОСТЬ {2:P0}\nЭЛЕКТРИЧЕСТВО {3}   /   ОКНО ОТЪЕЗДА {4:0} МИН
+pl: {0}\nNORMA ${1:N0}   /   STABILNOŚĆ {2:P0}\nPRĄD {3}   /   OKNO ODJAZDU {4:0} MIN
+
+# Power and night vision: one word has to fit both.
+en: OFF
+zh-CN: 关
+ja: オフ
+ko: 꺼짐
+es: APAGADA
+pt-BR: DESLIGADA
+de: AUS
+fr: OFF
+ru: ВЫКЛ.
+pl: WYŁ.
+
+en: ON
+zh-CN: 开
+ja: オン
+ko: 켜짐
+es: ENCENDIDA
+pt-BR: LIGADA
+de: AN
+fr: ON
+ru: ВКЛ.
+pl: WŁ.
+
+en: CREW RETURN IN PROGRESS\nPayday is on the answering machine.
+zh-CN: 队伍正在返回\n发薪情况在答录机里。
+ja: クルー帰還中\n給料の話は留守番電話に入っている。
+ko: 팀 복귀 중\n급여 내역은 자동응답기에 있습니다.
+es: REGRESO DEL EQUIPO EN CURSO\nEl día de pago está en el contestador.
+pt-BR: RETORNO DA EQUIPE EM ANDAMENTO\nO pagamento está na secretária eletrônica.
+de: RÜCKFAHRT DES TEAMS LÄUFT\nDer Zahltag ist auf dem Anrufbeantworter.
+fr: RETOUR DE L'ÉQUIPE EN COURS\nLa paie est sur le répondeur.
+ru: БРИГАДА ВОЗВРАЩАЕТСЯ\nПро выплату — на автоответчике.
+pl: POWRÓT EKIPY W TOKU\nWypłata jest na automatycznej sekretarce.
+
+en: AWAITING DISPATCH RECORD
+zh-CN: 等待调度记录
+ja: 配車記録を待機中
+ko: 배차 기록 대기 중
+es: ESPERANDO EL REGISTRO DE DESPACHO
+pt-BR: AGUARDANDO REGISTRO DO DESPACHO
+de: WARTE AUF EINSATZPROTOKOLL
+fr: EN ATTENTE DU DOSSIER DE DISPATCH
+ru: ОЖИДАНИЕ ЗАПИСИ ДИСПЕТЧЕРА
+pl: OCZEKIWANIE NA ZAPIS DYSPOZYTORA
+
+en: FIELD NOTE / {0}
+zh-CN: 现场提示 / {0}
+ja: 現場メモ / {0}
+ko: 현장 메모 / {0}
+es: NOTA DE CAMPO / {0}
+pt-BR: NOTA DE CAMPO / {0}
+de: FELDNOTIZ / {0}
+fr: NOTE DE TERRAIN / {0}
+ru: ПОЛЕВАЯ ЗАМЕТКА / {0}
+pl: NOTATKA TERENOWA / {0}
+
+en: ABANDONED SALVAGING / PERSONNEL TRANSPORT
+zh-CN: ABANDONED SALVAGING / 人员运输
+ja: ABANDONED SALVAGING / 人員輸送
+ko: ABANDONED SALVAGING / 인원 수송
+es: ABANDONED SALVAGING / TRANSPORTE DE PERSONAL
+pt-BR: ABANDONED SALVAGING / TRANSPORTE DE PESSOAL
+de: ABANDONED SALVAGING / PERSONALTRANSPORT
+fr: ABANDONED SALVAGING / TRANSPORT DU PERSONNEL
+ru: ABANDONED SALVAGING / ПЕРЕВОЗКА ПЕРСОНАЛА
+pl: ABANDONED SALVAGING / TRANSPORT PERSONELU
+
+en: Scan as soon as you're inside: prices first, plans second.
+zh-CN: 一进去就扫描：先看价格，再做计划。
+ja: 中に入ったらすぐスキャン。まず値段、計画はそのあと。
+ko: 들어가자마자 스캔하세요. 가격이 먼저, 계획은 그다음입니다.
+es: Escanea nada más entrar: primero los precios, luego los planes.
+pt-BR: Escaneie assim que entrar: primeiro os preços, depois os planos.
+de: Scanne, sobald du drin bist: erst die Preise, dann der Plan.
+fr: Scannez dès que vous êtes à l'intérieur : les prix d'abord, le plan ensuite.
+ru: Сканируйте сразу, как войдёте: сначала цены, потом планы.
+pl: Skanuj od razu po wejściu: najpierw ceny, potem plany.
+
+en: Weak floors creak before they crack and crack before they go. Listen.
+zh-CN: 脆弱的地板先嘎吱作响，再开裂，最后塌掉。注意听。
+ja: 弱った床は、きしんでからひび割れ、ひび割れてから落ちる。耳を澄ませ。
+ko: 약한 바닥은 금이 가기 전에 삐걱이고, 무너지기 전에 금이 갑니다. 귀를 기울이세요.
+es: Los suelos débiles crujen antes de agrietarse y se agrietan antes de caer. Escucha.
+pt-BR: Pisos fracos rangem antes de rachar e racham antes de ceder. Escute.
+de: Schwache Böden knarzen, bevor sie reißen, und reißen, bevor sie fallen. Hör hin.
+fr: Les sols fragiles grincent avant de se fissurer et se fissurent avant de lâcher. Écoutez.
+ru: Слабый пол сначала скрипит, потом трескается, потом падает. Слушайте.
+pl: Słabe podłogi skrzypią, zanim pękną, i pękają, zanim runą. Słuchaj.
+
+en: The truck's board shows the haul. Load it, read it, argue about it.
+zh-CN: 卡车的显示板会显示收获。装车、看数，然后为它吵一架。
+ja: トラックのボードには回収額が出る。積んで、読んで、揉めよう。
+ko: 트럭의 전광판에 수확이 표시됩니다. 싣고, 읽고, 그걸로 다투세요.
+es: El panel del camión muestra la carga. Cárgalo, léelo, discutid por él.
+pt-BR: O painel do caminhão mostra a carga. Carregue, leia, discuta.
+de: Die Anzeige am Laster zeigt die Ausbeute. Beladen, ablesen, darüber streiten.
+fr: Le panneau du camion affiche le chargement. Chargez, lisez, disputez-vous.
+ru: Табло грузовика показывает улов. Грузите, смотрите, спорьте.
+pl: Tablica ciężarówki pokazuje urobek. Załaduj, przeczytaj, pokłóćcie się o to.
+
+en: A rope and pulley over a hole beats carrying a piano down the stairs.
+zh-CN: 在洞口架上绳索和滑轮，总比抬着钢琴下楼梯强。
+ja: 穴にロープと滑車を張るほうが、ピアノを担いで階段を降りるよりましだ。
+ko: 구멍 위에 밧줄과 도르래를 거는 편이 피아노를 들고 계단을 내려가는 것보다 낫습니다.
+es: Una cuerda con polea sobre un agujero es mejor que bajar un piano por las escaleras.
+pt-BR: Uma corda com roldana sobre um buraco é melhor do que descer um piano pela escada.
+de: Seil und Flaschenzug über einem Loch schlagen jedes Klavier auf der Treppe.
+fr: Une corde et une poulie au-dessus d'un trou valent mieux que descendre un piano par l'escalier.
+ru: Верёвка с блоком над дырой лучше, чем тащить пианино по лестнице.
+pl: Lina z bloczkiem nad dziurą jest lepsza niż znoszenie pianina po schodach.
+
+en: Bolt cutters are quiet. Crowbars are not.
+zh-CN: 断线钳很安静。撬棍可不是。
+ja: ボルトカッターは静かだ。バールはそうではない。
+ko: 볼트 커터는 조용합니다. 쇠지렛대는 그렇지 않습니다.
+es: La cizalla es silenciosa. La palanca, no.
+pt-BR: O alicate de corte é silencioso. O pé de cabra, não.
+de: Bolzenschneider sind leise. Brecheisen nicht.
+fr: Le coupe-boulons est silencieux. Le pied-de-biche, non.
+ru: Болторез работает тихо. Лом — нет.
+pl: Nożyce do metalu są ciche. Łom nie.
+
+en: Two people on a heavy item go at the slower one's pace. Choose your partner.
+zh-CN: 两个人抬重物时，速度以慢的那个为准。选好你的搭档。
+ja: 重い物を二人で運ぶと、遅いほうの速さになる。相棒は選ぼう。
+ko: 두 사람이 무거운 물건을 들면 느린 쪽의 속도로 갑니다. 짝을 잘 고르세요.
+es: Dos personas con algo pesado van al ritmo del más lento. Elige bien a tu compañero.
+pt-BR: Duas pessoas num item pesado andam no ritmo do mais lento. Escolha bem o seu parceiro.
+de: Zwei Leute an einem schweren Teil gehen im Tempo des Langsameren. Wähl deinen Partner.
+fr: À deux sur un objet lourd, on avance au rythme du plus lent. Choisissez votre partenaire.
+ru: Двое с тяжёлой ношей идут со скоростью того, кто медленнее. Выбирайте напарника.
+pl: Dwie osoby z ciężkim przedmiotem idą tempem wolniejszej. Dobrze wybierz partnera.
+
+en: The Blind One hears your voice chat. Whisper. Or don't, and run.
+zh-CN: 盲者听得见你的语音聊天。小声点。要么别小声，然后跑。
+ja: 盲目の者はボイスチャットを聞いている。ささやこう。あるいは、ささやかずに走るか。
+ko: 눈먼 자는 음성 채팅을 듣습니다. 속삭이세요. 아니면 그냥 떠들고 뛰든가요.
+es: El Ciego oye tu chat de voz. Susurra. O no lo hagas, y corre.
+pt-BR: O Cego ouve o seu chat de voz. Sussurre. Ou não, e corra.
+de: Der Blinde hört deinen Sprachchat. Flüstere. Oder lass es und renn.
+fr: L'Aveugle entend votre chat vocal. Chuchotez. Ou pas, et courez.
+ru: Слепой слышит ваш голосовой чат. Шепчите. Или не шепчите — и бегите.
+pl: Ślepiec słyszy twój czat głosowy. Szepcz. Albo nie, i uciekaj.
+
+en: Locked stores hold the good stock.
+zh-CN: 上锁的店铺里有好货。
+ja: 鍵のかかった店には上物がある。
+ko: 잠긴 가게에 좋은 물건이 있습니다.
+es: Las tiendas cerradas guardan lo bueno.
+pt-BR: Lojas trancadas guardam o que há de bom.
+de: Verschlossene Läden haben die gute Ware.
+fr: Les boutiques verrouillées gardent la bonne marchandise.
+ru: В запертых магазинах лежит хороший товар.
+pl: W zamkniętych sklepach leży dobry towar.
+
+# Salvage archive (the loot catalogue)
+
+en: SALVAGE DIVISION / RECOVERED RECORDS
+zh-CN: 回收部 / 回收档案
+ja: 回収部門 / 回収記録
+ko: 회수 부서 / 회수 기록
+es: DIVISIÓN DE RECUPERACIÓN / REGISTROS RECUPERADOS
+pt-BR: DIVISÃO DE RECUPERAÇÃO / REGISTROS RECUPERADOS
+de: BERGUNGSABTEILUNG / GEBORGENE AKTEN
+fr: DIVISION RÉCUPÉRATION / ARCHIVES RÉCUPÉRÉES
+ru: ОТДЕЛ ВЫВОЗА / НАЙДЕННЫЕ ЗАПИСИ
+pl: DZIAŁ ODZYSKU / ODZYSKANE AKTA
+
+en: SALVAGE ARCHIVE
+zh-CN: 回收品档案
+ja: 回収品アーカイブ
+ko: 회수품 기록 보관소
+es: ARCHIVO DE RECUPERACIÓN
+pt-BR: ARQUIVO DE RECUPERAÇÃO
+de: BERGUNGSARCHIV
+fr: ARCHIVES DE RÉCUPÉRATION
+ru: АРХИВ НАХОДОК
+pl: ARCHIWUM ODZYSKU
+
+en: RECOVERED {0:00} / {1:00}  —  Sale records unlock identification. Jackpots go on the trophy shelf.
+zh-CN: 已回收 {0:00} / {1:00}  —  有销售记录后即可识别。大奖会摆上奖杯架。
+ja: 回収済み {0:00} / {1:00}  —  販売記録があれば識別できる。大当たりはトロフィー棚に飾られる。
+ko: 회수 {0:00} / {1:00}  —  판매 기록이 있으면 식별됩니다. 대박 물건은 트로피 선반에 진열됩니다.
+es: RECUPERADO {0:00} / {1:00}  —  Los registros de venta permiten identificarlo. Los premios gordos van a la estantería de trofeos.
+pt-BR: RECUPERADO {0:00} / {1:00}  —  Registros de venda liberam a identificação. As boladas vão para a prateleira de troféus.
+de: GEBORGEN {0:00} / {1:00}  —  Verkaufsbelege schalten die Bestimmung frei. Hauptgewinne kommen ins Trophäenregal.
+fr: RÉCUPÉRÉ {0:00} / {1:00}  —  Les registres de vente permettent l'identification. Les gros lots vont sur l'étagère des trophées.
+ru: НАЙДЕНО {0:00} / {1:00}  —  Записи о продаже открывают описание. Джекпоты идут на полку трофеев.
+pl: ODZYSKANO {0:00} / {1:00}  —  Zapisy sprzedaży odblokowują identyfikację. Główne wygrane trafiają na półkę z trofeami.
+
+en: UNIDENTIFIED SALVAGE
+zh-CN: 未识别的回收品
+ja: 未確認の回収品
+ko: 미확인 회수품
+es: CHATARRA SIN IDENTIFICAR
+pt-BR: SUCATA NÃO IDENTIFICADA
+de: UNBESTIMMTES BERGUNGSGUT
+fr: RÉCUPÉRATION NON IDENTIFIÉE
+ru: НЕОПОЗНАННАЯ НАХОДКА
+pl: NIEZIDENTYFIKOWANY ZŁOM
+
+en: NO SALE RECORD
+zh-CN: 无销售记录
+ja: 販売記録なし
+ko: 판매 기록 없음
+es: SIN REGISTRO DE VENTA
+pt-BR: SEM REGISTRO DE VENDA
+de: KEIN VERKAUFSBELEG
+fr: AUCUN REGISTRE DE VENTE
+ru: НЕТ ЗАПИСИ О ПРОДАЖЕ
+pl: BRAK ZAPISU SPRZEDAŻY
+
+en: HIGH VALUE / TROPHY RECORD
+zh-CN: 高价值 / 奖杯记录
+ja: 高額品 / トロフィー記録
+ko: 고가품 / 트로피 기록
+es: ALTO VALOR / REGISTRO DE TROFEO
+pt-BR: ALTO VALOR / REGISTRO DE TROFÉU
+de: HOHER WERT / TROPHÄENEINTRAG
+fr: GRANDE VALEUR / FICHE TROPHÉE
+ru: ВЫСОКАЯ ЦЕННОСТЬ / ТРОФЕЙ
+pl: WYSOKA WARTOŚĆ / WPIS TROFEUM
+
+en: {0} / RECOVERED
+zh-CN: {0} / 已回收
+ja: {0} / 回収済み
+ko: {0} / 회수됨
+es: {0} / RECUPERADO
+pt-BR: {0} / RECUPERADO
+de: {0} / GEBORGEN
+fr: {0} / RÉCUPÉRÉ
+ru: {0} / НАЙДЕНО
+pl: {0} / ODZYSKANO
+
+en: RECOVER AND SELL TO IDENTIFY
+zh-CN: 回收并售出后即可识别
+ja: 回収して売ると識別できる
+ko: 회수해서 판매하면 식별됩니다
+es: RECUPÉRALO Y VÉNDELO PARA IDENTIFICARLO
+pt-BR: RECUPERE E VENDA PARA IDENTIFICAR
+de: BERGEN UND VERKAUFEN ZUM BESTIMMEN
+fr: RÉCUPÉREZ ET VENDEZ POUR IDENTIFIER
+ru: НАЙДИТЕ И ПРОДАЙТЕ, ЧТОБЫ ОПОЗНАТЬ
+pl: ODZYSKAJ I SPRZEDAJ, BY ZIDENTYFIKOWAĆ
+
+en: Seal archive
+zh-CN: 封存档案
+ja: アーカイブを閉じる
+ko: 기록 보관소 닫기
+es: Sellar archivo
+pt-BR: Lacrar arquivo
+de: Archiv schließen
+fr: Sceller les archives
+ru: Закрыть архив
+pl: Zamknij archiwum
+
+key: carry.Pocket
+en: Pocket
+zh-CN: 口袋
+ja: ポケット
+ko: 주머니
+es: Bolsillo
+pt-BR: Bolso
+de: Tasche
+fr: Poche
+ru: Карман
+pl: Kieszeń
+
+key: carry.OneHand
+en: OneHand
+zh-CN: 单手
+ja: 片手
+ko: 한 손
+es: Una mano
+pt-BR: Uma mão
+de: Eine Hand
+fr: Une main
+ru: Одна рука
+pl: Jedna ręka
+
+key: carry.TwoHand
+en: TwoHand
+zh-CN: 双手
+ja: 両手
+ko: 양손
+es: Dos manos
+pt-BR: Duas mãos
+de: Zwei Hände
+fr: Deux mains
+ru: Две руки
+pl: Dwie ręce
+
+key: carry.Heavy
+en: Heavy
+zh-CN: 重型
+ja: 重量物
+ko: 무거움
+es: Pesado
+pt-BR: Pesado
+de: Schwer
+fr: Lourd
+ru: Тяжёлое
+pl: Ciężkie
+
+key: carry.Huge
+en: Huge
+zh-CN: 巨型
+ja: 超大型
+ko: 초대형
+es: Enorme
+pt-BR: Enorme
+de: Riesig
+fr: Énorme
+ru: Огромное
+pl: Ogromne
+
+# Threat archive (the field guide)
+
+en: THREAT ARCHIVE
+zh-CN: 威胁档案
+ja: 脅威アーカイブ
+ko: 위협 기록 보관소
+es: ARCHIVO DE AMENAZAS
+pt-BR: ARQUIVO DE AMEAÇAS
+de: BEDROHUNGSARCHIV
+fr: ARCHIVES DES MENACES
+ru: АРХИВ УГРОЗ
+pl: ARCHIWUM ZAGROŻEŃ
+
+en: {0} / FIELD OBSERVATIONS
+zh-CN: {0} / 现场观察记录
+ja: {0} / 現場観察記録
+ko: {0} / 현장 관찰 기록
+es: {0} / OBSERVACIONES DE CAMPO
+pt-BR: {0} / OBSERVAÇÕES DE CAMPO
+de: {0} / FELDBEOBACHTUNGEN
+fr: {0} / OBSERVATIONS DE TERRAIN
+ru: {0} / ПОЛЕВЫЕ НАБЛЮДЕНИЯ
+pl: {0} / OBSERWACJE TERENOWE
+
+en: SUBJECT INDEX
+zh-CN: 对象索引
+ja: 対象一覧
+ko: 대상 목록
+es: ÍNDICE DE SUJETOS
+pt-BR: ÍNDICE DE ESPÉCIMES
+de: SUBJEKTVERZEICHNIS
+fr: INDEX DES SUJETS
+ru: УКАЗАТЕЛЬ ОБЪЕКТОВ
+pl: INDEKS OBIEKTÓW
+
+en: {0} of {1} subjects observed
+zh-CN: 已观察 {0} / {1} 个对象
+ja: 対象 {1} 体のうち {0} 体を観察済み
+ko: 대상 {1}종 중 {0}종 관찰
+es: {0} de {1} sujetos observados
+pt-BR: {0} de {1} espécimes observados
+de: {0} von {1} Subjekten beobachtet
+fr: {0} sujets observés sur {1}
+ru: Наблюдалось объектов: {0} из {1}
+pl: Zaobserwowano {0} z {1} obiektów
+
+en: Notes appear after your first encounter. Unseen subjects stay unidentified.
+zh-CN: 首次遭遇后才会出现笔记。没见过的对象保持未识别状态。
+ja: メモは最初の遭遇のあとに現れる。見ていない対象は未確認のままだ。
+ko: 기록은 첫 조우 후에 나타납니다. 보지 못한 대상은 미확인 상태로 남습니다.
+es: Las notas aparecen tras el primer encuentro. Los sujetos no vistos siguen sin identificar.
+pt-BR: As anotações aparecem depois do primeiro encontro. Espécimes não vistos continuam sem identificação.
+de: Notizen erscheinen nach der ersten Begegnung. Ungesehene Subjekte bleiben unbestimmt.
+fr: Les notes apparaissent après la première rencontre. Les sujets jamais vus restent non identifiés.
+ru: Заметки появляются после первой встречи. Невиданные объекты остаются неопознанными.
+pl: Notatki pojawiają się po pierwszym spotkaniu. Niewidziane obiekty pozostają niezidentyfikowane.
+
+en: Unidentified subject
+zh-CN: 未识别对象
+ja: 未確認の対象
+ko: 미확인 대상
+es: Sujeto sin identificar
+pt-BR: Espécime não identificado
+de: Unbestimmtes Subjekt
+fr: Sujet non identifié
+ru: Неопознанный объект
+pl: Niezidentyfikowany obiekt
+
+en: OBSERVATION {0:00}
+zh-CN: 观察记录 {0:00}
+ja: 観察記録 {0:00}
+ko: 관찰 {0:00}
+es: OBSERVACIÓN {0:00}
+pt-BR: OBSERVAÇÃO {0:00}
+de: BEOBACHTUNG {0:00}
+fr: OBSERVATION {0:00}
+ru: НАБЛЮДЕНИЕ {0:00}
+pl: OBSERWACJA {0:00}
+
+en: MOVEMENT & BEHAVIOUR
+zh-CN: 行动与习性
+ja: 動きと習性
+ko: 움직임과 습성
+es: MOVIMIENTO Y COMPORTAMIENTO
+pt-BR: MOVIMENTO E COMPORTAMENTO
+de: BEWEGUNG & VERHALTEN
+fr: DÉPLACEMENT ET COMPORTEMENT
+ru: ДВИЖЕНИЕ И ПОВАДКИ
+pl: RUCH I ZACHOWANIE
+
+en: SURVIVAL NOTES
+zh-CN: 生存要点
+ja: 生存メモ
+ko: 생존 메모
+es: NOTAS DE SUPERVIVENCIA
+pt-BR: NOTAS DE SOBREVIVÊNCIA
+de: ÜBERLEBENSNOTIZEN
+fr: NOTES DE SURVIE
+ru: КАК ВЫЖИТЬ
+pl: NOTATKI O PRZETRWANIU
+
+en: IDENTITY UNKNOWN
+zh-CN: 身份不明
+ja: 正体不明
+ko: 정체불명
+es: IDENTIDAD DESCONOCIDA
+pt-BR: IDENTIDADE DESCONHECIDA
+de: IDENTITÄT UNBEKANNT
+fr: IDENTITÉ INCONNUE
+ru: ЛИЧНОСТЬ НЕ УСТАНОВЛЕНА
+pl: TOŻSAMOŚĆ NIEZNANA
+
+en: No first-hand account on file. Survive an encounter to recover this record.
+zh-CN: 档案中没有第一手记录。在一次遭遇中活下来，才能取回这份记录。
+ja: 直接の目撃記録はない。遭遇して生き延びれば、この記録を取り戻せる。
+ko: 직접 목격한 기록이 없습니다. 조우에서 살아남으면 이 기록을 되찾을 수 있습니다.
+es: No hay testimonio directo en el archivo. Sobrevive a un encuentro para recuperar este registro.
+pt-BR: Não há relato em primeira mão no arquivo. Sobreviva a um encontro para recuperar este registro.
+de: Kein Bericht aus erster Hand in den Akten. Überleb eine Begegnung, um diesen Eintrag zu bergen.
+fr: Aucun témoignage direct au dossier. Survivez à une rencontre pour récupérer cette fiche.
+ru: Свидетельств очевидцев в деле нет. Переживите встречу, чтобы восстановить эту запись.
+pl: W aktach nie ma relacji z pierwszej ręki. Przeżyj spotkanie, żeby odzyskać ten wpis.
+
+en: NO OBSERVATION / NO SURVIVAL NOTES
+zh-CN: 无观察记录 / 无生存要点
+ja: 観察記録なし / 生存メモなし
+ko: 관찰 없음 / 생존 메모 없음
+es: SIN OBSERVACIÓN / SIN NOTAS DE SUPERVIVENCIA
+pt-BR: SEM OBSERVAÇÃO / SEM NOTAS DE SOBREVIVÊNCIA
+de: KEINE BEOBACHTUNG / KEINE ÜBERLEBENSNOTIZEN
+fr: AUCUNE OBSERVATION / AUCUNE NOTE DE SURVIE
+ru: НАБЛЮДЕНИЙ НЕТ / СОВЕТОВ НЕТ
+pl: BRAK OBSERWACJI / BRAK NOTATEK O PRZETRWANIU
+
+en: Previous entry
+zh-CN: 上一条
+ja: 前の項目
+ko: 이전 항목
+es: Entrada anterior
+pt-BR: Entrada anterior
+de: Voriger Eintrag
+fr: Fiche précédente
+ru: Предыдущая запись
+pl: Poprzedni wpis
+
+en: Next entry
+zh-CN: 下一条
+ja: 次の項目
+ko: 다음 항목
+es: Entrada siguiente
+pt-BR: Próxima entrada
+de: Nächster Eintrag
+fr: Fiche suivante
+ru: Следующая запись
+pl: Następny wpis

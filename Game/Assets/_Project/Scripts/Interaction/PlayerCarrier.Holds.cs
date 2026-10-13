@@ -9,7 +9,8 @@ namespace Abandoned.Interaction
     {
         public void ShowHint(string message)
         {
-            Hint = message;
+            // Refusals arrive as English, also from the host: each machine words them itself (0.24.8).
+            Hint = Core.Loc.FromWire(message);
             HintTime = Time.time;
         }
 

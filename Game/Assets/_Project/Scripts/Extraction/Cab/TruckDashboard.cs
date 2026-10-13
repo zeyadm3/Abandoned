@@ -59,7 +59,7 @@ namespace Abandoned.Extraction
             quotaLamp.SetPropertyBlock(block);
         }
 
-        public string UsePrompt(GameObject user) => RunCab.Current != null && RunCab.Current.IsSpawned ? "Toot the horn (calls the crew, and anything else)" : null;
+        public string UsePrompt(GameObject user) => RunCab.Current != null && RunCab.Current.IsSpawned ? Loc.T("Toot the horn (calls the crew, and anything else)") : null;
 
         public void Use(GameObject user) => RunCab.Current?.RequestToot();
 

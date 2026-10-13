@@ -128,7 +128,7 @@ namespace Abandoned.Company
             // Only for a game that started at the HQ; a session hosted straight in a level (dev, tests) stays open.
             NetworkBootstrap.JoinBlocker = () => SessionTravel.Current != null && SessionTravel.Current.StartLevel == HomeLevel
                                                  && SessionTravel.Current.Level != HomeLevel
-                ? "The crew is out on a job. Join when they're back at the HQ." : null;
+                ? Loc.Mark("The crew is out on a job. Join when they're back at the HQ.") : null;
             Debug.Log($"[Company] {save.companyName}: ${save.money:N0}, level {save.level}{(store != null ? $" ({store.Path})" : " (not saved: test/batch run)")}.");
         }
 

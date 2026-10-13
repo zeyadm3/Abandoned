@@ -43,17 +43,17 @@ namespace Abandoned.Company
         /// <summary>What a crew member is told when the host keeps something to themselves.</summary>
         public static string Refusal(CrewRule rule) => rule switch
         {
-            CrewRule.Spend => "The host keeps the company card. Ask them, or they can allow crew spending in the pause menu.",
-            CrewRule.Drive => "Only the host can start the van. They can allow it in the pause menu.",
-            CrewRule.Lever => "Only the host can pull the lever on this crew.",
-            _ => "The host hasn't allowed that.",
+            CrewRule.Spend => Loc.T("The host keeps the company card. Ask them, or they can allow crew spending in the pause menu."),
+            CrewRule.Drive => Loc.T("Only the host can start the van. They can allow it in the pause menu."),
+            CrewRule.Lever => Loc.T("Only the host can pull the lever on this crew."),
+            _ => Loc.T("The host hasn't allowed that."),
         };
 
         // Client side: say no at once instead of sending a request the host will refuse.
         private bool RefuseLocally(CrewRule rule)
         {
             if (LocalMay(rule)) return false;
-            UI.ToastFeed.Show("HOST ONLY", Refusal(rule), null, UI.ToastFeed.Kind.Warn);
+            UI.ToastFeed.Show(Loc.T("HOST ONLY"), Refusal(rule), null, UI.ToastFeed.Kind.Warn);
             return true;
         }
 

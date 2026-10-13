@@ -1,4 +1,5 @@
 using Abandoned.Company;
+using Abandoned.Core;
 using Abandoned.Networking;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -16,14 +17,14 @@ namespace Abandoned.UI
 
         private static readonly string[] Tips =
         {
-            "Scan as soon as you're inside: prices first, plans second.",
-            "Weak floors creak before they crack and crack before they go. Listen.",
-            "The truck's board shows the haul. Load it, read it, argue about it.",
-            "A rope and pulley over a hole beats carrying a piano down the stairs.",
-            "Bolt cutters are quiet. Crowbars are not.",
-            "Two people on a heavy item go at the slower one's pace. Choose your partner.",
-            "The Blind One hears your voice chat. Whisper. Or don't, and run.",
-            "Locked stores hold the good stock.",
+            "Scan as soon as you're inside: prices first, plans second.", // @loc
+            "Weak floors creak before they crack and crack before they go. Listen.", // @loc
+            "The truck's board shows the haul. Load it, read it, argue about it.", // @loc
+            "A rope and pulley over a hole beats carrying a piano down the stairs.", // @loc
+            "Bolt cutters are quiet. Crowbars are not.", // @loc
+            "Two people on a heavy item go at the slower one's pace. Choose your partner.", // @loc
+            "The Blind One hears your voice chat. Whisper. Or don't, and run.", // @loc
+            "Locked stores hold the good stock.", // @loc
         };
 
         private VisualElement root, progress;
@@ -76,9 +77,9 @@ namespace Abandoned.UI
         // QA B-04/B-05: what's holding the drive up, so a long wait isn't a mystery.
         private static string Status(SessionTravel travel)
         {
-            if (!Loaded(travel.Level) || travel.LoadProgress < 1f) return $"LOADING  {travel.LoadProgress:P0}";
+            if (!Loaded(travel.Level) || travel.LoadProgress < 1f) return Loc.T("LOADING  {0:P0}", travel.LoadProgress);
             string waiting = travel.WaitingFor;
-            return string.IsNullOrEmpty(waiting) ? "MANIFEST VERIFIED / ARRIVING" : $"WAITING FOR {waiting.ToUpperInvariant()}";
+            return string.IsNullOrEmpty(waiting) ? Loc.T("MANIFEST VERIFIED / ARRIVING") : Loc.T("WAITING FOR {0}", waiting.ToUpperInvariant());
         }
 
         private static bool Loaded(string level) => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == level;
@@ -94,16 +95,16 @@ namespace Abandoned.UI
         {
             if ((root == null || root.panel == null) && !Build()) return;
             bool home = level == CompanyService.HomeLevel;
-            direction.text = home ? "RETURN TRANSFER / CREW RECOVERY" : "OUTBOUND TRANSFER / SALVAGE DETAIL";
-            where.text = home ? "HEADQUARTERS" : Location(level);
+            direction.text = home ? Loc.T("RETURN TRANSFER / CREW RECOVERY") : Loc.T("OUTBOUND TRANSFER / SALVAGE DETAIL");
+            where.text = home ? Loc.T("HEADQUARTERS") : Location(level);
             CompanyService company = CompanyService.Current;
             if (!home && company != null && company.Active.IsValid)
             {
                 Contracts.Contract c = company.Active;
-                terms.text = $"{c.ModifierName.ToUpperInvariant()}\nQUOTA ${company.QuotaFor(c):N0}   /   STABILITY {c.Stability:P0}\nPOWER {(c.PowerOff ? "OFF" : "ON")}   /   DEPARTURE WINDOW {c.WindowSeconds / 60f:0} MIN";
+                terms.text = Loc.T("{0}\nQUOTA ${1:N0}   /   STABILITY {2:P0}\nPOWER {3}   /   DEPARTURE WINDOW {4:0} MIN", Loc.T(c.ModifierName).ToUpperInvariant(), company.QuotaFor(c), c.Stability, (c.PowerOff ? Loc.T("OFF") : Loc.T("ON")), c.WindowSeconds / 60f);
             }
-            else terms.text = home ? "CREW RETURN IN PROGRESS\nPayday is on the answering machine." : "AWAITING DISPATCH RECORD";
-            tip.text = "FIELD NOTE / " + Tips[Random.Range(0, Tips.Length)];
+            else terms.text = home ? Loc.T("CREW RETURN IN PROGRESS\nPayday is on the answering machine.") : Loc.T("AWAITING DISPATCH RECORD");
+            tip.text = Loc.T("FIELD NOTE / {0}", Loc.T(Tips[Random.Range(0, Tips.Length)]));
             Set(true);
         }
 
@@ -132,7 +133,7 @@ namespace Abandoned.UI
             status = Text(middle, "transfer__status");
             status.enableRichText = false;
             tip = Text(root, "travel__tip");
-            Text(root, "ABANDONED SALVAGING / PERSONNEL TRANSPORT", "transfer__footer");
+            Text(root, Loc.T("ABANDONED SALVAGING / PERSONNEL TRANSPORT"), "transfer__footer");
             return true;
         }
 

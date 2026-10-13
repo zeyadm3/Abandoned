@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Unity.Netcode;
 using UnityEngine;
@@ -16,8 +17,8 @@ namespace Abandoned.Networking
         {
             SharedCarryable shared = net.Shared;
             if (!PickupRules.CanGrabPoint(carrier, shared, out int point, out reason)) return false;
-            if (net.Loot.Hold.Mode != LootHoldMode.Free) { reason = "Someone else has it"; return false; }
-            if (PlayerObjectId(carrier) == 0) { reason = "Not in the session"; return false; }
+            if (net.Loot.Hold.Mode != LootHoldMode.Free) { reason = Loc.Mark("Someone else has it"); return false; }
+            if (PlayerObjectId(carrier) == 0) { reason = Loc.Mark("Not in the session"); return false; }
 
             if (net.Loot.OwnerClientId != NetworkManager.ServerClientId) net.Loot.NetworkObject.RemoveOwnership();
             net.Loot.SyncPhysicsAuthority();

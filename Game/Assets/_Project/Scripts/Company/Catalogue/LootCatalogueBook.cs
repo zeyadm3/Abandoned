@@ -19,7 +19,7 @@ namespace Abandoned.Company
 
         private void OnEnable() => Catalog = catalog;
 
-        public string UsePrompt(GameObject user) => "Read the loot catalogue";
+        public string UsePrompt(GameObject user) => Loc.T("Read the loot catalogue");
 
         public void Use(GameObject user)
         {

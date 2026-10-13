@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.IO;
 using Steamworks;
 
@@ -12,7 +13,7 @@ namespace Abandoned.Voice
         private readonly MemoryStream stream = new();
 
         public string Name => "Steam voice";
-        public string Problem => SteamClient.IsValid ? string.Empty : "Steam isn't running, so Steam voice is off.";
+        public string Problem => SteamClient.IsValid ? string.Empty : Loc.Mark("Steam isn't running, so Steam voice is off.");
         public VoiceCodecId Codec => VoiceCodecId.Steam;
 
         public SteamVoiceCapture()

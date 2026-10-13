@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.UI;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -31,6 +32,8 @@ namespace Abandoned.Extraction
             texture = new RenderTexture(size.x, size.y, 0, RenderTextureFormat.ARGB32) { name = "TruckDisplay" };
             panel = ScriptableObject.CreateInstance<PanelSettings>();
             panel.themeStyleSheet = theme;
+            // 0.24.8: the menu's fallback fonts, or the board shows boxes in every script the display font lacks.
+            LanguageFonts.Apply(panel);
             panel.targetTexture = texture;
             panel.scaleMode = PanelScaleMode.ConstantPixelSize;
             panel.clearColor = true;
@@ -49,9 +52,9 @@ namespace Abandoned.Extraction
             root.AddToClassList("truck-display");
             UiThemeAssets.Apply(root);
             UiKit.Hazard(root);
-            state = Text(root, "RECOVERY MANIFEST", "truck-display__label");
+            state = Text(root, Loc.T("RECOVERY MANIFEST"), "truck-display__label");
             amount = Text(root, "$0", "truck-display__amount");
-            quota = Text(root, "QUOTA $0", "truck-display__quota");
+            quota = Text(root, Loc.T("QUOTA $0"), "truck-display__quota");
             bar = UiKit.Bar(root, "truck-display__bar");
             cargo = Text(root, "", "truck-display__cargo");
         }
@@ -76,12 +79,12 @@ namespace Abandoned.Extraction
             shown = key;
             bool met = s.Haul >= s.Quota;
             amount.text = $"${s.Haul:N0}";
-            quota.text = met ? $"QUOTA ${s.Quota:N0}  -  MET" : $"QUOTA ${s.Quota:N0}  -  ${s.Quota - s.Haul:N0} TO GO";
+            quota.text = met ? Loc.T("QUOTA ${0:N0}  -  MET", s.Quota) : Loc.T("QUOTA ${0:N0}  -  ${1:N0} TO GO", s.Quota, s.Quota - s.Haul);
             quota.EnableInClassList("truck-display__quota--met", met);
             UiKit.SetBar(bar, s.Quota > 0 ? (float)s.Haul / s.Quota : 1f, met ? "good" : null);
-            cargo.text = s.Overloaded ? $"OVERLOADED  {s.CargoVolume:0.0} / {s.CargoCapacity:0} m³" : $"CARGO  {s.CargoVolume:0.0} / {s.CargoCapacity:0} m³";
+            cargo.text = s.Overloaded ? Loc.T("OVERLOADED  {0:0.0} / {1:0} m³", s.CargoVolume, s.CargoCapacity) : Loc.T("CARGO  {0:0.0} / {1:0} m³", s.CargoVolume, s.CargoCapacity);
             cargo.EnableInClassList("truck-display__cargo--bad", s.Overloaded);
-            state.text = s.Phase == RunPhase.Honking ? "EVACUATING" : "RECOVERY MANIFEST";
+            state.text = s.Phase == RunPhase.Honking ? Loc.T("EVACUATING") : Loc.T("RECOVERY MANIFEST");
         }
 
         private void OnDestroy()

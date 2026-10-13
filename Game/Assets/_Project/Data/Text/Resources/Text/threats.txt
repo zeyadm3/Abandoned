@@ -1,0 +1,474 @@
+# The monsters: their names, the line under YOU DIED, and the field guide's files (Threats/*.cs).
+# Names keep one wording everywhere: see the table in Docs/LOCALIZATION_0.24.8.md. When a monster's behaviour
+# changes, its file changes here in every language.
+
+en: Blind One
+zh-CN: 盲者
+ja: 盲目の者
+ko: 눈먼 자
+es: El Ciego
+pt-BR: O Cego
+de: Der Blinde
+fr: L'Aveugle
+ru: Слепой
+pl: Ślepiec
+
+en: Stalker
+zh-CN: 潜行者
+ja: ストーカー
+ko: 스토커
+es: El Acechador
+pt-BR: O Perseguidor
+de: Der Pirscher
+fr: Le Rôdeur
+ru: Преследователь
+pl: Prześladowca
+
+en: Collector
+zh-CN: 收藏家
+ja: コレクター
+ko: 수집가
+es: El Coleccionista
+pt-BR: O Colecionador
+de: Der Sammler
+fr: Le Collectionneur
+ru: Коллекционер
+pl: Kolekcjoner
+
+en: Hunter
+zh-CN: 猎手
+ja: ハンター
+ko: 사냥꾼
+es: El Cazador
+pt-BR: O Caçador
+de: Der Jäger
+fr: Le Chasseur
+ru: Охотник
+pl: Łowca
+
+en: Crawlers
+zh-CN: 爬行者
+ja: クローラー
+ko: 크롤러
+es: Los Reptadores
+pt-BR: Os Rastejantes
+de: Die Krabbler
+fr: Les Rampants
+ru: Ползуны
+pl: Pełzacze
+
+en: The Weight
+zh-CN: 重压
+ja: 重み
+ko: 무게
+es: El Peso
+pt-BR: O Peso
+de: Das Gewicht
+fr: Le Poids
+ru: Тяжесть
+pl: Ciężar
+
+en: The Thing
+zh-CN: 那东西
+ja: それ
+ko: 그것
+es: La Cosa
+pt-BR: A Coisa
+de: Das Ding
+fr: La Chose
+ru: Нечто
+pl: Coś
+
+en: The Last Hunter
+zh-CN: 最后的猎手
+ja: 最後のハンター
+ko: 마지막 사냥꾼
+es: El Último Cazador
+pt-BR: O Último Caçador
+de: Der Letzte Jäger
+fr: Le Dernier Chasseur
+ru: Последний Охотник
+pl: Ostatni Łowca
+
+# Death lines
+
+en: The Blind One heard you.
+zh-CN: 盲者听见了你。
+ja: 盲目の者に音を聞かれた。
+ko: 눈먼 자가 당신의 소리를 들었습니다.
+es: El Ciego te oyó.
+pt-BR: O Cego ouviu você.
+de: Der Blinde hat dich gehört.
+fr: L'Aveugle vous a entendu.
+ru: Слепой вас услышал.
+pl: Ślepiec cię usłyszał.
+
+en: You looked away from the Stalker.
+zh-CN: 你把视线从潜行者身上移开了。
+ja: ストーカーから目を離した。
+ko: 스토커에게서 눈을 뗐습니다.
+es: Apartaste la vista del Acechador.
+pt-BR: Você tirou os olhos do Perseguidor.
+de: Du hast vom Pirscher weggesehen.
+fr: Vous avez quitté le Rôdeur des yeux.
+ru: Вы отвели взгляд от Преследователя.
+pl: Spuściłeś Prześladowcę z oczu.
+
+en: The Hunter ran you down.
+zh-CN: 猎手追上了你。
+ja: ハンターに追いつかれた。
+ko: 사냥꾼에게 따라잡혔습니다.
+es: El Cazador te dio alcance.
+pt-BR: O Caçador alcançou você.
+de: Der Jäger hat dich niedergerannt.
+fr: Le Chasseur vous a rattrapé.
+ru: Охотник вас настиг.
+pl: Łowca cię dopadł.
+
+en: The Crawlers dragged you down.
+zh-CN: 爬行者把你拖倒了。
+ja: クローラーに引きずり倒された。
+ko: 크롤러들이 당신을 끌어내렸습니다.
+es: Los Reptadores te arrastraron al suelo.
+pt-BR: Os Rastejantes derrubaram você.
+de: Die Krabbler haben dich zu Boden gezogen.
+fr: Les Rampants vous ont entraîné au sol.
+ru: Ползуны повалили вас.
+pl: Pełzacze ściągnęły cię na ziemię.
+
+en: You showed the Thing where you were.
+zh-CN: 你让那东西知道了你在哪里。
+ja: 「それ」に居場所を教えてしまった。
+ko: 그것에게 당신의 위치를 알려 주고 말았습니다.
+es: Le mostraste a la Cosa dónde estabas.
+pt-BR: Você mostrou à Coisa onde estava.
+de: Du hast dem Ding gezeigt, wo du warst.
+fr: Vous avez montré à la Chose où vous étiez.
+ru: Вы показали Нечто, где находитесь.
+pl: Pokazałeś Czemuś, gdzie jesteś.
+
+en: You stayed too long.
+zh-CN: 你待得太久了。
+ja: 長居しすぎた。
+ko: 너무 오래 머물렀습니다.
+es: Te quedaste demasiado tiempo.
+pt-BR: Você ficou tempo demais.
+de: Du bist zu lange geblieben.
+fr: Vous êtes resté trop longtemps.
+ru: Вы задержались слишком надолго.
+pl: Zostałeś za długo.
+
+# The guide itself
+
+en: Inspect the field guide / monster manual
+zh-CN: 查看现场手册 / 怪物图鉴
+ja: フィールドガイド / 怪物図鑑を見る
+ko: 현장 안내서 / 괴물 도감 살펴보기
+es: Consultar la guía de campo / manual de monstruos
+pt-BR: Consultar o guia de campo / manual de monstros
+de: Feldhandbuch / Monsterkunde ansehen
+fr: Consulter le guide de terrain / manuel des monstres
+ru: Открыть полевой справочник / бестиарий
+pl: Zajrzyj do przewodnika terenowego / bestiariusza
+
+en: THREAT FILE OPENED
+zh-CN: 威胁档案已开启
+ja: 脅威ファイル開放
+ko: 위협 파일 열림
+es: ARCHIVO DE AMENAZA ABIERTO
+pt-BR: ARQUIVO DE AMEAÇA ABERTO
+de: BEDROHUNGSAKTE GEÖFFNET
+fr: DOSSIER DE MENACE OUVERT
+ru: ОТКРЫТО ДЕЛО ОБ УГРОЗЕ
+pl: OTWARTO AKTA ZAGROŻENIA
+
+en: {0}: read it on the office computer at the HQ.
+zh-CN: {0}：可在总部的办公室电脑上阅读。
+ja: {0}：本部のオフィスのコンピューターで読める。
+ko: {0}: 본부 사무실 컴퓨터에서 읽을 수 있습니다.
+es: {0}: léelo en el ordenador de la oficina de la central.
+pt-BR: {0}: leia no computador do escritório do QG.
+de: {0}: nachzulesen am Bürocomputer in der Zentrale.
+fr: {0} : à lire sur l'ordinateur du bureau au QG.
+ru: {0}: читайте на офисном компьютере на базе.
+pl: {0}: przeczytasz to na komputerze w biurze w bazie.
+
+# Blind One
+
+en: Tall and eyeless. It clicks as it walks, and the clicking speeds up when it is hunting.
+zh-CN: 高大，没有眼睛。它走路时会发出咔哒声，狩猎时咔哒声会加快。
+ja: 背が高く、目がない。歩くたびにカチカチと音を立て、狩りを始めるとその音が速くなる。
+ko: 키가 크고 눈이 없습니다. 걸을 때 딸깍거리며, 사냥할 때는 그 소리가 빨라집니다.
+es: Alto y sin ojos. Chasquea al caminar, y los chasquidos se aceleran cuando está cazando.
+pt-BR: Alto e sem olhos. Ele estala enquanto anda, e os estalos aceleram quando está caçando.
+de: Groß und augenlos. Er klickt beim Gehen, und das Klicken wird schneller, wenn er jagt.
+fr: Grand et sans yeux. Il cliquette en marchant, et le cliquetis s'accélère quand il chasse.
+ru: Высокий, без глаз. При ходьбе щёлкает, и щелчки учащаются, когда он охотится.
+pl: Wysoki i bez oczu. Klika, gdy idzie, a klikanie przyspiesza, kiedy poluje.
+
+en: It cannot see. It wanders until it hears something, walks to the sound and stands there listening. One loud noise, or several in a row, and it runs at the source. A couple of hits kill.
+zh-CN: 它看不见。它四处游荡，直到听见动静，然后走到声音传来的地方，站在那里倾听。一声巨响，或者接连几声，它就会冲向声源。挨上几下就会死。
+ja: 目は見えない。何かが聞こえるまでさまよい、音のした場所まで歩いて、そこで立ち止まって耳を澄ます。大きな音がひとつ、あるいは続けて何度かすると、音の出どころへ走ってくる。数発で死ぬ。
+ko: 앞을 보지 못합니다. 무언가 들릴 때까지 돌아다니다가, 소리가 난 곳으로 걸어가 그 자리에 서서 귀를 기울입니다. 큰 소리 한 번이나 연달아 나는 소리에는 소리의 근원으로 달려듭니다. 두어 대 맞으면 죽습니다.
+es: No ve. Deambula hasta que oye algo, camina hacia el sonido y se queda allí escuchando. Un ruido fuerte, o varios seguidos, y corre hacia el origen. Un par de golpes matan.
+pt-BR: Ele não enxerga. Vaga até ouvir alguma coisa, anda até o som e fica ali, escutando. Um barulho alto, ou vários seguidos, e ele corre até a origem. Dois golpes matam.
+de: Er kann nicht sehen. Er streift umher, bis er etwas hört, geht zum Geräusch und bleibt dort lauschend stehen. Ein lautes Geräusch oder mehrere hintereinander, und er rennt zur Quelle. Ein paar Treffer sind tödlich.
+fr: Il ne voit pas. Il erre jusqu'à entendre quelque chose, marche vers le bruit et reste là, à écouter. Un bruit fort, ou plusieurs d'affilée, et il court vers la source. Quelques coups suffisent à tuer.
+ru: Он не видит. Бродит, пока что-нибудь не услышит, идёт на звук и стоит там, прислушиваясь. Один громкий звук или несколько подряд — и он бежит к источнику. Пара ударов убивает.
+pl: Nie widzi. Błąka się, aż coś usłyszy, idzie w stronę dźwięku i stoi tam, nasłuchując. Jeden głośny hałas albo kilka z rzędu i biegnie do źródła. Dwa ciosy zabijają.
+
+en: Crouch, don't sprint, and don't drop or throw things near it. If it is close, stop and stay quiet: it only strikes what it has just heard. A noise somewhere else gives it somewhere else to go. A locker hides nothing from it, but it is safe as long as you make no sound in there; it cannot open a shut door.
+zh-CN: 蹲下，别冲刺，别在它附近丢东西或扔东西。如果它离得很近，就停下来保持安静：它只攻击刚刚听到的东西。别处的响声会把它引到别处去。储物柜对它毫无遮蔽作用，但只要你在里面不出声就是安全的；它打不开关着的门。
+ja: しゃがみ、走らず、近くで物を落としたり投げたりしないこと。近くにいるなら、立ち止まって静かにしよう。あれは、たった今聞こえたものだけを襲う。別の場所で音がすれば、そちらへ向かう。ロッカーは目隠しにならないが、中で音を立てなければ安全だ。閉まったドアは開けられない。
+ko: 웅크리고, 달리지 말고, 근처에서 물건을 떨어뜨리거나 던지지 마세요. 가까이 있으면 멈춰서 조용히 있으세요. 놈은 방금 들은 것만 공격합니다. 다른 곳에서 소리가 나면 그쪽으로 갑니다. 사물함은 놈에게서 아무것도 숨겨 주지 못하지만, 안에서 소리만 내지 않으면 안전합니다. 놈은 닫힌 문을 열지 못합니다.
+es: Agáchate, no corras y no sueltes ni lances cosas cerca de él. Si está cerca, detente y guarda silencio: solo golpea lo que acaba de oír. Un ruido en otra parte le da otro sitio adonde ir. Un casillero no le oculta nada, pero es seguro mientras no hagas ruido dentro; no puede abrir una puerta cerrada.
+pt-BR: Agache, não corra e não solte nem arremesse coisas perto dele. Se ele estiver perto, pare e fique em silêncio: ele só ataca o que acabou de ouvir. Um barulho em outro lugar dá a ele outro lugar para ir. Um armário não esconde nada dele, mas é seguro desde que você não faça som lá dentro; ele não consegue abrir uma porta fechada.
+de: Duck dich, sprinte nicht, und lass in seiner Nähe nichts fallen und wirf nichts. Ist er nah, bleib stehen und sei still: Er schlägt nur nach dem, was er gerade gehört hat. Ein Geräusch woanders gibt ihm ein anderes Ziel. Ein Spind verbirgt nichts vor ihm, ist aber sicher, solange du darin keinen Laut machst; eine geschlossene Tür bekommt er nicht auf.
+fr: Accroupissez-vous, ne sprintez pas, et ne lâchez ni ne lancez rien près de lui. S'il est proche, arrêtez-vous et restez silencieux : il ne frappe que ce qu'il vient d'entendre. Un bruit ailleurs lui donne un autre endroit où aller. Un casier ne lui cache rien, mais il est sûr tant que vous n'y faites aucun bruit ; il ne sait pas ouvrir une porte fermée.
+ru: Присядьте, не бегите и не роняйте и не бросайте ничего рядом с ним. Если он близко, замрите и молчите: он бьёт только то, что услышал только что. Шум в другом месте уведёт его туда. Шкафчик от него ничего не скрывает, но там безопасно, пока вы не издаёте ни звука; закрытую дверь он открыть не может.
+pl: Kucnij, nie biegaj i niczego przy nim nie upuszczaj ani nie rzucaj. Jeśli jest blisko, stań i bądź cicho: uderza tylko w to, co właśnie usłyszał. Hałas gdzie indziej da mu inne miejsce, do którego pójdzie. Szafka niczego przed nim nie ukrywa, ale jest bezpieczna, dopóki nie wydasz w niej dźwięku; nie potrafi otworzyć zamkniętych drzwi.
+
+# Stalker
+
+en: Thin and tall, usually at the edge of your light. You may hear it breathing before you see it.
+zh-CN: 又瘦又高，通常待在你灯光的边缘。你可能会在看见它之前先听到它的呼吸声。
+ja: 痩せて背が高く、たいていは明かりの端にいる。姿を見る前に、息づかいが聞こえるかもしれない。
+ko: 마르고 키가 크며, 보통 불빛의 가장자리에 있습니다. 보기 전에 숨소리가 먼저 들릴 수 있습니다.
+es: Delgado y alto, casi siempre en el borde de tu luz. Puede que lo oigas respirar antes de verlo.
+pt-BR: Magro e alto, quase sempre na borda da sua luz. Talvez você o ouça respirando antes de vê-lo.
+de: Dünn und groß, meist am Rand deines Lichts. Vielleicht hörst du ihn atmen, bevor du ihn siehst.
+fr: Mince et grand, le plus souvent à la limite de votre lumière. Vous l'entendrez peut-être respirer avant de le voir.
+ru: Худой и высокий, обычно на границе вашего света. Его дыхание можно услышать раньше, чем увидеть его самого.
+pl: Chudy i wysoki, zwykle na skraju twojego światła. Możesz usłyszeć jego oddech, zanim go zobaczysz.
+
+en: It picks whoever is furthest from the crew and follows about ten metres back. It cannot move while that person is looking at it. If they are alone, in its sight and facing away for a few seconds, it rushes.
+zh-CN: 它会挑中离队伍最远的那个人，在大约十米后跟着。只要那个人看着它，它就动不了。如果那个人独自一人、在它的视线内，并且背对它几秒钟，它就会猛冲过来。
+ja: クルーから最も離れた者を選び、10メートルほど後ろをついて来る。その相手に見られている間は動けない。相手が一人きりで、視界に入っていて、数秒間背を向けていると、突進してくる。
+ko: 팀에서 가장 멀리 떨어진 사람을 골라 10미터쯤 뒤에서 따라옵니다. 그 사람이 보고 있는 동안에는 움직이지 못합니다. 그 사람이 혼자이고, 놈의 시야 안에 있으며, 몇 초 동안 등을 돌리고 있으면 돌진합니다.
+es: Elige a quien esté más lejos del equipo y lo sigue a unos diez metros. No puede moverse mientras esa persona lo mira. Si está sola, a la vista y de espaldas durante unos segundos, se abalanza.
+pt-BR: Ele escolhe quem estiver mais longe da equipe e segue uns dez metros atrás. Não consegue se mover enquanto essa pessoa olha para ele. Se ela estiver sozinha, à vista dele e de costas por alguns segundos, ele avança.
+de: Er wählt, wer am weitesten vom Team entfernt ist, und folgt etwa zehn Meter dahinter. Er kann sich nicht bewegen, solange diese Person ihn ansieht. Ist sie allein, in seinem Blick und ein paar Sekunden abgewandt, stürmt er los.
+fr: Il choisit celui qui est le plus loin de l'équipe et le suit à une dizaine de mètres. Il ne peut pas bouger tant que cette personne le regarde. Si elle est seule, dans son champ de vision et lui tourne le dos quelques secondes, il fonce.
+ru: Выбирает того, кто дальше всех от бригады, и идёт следом метрах в десяти. Не может двигаться, пока этот человек на него смотрит. Если человек один, в его поле зрения и несколько секунд стоит спиной — бросается.
+pl: Wybiera tego, kto jest najdalej od ekipy, i idzie jakieś dziesięć metrów za nim. Nie może się ruszyć, gdy ta osoba na niego patrzy. Jeśli jest sama, w zasięgu jego wzroku i przez kilka sekund odwrócona tyłem, rzuca się na nią.
+
+en: Stay within a few steps of a teammate and it never works up to a rush. Alone, turn and look at it often: every look resets it, and even a rush stops dead if you turn round in time. Your heartbeat and its breathing quicken as it works up to it, and the compass marks where it is. It cannot open a door, and in a locker it loses you and waits where it stands, unless it was already rushing when you climbed in.
+zh-CN: 待在队友几步之内，它就永远攒不够冲刺的劲头。独自一人时，要经常回头看它：每看一眼都会让它重新计时，就算它已经冲过来，只要你及时回头，它也会戛然而止。随着它蓄势，你的心跳和它的呼吸都会加快，指南针也会标出它的位置。它打不开门；你躲进储物柜后它会跟丢你，在原地等着，除非你钻进去的时候它已经在冲刺了。
+ja: 仲間から数歩以内にいれば、突進に踏み切ることはない。一人のときは、何度も振り返って見ること。見るたびに振り出しに戻り、突進中でも間に合って振り向けばぴたりと止まる。あれが力を溜めるにつれて、あなたの鼓動とあれの息づかいが速くなり、コンパスには居場所が印される。ドアは開けられない。ロッカーに入れば見失ってその場で待つが、入る時点ですでに突進していた場合は別だ。
+ko: 팀원과 몇 걸음 안에 있으면 놈은 돌진할 만큼 몰아가지 못합니다. 혼자일 때는 자주 돌아서 놈을 보세요. 볼 때마다 처음으로 돌아가고, 돌진 중이더라도 제때 돌아보면 그 자리에 멈춥니다. 놈이 기세를 올릴수록 당신의 심장 박동과 놈의 숨소리가 빨라지고, 나침반에 놈의 위치가 표시됩니다. 놈은 문을 열지 못하고, 사물함에 숨으면 당신을 놓치고 그 자리에서 기다립니다. 다만 당신이 들어갈 때 이미 돌진 중이었다면 예외입니다.
+es: Quédate a pocos pasos de un compañero y nunca llegará a abalanzarse. Si estás solo, gírate y míralo a menudo: cada mirada lo reinicia, e incluso una embestida se detiene en seco si te das la vuelta a tiempo. Tu pulso y su respiración se aceleran mientras se prepara, y la brújula marca dónde está. No puede abrir una puerta, y en un casillero te pierde y espera donde está, salvo que ya estuviera embistiendo cuando te metiste.
+pt-BR: Fique a poucos passos de um colega e ele nunca chega a avançar. Sozinho, vire-se e olhe para ele com frequência: cada olhada o reinicia, e até uma investida para na hora se você se virar a tempo. O seu coração e a respiração dele aceleram conforme ele se prepara, e a bússola marca onde ele está. Ele não consegue abrir uma porta, e num armário ele perde você e espera onde está, a não ser que já estivesse avançando quando você entrou.
+de: Bleib ein paar Schritte bei einem Teamkollegen, und er steigert sich nie bis zum Ansturm. Allein: Dreh dich oft um und sieh ihn an. Jeder Blick setzt ihn zurück, und selbst ein Ansturm bricht sofort ab, wenn du dich rechtzeitig umdrehst. Dein Herzschlag und sein Atem werden schneller, während er sich steigert, und der Kompass zeigt, wo er ist. Er kann keine Tür öffnen, und im Spind verliert er dich und wartet, wo er steht, außer er stürmte schon, als du hineingeklettert bist.
+fr: Restez à quelques pas d'un coéquipier et il n'ira jamais jusqu'à foncer. Seul, retournez-vous et regardez-le souvent : chaque regard le remet à zéro, et même une charge s'arrête net si vous vous retournez à temps. Votre cœur et sa respiration s'accélèrent à mesure qu'il se prépare, et la boussole indique où il se trouve. Il ne sait pas ouvrir une porte, et dans un casier il vous perd et attend sur place, sauf s'il fonçait déjà quand vous y êtes entré.
+ru: Держитесь в нескольких шагах от напарника — и он так и не решится на бросок. В одиночку почаще оборачивайтесь и смотрите на него: каждый взгляд сбрасывает его настрой, и даже бросок обрывается, если вы обернётесь вовремя. Пока он готовится, ваше сердце и его дыхание учащаются, а компас показывает, где он. Он не может открыть дверь, а в шкафчике теряет вас и ждёт на месте — если только уже не бросился, когда вы туда залезали.
+pl: Trzymaj się kilka kroków od kolegi, a nigdy nie zbierze się do szarży. Będąc sam, często się odwracaj i na niego patrz: każde spojrzenie go zeruje, a nawet szarża staje w miejscu, jeśli zdążysz się odwrócić. Twoje serce i jego oddech przyspieszają, gdy się zbiera, a kompas pokazuje, gdzie jest. Nie potrafi otworzyć drzwi, a w szafce gubi cię i czeka tam, gdzie stoi, chyba że już szarżował, kiedy wchodziłeś.
+
+# Collector
+
+en: Small, quick, and not interested in you.
+zh-CN: 个头小，动作快，对你不感兴趣。
+ja: 小さくて素早く、あなたには興味がない。
+ko: 작고 빠르며, 당신에게는 관심이 없습니다.
+es: Pequeño, rápido y sin interés por ti.
+pt-BR: Pequeno, rápido e sem interesse em você.
+de: Klein, flink und nicht an dir interessiert.
+fr: Petit, rapide, et vous ne l'intéressez pas.
+ru: Маленький, быстрый, и вы ему не интересны.
+pl: Mały, szybki i wcale tobą niezainteresowany.
+
+en: It never attacks. It takes loot nobody is standing near and carries it to one nest, far from the truck, for the whole job. The hoard clinks now and then. Someone hiding in a locker doesn't count as standing near.
+zh-CN: 它从不攻击。它会拿走没人守着的战利品，在整份任务期间都搬到同一个离卡车很远的巢里。那堆赃物时不时会叮当作响。躲在储物柜里的人不算守在旁边。
+ja: 決して攻撃はしない。誰もそばにいない回収品を持ち去り、仕事の間ずっと、トラックから遠いひとつの巣に運び込む。溜め込んだ品が時おりカチャリと鳴る。ロッカーに隠れている者は「そばにいる」うちに入らない。
+ko: 절대 공격하지 않습니다. 근처에 아무도 없는 전리품을 가져가, 작업 내내 트럭에서 먼 한 곳의 둥지로 옮깁니다. 모아 둔 물건이 가끔 짤랑거립니다. 사물함에 숨은 사람은 근처에 있는 것으로 치지 않습니다.
+es: Nunca ataca. Se lleva el botín que nadie tiene cerca y lo carga hasta un único nido, lejos del camión, durante todo el trabajo. El tesoro tintinea de vez en cuando. Alguien escondido en un casillero no cuenta como estar cerca.
+pt-BR: Ele nunca ataca. Pega o saque que ninguém está por perto vigiando e leva para um único ninho, longe do caminhão, durante o trabalho inteiro. O tesouro tilinta de vez em quando. Alguém escondido num armário não conta como estar por perto.
+de: Er greift nie an. Er nimmt Beute, bei der niemand steht, und trägt sie den ganzen Auftrag lang zu einem Nest weit weg vom Laster. Der Hort klimpert hin und wieder. Wer sich im Spind versteckt, zählt nicht als danebenstehend.
+fr: Il n'attaque jamais. Il prend le butin que personne ne surveille de près et l'emporte dans un seul nid, loin du camion, pendant toute la mission. Son magot tinte de temps en temps. Quelqu'un caché dans un casier ne compte pas comme étant à côté.
+ru: Никогда не нападает. Забирает добычу, возле которой никого нет, и весь заказ носит её в одно гнездо вдали от грузовика. Его запасы время от времени позвякивают. Тот, кто прячется в шкафчике, не считается стоящим рядом.
+pl: Nigdy nie atakuje. Zabiera łupy, przy których nikt nie stoi, i przez całe zlecenie nosi je do jednego gniazda, daleko od ciężarówki. Jego skarb od czasu do czasu pobrzękuje. Ktoś schowany w szafce nie liczy się jako stojący obok.
+
+en: Don't leave piles unguarded; carry things straight to the truck. Get close and it drops what it holds and runs. Find the nest and everything it took is still there.
+zh-CN: 别把成堆的东西放着没人看；直接把东西搬到卡车上。靠近它，它就会丢下手里的东西逃跑。找到巢穴，它拿走的一切都还在那里。
+ja: 山積みにしたまま放置せず、まっすぐトラックへ運ぼう。近づけば、持っている物を落として逃げる。巣を見つければ、持ち去られた物はすべてそこに残っている。
+ko: 쌓아 둔 물건을 지키는 사람 없이 두지 말고, 곧장 트럭으로 옮기세요. 가까이 가면 들고 있던 것을 떨어뜨리고 달아납니다. 둥지를 찾으면 가져간 것이 전부 그대로 있습니다.
+es: No dejes montones sin vigilar; lleva las cosas directas al camión. Acércate y soltará lo que lleva y huirá. Encuentra el nido y todo lo que se llevó seguirá allí.
+pt-BR: Não deixe pilhas sem ninguém vigiando; leve as coisas direto para o caminhão. Chegue perto e ele solta o que está segurando e foge. Ache o ninho e tudo o que ele pegou continua lá.
+de: Lass keine Haufen unbewacht; trag alles direkt zum Laster. Komm ihm nahe, und er lässt fallen, was er hält, und rennt. Finde das Nest, und alles, was er genommen hat, ist noch da.
+fr: Ne laissez pas de tas sans surveillance ; portez tout directement au camion. Approchez-vous et il lâche ce qu'il tient et s'enfuit. Trouvez le nid : tout ce qu'il a pris y est encore.
+ru: Не оставляйте кучи без присмотра; несите вещи прямо к грузовику. Подойдите ближе — он бросит то, что держит, и убежит. Найдите гнездо: всё, что он утащил, лежит там.
+pl: Nie zostawiaj stert bez opieki; noś rzeczy prosto do ciężarówki. Podejdź blisko, a upuści to, co trzyma, i ucieknie. Znajdź gniazdo, a wszystko, co zabrał, nadal tam jest.
+
+# Hunter
+
+en: Big, heavy, and it can see. You hear its footsteps first.
+zh-CN: 又大又重，而且看得见。你会先听到它的脚步声。
+ja: 大きくて重く、目が見える。まず足音が聞こえてくる。
+ko: 크고 무거우며, 앞을 봅니다. 먼저 발소리가 들립니다.
+es: Grande, pesado, y ve. Primero oyes sus pasos.
+pt-BR: Grande, pesado, e enxerga. Você ouve os passos dele primeiro.
+de: Groß, schwer, und er kann sehen. Zuerst hörst du seine Schritte.
+fr: Gros, lourd, et il voit. Vous entendez d'abord ses pas.
+ru: Большой, тяжёлый, и он видит. Сначала вы слышите его шаги.
+pl: Duży, ciężki i widzi. Najpierw słyszysz jego kroki.
+
+en: It patrols. If it sees you it charges, and one touch kills. It weighs as much as a piano. A shut door stops it seeing you, but it breaks down a door it saw you go through: a few blows the whole building hears, and that door never shuts again.
+zh-CN: 它会巡逻。一看见你就冲过来，碰一下就会死。它和一架钢琴一样重。关上的门能挡住它的视线，但它会砸开它看见你穿过的门：砸几下，整栋楼都听得见，而且那扇门再也关不上了。
+ja: 巡回している。見つかれば突進してきて、一度触れられただけで死ぬ。重さはピアノほどある。閉めたドアはあれの視線を遮るが、あなたが通るのを見たドアは打ち破る。数発の打撃音は建物中に響き、そのドアは二度と閉まらない。
+ko: 순찰합니다. 당신을 보면 돌진하며, 한 번 닿으면 죽습니다. 무게가 피아노만큼 나갑니다. 닫힌 문은 놈의 시야를 가리지만, 당신이 지나가는 걸 본 문은 부숩니다. 몇 번 치는 소리가 건물 전체에 들리고, 그 문은 다시는 닫히지 않습니다.
+es: Patrulla. Si te ve, embiste, y un solo toque mata. Pesa tanto como un piano. Una puerta cerrada le impide verte, pero derriba la puerta por la que te vio pasar: unos golpes que oye todo el edificio, y esa puerta no vuelve a cerrarse.
+pt-BR: Ele patrulha. Se vir você, ele investe, e um toque mata. Pesa tanto quanto um piano. Uma porta fechada impede que ele veja você, mas ele arromba a porta por onde viu você passar: alguns golpes que o prédio inteiro ouve, e essa porta nunca mais fecha.
+de: Er patrouilliert. Sieht er dich, stürmt er los, und eine Berührung tötet. Er wiegt so viel wie ein Klavier. Eine geschlossene Tür nimmt ihm die Sicht, aber er bricht eine Tür auf, durch die er dich gehen sah: ein paar Schläge, die das ganze Gebäude hört, und diese Tür schließt nie wieder.
+fr: Il patrouille. S'il vous voit, il charge, et un seul contact tue. Il pèse autant qu'un piano. Une porte fermée l'empêche de vous voir, mais il défonce la porte qu'il vous a vu franchir : quelques coups que tout le bâtiment entend, et cette porte ne se refermera plus jamais.
+ru: Он патрулирует. Увидев вас, бросается в атаку, и одно касание убивает. Весит как пианино. Закрытая дверь не даёт ему вас видеть, но дверь, за которой вы скрылись у него на глазах, он выломает: несколько ударов, которые слышит всё здание, и эта дверь больше не закроется.
+pl: Patroluje. Jeśli cię zobaczy, szarżuje, a jedno dotknięcie zabija. Waży tyle, co pianino. Zamknięte drzwi sprawiają, że cię nie widzi, ale wyłamuje drzwi, przez które widział, że przechodzisz: kilka uderzeń, które słyszy cały budynek, i te drzwi już nigdy się nie zamkną.
+
+en: Break line of sight, crouch behind something, or sprint while your breath lasts. Slide a door shut behind you and use the seconds it buys. A locker hides you, unless it watched you climb in: then it pulls you out. Weak floors don't hold it: when one gives way under it, it falls and lies stunned.
+zh-CN: 躲出它的视线，蹲到什么东西后面，或者趁还有气息拼命跑。把身后的门拉上，利用它争取到的那几秒钟。储物柜能藏住你，除非它看着你钻进去：那样它会把你拽出来。脆弱的地板撑不住它：地板在它脚下塌陷时，它会摔下去，昏倒在地。
+ja: 視線を切るか、何かの陰にしゃがむか、息が続くかぎり走ろう。背後のドアを閉め、稼いだ数秒を使うこと。ロッカーは身を隠してくれるが、入るところを見られていたら引きずり出される。弱った床はあれを支えきれない。足元の床が抜けると、落ちて気絶する。
+ko: 시야에서 벗어나거나, 무언가 뒤에 웅크리거나, 숨이 남아 있는 동안 전력으로 달리세요. 뒤에서 문을 닫고 벌어들인 몇 초를 활용하세요. 사물함은 당신을 숨겨 주지만, 놈이 들어가는 걸 지켜봤다면 당신을 끌어냅니다. 약한 바닥은 놈을 버티지 못합니다. 바닥이 놈의 발밑에서 무너지면 놈은 떨어져 기절한 채 쓰러집니다.
+es: Rompe la línea de visión, agáchate detrás de algo o corre mientras te dure el aliento. Cierra una puerta tras de ti y aprovecha los segundos que te da. Un casillero te oculta, salvo que te viera meterte: entonces te saca. Los suelos débiles no lo aguantan: cuando uno cede bajo su peso, cae y queda aturdido.
+pt-BR: Saia da linha de visão, agache atrás de alguma coisa ou corra enquanto tiver fôlego. Feche uma porta atrás de você e use os segundos que ela dá. Um armário esconde você, a não ser que ele tenha visto você entrar: aí ele puxa você para fora. Pisos fracos não o aguentam: quando um cede debaixo dele, ele cai e fica atordoado.
+de: Raus aus der Sichtlinie, duck dich hinter etwas oder sprinte, solange dein Atem reicht. Schieb eine Tür hinter dir zu und nutz die Sekunden, die sie bringt. Ein Spind versteckt dich, außer er hat dich hineinklettern sehen: Dann zieht er dich heraus. Schwache Böden halten ihn nicht: Gibt einer unter ihm nach, stürzt er und bleibt benommen liegen.
+fr: Sortez de son champ de vision, accroupissez-vous derrière quelque chose, ou sprintez tant que vous avez du souffle. Fermez une porte derrière vous et profitez des secondes gagnées. Un casier vous cache, sauf s'il vous a vu y entrer : alors il vous en sort. Les sols fragiles ne le supportent pas : quand l'un cède sous lui, il tombe et reste sonné.
+ru: Уйдите из поля зрения, присядьте за чем-нибудь или бегите, пока хватает дыхания. Задвиньте за собой дверь и используйте выигранные секунды. Шкафчик вас спрячет — если только он не видел, как вы туда залезли: тогда вытащит. Слабые полы его не выдерживают: когда пол под ним проваливается, он падает и лежит оглушённый.
+pl: Zejdź mu z oczu, kucnij za czymś albo biegnij, póki starcza ci oddechu. Zasuń za sobą drzwi i wykorzystaj sekundy, które ci dadzą. Szafka cię ukryje, chyba że widział, jak wchodzisz: wtedy cię wyciągnie. Słabe podłogi go nie utrzymają: gdy któraś się pod nim zawali, spada i leży ogłuszony.
+
+# Crawlers
+
+en: A carpet of small things that keeps to the dark.
+zh-CN: 一大片紧贴着黑暗的小东西。
+ja: 暗がりにとどまる、小さなものたちの絨毯。
+ko: 어둠 속에만 머무는 작은 것들의 융단.
+es: Una alfombra de cosas pequeñas que no sale de la oscuridad.
+pt-BR: Um tapete de coisas pequenas que não sai do escuro.
+de: Ein Teppich aus kleinen Dingern, der im Dunkeln bleibt.
+fr: Un tapis de petites choses qui reste dans l'ombre.
+ru: Ковёр из мелких тварей, который держится в темноте.
+pl: Dywan z małych stworzeń, który trzyma się ciemności.
+
+en: They arrive once the building starts to turn. They swarm whoever is carrying, bite lightly and tear what is in your hands loose. They are small enough to pour into a locker after you.
+zh-CN: 建筑开始恶化后它们就会出现。它们会围攻搬着东西的人，轻轻撕咬，把你手里的东西扯掉。它们小到能跟着你涌进储物柜。
+ja: 建物が悪化し始めると現れる。物を運んでいる者に群がり、軽く噛みつき、手にしている物をもぎ取る。小さいので、あなたを追ってロッカーにもなだれ込んでくる。
+ko: 건물이 변하기 시작하면 나타납니다. 물건을 들고 있는 사람에게 몰려들어 가볍게 물고, 손에 든 것을 뜯어냅니다. 작아서 당신을 따라 사물함 안으로 쏟아져 들어옵니다.
+es: Llegan cuando el edificio empieza a torcerse. Se abalanzan sobre quien carga algo, muerden flojo y te arrancan lo que llevas en las manos. Son tan pequeños que entran en tromba en un casillero detrás de ti.
+pt-BR: Eles chegam quando o prédio começa a virar. Cercam quem estiver carregando algo, mordem de leve e arrancam o que está nas suas mãos. São pequenos o bastante para entrar atrás de você num armário.
+de: Sie kommen, sobald das Gebäude kippt. Sie fallen über jeden her, der trägt, beißen leicht und reißen dir aus den Händen, was du hältst. Sie sind klein genug, um dir in einen Spind nachzuströmen.
+fr: Ils arrivent quand le bâtiment commence à mal tourner. Ils submergent celui qui porte quelque chose, mordent légèrement et arrachent ce que vous avez en main. Ils sont assez petits pour se déverser dans un casier à votre suite.
+ru: Они приходят, когда здание начинает меняться. Набрасываются на того, кто что-то несёт, слегка кусают и вырывают ношу из рук. Они достаточно мелкие, чтобы хлынуть за вами в шкафчик.
+pl: Przychodzą, gdy budynek zaczyna się zmieniać. Obłażą tego, kto coś niesie, lekko gryzą i wyrywają ci z rąk to, co trzymasz. Są na tyle małe, że wsypią się za tobą do szafki.
+
+en: Light. Put your flashlight beam on them and they scatter for a few seconds. A shut door keeps them out; a locker does not.
+zh-CN: 用光。把手电筒的光束照在它们身上，它们会四散逃开几秒钟。关上的门能把它们挡在外面；储物柜不行。
+ja: 光だ。懐中電灯の光を当てれば、数秒間は散り散りになる。閉めたドアは防げるが、ロッカーでは防げない。
+ko: 빛입니다. 손전등 빛을 비추면 몇 초 동안 흩어집니다. 닫힌 문은 놈들을 막아 주지만, 사물함은 막아 주지 못합니다.
+es: Luz. Apúntales con la linterna y se dispersan unos segundos. Una puerta cerrada los deja fuera; un casillero, no.
+pt-BR: Luz. Aponte o facho da lanterna para eles e eles se espalham por alguns segundos. Uma porta fechada os mantém do lado de fora; um armário, não.
+de: Licht. Richte den Strahl deiner Taschenlampe auf sie, und sie stieben ein paar Sekunden auseinander. Eine geschlossene Tür hält sie draußen; ein Spind nicht.
+fr: La lumière. Braquez le faisceau de votre lampe sur eux et ils se dispersent quelques secondes. Une porte fermée les arrête ; un casier, non.
+ru: Свет. Направьте на них луч фонарика — и они разбегутся на несколько секунд. Закрытая дверь их не пускает, шкафчик — нет.
+pl: Światło. Skieruj na nie snop latarki, a rozproszą się na kilka sekund. Zamknięte drzwi ich nie wpuszczą; szafka ich nie zatrzyma.
+
+# The Weight
+
+en: Something enormous moving above the halls.
+zh-CN: 某个庞然大物在大厅上方移动。
+ja: 広間の上を動く、とてつもなく大きな何か。
+ko: 홀 위를 움직이는 거대한 무언가.
+es: Algo enorme que se mueve sobre las salas.
+pt-BR: Algo enorme se movendo acima dos corredores.
+de: Etwas Riesiges, das sich über den Hallen bewegt.
+fr: Quelque chose d'énorme qui se déplace au-dessus des halls.
+ru: Нечто огромное, движущееся над залами.
+pl: Coś ogromnego, co porusza się nad halami.
+
+en: Very slow, and it never touches you. It leans on the building: you hear it wind up, then the weak sections under it crack.
+zh-CN: 非常缓慢，而且从不碰你。它会压在建筑上：你会听到它蓄力的声音，然后它下方脆弱的部分就会开裂。
+ja: とても遅く、あなたに触れることはない。建物にもたれかかるのだ。力を溜める音が聞こえ、そのあと真下の弱った区画にひびが入る。
+ko: 매우 느리고, 절대 당신을 건드리지 않습니다. 건물에 몸을 기댑니다. 힘을 모으는 소리가 들린 뒤, 그 아래 약한 구역에 금이 갑니다.
+es: Muy lento, y nunca te toca. Se apoya en el edificio: lo oyes tomar impulso y luego los tramos débiles que tiene debajo se agrietan.
+pt-BR: Muito lento, e nunca toca em você. Ele se apoia no prédio: você o ouve se preparar, e então os trechos fracos embaixo dele racham.
+de: Sehr langsam, und es berührt dich nie. Es lehnt sich auf das Gebäude: Du hörst, wie es sich anspannt, dann reißen die schwachen Abschnitte darunter.
+fr: Très lent, et il ne vous touche jamais. Il s'appuie sur le bâtiment : vous l'entendez prendre son élan, puis les sections fragiles sous lui se fissurent.
+ru: Очень медленная и никогда вас не касается. Она наваливается на здание: вы слышите, как она напрягается, а затем слабые участки под ней трескаются.
+pl: Bardzo powolny i nigdy cię nie dotyka. Napiera na budynek: słyszysz, jak się zbiera, a potem słabe części pod nim pękają.
+
+en: When you hear the wind-up, get off cracked floors and out from under them. Keep heavy loot away from where it walks.
+zh-CN: 听到蓄力声时，离开开裂的地板，也别待在它们下方。让重的战利品远离它走过的地方。
+ja: 力を溜める音が聞こえたら、ひびの入った床から離れ、その下からも出ること。重い回収品は、あれが歩く場所から遠ざけておこう。
+ko: 힘을 모으는 소리가 들리면 금이 간 바닥에서 벗어나고, 그 아래에서도 나오세요. 무거운 전리품은 놈이 지나는 곳에서 멀리 두세요.
+es: Cuando lo oigas tomar impulso, sal de los suelos agrietados y de debajo de ellos. Mantén el botín pesado lejos de por donde camina.
+pt-BR: Quando ouvir a preparação, saia de pisos rachados e de baixo deles. Mantenha o saque pesado longe de onde ele anda.
+de: Hörst du das Anspannen, runter von rissigen Böden und raus darunter. Halt schwere Beute fern von dort, wo es geht.
+fr: Quand vous l'entendez prendre son élan, quittez les sols fissurés et ne restez pas dessous. Tenez le butin lourd à l'écart de son passage.
+ru: Услышав, как она напрягается, уходите с потрескавшихся полов и из-под них. Держите тяжёлую добычу подальше от мест, где она ходит.
+pl: Gdy usłyszysz, że się zbiera, zejdź z popękanych podłóg i spod nich. Trzymaj ciężkie łupy z dala od miejsc, którymi chodzi.
+
+# The Thing
+
+en: It looks like part of the room until it doesn't.
+zh-CN: 它看起来像房间的一部分，直到它不再像。
+ja: 部屋の一部に見える。そう見えなくなる、その時までは。
+ko: 방의 일부처럼 보입니다. 그렇게 보이지 않게 되기 전까지는.
+es: Parece parte de la habitación hasta que deja de parecerlo.
+pt-BR: Parece parte da sala, até deixar de parecer.
+de: Es sieht aus wie ein Teil des Raums, bis es das nicht mehr tut.
+fr: On dirait un élément de la pièce, jusqu'à ce que ce ne soit plus le cas.
+ru: Выглядит как часть комнаты — до поры до времени.
+pl: Wygląda jak część pomieszczenia, dopóki nie przestaje.
+
+en: Harmless while ignored. Hold a flashlight on it too long and it wakes, and comes for whoever showed it where they were.
+zh-CN: 只要不理它就无害。用手电筒照它太久，它就会醒来，去找那个暴露了自己位置的人。
+ja: 無視しているかぎりは無害だ。懐中電灯を長く当てすぎると目覚め、居場所を教えた者を狙ってくる。
+ko: 무시하는 동안에는 해롭지 않습니다. 손전등을 너무 오래 비추면 깨어나, 자기 위치를 알려 준 사람을 쫓아옵니다.
+es: Inofensiva mientras se la ignora. Mantén la linterna sobre ella demasiado tiempo y despierta, y va a por quien le mostró dónde estaba.
+pt-BR: Inofensiva enquanto é ignorada. Segure a lanterna nela por tempo demais e ela acorda, e vai atrás de quem mostrou onde estava.
+de: Harmlos, solange man es ignoriert. Halt die Taschenlampe zu lange darauf, und es erwacht und kommt zu dem, der ihm gezeigt hat, wo er war.
+fr: Inoffensive tant qu'on l'ignore. Gardez la lampe braquée sur elle trop longtemps et elle s'éveille, puis vient chercher celui qui lui a montré où il était.
+ru: Безвредно, пока его не замечают. Подержите на нём луч фонарика слишком долго — оно проснётся и придёт за тем, кто выдал, где находится.
+pl: Niegroźne, dopóki się je ignoruje. Potrzymaj na nim latarkę za długo, a się obudzi i przyjdzie po tego, kto pokazał mu, gdzie jest.
+
+en: Don't study it. Take the beam off it and keep to the dark; in time it loses interest. A shut door stops it, and so does a locker it didn't watch you climb into.
+zh-CN: 别盯着研究它。把光束从它身上移开，待在黑暗里；过一阵子它就会失去兴趣。关上的门能挡住它，它没看见你钻进去的储物柜也能。
+ja: じっくり観察しないこと。光を外して暗がりにとどまれば、やがて興味を失う。閉めたドアで止められるし、入るところを見られていないロッカーでも止められる。
+ko: 자세히 살펴보지 마세요. 빛을 거두고 어둠 속에 머무르면, 시간이 지나 흥미를 잃습니다. 닫힌 문이 놈을 막아 주고, 들어가는 걸 들키지 않은 사물함도 마찬가지입니다.
+es: No la estudies. Aparta el haz y quédate en la oscuridad; con el tiempo pierde el interés. La detiene una puerta cerrada, y también un casillero en el que no te vio meterte.
+pt-BR: Não fique estudando. Tire o facho de cima dela e fique no escuro; com o tempo ela perde o interesse. Uma porta fechada a detém, e também um armário em que ela não viu você entrar.
+de: Studier es nicht. Nimm den Strahl weg und bleib im Dunkeln; mit der Zeit verliert es das Interesse. Eine geschlossene Tür hält es auf, ebenso ein Spind, in den es dich nicht klettern sah.
+fr: Ne l'examinez pas. Écartez le faisceau et restez dans le noir ; avec le temps, elle se désintéresse. Une porte fermée l'arrête, tout comme un casier où elle ne vous a pas vu entrer.
+ru: Не разглядывайте его. Уберите луч и держитесь в темноте; со временем оно теряет интерес. Его останавливает закрытая дверь, а также шкафчик, если оно не видело, как вы туда залезли.
+pl: Nie przyglądaj mu się. Zabierz z niego snop światła i trzymaj się ciemności; z czasem traci zainteresowanie. Zatrzymają go zamknięte drzwi, a także szafka, jeśli nie widziało, jak do niej wchodzisz.
+
+# The Last Hunter
+
+en: What comes when you have stayed too long.
+zh-CN: 你待得太久之后来的东西。
+ja: 長居しすぎた者のもとへ来るもの。
+ko: 너무 오래 머물렀을 때 찾아오는 것.
+es: Lo que llega cuando te has quedado demasiado.
+pt-BR: O que vem quando você ficou tempo demais.
+de: Was kommt, wenn du zu lange geblieben bist.
+fr: Ce qui vient quand vous êtes resté trop longtemps.
+ru: То, что приходит, когда вы задержались слишком надолго.
+pl: To, co przychodzi, gdy zostałeś za długo.
+
+en: It only appears after the window has closed. It knows where every living crew member is, and walls, floors and doors don't stop it: it breaks any shut door it comes near. One touch kills.
+zh-CN: 它只在时限结束后出现。它知道每一名活着的队员在哪里，墙壁、地板和门都挡不住它：它会砸开靠近的任何一扇关着的门。碰一下就会死。
+ja: 期限が過ぎてからしか現れない。生きているクルー全員の居場所を知っていて、壁も床もドアも妨げにならない。近くにある閉まったドアはすべて破る。一度触れられただけで死ぬ。
+ko: 시한이 끝난 뒤에만 나타납니다. 살아 있는 모든 팀원의 위치를 알고 있으며, 벽도 바닥도 문도 놈을 막지 못합니다. 가까이 있는 닫힌 문은 모두 부숩니다. 한 번 닿으면 죽습니다.
+es: Solo aparece cuando el plazo se ha cerrado. Sabe dónde está cada miembro vivo del equipo, y ni paredes, ni suelos, ni puertas lo detienen: derriba cualquier puerta cerrada a la que se acerque. Un solo toque mata.
+pt-BR: Só aparece depois que a janela fecha. Ele sabe onde está cada membro vivo da equipe, e paredes, pisos e portas não o detêm: ele arromba qualquer porta fechada de que se aproxima. Um toque mata.
+de: Er erscheint erst, wenn das Fenster geschlossen ist. Er weiß, wo jedes lebende Teammitglied ist, und Wände, Böden und Türen halten ihn nicht auf: Er bricht jede geschlossene Tür auf, der er nahe kommt. Eine Berührung tötet.
+fr: Il n'apparaît qu'une fois la fenêtre fermée. Il sait où se trouve chaque membre vivant de l'équipe, et ni les murs, ni les sols, ni les portes ne l'arrêtent : il défonce toute porte fermée dont il s'approche. Un seul contact tue.
+ru: Появляется только после закрытия окна. Знает, где находится каждый живой член бригады, и его не останавливают ни стены, ни полы, ни двери: он выламывает любую закрытую дверь поблизости. Одно касание убивает.
+pl: Pojawia się dopiero po zamknięciu okna. Wie, gdzie jest każdy żywy członek ekipy, a ściany, podłogi i drzwi go nie zatrzymują: wyłamuje każde zamknięte drzwi, do których się zbliży. Jedno dotknięcie zabija.
+
+en: There is no fighting it and no hiding from it. Be in the truck: that is the one place it will not follow.
+zh-CN: 打不过它，也躲不开它。待在卡车里：那是它唯一不会跟来的地方。
+ja: 戦うことも、隠れることもできない。トラックの中にいること。あれが追って来ない場所は、そこだけだ。
+ko: 놈과는 싸울 수도, 숨을 수도 없습니다. 트럭 안에 있으세요. 놈이 따라오지 않는 곳은 그곳뿐입니다.
+es: No se puede luchar contra él ni esconderse de él. Quédate en el camión: es el único sitio al que no te sigue.
+pt-BR: Não dá para lutar contra ele nem se esconder dele. Esteja no caminhão: é o único lugar aonde ele não segue você.
+de: Man kann ihn nicht bekämpfen und sich nicht vor ihm verstecken. Sei im Laster: Das ist der eine Ort, an den er nicht folgt.
+fr: On ne peut ni le combattre ni s'en cacher. Soyez dans le camion : c'est le seul endroit où il ne vous suivra pas.
+ru: С ним нельзя сражаться и от него нельзя спрятаться. Будьте в грузовике: это единственное место, куда он не пойдёт.
+pl: Nie da się z nim walczyć ani się przed nim ukryć. Bądź w ciężarówce: to jedyne miejsce, do którego za tobą nie pójdzie.

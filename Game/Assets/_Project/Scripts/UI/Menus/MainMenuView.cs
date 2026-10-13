@@ -15,10 +15,10 @@ namespace Abandoned.UI
     {
         private static readonly string[] Memos =
         {
-            "RECOVERY NOTICE / The building is abandoned. You are not alone.",
-            "STRUCTURAL WARNING / Listen to the floor. Weight has consequences.",
-            "EXTRACTION NOTICE / The truck will leave. Make it back before it does.",
-            "SALVAGE RECORD / Take what's left. Leave while you can.",
+            "RECOVERY NOTICE / The building is abandoned. You are not alone.", // @loc
+            "STRUCTURAL WARNING / Listen to the floor. Weight has consequences.", // @loc
+            "EXTRACTION NOTICE / The truck will leave. Make it back before it does.", // @loc
+            "SALVAGE RECORD / Take what's left. Leave while you can.", // @loc
         };
 
         private readonly MenuUi menu;
@@ -39,11 +39,11 @@ namespace Abandoned.UI
             shade.AddToClassList("main__shade");
             Root.Add(shade);
             BuildRuin();
-            MenuKit.Text(Root, "ABANDONED SALVAGING / RECOVERY DIVISION", "main__eyebrow");
+            MenuKit.Text(Root, Loc.T("ABANDONED SALVAGING / RECOVERY DIVISION"), "main__eyebrow");
             column = MenuKit.Scroll(Root, "main__column");
 
             title = new MenuTitle(column, "ABANDONED", menu.TitleFont, MenuEffectsConfig.Current);
-            MenuKit.Text(column, Demo.IsDemo ? $"DEMO / {Demo.MaxJobs} JOBS AT THE ABANDONED MALL" : "TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN.", "subtitle");
+            MenuKit.Text(column, Demo.IsDemo ? Loc.T("DEMO / {0} JOBS AT THE ABANDONED MALL", Demo.MaxJobs) : Loc.T("TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN."), "subtitle");
             var fracture = new VisualElement { pickingMode = PickingMode.Ignore };
             fracture.AddToClassList("main__fracture");
             column.Add(fracture);
@@ -55,16 +55,16 @@ namespace Abandoned.UI
             notice.style.flexGrow = 1;
             notice.style.flexShrink = 1;
             notice.AddToClassList("text--error");
-            MenuKit.Button(noticeBox, "OK", SessionEndNotice.Clear, SoundId.UiConfirm, small: true);
+            MenuKit.Button(noticeBox, Loc.T("OK"), SessionEndNotice.Clear, SoundId.UiConfirm, small: true);
 
             var actions = new VisualElement();
             actions.AddToClassList("main__actions");
             column.Add(actions);
-            Navigation(actions, "01", "Play", () => menu.Push(MenuScreen.Play), SoundId.UiConfirm);
-            Navigation(actions, "02", "Settings", () => menu.Push(MenuScreen.Settings));
-            Navigation(actions, "03", "Achievements", () => menu.Push(MenuScreen.Achievements));
-            Navigation(actions, "04", "Credits", () => menu.Push(MenuScreen.Credits));
-            Navigation(actions, "05", "Quit", menu.Quit, SoundId.UiBack, important: true);
+            Navigation(actions, "01", Loc.T("Play"), () => menu.Push(MenuScreen.Play), SoundId.UiConfirm);
+            Navigation(actions, "02", Loc.T("Settings"), () => menu.Push(MenuScreen.Settings));
+            Navigation(actions, "03", Loc.T("Achievements"), () => menu.Push(MenuScreen.Achievements));
+            Navigation(actions, "04", Loc.T("Credits"), () => menu.Push(MenuScreen.Credits));
+            Navigation(actions, "05", Loc.T("Quit"), menu.Quit, SoundId.UiBack, important: true);
 
             var footer = new VisualElement();
             footer.AddToClassList("main__footer");
@@ -73,15 +73,15 @@ namespace Abandoned.UI
             links.style.flexWrap = Wrap.Wrap;
             links.AddToClassList("main__links");
             if (Launch.HasDiscord) MenuKit.Button(links, "Discord", Launch.OpenDiscord, small: true);
-            if (Launch.HasFeedback) MenuKit.Button(links, "Feedback", Launch.OpenFeedback, small: true);
-            MenuKit.Button(links, "Open logs", Launch.OpenLogFolder, small: true);
+            if (Launch.HasFeedback) MenuKit.Button(links, Loc.T("Feedback"), Launch.OpenFeedback, small: true);
+            MenuKit.Button(links, Loc.T("Open logs"), Launch.OpenLogFolder, small: true);
 
             VisualElement record = MenuKit.Row(footer);
             record.AddToClassList("main__record");
             record.style.flexWrap = Wrap.Wrap;
             memo = MenuKit.Text(record, "", "main__memo");
             memo.style.flexShrink = 1;
-            Label version = MenuKit.Text(record, $"v{VersionInfo.Display}  -  {EarlyAccessNotice.Tag}", "footer");
+            Label version = MenuKit.Text(record, $"v{VersionInfo.Display}  -  {Loc.T(EarlyAccessNotice.Tag)}", "footer");
             version.style.flexShrink = 1;
             // Last, so it sits over everything until Continue (friends-and-family build, 2026-10-08).
             earlyAccess = new EarlyAccessNotice(Root, menu.TitleFont, () =>
@@ -122,7 +122,7 @@ namespace Abandoned.UI
             Part("main__ruin-beam", "main__ruin-beam--left");
             Part("main__ruin-beam", "main__ruin-beam--right");
             Part("main__ruin-fault");
-            MenuKit.Text(ruin, "STRUCTURE\nCOMPROMISED", "main__ruin-caption").pickingMode = PickingMode.Ignore;
+            MenuKit.Text(ruin, Loc.T("STRUCTURE\nCOMPROMISED"), "main__ruin-caption").pickingMode = PickingMode.Ignore;
 
             void Part(params string[] classes)
             {
@@ -144,7 +144,7 @@ namespace Abandoned.UI
             if (m != memoShown)
             {
                 memoShown = m;
-                memo.text = Memos[m];
+                memo.text = Loc.T(Memos[m]);
             }
             title.Tick();
         }

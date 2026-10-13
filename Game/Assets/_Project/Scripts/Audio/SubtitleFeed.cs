@@ -29,8 +29,11 @@ namespace Abandoned.Audio
             }
             // 0.23.1: who's making it (never where).
             SoundInfo info = SoundCatalog.Info(id);
-            string who = info.Bus == AudioBus.Threats ? "MONSTER: " : info.Bus == AudioBus.Structure ? "BUILDING: " : "";
-            Heard($"[{who}{caption}]");
+            // The catalog keeps captions in English; they are worded here, in the listener's language (0.24.8).
+            string line = Core.Loc.T(caption);
+            if (info.Bus == AudioBus.Threats) line = Core.Loc.T("MONSTER: {0}", line);
+            else if (info.Bus == AudioBus.Structure) line = Core.Loc.T("BUILDING: {0}", line);
+            Heard($"[{line}]");
         }
 
         /// <summary>" - left", " - behind" ... from the listener's facing; nothing when it's right here.</summary>

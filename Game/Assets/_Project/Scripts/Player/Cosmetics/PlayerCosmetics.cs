@@ -1,4 +1,5 @@
 using Abandoned.Company;
+using Abandoned.Core;
 using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -88,7 +89,7 @@ namespace Abandoned.Player
             CosmeticDefinition d = Definition(kind, index);
             if (!IsOwner || PurchasePending || d == null || d.Unlock != CosmeticUnlock.Buy || PlayerProfile.Owns(d)) return;
             PurchasePending = true;
-            PurchaseMessage = "Signing the requisition...";
+            PurchaseMessage = Loc.T("Signing the requisition...");
             BuyRpc(kind, index);
         }
 
@@ -97,10 +98,10 @@ namespace Abandoned.Player
         {
             CosmeticDefinition d = Definition(kind, index);
             CompanyService company = CompanyService.Current;
-            if (d == null || d.Unlock != CosmeticUnlock.Buy) BuyResultRpc(kind, index, false, "That isn't for sale.");
-            else if (company == null || !company.IsSpawned) BuyResultRpc(kind, index, false, "Only at the HQ: the company pays for it.");
+            if (d == null || d.Unlock != CosmeticUnlock.Buy) BuyResultRpc(kind, index, false, Loc.Mark("That isn't for sale."));
+            else if (company == null || !company.IsSpawned) BuyResultRpc(kind, index, false, Loc.Mark("Only at the HQ: the company pays for it."));
             else if (!company.Allows(rpcParams.Receive.SenderClientId, CrewRule.Spend)) BuyResultRpc(kind, index, false, CompanyService.Refusal(CrewRule.Spend));
-            else if (!company.TryCharge(d.Price, d.DisplayName)) BuyResultRpc(kind, index, false, $"The company can't afford ${d.Price:N0}.");
+            else if (!company.TryCharge(d.Price, d.DisplayName)) BuyResultRpc(kind, index, false, Loc.Wire("The company can't afford ${0}.", d.Price.ToString("N0")));
             else BuyResultRpc(kind, index, true, "");
         }
 
@@ -111,11 +112,11 @@ namespace Abandoned.Player
             CosmeticDefinition d = Definition(kind, index);
             if (!bought || d == null)
             {
-                PurchaseMessage = reason;
+                PurchaseMessage = Loc.FromWire(reason); // the host answers in English
                 return;
             }
             PlayerProfile.Grant(d);
-            PurchaseMessage = $"Bought: {d.DisplayName}.";
+            PurchaseMessage = Loc.T("Bought: {0}.", d.LocalName);
             Wear(kind switch
             {
                 CosmeticKind.Coverall => choice.Value.WithCoverall(index),

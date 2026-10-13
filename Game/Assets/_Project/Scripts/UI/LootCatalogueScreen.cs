@@ -47,8 +47,8 @@ namespace Abandoned.UI
             var all = catalog != null ? catalog.Entries.Select(e => e.definition).Where(d => d != null && !d.Utility)
                 .OrderByDescending(d => d.Jackpot).ThenByDescending(d => d.ValueMax).ToList() : new System.Collections.Generic.List<LootDefinition>();
             int found = company != null ? all.Count(d => company.Catalogued(d.Id)) : 0;
-            Text(panel, "SALVAGE ARCHIVE", "field-guide__cover-title");
-            Text(panel, $"RECOVERED {found:00} / {all.Count:00}  —  Sale records unlock identification. Jackpots go on the trophy shelf.", "field-guide__cover-note");
+            Text(panel, Loc.T("SALVAGE ARCHIVE"), "field-guide__cover-title");
+            Text(panel, Loc.T("RECOVERED {0:00} / {1:00}  —  Sale records unlock identification. Jackpots go on the trophy shelf.", found, all.Count), "field-guide__cover-note");
             var grid = new VisualElement();
             grid.AddToClassList("salvage-catalogue__grid");
             grid.style.flexDirection = FlexDirection.Row;
@@ -67,16 +67,17 @@ namespace Abandoned.UI
                 cell.Add(visual);
                 if (known) UiKit.Icon(visual, $"loot/{d.Id}", "large");
                 else Text(visual, "?", "salvage-catalogue__unknown");
-                Text(cell, known ? d.DisplayName.ToUpperInvariant() : "UNIDENTIFIED SALVAGE", "field-guide__entry-name");
-                Text(cell, known ? $"${d.ValueMin:N0} — ${d.ValueMax:N0}" : "NO SALE RECORD", "salvage-catalogue__value");
-                Text(cell, known ? d.Jackpot ? "HIGH VALUE / TROPHY RECORD" : $"{d.CarryClass.ToString().ToUpperInvariant()} / RECOVERED" : "RECOVER AND SELL TO IDENTIFY", "salvage-catalogue__status");
+                Text(cell, known ? d.LocalName.ToUpperInvariant() : Loc.T("UNIDENTIFIED SALVAGE"), "field-guide__entry-name");
+                Text(cell, known ? $"${d.ValueMin:N0} — ${d.ValueMax:N0}" : Loc.T("NO SALE RECORD"), "salvage-catalogue__value");
+                // The carry class as the enum names it. @loc:carry "Pocket", "OneHand", "TwoHand", "Heavy", "Huge"
+                Text(cell, known ? d.Jackpot ? Loc.T("HIGH VALUE / TROPHY RECORD") : Loc.T("{0} / RECOVERED", Loc.C("carry", d.CarryClass.ToString()).ToUpperInvariant()) : Loc.T("RECOVER AND SELL TO IDENTIFY"), "salvage-catalogue__status");
                 grid.Add(cell);
             }
             var close = new Button(() =>
             {
                 GameAudio.PlayUi(SoundId.UiBack);
                 LootCatalogueBook.Open = false;
-            }) { text = "Seal archive" };
+            }) { text = Loc.T("Seal archive") };
             close.AddToClassList("field-guide__close");
             panel.Add(close);
         }

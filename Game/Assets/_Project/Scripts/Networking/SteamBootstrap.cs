@@ -98,6 +98,8 @@ namespace Abandoned.Networking
             };
             // ...and the ones earned while Steam was off catch up now (setting one twice is harmless).
             Core.Achievements.ResendUnlocked();
+            // 0.24.8: the language the player set for the game in Steam, unless they picked one in Settings.
+            Languages.UseSteamLanguage(client.GameLanguage);
             AvailabilityChanged?.Invoke(true);
             return true;
         }

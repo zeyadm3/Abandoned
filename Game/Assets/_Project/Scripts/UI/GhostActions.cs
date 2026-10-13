@@ -27,8 +27,10 @@ namespace Abandoned.UI
                 return;
             }
             // 0.22.4: and the way back, when the agency will still send someone.
-            string back = RunHires.Current != null && RunHires.Current.HiresLeft ? "      a crewmate can hire you back at the truck's radio" : "";
-            HudCallout.Set(this, $"{Core.InputBindings.Display("Interact")}  knock      {Core.InputBindings.Display("Flashlight")}  flicker the lights      {Core.InputBindings.Display("Jump")}  nudge something{back}");
+            string line = Core.Loc.T("{0}  knock      {1}  flicker the lights      {2}  nudge something",
+                Core.InputBindings.Display("Interact"), Core.InputBindings.Display("Flashlight"), Core.InputBindings.Display("Jump"));
+            if (RunHires.Current != null && RunHires.Current.HiresLeft) line += "      " + Core.Loc.T("a crewmate can hire you back at the truck's radio");
+            HudCallout.Set(this, line);
             if (Core.CursorOwner.UiActive) return;
             var reader = me.GetComponent<PlayerInputReader>();
             if (reader == null) return;

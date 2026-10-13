@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -86,9 +87,9 @@ namespace Abandoned.Extraction
             paydayBox.Clear();
             if (contract) Payday(paydayBox, company);
             buttonsBox.Clear();
-            if (run.IsServer && contract) MenuKit.Button(buttonsBox, "Back to HQ", company.ReturnToHq, Audio.SoundId.UiConfirm);
-            else if (director != null && run.IsServer) MenuKit.Button(buttonsBox, "Next run", director.StartNextRun, Audio.SoundId.UiConfirm);
-            else MenuKit.Text(buttonsBox, contract ? "Waiting for the host to drive back to HQ..." : "Waiting for the host to start the next run...");
+            if (run.IsServer && contract) MenuKit.Button(buttonsBox, Loc.T("Back to HQ"), company.ReturnToHq, Audio.SoundId.UiConfirm);
+            else if (director != null && run.IsServer) MenuKit.Button(buttonsBox, Loc.T("Next run"), director.StartNextRun, Audio.SoundId.UiConfirm);
+            else MenuKit.Text(buttonsBox, contract ? Loc.T("Waiting for the host to drive back to HQ...") : Loc.T("Waiting for the host to start the next run..."));
         }
 
         // UI step 7: a till receipt that prints line by line, the haul counting up, a stamp; the crew,
@@ -106,7 +107,7 @@ namespace Abandoned.Extraction
             Company.CompanyService company = Company.CompanyService.Current;
             // Names are cleaned of markup when set (NetworkPlayer.Clean), so they're safe in a rich-text line.
             Line(receipt, company != null && company.State.Name.Length > 0 ? company.State.Name.ToString().ToUpperInvariant() : Company.CompanySave.DefaultName.ToUpperInvariant(), "receipt__head");
-            Line(receipt, $"APPRAISAL - RUN {r.Seed % 10000:0000} - {(int)r.Seconds / 60}:{(int)r.Seconds % 60:00} ON SITE", "receipt__small");
+            Line(receipt, Loc.T("APPRAISAL - RUN {0:0000} - {1}:{2:00} ON SITE", r.Seed % 10000, (int)r.Seconds / 60, (int)r.Seconds % 60), "receipt__small");
             Line(receipt, new string('-', 44), "receipt__rule");
             var lines = new System.Collections.Generic.List<VisualElement>();
             var scroll = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
@@ -118,16 +119,16 @@ namespace Abandoned.Extraction
                 row.style.display = DisplayStyle.None;
                 lines.Add(row);
             }
-            if (r.Items.Length == 0) Line(scroll, "NOTHING. THE TRUCK LEFT EMPTY.", "receipt__line");
+            if (r.Items.Length == 0) Line(scroll, Loc.T("NOTHING. THE TRUCK LEFT EMPTY."), "receipt__line");
             Line(receipt, new string('-', 44), "receipt__rule");
             VisualElement total = MenuKit.Row(receipt);
             total.AddToClassList("receipt__total");
-            Line(total, "HAUL", "receipt__total-label");
+            Line(total, Loc.T("HAUL"), "receipt__total-label");
             Label haul = Line(total, "$0", "receipt__total-value");
             VisualElement quotaRow = MenuKit.Row(receipt);
-            Line(quotaRow, "QUOTA", "receipt__line");
+            Line(quotaRow, Loc.T("QUOTA"), "receipt__line");
             Line(quotaRow, $"${r.Quota:N0}", "receipt__line-value");
-            Label stamp = UiKit.Stamp(receipt, r.QuotaMet ? "QUOTA MET" : "QUOTA MISSED", r.QuotaMet);
+            Label stamp = UiKit.Stamp(receipt, r.QuotaMet ? Loc.T("QUOTA MET") : Loc.T("QUOTA MISSED"), r.QuotaMet);
             stamp.AddToClassList("receipt__stamp");
 
             // Print: a line every so often (with a tick), then the total counts up and the stamp comes down.
@@ -159,26 +160,28 @@ namespace Abandoned.Extraction
             var side = new VisualElement();
             side.AddToClassList("appraisal__side");
             columns.Add(side);
-            MenuKit.Text(side, "APPRAISAL", "heading");
-            MenuKit.Text(side, "CREW", "section");
+            MenuKit.Text(side, Loc.T("APPRAISAL"), "heading");
+            MenuKit.Text(side, Loc.T("CREW"), "section");
             foreach (RunResults.Player p in r.Players)
-                MenuKit.Text(side, p.Extracted ? $"<color=#7ee07e>\u25CF</color> {p.Name}: made it out" : p.Died ? $"<color=#ff5c4a>\u2716</color> {p.Name}: died in there" :
-                    $"<color=#ff5c4a>\u25CB</color> {p.Name}: left behind{(p.PocketValueLost > 0 ? $" (lost ${p.PocketValueLost:N0} in their pockets)" : "")}");
+                MenuKit.Text(side, p.Extracted ? Loc.T("<color=#7ee07e>\u25CF</color> {0}: made it out", p.Name) : p.Died ? Loc.T("<color=#ff5c4a>\u2716</color> {0}: died in there", p.Name) :
+                    p.PocketValueLost > 0 ? Loc.T("<color=#ff5c4a>\u25CB</color> {0}: left behind (lost ${1:N0} in their pockets)", p.Name, p.PocketValueLost)
+                    : Loc.T("<color=#ff5c4a>\u25CB</color> {0}: left behind", p.Name));
             if (r.Blame.Length > 0)
             {
                 // 0.19.3: the blame sheet, a job title for everyone.
-                MenuKit.Text(side, "WHO DID WHAT", "section");
-                foreach (string line in r.Blame) MenuKit.Text(side, line, "text");
+                MenuKit.Text(side, Loc.T("WHO DID WHAT"), "section");
+                // The host sends these as English with their values; each machine words them (Loc.Wire).
+                foreach (string line in r.Blame) MenuKit.Text(side, Loc.FromWire(line), "text");
             }
             if (r.Stats.Length > 0)
             {
-                MenuKit.Text(side, "EMPLOYEE AWARDS", "section");
+                MenuKit.Text(side, Loc.T("EMPLOYEE AWARDS"), "section");
                 foreach (string line in r.Stats)
                 {
                     VisualElement award = MenuKit.Row(side);
                     award.AddToClassList("award");
                     UiKit.Icon(award, "board/award", "small").AddToClassList("award__icon");
-                    MenuKit.Text(award, line, "text").AddToClassList("award__text");
+                    MenuKit.Text(award, Loc.FromWire(line), "text").AddToClassList("award__text");
                 }
             }
             paydayBox = new VisualElement();
@@ -192,7 +195,9 @@ namespace Abandoned.Extraction
         {
             VisualElement row = MenuKit.Row(parent);
             row.AddToClassList("receipt__row");
-            string name = item.Name.ToUpperInvariant() + (item.Pocketed ? " (POCKET)" : "") + (item.Jackpot ? " *" : "");
+            string name = Loc.T(item.Name).ToUpperInvariant();
+            if (item.Pocketed) name = Loc.T("{0} (POCKET)", name);
+            if (item.Jackpot) name += " *";
             Line(row, name, "receipt__line");
             if (item.DamageLost > 0)
             {
@@ -216,15 +221,15 @@ namespace Abandoned.Extraction
         {
             Company.OutcomeNet o = company.LastOutcome;
             if (o.Run == 0) return;
-            MenuKit.Text(panel, "PAYDAY", "section");
-            Tally(panel, "Payout", $"${o.Payout:N0}", "text--money");
-            if (o.Penalty > 0) Tally(panel, "Quota penalty", $"-${o.Penalty:N0}", "text--error");
-            if (o.Costs > 0) Tally(panel, "Running costs", $"-${o.Costs:N0}", "text--error");
-            Tally(panel, "Experience", $"+{o.Xp} XP" + (o.LevelledUp ? $"  -  LEVEL {o.NewLevel}!" : ""), o.LevelledUp ? "text--good" : null);
+            MenuKit.Text(panel, Loc.T("PAYDAY"), "section");
+            Tally(panel, Loc.T("Payout"), $"${o.Payout:N0}", "text--money");
+            if (o.Penalty > 0) Tally(panel, Loc.T("Quota penalty"), $"-${o.Penalty:N0}", "text--error");
+            if (o.Costs > 0) Tally(panel, Loc.T("Running costs"), $"-${o.Costs:N0}", "text--error");
+            Tally(panel, Loc.T("Experience"), o.LevelledUp ? Loc.T("+{0} XP  -  LEVEL {1}!", o.Xp, o.NewLevel) : Loc.T("+{0} XP", o.Xp), o.LevelledUp ? "text--good" : null);
             int balance = company.State.Money;
-            Tally(panel, "Company money", balance < 0 ? $"DEBT ${-balance:N0}" : $"${balance:N0}", balance < 0 ? "text--error" : "text--money").AddToClassList("tally--total");
-            if (o.Bankrupt) MenuKit.Text(panel, "<color=#ff5c4a><b>BANKRUPT.</b> Three missed quotas in a row. The company folds; a new one starts with the basic kit.</color>");
-            else if (o.MissedInARow > 0) MenuKit.Text(panel, $"<color=#ff5c4a>Missed quotas in a row: {o.MissedInARow}/{company.Config.MissesToBankruptcy}</color>");
+            Tally(panel, Loc.T("Company money"), balance < 0 ? Loc.T("DEBT ${0:N0}", -balance) : $"${balance:N0}", balance < 0 ? "text--error" : "text--money").AddToClassList("tally--total");
+            if (o.Bankrupt) MenuKit.Text(panel, Loc.T("<color=#ff5c4a><b>BANKRUPT.</b> Three missed quotas in a row. The company folds; a new one starts with the basic kit.</color>"));
+            else if (o.MissedInARow > 0) MenuKit.Text(panel, Loc.T("<color=#ff5c4a>Missed quotas in a row: {0}/{1}</color>", o.MissedInARow, company.Config.MissesToBankruptcy));
         }
 
         private static VisualElement Tally(VisualElement parent, string label, string value, string cls)

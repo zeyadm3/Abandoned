@@ -16,8 +16,8 @@ namespace Abandoned.Extraction
             if (hires == null || !hires.IsSpawned) return null;
             NetworkPlayer dead = hires.Replaces();
             if (dead == null) return null;
-            if (!hires.HiresLeft) return "The agency won't send anyone else today";
-            return $"Hire a replacement for {dead.DisplayName} (-${hires.Fee:N0})";
+            if (!hires.HiresLeft) return Loc.T("The agency won't send anyone else today");
+            return Loc.T("Hire a replacement for {0} (-${1:N0})", dead.DisplayName, hires.Fee);
         }
 
         public void Use(GameObject user) => RunHires.Current?.RequestHire();

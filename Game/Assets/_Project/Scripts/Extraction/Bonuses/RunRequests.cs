@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Interaction;
@@ -45,7 +46,7 @@ namespace Abandoned.Extraction
             if (Current == this) Current = null;
         }
 
-        private string Goal() => bonus.Value > 0 ? $"BOSS WANTS: the {WantName} (+${bonus.Value:N0})" : null;
+        private string Goal() => bonus.Value > 0 ? Loc.T("BOSS WANTS: the {0} (+${1:N0})", Loc.T(WantName), bonus.Value) : null;
 
         private void Update()
         {
@@ -53,7 +54,7 @@ namespace Abandoned.Extraction
             if (bonus.Value > 0 && toasted != WantName)
             {
                 toasted = WantName;
-                ToastFeed.Show("BOSS REQUEST", $"\"Bring me the {WantName}.\" +${bonus.Value:N0} on top of quota.", null, ToastFeed.Kind.Info);
+                ToastFeed.Show(Loc.T("BOSS REQUEST"), Loc.T("\"Bring me the {0}.\" +${1:N0} on top of quota.", Loc.T(WantName), bonus.Value), null, ToastFeed.Kind.Info);
             }
             if (!IsServer || callAt < 0f || Time.time < callAt) return;
             callAt = -1f;
@@ -94,8 +95,8 @@ namespace Abandoned.Extraction
             if (bonus.Value <= 0) return;
             string id = wantFullId ?? wantId.Value.ToString();
             bool brought = aboard.Any(i => i != null && i.Definition != null && i.Definition.Id == id && !i.IsShattered);
-            lines.Add(brought ? (bonus.Value, $"BOSS REQUEST: the {WantName} made it. +${bonus.Value:N0}")
-                : (0, $"BOSS REQUEST missed: no {WantName}. The boss noticed."));
+            lines.Add(brought ? (bonus.Value, Loc.Wire("BOSS REQUEST: the {0} made it. +${1}", Loc.Word(WantName), bonus.Value.ToString("N0")))
+                : (0, Loc.Wire("BOSS REQUEST missed: no {0}. The boss noticed.", Loc.Word(WantName))));
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

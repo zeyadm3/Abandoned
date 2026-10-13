@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Loot;
@@ -47,7 +48,7 @@ namespace Abandoned.Extraction
         private string Goal()
         {
             float left = Left;
-            return left > 0f ? $"RUSH: {rushName.Value} pays x{BonusConfig.Current.RushMultiplier:0.#} for {(int)left / 60}:{(int)left % 60:00}" : null;
+            return left > 0f ? Loc.T("RUSH: {0} pays x{1:0.#} for {2}:{3:00}", Loc.T(rushName.Value.ToString()), BonusConfig.Current.RushMultiplier, (int)left / 60, (int)left % 60) : null;
         }
 
         private void Update()
@@ -56,8 +57,8 @@ namespace Abandoned.Extraction
             if (rushUntil.Value > toastedUntil && Left > 0f)
             {
                 toastedUntil = rushUntil.Value;
-                ToastFeed.Show("RUSH ORDER", $"Any {rushName.Value} in the truck in the next {BonusConfig.Current.RushSeconds / 60f:0.#} minutes pays x{BonusConfig.Current.RushMultiplier:0.#}.", null, ToastFeed.Kind.Info);
-                RunHorrorDirector.Say($"RUSH ORDER / {rushName.Value}", 6f);
+                ToastFeed.Show(Loc.T("RUSH ORDER"), Loc.T("Any {0} in the truck in the next {1:0.#} minutes pays x{2:0.#}.", Loc.T(rushName.Value.ToString()), BonusConfig.Current.RushSeconds / 60f, BonusConfig.Current.RushMultiplier), null, ToastFeed.Kind.Info);
+                RunHorrorDirector.Say(Loc.T("RUSH ORDER / {0}", Loc.T(rushName.Value.ToString())), 6f);
             }
             if (!IsServer || run.State.Phase != RunPhase.Running) return;
             random ??= new System.Random(run.State.Seed ^ 0x0b0181);
@@ -113,7 +114,7 @@ namespace Abandoned.Extraction
                     if (kind == null) kind = itemKind;
                     else if (kind != itemKind) mixed = true;
                 }
-            if (count > 0) lines.Add((pay, $"RUSH ORDER: {count} x {(mixed || kind == null ? "rushed items" : kind)} in time. +${pay:N0}"));
+            if (count > 0) lines.Add((pay, Loc.Wire("RUSH ORDER: {0} x {1} in time. +${2}", count, Loc.Word(mixed || kind == null ? Loc.Mark("rushed items") : kind), pay.ToString("N0"))));
         }
     }
 }

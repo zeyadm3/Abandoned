@@ -1,0 +1,320 @@
+# The scrap and quota depot at the HQ (Company/ScrapDepot.cs).
+
+en: Unload recovered salvage / cargo receipt
+zh-CN: 卸下回收品 / 货物单据
+ja: 回収品を降ろす / 積荷の伝票
+ko: 회수품 하역 / 화물 영수증
+es: Descargar lo recuperado / recibo de carga
+pt-BR: Descarregar o que foi recuperado / recibo da carga
+de: Bergungsgut abladen / Frachtbeleg
+fr: Décharger le matériel récupéré / reçu de chargement
+ru: Выгрузить добычу / квитанция на груз
+pl: Rozładuj odzyskane łupy / kwit ładunku
+
+en: Read the scrap weight and quota receipt
+zh-CN: 查看废品重量和定额单据
+ja: スクラップ重量とノルマの伝票を見る
+ko: 고철 무게와 할당량 영수증 보기
+es: Leer el peso de la chatarra y el recibo de cuota
+pt-BR: Ler o peso da sucata e o recibo da cota
+de: Schrottgewicht und Soll-Beleg lesen
+fr: Lire le poids de ferraille et le reçu de quota
+ru: Посмотреть вес лома и квитанцию по норме
+pl: Sprawdź wagę złomu i kwit normy
+
+en: INTAKE LOAD\n{0:0.0} kg\n${1:N0}
+zh-CN: 待收货物\n{0:0.0} 公斤\n${1:N0}
+ja: 受入れ荷物\n{0:0.0} kg\n${1:N0}
+ko: 접수 화물\n{0:0.0} kg\n${1:N0}
+es: CARGA EN RECEPCIÓN\n{0:0.0} kg\n${1:N0}
+pt-BR: CARGA NA RECEPÇÃO\n{0:0.0} kg\n${1:N0}
+de: LADUNG IN DER ANNAHME\n{0:0.0} kg\n${1:N0}
+fr: CHARGE À LA RÉCEPTION\n{0:0.0} kg\n${1:N0}
+ru: ГРУЗ НА ПРИЁМКЕ\n{0:0.0} кг\n${1:N0}
+pl: ŁADUNEK NA PRZYJĘCIU\n{0:0.0} kg\n${1:N0}
+
+en: DEPOT READY\n0.0 kg\nNO LOAD ON FILE
+zh-CN: 废品站就绪\n0.0 公斤\n无货物记录
+ja: 置き場準備完了\n0.0 kg\n荷物の記録なし
+ko: 처리장 준비 완료\n0.0 kg\n화물 기록 없음
+es: DEPÓSITO LISTO\n0.0 kg\nSIN CARGA REGISTRADA
+pt-BR: DEPÓSITO PRONTO\n0.0 kg\nSEM CARGA REGISTRADA
+de: DEPOT BEREIT\n0.0 kg\nKEINE LADUNG ERFASST
+fr: DÉPÔT PRÊT\n0.0 kg\nAUCUNE CHARGE ENREGISTRÉE
+ru: ПУНКТ ГОТОВ\n0.0 кг\nГРУЗ НЕ ЗАПИСАН
+pl: PUNKT GOTOWY\n0.0 kg\nBRAK ŁADUNKU W REJESTRZE
+
+en: LAST LOAD\n{0}\n${1:N0}
+zh-CN: 上一批货物\n{0}\n${1:N0}
+ja: 前回の荷物\n{0}\n${1:N0}
+ko: 지난 화물\n{0}\n${1:N0}
+es: ÚLTIMA CARGA\n{0}\n${1:N0}
+pt-BR: ÚLTIMA CARGA\n{0}\n${1:N0}
+de: LETZTE LADUNG\n{0}\n${1:N0}
+fr: DERNIÈRE CHARGE\n{0}\n${1:N0}
+ru: ПОСЛЕДНИЙ ГРУЗ\n{0}\n${1:N0}
+pl: OSTATNI ŁADUNEK\n{0}\n${1:N0}
+
+en: {0:0.0} kg
+zh-CN: {0:0.0} 公斤
+ja: {0:0.0} kg
+ko: {0:0.0} kg
+es: {0:0.0} kg
+pt-BR: {0:0.0} kg
+de: {0:0.0} kg
+fr: {0:0.0} kg
+ru: {0:0.0} кг
+pl: {0:0.0} kg
+
+en: WEIGHT N/A
+zh-CN: 重量不详
+ja: 重量不明
+ko: 무게 정보 없음
+es: PESO N/D
+pt-BR: PESO N/D
+de: GEWICHT K. A.
+fr: POIDS N/D
+ru: ВЕС Н/Д
+pl: WAGA B/D
+
+en: SCRAP & QUOTA DEPOT
+zh-CN: 废品与定额站
+ja: スクラップ・ノルマ置き場
+ko: 고철 및 할당량 처리장
+es: DEPÓSITO DE CHATARRA Y CUOTA
+pt-BR: DEPÓSITO DE SUCATA E COTA
+de: SCHROTT- & SOLL-DEPOT
+fr: DÉPÔT DE FERRAILLE ET DE QUOTA
+ru: ПУНКТ ПРИЁМА ЛОМА И НОРМЫ
+pl: PUNKT ZŁOMU I NORMY
+
+en: CARGO RECEIPT / SETTLED
+zh-CN: 货物单据 / 已结算
+ja: 積荷の伝票 / 精算済み
+ko: 화물 영수증 / 정산 완료
+es: RECIBO DE CARGA / LIQUIDADO
+pt-BR: RECIBO DA CARGA / LIQUIDADO
+de: FRACHTBELEG / ABGERECHNET
+fr: REÇU DE CHARGEMENT / SOLDÉ
+ru: КВИТАНЦИЯ НА ГРУЗ / РАСЧЁТ ЗАКРЫТ
+pl: KWIT ŁADUNKU / ROZLICZONY
+
+en: Appraised salvage: ${0:N0}
+zh-CN: 回收品估价：${0:N0}
+ja: 回収品の査定額：${0:N0}
+ko: 회수품 감정가: ${0:N0}
+es: Recuperado tasado: ${0:N0}
+pt-BR: Recuperado avaliado: ${0:N0}
+de: Geschätztes Bergungsgut: ${0:N0}
+fr: Matériel estimé : ${0:N0}
+ru: Оценка добычи: ${0:N0}
+pl: Wycena łupów: ${0:N0}
+
+en: Quota: ${0:N0} / {1}
+zh-CN: 定额：${0:N0} / {1}
+ja: ノルマ：${0:N0} / {1}
+ko: 할당량: ${0:N0} / {1}
+es: Cuota: ${0:N0} / {1}
+pt-BR: Cota: ${0:N0} / {1}
+de: Soll: ${0:N0} / {1}
+fr: Quota : ${0:N0} / {1}
+ru: Норма: ${0:N0} / {1}
+pl: Norma: ${0:N0} / {1}
+
+en: MET
+zh-CN: 已达成
+ja: 達成
+ko: 달성
+es: CUMPLIDA
+pt-BR: BATIDA
+de: ERFÜLLT
+fr: ATTEINT
+ru: ВЫПОЛНЕНА
+pl: WYROBIONA
+
+en: MISSED
+zh-CN: 未达成
+ja: 未達
+ko: 미달
+es: FALLADA
+pt-BR: PERDIDA
+de: VERFEHLT
+fr: MANQUÉ
+ru: ПРОВАЛЕНА
+pl: NIEWYROBIONA
+
+en: Loaded weight: {0:0.0} kg / {1} items
+zh-CN: 装载重量：{0:0.0} 公斤 / {1} 件物品
+ja: 積載重量：{0:0.0} kg / {1} 点
+ko: 적재 무게: {0:0.0} kg / 물건 {1}개
+es: Peso cargado: {0:0.0} kg / {1} objetos
+pt-BR: Peso carregado: {0:0.0} kg / {1} itens
+de: Geladenes Gewicht: {0:0.0} kg / {1} Teile
+fr: Poids chargé : {0:0.0} kg / {1} objets
+ru: Загружено: {0:0.0} кг / предметов: {1}
+pl: Załadowana waga: {0:0.0} kg / przedmioty: {1}
+
+en: Loaded weight: not recorded
+zh-CN: 装载重量：未记录
+ja: 積載重量：記録なし
+ko: 적재 무게: 기록 없음
+es: Peso cargado: sin registrar
+pt-BR: Peso carregado: não registrado
+de: Geladenes Gewicht: nicht erfasst
+fr: Poids chargé : non enregistré
+ru: Загружено: нет записи
+pl: Załadowana waga: nie zapisano
+
+en: Payout: ${0:N0} / quota penalty: ${1:N0}
+zh-CN: 报酬：${0:N0} / 定额罚金：${1:N0}
+ja: 報酬：${0:N0} / ノルマ罰金：${1:N0}
+ko: 지급액: ${0:N0} / 할당량 벌금: ${1:N0}
+es: Pago: ${0:N0} / multa por cuota: ${1:N0}
+pt-BR: Pagamento: ${0:N0} / multa da cota: ${1:N0}
+de: Auszahlung: ${0:N0} / Soll-Strafe: ${1:N0}
+fr: Paie : ${0:N0} / pénalité de quota : ${1:N0}
+ru: Выплата: ${0:N0} / штраф за норму: ${1:N0}
+pl: Wypłata: ${0:N0} / kara za normę: ${1:N0}
+
+en: Operating costs: ${0:N0}
+zh-CN: 运营成本：${0:N0}
+ja: 経費：${0:N0}
+ko: 운영비: ${0:N0}
+es: Gastos de operación: ${0:N0}
+pt-BR: Custos de operação: ${0:N0}
+de: Betriebskosten: ${0:N0}
+fr: Frais d'exploitation : ${0:N0}
+ru: Накладные расходы: ${0:N0}
+pl: Koszty operacyjne: ${0:N0}
+
+en: Haul already credited. This receipt stays with the company after unloading.
+zh-CN: 收获已入账。卸货后这张单据仍由公司保存。
+ja: 回収額は入金済み。この伝票は荷降ろし後も会社に残る。
+ko: 수확은 이미 입금되었습니다. 이 영수증은 하역 후에도 회사에 남습니다.
+es: La carga ya está abonada. Este recibo se queda en la empresa tras la descarga.
+pt-BR: A carga já foi creditada. Este recibo fica com a empresa depois da descarga.
+de: Ausbeute bereits gutgeschrieben. Dieser Beleg bleibt nach dem Abladen bei der Firma.
+fr: Chargement déjà crédité. Ce reçu reste à l'entreprise après le déchargement.
+ru: Улов уже зачислен. Квитанция остаётся у компании после выгрузки.
+pl: Urobek już zaksięgowany. Ten kwit zostaje w firmie po rozładunku.
+
+en: No recovered load on file. Take a contract and bring the truck home.
+zh-CN: 没有回收货物记录。接一份合同，把卡车开回来。
+ja: 回収した荷物の記録がない。契約を取って、トラックを連れ帰ろう。
+ko: 회수한 화물 기록이 없습니다. 계약을 맡고 트럭을 몰고 돌아오세요.
+es: No hay carga recuperada registrada. Acepta un contrato y trae el camión de vuelta.
+pt-BR: Nenhuma carga recuperada registrada. Pegue um contrato e traga o caminhão de volta.
+de: Keine geborgene Ladung erfasst. Nimm einen Auftrag an und bring den Laster heim.
+fr: Aucune charge récupérée au dossier. Prenez un contrat et ramenez le camion.
+ru: Записей о вывезенном грузе нет. Возьмите контракт и верните грузовик.
+pl: Brak odzyskanego ładunku w rejestrze. Weź kontrakt i przyprowadź ciężarówkę z powrotem.
+
+en: INTAKE
+zh-CN: 收货口
+ja: 受入れ口
+ko: 접수구
+es: RECEPCIÓN
+pt-BR: RECEPÇÃO
+de: ANNAHME
+fr: RÉCEPTION
+ru: ПРИЁМКА
+pl: PRZYJĘCIE
+
+en: Waiting in intake: {0} items / {1:0.0} kg / ${2:N0}
+zh-CN: 收货口待处理：{0} 件物品 / {1:0.0} 公斤 / ${2:N0}
+ja: 受入れ待ち：{0} 点 / {1:0.0} kg / ${2:N0}
+ko: 접수 대기: 물건 {0}개 / {1:0.0} kg / ${2:N0}
+es: Esperando en recepción: {0} objetos / {1:0.0} kg / ${2:N0}
+pt-BR: Aguardando na recepção: {0} itens / {1:0.0} kg / ${2:N0}
+de: In der Annahme: {0} Teile / {1:0.0} kg / ${2:N0}
+fr: En attente à la réception : {0} objets / {1:0.0} kg / ${2:N0}
+ru: Ждёт на приёмке: предметов {0} / {1:0.0} кг / ${2:N0}
+pl: Czeka na przyjęciu: przedmioty {0} / {1:0.0} kg / ${2:N0}
+
+en: No loose salvage in intake.
+zh-CN: 收货口没有散放的回收品。
+ja: 受入れ口にばら積みの回収品はない。
+ko: 접수구에 낱개 회수품이 없습니다.
+es: No hay material suelto en recepción.
+pt-BR: Nada solto na recepção.
+de: Kein loses Bergungsgut in der Annahme.
+fr: Aucun matériel en vrac à la réception.
+ru: На приёмке нет россыпной добычи.
+pl: Na przyjęciu nie ma luźnych łupów.
+
+en: Unloaded here: {0} items / {1:0.0} kg
+zh-CN: 已在此卸下：{0} 件物品 / {1:0.0} 公斤
+ja: ここで降ろした分：{0} 点 / {1:0.0} kg
+ko: 여기서 하역: 물건 {0}개 / {1:0.0} kg
+es: Descargado aquí: {0} objetos / {1:0.0} kg
+pt-BR: Descarregado aqui: {0} itens / {1:0.0} kg
+de: Hier abgeladen: {0} Teile / {1:0.0} kg
+fr: Déchargé ici : {0} objets / {1:0.0} kg
+ru: Выгружено здесь: предметов {0} / {1:0.0} кг
+pl: Rozładowano tutaj: przedmioty {0} / {1:0.0} kg
+
+en: Use the reinforced chute to offload loose recovered salvage. Cargo credit stays on the settled receipt.
+zh-CN: 使用加固滑槽卸下散放的回收品。货物入账金额保留在已结算的单据上。
+ja: 補強シュートでばら積みの回収品を降ろそう。積荷の入金額は精算済みの伝票のままだ。
+ko: 보강된 슈트로 낱개 회수품을 하역하세요. 화물 입금액은 정산된 영수증 그대로 유지됩니다.
+es: Usa la tolva reforzada para descargar el material suelto. El abono de la carga sigue en el recibo liquidado.
+pt-BR: Use a calha reforçada para descarregar o que estiver solto. O crédito da carga continua no recibo liquidado.
+de: Nutz die verstärkte Rutsche, um loses Bergungsgut abzuladen. Die Gutschrift bleibt auf dem abgerechneten Beleg.
+fr: Utilisez la goulotte renforcée pour décharger le matériel en vrac. Le crédit du chargement reste sur le reçu soldé.
+ru: Сбрасывайте россыпную добычу в усиленный жёлоб. Сумма за груз остаётся в закрытой квитанции.
+pl: Użyj wzmocnionej zsuwni, żeby rozładować luźne łupy. Kwota za ładunek zostaje na rozliczonym kwicie.
+
+en: Unload salvage
+zh-CN: 卸下回收品
+ja: 回収品を降ろす
+ko: 회수품 하역
+es: Descargar material
+pt-BR: Descarregar
+de: Bergungsgut abladen
+fr: Décharger le matériel
+ru: Выгрузить добычу
+pl: Rozładuj łupy
+
+en: NEXT LOAD
+zh-CN: 下一批货物
+ja: 次の荷物
+ko: 다음 화물
+es: PRÓXIMA CARGA
+pt-BR: PRÓXIMA CARGA
+de: NÄCHSTE LADUNG
+fr: PROCHAINE CHARGE
+ru: СЛЕДУЮЩИЙ ГРУЗ
+pl: NASTĘPNY ŁADUNEK
+
+en: {0} / quota ${1:N0} for {2} crew
+zh-CN: {0} / {2} 人队伍定额 ${1:N0}
+ja: {0} / クルー {2} 人でノルマ ${1:N0}
+ko: {0} / 팀원 {2}명 기준 할당량 ${1:N0}
+es: {0} / cuota ${1:N0} para un equipo de {2}
+pt-BR: {0} / cota ${1:N0} para uma equipe de {2}
+de: {0} / Soll ${1:N0} für ein Team von {2}
+fr: {0} / quota ${1:N0} pour une équipe de {2}
+ru: {0} / норма ${1:N0} на бригаду из {2}
+pl: {0} / norma ${1:N0} dla ekipy {2}-osobowej
+
+en: Company balance: ${0:N0}
+zh-CN: 公司余额：${0:N0}
+ja: 会社の残高：${0:N0}
+ko: 회사 잔액: ${0:N0}
+es: Saldo de la empresa: ${0:N0}
+pt-BR: Saldo da empresa: ${0:N0}
+de: Kontostand der Firma: ${0:N0}
+fr: Solde de l'entreprise : ${0:N0}
+ru: Баланс компании: ${0:N0}
+pl: Saldo firmy: ${0:N0}
+
+en: Close receipt
+zh-CN: 关闭单据
+ja: 伝票を閉じる
+ko: 영수증 닫기
+es: Cerrar recibo
+pt-BR: Fechar recibo
+de: Beleg schließen
+fr: Fermer le reçu
+ru: Закрыть квитанцию
+pl: Zamknij kwit

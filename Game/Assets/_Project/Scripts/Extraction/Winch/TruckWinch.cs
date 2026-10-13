@@ -48,7 +48,7 @@ namespace Abandoned.Extraction
         public string UsePrompt(GameObject user)
         {
             if (!Owned || RunWinch.Current == null || !RunWinch.Current.IsSpawned) return null;
-            return RunWinch.Current.Target != null ? "Unhook the winch" : "Run the winch out to the nearest heavy item";
+            return RunWinch.Current.Target != null ? Loc.T("Unhook the winch") : Loc.T("Run the winch out to the nearest heavy item");
         }
 
         public void Use(GameObject user) => RunWinch.Current?.RequestToggle();

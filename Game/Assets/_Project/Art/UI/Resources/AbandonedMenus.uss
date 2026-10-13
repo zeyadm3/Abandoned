@@ -322,3 +322,8 @@
 .menu-short .menu-record { margin-bottom: 6px; font-size: 15px; }
 .menu-short .menu-screen .subtitle { margin-bottom: 14px; }
 .menu-short .pause__left .menu-button { font-size: 25px; }
+
+/* 0.24.8: Settings > Gameplay > Language. One button per language, each in its own script. */
+.menu-screen .language-list { flex-direction: row; flex-wrap: wrap; align-items: flex-start; margin-bottom: 4px; }
+.menu-screen .language-list__button { margin-left: 0; margin-right: 8px; margin-bottom: 8px; }
+.menu-screen .language-list__button--current { color: var(--c-text); border-left-color: rgb(151, 65, 47); background-color: rgba(91, 45, 33, 0.4); border-bottom-color: var(--c-accent); }

@@ -160,7 +160,7 @@ namespace Abandoned.Equipment
             if (input.FlashlightPressed && Has(EquipmentKind.Flashlight))
             {
                 if (HandsFreeForLight) LightRpc(!state.Value.LightOn);
-                else carrier.ShowHint("Your hands are full. Set the loot down to use your flashlight.");
+                else carrier.ShowHint(Loc.Mark("Your hands are full. Set the loot down to use your flashlight."));
             }
             // Single-use gear: the left mouse button with empty hands.
             if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar || d.Kind >= EquipmentKind.Sledgehammer)) UseRpc(state.Value.Active);

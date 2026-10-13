@@ -14,6 +14,9 @@ namespace Abandoned.Contracts
         [field: SerializeField] public string Id { get; private set; } = "new_modifier";
         [field: SerializeField] public string DisplayName { get; private set; } = "New Modifier";
         [field: SerializeField, TextArea] public string Description { get; private set; } = "";
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
+        public string LocalDescription => Loc.T(Description);
 
         [Tooltip("Added to the rolled structural stability (-0.2 = 'unstable').")]
         [field: SerializeField, Range(-0.5f, 0.5f)] public float StabilityDelta { get; private set; }

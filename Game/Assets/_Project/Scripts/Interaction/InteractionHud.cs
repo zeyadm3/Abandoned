@@ -48,7 +48,7 @@ namespace Abandoned.Interaction
                     crosshair.Add(bracket);
                 }
                 prompt = UI.HudLayer.Add(new VisualElement(), "h-interaction");
-                context = new Label("RECOVER") { pickingMode = PickingMode.Ignore };
+                context = new Label(Loc.T("RECOVER")) { pickingMode = PickingMode.Ignore };
                 context.AddToClassList("h-interaction__context");
                 prompt.Add(context);
                 promptRow = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -56,7 +56,7 @@ namespace Abandoned.Interaction
                 promptRow.AddToClassList("h-interaction__actions");
                 prompt.Add(promptRow);
                 charge = UI.HudLayer.Add(new VisualElement(), "hud-charge", "h-throw");
-                chargeReadout = new Label("THROW / 00%") { pickingMode = PickingMode.Ignore };
+                chargeReadout = new Label(Loc.T("THROW / 00%")) { pickingMode = PickingMode.Ignore };
                 chargeReadout.AddToClassList("h-throw__label");
                 charge.Add(chargeReadout);
                 chargeFill = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -73,8 +73,8 @@ namespace Abandoned.Interaction
                 UI.UiKit.Prompt(promptRow, Prompt);
                 prompt.BringToFront(); // over any value tags behind it
             }
-            string caption = hint ? "OBSTRUCTED" : !string.IsNullOrEmpty(Override) ? "INTERACT" : interactor.IsPlacing ? "SET DOWN"
-                : interactor.IsRotating ? "ORIENT" : interactor.Target != null ? "RECOVER" : carrier.Held != null ? "CARRY" : "INTERACT";
+            string caption = hint ? Loc.T("OBSTRUCTED") : !string.IsNullOrEmpty(Override) ? Loc.T("INTERACT") : interactor.IsPlacing ? Loc.T("SET DOWN")
+                : interactor.IsRotating ? Loc.T("ORIENT") : interactor.Target != null ? Loc.T("RECOVER") : carrier.Held != null ? Loc.T("CARRY") : Loc.T("INTERACT");
             if (context.text != caption) context.text = caption;
             prompt.EnableInClassList("h-interaction--hint", hint);
             promptRow.EnableInClassList("hud-prompt-row--hint", hint);
@@ -92,7 +92,7 @@ namespace Abandoned.Interaction
             UI.MenuKit.Show(charge, interactor.Charge > 0f);
             float strength = Mathf.Clamp01(interactor.Charge);
             chargeFill.style.width = Length.Percent(strength * 100f);
-            string chargeText = $"THROW / {Mathf.CeilToInt(strength * 100f):00}%";
+            string chargeText = Loc.T("THROW / {0:00}%", Mathf.CeilToInt(strength * 100f));
             if (chargeReadout.text != chargeText) chargeReadout.text = chargeText;
             if (UI.HudLayer.TryLocalRect(prompt, root, out Rect actions))
             {
@@ -132,16 +132,16 @@ namespace Abandoned.Interaction
             if (interactor.IsPlacing)
             {
                 hint = interactor.PlacementBlocked;
-                return interactor.PlacementBlocked ? $"No support / release [{drop}] to reposition" : $"[{drop}] hold to place / release to cancel";
+                return interactor.PlacementBlocked ? Loc.T("No support / release [{0}] to reposition", drop) : Loc.T("[{0}] hold to place / release to cancel", drop);
             }
-            if (interactor.IsRotating) return $"[{rotate}] hold + mouse / rotate   release / look";
+            if (interactor.IsRotating) return Loc.T("[{0}] hold + mouse / rotate   release / look", rotate);
             if (interactor.Target != null && interactor.Target.Shared != null)
-                return $"[{interact}] Grab {Describe(interactor.Target)} - {SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers)}";
-            if (interactor.Target != null) return $"[{interact}] Pick up {Describe(interactor.Target)}";
+                return Loc.T("[{0}] Grab {1} - {2}", interact, Describe(interactor.Target), SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers));
+            if (interactor.Target != null) return Loc.T("[{0}] Pick up {1}", interact, Describe(interactor.Target));
             if (carrier.Held == null && interactor.UseTarget?.UsePrompt(interactor.gameObject) is string usable) return $"[{interact}] {usable}";
-            if (carrier.IsSharing) return $"{carrier.Held.DisplayName}: {SharedCarryText.Of(carrier.Held.Shared)}   [{drop}] let go";
-            if (carrier.IsDragging) return $"Dragging {Describe(carrier.Held)}   [{drop}] let go";
-            if (carrier.Held != null) return $"[{use}] hold / throw   [{drop}] tap / drop, hold / place   [{rotate}] rotate";
+            if (carrier.IsSharing) return Loc.T("{0}: {1}   [{2}] let go", carrier.Held.LocalName, SharedCarryText.Of(carrier.Held.Shared), drop);
+            if (carrier.IsDragging) return Loc.T("Dragging {0}   [{1}] let go", Describe(carrier.Held), drop);
+            if (carrier.Held != null) return Loc.T("[{0}] hold / throw   [{1}] tap / drop, hold / place   [{2}] rotate", use, drop, rotate);
             return null;
         }
 
@@ -179,6 +179,6 @@ namespace Abandoned.Interaction
         }
 
         // The value tag over the item says what it's worth (UI.LootTags); the prompt says what it is and weighs.
-        private static string Describe(Grabbable g) => $"{g.DisplayName} ({g.Weight:0.#} kg)";
+        private static string Describe(Grabbable g) => Loc.T("{0} ({1:0.#} kg)", g.LocalName, g.Weight);
     }
 }

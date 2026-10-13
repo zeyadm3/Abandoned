@@ -1,0 +1,905 @@
+# Joining, hosting and Steam messages; ghosts; voice; the wardrobe till; photo mode
+# (Networking/*.cs, Voice/*.cs, Player/*.cs). The host sends several of these as English and each machine words them.
+
+en: Offline
+zh-CN: 离线
+ja: オフライン
+ko: 오프라인
+es: Sin conexión
+pt-BR: Offline
+de: Offline
+fr: Hors ligne
+ru: Не в сети
+pl: Offline
+
+en: Disconnecting...
+zh-CN: 正在断开连接...
+ja: 切断中...
+ko: 연결 끊는 중...
+es: Desconectando...
+pt-BR: Desconectando...
+de: Trenne Verbindung...
+fr: Déconnexion...
+ru: Отключение...
+pl: Rozłączanie...
+
+en: No NetworkManager
+zh-CN: 没有 NetworkManager
+ja: NetworkManager がない
+ko: NetworkManager 없음
+es: Sin NetworkManager
+pt-BR: Sem NetworkManager
+de: Kein NetworkManager
+fr: Aucun NetworkManager
+ru: Нет NetworkManager
+pl: Brak NetworkManager
+
+en: Hosting ({0}/{1}) over {2}, port {3}
+zh-CN: 正在主持（{0}/{1}），通过 {2}，端口 {3}
+ja: ホスト中（{0}/{1}）、{2} 経由、ポート {3}
+ko: 호스트 중 ({0}/{1}), {2} 사용, 포트 {3}
+es: Anfitrión ({0}/{1}) por {2}, puerto {3}
+pt-BR: Hospedando ({0}/{1}) por {2}, porta {3}
+de: Hoste ({0}/{1}) über {2}, Port {3}
+fr: Hébergement ({0}/{1}) via {2}, port {3}
+ru: Хост ({0}/{1}) через {2}, порт {3}
+pl: Hostujesz ({0}/{1}) przez {2}, port {3}
+
+en: Hosting ({0}/{1}) over {2}
+zh-CN: 正在主持（{0}/{1}），通过 {2}
+ja: ホスト中（{0}/{1}）、{2} 経由
+ko: 호스트 중 ({0}/{1}), {2} 사용
+es: Anfitrión ({0}/{1}) por {2}
+pt-BR: Hospedando ({0}/{1}) por {2}
+de: Hoste ({0}/{1}) über {2}
+fr: Hébergement ({0}/{1}) via {2}
+ru: Хост ({0}/{1}) через {2}
+pl: Hostujesz ({0}/{1}) przez {2}
+
+en: Connected to {0}
+zh-CN: 已连接到 {0}
+ja: {0} に接続済み
+ko: {0}에 연결됨
+es: Conectado a {0}
+pt-BR: Conectado a {0}
+de: Verbunden mit {0}
+fr: Connecté à {0}
+ru: Подключено к {0}
+pl: Połączono z {0}
+
+en: Connecting to {0}...
+zh-CN: 正在连接到 {0}...
+ja: {0} に接続中...
+ko: {0}에 연결하는 중...
+es: Conectando a {0}...
+pt-BR: Conectando a {0}...
+de: Verbinde mit {0}...
+fr: Connexion à {0}...
+ru: Подключение к {0}...
+pl: Łączenie z {0}...
+
+en: Network setup is incomplete.
+zh-CN: 网络设置不完整。
+ja: ネットワーク設定が不完全だ。
+ko: 네트워크 설정이 완료되지 않았습니다.
+es: La configuración de red está incompleta.
+pt-BR: A configuração de rede está incompleta.
+de: Die Netzwerkeinrichtung ist unvollständig.
+fr: La configuration réseau est incomplète.
+ru: Сеть настроена не полностью.
+pl: Konfiguracja sieci jest niepełna.
+
+en: Network setup is incomplete (no NetworkManager or NetworkConfig).
+zh-CN: 网络设置不完整（缺少 NetworkManager 或 NetworkConfig）。
+ja: ネットワーク設定が不完全だ（NetworkManager か NetworkConfig がない）。
+ko: 네트워크 설정이 완료되지 않았습니다(NetworkManager 또는 NetworkConfig 없음).
+es: La configuración de red está incompleta (falta NetworkManager o NetworkConfig).
+pt-BR: A configuração de rede está incompleta (sem NetworkManager ou NetworkConfig).
+de: Die Netzwerkeinrichtung ist unvollständig (kein NetworkManager oder NetworkConfig).
+fr: La configuration réseau est incomplète (ni NetworkManager ni NetworkConfig).
+ru: Сеть настроена не полностью (нет NetworkManager или NetworkConfig).
+pl: Konfiguracja sieci jest niepełna (brak NetworkManager lub NetworkConfig).
+
+en: Already in a session; disconnect first.
+zh-CN: 已经在一个会话中；请先断开连接。
+ja: すでにセッション中だ。先に切断しよう。
+ko: 이미 세션에 참가 중입니다. 먼저 연결을 끊으세요.
+es: Ya estás en una sesión; desconéctate primero.
+pt-BR: Você já está numa sessão; desconecte antes.
+de: Bereits in einer Sitzung; trenn zuerst die Verbindung.
+fr: Déjà en session ; déconnectez-vous d'abord.
+ru: Вы уже в сессии; сначала отключитесь.
+pl: Jesteś już w sesji; najpierw się rozłącz.
+
+en: Disconnect before switching transport.
+zh-CN: 切换连接方式前请先断开连接。
+ja: 接続方法を切り替える前に切断しよう。
+ko: 연결 방식을 바꾸기 전에 먼저 연결을 끊으세요.
+es: Desconéctate antes de cambiar de transporte.
+pt-BR: Desconecte antes de trocar o tipo de conexão.
+de: Trenn die Verbindung, bevor du den Transport wechselst.
+fr: Déconnectez-vous avant de changer de transport.
+ru: Отключитесь, прежде чем менять способ подключения.
+pl: Rozłącz się przed zmianą sposobu połączenia.
+
+en: Couldn't host on port {0}. Is another game already using it?
+zh-CN: 无法在端口 {0} 上主持。是不是已有其他游戏在使用它？
+ja: ポート {0} でホストできなかった。別のゲームが使っていないか？
+ko: 포트 {0}에서 호스트할 수 없습니다. 다른 게임이 이미 사용 중인가요?
+es: No se pudo crear la partida en el puerto {0}. ¿Lo está usando ya otro juego?
+pt-BR: Não foi possível hospedar na porta {0}. Outro jogo já está usando?
+de: Hosten auf Port {0} fehlgeschlagen. Nutzt ihn schon ein anderes Spiel?
+fr: Impossible d'héberger sur le port {0}. Un autre jeu l'utilise-t-il déjà ?
+ru: Не удалось создать игру на порту {0}. Может, его уже занимает другая игра?
+pl: Nie udało się hostować na porcie {0}. Czy używa go już inna gra?
+
+en: Couldn't host over Steam.
+zh-CN: 无法通过 Steam 主持。
+ja: Steam経由でホストできなかった。
+ko: Steam으로 호스트할 수 없습니다.
+es: No se pudo crear la partida por Steam.
+pt-BR: Não foi possível hospedar pelo Steam.
+de: Hosten über Steam fehlgeschlagen.
+fr: Impossible d'héberger via Steam.
+ru: Не удалось создать игру через Steam.
+pl: Nie udało się hostować przez Steam.
+
+en: Enter an address to join.
+zh-CN: 请输入要加入的地址。
+ja: 参加するアドレスを入力しよう。
+ko: 참가할 주소를 입력하세요.
+es: Escribe una dirección para unirte.
+pt-BR: Digite um endereço para entrar.
+de: Gib eine Adresse zum Beitreten ein.
+fr: Saisissez une adresse à rejoindre.
+ru: Введите адрес для подключения.
+pl: Wpisz adres, żeby dołączyć.
+
+en: For Steam, enter the host's SteamID64 (invites arrive with the lobby).
+zh-CN: 使用 Steam 时，请输入房主的 SteamID64（邀请会随大厅一起发来）。
+ja: Steamの場合は、ホストのSteamID64を入力しよう（招待はロビーと一緒に届く）。
+ko: Steam의 경우 호스트의 SteamID64를 입력하세요(초대는 로비와 함께 도착합니다).
+es: Para Steam, escribe el SteamID64 del anfitrión (las invitaciones llegan con la sala).
+pt-BR: No Steam, digite o SteamID64 do anfitrião (os convites chegam com o lobby).
+de: Gib für Steam die SteamID64 des Hosts ein (Einladungen kommen mit der Lobby).
+fr: Pour Steam, saisissez le SteamID64 de l'hôte (les invitations arrivent avec le salon).
+ru: Для Steam введите SteamID64 хоста (приглашения приходят вместе с лобби).
+pl: Dla Steama wpisz SteamID64 hosta (zaproszenia przychodzą razem z lobby).
+
+en: Couldn't start joining {0}.
+zh-CN: 无法开始加入 {0}。
+ja: {0} への参加を開始できなかった。
+ko: {0}에 참가를 시작할 수 없습니다.
+es: No se pudo empezar a unirse a {0}.
+pt-BR: Não foi possível começar a entrar em {0}.
+de: Beitritt zu {0} konnte nicht gestartet werden.
+fr: Impossible de commencer à rejoindre {0}.
+ru: Не удалось начать подключение к {0}.
+pl: Nie udało się rozpocząć dołączania do {0}.
+
+en: The network transport failed; the session ended.
+zh-CN: 网络传输失败；会话已结束。
+ja: ネットワーク通信に失敗し、セッションが終了した。
+ko: 네트워크 전송에 실패하여 세션이 종료되었습니다.
+es: Falló el transporte de red; la sesión ha terminado.
+pt-BR: A conexão de rede falhou; a sessão terminou.
+de: Der Netzwerktransport ist ausgefallen; die Sitzung wurde beendet.
+fr: Le transport réseau a échoué ; la session est terminée.
+ru: Сбой сетевого соединения; сессия завершена.
+pl: Połączenie sieciowe zawiodło; sesja się zakończyła.
+
+en: Couldn't join {0}. Is the host running, and on the same build as you ({1})?
+zh-CN: 无法加入 {0}。房主是否已在运行，并且与你使用相同的版本（{1}）？
+ja: {0} に参加できなかった。ホストは起動しているか？ あなたと同じビルド（{1}）か？
+ko: {0}에 참가할 수 없습니다. 호스트가 실행 중이고, 당신과 같은 빌드({1})인가요?
+es: No se pudo unir a {0}. ¿Está el anfitrión en marcha y con tu misma versión ({1})?
+pt-BR: Não foi possível entrar em {0}. O anfitrião está rodando o jogo, e na mesma versão que você ({1})?
+de: Beitritt zu {0} fehlgeschlagen. Läuft der Host, und hat er denselben Build wie du ({1})?
+fr: Impossible de rejoindre {0}. L'hôte est-il lancé, et sur la même version que vous ({1}) ?
+ru: Не удалось подключиться к {0}. Запущена ли игра у хоста и та же ли у него сборка ({1})?
+pl: Nie udało się dołączyć do {0}. Czy host ma uruchomioną grę i tę samą wersję co ty ({1})?
+
+en: The game is full ({0} players).
+zh-CN: 游戏已满（{0} 名玩家）。
+ja: ゲームは満員だ（{0} 人）。
+ko: 게임이 가득 찼습니다({0}명).
+es: La partida está llena ({0} jugadores).
+pt-BR: A partida está cheia ({0} jogadores).
+de: Das Spiel ist voll ({0} Spieler).
+fr: La partie est complète ({0} joueurs).
+ru: Игра заполнена (игроков: {0}).
+pl: Gra jest pełna (graczy: {0}).
+
+en: The host is on version {0}; you have {1}. Both players need the same build.
+zh-CN: 房主的版本是 {0}；你的是 {1}。双方需要使用相同的版本。
+ja: ホストはバージョン {0}、あなたは {1} だ。両方が同じビルドである必要がある。
+ko: 호스트는 버전 {0}, 당신은 {1}입니다. 두 플레이어 모두 같은 빌드여야 합니다.
+es: El anfitrión tiene la versión {0}; tú tienes la {1}. Ambos necesitáis la misma versión.
+pt-BR: O anfitrião está na versão {0}; você tem a {1}. Os dois precisam da mesma versão.
+de: Der Host hat Version {0}; du hast {1}. Beide Spieler brauchen denselben Build.
+fr: L'hôte est en version {0} ; vous avez la {1}. Les deux joueurs doivent avoir la même version.
+ru: У хоста версия {0}, у вас — {1}. Обоим игрокам нужна одна и та же сборка.
+pl: Host ma wersję {0}, a ty {1}. Obaj gracze potrzebują tej samej wersji.
+
+en: The host left the game.
+zh-CN: 房主离开了游戏。
+ja: ホストがゲームを抜けた。
+ko: 호스트가 게임을 떠났습니다.
+es: El anfitrión ha abandonado la partida.
+pt-BR: O anfitrião saiu da partida.
+de: Der Host hat das Spiel verlassen.
+fr: L'hôte a quitté la partie.
+ru: Хост покинул игру.
+pl: Host opuścił grę.
+
+en: Lost connection to the host.
+zh-CN: 与房主的连接已断开。
+ja: ホストとの接続が切れた。
+ko: 호스트와의 연결이 끊겼습니다.
+es: Se perdió la conexión con el anfitrión.
+pt-BR: A conexão com o anfitrião caiu.
+de: Verbindung zum Host verloren.
+fr: Connexion à l'hôte perdue.
+ru: Потеряно соединение с хостом.
+pl: Utracono połączenie z hostem.
+
+en: The host removed you from the game.
+zh-CN: 房主把你移出了游戏。
+ja: ホストによってゲームから外された。
+ko: 호스트가 당신을 게임에서 내보냈습니다.
+es: El anfitrión te ha expulsado de la partida.
+pt-BR: O anfitrião removeu você da partida.
+de: Der Host hat dich aus dem Spiel entfernt.
+fr: L'hôte vous a retiré de la partie.
+ru: Хост удалил вас из игры.
+pl: Host usunął cię z gry.
+
+en: Your game took too long to load the level, so the crew went on without you. Rejoin at the HQ.
+zh-CN: 你的游戏加载关卡用时太久，队伍已经先走了。请在总部重新加入。
+ja: レベルの読み込みに時間がかかりすぎたため、クルーは先に進んだ。本部で再参加しよう。
+ko: 레벨을 불러오는 데 너무 오래 걸려서 팀이 먼저 진행했습니다. 본부에서 다시 참가하세요.
+es: Tu juego tardó demasiado en cargar el nivel y el equipo siguió sin ti. Vuelve a unirte en la central.
+pt-BR: Seu jogo demorou demais para carregar a fase, então a equipe seguiu sem você. Entre de novo no QG.
+de: Dein Spiel hat zu lange zum Laden des Levels gebraucht, also zog das Team ohne dich weiter. Tritt in der Zentrale wieder bei.
+fr: Votre jeu a mis trop de temps à charger le niveau, l'équipe a donc continué sans vous. Rejoignez-la au QG.
+ru: Ваша игра слишком долго загружала уровень, и бригада продолжила без вас. Присоединитесь снова на базе.
+pl: Twoja gra za długo wczytywała poziom, więc ekipa pojechała bez ciebie. Dołącz ponownie w bazie.
+
+# Steam lobby
+
+en: Couldn't create the Steam lobby, so friends can't join by invite. Try hosting again.
+zh-CN: 无法创建 Steam 大厅，好友无法通过邀请加入。请重新尝试主持。
+ja: Steamロビーを作成できなかったため、フレンドは招待から参加できない。もう一度ホストしてみよう。
+ko: Steam 로비를 만들 수 없어 친구가 초대로 참가할 수 없습니다. 다시 호스트해 보세요.
+es: No se pudo crear la sala de Steam, así que los amigos no pueden unirse por invitación. Intenta crear la partida otra vez.
+pt-BR: Não foi possível criar o lobby do Steam, então os amigos não conseguem entrar por convite. Tente hospedar de novo.
+de: Die Steam-Lobby konnte nicht erstellt werden, Freunde können also nicht per Einladung beitreten. Versuch noch einmal zu hosten.
+fr: Impossible de créer le salon Steam, vos amis ne peuvent donc pas rejoindre par invitation. Réessayez d'héberger.
+ru: Не удалось создать лобби Steam, поэтому друзья не смогут зайти по приглашению. Попробуйте создать игру ещё раз.
+pl: Nie udało się utworzyć lobby Steam, więc znajomi nie dołączą przez zaproszenie. Spróbuj hostować ponownie.
+
+en: Leave your current game first, then accept the invite again.
+zh-CN: 请先离开当前游戏，然后再次接受邀请。
+ja: 先に今のゲームを抜けてから、もう一度招待を受けよう。
+ko: 먼저 현재 게임에서 나간 다음 초대를 다시 수락하세요.
+es: Sal primero de tu partida actual y vuelve a aceptar la invitación.
+pt-BR: Saia da partida atual primeiro e depois aceite o convite de novo.
+de: Verlass zuerst dein aktuelles Spiel und nimm die Einladung dann erneut an.
+fr: Quittez d'abord votre partie en cours, puis acceptez de nouveau l'invitation.
+ru: Сначала выйдите из текущей игры, затем примите приглашение ещё раз.
+pl: Najpierw opuść obecną grę, a potem przyjmij zaproszenie jeszcze raz.
+
+en: Already joining a lobby...
+zh-CN: 正在加入一个大厅...
+ja: すでにロビーに参加中...
+ko: 이미 로비에 참가하는 중...
+es: Ya te estás uniendo a una sala...
+pt-BR: Já entrando num lobby...
+de: Trete bereits einer Lobby bei...
+fr: Connexion à un salon déjà en cours...
+ru: Уже идёт подключение к лобби...
+pl: Już dołączasz do lobby...
+
+en: That lobby has no host any more.
+zh-CN: 那个大厅已经没有房主了。
+ja: そのロビーにはもうホストがいない。
+ko: 그 로비에는 더 이상 호스트가 없습니다.
+es: Esa sala ya no tiene anfitrión.
+pt-BR: Esse lobby não tem mais anfitrião.
+de: Diese Lobby hat keinen Host mehr.
+fr: Ce salon n'a plus d'hôte.
+ru: В этом лобби больше нет хоста.
+pl: To lobby nie ma już hosta.
+
+en: That game is full.
+zh-CN: 那个游戏已满。
+ja: そのゲームは満員だ。
+ko: 그 게임은 가득 찼습니다.
+es: Esa partida está llena.
+pt-BR: Essa partida está cheia.
+de: Dieses Spiel ist voll.
+fr: Cette partie est complète.
+ru: Эта игра заполнена.
+pl: Ta gra jest pełna.
+
+en: That game doesn't exist any more (the host left).
+zh-CN: 那个游戏已经不存在了（房主已离开）。
+ja: そのゲームはもう存在しない（ホストが抜けた）。
+ko: 그 게임은 더 이상 존재하지 않습니다(호스트가 떠났습니다).
+es: Esa partida ya no existe (el anfitrión se fue).
+pt-BR: Essa partida não existe mais (o anfitrião saiu).
+de: Dieses Spiel gibt es nicht mehr (der Host ist gegangen).
+fr: Cette partie n'existe plus (l'hôte est parti).
+ru: Этой игры больше нет (хост вышел).
+pl: Ta gra już nie istnieje (host wyszedł).
+
+en: You're not allowed into that lobby (it's friends-only).
+zh-CN: 你不能进入那个大厅（仅限好友）。
+ja: そのロビーには入れない（フレンド限定）。
+ko: 그 로비에는 들어갈 수 없습니다(친구 전용).
+es: No puedes entrar en esa sala (es solo para amigos).
+pt-BR: Você não pode entrar nesse lobby (é só para amigos).
+de: Du darfst nicht in diese Lobby (nur für Freunde).
+fr: Vous n'êtes pas autorisé dans ce salon (réservé aux amis).
+ru: Вам нельзя в это лобби (оно только для друзей).
+pl: Nie masz wstępu do tego lobby (tylko dla znajomych).
+
+en: You can't join that lobby.
+zh-CN: 你无法加入那个大厅。
+ja: そのロビーには参加できない。
+ko: 그 로비에 참가할 수 없습니다.
+es: No puedes unirte a esa sala.
+pt-BR: Você não pode entrar nesse lobby.
+de: Du kannst dieser Lobby nicht beitreten.
+fr: Vous ne pouvez pas rejoindre ce salon.
+ru: Вы не можете войти в это лобби.
+pl: Nie możesz dołączyć do tego lobby.
+
+en: Limited Steam accounts can't join lobbies.
+zh-CN: 受限的 Steam 账户无法加入大厅。
+ja: 制限付きのSteamアカウントはロビーに参加できない。
+ko: 제한된 Steam 계정은 로비에 참가할 수 없습니다.
+es: Las cuentas limitadas de Steam no pueden unirse a salas.
+pt-BR: Contas limitadas do Steam não podem entrar em lobbies.
+de: Eingeschränkte Steam-Konten können keinen Lobbys beitreten.
+fr: Les comptes Steam limités ne peuvent pas rejoindre de salons.
+ru: Ограниченные аккаунты Steam не могут входить в лобби.
+pl: Ograniczone konta Steam nie mogą dołączać do lobby.
+
+en: Someone in that lobby has blocked you (or you them).
+zh-CN: 那个大厅里有人屏蔽了你（或者你屏蔽了对方）。
+ja: そのロビーの誰かがあなたをブロックしている（またはあなたが相手を）。
+ko: 그 로비의 누군가가 당신을 차단했습니다(또는 당신이 상대를 차단했습니다).
+es: Alguien de esa sala te ha bloqueado (o tú a esa persona).
+pt-BR: Alguém nesse lobby bloqueou você (ou você bloqueou a pessoa).
+de: Jemand in dieser Lobby hat dich blockiert (oder du ihn).
+fr: Quelqu'un dans ce salon vous a bloqué (ou l'inverse).
+ru: Кто-то в этом лобби вас заблокировал (или вы его).
+pl: Ktoś w tym lobby cię zablokował (albo ty jego).
+
+en: Steam says slow down; try again in a moment.
+zh-CN: Steam 提示操作过于频繁；请稍后再试。
+ja: Steamが「落ち着け」と言っている。少し待ってからもう一度試そう。
+ko: Steam이 요청이 너무 잦다고 합니다. 잠시 후 다시 시도하세요.
+es: Steam pide ir más despacio; inténtalo de nuevo en un momento.
+pt-BR: O Steam pediu calma; tente de novo daqui a pouco.
+de: Steam bittet um Geduld; versuch es gleich noch einmal.
+fr: Steam demande de ralentir ; réessayez dans un instant.
+ru: Steam просит не спешить; повторите через минуту.
+pl: Steam każe zwolnić; spróbuj ponownie za chwilę.
+
+en: Couldn't join the Steam lobby ({0}).
+zh-CN: 无法加入 Steam 大厅（{0}）。
+ja: Steamロビーに参加できなかった（{0}）。
+ko: Steam 로비에 참가할 수 없습니다({0}).
+es: No se pudo unir a la sala de Steam ({0}).
+pt-BR: Não foi possível entrar no lobby do Steam ({0}).
+de: Beitritt zur Steam-Lobby fehlgeschlagen ({0}).
+fr: Impossible de rejoindre le salon Steam ({0}).
+ru: Не удалось войти в лобби Steam ({0}).
+pl: Nie udało się dołączyć do lobby Steam ({0}).
+
+# Steam itself
+
+en: Steam isn't running - start Steam and try again.
+zh-CN: Steam 没有运行 - 请启动 Steam 后重试。
+ja: Steamが起動していない - Steamを起動してもう一度試そう。
+ko: Steam이 실행 중이 아닙니다 - Steam을 시작한 뒤 다시 시도하세요.
+es: Steam no está en ejecución - inicia Steam e inténtalo de nuevo.
+pt-BR: O Steam não está aberto - abra o Steam e tente de novo.
+de: Steam läuft nicht - starte Steam und versuch es erneut.
+fr: Steam n'est pas lancé - démarrez Steam et réessayez.
+ru: Steam не запущен - запустите Steam и повторите попытку.
+pl: Steam nie jest uruchomiony - włącz Steama i spróbuj ponownie.
+
+en: Steam couldn't be loaded on this computer - reinstall the game and try again.
+zh-CN: 无法在这台电脑上加载 Steam - 请重新安装游戏后重试。
+ja: このコンピューターでSteamを読み込めなかった - ゲームを再インストールしてもう一度試そう。
+ko: 이 컴퓨터에서 Steam을 불러올 수 없습니다 - 게임을 다시 설치한 뒤 다시 시도하세요.
+es: No se pudo cargar Steam en este equipo - reinstala el juego e inténtalo de nuevo.
+pt-BR: Não foi possível carregar o Steam neste computador - reinstale o jogo e tente de novo.
+de: Steam konnte auf diesem Computer nicht geladen werden - installier das Spiel neu und versuch es erneut.
+fr: Steam n'a pas pu être chargé sur cet ordinateur - réinstallez le jeu et réessayez.
+ru: Не удалось загрузить Steam на этом компьютере - переустановите игру и повторите попытку.
+pl: Nie udało się wczytać Steama na tym komputerze - zainstaluj grę ponownie i spróbuj jeszcze raz.
+
+en: Steam needs an update - restart Steam to update it and try again.
+zh-CN: Steam 需要更新 - 请重启 Steam 完成更新后重试。
+ja: Steamの更新が必要だ - Steamを再起動して更新し、もう一度試そう。
+ko: Steam을 업데이트해야 합니다 - Steam을 다시 시작해 업데이트한 뒤 다시 시도하세요.
+es: Steam necesita actualizarse - reinicia Steam para actualizarlo e inténtalo de nuevo.
+pt-BR: O Steam precisa ser atualizado - reinicie o Steam para atualizar e tente de novo.
+de: Steam braucht ein Update - starte Steam neu, um es zu aktualisieren, und versuch es erneut.
+fr: Steam doit être mis à jour - redémarrez Steam pour le mettre à jour et réessayez.
+ru: Steam нужно обновить - перезапустите Steam для обновления и повторите попытку.
+pl: Steam wymaga aktualizacji - uruchom Steama ponownie, żeby go zaktualizować, i spróbuj jeszcze raz.
+
+en: Steam settings are missing from this build (NetworkConfig).
+zh-CN: 此版本缺少 Steam 设置（NetworkConfig）。
+ja: このビルドにはSteam設定がない（NetworkConfig）。
+ko: 이 빌드에 Steam 설정이 없습니다(NetworkConfig).
+es: Faltan los ajustes de Steam en esta versión (NetworkConfig).
+pt-BR: As configurações do Steam estão faltando nesta versão (NetworkConfig).
+de: In diesem Build fehlen die Steam-Einstellungen (NetworkConfig).
+fr: Les paramètres Steam sont absents de cette version (NetworkConfig).
+ru: В этой сборке нет настроек Steam (NetworkConfig).
+pl: W tej wersji brakuje ustawień Steama (NetworkConfig).
+
+en: Couldn't connect to Steam - make sure Steam is running and you're logged in, then try again.
+zh-CN: 无法连接到 Steam - 请确认 Steam 正在运行且你已登录，然后重试。
+ja: Steamに接続できなかった - Steamが起動していてログイン済みか確認し、もう一度試そう。
+ko: Steam에 연결할 수 없습니다 - Steam이 실행 중이고 로그인되어 있는지 확인한 뒤 다시 시도하세요.
+es: No se pudo conectar con Steam - comprueba que Steam está en ejecución y con la sesión iniciada, e inténtalo de nuevo.
+pt-BR: Não foi possível conectar ao Steam - veja se o Steam está aberto e você está logado, e tente de novo.
+de: Verbindung zu Steam fehlgeschlagen - stell sicher, dass Steam läuft und du angemeldet bist, und versuch es erneut.
+fr: Connexion à Steam impossible - vérifiez que Steam est lancé et que vous êtes connecté, puis réessayez.
+ru: Не удалось подключиться к Steam - убедитесь, что Steam запущен и вы вошли в аккаунт, и повторите попытку.
+pl: Nie udało się połączyć ze Steamem - upewnij się, że Steam działa i jesteś zalogowany, po czym spróbuj ponownie.
+
+en: Lost connection to Steam - restart Steam and the game.
+zh-CN: 与 Steam 的连接已断开 - 请重启 Steam 和游戏。
+ja: Steamとの接続が切れた - Steamとゲームを再起動しよう。
+ko: Steam과의 연결이 끊겼습니다 - Steam과 게임을 다시 시작하세요.
+es: Se perdió la conexión con Steam - reinicia Steam y el juego.
+pt-BR: A conexão com o Steam caiu - reinicie o Steam e o jogo.
+de: Verbindung zu Steam verloren - starte Steam und das Spiel neu.
+fr: Connexion à Steam perdue - redémarrez Steam et le jeu.
+ru: Потеряно соединение со Steam - перезапустите Steam и игру.
+pl: Utracono połączenie ze Steamem - uruchom ponownie Steama i grę.
+
+en: Steam is turned off for this session (-nosteam).
+zh-CN: 本次会话已关闭 Steam（-nosteam）。
+ja: このセッションではSteamがオフになっている（-nosteam）。
+ko: 이번 세션에서는 Steam이 꺼져 있습니다(-nosteam).
+es: Steam está desactivado en esta sesión (-nosteam).
+pt-BR: O Steam está desligado nesta sessão (-nosteam).
+de: Steam ist für diese Sitzung ausgeschaltet (-nosteam).
+fr: Steam est désactivé pour cette session (-nosteam).
+ru: В этой сессии Steam отключён (-nosteam).
+pl: Steam jest wyłączony w tej sesji (-nosteam).
+
+en: Steam is off in batch mode and automated tests (run with -steam to allow it).
+zh-CN: 批处理模式和自动化测试中 Steam 处于关闭状态（使用 -steam 运行可启用）。
+ja: バッチモードと自動テストではSteamはオフになる（-steam を付けて起動すると有効）。
+ko: 배치 모드와 자동 테스트에서는 Steam이 꺼집니다(-steam으로 실행하면 허용).
+es: Steam está desactivado en modo por lotes y en pruebas automáticas (ejecuta con -steam para permitirlo).
+pt-BR: O Steam fica desligado em modo batch e em testes automáticos (rode com -steam para permitir).
+de: Steam ist im Batch-Modus und in automatischen Tests aus (mit -steam starten, um es zu erlauben).
+fr: Steam est désactivé en mode batch et dans les tests automatisés (lancez avec -steam pour l'autoriser).
+ru: В пакетном режиме и автотестах Steam отключён (запустите с -steam, чтобы разрешить).
+pl: Steam jest wyłączony w trybie wsadowym i testach automatycznych (uruchom z -steam, żeby go włączyć).
+
+# Refusals the host sends about loot
+
+en: That's not in your pockets
+zh-CN: 那东西不在你的口袋里
+ja: それはポケットに入っていない
+ko: 그건 주머니에 없습니다
+es: Eso no está en tus bolsillos
+pt-BR: Isso não está nos seus bolsos
+de: Das ist nicht in deinen Taschen
+fr: Ce n'est pas dans vos poches
+ru: Этого нет в ваших карманах
+pl: Tego nie masz w kieszeniach
+
+en: Not ready yet
+zh-CN: 还没准备好
+ja: まだ準備ができていない
+ko: 아직 준비되지 않았습니다
+es: Todavía no está listo
+pt-BR: Ainda não está pronto
+de: Noch nicht bereit
+fr: Pas encore prêt
+ru: Ещё не готово
+pl: Jeszcze niegotowe
+
+en: No clear place to set it down
+zh-CN: 没有可以放下的空位
+ja: 置ける場所がない
+ko: 내려놓을 빈 자리가 없습니다
+es: No hay sitio despejado donde dejarlo
+pt-BR: Não há lugar livre para pousar
+de: Kein freier Platz zum Absetzen
+fr: Aucun endroit dégagé pour le poser
+ru: Некуда поставить
+pl: Nie ma wolnego miejsca, żeby to odłożyć
+
+en: Lost your grip
+zh-CN: 你没抓稳
+ja: 手が離れた
+ko: 손을 놓쳤습니다
+es: Se te ha escapado
+pt-BR: Você perdeu a pegada
+de: Griff verloren
+fr: Vous avez lâché prise
+ru: Вы не удержали
+pl: Wyślizgnęło ci się
+
+en: Not in the session
+zh-CN: 不在会话中
+ja: セッションに参加していない
+ko: 세션에 참가하지 않았습니다
+es: No estás en la sesión
+pt-BR: Fora da sessão
+de: Nicht in der Sitzung
+fr: Hors de la session
+ru: Вне сессии
+pl: Poza sesją
+
+# Ghosts and death
+
+en: YOU DIED
+zh-CN: 你死了
+ja: あなたは死んだ
+ko: 사망했습니다
+es: HAS MUERTO
+pt-BR: VOCÊ MORREU
+de: DU BIST TOT
+fr: VOUS ÊTES MORT
+ru: ВЫ ПОГИБЛИ
+pl: NIE ŻYJESZ
+
+en: Your pockets dropped where you fell. Watch your crew, or wait for a medkit.
+zh-CN: 口袋里的东西掉在了你倒下的地方。看着你的队友，或者等人带急救包来。
+ja: ポケットの中身は倒れた場所に落ちた。クルーを見守るか、救急キットを待とう。
+ko: 주머니 속 물건은 쓰러진 자리에 떨어졌습니다. 팀을 지켜보거나 구급상자를 기다리세요.
+es: Lo de tus bolsillos cayó donde caíste. Observa a tu equipo o espera un botiquín.
+pt-BR: O que estava nos seus bolsos caiu onde você caiu. Acompanhe a equipe ou espere um kit médico.
+de: Deine Taschen haben sich dort geleert, wo du gefallen bist. Sieh deinem Team zu oder warte auf einen Verbandskasten.
+fr: Le contenu de vos poches est tombé là où vous êtes tombé. Suivez votre équipe, ou attendez une trousse de soins.
+ru: Содержимое карманов осталось там, где вы упали. Наблюдайте за бригадой или ждите аптечку.
+pl: Zawartość kieszeni wypadła tam, gdzie upadłeś. Obserwuj ekipę albo czekaj na apteczkę.
+
+en: GHOST   Watching {0}   [{1}] previous   [{2}] next
+zh-CN: 幽灵   正在观看 {0}   [{1}] 上一个   [{2}] 下一个
+ja: 幽霊   {0} を観戦中   [{1}] 前へ   [{2}] 次へ
+ko: 유령   {0} 관전 중   [{1}] 이전   [{2}] 다음
+es: FANTASMA   Observando a {0}   [{1}] anterior   [{2}] siguiente
+pt-BR: FANTASMA   Assistindo {0}   [{1}] anterior   [{2}] próximo
+de: GEIST   Beobachte {0}   [{1}] voriger   [{2}] nächster
+fr: FANTÔME   Vous suivez {0}   [{1}] précédent   [{2}] suivant
+ru: ПРИЗРАК   Наблюдение: {0}   [{1}] предыдущий   [{2}] следующий
+pl: DUCH   Obserwujesz: {0}   [{1}] poprzedni   [{2}] następny
+
+en: Fell
+zh-CN: 摔落
+ja: 転落
+ko: 추락
+es: Caída
+pt-BR: Queda
+de: Gestürzt
+fr: Chute
+ru: Падение
+pl: Upadek
+
+en: Something got you.
+zh-CN: 有东西抓到你了。
+ja: 何かに捕まった。
+ko: 무언가에게 당했습니다.
+es: Algo te atrapó.
+pt-BR: Algo pegou você.
+de: Etwas hat dich erwischt.
+fr: Quelque chose vous a eu.
+ru: Что-то до вас добралось.
+pl: Coś cię dopadło.
+
+en: Crewmate {0}
+zh-CN: 队友 {0}
+ja: 仲間 {0}
+ko: 동료 {0}
+es: Compañero {0}
+pt-BR: Colega {0}
+de: Kollege {0}
+fr: Coéquipier {0}
+ru: Напарник {0}
+pl: Kolega {0}
+
+en: [{0}] Climb out
+zh-CN: [{0}] 爬出来
+ja: [{0}] 外に出る
+ko: [{0}] 나오기
+es: [{0}] Salir
+pt-BR: [{0}] Sair
+de: [{0}] Herausklettern
+fr: [{0}] Sortir
+ru: [{0}] Вылезти
+pl: [{0}] Wyjdź
+
+en: Crawling through the vent...
+zh-CN: 正在通风管里爬行...
+ja: ダクトの中を這っている...
+ko: 환풍구를 기어가는 중...
+es: Arrastrándote por el conducto...
+pt-BR: Rastejando pelo duto...
+de: Kriechst durch den Schacht...
+fr: Vous rampez dans le conduit...
+ru: Ползёте по вентиляции...
+pl: Czołgasz się przez szyb...
+
+en: crawling...  {0:0}
+zh-CN: 爬行中...  {0:0}
+ja: 移動中...  {0:0}
+ko: 기어가는 중...  {0:0}
+es: arrastrándote...  {0:0}
+pt-BR: rastejando...  {0:0}
+de: kriechst...  {0:0}
+fr: vous rampez...  {0:0}
+ru: ползёте...  {0:0}
+pl: czołganie...  {0:0}
+
+en: DAILY JOB
+zh-CN: 每日任务
+ja: 日替わりの仕事
+ko: 일일 작업
+es: TRABAJO DIARIO
+pt-BR: TRABALHO DIÁRIO
+de: TAGESAUFTRAG
+fr: MISSION DU JOUR
+ru: ЗАКАЗ ДНЯ
+pl: ZLECENIE DNIA
+
+en: Your crew's ${0:N0} ranks #{1:N0} today.
+zh-CN: 你的队伍以 ${0:N0} 位列今日第 {1:N0} 名。
+ja: あなたのクルーの ${0:N0} は、今日の {1:N0} 位だ。
+ko: 당신의 팀은 ${0:N0}로 오늘 {1:N0}위입니다.
+es: Los ${0:N0} de tu equipo están en el puesto n.º {1:N0} de hoy.
+pt-BR: Os ${0:N0} da sua equipe estão em {1:N0}º lugar hoje.
+de: Die ${0:N0} deines Teams liegen heute auf Platz {1:N0}.
+fr: Les ${0:N0} de votre équipe sont classés n° {1:N0} aujourd'hui.
+ru: ${0:N0} вашей бригады — сегодня {1:N0}-е место.
+pl: ${0:N0} twojej ekipy to dziś miejsce nr {1:N0}.
+
+# Voice
+
+en: MIC / MUTED
+zh-CN: 麦克风 / 已静音
+ja: マイク / ミュート
+ko: 마이크 / 음소거
+es: MICRO / SILENCIADO
+pt-BR: MICROFONE / SILENCIADO
+de: MIKRO / STUMM
+fr: MICRO / COUPÉ
+ru: МИКРОФОН / ВЫКЛ.
+pl: MIKROFON / WYCISZONY
+
+en: MIC / OPEN
+zh-CN: 麦克风 / 开放
+ja: マイク / オープン
+ko: 마이크 / 오픈
+es: MICRO / ABIERTO
+pt-BR: MICROFONE / ABERTO
+de: MIKRO / OFFEN
+fr: MICRO / OUVERT
+ru: МИКРОФОН / ОТКРЫТ
+pl: MIKROFON / OTWARTY
+
+en: VOICE / {0}
+zh-CN: 语音 / {0}
+ja: ボイス / {0}
+ko: 음성 / {0}
+es: VOZ / {0}
+pt-BR: VOZ / {0}
+de: SPRACHE / {0}
+fr: VOIX / {0}
+ru: ГОЛОС / {0}
+pl: GŁOS / {0}
+
+en: ● RADIO TRANSMITTING
+zh-CN: ● 对讲机发送中
+ja: ● 無線送信中
+ko: ● 무전 송신 중
+es: ● RADIO TRANSMITIENDO
+pt-BR: ● RÁDIO TRANSMITINDO
+de: ● FUNK SENDET
+fr: ● RADIO EN ÉMISSION
+ru: ● РАЦИЯ В ЭФИРЕ
+pl: ● RADIO NADAJE
+
+en: ● VOICE TRANSMITTING
+zh-CN: ● 语音发送中
+ja: ● 音声送信中
+ko: ● 음성 송신 중
+es: ● VOZ TRANSMITIENDO
+pt-BR: ● VOZ TRANSMITINDO
+de: ● SPRACHE SENDET
+fr: ● VOIX EN ÉMISSION
+ru: ● ГОЛОС В ЭФИРЕ
+pl: ● GŁOS NADAJE
+
+en: HOLD {0} TO TALK  /  {1} RADIO
+zh-CN: 按住 {0} 说话  /  {1} 对讲机
+ja: {0} 長押しで話す  /  {1} 無線
+ko: {0} 누르고 말하기  /  {1} 무전기
+es: MANTÉN {0} PARA HABLAR  /  {1} RADIO
+pt-BR: SEGURE {0} PARA FALAR  /  {1} RÁDIO
+de: {0} HALTEN ZUM SPRECHEN  /  {1} FUNK
+fr: MAINTENIR {0} POUR PARLER  /  {1} RADIO
+ru: УДЕРЖИВАЙТЕ {0}, ЧТОБЫ ГОВОРИТЬ  /  {1} РАЦИЯ
+pl: PRZYTRZYMAJ {0}, BY MÓWIĆ  /  {1} RADIO
+
+en: No microphone found.
+zh-CN: 未找到麦克风。
+ja: マイクが見つからない。
+ko: 마이크를 찾을 수 없습니다.
+es: No se ha encontrado ningún micrófono.
+pt-BR: Nenhum microfone encontrado.
+de: Kein Mikrofon gefunden.
+fr: Aucun micro détecté.
+ru: Микрофон не найден.
+pl: Nie znaleziono mikrofonu.
+
+en: Couldn't open the microphone.
+zh-CN: 无法打开麦克风。
+ja: マイクを開けなかった。
+ko: 마이크를 열 수 없습니다.
+es: No se pudo abrir el micrófono.
+pt-BR: Não foi possível abrir o microfone.
+de: Mikrofon konnte nicht geöffnet werden.
+fr: Impossible d'ouvrir le micro.
+ru: Не удалось открыть микрофон.
+pl: Nie udało się otworzyć mikrofonu.
+
+en: The microphone sends nothing. Allow microphone access for Abandoned (System Settings > Privacy).
+zh-CN: 麦克风没有传出任何声音。请允许 Abandoned 访问麦克风（系统设置 > 隐私）。
+ja: マイクから何も送られていない。Abandoned にマイクへのアクセスを許可しよう（システム設定 > プライバシー）。
+ko: 마이크에서 아무것도 전송되지 않습니다. Abandoned의 마이크 접근을 허용하세요(시스템 설정 > 개인 정보 보호).
+es: El micrófono no envía nada. Permite el acceso al micrófono para Abandoned (Ajustes del Sistema > Privacidad).
+pt-BR: O microfone não envia nada. Permita o acesso ao microfone para Abandoned (Ajustes do Sistema > Privacidade).
+de: Das Mikrofon sendet nichts. Erlaube Abandoned den Mikrofonzugriff (Systemeinstellungen > Datenschutz).
+fr: Le micro n'envoie rien. Autorisez l'accès au micro pour Abandoned (Réglages Système > Confidentialité).
+ru: Микрофон ничего не передаёт. Разрешите Abandoned доступ к микрофону (Системные настройки > Конфиденциальность).
+pl: Mikrofon niczego nie wysyła. Zezwól Abandoned na dostęp do mikrofonu (Ustawienia systemowe > Prywatność).
+
+en: Steam isn't running, so Steam voice is off.
+zh-CN: Steam 没有运行，因此 Steam 语音已关闭。
+ja: Steamが起動していないため、Steamボイスはオフだ。
+ko: Steam이 실행 중이 아니어서 Steam 음성이 꺼져 있습니다.
+es: Steam no está en ejecución, así que la voz de Steam está desactivada.
+pt-BR: O Steam não está aberto, então a voz do Steam está desligada.
+de: Steam läuft nicht, also ist Steam-Sprache aus.
+fr: Steam n'est pas lancé, la voix Steam est donc désactivée.
+ru: Steam не запущен, поэтому голос Steam отключён.
+pl: Steam nie jest uruchomiony, więc głos Steama jest wyłączony.
+
+en: No microphone in batch mode.
+zh-CN: 批处理模式下没有麦克风。
+ja: バッチモードではマイクは使えない。
+ko: 배치 모드에서는 마이크가 없습니다.
+es: Sin micrófono en modo por lotes.
+pt-BR: Sem microfone em modo batch.
+de: Kein Mikrofon im Batch-Modus.
+fr: Pas de micro en mode batch.
+ru: В пакетном режиме микрофона нет.
+pl: W trybie wsadowym nie ma mikrofonu.
+
+# The wardrobe till, photo mode, the frame counter
+
+en: Signing the requisition...
+zh-CN: 正在签署申领单...
+ja: 申請書に署名中...
+ko: 구매 요청서에 서명하는 중...
+es: Firmando la solicitud...
+pt-BR: Assinando a requisição...
+de: Anforderung wird unterschrieben...
+fr: Signature du bon de commande...
+ru: Подписываем заявку...
+pl: Podpisywanie zapotrzebowania...
+
+en: That isn't for sale.
+zh-CN: 那件不出售。
+ja: それは売り物ではない。
+ko: 그건 판매하지 않습니다.
+es: Eso no está en venta.
+pt-BR: Isso não está à venda.
+de: Das steht nicht zum Verkauf.
+fr: Ce n'est pas à vendre.
+ru: Это не продаётся.
+pl: To nie jest na sprzedaż.
+
+en: Only at the HQ: the company pays for it.
+zh-CN: 只能在总部购买：由公司付钱。
+ja: 本部でのみ可能。支払うのは会社だ。
+ko: 본부에서만 가능합니다. 회사가 비용을 냅니다.
+es: Solo en la central: lo paga la empresa.
+pt-BR: Só no QG: a empresa paga.
+de: Nur in der Zentrale: Die Firma zahlt dafür.
+fr: Uniquement au QG : c'est l'entreprise qui paie.
+ru: Только на базе: платит компания.
+pl: Tylko w bazie: płaci za to firma.
+
+en: The company can't afford ${0}.
+zh-CN: 公司付不起 ${0}。
+ja: 会社には ${0} を払う余裕がない。
+ko: 회사는 ${0}를 감당할 수 없습니다.
+es: La empresa no puede permitirse ${0}.
+pt-BR: A empresa não tem ${0}.
+de: Die Firma kann sich ${0} nicht leisten.
+fr: L'entreprise ne peut pas se permettre ${0}.
+ru: Компании не по карману ${0}.
+pl: Firmy nie stać na ${0}.
+
+en: Bought: {0}.
+zh-CN: 已购买：{0}。
+ja: 購入：{0}。
+ko: 구매: {0}.
+es: Comprado: {0}.
+pt-BR: Comprado: {0}.
+de: Gekauft: {0}.
+fr: Acheté : {0}.
+ru: Куплено: {0}.
+pl: Kupiono: {0}.
+
+en: PHOTO
+zh-CN: 照片
+ja: 写真
+ko: 사진
+es: FOTO
+pt-BR: FOTO
+de: FOTO
+fr: PHOTO
+ru: ФОТО
+pl: ZDJĘCIE
+
+en: Couldn't save the photo: no folder to write to.
+zh-CN: 无法保存照片：没有可写入的文件夹。
+ja: 写真を保存できなかった。書き込めるフォルダがない。
+ko: 사진을 저장할 수 없습니다. 쓸 수 있는 폴더가 없습니다.
+es: No se pudo guardar la foto: no hay carpeta donde escribir.
+pt-BR: Não foi possível salvar a foto: não há pasta para gravar.
+de: Foto konnte nicht gespeichert werden: kein Ordner zum Schreiben.
+fr: Impossible d'enregistrer la photo : aucun dossier où écrire.
+ru: Не удалось сохранить фото: нет папки для записи.
+pl: Nie udało się zapisać zdjęcia: brak folderu do zapisu.
+
+en: Saved to {0}
+zh-CN: 已保存到 {0}
+ja: {0} に保存した
+ko: {0}에 저장됨
+es: Guardada en {0}
+pt-BR: Salva em {0}
+de: Gespeichert unter {0}
+fr: Enregistrée dans {0}
+ru: Сохранено в {0}
+pl: Zapisano w {0}
+
+en: PHOTO MODE   WASD / Q E fly   wheel speed   Z / X zoom   Enter take a photo   F9 leave
+zh-CN: 拍照模式   WASD / Q E 飞行   滚轮 速度   Z / X 缩放   回车 拍照   F9 退出
+ja: フォトモード   WASD / Q E 移動   ホイール 速度   Z / X ズーム   Enter 撮影   F9 終了
+ko: 사진 모드   WASD / Q E 비행   휠 속도   Z / X 확대/축소   Enter 촬영   F9 나가기
+es: MODO FOTO   WASD / Q E volar   rueda velocidad   Z / X zoom   Intro hacer foto   F9 salir
+pt-BR: MODO FOTO   WASD / Q E voar   roda velocidade   Z / X zoom   Enter tirar foto   F9 sair
+de: FOTOMODUS   WASD / Q E fliegen   Mausrad Tempo   Z / X Zoom   Enter Foto machen   F9 verlassen
+fr: MODE PHOTO   WASD / Q E voler   molette vitesse   Z / X zoom   Entrée prendre une photo   F9 quitter
+ru: ФОТОРЕЖИМ   WASD / Q E полёт   колесо скорость   Z / X зум   Enter снимок   F9 выход
+pl: TRYB FOTO   WASD / Q E lot   kółko prędkość   Z / X zoom   Enter zrób zdjęcie   F9 wyjdź
+
+en: {0:0} FPS
+zh-CN: {0:0} FPS
+ja: {0:0} FPS
+ko: {0:0} FPS
+es: {0:0} FPS
+pt-BR: {0:0} FPS
+de: {0:0} FPS
+fr: {0:0} FPS
+ru: {0:0} FPS
+pl: {0:0} FPS

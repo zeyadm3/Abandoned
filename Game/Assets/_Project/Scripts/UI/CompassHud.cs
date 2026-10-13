@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Extraction;
 using Abandoned.Networking;
 using Abandoned.Threats;
@@ -19,7 +20,7 @@ namespace Abandoned.UI
         // A Stalker past this much of its build-up shows as a red mark at its bearing; the strip shows 90 degrees
         // either side, so a mark pinned at an edge means "behind you, turn this way".
         private const float WarnFrom = 0.35f, EdgeDegrees = 86f;
-        private static readonly string[] Points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
+        private static readonly string[] Points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" }; // @loc:compass
 
         private VisualElement strip, tape, threat, window;
         private Label bearing, direction;
@@ -66,7 +67,7 @@ namespace Abandoned.UI
             var readout = new VisualElement { pickingMode = PickingMode.Ignore };
             readout.AddToClassList("h-navigation__readout");
             strip.Add(readout);
-            var caption = new Label("BEARING") { pickingMode = PickingMode.Ignore };
+            var caption = new Label(Loc.T("BEARING")) { pickingMode = PickingMode.Ignore };
             caption.AddToClassList("h-micro");
             readout.Add(caption);
             direction = new Label("N") { pickingMode = PickingMode.Ignore };
@@ -85,7 +86,7 @@ namespace Abandoned.UI
             {
                 int bearing = (degrees % 360 + 360) % 360;
                 bool point = bearing % 45 == 0;
-                var mark = new Label(point ? Points[bearing / 45] : "") { pickingMode = PickingMode.Ignore };
+                var mark = new Label(point ? Loc.C("compass", Points[bearing / 45]) : "") { pickingMode = PickingMode.Ignore };
                 mark.AddToClassList(point ? "compass__point" : "compass__tick");
                 if (bearing % 90 == 0) mark.AddToClassList("compass__point--cardinal");
                 if (bearing == 0) mark.AddToClassList("compass__point--north");

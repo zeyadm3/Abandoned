@@ -1,0 +1,1051 @@
+# Controls, credits, wardrobe, achievements, the demo's end screen and the early-access notice (UI/Menus/*.cs).
+
+en: FIELD CONTROLS / PERSONAL BINDINGS
+zh-CN: 现场操作 / 个人按键
+ja: 現場操作 / 個人割り当て
+ko: 현장 조작 / 개인 키 설정
+es: CONTROLES DE CAMPO / ASIGNACIONES PERSONALES
+pt-BR: CONTROLES DE CAMPO / ATALHOS PESSOAIS
+de: FELDSTEUERUNG / PERSÖNLICHE BELEGUNG
+fr: COMMANDES DE TERRAIN / TOUCHES PERSONNELLES
+ru: ПОЛЕВОЕ УПРАВЛЕНИЕ / ЛИЧНЫЕ НАЗНАЧЕНИЯ
+pl: STEROWANIE TERENOWE / WŁASNE PRZYPISANIA
+
+en: CONTROLS
+zh-CN: 操作
+ja: 操作
+ko: 조작
+es: CONTROLES
+pt-BR: CONTROLES
+de: STEUERUNG
+fr: COMMANDES
+ru: УПРАВЛЕНИЕ
+pl: STEROWANIE
+
+en: Click a key, then press the new one. Esc cancels.
+zh-CN: 点击一个按键，然后按下新的按键。Esc 取消。
+ja: キーをクリックしてから、新しいキーを押そう。Escでキャンセル。
+ko: 키를 클릭한 다음 새 키를 누르세요. Esc로 취소합니다.
+es: Haz clic en una tecla y pulsa la nueva. Esc cancela.
+pt-BR: Clique numa tecla e aperte a nova. Esc cancela.
+de: Klick auf eine Taste und drück dann die neue. Esc bricht ab.
+fr: Cliquez sur une touche, puis appuyez sur la nouvelle. Échap annule.
+ru: Щёлкните по клавише, затем нажмите новую. Esc — отмена.
+pl: Kliknij klawisz, a potem naciśnij nowy. Esc anuluje.
+
+en: Reset to defaults
+zh-CN: 恢复默认
+ja: 初期設定に戻す
+ko: 기본값으로 초기화
+es: Restablecer valores
+pt-BR: Restaurar padrões
+de: Auf Standard zurücksetzen
+fr: Rétablir par défaut
+ru: Сбросить по умолчанию
+pl: Przywróć domyślne
+
+en: Press a key...
+zh-CN: 请按下按键...
+ja: キーを押してください...
+ko: 키를 누르세요...
+es: Pulsa una tecla...
+pt-BR: Aperte uma tecla...
+de: Taste drücken...
+fr: Appuyez sur une touche...
+ru: Нажмите клавишу...
+pl: Naciśnij klawisz...
+
+en: That key is also bound to {0}.
+zh-CN: 该按键也绑定到了 {0}。
+ja: そのキーは {0} にも割り当てられている。
+ko: 그 키는 {0}에도 지정되어 있습니다.
+es: Esa tecla también está asignada a {0}.
+pt-BR: Essa tecla também está atribuída a {0}.
+de: Diese Taste ist auch mit {0} belegt.
+fr: Cette touche est aussi attribuée à {0}.
+ru: Эта клавиша также назначена на «{0}».
+pl: Ten klawisz jest też przypisany do: {0}.
+
+en: {0}  (pad)
+zh-CN: {0}  （手柄）
+ja: {0}  （パッド）
+ko: {0}  (패드)
+es: {0}  (mando)
+pt-BR: {0}  (controle)
+de: {0}  (Pad)
+fr: {0}  (manette)
+ru: {0}  (геймпад)
+pl: {0}  (pad)
+
+en: {0}  (2nd key)
+zh-CN: {0}  （第二按键）
+ja: {0}  （第2キー）
+ko: {0}  (보조 키)
+es: {0}  (2.ª tecla)
+pt-BR: {0}  (2ª tecla)
+de: {0}  (2. Taste)
+fr: {0}  (2e touche)
+ru: {0}  (2-я клавиша)
+pl: {0}  (2. klawisz)
+
+key: direction.up
+en: up
+zh-CN: 上
+ja: 上
+ko: 위
+es: arriba
+pt-BR: cima
+de: hoch
+fr: haut
+ru: вверх
+pl: góra
+
+key: direction.down
+en: down
+zh-CN: 下
+ja: 下
+ko: 아래
+es: abajo
+pt-BR: baixo
+de: runter
+fr: bas
+ru: вниз
+pl: dół
+
+key: direction.left
+en: left
+zh-CN: 左
+ja: 左
+ko: 왼쪽
+es: izquierda
+pt-BR: esquerda
+de: links
+fr: gauche
+ru: влево
+pl: lewo
+
+key: direction.right
+en: right
+zh-CN: 右
+ja: 右
+ko: 오른쪽
+es: derecha
+pt-BR: direita
+de: rechts
+fr: droite
+ru: вправо
+pl: prawo
+
+# Action names in the key list
+
+en: Move
+zh-CN: 移动
+ja: 移動
+ko: 이동
+es: Moverse
+pt-BR: Mover
+de: Bewegen
+fr: Se déplacer
+ru: Движение
+pl: Ruch
+
+en: Sprint
+zh-CN: 冲刺
+ja: ダッシュ
+ko: 달리기
+es: Esprintar
+pt-BR: Correr
+de: Sprinten
+fr: Sprinter
+ru: Бег
+pl: Sprint
+
+en: Jump
+zh-CN: 跳跃
+ja: ジャンプ
+ko: 점프
+es: Saltar
+pt-BR: Pular
+de: Springen
+fr: Sauter
+ru: Прыжок
+pl: Skok
+
+en: Interact / pick up
+zh-CN: 互动 / 拾取
+ja: 調べる / 拾う
+ko: 상호작용 / 줍기
+es: Interactuar / recoger
+pt-BR: Interagir / pegar
+de: Interagieren / aufheben
+fr: Interagir / ramasser
+ru: Взаимодействие / подобрать
+pl: Interakcja / podnieś
+
+en: Use / throw
+zh-CN: 使用 / 投掷
+ja: 使う / 投げる
+ko: 사용 / 던지기
+es: Usar / lanzar
+pt-BR: Usar / arremessar
+de: Benutzen / werfen
+fr: Utiliser / lancer
+ru: Использовать / бросок
+pl: Użyj / rzuć
+
+en: Drop / hold to set down
+zh-CN: 丢下 / 按住轻放
+ja: 落とす / 長押しでそっと置く
+ko: 떨어뜨리기 / 길게 눌러 내려놓기
+es: Soltar / mantener para dejar
+pt-BR: Soltar / segurar para pousar
+de: Fallenlassen / halten zum Absetzen
+fr: Lâcher / maintenir pour poser
+ru: Бросить / удерживать, чтобы поставить
+pl: Upuść / przytrzymaj, by odłożyć
+
+en: Rotate held object
+zh-CN: 旋转手持物品
+ja: 持っている物を回す
+ko: 들고 있는 물건 돌리기
+es: Girar objeto sujetado
+pt-BR: Girar objeto segurado
+de: Gehaltenen Gegenstand drehen
+fr: Tourner l'objet tenu
+ru: Вращать предмет в руках
+pl: Obracaj trzymany przedmiot
+
+en: Scan
+zh-CN: 扫描
+ja: スキャン
+ko: 스캔
+es: Escanear
+pt-BR: Escanear
+de: Scannen
+fr: Scanner
+ru: Сканирование
+pl: Skanuj
+
+en: Flashlight
+zh-CN: 手电筒
+ja: 懐中電灯
+ko: 손전등
+es: Linterna
+pt-BR: Lanterna
+de: Taschenlampe
+fr: Lampe torche
+ru: Фонарик
+pl: Latarka
+
+en: Hand slot 1
+zh-CN: 手持栏位 1
+ja: 手のスロット1
+ko: 손 슬롯 1
+es: Ranura de mano 1
+pt-BR: Espaço de mão 1
+de: Handplatz 1
+fr: Emplacement de main 1
+ru: Слот руки 1
+pl: Slot ręki 1
+
+en: Hand slot 2
+zh-CN: 手持栏位 2
+ja: 手のスロット2
+ko: 손 슬롯 2
+es: Ranura de mano 2
+pt-BR: Espaço de mão 2
+de: Handplatz 2
+fr: Emplacement de main 2
+ru: Слот руки 2
+pl: Slot ręki 2
+
+en: Inventory
+zh-CN: 物品栏
+ja: インベントリ
+ko: 인벤토리
+es: Inventario
+pt-BR: Inventário
+de: Inventar
+fr: Inventaire
+ru: Инвентарь
+pl: Ekwipunek
+
+en: Push to talk
+zh-CN: 按键说话
+ja: プッシュトゥトーク
+ko: 눌러서 말하기
+es: Pulsar para hablar
+pt-BR: Apertar para falar
+de: Push-to-Talk
+fr: Appuyer pour parler
+ru: Говорить по нажатию
+pl: Naciśnij, by mówić
+
+en: Radio
+zh-CN: 对讲机
+ja: 無線
+ko: 무전기
+es: Radio
+pt-BR: Rádio
+de: Funk
+fr: Radio
+ru: Рация
+pl: Radio
+
+en: Give gear / take a fallen crewmate's
+zh-CN: 递出装备 / 拿走倒下队友的装备
+ja: 装備を渡す / 倒れた仲間の装備を取る
+ko: 장비 건네기 / 쓰러진 동료의 장비 가져오기
+es: Dar equipo / coger el de un compañero caído
+pt-BR: Dar equipamento / pegar o de um colega caído
+de: Ausrüstung geben / die eines gefallenen Kollegen nehmen
+fr: Donner du matériel / prendre celui d'un coéquipier à terre
+ru: Передать снаряжение / забрать у павшего напарника
+pl: Daj sprzęt / weź sprzęt poległego kolegi
+
+en: Text chat
+zh-CN: 文字聊天
+ja: テキストチャット
+ko: 문자 채팅
+es: Chat de texto
+pt-BR: Chat de texto
+de: Textchat
+fr: Chat textuel
+ru: Текстовый чат
+pl: Czat tekstowy
+
+en: Free camera (photo)
+zh-CN: 自由镜头（拍照）
+ja: フリーカメラ（写真）
+ko: 자유 카메라(사진)
+es: Cámara libre (foto)
+pt-BR: Câmera livre (foto)
+de: Freie Kamera (Foto)
+fr: Caméra libre (photo)
+ru: Свободная камера (фото)
+pl: Wolna kamera (zdjęcia)
+
+en: Hide the HUD (clips)
+zh-CN: 隐藏界面（录制）
+ja: HUDを隠す（録画用）
+ko: HUD 숨기기(클립용)
+es: Ocultar el HUD (clips)
+pt-BR: Ocultar o HUD (clipes)
+de: HUD ausblenden (Clips)
+fr: Masquer l'ATH (clips)
+ru: Скрыть интерфейс (для клипов)
+pl: Ukryj HUD (klipy)
+
+en: Ping
+zh-CN: 标记
+ja: ピン
+ko: 핑
+es: Marcar
+pt-BR: Marcar
+de: Markieren
+fr: Marquer
+ru: Метка
+pl: Znacznik
+
+en: Emote: point
+zh-CN: 表情：指向
+ja: エモート：指さす
+ko: 감정 표현: 가리키기
+es: Gesto: señalar
+pt-BR: Gesto: apontar
+de: Geste: zeigen
+fr: Geste : pointer
+ru: Жест: указать
+pl: Gest: wskaż
+
+en: Emote: wave
+zh-CN: 表情：挥手
+ja: エモート：手を振る
+ko: 감정 표현: 손 흔들기
+es: Gesto: saludar
+pt-BR: Gesto: acenar
+de: Geste: winken
+fr: Geste : saluer
+ru: Жест: помахать
+pl: Gest: pomachaj
+
+en: Emote: panic
+zh-CN: 表情：惊慌
+ja: エモート：パニック
+ko: 감정 표현: 공황
+es: Gesto: pánico
+pt-BR: Gesto: pânico
+de: Geste: Panik
+fr: Geste : paniquer
+ru: Жест: паника
+pl: Gest: panika
+
+# Credits
+
+en: ARCHIVE / THOSE BEHIND THE BUILDING
+zh-CN: 档案 / 建筑背后的人
+ja: 記録保管庫 / この建物を作った者たち
+ko: 기록 보관소 / 이 건물을 만든 사람들
+es: ARCHIVO / QUIENES ESTÁN DETRÁS DEL EDIFICIO
+pt-BR: ARQUIVO / QUEM ESTÁ POR TRÁS DO PRÉDIO
+de: ARCHIV / DIE LEUTE HINTER DEM GEBÄUDE
+fr: ARCHIVES / CEUX QUI SONT DERRIÈRE LE BÂTIMENT
+ru: АРХИВ / ТЕ, КТО СТОИТ ЗА ЗДАНИЕМ
+pl: ARCHIWUM / CI, KTÓRZY STOJĄ ZA BUDYNKIEM
+
+en: CREDITS
+zh-CN: 制作人员
+ja: クレジット
+ko: 크레딧
+es: CRÉDITOS
+pt-BR: CRÉDITOS
+de: MITWIRKENDE
+fr: CRÉDITS
+ru: АВТОРЫ
+pl: AUTORZY
+
+en: A game by Zeyad Games.
+zh-CN: Zeyad Games 出品。
+ja: Zeyad Games 制作。
+ko: Zeyad Games 제작.
+es: Un juego de Zeyad Games.
+pt-BR: Um jogo da Zeyad Games.
+de: Ein Spiel von Zeyad Games.
+fr: Un jeu de Zeyad Games.
+ru: Игра от Zeyad Games.
+pl: Gra od Zeyad Games.
+
+# Wardrobe
+
+en: WORKER KIT / ISSUE AND IDENTIFICATION
+zh-CN: 工人装备 / 发放与身份识别
+ja: 作業員装備 / 支給と身分確認
+ko: 작업자 장비 / 지급 및 신원 확인
+es: EQUIPO DEL TRABAJADOR / ENTREGA E IDENTIFICACIÓN
+pt-BR: KIT DO TRABALHADOR / ENTREGA E IDENTIFICAÇÃO
+de: ARBEITERAUSSTATTUNG / AUSGABE UND KENNZEICHNUNG
+fr: ÉQUIPEMENT OUVRIER / DOTATION ET IDENTIFICATION
+ru: КОМПЛЕКТ РАБОЧЕГО / ВЫДАЧА И ОПОЗНАНИЕ
+pl: WYPOSAŻENIE PRACOWNIKA / WYDANIE I IDENTYFIKACJA
+
+en: WARDROBE
+zh-CN: 衣柜
+ja: ワードローブ
+ko: 옷장
+es: VESTUARIO
+pt-BR: GUARDA-ROUPA
+de: GARDEROBE
+fr: GARDE-ROBE
+ru: ГАРДЕРОБ
+pl: SZATNIA
+
+en: Drag to turn. Anything you select is tried on.
+zh-CN: 拖动可旋转。选中的东西会直接试穿。
+ja: ドラッグで回転。選んだものは試着される。
+ko: 드래그해서 돌립니다. 선택한 것은 바로 입어 봅니다.
+es: Arrastra para girar. Todo lo que selecciones se prueba.
+pt-BR: Arraste para girar. Tudo o que você seleciona é experimentado.
+de: Ziehen zum Drehen. Alles, was du auswählst, wird anprobiert.
+fr: Faites glisser pour tourner. Tout ce que vous sélectionnez est essayé.
+ru: Перетаскивайте, чтобы повернуть. Всё, что вы выберете, сразу примеряется.
+pl: Przeciągnij, żeby obrócić. Wszystko, co wybierzesz, jest od razu przymierzane.
+
+en: Done
+zh-CN: 完成
+ja: 完了
+ko: 완료
+es: Listo
+pt-BR: Pronto
+de: Fertig
+fr: Terminé
+ru: Готово
+pl: Gotowe
+
+en: Nobody to dress
+zh-CN: 没有可换装的人
+ja: 着替えさせる相手がいない
+ko: 옷을 입힐 사람이 없습니다
+es: No hay a quién vestir
+pt-BR: Ninguém para vestir
+de: Niemand zum Einkleiden
+fr: Personne à habiller
+ru: Некого одевать
+pl: Nie ma kogo ubrać
+
+en: The wardrobe works in a game, at the HQ lockers.
+zh-CN: 衣柜只能在游戏中、总部的储物柜处使用。
+ja: ワードローブはゲーム中、本部のロッカーで使える。
+ko: 옷장은 게임 중 본부의 사물함에서 사용할 수 있습니다.
+es: El vestuario funciona dentro de una partida, en los casilleros de la central.
+pt-BR: O guarda-roupa funciona dentro de uma partida, nos armários do QG.
+de: Die Garderobe funktioniert im Spiel, an den Spinden der Zentrale.
+fr: La garde-robe fonctionne en partie, aux casiers du QG.
+ru: Гардероб работает в игре, у шкафчиков на базе.
+pl: Szatnia działa w trakcie gry, przy szafkach w bazie.
+
+en: WEARING
+zh-CN: 穿戴中
+ja: 着用中
+ko: 착용 중
+es: PUESTO
+pt-BR: USANDO
+de: ANGEZOGEN
+fr: PORTÉ
+ru: НАДЕТО
+pl: ZAŁOŻONE
+
+en: FREE
+zh-CN: 免费
+ja: 無料
+ko: 무료
+es: GRATIS
+pt-BR: GRÁTIS
+de: GRATIS
+fr: GRATUIT
+ru: БЕСПЛАТНО
+pl: ZA DARMO
+
+en: OWNED
+zh-CN: 已拥有
+ja: 所持
+ko: 보유
+es: EN PROPIEDAD
+pt-BR: ADQUIRIDO
+de: IM BESITZ
+fr: POSSÉDÉ
+ru: КУПЛЕНО
+pl: POSIADANE
+
+en: REWARD
+zh-CN: 奖励
+ja: 報酬
+ko: 보상
+es: RECOMPENSA
+pt-BR: RECOMPENSA
+de: BELOHNUNG
+fr: RÉCOMPENSE
+ru: НАГРАДА
+pl: NAGRODA
+
+en: You're wearing it.
+zh-CN: 你正穿着它。
+ja: 着用している。
+ko: 착용하고 있습니다.
+es: Lo llevas puesto.
+pt-BR: Você está usando.
+de: Du trägst es gerade.
+fr: Vous le portez.
+ru: Это на вас.
+pl: Masz to na sobie.
+
+en: Wearing
+zh-CN: 穿戴中
+ja: 着用中
+ko: 착용 중
+es: Puesto
+pt-BR: Usando
+de: Angezogen
+fr: Porté
+ru: Надето
+pl: Założone
+
+en: Earned: {0}.
+zh-CN: 已获得：{0}。
+ja: 獲得済み：{0}。
+ko: 획득: {0}.
+es: Conseguido: {0}.
+pt-BR: Conquistado: {0}.
+de: Verdient: {0}.
+fr: Obtenu : {0}.
+ru: Получено: {0}.
+pl: Zdobyte: {0}.
+
+en: Bought. It's yours.
+zh-CN: 已购买。它是你的了。
+ja: 購入済み。あなたの物だ。
+ko: 구매했습니다. 이제 당신 것입니다.
+es: Comprado. Es tuyo.
+pt-BR: Comprado. É seu.
+de: Gekauft. Es gehört dir.
+fr: Acheté. C'est à vous.
+ru: Куплено. Теперь это ваше.
+pl: Kupione. Należy do ciebie.
+
+en: Free for every crew member.
+zh-CN: 对所有队员免费。
+ja: クルー全員が無料で使える。
+ko: 모든 팀원에게 무료입니다.
+es: Gratis para todo el equipo.
+pt-BR: Grátis para todos da equipe.
+de: Gratis für jedes Teammitglied.
+fr: Gratuit pour tous les membres de l'équipe.
+ru: Бесплатно для каждого в бригаде.
+pl: Za darmo dla każdego w ekipie.
+
+en: Wear it
+zh-CN: 穿上
+ja: 着る
+ko: 착용하기
+es: Ponérmelo
+pt-BR: Usar
+de: Anziehen
+fr: Le porter
+ru: Надеть
+pl: Załóż
+
+en: ${0:N0}, paid by the company at the HQ.
+zh-CN: ${0:N0}，在总部由公司支付。
+ja: ${0:N0}。本部で会社が支払う。
+ko: ${0:N0}, 본부에서 회사가 지불합니다.
+es: ${0:N0}, lo paga la empresa en la central.
+pt-BR: ${0:N0}, pagos pela empresa no QG.
+de: ${0:N0}, bezahlt von der Firma in der Zentrale.
+fr: ${0:N0}, payés par l'entreprise au QG.
+ru: ${0:N0}, оплачивает компания на базе.
+pl: ${0:N0}, płaci firma w bazie.
+
+en: ${0:N0} from the company's ${1:N0}.
+zh-CN: 从公司的 ${1:N0} 中支出 ${0:N0}。
+ja: 会社の ${1:N0} から ${0:N0}。
+ko: 회사 자금 ${1:N0} 중 ${0:N0}.
+es: ${0:N0} de los ${1:N0} de la empresa.
+pt-BR: ${0:N0} dos ${1:N0} da empresa.
+de: ${0:N0} aus den ${1:N0} der Firma.
+fr: ${0:N0} sur les ${1:N0} de l'entreprise.
+ru: ${0:N0} из ${1:N0} компании.
+pl: ${0:N0} z ${1:N0} firmy.
+
+en: Paying...
+zh-CN: 支付中...
+ja: 支払い中...
+ko: 결제 중...
+es: Pagando...
+pt-BR: Pagando...
+de: Wird bezahlt...
+fr: Paiement...
+ru: Оплата...
+pl: Płacenie...
+
+en: Buy for ${0:N0}
+zh-CN: 以 ${0:N0} 购买
+ja: ${0:N0} で購入
+ko: ${0:N0}에 구매
+es: Comprar por ${0:N0}
+pt-BR: Comprar por ${0:N0}
+de: Für ${0:N0} kaufen
+fr: Acheter pour ${0:N0}
+ru: Купить за ${0:N0}
+pl: Kup za ${0:N0}
+
+en: Reward for "{0}": {1}
+zh-CN: “{0}”的奖励：{1}
+ja: 「{0}」の報酬：{1}
+ko: "{0}" 보상: {1}
+es: Recompensa por «{0}»: {1}
+pt-BR: Recompensa por "{0}": {1}
+de: Belohnung für „{0}“: {1}
+fr: Récompense pour « {0} » : {1}
+ru: Награда за «{0}»: {1}
+pl: Nagroda za „{0}”: {1}
+
+en: A reward for an achievement.
+zh-CN: 某项成就的奖励。
+ja: 実績の報酬。
+ko: 도전 과제 보상입니다.
+es: Una recompensa por un logro.
+pt-BR: Uma recompensa por uma conquista.
+de: Eine Belohnung für einen Erfolg.
+fr: Une récompense pour un succès.
+ru: Награда за достижение.
+pl: Nagroda za osiągnięcie.
+
+en: Locked
+zh-CN: 未解锁
+ja: ロック中
+ko: 잠김
+es: Bloqueado
+pt-BR: Bloqueado
+de: Gesperrt
+fr: Verrouillé
+ru: Закрыто
+pl: Zablokowane
+
+en: an achievement
+zh-CN: 一项成就
+ja: 実績
+ko: 도전 과제
+es: un logro
+pt-BR: uma conquista
+de: ein Erfolg
+fr: un succès
+ru: достижение
+pl: osiągnięcie
+
+en: COMPANY FUNDS  ${0:N0}
+zh-CN: 公司资金  ${0:N0}
+ja: 会社資金  ${0:N0}
+ko: 회사 자금  ${0:N0}
+es: FONDOS DE LA EMPRESA  ${0:N0}
+pt-BR: CAIXA DA EMPRESA  ${0:N0}
+de: FIRMENKASSE  ${0:N0}
+fr: FONDS DE L'ENTREPRISE  ${0:N0}
+ru: СРЕДСТВА КОМПАНИИ  ${0:N0}
+pl: FUNDUSZE FIRMY  ${0:N0}
+
+en: COMPANY FUNDS  -
+zh-CN: 公司资金  -
+ja: 会社資金  -
+ko: 회사 자금  -
+es: FONDOS DE LA EMPRESA  -
+pt-BR: CAIXA DA EMPRESA  -
+de: FIRMENKASSE  -
+fr: FONDS DE L'ENTREPRISE  -
+ru: СРЕДСТВА КОМПАНИИ  -
+pl: FUNDUSZE FIRMY  -
+
+en: COVERALLS
+zh-CN: 连体工装
+ja: つなぎ
+ko: 작업복
+es: MONOS
+pt-BR: MACACÕES
+de: OVERALLS
+fr: COMBINAISONS
+ru: КОМБИНЕЗОНЫ
+pl: KOMBINEZONY
+
+en: HATS
+zh-CN: 帽子
+ja: 帽子
+ko: 모자
+es: SOMBREROS
+pt-BR: CHAPÉUS
+de: HÜTE
+fr: CHAPEAUX
+ru: ГОЛОВНЫЕ УБОРЫ
+pl: NAKRYCIA GŁOWY
+
+en: ACCESSORIES
+zh-CN: 配饰
+ja: アクセサリー
+ko: 액세서리
+es: ACCESORIOS
+pt-BR: ACESSÓRIOS
+de: ACCESSOIRES
+fr: ACCESSOIRES
+ru: АКСЕССУАРЫ
+pl: DODATKI
+
+# Achievements
+
+en: RECOVERED RECORDS / WORKER HISTORY
+zh-CN: 回收档案 / 工人履历
+ja: 回収記録 / 作業員の経歴
+ko: 회수 기록 / 작업자 이력
+es: REGISTROS RECUPERADOS / HISTORIAL DEL TRABAJADOR
+pt-BR: REGISTROS RECUPERADOS / HISTÓRICO DO TRABALHADOR
+de: GEBORGENE AKTEN / ARBEITERHISTORIE
+fr: ARCHIVES RÉCUPÉRÉES / PARCOURS DE L'OUVRIER
+ru: НАЙДЕННЫЕ ЗАПИСИ / ИСТОРИЯ РАБОЧЕГО
+pl: ODZYSKANE AKTA / HISTORIA PRACOWNIKA
+
+en: ACHIEVEMENTS
+zh-CN: 成就
+ja: 実績
+ko: 도전 과제
+es: LOGROS
+pt-BR: CONQUISTAS
+de: ERFOLGE
+fr: SUCCÈS
+ru: ДОСТИЖЕНИЯ
+pl: OSIĄGNIĘCIA
+
+en: EARNED
+zh-CN: 已达成
+ja: 獲得済み
+ko: 달성
+es: CONSEGUIDO
+pt-BR: CONQUISTADA
+de: ERREICHT
+fr: OBTENU
+ru: ПОЛУЧЕНО
+pl: ZDOBYTE
+
+en: LOCKED
+zh-CN: 未解锁
+ja: 未達成
+ko: 미달성
+es: BLOQUEADO
+pt-BR: BLOQUEADA
+de: GESPERRT
+fr: VERROUILLÉ
+ru: ЗАКРЫТО
+pl: ZABLOKOWANE
+
+en: {0} / {1} UNLOCKED
+zh-CN: 已解锁 {0} / {1}
+ja: {0} / {1} 解除
+ko: {0} / {1} 달성
+es: {0} / {1} DESBLOQUEADOS
+pt-BR: {0} / {1} DESBLOQUEADAS
+de: {0} / {1} FREIGESCHALTET
+fr: {0} / {1} DÉBLOQUÉS
+ru: ОТКРЫТО {0} / {1}
+pl: ODBLOKOWANO {0} / {1}
+
+en: STATS
+zh-CN: 统计
+ja: 統計
+ko: 통계
+es: ESTADÍSTICAS
+pt-BR: ESTATÍSTICAS
+de: STATISTIK
+fr: STATISTIQUES
+ru: СТАТИСТИКА
+pl: STATYSTYKI
+
+# The demo's end screen
+
+en: RECOVERY RECORD / DEMO COMPLETE
+zh-CN: 回收记录 / 试玩版完成
+ja: 回収記録 / 体験版クリア
+ko: 회수 기록 / 데모 완료
+es: REGISTRO DE RECUPERACIÓN / DEMO COMPLETADA
+pt-BR: REGISTRO DE RECUPERAÇÃO / DEMO CONCLUÍDA
+de: BERGUNGSPROTOKOLL / DEMO ABGESCHLOSSEN
+fr: REGISTRE DE RÉCUPÉRATION / DÉMO TERMINÉE
+ru: ЖУРНАЛ ВЫВОЗА / ДЕМО ПРОЙДЕНО
+pl: REJESTR ODZYSKU / DEMO UKOŃCZONE
+
+en: THANKS FOR PLAYING
+zh-CN: 感谢游玩
+ja: プレイしてくれてありがとう
+ko: 플레이해 주셔서 감사합니다
+es: GRACIAS POR JUGAR
+pt-BR: OBRIGADO POR JOGAR
+de: DANKE FÜRS SPIELEN
+fr: MERCI D'AVOIR JOUÉ
+ru: СПАСИБО ЗА ИГРУ
+pl: DZIĘKUJEMY ZA GRĘ
+
+en: That's the end of the ABANDONED demo.
+zh-CN: ABANDONED 试玩版到此结束。
+ja: ABANDONED 体験版はここまで。
+ko: ABANDONED 데모는 여기까지입니다.
+es: Hasta aquí llega la demo de ABANDONED.
+pt-BR: Este é o fim da demo de ABANDONED.
+de: Das war die Demo von ABANDONED.
+fr: C'est la fin de la démo d'ABANDONED.
+ru: На этом демо ABANDONED заканчивается.
+pl: To koniec dema ABANDONED.
+
+en: The full game has more buildings, more threats, more loot and a lot more floors to fall through. Wishlisting on Steam is the best way to help a solo developer.
+zh-CN: 完整版有更多建筑、更多威胁、更多战利品，还有多得多的地板可以让你掉下去。在 Steam 上加入愿望单，是帮助独立开发者的最好方式。
+ja: 製品版には、もっと多くの建物、脅威、回収品、そして踏み抜ける床がたっぷりある。Steamでウィッシュリストに入れるのが、個人開発者への一番の応援になる。
+ko: 정식 버전에는 더 많은 건물, 더 많은 위협, 더 많은 전리품, 그리고 떨어질 바닥이 훨씬 많습니다. Steam에서 찜하는 것이 1인 개발자를 돕는 가장 좋은 방법입니다.
+es: El juego completo tiene más edificios, más amenazas, más botín y muchos más suelos por los que caer. Añadirlo a tu lista de deseados en Steam es la mejor forma de ayudar a un desarrollador en solitario.
+pt-BR: O jogo completo tem mais prédios, mais ameaças, mais saque e muito mais pisos para despencar. Adicionar à lista de desejos no Steam é a melhor forma de ajudar um desenvolvedor solo.
+de: Das volle Spiel hat mehr Gebäude, mehr Bedrohungen, mehr Beute und viel mehr Böden zum Durchbrechen. Ein Eintrag auf der Steam-Wunschliste hilft einem Solo-Entwickler am meisten.
+fr: Le jeu complet propose plus de bâtiments, plus de menaces, plus de butin et bien plus de planchers à traverser. L'ajouter à votre liste de souhaits Steam est la meilleure façon d'aider un développeur solo.
+ru: В полной игре больше зданий, больше угроз, больше добычи и гораздо больше полов, сквозь которые можно провалиться. Добавьте игру в список желаемого в Steam — это лучшая помощь разработчику-одиночке.
+pl: Pełna gra ma więcej budynków, więcej zagrożeń, więcej łupów i dużo więcej podłóg, przez które można spaść. Dodanie do listy życzeń na Steamie to najlepszy sposób, żeby pomóc samotnemu twórcy.
+
+en: Wishlist on Steam
+zh-CN: 在 Steam 上加入愿望单
+ja: Steamでウィッシュリストに追加
+ko: Steam에서 찜하기
+es: Añadir a deseados en Steam
+pt-BR: Adicionar à lista de desejos no Steam
+de: Auf die Steam-Wunschliste
+fr: Ajouter à la liste de souhaits Steam
+ru: В список желаемого в Steam
+pl: Dodaj do listy życzeń na Steamie
+
+en: Start over as a new hire
+zh-CN: 以新雇员身份重新开始
+ja: 新人としてやり直す
+ko: 신입으로 다시 시작
+es: Empezar de nuevo como nuevo empleado
+pt-BR: Recomeçar como novo contratado
+de: Als Neuling von vorn anfangen
+fr: Recommencer comme nouvelle recrue
+ru: Начать заново новичком
+pl: Zacznij od nowa jako nowy pracownik
+
+en: The host can start over to play again.
+zh-CN: 房主可以重新开始，再玩一次。
+ja: ホストがやり直せば、もう一度遊べる。
+ko: 호스트가 다시 시작하면 또 플레이할 수 있습니다.
+es: El anfitrión puede empezar de nuevo para volver a jugar.
+pt-BR: O anfitrião pode recomeçar para jogar de novo.
+de: Der Host kann von vorn anfangen, um noch einmal zu spielen.
+fr: L'hôte peut recommencer pour rejouer.
+ru: Хост может начать заново, чтобы сыграть ещё раз.
+pl: Host może zacząć od nowa, żeby zagrać jeszcze raz.
+
+en: Back to the HQ
+zh-CN: 返回总部
+ja: 本部に戻る
+ko: 본부로 돌아가기
+es: Volver a la central
+pt-BR: Voltar ao QG
+de: Zurück zur Zentrale
+fr: Retour au QG
+ru: Вернуться на базу
+pl: Wróć do bazy
+
+en: JOBS {0}   BEST HAUL ${1:N0}   COMPANY {2}   LEVEL {3}
+zh-CN: 任务 {0}   最高收获 ${1:N0}   公司 {2}   等级 {3}
+ja: 仕事 {0}   最高回収額 ${1:N0}   会社 {2}   レベル {3}
+ko: 작업 {0}   최고 수확 ${1:N0}   회사 {2}   레벨 {3}
+es: TRABAJOS {0}   MEJOR CARGA ${1:N0}   EMPRESA {2}   NIVEL {3}
+pt-BR: TRABALHOS {0}   MELHOR CARGA ${1:N0}   EMPRESA {2}   NÍVEL {3}
+de: AUFTRÄGE {0}   BESTE AUSBEUTE ${1:N0}   FIRMA {2}   STUFE {3}
+fr: MISSIONS {0}   MEILLEUR CHARGEMENT ${1:N0}   ENTREPRISE {2}   NIVEAU {3}
+ru: ЗАКАЗЫ {0}   ЛУЧШИЙ УЛОВ ${1:N0}   КОМПАНИЯ {2}   УРОВЕНЬ {3}
+pl: ZLECENIA {0}   NAJLEPSZY UROBEK ${1:N0}   FIRMA {2}   POZIOM {3}
+
+en: DEBT ${0:N0}
+zh-CN: 负债 ${0:N0}
+ja: 負債 ${0:N0}
+ko: 부채 ${0:N0}
+es: DEUDA ${0:N0}
+pt-BR: DÍVIDA ${0:N0}
+de: SCHULDEN ${0:N0}
+fr: DETTE ${0:N0}
+ru: ДОЛГ ${0:N0}
+pl: DŁUG ${0:N0}
+
+# Early-access notice and watermark
+
+en: BEFORE YOU ENTER / EARLY ACCESS RECORD
+zh-CN: 进入之前 / 抢先体验记录
+ja: 立ち入る前に / 早期アクセス記録
+ko: 들어가기 전에 / 앞서 해보기 기록
+es: ANTES DE ENTRAR / REGISTRO DE ACCESO ANTICIPADO
+pt-BR: ANTES DE ENTRAR / REGISTRO DE ACESSO ANTECIPADO
+de: BEVOR DU EINTRITTST / EARLY-ACCESS-VERMERK
+fr: AVANT D'ENTRER / DOSSIER D'ACCÈS ANTICIPÉ
+ru: ПРЕЖДЕ ЧЕМ ВОЙТИ / ЗАПИСЬ РАННЕГО ДОСТУПА
+pl: ZANIM WEJDZIESZ / NOTA WCZESNEGO DOSTĘPU
+
+en: You're playing a very early build of ABANDONED. The gameplay is a work in progress: expect bugs, rough edges and things that change between versions.
+zh-CN: 你正在游玩 ABANDONED 的一个非常早期的版本。玩法仍在开发中：请做好遇到 bug、粗糙之处以及版本间变动的准备。
+ja: これは ABANDONED のごく初期のビルドだ。ゲームプレイは開発途中で、バグや粗い部分、バージョンごとの変更がある。
+ko: 지금 플레이하는 것은 ABANDONED의 아주 초기 빌드입니다. 게임플레이는 아직 개발 중이므로 버그와 거친 부분, 버전마다 바뀌는 내용이 있을 수 있습니다.
+es: Estás jugando una versión muy temprana de ABANDONED. La jugabilidad está en desarrollo: espera errores, asperezas y cosas que cambian entre versiones.
+pt-BR: Você está jogando uma versão bem inicial de ABANDONED. A jogabilidade está em desenvolvimento: espere bugs, arestas e coisas que mudam entre versões.
+de: Du spielst einen sehr frühen Build von ABANDONED. Das Gameplay ist in Arbeit: Rechne mit Bugs, Ecken und Kanten und Dingen, die sich von Version zu Version ändern.
+fr: Vous jouez à une version très précoce d'ABANDONED. Le gameplay est en cours de développement : attendez-vous à des bugs, des aspérités et des éléments qui changent d'une version à l'autre.
+ru: Вы играете в очень раннюю сборку ABANDONED. Игровой процесс ещё в разработке: ждите ошибок, шероховатостей и изменений от версии к версии.
+pl: Grasz w bardzo wczesną wersję ABANDONED. Rozgrywka jest wciąż w budowie: spodziewaj się błędów, niedoróbek i rzeczy, które zmieniają się między wersjami.
+
+en: Send feedback, feature wishes and problem reports to:
+zh-CN: 请将反馈、功能建议和问题报告发送至：
+ja: フィードバック、要望、不具合の報告はこちらへ：
+ko: 피드백, 기능 요청, 문제 신고는 아래로 보내 주세요:
+es: Envía comentarios, ideas y avisos de problemas a:
+pt-BR: Envie feedback, pedidos de recursos e relatos de problemas para:
+de: Schick Feedback, Wünsche und Problemberichte an:
+fr: Envoyez vos retours, vos souhaits et vos signalements à :
+ru: Отзывы, пожелания и сообщения о проблемах отправляйте на:
+pl: Opinie, pomysły i zgłoszenia problemów wysyłaj na:
+
+en: Send feedback, feature wishes and problem reports with the buttons below.
+zh-CN: 请使用下方按钮发送反馈、功能建议和问题报告。
+ja: フィードバック、要望、不具合の報告は下のボタンから送れる。
+ko: 아래 버튼으로 피드백, 기능 요청, 문제 신고를 보내 주세요.
+es: Envía comentarios, ideas y avisos de problemas con los botones de abajo.
+pt-BR: Envie feedback, pedidos de recursos e relatos de problemas pelos botões abaixo.
+de: Schick Feedback, Wünsche und Problemberichte über die Schaltflächen unten.
+fr: Envoyez vos retours, vos souhaits et vos signalements avec les boutons ci-dessous.
+ru: Отзывы, пожелания и сообщения о проблемах отправляйте кнопками ниже.
+pl: Opinie, pomysły i zgłoszenia problemów wysyłaj przyciskami poniżej.
+
+en: Email feedback
+zh-CN: 通过邮件反馈
+ja: メールで送る
+ko: 이메일로 피드백
+es: Enviar por correo
+pt-BR: Enviar por e-mail
+de: Feedback per E-Mail
+fr: Envoyer par e-mail
+ru: Написать на почту
+pl: Wyślij e-mailem
+
+en: Copy email
+zh-CN: 复制邮箱
+ja: アドレスをコピー
+ko: 이메일 복사
+es: Copiar correo
+pt-BR: Copiar e-mail
+de: E-Mail kopieren
+fr: Copier l'e-mail
+ru: Скопировать адрес
+pl: Skopiuj e-mail
+
+en: Steam discussions
+zh-CN: Steam 讨论区
+ja: Steamスレッド
+ko: Steam 토론
+es: Discusiones de Steam
+pt-BR: Discussões do Steam
+de: Steam-Diskussionen
+fr: Discussions Steam
+ru: Обсуждения Steam
+pl: Dyskusje Steam
+
+en: Send feedback
+zh-CN: 发送反馈
+ja: フィードバックを送る
+ko: 피드백 보내기
+es: Enviar comentarios
+pt-BR: Enviar feedback
+de: Feedback senden
+fr: Envoyer un retour
+ru: Отправить отзыв
+pl: Wyślij opinię
+
+en: Continue
+zh-CN: 继续
+ja: 続ける
+ko: 계속
+es: Continuar
+pt-BR: Continuar
+de: Weiter
+fr: Continuer
+ru: Продолжить
+pl: Dalej
+
+en: Copied.
+zh-CN: 已复制。
+ja: コピーした。
+ko: 복사했습니다.
+es: Copiado.
+pt-BR: Copiado.
+de: Kopiert.
+fr: Copié.
+ru: Скопировано.
+pl: Skopiowano.
+
+en: VERY EARLY ACCESS - GAMEPLAY WORK IN PROGRESS
+zh-CN: 极早期抢先体验 - 玩法仍在开发中
+ja: 超早期アクセス - ゲームプレイ開発中
+ko: 초기 앞서 해보기 - 게임플레이 개발 중
+es: ACCESO MUY ANTICIPADO - JUGABILIDAD EN DESARROLLO
+pt-BR: ACESSO BEM ANTECIPADO - JOGABILIDADE EM DESENVOLVIMENTO
+de: SEHR FRÜHER ZUGANG - GAMEPLAY IN ARBEIT
+fr: ACCÈS TRÈS ANTICIPÉ - GAMEPLAY EN COURS DE DÉVELOPPEMENT
+ru: ОЧЕНЬ РАННИЙ ДОСТУП - ИГРОВОЙ ПРОЦЕСС В РАЗРАБОТКЕ
+pl: BARDZO WCZESNY DOSTĘP - ROZGRYWKA W BUDOWIE
+
+en: EXCLUSIVE EARLY ACCESS
+zh-CN: 独家抢先体验
+ja: 限定早期アクセス
+ko: 독점 앞서 해보기
+es: ACCESO ANTICIPADO EXCLUSIVO
+pt-BR: ACESSO ANTECIPADO EXCLUSIVO
+de: EXKLUSIVER EARLY ACCESS
+fr: ACCÈS ANTICIPÉ EXCLUSIF
+ru: ЭКСКЛЮЗИВНЫЙ РАННИЙ ДОСТУП
+pl: EKSKLUZYWNY WCZESNY DOSTĘP

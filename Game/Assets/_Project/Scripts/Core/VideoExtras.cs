@@ -92,7 +92,7 @@ namespace Abandoned.Core
             fpsLabel.style.display = UnityEngine.UIElements.DisplayStyle.Flex;
             if (Time.unscaledTime < nextFpsText) return;
             nextFpsText = Time.unscaledTime + 0.5f;
-            fpsLabel.text = $"{fps:0} FPS";
+            fpsLabel.text = Loc.T("{0:0} FPS", fps);
         }
     }
 }

@@ -77,7 +77,7 @@ namespace Abandoned.Equipment
                 RecallRpc();
                 return;
             }
-            UI.HudCallout.Set(this, $"DRONE  {battery:0} s      {InputBindings.Display("Use")}  bring it home      {InputBindings.Display("Sprint")} / {InputBindings.Display("Crouch")}  up / down");
+            UI.HudCallout.Set(this, Loc.T("DRONE  {0:0} s      {1}  bring it home      {2} / {3}  up / down", battery, InputBindings.Display("Use"), InputBindings.Display("Sprint"), InputBindings.Display("Crouch")));
             float sens = 0.12f * GameSettings.Sensitivity;
             yaw += f.Look.x * sens;
             pitch = Mathf.Clamp(pitch - f.Look.y * sens, -70f, 70f);

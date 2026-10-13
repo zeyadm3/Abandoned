@@ -1,4 +1,5 @@
 using Abandoned.Audio;
+using Abandoned.Core;
 using Abandoned.UI;
 using Unity.Netcode;
 
@@ -15,7 +16,7 @@ namespace Abandoned.Company
         [Rpc(SendTo.Everyone)]
         private void ToyScoreRpc(string text)
         {
-            ToastFeed.Show("BREAK ROOM", text, null, ToastFeed.Kind.Good);
+            ToastFeed.Show(Loc.T("BREAK ROOM"), Loc.FromWire(text), null, ToastFeed.Kind.Good);
             GameAudio.PlayUi(SoundId.ToyScore, 0.8f);
         }
     }

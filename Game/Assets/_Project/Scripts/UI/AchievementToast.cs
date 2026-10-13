@@ -28,7 +28,7 @@ namespace Abandoned.UI
             if (waiting.Count == 0) return;
             Showing = waiting.Dequeue();
             until = Time.time + Seconds;
-            ToastFeed.Show("ACHIEVEMENT UNLOCKED", $"{Showing.DisplayName}: {Showing.Description}", "icon/trophy", ToastFeed.Kind.Good);
+            ToastFeed.Show(Loc.T("ACHIEVEMENT UNLOCKED"), $"{Showing.LocalName}: {Showing.LocalDescription}", "icon/trophy", ToastFeed.Kind.Good);
         }
     }
 }

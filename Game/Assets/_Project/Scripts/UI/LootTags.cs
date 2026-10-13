@@ -85,7 +85,7 @@ namespace Abandoned.UI
             {
                 ready = HudLayer.Add(new VisualElement(), "scan-ready");
                 if (ready == null) return;
-                var text = new Label("SCAN FOR LOOT") { pickingMode = PickingMode.Ignore };
+                var text = new Label(Loc.T("SCAN FOR LOOT")) { pickingMode = PickingMode.Ignore };
                 text.AddToClassList("scan-ready__text");
                 ready.Add(text);
             }
@@ -168,7 +168,7 @@ namespace Abandoned.UI
             if (key == t.Key) return;
             t.Key = key;
             t.Value.text = $"${value:N0}";
-            t.Name.text = d.DisplayName;
+            t.Name.text = d.LocalName;
             int tier = d.Jackpot ? 3 : Money.Tier(value);
             for (int i = 1; i <= 3; i++) t.Root.EnableInClassList($"loot-tag--t{i}", tier == i);
             t.Root.EnableInClassList("loot-tag--broken", item.FullValue > 0 && value < item.FullValue * 0.5f);
@@ -178,17 +178,17 @@ namespace Abandoned.UI
             if (!full) return;
             string carry = d.CarryClass switch
             {
-                CarryClass.Pocket => "POCKET",
-                CarryClass.OneHand => "ONE HAND",
-                CarryClass.TwoHand => "TWO HANDS",
-                CarryClass.Heavy => "HEAVY - 2 PEOPLE",
-                _ => "HUGE - A WHOLE CREW",
+                CarryClass.Pocket => Loc.T("POCKET"),
+                CarryClass.OneHand => Loc.T("ONE HAND"),
+                CarryClass.TwoHand => Loc.T("TWO HANDS"),
+                CarryClass.Heavy => Loc.T("HEAVY - 2 PEOPLE"),
+                _ => Loc.T("HUGE - A WHOLE CREW"),
             };
             UiKit.Tag(t.Meta, carry).AddToClassList("tag--dim");
-            if (d.Fragility >= Fragility.High) UiKit.Tag(t.Meta, d.Fragility == Fragility.Extreme ? "VERY FRAGILE" : "FRAGILE").AddToClassList("tag--warn");
-            if (d.Jackpot) UiKit.Tag(t.Meta, "JACKPOT");
+            if (d.Fragility >= Fragility.High) UiKit.Tag(t.Meta, d.Fragility == Fragility.Extreme ? Loc.T("VERY FRAGILE") : Loc.T("FRAGILE")).AddToClassList("tag--warn");
+            if (d.Jackpot) UiKit.Tag(t.Meta, Loc.T("JACKPOT"));
             if (item.FullValue > 0 && value < item.FullValue * 0.5f)
-                UiKit.Tag(t.Meta, "DAMAGED").AddToClassList("tag--warn");
+                UiKit.Tag(t.Meta, Loc.T("DAMAGED")).AddToClassList("tag--warn");
         }
 
         private static void Place(Tag t, Bounds bounds, Camera camera)

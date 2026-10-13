@@ -31,8 +31,8 @@ namespace Abandoned.UI
 
         public static string Text(HintId id)
         {
-            // 0.19.9: the text table wins (translations); the English below stays as the fallback.
-            if (TextTable.Get("hint." + id) is string table) return TextTable.Format(table);
+            // 0.19.9: the text sheet wins (Text/tips, every language since 0.24.8); the English below stays as the fallback.
+            if (Loc.K("hint." + id, null) is string table) return TextTable.Format(table);
             string interact = InputBindings.Display("Interact"), use = InputBindings.Display("Use"), drop = InputBindings.Display("Drop"),
                 inventory = InputBindings.Display("Inventory"), crouch = InputBindings.Display("Crouch"), light = InputBindings.Display("Flashlight"),
                 scan = InputBindings.Display("Scan"), rotate = InputBindings.Display("Rotate");

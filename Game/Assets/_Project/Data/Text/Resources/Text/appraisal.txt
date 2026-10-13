@@ -1,0 +1,533 @@
+# The appraisal receipt after a job (Extraction/AppraisalScreen.cs) and the lines the host sends for it
+# (RunStats.cs, RunState.cs, Bonuses/*.cs, Hires/RunHires.cs). In those, {0} is usually a player's or an item's name
+# and the numbers arrive already formatted, so they carry no ":N0".
+
+en: APPRAISAL
+zh-CN: 估价
+ja: 査定
+ko: 감정
+es: TASACIÓN
+pt-BR: AVALIAÇÃO
+de: SCHÄTZUNG
+fr: ESTIMATION
+ru: ОЦЕНКА
+pl: WYCENA
+
+en: APPRAISAL - RUN {0:0000} - {1}:{2:00} ON SITE
+zh-CN: 估价 - 任务 {0:0000} - 现场时间 {1}:{2:00}
+ja: 査定 - 作業 {0:0000} - 現場滞在 {1}:{2:00}
+ko: 감정 - 작업 {0:0000} - 현장 체류 {1}:{2:00}
+es: TASACIÓN - TRABAJO {0:0000} - {1}:{2:00} EN EL LUGAR
+pt-BR: AVALIAÇÃO - TRABALHO {0:0000} - {1}:{2:00} NO LOCAL
+de: SCHÄTZUNG - EINSATZ {0:0000} - {1}:{2:00} VOR ORT
+fr: ESTIMATION - MISSION {0:0000} - {1}:{2:00} SUR PLACE
+ru: ОЦЕНКА - ЗАКАЗ {0:0000} - {1}:{2:00} НА ОБЪЕКТЕ
+pl: WYCENA - ZLECENIE {0:0000} - {1}:{2:00} NA MIEJSCU
+
+en: NOTHING. THE TRUCK LEFT EMPTY.
+zh-CN: 什么都没有。卡车空着开走了。
+ja: 何もなし。トラックは空のまま出発した。
+ko: 아무것도 없습니다. 트럭은 빈 채로 떠났습니다.
+es: NADA. EL CAMIÓN SE FUE VACÍO.
+pt-BR: NADA. O CAMINHÃO SAIU VAZIO.
+de: NICHTS. DER LASTER FUHR LEER AB.
+fr: RIEN. LE CAMION EST PARTI VIDE.
+ru: НИЧЕГО. ГРУЗОВИК УЕХАЛ ПУСТЫМ.
+pl: NIC. CIĘŻARÓWKA ODJECHAŁA PUSTA.
+
+en: HAUL
+zh-CN: 收获
+ja: 回収額
+ko: 수확
+es: CARGA
+pt-BR: CARGA
+de: AUSBEUTE
+fr: CHARGEMENT
+ru: УЛОВ
+pl: UROBEK
+
+en: QUOTA MISSED
+zh-CN: 未达定额
+ja: ノルマ未達
+ko: 할당량 미달
+es: CUOTA FALLADA
+pt-BR: COTA PERDIDA
+de: SOLL VERFEHLT
+fr: QUOTA MANQUÉ
+ru: НОРМА НЕ ВЫПОЛНЕНА
+pl: NORMA NIEWYROBIONA
+
+en: <color=#7ee07e>●</color> {0}: made it out
+zh-CN: <color=#7ee07e>●</color> {0}：成功撤离
+ja: <color=#7ee07e>●</color> {0}：脱出した
+ko: <color=#7ee07e>●</color> {0}: 빠져나옴
+es: <color=#7ee07e>●</color> {0}: consiguió salir
+pt-BR: <color=#7ee07e>●</color> {0}: conseguiu sair
+de: <color=#7ee07e>●</color> {0}: hat es rausgeschafft
+fr: <color=#7ee07e>●</color> {0} : s'en est sorti
+ru: <color=#7ee07e>●</color> {0}: выбрался
+pl: <color=#7ee07e>●</color> {0}: wydostał się
+
+en: <color=#ff5c4a>✖</color> {0}: died in there
+zh-CN: <color=#ff5c4a>✖</color> {0}：死在了里面
+ja: <color=#ff5c4a>✖</color> {0}：中で死んだ
+ko: <color=#ff5c4a>✖</color> {0}: 안에서 사망
+es: <color=#ff5c4a>✖</color> {0}: murió ahí dentro
+pt-BR: <color=#ff5c4a>✖</color> {0}: morreu lá dentro
+de: <color=#ff5c4a>✖</color> {0}: ist da drin gestorben
+fr: <color=#ff5c4a>✖</color> {0} : y est resté
+ru: <color=#ff5c4a>✖</color> {0}: погиб внутри
+pl: <color=#ff5c4a>✖</color> {0}: zginął w środku
+
+en: <color=#ff5c4a>○</color> {0}: left behind (lost ${1:N0} in their pockets)
+zh-CN: <color=#ff5c4a>○</color> {0}：被丢下了（口袋里的 ${1:N0} 没了）
+ja: <color=#ff5c4a>○</color> {0}：置き去り（ポケットの ${1:N0} を失った）
+ko: <color=#ff5c4a>○</color> {0}: 남겨짐 (주머니 속 ${1:N0} 손실)
+es: <color=#ff5c4a>○</color> {0}: se quedó atrás (perdió ${1:N0} que llevaba en los bolsillos)
+pt-BR: <color=#ff5c4a>○</color> {0}: ficou para trás (perdeu ${1:N0} que estavam nos bolsos)
+de: <color=#ff5c4a>○</color> {0}: zurückgelassen (${1:N0} in den Taschen verloren)
+fr: <color=#ff5c4a>○</color> {0} : laissé sur place (${1:N0} perdus dans ses poches)
+ru: <color=#ff5c4a>○</color> {0}: остался там (потеряно ${1:N0} из карманов)
+pl: <color=#ff5c4a>○</color> {0}: został w środku (stracił ${1:N0} z kieszeni)
+
+en: <color=#ff5c4a>○</color> {0}: left behind
+zh-CN: <color=#ff5c4a>○</color> {0}：被丢下了
+ja: <color=#ff5c4a>○</color> {0}：置き去り
+ko: <color=#ff5c4a>○</color> {0}: 남겨짐
+es: <color=#ff5c4a>○</color> {0}: se quedó atrás
+pt-BR: <color=#ff5c4a>○</color> {0}: ficou para trás
+de: <color=#ff5c4a>○</color> {0}: zurückgelassen
+fr: <color=#ff5c4a>○</color> {0} : laissé sur place
+ru: <color=#ff5c4a>○</color> {0}: остался там
+pl: <color=#ff5c4a>○</color> {0}: został w środku
+
+en: WHO DID WHAT
+zh-CN: 谁干了什么
+ja: 誰が何をしたか
+ko: 누가 무엇을 했나
+es: QUIÉN HIZO QUÉ
+pt-BR: QUEM FEZ O QUÊ
+de: WER WAS GETAN HAT
+fr: QUI A FAIT QUOI
+ru: КТО ЧТО СДЕЛАЛ
+pl: KTO CO ZROBIŁ
+
+en: EMPLOYEE AWARDS
+zh-CN: 员工奖项
+ja: 従業員表彰
+ko: 직원 표창
+es: PREMIOS AL EMPLEADO
+pt-BR: PRÊMIOS DOS FUNCIONÁRIOS
+de: MITARBEITERAUSZEICHNUNGEN
+fr: DISTINCTIONS DU PERSONNEL
+ru: НАГРАДЫ СОТРУДНИКАМ
+pl: NAGRODY PRACOWNICZE
+
+en: {0} (POCKET)
+zh-CN: {0}（口袋）
+ja: {0}（ポケット）
+ko: {0} (주머니)
+es: {0} (BOLSILLO)
+pt-BR: {0} (BOLSO)
+de: {0} (TASCHE)
+fr: {0} (POCHE)
+ru: {0} (КАРМАН)
+pl: {0} (KIESZEŃ)
+
+en: PAYDAY
+zh-CN: 发薪日
+ja: 給料日
+ko: 급여일
+es: DÍA DE PAGO
+pt-BR: DIA DE PAGAMENTO
+de: ZAHLTAG
+fr: JOUR DE PAIE
+ru: ДЕНЬ ЗАРПЛАТЫ
+pl: DZIEŃ WYPŁATY
+
+en: Payout
+zh-CN: 报酬
+ja: 報酬
+ko: 지급액
+es: Pago
+pt-BR: Pagamento
+de: Auszahlung
+fr: Paie
+ru: Выплата
+pl: Wypłata
+
+en: Quota penalty
+zh-CN: 定额罚金
+ja: ノルマ罰金
+ko: 할당량 벌금
+es: Multa por cuota
+pt-BR: Multa da cota
+de: Soll-Strafe
+fr: Pénalité de quota
+ru: Штраф за норму
+pl: Kara za normę
+
+en: Running costs
+zh-CN: 运营成本
+ja: 経費
+ko: 운영비
+es: Gastos fijos
+pt-BR: Custos fixos
+de: Betriebskosten
+fr: Frais fixes
+ru: Накладные расходы
+pl: Koszty stałe
+
+en: Experience
+zh-CN: 经验
+ja: 経験値
+ko: 경험치
+es: Experiencia
+pt-BR: Experiência
+de: Erfahrung
+fr: Expérience
+ru: Опыт
+pl: Doświadczenie
+
+en: +{0} XP  -  LEVEL {1}!
+zh-CN: +{0} 经验  -  等级 {1}！
+ja: +{0} XP  -  レベル {1}！
+ko: +{0} XP  -  레벨 {1}!
+es: +{0} XP  -  ¡NIVEL {1}!
+pt-BR: +{0} XP  -  NÍVEL {1}!
+de: +{0} XP  -  STUFE {1}!
+fr: +{0} XP  -  NIVEAU {1} !
+ru: +{0} ОП  -  УРОВЕНЬ {1}!
+pl: +{0} PD  -  POZIOM {1}!
+
+en: +{0} XP
+zh-CN: +{0} 经验
+ja: +{0} XP
+ko: +{0} XP
+es: +{0} XP
+pt-BR: +{0} XP
+de: +{0} XP
+fr: +{0} XP
+ru: +{0} ОП
+pl: +{0} PD
+
+en: Company money
+zh-CN: 公司资金
+ja: 会社の資金
+ko: 회사 자금
+es: Dinero de la empresa
+pt-BR: Dinheiro da empresa
+de: Firmengeld
+fr: Argent de l'entreprise
+ru: Деньги компании
+pl: Pieniądze firmy
+
+en: <color=#ff5c4a><b>BANKRUPT.</b> Three missed quotas in a row. The company folds; a new one starts with the basic kit.</color>
+zh-CN: <color=#ff5c4a><b>破产。</b>连续三次未达定额。公司倒闭；新公司将带着基础装备重新开始。</color>
+ja: <color=#ff5c4a><b>倒産。</b>ノルマを3回連続で逃した。会社は潰れ、新しい会社が基本装備で始まる。</color>
+ko: <color=#ff5c4a><b>파산.</b> 할당량을 세 번 연속 채우지 못했습니다. 회사가 문을 닫고, 새 회사가 기본 장비로 시작합니다.</color>
+es: <color=#ff5c4a><b>QUIEBRA.</b> Tres cuotas falladas seguidas. La empresa cierra; una nueva empieza con el equipo básico.</color>
+pt-BR: <color=#ff5c4a><b>FALÊNCIA.</b> Três cotas perdidas seguidas. A empresa fecha; uma nova começa com o kit básico.</color>
+de: <color=#ff5c4a><b>PLEITE.</b> Dreimal in Folge das Soll verfehlt. Die Firma macht dicht; eine neue startet mit der Grundausstattung.</color>
+fr: <color=#ff5c4a><b>FAILLITE.</b> Trois quotas manqués d'affilée. L'entreprise ferme ; une nouvelle démarre avec l'équipement de base.</color>
+ru: <color=#ff5c4a><b>БАНКРОТСТВО.</b> Три проваленные нормы подряд. Компания закрывается; новая начинает с базовым набором.</color>
+pl: <color=#ff5c4a><b>BANKRUCTWO.</b> Trzy niewyrobione normy z rzędu. Firma pada; nowa zaczyna z podstawowym zestawem.</color>
+
+en: <color=#ff5c4a>Missed quotas in a row: {0}/{1}</color>
+zh-CN: <color=#ff5c4a>连续未达定额：{0}/{1}</color>
+ja: <color=#ff5c4a>連続ノルマ未達：{0}/{1}</color>
+ko: <color=#ff5c4a>연속 할당량 미달: {0}/{1}</color>
+es: <color=#ff5c4a>Cuotas falladas seguidas: {0}/{1}</color>
+pt-BR: <color=#ff5c4a>Cotas perdidas seguidas: {0}/{1}</color>
+de: <color=#ff5c4a>Soll in Folge verfehlt: {0}/{1}</color>
+fr: <color=#ff5c4a>Quotas manqués d'affilée : {0}/{1}</color>
+ru: <color=#ff5c4a>Проваленных норм подряд: {0}/{1}</color>
+pl: <color=#ff5c4a>Niewyrobione normy z rzędu: {0}/{1}</color>
+
+en: Back to HQ
+zh-CN: 返回总部
+ja: 本部に戻る
+ko: 본부로 돌아가기
+es: Volver a la central
+pt-BR: Voltar ao QG
+de: Zurück zur Zentrale
+fr: Retour au QG
+ru: Вернуться на базу
+pl: Wróć do bazy
+
+en: Next run
+zh-CN: 下一份任务
+ja: 次の仕事
+ko: 다음 작업
+es: Siguiente trabajo
+pt-BR: Próximo trabalho
+de: Nächster Einsatz
+fr: Mission suivante
+ru: Следующий заказ
+pl: Następne zlecenie
+
+en: Waiting for the host to drive back to HQ...
+zh-CN: 正在等待房主开车返回总部...
+ja: ホストが本部へ戻るのを待っている...
+ko: 호스트가 본부로 돌아가기를 기다리는 중...
+es: Esperando a que el anfitrión conduzca de vuelta a la central...
+pt-BR: Esperando o anfitrião dirigir de volta ao QG...
+de: Warte, bis der Host zur Zentrale zurückfährt...
+fr: En attente du retour au QG par l'hôte...
+ru: Ждём, пока хост поедет обратно на базу...
+pl: Czekamy, aż host pojedzie z powrotem do bazy...
+
+en: Waiting for the host to start the next run...
+zh-CN: 正在等待房主开始下一份任务...
+ja: ホストが次の仕事を始めるのを待っている...
+ko: 호스트가 다음 작업을 시작하기를 기다리는 중...
+es: Esperando a que el anfitrión empiece el siguiente trabajo...
+pt-BR: Esperando o anfitrião começar o próximo trabalho...
+de: Warte, bis der Host den nächsten Einsatz startet...
+fr: En attente du lancement de la mission suivante par l'hôte...
+ru: Ждём, пока хост начнёт следующий заказ...
+pl: Czekamy, aż host rozpocznie następne zlecenie...
+
+# Lines the host sends
+
+en: THE MALL CAME DOWN WITH THE CREW INSIDE. Job lost: nothing from this job counts.
+zh-CN: 商场塌了，队伍还在里面。任务失败：这份任务的一切都不算数。
+ja: クルーを中に残したままモールが崩れ落ちた。仕事は失敗。この仕事の成果は一切数えられない。
+ko: 팀이 안에 있는 채로 쇼핑몰이 무너졌습니다. 작업 실패: 이번 작업의 어떤 것도 인정되지 않습니다.
+es: EL CENTRO COMERCIAL SE VINO ABAJO CON EL EQUIPO DENTRO. Trabajo perdido: nada de este trabajo cuenta.
+pt-BR: O SHOPPING DESABOU COM A EQUIPE LÁ DENTRO. Trabalho perdido: nada deste trabalho conta.
+de: DAS EINKAUFSZENTRUM IST MIT DEM TEAM DARIN EINGESTÜRZT. Auftrag verloren: Nichts von diesem Auftrag zählt.
+fr: LE CENTRE COMMERCIAL S'EST EFFONDRÉ AVEC L'ÉQUIPE À L'INTÉRIEUR. Mission perdue : rien de cette mission ne compte.
+ru: ТОРГОВЫЙ ЦЕНТР РУХНУЛ ВМЕСТЕ С БРИГАДОЙ. Заказ потерян: ничего из этого заказа не засчитано.
+pl: GALERIA ZAWALIŁA SIĘ Z EKIPĄ W ŚRODKU. Zlecenie przepadło: nic z niego się nie liczy.
+
+en: NOBODY MADE IT. The truck was towed home; {0}% of the load went missing on the way. No bonus.
+zh-CN: 无人生还。卡车被拖回来了；路上丢了 {0}% 的货。没有奖金。
+ja: 誰も戻らなかった。トラックは牽引されて帰ってきたが、積荷の {0}% は途中で消えた。ボーナスなし。
+ko: 아무도 살아 돌아오지 못했습니다. 트럭은 견인되어 왔고, 화물의 {0}%가 오는 길에 사라졌습니다. 보너스 없음.
+es: NO SALIÓ NADIE. Remolcaron el camión de vuelta; el {0}% de la carga desapareció por el camino. Sin bonificación.
+pt-BR: NINGUÉM SAIU. O caminhão foi rebocado de volta; {0}% da carga sumiu no caminho. Sem bônus.
+de: KEINER HAT ES GESCHAFFT. Der Laster wurde abgeschleppt; {0}% der Ladung sind unterwegs verschwunden. Kein Bonus.
+fr: PERSONNE N'EN EST SORTI. Le camion a été remorqué ; {0}% du chargement a disparu en route. Pas de prime.
+ru: НИКТО НЕ ВЫБРАЛСЯ. Грузовик отбуксировали домой; {0}% груза пропало по дороге. Без премии.
+pl: NIKT NIE WRÓCIŁ. Ciężarówkę odholowano do bazy; {0}% ładunku zniknęło po drodze. Bez premii.
+
+en: Most expensive mistake: {0} (${1}) - {2}
+zh-CN: 最昂贵的失误：{0}（${1}）- {2}
+ja: 最も高くついた失敗：{0}（${1}）- {2}
+ko: 가장 비싼 실수: {0} (${1}) - {2}
+es: El error más caro: {0} (${1}) - {2}
+pt-BR: O erro mais caro: {0} (${1}) - {2}
+de: Teuerster Fehler: {0} (${1}) - {2}
+fr: L'erreur la plus chère : {0} (${1}) - {2}
+ru: Самая дорогая ошибка: {0} (${1}) - {2}
+pl: Najdroższy błąd: {0} (${1}) - {2}
+
+en: Most expensive mistake: {0} (${1})
+zh-CN: 最昂贵的失误：{0}（${1}）
+ja: 最も高くついた失敗：{0}（${1}）
+ko: 가장 비싼 실수: {0} (${1})
+es: El error más caro: {0} (${1})
+pt-BR: O erro mais caro: {0} (${1})
+de: Teuerster Fehler: {0} (${1})
+fr: L'erreur la plus chère : {0} (${1})
+ru: Самая дорогая ошибка: {0} (${1})
+pl: Najdroższy błąd: {0} (${1})
+
+en: Butterfingers: {0} broke ${1} worth of loot
+zh-CN: 手滑大王：{0} 弄坏了价值 ${1} 的战利品
+ja: うっかり者：{0} が ${1} 分の回収品を壊した
+ko: 덜렁이: {0} 님이 ${1}어치 전리품을 망가뜨렸습니다
+es: Manos de mantequilla: {0} rompió botín por valor de ${1}
+pt-BR: Mão furada: {0} quebrou ${1} em saque
+de: Tollpatsch: {0} hat Beute im Wert von ${1} zerbrochen
+fr: Mains en beurre : {0} a cassé pour ${1} de butin
+ru: Руки-крюки: {0} разбил добычи на ${1}
+pl: Dziurawe ręce: {0} rozbił łupy warte ${1}
+
+en: Longest fall: {0}, {1} m
+zh-CN: 摔得最远：{0}，{1} 米
+ja: 最長落下：{0}、{1} m
+ko: 최장 추락: {0}, {1} m
+es: Caída más larga: {0}, {1} m
+pt-BR: Queda mais longa: {0}, {1} m
+de: Längster Sturz: {0}, {1} m
+fr: Plus longue chute : {0}, {1} m
+ru: Самое долгое падение: {0}, {1} м
+pl: Najdłuższy upadek: {0}, {1} m
+
+en: Floors that gave way: {0}
+zh-CN: 塌陷的地板：{0}
+ja: 抜けた床：{0}
+ko: 무너진 바닥: {0}
+es: Suelos que cedieron: {0}
+pt-BR: Pisos que cederam: {0}
+de: Eingestürzte Böden: {0}
+fr: Sols qui ont cédé : {0}
+ru: Провалившихся полов: {0}
+pl: Zawalone podłogi: {0}
+
+en: Left in the building: about {0} items
+zh-CN: 留在楼里的：大约 {0} 件物品
+ja: 建物に残した物：およそ {0} 点
+ko: 건물에 남긴 것: 약 {0}개
+es: Se quedó en el edificio: unos {0} objetos
+pt-BR: Ficou no prédio: cerca de {0} itens
+de: Im Gebäude geblieben: etwa {0} Teile
+fr: Laissé dans le bâtiment : environ {0} objets
+ru: Осталось в здании: около {0} предметов
+pl: Zostało w budynku: około {0} przedmiotów
+
+en: A clean job. Suspiciously clean.
+zh-CN: 干净利落的一次任务。干净得可疑。
+ja: きれいな仕事だ。怪しいほどに。
+ko: 깔끔한 작업이었습니다. 수상할 만큼 깔끔하게.
+es: Un trabajo limpio. Sospechosamente limpio.
+pt-BR: Um trabalho limpo. Suspeitamente limpo.
+de: Ein sauberer Auftrag. Verdächtig sauber.
+fr: Un travail propre. Étrangement propre.
+ru: Чистая работа. Подозрительно чистая.
+pl: Czysta robota. Podejrzanie czysta.
+
+en: {0}: Employee of the Month (brought home ${1})
+zh-CN: {0}：月度最佳员工（带回了 ${1}）
+ja: {0}：今月の優秀従業員（${1} を持ち帰った）
+ko: {0}: 이달의 직원 (${1} 반입)
+es: {0}: Empleado del mes (trajo ${1})
+pt-BR: {0}: Funcionário do Mês (trouxe ${1})
+de: {0}: Mitarbeiter des Monats (hat ${1} heimgebracht)
+fr: {0} : Employé du mois (a rapporté ${1})
+ru: {0}: Работник месяца (привёз на ${1})
+pl: {0}: Pracownik miesiąca (przywiózł ${1})
+
+en: {0}: Demolition Specialist (broke ${1} of stock)
+zh-CN: {0}：拆除专家（弄坏了 ${1} 的货物）
+ja: {0}：解体のスペシャリスト（${1} 分の品を壊した）
+ko: {0}: 철거 전문가 (${1}어치 파손)
+es: {0}: Especialista en demoliciones (rompió género por ${1})
+pt-BR: {0}: Especialista em Demolição (quebrou ${1} em mercadoria)
+de: {0}: Abrissspezialist (hat Ware für ${1} zerlegt)
+fr: {0} : Spécialiste en démolition (a cassé pour ${1} de marchandise)
+ru: {0}: Специалист по сносу (разбил товара на ${1})
+pl: {0}: Specjalista od rozbiórek (zniszczył towar za ${1})
+
+en: {0}: Gravity Tester (fell {1} m)
+zh-CN: {0}：重力测试员（摔了 {1} 米）
+ja: {0}：重力テスター（{1} m 落ちた）
+ko: {0}: 중력 시험관 ({1} m 추락)
+es: {0}: Probador de gravedad (cayó {1} m)
+pt-BR: {0}: Testador de Gravidade (caiu {1} m)
+de: {0}: Schwerkrafttester ({1} m gefallen)
+fr: {0} : Testeur de gravité (a chuté de {1} m)
+ru: {0}: Испытатель гравитации (упал на {1} м)
+pl: {0}: Tester grawitacji (spadł {1} m)
+
+en: {0}: Deceased (unpaid)
+zh-CN: {0}：已故（无薪）
+ja: {0}：死亡（無給）
+ko: {0}: 사망 (무급)
+es: {0}: Fallecido (sin sueldo)
+pt-BR: {0}: Falecido (sem pagamento)
+de: {0}: Verstorben (unbezahlt)
+fr: {0} : Décédé (non payé)
+ru: {0}: Скончался (без оплаты)
+pl: {0}: Zmarły (bez wypłaty)
+
+en: {0}: Missing, presumed lazy
+zh-CN: {0}：失踪，推定为偷懒
+ja: {0}：行方不明（怠けていたと推定）
+ko: {0}: 실종, 농땡이로 추정
+es: {0}: Desaparecido, presuntamente vago
+pt-BR: {0}: Desaparecido, presumidamente preguiçoso
+de: {0}: Vermisst, vermutlich faul
+fr: {0} : Disparu, présumé fainéant
+ru: {0}: Пропал, предположительно ленился
+pl: {0}: Zaginiony, przypuszczalnie leniwy
+
+en: {0}: Present
+zh-CN: {0}：到岗
+ja: {0}：出勤
+ko: {0}: 출근함
+es: {0}: Presente
+pt-BR: {0}: Presente
+de: {0}: Anwesend
+fr: {0} : Présent
+ru: {0}: Присутствовал
+pl: {0}: Obecny
+
+en: OVERTIME x{0} on ${1} over quota. +${2}
+zh-CN: 加班 x{0}，适用于超出定额的 ${1}。+${2}
+ja: 残業 x{0}：ノルマ超過 ${1} に適用。+${2}
+ko: 초과 근무 x{0}: 할당량 초과분 ${1}에 적용. +${2}
+es: HORAS EXTRA x{0} sobre ${1} por encima de la cuota. +${2}
+pt-BR: HORA EXTRA x{0} sobre ${1} acima da cota. +${2}
+de: ÜBERSTUNDEN x{0} auf ${1} über dem Soll. +${2}
+fr: HEURES SUP x{0} sur ${1} au-dessus du quota. +${2}
+ru: СВЕРХУРОЧНЫЕ x{0} на ${1} сверх нормы. +${2}
+pl: NADGODZINY x{0} za ${1} ponad normę. +${2}
+
+en: BOSS REQUEST: the {0} made it. +${1}
+zh-CN: 老板的要求：{0} 送到了。+${1}
+ja: ボスの要望：{0} を届けた。+${1}
+ko: 사장의 요청: {0} 반입 완료. +${1}
+es: ENCARGO DEL JEFE: llegó esto: {0}. +${1}
+pt-BR: PEDIDO DO CHEFE: chegou isto: {0}. +${1}
+de: CHEFWUNSCH: geliefert: {0}. +${1}
+fr: DEMANDE DU PATRON : livré : {0}. +${1}
+ru: ПРОСЬБА НАЧАЛЬНИКА: доставлено: {0}. +${1}
+pl: PROŚBA SZEFA: dostarczono: {0}. +${1}
+
+en: BOSS REQUEST missed: no {0}. The boss noticed.
+zh-CN: 老板的要求未完成：没有 {0}。老板注意到了。
+ja: ボスの要望は未達：{0} なし。ボスは気づいている。
+ko: 사장의 요청 실패: {0} 없음. 사장이 알아챘습니다.
+es: ENCARGO DEL JEFE fallado: falta esto: {0}. El jefe se ha dado cuenta.
+pt-BR: PEDIDO DO CHEFE perdido: faltou isto: {0}. O chefe percebeu.
+de: CHEFWUNSCH verfehlt: fehlt: {0}. Der Chef hat es bemerkt.
+fr: DEMANDE DU PATRON manquée : absent : {0}. Le patron l'a remarqué.
+ru: ПРОСЬБА НАЧАЛЬНИКА не выполнена: нет вот этого: {0}. Начальник заметил.
+pl: PROŚBA SZEFA niespełniona: brakuje: {0}. Szef zauważył.
+
+en: RUSH ORDER: {0} x {1} in time. +${2}
+zh-CN: 加急订单：{0} x {1} 按时送达。+${2}
+ja: 急ぎの注文：{0} x {1} が間に合った。+${2}
+ko: 긴급 주문: {0} x {1} 제때 반입. +${2}
+es: PEDIDO URGENTE: {0} x {1} a tiempo. +${2}
+pt-BR: PEDIDO URGENTE: {0} x {1} a tempo. +${2}
+de: EILAUFTRAG: {0} x {1} rechtzeitig. +${2}
+fr: COMMANDE URGENTE : {0} x {1} à temps. +${2}
+ru: СРОЧНЫЙ ЗАКАЗ: {0} x {1} вовремя. +${2}
+pl: PILNE ZAMÓWIENIE: {0} x {1} na czas. +${2}
+
+en: rushed items
+zh-CN: 加急物品
+ja: 急ぎの品
+ko: 긴급 물품
+es: objetos urgentes
+pt-BR: itens urgentes
+de: Eilware
+fr: objets urgents
+ru: срочные предметы
+pl: pilne przedmioty
+
+en: SET COMPLETE: {0}. +${1}
+zh-CN: 套装已集齐：{0}。+${1}
+ja: セット完成：{0}。+${1}
+ko: 세트 완성: {0}. +${1}
+es: CONJUNTO COMPLETO: {0}. +${1}
+pt-BR: CONJUNTO COMPLETO: {0}. +${1}
+de: SET KOMPLETT: {0}. +${1}
+fr: SÉRIE COMPLÈTE : {0}. +${1}
+ru: НАБОР СОБРАН: {0}. +${1}
+pl: ZESTAW SKOMPLETOWANY: {0}. +${1}
+
+en: AGENCY FEE: a replacement worker. -${0}
+zh-CN: 中介费：一名替补工人。-${0}
+ja: 派遣手数料：代わりの作業員。-${0}
+ko: 인력 사무소 수수료: 대체 작업자. -${0}
+es: TARIFA DE AGENCIA: un trabajador sustituto. -${0}
+pt-BR: TAXA DA AGÊNCIA: um trabalhador substituto. -${0}
+de: AGENTURGEBÜHR: eine Ersatzkraft. -${0}
+fr: FRAIS D'AGENCE : un ouvrier remplaçant. -${0}
+ru: КОМИССИЯ АГЕНТСТВА: работник на замену. -${0}
+pl: OPŁATA AGENCJI: pracownik na zastępstwo. -${0}

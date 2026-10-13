@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Extraction;
@@ -37,7 +38,7 @@ namespace Abandoned.Threats
         // Items it couldn't get to (a collapsed island, past the NavMesh): not tried again this run.
         private readonly HashSet<NetworkLoot> unreachable = new();
 
-        public override string DisplayName => "Collector";
+        public override string DisplayName => Loc.Mark("Collector");
         public CollectorState State => state.Value;
         public override ThreatMotion DesiredMotion => State == CollectorState.Carrying ? ThreatMotion.Special : State == CollectorState.Fleeing ? ThreatMotion.Chase : ThreatMotion.Idle;
         public NetworkLoot Carried => carried;

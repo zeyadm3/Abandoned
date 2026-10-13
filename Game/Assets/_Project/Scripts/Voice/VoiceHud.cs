@@ -100,10 +100,10 @@ namespace Abandoned.Voice
         {
             IVoiceCapture capture = transmitter.Capture;
             string talk = InputBindings.Display("PushToTalk"), radio = InputBindings.Display("Radio");
-            if (VoiceSettings.MicMuted) return "MIC / MUTED";
-            if (capture != null && capture.Problem.Length > 0) return $"VOICE / {capture.Problem}";
-            if (transmitter.Transmitting) return transmitter.OnRadio ? "\u25CF RADIO TRANSMITTING" : "\u25CF VOICE TRANSMITTING";
-            return VoiceSettings.Mode == VoiceMode.PushToTalk ? $"HOLD {talk} TO TALK  /  {radio} RADIO" : "MIC / OPEN";
+            if (VoiceSettings.MicMuted) return Loc.T("MIC / MUTED");
+            if (capture != null && capture.Problem.Length > 0) return Loc.T("VOICE / {0}", Loc.T(capture.Problem));
+            if (transmitter.Transmitting) return transmitter.OnRadio ? Loc.T("\u25CF RADIO TRANSMITTING") : Loc.T("\u25CF VOICE TRANSMITTING");
+            return VoiceSettings.Mode == VoiceMode.PushToTalk ? Loc.T("HOLD {0} TO TALK  /  {1} RADIO", talk, radio) : Loc.T("MIC / OPEN");
         }
 
         private void UpdateSpeakers()

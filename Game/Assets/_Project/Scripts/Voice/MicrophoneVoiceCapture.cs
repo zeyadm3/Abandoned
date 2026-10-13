@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Voice
@@ -40,7 +41,7 @@ namespace Abandoned.Voice
         {
             if (Microphone.devices.Length == 0)
             {
-                Problem = "No microphone found.";
+                Problem = Loc.Mark("No microphone found.");
                 return;
             }
             Microphone.GetDeviceCaps(device, out int min, out int max);
@@ -48,7 +49,7 @@ namespace Abandoned.Voice
             deviceRate = max == 0 ? MuLawCodec.Rate : Mathf.Clamp(MuLawCodec.Rate, min, max);
             resampler = new MicResampler((double)deviceRate / MuLawCodec.Rate);
             clip = Microphone.Start(device, true, BufferSeconds, deviceRate);
-            if (clip == null) Problem = "Couldn't open the microphone.";
+            if (clip == null) Problem = Loc.Mark("Couldn't open the microphone.");
         }
 
         public bool Recording
@@ -90,7 +91,7 @@ namespace Abandoned.Voice
             for (int i = 0; i < count && silent; i++) silent = raw[i] == 0f;
             silentFor = silent ? silentFor + (float)count / deviceRate : 0f;
             Problem = silentFor >= SilentInputSeconds
-                ? "The microphone sends nothing. Allow microphone access for Abandoned (System Settings > Privacy)."
+                ? Loc.Mark("The microphone sends nothing. Allow microphone access for Abandoned (System Settings > Privacy).")
                 : string.Empty;
         }
 

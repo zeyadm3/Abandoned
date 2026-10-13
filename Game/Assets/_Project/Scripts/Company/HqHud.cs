@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -32,19 +33,19 @@ namespace Abandoned.Company
             bool capped = index >= company.Config.LevelXp.Length;
             int next = index >= 0 && !capped ? company.Config.LevelXp[index] : s.Xp;
             bool debt = s.Money < 0;
-            Set(accountCaption, debt ? "DEBT" : "BALANCE");
+            Set(accountCaption, debt ? Loc.T("DEBT") : Loc.T("BALANCE"));
             Set(money, $"${(debt ? -(long)s.Money : s.Money):N0}");
             account.EnableInClassList("hq-brief__metric--warning", debt);
             Set(level, $"{s.Level:00}");
-            Set(experience, capped ? $"{s.Xp} XP / MAX" : $"{s.Xp}/{next} XP");
+            Set(experience, capped ? Loc.T("{0} XP / MAX", s.Xp) : Loc.T("{0}/{1} XP", s.Xp, next));
             MenuKit.Show(failures, s.MissedQuotas > 0);
             Set(streak, $"{s.MissedQuotas} / {company.Config.MissesToBankruptcy}");
 
             bool assigned = company.Selected >= 0 && company.Selected < company.Board.Count;
-            Set(dispatchCaption, assigned ? "ASSIGNED" : "NEXT STEP");
+            Set(dispatchCaption, assigned ? Loc.T("ASSIGNED") : Loc.T("NEXT STEP"));
             Set(job, assigned
-                ? $"{company.Board[company.Selected].ModifierName.ToUpperInvariant()} / {company.Board[company.Selected].Location.ToUpperInvariant()}"
-                : "READ THE CONTRACT BOARD");
+                ? $"{Loc.T(company.Board[company.Selected].ModifierName).ToUpperInvariant()} / {Loc.T(company.Board[company.Selected].Location).ToUpperInvariant()}"
+                : Loc.T("READ THE CONTRACT BOARD"));
             MenuKit.Show(departure, assigned);
         }
 
@@ -57,24 +58,24 @@ namespace Abandoned.Company
 
             VisualElement metrics = Element(top, "hq-brief__metrics");
             account = Element(metrics, "hq-brief__metric", "hq-brief__account");
-            accountCaption = Text(account, "BALANCE", "hq-brief__caption");
+            accountCaption = Text(account, Loc.T("BALANCE"), "hq-brief__caption");
             money = Text(account, "", "hq-brief__value");
 
             VisualElement clearance = Element(metrics, "hq-brief__metric", "hq-brief__clearance");
-            Text(clearance, "CLEARANCE", "hq-brief__caption");
+            Text(clearance, Loc.T("CLEARANCE"), "hq-brief__caption");
             VisualElement progress = Element(clearance, "hq-brief__progress");
             level = Text(progress, "", "hq-brief__value");
             experience = Text(progress, "", "hq-brief__experience");
 
             failures = Element(metrics, "hq-brief__metric", "hq-brief__failures", "hq-brief__metric--warning");
-            Text(failures, "MISSED QUOTAS", "hq-brief__caption");
+            Text(failures, Loc.T("MISSED QUOTAS"), "hq-brief__caption");
             streak = Text(failures, "", "hq-brief__value");
 
             VisualElement assignment = Element(top, "hq-brief__assignment");
-            dispatchCaption = Text(assignment, "NEXT STEP", "hq-brief__dispatch-caption");
+            dispatchCaption = Text(assignment, Loc.T("NEXT STEP"), "hq-brief__dispatch-caption");
             VisualElement detail = Element(assignment, "hq-brief__detail");
             job = Text(detail, "", "hq-brief__job");
-            departure = Text(detail, "TAKE THE VAN", "hq-brief__departure");
+            departure = Text(detail, Loc.T("TAKE THE VAN"), "hq-brief__departure");
             MenuKit.Show(departure, false);
         }
 

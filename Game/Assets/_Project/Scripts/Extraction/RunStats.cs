@@ -104,23 +104,25 @@ namespace Abandoned.Extraction
         {
             var lines = new List<string>();
             if (worstLoss.item != null)
-                lines.Add($"Most expensive mistake: {worstLoss.item} (${worstLoss.value:N0}){(worstLoss.by is ulong w ? $" - {Name(w)}" : "")}");
+                lines.Add(worstLoss.by is ulong w
+                    ? Loc.Wire("Most expensive mistake: {0} (${1}) - {2}", Loc.Word(worstLoss.item), worstLoss.value.ToString("N0"), Name(w))
+                    : Loc.Wire("Most expensive mistake: {0} (${1})", Loc.Word(worstLoss.item), worstLoss.value.ToString("N0")));
             if (brokenValue.Count > 0)
             {
                 var top = brokenValue.OrderByDescending(kv => kv.Value).First();
-                lines.Add($"Butterfingers: {Name(top.Key)} broke ${top.Value:N0} worth of loot");
+                lines.Add(Loc.Wire("Butterfingers: {0} broke ${1} worth of loot", Name(top.Key), top.Value.ToString("N0")));
             }
             if (longestFall.Count > 0)
             {
                 var top = longestFall.OrderByDescending(kv => kv.Value).First();
-                if (top.Value > 1.5f) lines.Add($"Longest fall: {Name(top.Key)}, {top.Value:0.0} m");
+                if (top.Value > 1.5f) lines.Add(Loc.Wire("Longest fall: {0}, {1} m", Name(top.Key), top.Value.ToString("0.0")));
             }
-            if (collapses > 0) lines.Add($"Floors that gave way: {collapses}");
+            if (collapses > 0) lines.Add(Loc.Wire("Floors that gave way: {0}", collapses));
             int carried = results.Items.Length;
             var left = items.Where(l => l != null && l.IsSpawned && !l.Item.IsShattered).ToList();
             int leftCount = Mathf.Max(0, left.Count - carried);
-            if (leftCount > 0) lines.Add($"Left in the building: about {leftCount} items");
-            if (lines.Count == 0) lines.Add("A clean job. Suspiciously clean.");
+            if (leftCount > 0) lines.Add(Loc.Wire("Left in the building: about {0} items", leftCount));
+            if (lines.Count == 0) lines.Add(Loc.Mark("A clean job. Suspiciously clean."));
             return lines.ToArray();
         }
 
@@ -137,22 +139,20 @@ namespace Abandoned.Extraction
                 if (l == null || !l.IsSpawned || l.Item.IsShattered || truck == null || !truck.Carries(l.transform.position)) continue;
                 if (lastHeld.TryGetValue(l.Item, out var h)) delivered[h.client] = delivered.GetValueOrDefault(h.client) + l.Item.CurrentValue;
             }
-            var titles = new Dictionary<ulong, string>();
-            void Award(Dictionary<ulong, int> by, string title, string why)
+            // Lines travel as English with their values ({0} the player, {1} the number): every machine words them.
+            var titles = new Dictionary<ulong, (string line, int value)>();
+            void Award(Dictionary<ulong, int> by, string line)
             {
                 foreach (var kv in by.OrderByDescending(kv => kv.Value))
-                    if (kv.Value > 0 && !titles.ContainsKey(kv.Key)) { titles[kv.Key] = $"{title} ({string.Format(why, kv.Value)})"; return; }
+                    if (kv.Value > 0 && !titles.ContainsKey(kv.Key)) { titles[kv.Key] = (line, kv.Value); return; }
             }
-            Award(delivered, "Employee of the Month", "brought home ${0:N0}");
-            Award(brokenValue, "Demolition Specialist", "broke ${0:N0} of stock");
-            Award(longestFall.ToDictionary(kv => kv.Key, kv => Mathf.RoundToInt(kv.Value)), "Gravity Tester", "fell {0} m");
+            Award(delivered, Loc.Mark("{0}: Employee of the Month (brought home ${1})"));
+            Award(brokenValue, Loc.Mark("{0}: Demolition Specialist (broke ${1} of stock)"));
+            Award(longestFall.ToDictionary(kv => kv.Key, kv => Mathf.RoundToInt(kv.Value)), Loc.Mark("{0}: Gravity Tester (fell {1} m)"));
             var lines = new List<string>();
             foreach (RunResults.Player p in results.Players)
-            {
-                string title = titles.TryGetValue(p.ClientId, out string t) ? t
-                    : p.Died ? "Deceased (unpaid)" : !p.Extracted ? "Missing, presumed lazy" : "Present";
-                lines.Add($"{p.Name}: {title}");
-            }
+                lines.Add(titles.TryGetValue(p.ClientId, out var title) ? Loc.Wire(title.line, p.Name, title.value.ToString("N0"))
+                    : Loc.Wire(p.Died ? Loc.Mark("{0}: Deceased (unpaid)") : !p.Extracted ? Loc.Mark("{0}: Missing, presumed lazy") : Loc.Mark("{0}: Present"), p.Name));
             return lines.ToArray();
         }
 

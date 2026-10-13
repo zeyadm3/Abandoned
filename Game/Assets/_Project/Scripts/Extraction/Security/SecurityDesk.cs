@@ -34,7 +34,7 @@ namespace Abandoned.Extraction
         public string UsePrompt(GameObject user)
         {
             if (SecurityCamera.All.Count == 0) return null;
-            return Powered ? "Watch the security cameras" : "The monitors are dead (no power here)";
+            return Powered ? Loc.T("Watch the security cameras") : Loc.T("The monitors are dead (no power here)");
         }
 
         public void Use(GameObject user)
@@ -141,7 +141,7 @@ namespace Abandoned.Extraction
             screen.style.display = UnityEngine.UIElements.DisplayStyle.Flex;
             screen.style.backgroundImage = UnityEngine.UIElements.Background.FromRenderTexture(feed);
             caption.text = $"{SecurityCamera.All[current].Label}     {System.TimeSpan.FromSeconds(Time.time):hh\\:mm\\:ss}";
-            help.text = $"A / D or click   next camera          {InputBindings.Display("Interact")}   get up";
+            help.text = Loc.T("A / D or click   next camera          {0}   get up", InputBindings.Display("Interact"));
         }
 
 #if UNITY_EDITOR

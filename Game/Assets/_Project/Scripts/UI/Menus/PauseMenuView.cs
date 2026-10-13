@@ -53,29 +53,29 @@ namespace Abandoned.UI
             VisualElement left = new();
             left.AddToClassList("pause__left");
             columns.Add(left);
-            MenuKit.Text(left, "RECOVERY IN PROGRESS", "pause__eyebrow");
-            MenuKit.Text(left, "PAUSED", "title");
-            MenuKit.Text(left, "The game keeps running. The building does not wait.", "subtitle").AddToClassList("pause__warning");
-            MenuKit.Button(left, "Resume", menu.Resume, SoundId.UiConfirm).AddToClassList("pause__resume");
-            MenuKit.Button(left, "Settings", () => menu.Push(MenuScreen.Settings));
-            MenuKit.Button(left, "How to play", () => menu.Push(MenuScreen.HowToPlay));
-            MenuKit.Button(left, "Achievements", () => menu.Push(MenuScreen.Achievements));
-            invite = MenuKit.Button(left, "Invite friends", () => menu.Lobby?.Flow?.OpenInviteOverlay());
-            leave = MenuKit.Button(left, "Leave game", () =>
+            MenuKit.Text(left, Loc.T("RECOVERY IN PROGRESS"), "pause__eyebrow");
+            MenuKit.Text(left, Loc.T("PAUSED"), "title");
+            MenuKit.Text(left, Loc.T("The game keeps running. The building does not wait."), "subtitle").AddToClassList("pause__warning");
+            MenuKit.Button(left, Loc.T("Resume"), menu.Resume, SoundId.UiConfirm).AddToClassList("pause__resume");
+            MenuKit.Button(left, Loc.T("Settings"), () => menu.Push(MenuScreen.Settings));
+            MenuKit.Button(left, Loc.T("How to play"), () => menu.Push(MenuScreen.HowToPlay));
+            MenuKit.Button(left, Loc.T("Achievements"), () => menu.Push(MenuScreen.Achievements));
+            invite = MenuKit.Button(left, Loc.T("Invite friends"), () => menu.Lobby?.Flow?.OpenInviteOverlay());
+            leave = MenuKit.Button(left, Loc.T("Leave game"), () =>
             {
                 Company.CompanyService.Current?.MarkLeavingMidJob();
                 menu.Bootstrap.Disconnect();
             }, SoundId.UiBack, important: true);
-            MenuKit.Button(left, "Quit to desktop", () =>
+            MenuKit.Button(left, Loc.T("Quit to desktop"), () =>
             {
                 Company.CompanyService.Current?.MarkLeavingMidJob();
                 menu.Quit();
             }, SoundId.UiBack, important: true);
-            MenuKit.Button(left, "Report a problem", () =>
+            MenuKit.Button(left, Loc.T("Report a problem"), () =>
             {
                 Launch.OpenLogFolder();
                 Launch.OpenFeedback();
-            }, small: true).tooltip = "Opens your log folder (attach Player.log) and the feedback page.";
+            }, small: true).tooltip = Loc.T("Opens your log folder (attach Player.log) and the feedback page.");
 
             // One scrolling body under the title: the crew rows get the room they need and the host's rules sit
             // below them inside the panel, never spilling out of it.
@@ -87,13 +87,13 @@ namespace Abandoned.UI
             right.style.maxHeight = 640f;
             right.style.flexDirection = FlexDirection.Column;
             right.AddToClassList("pause__crew");
-            crewTitle = MenuKit.Text(right, "CREW", "heading");
+            crewTitle = MenuKit.Text(right, Loc.T("CREW"), "heading");
             crewTitle.style.flexShrink = 0;
             ScrollView body = MenuKit.Scroll(right, "pause__crew-body");
             body.style.flexGrow = 1;
             body.style.flexShrink = 1;
             body.style.minHeight = 0;
-            Label note = MenuKit.Text(body, "Voice volume and mute only change what you hear.", "text");
+            Label note = MenuKit.Text(body, Loc.T("Voice volume and mute only change what you hear."), "text");
             note.AddToClassList("text--small");
             crewList = new VisualElement();
             crewList.AddToClassList("pause__crew-list");
@@ -119,10 +119,10 @@ namespace Abandoned.UI
             if (!show || rulesFor == company) return;
             rulesFor = company;
             hostRules.Clear();
-            MenuKit.Text(hostRules, "HOST RULES: THE CREW MAY", "section");
-            MenuKit.Toggle(hostRules, "Buy gear on the company account", company.CrewMay(Company.CrewRule.Spend), v => company.SetCrewRule(Company.CrewRule.Spend, v));
-            MenuKit.Toggle(hostRules, "Start the van", company.CrewMay(Company.CrewRule.Drive), v => company.SetCrewRule(Company.CrewRule.Drive, v));
-            MenuKit.Toggle(hostRules, "Pull the truck lever", company.CrewMay(Company.CrewRule.Lever), v => company.SetCrewRule(Company.CrewRule.Lever, v));
+            MenuKit.Text(hostRules, Loc.T("HOST RULES: THE CREW MAY"), "section");
+            MenuKit.Toggle(hostRules, Loc.T("Buy gear on the company account"), company.CrewMay(Company.CrewRule.Spend), v => company.SetCrewRule(Company.CrewRule.Spend, v));
+            MenuKit.Toggle(hostRules, Loc.T("Start the van"), company.CrewMay(Company.CrewRule.Drive), v => company.SetCrewRule(Company.CrewRule.Drive, v));
+            MenuKit.Toggle(hostRules, Loc.T("Pull the truck lever"), company.CrewMay(Company.CrewRule.Lever), v => company.SetCrewRule(Company.CrewRule.Lever, v));
         }
 
         public void Refresh()
@@ -152,13 +152,13 @@ namespace Abandoned.UI
                 Live(p, row, b);
             }
             int max = b.Config != null ? b.Config.MaxPlayers : 4;
-            crewTitle.text = $"CREW  {count}/{max}";
+            crewTitle.text = Loc.T("CREW  {0}/{1}", count, max);
             MenuKit.Show(invite, isHost && flow != null && flow.InLobby);
-            joinHint.text = flow != null && flow.InLobby ? $"Steam lobby: {flow.Members.Count}/{max} - friends join from the overlay or your profile."
-                : isHost && b.HostPort != 0 ? (GameSettings.StreamerMode ? "Friends join at your LAN address (hidden: streamer mode). Players join at the HQ only."
-                    : $"Friends join at your LAN address, port {b.HostPort}. Players join at the HQ only.") : "";
+            joinHint.text = flow != null && flow.InLobby ? Loc.T("Steam lobby: {0}/{1} - friends join from the overlay or your profile.", flow.Members.Count, max)
+                : isHost && b.HostPort != 0 ? (GameSettings.StreamerMode ? Loc.T("Friends join at your LAN address (hidden: streamer mode). Players join at the HQ only.")
+                    : Loc.T("Friends join at your LAN address, port {0}. Players join at the HQ only.", b.HostPort)) : "";
             bool midJob = isHost && Company.CompanyService.Current != null && Company.CompanyService.Current.JobInProgress;
-            leave.text = !isHost ? "Leave game" : midJob ? "End game (job counts as failed)" : "End game for everyone";
+            leave.text = !isHost ? Loc.T("Leave game") : midJob ? Loc.T("End game (job counts as failed)") : Loc.T("End game for everyone");
         }
 
         private Row Build(NetworkPlayer p, bool isHost)
@@ -194,10 +194,10 @@ namespace Abandoned.UI
                 slider.AddToClassList("crew-row__volume");
                 slider.RegisterValueChangedCallback(e => VoiceSettings.SetPlayerVolume(id, e.newValue));
                 controls.Add(slider);
-                row.Mute = MenuKit.Button(controls, VoiceSettings.PlayerMuted(id) ? "Muted" : "Mute", () =>
+                row.Mute = MenuKit.Button(controls, VoiceSettings.PlayerMuted(id) ? Loc.T("Muted") : Loc.T("Mute"), () =>
                 {
                     VoiceSettings.SetPlayerMuted(id, !VoiceSettings.PlayerMuted(id));
-                    row.Mute.text = VoiceSettings.PlayerMuted(id) ? "Muted" : "Mute";
+                    row.Mute.text = VoiceSettings.PlayerMuted(id) ? Loc.T("Muted") : Loc.T("Mute");
                     row.Mute.EnableInClassList("menu-button--on", VoiceSettings.PlayerMuted(id));
                 }, SoundId.UiClick, small: true);
                 row.Mute.EnableInClassList("menu-button--on", VoiceSettings.PlayerMuted(id));
@@ -206,12 +206,12 @@ namespace Abandoned.UI
                     // Two presses, so a stray click doesn't throw a friend out (QA B-24).
                     Button kick = null;
                     float armedUntil = -1f;
-                    kick = MenuKit.Button(controls, "Kick", () =>
+                    kick = MenuKit.Button(controls, Loc.T("Kick"), () =>
                     {
                         if (Time.unscaledTime > armedUntil)
                         {
                             armedUntil = Time.unscaledTime + 3f;
-                            kick.text = "Sure?";
+                            kick.text = Loc.T("Sure?");
                             return;
                         }
                         Company.CompanyService.Current?.Kick(id);
@@ -225,9 +225,9 @@ namespace Abandoned.UI
         private static void Live(NetworkPlayer p, Row row, NetworkBootstrap b)
         {
             var tags = new List<string>();
-            if (p.OwnerClientId == Unity.Netcode.NetworkManager.ServerClientId) tags.Add("HOST");
-            if (p.IsOwner) tags.Add("YOU");
-            if (p.IsDead) tags.Add("GHOST");
+            if (p.OwnerClientId == Unity.Netcode.NetworkManager.ServerClientId) tags.Add(Loc.T("HOST"));
+            if (p.IsOwner) tags.Add(Loc.T("YOU"));
+            if (p.IsDead) tags.Add(Loc.T("GHOST"));
             string t = string.Join("  -  ", tags);
             if (row.Tags.text != t) row.Tags.text = t;
             string ping = Ping(p, b);
@@ -243,8 +243,8 @@ namespace Abandoned.UI
             var nm = b.Manager;
             if (nm == null || !nm.IsListening || nm.NetworkConfig.NetworkTransport == null) return "";
             if (nm.IsServer)
-                return p.OwnerClientId == nm.LocalClientId ? "" : $"{nm.NetworkConfig.NetworkTransport.GetCurrentRtt(p.OwnerClientId)} ms";
-            return p.IsOwner ? $"{nm.NetworkConfig.NetworkTransport.GetCurrentRtt(Unity.Netcode.NetworkManager.ServerClientId)} ms" : "";
+                return p.OwnerClientId == nm.LocalClientId ? "" : Loc.T("{0} ms", nm.NetworkConfig.NetworkTransport.GetCurrentRtt(p.OwnerClientId));
+            return p.IsOwner ? Loc.T("{0} ms", nm.NetworkConfig.NetworkTransport.GetCurrentRtt(Unity.Netcode.NetworkManager.ServerClientId)) : "";
         }
     }
 }

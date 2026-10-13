@@ -65,6 +65,7 @@ namespace Abandoned.UI
                 scaledPanel = Instantiate(document.panelSettings);
                 scaledPanel.name = document.panelSettings.name + " (scaled)";
                 document.panelSettings = scaledPanel;
+                LanguageFonts.Apply(scaledPanel);
             }
             float s = GameSettings.UiScale;
             var wanted = new Vector2Int(Mathf.RoundToInt(1920f / s), Mathf.RoundToInt(1080f / s));
@@ -76,6 +77,7 @@ namespace Abandoned.UI
             Current = this;
             ApplyUiScale();
             GameSettings.Changed += ApplyUiScale;
+            Languages.Changed += OnLanguageChanged;
             VisualElement root = document.rootVisualElement;
             root.Clear();
             UiKit.FillScreen(root);
@@ -98,35 +100,7 @@ namespace Abandoned.UI
             hud.AddToClassList("hud-layer");
             root.Add(hud);
             HudLayer.Attach(hud);
-            main = new MainMenuView(this);
-            pause = new PauseMenuView(this);
-            views[MenuScreen.Main] = main.Root;
-            views[MenuScreen.Pause] = pause.Root;
-            play = new PlayView(this);
-            views[MenuScreen.Play] = play.Root;
-            views[MenuScreen.Settings] = new SettingsView(this).Root;
-            views[MenuScreen.Controls] = new ControlsView(this).Root;
-            views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
-            wardrobe = new WardrobeView(this);
-            views[MenuScreen.Wardrobe] = wardrobe.Root;
-            howToPlay = new HowToPlayView(this);
-            views[MenuScreen.HowToPlay] = howToPlay.Root;
-            demoEnd = new DemoEndView(this);
-            views[MenuScreen.DemoEnd] = demoEnd.Root;
-            achievements = new AchievementsView(this);
-            views[MenuScreen.Achievements] = achievements.Root;
-            foreach (KeyValuePair<MenuScreen, VisualElement> screen in views)
-            {
-                VisualElement v = screen.Value;
-                v.AddToClassList("menu-screen");
-                v.AddToClassList("menu-screen--" + screen.Key.ToString().ToLowerInvariant());
-                UiKit.FillScreen(v);
-                v.style.flexDirection = FlexDirection.Column;
-                v.style.justifyContent = Justify.Center;
-                v.style.alignItems = v == main.Root ? Align.FlexStart : Align.Center;
-                v.style.display = DisplayStyle.None;
-                root.Add(v);
-            }
+            BuildViews(root);
             wear = new VisualElement { pickingMode = PickingMode.Ignore };
             UiKit.FillScreen(wear);
             wear.AddToClassList("horror-grime");
@@ -149,6 +123,7 @@ namespace Abandoned.UI
             if (GetComponent<ThreatFilesScreen>() == null) gameObject.AddComponent<ThreatFilesScreen>();
             if (GetComponent<FirstDayGuide>() == null) gameObject.AddComponent<FirstDayGuide>();
             if (GetComponent<Threats.ThreatFilesTracker>() == null) gameObject.AddComponent<Threats.ThreatFilesTracker>();
+            if (GetComponent<TextDebugOverlay>() == null) gameObject.AddComponent<TextDebugOverlay>();
         }
 
         private void OnDisable()
@@ -157,6 +132,7 @@ namespace Abandoned.UI
             VisualElement root = document != null ? document.rootVisualElement : null;
             root?.UnregisterCallback<GeometryChangedEvent>(OnRootGeometry);
             GameSettings.Changed -= ApplyUiScale;
+            Languages.Changed -= OnLanguageChanged;
             CursorOwner.Set(this, false);
             if (subtitles != null) SubtitleFeed.Heard -= subtitles.Add;
             fx?.Detach();
@@ -177,6 +153,7 @@ namespace Abandoned.UI
         {
             subtitles?.Tick();
             watermark?.KeepOnTop();
+            if (languageChanged) RebuildForLanguage();
             if (bootstrap == null) return;
             bool running = bootstrap.IsRunning;
             AutoOpenDemoEnd(running);

@@ -13,7 +13,7 @@ namespace Abandoned.Threats
         private readonly NetworkVariable<bool> pressing = new();
         private float nextPress, strikeAt;
         private StructuralSection pressureSection;
-        public override string DisplayName => "The Weight";
+        public override string DisplayName => Loc.Mark("The Weight");
         public override ThreatMotion DesiredMotion => pressing.Value ? ThreatMotion.Special : ThreatMotion.Idle;
         protected override void HostTick()
         {

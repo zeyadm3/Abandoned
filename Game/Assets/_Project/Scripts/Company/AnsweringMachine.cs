@@ -32,7 +32,7 @@ namespace Abandoned.Company
         }
 
         public string UsePrompt(GameObject user) => Current(out string k, out _)
-            ? k != heard ? "Play the boss's message (1 new)" : "Play the boss's message again" : null;
+            ? k != heard ? Loc.T("Play the boss's message (1 new)") : Loc.T("Play the boss's message again") : null;
 
         public void Use(GameObject user)
         {
@@ -82,11 +82,11 @@ namespace Abandoned.Company
             if (!open) return;
             screen.Build(key, panel =>
             {
-                MenuKit.Text(panel, "VOICEMAIL", "heading");
-                MenuKit.Text(panel, "1 message - from: THE BOSS", "subtitle");
-                MenuKit.Text(panel, $"\"{text}\"");
+                MenuKit.Text(panel, Loc.T("VOICEMAIL"), "heading");
+                MenuKit.Text(panel, Loc.T("1 message - from: THE BOSS"), "subtitle");
+                MenuKit.Text(panel, $"\"{Loc.T(text)}\"");
                 MenuKit.Text(panel, "<i>*beep*</i>", "text").AddToClassList("text--small");
-                MenuKit.Button(panel, "Hang up", () => open = false, SoundId.UiBack);
+                MenuKit.Button(panel, Loc.T("Hang up"), () => open = false, SoundId.UiBack);
             });
         }
 

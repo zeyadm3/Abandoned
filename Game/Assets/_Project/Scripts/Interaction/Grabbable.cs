@@ -43,6 +43,9 @@ namespace Abandoned.Interaction
         public bool HasPhysicsAuthority { get; private set; } = true;
         private bool externallyHeld;
         public string DisplayName => carryable?.DisplayName ?? name;
+
+        /// <summary>The name as the HUD shows it, in the player's language.</summary>
+        public string LocalName => Core.Loc.T(DisplayName);
         public CarryClass CarryClass => carryable?.CarryClass ?? CarryClass.OneHand;
         public float Weight => carryable?.GameplayWeight ?? body.mass;
 

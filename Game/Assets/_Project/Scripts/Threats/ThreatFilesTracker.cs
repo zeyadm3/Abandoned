@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Networking;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace Abandoned.Threats
                 if ((t.transform.position - at).sqrMagnitude > NoticeDistance * NoticeDistance) continue;
                 // Names only: what it does is in the file, back at the office.
                 if (ThreatFiles.MarkMet(t.Definition.Kind))
-                    UI.ToastFeed.Show("THREAT FILE OPENED", $"{ThreatFiles.For(t.Definition.Kind).Name}: read it on the office computer at the HQ.");
+                    UI.ToastFeed.Show(Loc.T("THREAT FILE OPENED"), Loc.T("{0}: read it on the office computer at the HQ.", ThreatFiles.For(t.Definition.Kind).Name));
             }
         }
     }

@@ -40,7 +40,7 @@ namespace Abandoned.Networking
             get
             {
                 // 0.19.7: streamer mode shows crewmates by seat on this screen, never their names.
-                if (Core.GameSettings.StreamerMode && !IsOwner) return $"Crewmate {Mathf.Max(0, CrewSeat) + 1}";
+                if (Core.GameSettings.StreamerMode && !IsOwner) return Loc.T("Crewmate {0}", Mathf.Max(0, CrewSeat) + 1);
                 string chosen = displayName.Value.ToString();
                 return string.IsNullOrWhiteSpace(chosen) ? $"Player {Mathf.Max(0, CrewSeat) + 1}" : chosen;
             }

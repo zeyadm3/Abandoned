@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Equipment;
 using Abandoned.Extraction;
 using Abandoned.Networking;
@@ -34,7 +35,7 @@ namespace Abandoned.UI
                 HudCallout.Clear(this);
                 return;
             }
-            HudCallout.Set(this, $"CHARGING FLASHLIGHT  {level * 100f:0}%");
+            HudCallout.Set(this, Loc.T("CHARGING FLASHLIGHT  {0:0}%", level * 100f));
             if (shownLevel >= 0f && level > shownLevel + 0.001f && Time.time >= nextTick)
             {
                 nextTick = Time.time + 1.2f;

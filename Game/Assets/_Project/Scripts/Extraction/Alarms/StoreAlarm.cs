@@ -64,8 +64,8 @@ namespace Abandoned.Extraction
             RunAlarms run = RunAlarms.Current;
             if (run == null || !run.Wired(Store) || run.Disarmed(Store)) return null;
             PlayerEquipment gear = user != null ? user.GetComponentInParent<PlayerEquipment>() : null;
-            if (gear == null || !gear.Has(EquipmentKind.BoltCutters)) return run.Ringing(Store) ? "Alarm ringing (bolt cutters cut it)" : "Wired alarm (bolt cutters cut it)";
-            return "Cut the alarm wires";
+            if (gear == null || !gear.Has(EquipmentKind.BoltCutters)) return run.Ringing(Store) ? Loc.T("Alarm ringing (bolt cutters cut it)") : Loc.T("Wired alarm (bolt cutters cut it)");
+            return Loc.T("Cut the alarm wires");
         }
 
         public void Use(GameObject user)

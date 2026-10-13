@@ -96,9 +96,9 @@ namespace Abandoned.Extraction
         {
             NetworkPlayer me = user != null ? user.GetComponentInParent<NetworkPlayer>() : null;
             if (me == null || !me.IsSpawned || !Usable) return null;
-            if (me.HidingIn == index) return "Climb out";
-            if (Occupant != null) return "Someone is hiding in here";
-            return "Hide in the locker";
+            if (me.HidingIn == index) return Loc.T("Climb out");
+            if (Occupant != null) return Loc.T("Someone is hiding in here");
+            return Loc.T("Hide in the locker");
         }
 
         public void Use(GameObject user)
@@ -114,7 +114,7 @@ namespace Abandoned.Extraction
             // Nothing bigger than a pocket fits in there with you (the prompt is hidden while hands are full).
             if (me.Carrier != null && me.Carrier.Held != null)
             {
-                me.Carrier.ShowHint("Put that down to hide in the locker");
+                me.Carrier.ShowHint(Loc.T("Put that down to hide in the locker"));
                 return;
             }
             me.RequestHide(index);

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Networking;
 using Abandoned.Structure;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace Abandoned.UI
             }
             MenuKit.Show(label, Warning != null);
             if (Warning == null) return;
-            string text = "FLOOR GIVING WAY · MOVE";
+            string text = Loc.T("FLOOR GIVING WAY · MOVE");
             if (label.text != text) label.text = text;
             HudLayer.FitCenterLane(label, HudLayer.Root, 640f);
             // Urgent structural feedback belongs above the reticle, clear of held tags and throw charge.

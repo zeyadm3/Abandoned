@@ -8,7 +8,7 @@ namespace Abandoned.Threats
     {
         public static bool Open { get; set; }
 
-        public string UsePrompt(GameObject user) => "Inspect the field guide / monster manual";
+        public string UsePrompt(GameObject user) => Loc.T("Inspect the field guide / monster manual");
 
         public void Use(GameObject user) => Open = true;
 

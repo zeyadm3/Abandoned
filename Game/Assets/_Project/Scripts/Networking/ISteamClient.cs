@@ -10,6 +10,9 @@ namespace Abandoned.Networking
         ulong SteamId { get; }
         string PlayerName { get; }
 
+        /// <summary>Steam's API name of the language the player set for this game ("german", "schinese"); empty when unknown.</summary>
+        string GameLanguage { get; }
+
         /// <summary>Throws on failure (Steam not running, library missing...), like SteamClient.Init.</summary>
         void Init(uint appId);
         void RunCallbacks();

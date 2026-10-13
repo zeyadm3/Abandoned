@@ -1,4 +1,5 @@
 using Abandoned.Audio;
+using Abandoned.Core;
 using Abandoned.Networking;
 using UnityEngine.UIElements;
 
@@ -31,16 +32,16 @@ namespace Abandoned.UI
             panel.AddToClassList("play");
             panel.style.width = 1240f;
             panel.style.maxWidth = Length.Percent(96f);
-            MenuKit.Text(panel, "RECOVERY ASSIGNMENT / CREW ACCESS", "menu-record");
-            MenuKit.Text(panel, "PLAY", "heading");
+            MenuKit.Text(panel, Loc.T("RECOVERY ASSIGNMENT / CREW ACCESS"), "menu-record");
+            MenuKit.Text(panel, Loc.T("PLAY"), "heading");
             ScrollView body = MenuKit.Scroll(panel, "play__body");
 
             VisualElement over = MenuKit.Row(body);
             over.AddToClassList("play__transport");
             over.style.flexWrap = Wrap.Wrap;
-            MenuKit.Text(over, "Play over", "setting__label");
+            MenuKit.Text(over, Loc.T("Play over"), "setting__label");
             steam = MenuKit.Button(over, "Steam", () => b.SelectTransport(TransportMode.Steam), SoundId.UiClick, small: true);
-            directIp = MenuKit.Button(over, "Direct IP", () => b.SelectTransport(TransportMode.UnityTransport), SoundId.UiClick, small: true);
+            directIp = MenuKit.Button(over, Loc.T("Direct IP"), () => b.SelectTransport(TransportMode.UnityTransport), SoundId.UiClick, small: true);
 
             var cards = new VisualElement();
             cards.style.flexDirection = FlexDirection.Row;
@@ -52,18 +53,18 @@ namespace Abandoned.UI
             // QA B-24: up to three saves on this machine; hosting (or solo) plays the chosen one.
             var slots = new string[Company.SaveStore.Slots];
             for (int i = 0; i < slots.Length; i++) slots[i] = $"{i + 1}: {Company.SaveStore.Describe(i + 1)}";
-            MenuKit.Choice(body, "Save", slots, Company.SaveStore.Slot - 1, i => Company.SaveStore.Slot = i + 1);
+            MenuKit.Choice(body, Loc.T("Save"), slots, Company.SaveStore.Slot - 1, i => Company.SaveStore.Slot = i + 1);
             body.Add(cards);
 
-            VisualElement solo = Card(cards, "SOLO", "icon/singleplayer", "One worker. An unstable building. Use the trolley for heavy salvage. Friends can still join you at the HQ.");
-            MenuKit.Button(Actions(solo), "Start", () => b.StartHost(), SoundId.UiConfirm, important: true);
+            VisualElement solo = Card(cards, Loc.T("SOLO"), "icon/singleplayer", Loc.T("One worker. An unstable building. Use the trolley for heavy salvage. Friends can still join you at the HQ."));
+            MenuKit.Button(Actions(solo), Loc.T("Start"), () => b.StartHost(), SoundId.UiConfirm, important: true);
 
-            VisualElement host = Card(cards, "HOST A CREW", "icon/multiplayer", "Lead a crew of up to four for the company. Friends join you at the HQ between jobs.");
+            VisualElement host = Card(cards, Loc.T("HOST A CREW"), "icon/multiplayer", Loc.T("Lead a crew of up to four for the company. Friends join you at the HQ between jobs."));
             hostHow = MenuKit.Text(host, "", "text");
             hostHow.AddToClassList("text--small");
-            hostButton = MenuKit.Button(Actions(host), "Host", () => b.StartHost(), SoundId.UiConfirm, important: true);
+            hostButton = MenuKit.Button(Actions(host), Loc.T("Host"), () => b.StartHost(), SoundId.UiConfirm, important: true);
 
-            VisualElement join = Card(cards, "JOIN", "icon/exitRight", "Join a friend's crew.");
+            VisualElement join = Card(cards, Loc.T("JOIN"), "icon/exitRight", Loc.T("Join a friend's crew."));
             joinHow = MenuKit.Text(join, "", "text");
             joinHow.AddToClassList("text--small");
             address = new TextField { value = b.Config != null ? $"{b.Config.DefaultJoinAddress}:{b.Config.Port}" : "" };
@@ -71,17 +72,17 @@ namespace Abandoned.UI
             address.AddToClassList("field");
             join.Add(address);
             VisualElement joinActions = Actions(join);
-            MenuKit.Button(joinActions, "Join", () => b.StartClient(address.value), SoundId.UiConfirm, important: true);
+            MenuKit.Button(joinActions, Loc.T("Join"), () => b.StartClient(address.value), SoundId.UiConfirm, important: true);
             // 0.23.5: back to the crew you were last with (they must be at the HQ).
             string last = Core.Prefs.GetString(NetworkPlayer.LastJoinKey, "");
             if (!string.IsNullOrEmpty(last))
-                MenuKit.Button(joinActions, "Rejoin your last crew", () => b.StartClient(last), SoundId.UiConfirm, small: true);
+                MenuKit.Button(joinActions, Loc.T("Rejoin your last crew"), () => b.StartClient(last), SoundId.UiConfirm, small: true);
 
             status = MenuKit.Text(body, "", "text");
             status.AddToClassList("text--small");
             error = MenuKit.Text(body, "", "text");
             error.AddToClassList("text--error");
-            MenuKit.Button(panel, "Back", menu.Back, SoundId.UiBack);
+            MenuKit.Button(panel, Loc.T("Back"), menu.Back, SoundId.UiBack);
         }
 
         private static VisualElement Actions(VisualElement card)
@@ -117,13 +118,14 @@ namespace Abandoned.UI
             bool overSteam = b.Transport == TransportMode.Steam;
             steam.EnableInClassList("menu-button--on", overSteam);
             directIp.EnableInClassList("menu-button--on", !overSteam);
-            hostButton.text = overSteam ? "Host a Steam lobby" : "Host";
-            hostHow.text = overSteam ? "Friends-only Steam lobby: invite them from the pause menu (Steam overlay), or they join from your profile."
-                : $"Friends on your network join your LAN address, port {(b.Config != null ? b.Config.Port : 0)}.";
-            joinHow.text = overSteam ? "Accept their invite in Steam, or paste their SteamID64 here:" : "Their address and port (address:port):";
+            hostButton.text = overSteam ? Loc.T("Host a Steam lobby") : Loc.T("Host");
+            hostHow.text = overSteam ? Loc.T("Friends-only Steam lobby: invite them from the pause menu (Steam overlay), or they join from your profile.")
+                : Loc.T("Friends on your network join your LAN address, port {0}.", (b.Config != null ? b.Config.Port : 0));
+            joinHow.text = overSteam ? Loc.T("Accept their invite in Steam, or paste their SteamID64 here:") : Loc.T("Their address and port (address:port):");
             if (status.text != b.Status) status.text = b.Status;
             SteamLobbyFlow flow = menu.Lobby != null ? menu.Lobby.Flow : null;
-            string e = !string.IsNullOrEmpty(b.LastError) ? b.LastError : flow != null ? flow.LastError : "";
+            // Errors are kept (and arrive from the host) as English with their values; worded here.
+            string e = Loc.FromWire(!string.IsNullOrEmpty(b.LastError) ? b.LastError : flow != null ? flow.LastError : "");
             if (error.text != e) error.text = e;
         }
     }

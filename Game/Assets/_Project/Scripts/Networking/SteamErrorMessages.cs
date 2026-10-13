@@ -7,12 +7,12 @@ namespace Abandoned.Networking
     /// </summary>
     public static class SteamErrorMessages
     {
-        public const string NotRunning = "Steam isn't running - start Steam and try again.";
-        public const string LibraryMissing = "Steam couldn't be loaded on this computer - reinstall the game and try again.";
-        public const string NeedsUpdate = "Steam needs an update - restart Steam to update it and try again.";
-        public const string ConfigMissing = "Steam settings are missing from this build (NetworkConfig).";
-        public const string Generic = "Couldn't connect to Steam - make sure Steam is running and you're logged in, then try again.";
-        public const string LostConnection = "Lost connection to Steam - restart Steam and the game.";
+        public const string NotRunning = "Steam isn't running - start Steam and try again."; // @loc
+        public const string LibraryMissing = "Steam couldn't be loaded on this computer - reinstall the game and try again."; // @loc
+        public const string NeedsUpdate = "Steam needs an update - restart Steam to update it and try again."; // @loc
+        public const string ConfigMissing = "Steam settings are missing from this build (NetworkConfig)."; // @loc
+        public const string Generic = "Couldn't connect to Steam - make sure Steam is running and you're logged in, then try again."; // @loc
+        public const string LostConnection = "Lost connection to Steam - restart Steam and the game."; // @loc
 
         public static string FromException(Exception e)
         {

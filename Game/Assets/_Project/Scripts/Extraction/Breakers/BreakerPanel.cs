@@ -56,10 +56,10 @@ namespace Abandoned.Extraction
         {
             RunBreakers run = RunBreakers.Current;
             if (run == null) return null;
-            if (run.Restored(sector)) return $"Breaker on ({run.Remaining(sector):0} s left)";
+            if (run.Restored(sector)) return Loc.T("Breaker on ({0:0} s left)", run.Remaining(sector));
             float wait = run.Cooldown(sector);
-            if (wait > 0f) return $"Breaker cooling down ({wait:0} s)";
-            return "Throw the breaker (lights this sector, loudly)";
+            if (wait > 0f) return Loc.T("Breaker cooling down ({0:0} s)", wait);
+            return Loc.T("Throw the breaker (lights this sector, loudly)");
         }
 
         public void Use(GameObject user)

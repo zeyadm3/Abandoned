@@ -13,7 +13,7 @@ namespace Abandoned.Interaction
         private ScreenPanel screen;
         private bool open;
 
-        public string UsePrompt(GameObject user) => "Read " + title;
+        public string UsePrompt(GameObject user) => Loc.T("Read {0}", Loc.T(title));
 
         public void Use(GameObject user) => open = true;
 
@@ -32,7 +32,7 @@ namespace Abandoned.Interaction
                 {
                     MenuKit.Text(p, title.ToUpperInvariant(), "heading");
                     MenuKit.Text(p, text);
-                    MenuKit.Button(p, "Fold it away", () => open = false);
+                    MenuKit.Button(p, Loc.T("Fold it away"), () => open = false);
                 });
         }
 

@@ -82,7 +82,7 @@ namespace Abandoned.Extraction
             if (nextShock.TryGetValue(p, out float next) && Time.time < next) return;
             nextShock[p] = Time.time + config.ShockInterval;
             GameAudio.Play(SoundId.WaterZap, p.transform.position + Vector3.up * 0.3f, 1f);
-            if (GameAuthority.IsHost) p.DealDamage(config.ShockDamage * config.ShockInterval, "Electrocuted in live water");
+            if (GameAuthority.IsHost) p.DealDamage(config.ShockDamage * config.ShockInterval, Loc.Mark("Electrocuted in live water"));
         }
 
         private void Step(NetworkPlayer p, Vector3 feet, GroundConfig config)

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Loot;
@@ -51,7 +52,7 @@ namespace Abandoned.Extraction
                 float done = (float)have / set.Members.Length;
                 if (have == 0 || done <= best) continue;
                 best = done;
-                shown = have == set.Members.Length ? $"SET COMPLETE: {set.DisplayName} (+${set.Bonus:N0})" : $"SET: {set.DisplayName} {have}/{set.Members.Length}";
+                shown = have == set.Members.Length ? Loc.T("SET COMPLETE: {0} (+${1:N0})", set.LocalName, set.Bonus) : Loc.T("SET: {0} {1}/{2}", set.LocalName, have, set.Members.Length);
             }
             return shown;
         }
@@ -60,7 +61,7 @@ namespace Abandoned.Extraction
         {
             foreach (LootSet set in LootSetCatalog.Current.Sets)
                 if (set != null && set.Members.Length > 0 && Have(set, aboard) == set.Members.Length)
-                    lines.Add((set.Bonus, $"SET COMPLETE: {set.DisplayName}. +${set.Bonus:N0}"));
+                    lines.Add((set.Bonus, Loc.Wire("SET COMPLETE: {0}. +${1}", Loc.Word(set.DisplayName), set.Bonus.ToString("N0"))));
         }
     }
 }

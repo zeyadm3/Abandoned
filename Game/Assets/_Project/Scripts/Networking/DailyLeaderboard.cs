@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using Abandoned.Company;
 using Abandoned.Contracts;
@@ -58,7 +59,7 @@ namespace Abandoned.Networking
                 if (board == null) return;
                 Steamworks.Data.LeaderboardUpdate? update = await board.Value.SubmitScoreAsync(haul);
                 if (update != null)
-                    ToastFeed.Show("DAILY JOB", $"Your crew's ${haul:N0} ranks #{update.Value.NewGlobalRank:N0} today.", null, ToastFeed.Kind.Good);
+                    ToastFeed.Show(Loc.T("DAILY JOB"), Loc.T("Your crew's ${0:N0} ranks #{1:N0} today.", haul, update.Value.NewGlobalRank), null, ToastFeed.Kind.Good);
             }
             catch (Exception e)
             {

@@ -255,7 +255,7 @@ namespace Abandoned.Interaction
                 || Vector3.Distance(EyePosition, body.worldCenterOfMass) > config.Reach + config.ReachTolerance)
             {
                 CancelPlacement();
-                ShowHint("Moved too far from the item");
+                ShowHint(Loc.Mark("Moved too far from the item"));
                 InteractionService.Handler.RequestDrop(this);
                 return;
             }

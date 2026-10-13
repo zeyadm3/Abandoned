@@ -1,0 +1,474 @@
+# Settings screen: the Video and Graphics pages (UI/Menus/SettingsView.cs).
+
+en: Video
+zh-CN: 视频
+ja: ビデオ
+ko: 비디오
+es: Vídeo
+pt-BR: Vídeo
+de: Video
+fr: Vidéo
+ru: Видео
+pl: Obraz
+
+en: The window and how often it's drawn.
+zh-CN: 窗口及其刷新频率。
+ja: ウィンドウと描画の頻度。
+ko: 창과 화면을 그리는 빈도.
+es: La ventana y cada cuánto se dibuja.
+pt-BR: A janela e a frequência com que ela é desenhada.
+de: Das Fenster und wie oft es gezeichnet wird.
+fr: La fenêtre et sa fréquence d'affichage.
+ru: Окно и частота его отрисовки.
+pl: Okno i częstotliwość jego rysowania.
+
+en: DISPLAY
+zh-CN: 显示
+ja: ディスプレイ
+ko: 디스플레이
+es: PANTALLA
+pt-BR: TELA
+de: ANZEIGE
+fr: AFFICHAGE
+ru: ЭКРАН
+pl: EKRAN
+
+en: Borderless fullscreen
+zh-CN: 无边框全屏
+ja: ボーダーレスフルスクリーン
+ko: 테두리 없는 전체 화면
+es: Pantalla completa sin bordes
+pt-BR: Tela cheia sem bordas
+de: Randloses Vollbild
+fr: Plein écran sans bordure
+ru: Полный экран без рамки
+pl: Pełny ekran bez ramki
+
+en: Fullscreen
+zh-CN: 全屏
+ja: フルスクリーン
+ko: 전체 화면
+es: Pantalla completa
+pt-BR: Tela cheia
+de: Vollbild
+fr: Plein écran
+ru: Полный экран
+pl: Pełny ekran
+
+en: Windowed
+zh-CN: 窗口
+ja: ウィンドウ
+ko: 창 모드
+es: Ventana
+pt-BR: Janela
+de: Fenster
+fr: Fenêtré
+ru: В окне
+pl: W oknie
+
+en: Window mode
+zh-CN: 窗口模式
+ja: ウィンドウモード
+ko: 창 모드
+es: Modo de ventana
+pt-BR: Modo de janela
+de: Fenstermodus
+fr: Mode d'affichage
+ru: Режим окна
+pl: Tryb okna
+
+en: Desktop
+zh-CN: 桌面
+ja: デスクトップ
+ko: 바탕 화면
+es: Escritorio
+pt-BR: Área de trabalho
+de: Desktop
+fr: Bureau
+ru: Как на рабочем столе
+pl: Pulpit
+
+en: Resolution
+zh-CN: 分辨率
+ja: 解像度
+ko: 해상도
+es: Resolución
+pt-BR: Resolução
+de: Auflösung
+fr: Résolution
+ru: Разрешение
+pl: Rozdzielczość
+
+en: Window and resolution apply to the built game; the editor's Game view keeps its own size.
+zh-CN: 窗口和分辨率只对正式构建的游戏生效；编辑器的 Game 视图保持自己的尺寸。
+ja: ウィンドウと解像度はビルド版に適用される。エディターのGameビューは独自のサイズのまま。
+ko: 창과 해상도는 빌드된 게임에 적용됩니다. 에디터의 Game 뷰는 자체 크기를 유지합니다.
+es: La ventana y la resolución se aplican al juego compilado; la vista Game del editor conserva su tamaño.
+pt-BR: Janela e resolução valem para o jogo compilado; a janela Game do editor mantém o próprio tamanho.
+de: Fenster und Auflösung gelten für das gebaute Spiel; die Game-Ansicht des Editors behält ihre Größe.
+fr: La fenêtre et la résolution s'appliquent au jeu compilé ; la vue Game de l'éditeur garde sa taille.
+ru: Окно и разрешение применяются в собранной игре; окно Game в редакторе сохраняет свой размер.
+pl: Okno i rozdzielczość dotyczą zbudowanej gry; widok Game w edytorze zachowuje własny rozmiar.
+
+en: Monitor
+zh-CN: 显示器
+ja: モニター
+ko: 모니터
+es: Monitor
+pt-BR: Monitor
+de: Monitor
+fr: Écran
+ru: Монитор
+pl: Monitor
+
+en: Show FPS
+zh-CN: 显示帧率
+ja: FPSを表示
+ko: FPS 표시
+es: Mostrar FPS
+pt-BR: Mostrar FPS
+de: FPS anzeigen
+fr: Afficher les FPS
+ru: Показывать FPS
+pl: Pokaż FPS
+
+en: A small frame counter in the corner.
+zh-CN: 角落里的小型帧数计数器。
+ja: 画面の隅に小さなフレームカウンターを出す。
+ko: 화면 구석의 작은 프레임 카운터.
+es: Un pequeño contador de fotogramas en la esquina.
+pt-BR: Um pequeno contador de quadros no canto.
+de: Ein kleiner Bildzähler in der Ecke.
+fr: Un petit compteur d'images dans le coin.
+ru: Небольшой счётчик кадров в углу.
+pl: Mały licznik klatek w rogu.
+
+en: FRAME RATE
+zh-CN: 帧率
+ja: フレームレート
+ko: 프레임 속도
+es: FOTOGRAMAS
+pt-BR: TAXA DE QUADROS
+de: BILDRATE
+fr: FRÉQUENCE D'IMAGES
+ru: ЧАСТОТА КАДРОВ
+pl: LICZBA KLATEK
+
+en: VSync
+zh-CN: 垂直同步
+ja: 垂直同期
+ko: 수직 동기화
+es: VSync
+pt-BR: VSync
+de: VSync
+fr: VSync
+ru: Вертикальная синхронизация
+pl: VSync
+
+en: Matches your monitor's refresh: no tearing, a little more input delay.
+zh-CN: 与显示器刷新率同步：不撕裂，输入延迟略增。
+ja: モニターのリフレッシュレートに合わせる。ティアリングは消えるが、入力がわずかに遅れる。
+ko: 모니터 주사율에 맞춥니다. 화면 찢어짐이 없지만 입력 지연이 조금 늘어납니다.
+es: Se ajusta al refresco de tu monitor: sin cortes de imagen, un poco más de retardo.
+pt-BR: Acompanha a atualização do monitor: sem cortes na imagem, um pouco mais de atraso nos comandos.
+de: Passt sich der Bildwiederholrate des Monitors an: kein Tearing, etwas mehr Eingabeverzögerung.
+fr: S'aligne sur le rafraîchissement de l'écran : pas de déchirement, un peu plus de latence.
+ru: Подстраивается под частоту монитора: нет разрывов кадра, чуть больше задержка ввода.
+pl: Dopasowuje się do odświeżania monitora: bez rozrywania obrazu, nieco większe opóźnienie sterowania.
+
+en: Frame cap
+zh-CN: 帧数上限
+ja: フレーム上限
+ko: 프레임 제한
+es: Límite de fotogramas
+pt-BR: Limite de quadros
+de: Bildratenlimit
+fr: Limite d'images
+ru: Ограничение кадров
+pl: Limit klatek
+
+en: Unlimited
+zh-CN: 无限制
+ja: 無制限
+ko: 무제한
+es: Sin límite
+pt-BR: Sem limite
+de: Unbegrenzt
+fr: Illimitée
+ru: Без ограничения
+pl: Bez limitu
+
+en: {0} fps
+zh-CN: {0} 帧/秒
+ja: {0} fps
+ko: {0} fps
+es: {0} fps
+pt-BR: {0} fps
+de: {0} fps
+fr: {0} ips
+ru: {0} к/с
+pl: {0} kl./s
+
+en: Only used while VSync is off.
+zh-CN: 仅在垂直同步关闭时使用。
+ja: 垂直同期がオフのときだけ使われる。
+ko: 수직 동기화가 꺼져 있을 때만 사용됩니다.
+es: Solo se usa con VSync desactivado.
+pt-BR: Só é usado com o VSync desligado.
+de: Wird nur genutzt, wenn VSync aus ist.
+fr: Utilisée seulement quand VSync est désactivé.
+ru: Используется только при выключенной вертикальной синхронизации.
+pl: Używany tylko przy wyłączonym VSync.
+
+en: PICTURE
+zh-CN: 画面
+ja: 画質
+ko: 화면
+es: IMAGEN
+pt-BR: IMAGEM
+de: BILD
+fr: IMAGE
+ru: ИЗОБРАЖЕНИЕ
+pl: OBRAZ
+
+en: Brightness
+zh-CN: 亮度
+ja: 明るさ
+ko: 밝기
+es: Brillo
+pt-BR: Brilho
+de: Helligkeit
+fr: Luminosité
+ru: Яркость
+pl: Jasność
+
+en: Raise it if Power Off jobs are too dark to read on your screen.
+zh-CN: 如果停电任务在你的屏幕上暗得看不清，就调高它。
+ja: 停電の仕事が暗すぎて画面が見づらいなら上げよう。
+ko: 정전 작업이 너무 어두워 화면이 잘 안 보이면 올리세요.
+es: Súbelo si los trabajos sin corriente se ven demasiado oscuros en tu pantalla.
+pt-BR: Aumente se os trabalhos sem energia ficarem escuros demais na sua tela.
+de: Erhöhe sie, wenn Aufträge ohne Strom auf deinem Bildschirm zu dunkel sind.
+fr: Augmentez-la si les missions sans courant sont trop sombres sur votre écran.
+ru: Увеличьте, если заказы без электричества слишком тёмные на вашем экране.
+pl: Zwiększ, jeśli zlecenia bez prądu są na twoim ekranie zbyt ciemne.
+
+en: Graphics
+zh-CN: 画质
+ja: グラフィック
+ko: 그래픽
+es: Gráficos
+pt-BR: Gráficos
+de: Grafik
+fr: Graphismes
+ru: Графика
+pl: Grafika
+
+en: Detail against speed. Lower these first on a slow machine.
+zh-CN: 细节与速度的取舍。电脑较慢时先调低这些。
+ja: 細かさと速さの兼ね合い。動作が重いときはまずここを下げよう。
+ko: 디테일과 속도의 균형. 느린 컴퓨터에서는 이것부터 낮추세요.
+es: Detalle frente a velocidad. Baja esto primero en un equipo lento.
+pt-BR: Detalhe contra velocidade. Baixe estes primeiro numa máquina lenta.
+de: Detail gegen Tempo. Auf einem langsamen Rechner zuerst hier reduzieren.
+fr: Le détail contre la vitesse. À baisser en premier sur une machine lente.
+ru: Детализация против скорости. На слабом компьютере сначала снижайте эти параметры.
+pl: Szczegóły kontra szybkość. Na wolnym komputerze najpierw obniż te ustawienia.
+
+en: QUALITY
+zh-CN: 质量
+ja: 品質
+ko: 품질
+es: CALIDAD
+pt-BR: QUALIDADE
+de: QUALITÄT
+fr: QUALITÉ
+ru: КАЧЕСТВО
+pl: JAKOŚĆ
+
+en: Preset
+zh-CN: 预设
+ja: プリセット
+ko: 프리셋
+es: Preajuste
+pt-BR: Predefinição
+de: Voreinstellung
+fr: Préréglage
+ru: Набор настроек
+pl: Zestaw ustawień
+
+en: Shadows
+zh-CN: 阴影
+ja: 影
+ko: 그림자
+es: Sombras
+pt-BR: Sombras
+de: Schatten
+fr: Ombres
+ru: Тени
+pl: Cienie
+
+en: Textures
+zh-CN: 纹理
+ja: テクスチャ
+ko: 텍스처
+es: Texturas
+pt-BR: Texturas
+de: Texturen
+fr: Textures
+ru: Текстуры
+pl: Tekstury
+
+en: EFFECTS
+zh-CN: 特效
+ja: エフェクト
+ko: 효과
+es: EFECTOS
+pt-BR: EFEITOS
+de: EFFEKTE
+fr: EFFETS
+ru: ЭФФЕКТЫ
+pl: EFEKTY
+
+en: Fog
+zh-CN: 雾
+ja: 霧
+ko: 안개
+es: Niebla
+pt-BR: Névoa
+de: Nebel
+fr: Brouillard
+ru: Туман
+pl: Mgła
+
+en: Off: see further. The building is meant to be murky.
+zh-CN: 关闭：看得更远。这栋楼本来就该是昏暗的。
+ja: オフ：遠くまで見える。本来この建物は薄暗いものだ。
+ko: 끔: 더 멀리 보입니다. 원래 건물은 어둑해야 합니다.
+es: Desactivada: ves más lejos. El edificio está pensado para ser turbio.
+pt-BR: Desligada: você enxerga mais longe. O prédio foi feito para ser turvo.
+de: Aus: weitere Sicht. Das Gebäude soll eigentlich trüb sein.
+fr: Désactivé : on voit plus loin. Le bâtiment est censé être glauque.
+ru: Выкл.: видно дальше. Но здание задумано мрачным.
+pl: Wyłączona: widać dalej. Budynek ma być z założenia mroczny.
+
+en: Bloom
+zh-CN: 泛光
+ja: ブルーム
+ko: 블룸
+es: Resplandor
+pt-BR: Bloom
+de: Bloom
+fr: Flou lumineux
+ru: Свечение
+pl: Poświata
+
+en: The glow round bright lights.
+zh-CN: 强光周围的光晕。
+ja: 明るい光のまわりのにじみ。
+ko: 밝은 조명 주위의 빛 번짐.
+es: El halo alrededor de las luces intensas.
+pt-BR: O brilho em volta das luzes fortes.
+de: Das Glühen um helle Lichter.
+fr: Le halo autour des lumières vives.
+ru: Ореол вокруг ярких источников света.
+pl: Blask wokół jasnych świateł.
+
+en: Film grain
+zh-CN: 胶片颗粒
+ja: フィルムグレイン
+ko: 필름 그레인
+es: Grano de película
+pt-BR: Granulação de filme
+de: Filmkorn
+fr: Grain de film
+ru: Зернистость
+pl: Ziarno filmowe
+
+en: Off also calms night vision's noise.
+zh-CN: 关闭后夜视的噪点也会减弱。
+ja: オフにすると暗視のノイズも和らぐ。
+ko: 끄면 야간 투시의 노이즈도 줄어듭니다.
+es: Desactivado también reduce el ruido de la visión nocturna.
+pt-BR: Desligada também suaviza o ruído da visão noturna.
+de: Aus beruhigt auch das Rauschen der Nachtsicht.
+fr: Désactivé, le bruit de la vision nocturne est aussi atténué.
+ru: Выкл. также уменьшает шум ночного видения.
+pl: Wyłączenie łagodzi też szum noktowizji.
+
+en: Post-processing
+zh-CN: 后期处理
+ja: ポストプロセス
+ko: 후처리
+es: Posprocesado
+pt-BR: Pós-processamento
+de: Nachbearbeitung
+fr: Post-traitement
+ru: Постобработка
+pl: Postprocessing
+
+en: Everything above, plus colour grading, brightness, and the low-health and night-vision looks. Off is fastest.
+zh-CN: 以上全部，外加调色、亮度，以及低生命和夜视的画面效果。关闭时最快。
+ja: 上のすべてに加え、色調補正、明るさ、瀕死時と暗視の見た目。オフが最も軽い。
+ko: 위의 모든 것에 더해 색 보정, 밝기, 빈사 상태와 야간 투시 화면 효과. 끄면 가장 빠릅니다.
+es: Todo lo anterior, más la corrección de color, el brillo y los efectos de poca salud y visión nocturna. Desactivado es lo más rápido.
+pt-BR: Tudo acima, mais correção de cor, brilho e os visuais de vida baixa e visão noturna. Desligado é o mais rápido.
+de: Alles oben, dazu Farbkorrektur, Helligkeit und die Optik bei wenig Leben und Nachtsicht. Aus ist am schnellsten.
+fr: Tout ce qui précède, plus l'étalonnage des couleurs, la luminosité et les rendus de santé basse et de vision nocturne. Désactivé est le plus rapide.
+ru: Всё перечисленное выше, а также цветокоррекция, яркость и эффекты низкого здоровья и ночного видения. Выкл. — быстрее всего.
+pl: Wszystko powyżej, a do tego korekcja kolorów, jasność oraz wygląd przy niskim zdrowiu i w noktowizji. Wyłączenie działa najszybciej.
+
+en: How far shadows reach, and how many of the lights around you cast them (2, 4 or 6).
+zh-CN: 阴影延伸的距离，以及你周围有多少盏灯投射阴影（2、4 或 6 盏）。
+ja: 影が届く距離と、周囲の照明のうち影を落とす数（2、4、6）。
+ko: 그림자가 닿는 거리와, 주변 조명 중 그림자를 드리우는 수(2, 4, 6개).
+es: Hasta dónde llegan las sombras y cuántas de las luces cercanas las proyectan (2, 4 o 6).
+pt-BR: Até onde as sombras alcançam e quantas das luzes ao seu redor as projetam (2, 4 ou 6).
+de: Wie weit Schatten reichen und wie viele Lichter um dich herum welche werfen (2, 4 oder 6).
+fr: La portée des ombres et le nombre de lumières autour de vous qui en projettent (2, 4 ou 6).
+ru: Дальность теней и число ближайших источников света, которые их отбрасывают (2, 4 или 6).
+pl: Jak daleko sięgają cienie i ile świateł wokół ciebie je rzuca (2, 4 lub 6).
+
+en: Render scale
+zh-CN: 渲染比例
+ja: レンダースケール
+ko: 렌더 스케일
+es: Escala de renderizado
+pt-BR: Escala de renderização
+de: Renderskalierung
+fr: Échelle de rendu
+ru: Масштаб рендера
+pl: Skala renderowania
+
+en: Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp.
+zh-CN: 以较小尺寸绘制 3D 画面再拉伸（0% = 一半分辨率）。菜单保持清晰。
+ja: 3D画面を小さく描いて引き伸ばす（0% = 解像度半分）。メニューは鮮明なまま。
+ko: 3D 화면을 작게 그린 뒤 늘립니다(0% = 해상도 절반). 메뉴는 선명하게 유지됩니다.
+es: Dibuja la vista 3D más pequeña y la estira (0% = mitad de resolución). Los menús siguen nítidos.
+pt-BR: Desenha a visão 3D menor e estica (0% = metade da resolução). Os menus continuam nítidos.
+de: Zeichnet die 3D-Ansicht kleiner und streckt sie (0% = halbe Auflösung). Menüs bleiben scharf.
+fr: Dessine la vue 3D en plus petit puis l'étire (0% = demi-résolution). Les menus restent nets.
+ru: Рисует 3D-картинку меньше и растягивает её (0% = половина разрешения). Меню остаются чёткими.
+pl: Rysuje widok 3D w mniejszym rozmiarze i go rozciąga (0% = połowa rozdzielczości). Menu pozostają ostre.
+
+en: Anti-aliasing
+zh-CN: 抗锯齿
+ja: アンチエイリアス
+ko: 안티에일리어싱
+es: Antialiasing
+pt-BR: Antisserrilhamento
+de: Kantenglättung
+fr: Anticrénelage
+ru: Сглаживание
+pl: Wygładzanie krawędzi
+
+en: Smooths jagged edges. 4x costs the most.
+zh-CN: 平滑锯齿边缘。4x 开销最大。
+ja: ギザギザの輪郭を滑らかにする。4xが最も重い。
+ko: 계단 현상을 부드럽게 합니다. 4x가 가장 무겁습니다.
+es: Suaviza los bordes dentados. 4x es lo que más cuesta.
+pt-BR: Suaviza bordas serrilhadas. 4x é o que mais pesa.
+de: Glättet gezackte Kanten. 4x kostet am meisten.
+fr: Lisse les bords crénelés. 4x est le plus coûteux.
+ru: Сглаживает «лесенки» на краях. 4x требует больше всего ресурсов.
+pl: Wygładza poszarpane krawędzie. 4x kosztuje najwięcej.

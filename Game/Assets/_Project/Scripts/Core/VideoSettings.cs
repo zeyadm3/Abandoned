@@ -11,9 +11,9 @@ namespace Abandoned.Core
     public static partial class VideoSettings
     {
         public static readonly int[] FrameCaps = { 0, 30, 60, 90, 120, 144, 240 };
-        public static readonly string[] ShadowNames = { "Off", "Low", "Medium", "High" };
+        public static readonly string[] ShadowNames = { "Off", "Low", "Medium", "High" }; // @loc:quality
         public static readonly float[] ShadowDistances = { 0f, 15f, 25f, 35f };
-        public static readonly string[] AntiAliasingNames = { "Off", "MSAA 2x", "MSAA 4x" };
+        public static readonly string[] AntiAliasingNames = { "Off", "MSAA 2x", "MSAA 4x" }; // @loc:quality
         public static readonly int[] AntiAliasingSamples = { 1, 2, 4 };
         public const float MinRenderScale = 0.5f;
 

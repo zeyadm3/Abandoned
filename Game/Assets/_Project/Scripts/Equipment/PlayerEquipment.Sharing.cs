@@ -1,4 +1,5 @@
 using Abandoned.Company;
+using Abandoned.Core;
 using Abandoned.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -39,7 +40,7 @@ namespace Abandoned.Equipment
             PlayerEquipment other = CrewmateInFront();
             if (other == null)
             {
-                HintRpc("Face a crewmate to hand them your gear, or a fallen one to take theirs.");
+                HintRpc(Loc.Mark("Face a crewmate to hand them your gear, or a fallen one to take theirs."));
                 return;
             }
             if (other.IsDead) TakeFrom(other);
@@ -52,13 +53,13 @@ namespace Abandoned.Equipment
             int index = state.Value[slot];
             if (index < 0)
             {
-                HintRpc("Nothing in your hand to give. Pick a slot with 1 or 2.");
+                HintRpc(Loc.Mark("Nothing in your hand to give. Pick a slot with 1 or 2."));
                 return;
             }
             int free = other.state.Value[0] < 0 ? 0 : other.state.Value[1] < 0 ? 1 : -1;
             if (free < 0)
             {
-                HintRpc("Their hands are full.");
+                HintRpc(Loc.Mark("Their hands are full."));
                 return;
             }
             EquipState mine = state.Value.With(slot, -1);
@@ -83,7 +84,7 @@ namespace Abandoned.Equipment
                 fallen.state.Value = theirs;
                 took = true;
             }
-            HintRpc(took ? "You took their gear." : fallen.state.Value[0] < 0 && fallen.state.Value[1] < 0 ? "They had nothing on them." : "Your hands are full.");
+            HintRpc(took ? Loc.Mark("You took their gear.") : fallen.state.Value[0] < 0 && fallen.state.Value[1] < 0 ? Loc.Mark("They had nothing on them.") : Loc.Mark("Your hands are full."));
         }
 
         // Host: the nearest crewmate (alive or fallen) within reach, roughly where this player is looking, in sight.

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Networking;
 using Abandoned.Player;
@@ -105,7 +106,7 @@ namespace Abandoned.Equipment
                 panel = UI.HudLayer.Label("hud-panel", "hud-nightvision", "instrument-hud");
                 if (panel == null) return;
             }
-            string s = $"NIGHT VISION {(on ? "ON" : "OFF")}  {Battery01:P0}\n<color=#999999>{Core.InputBindings.Display("Use")}: switch</color>";
+            string s = Loc.T("NIGHT VISION {0}  {1:P0}\n<color=#999999>{2}: switch</color>", (on ? Loc.T("ON") : Loc.T("OFF")), Battery01, Core.InputBindings.Display("Use"));
             UI.MenuKit.Show(panel, true);
             if (panel.text != s) panel.text = s;
             PositionBattery();

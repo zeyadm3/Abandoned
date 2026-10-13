@@ -1,0 +1,856 @@
+# The HUD during a job and at the HQ (UI/PlayerHud.cs, LootTags.cs, CompassHud.cs, HorrorRunHud.cs, PingView.cs,
+# ChatView.cs, ToastFeed.cs, GhostActions.cs, FloorWarningHud.cs, ChargeIndicator.cs). Short: these sit in narrow boxes.
+
+en: SURVIVAL
+zh-CN: 生存
+ja: サバイバル
+ko: 생존
+es: SUPERVIVENCIA
+pt-BR: SOBREVIVÊNCIA
+de: ÜBERLEBEN
+fr: SURVIE
+ru: ВЫЖИВАНИЕ
+pl: PRZETRWANIE
+
+en: VITAL SIGNS
+zh-CN: 生命体征
+ja: バイタル
+ko: 생체 신호
+es: SIGNOS VITALES
+pt-BR: SINAIS VITAIS
+de: VITALWERTE
+fr: SIGNES VITAUX
+ru: ЖИЗНЕННЫЕ ПОКАЗАТЕЛИ
+pl: FUNKCJE ŻYCIOWE
+
+en: BREATH
+zh-CN: 气息
+ja: 息
+ko: 호흡
+es: ALIENTO
+pt-BR: FÔLEGO
+de: ATEM
+fr: SOUFFLE
+ru: ДЫХАНИЕ
+pl: ODDECH
+
+en: LIGHT
+zh-CN: 照明
+ja: ライト
+ko: 조명
+es: LUZ
+pt-BR: LUZ
+de: LICHT
+fr: LUMIÈRE
+ru: СВЕТ
+pl: ŚWIATŁO
+
+en: FAILING
+zh-CN: 濒危
+ja: 危篤
+ko: 위독
+es: AL LÍMITE
+pt-BR: NO LIMITE
+de: VERSAGT
+fr: DÉFAILLANT
+ru: ПРИ СМЕРТИ
+pl: NA GRANICY
+
+en: CRITICAL
+zh-CN: 危急
+ja: 重体
+ko: 위급
+es: CRÍTICO
+pt-BR: CRÍTICO
+de: KRITISCH
+fr: CRITIQUE
+ru: КРИТИЧНО
+pl: KRYTYCZNY
+
+en: WOUNDED
+zh-CN: 受伤
+ja: 負傷
+ko: 부상
+es: HERIDO
+pt-BR: FERIDO
+de: VERWUNDET
+fr: BLESSÉ
+ru: РАНЕН
+pl: RANNY
+
+en: STABLE
+zh-CN: 稳定
+ja: 安定
+ko: 안정
+es: ESTABLE
+pt-BR: ESTÁVEL
+de: STABIL
+fr: STABLE
+ru: СТАБИЛЬНО
+pl: STABILNY
+
+en: EXHAUSTED
+zh-CN: 力竭
+ja: 息切れ
+ko: 탈진
+es: AGOTADO
+pt-BR: EXAUSTO
+de: ERSCHÖPFT
+fr: ÉPUISÉ
+ru: ВЫДОХСЯ
+pl: WYCZERPANY
+
+en: STEADY
+zh-CN: 平稳
+ja: 平常
+ko: 정상
+es: ESTABLE
+pt-BR: FIRME
+de: RUHIG
+fr: RÉGULIER
+ru: РОВНОЕ
+pl: RÓWNY
+
+en: RECOVERING
+zh-CN: 恢复中
+ja: 回復中
+ko: 회복 중
+es: RECUPERANDO
+pt-BR: RECUPERANDO
+de: ERHOLT SICH
+fr: RÉCUPÉRATION
+ru: ВОССТАНОВЛЕНИЕ
+pl: REGENERACJA
+
+en: STRAINED
+zh-CN: 吃力
+ja: 消耗
+ko: 지침
+es: FORZADO
+pt-BR: FORÇADO
+de: ANGESTRENGT
+fr: SOUS TENSION
+ru: НАПРЯЖЕНО
+pl: WYSIŁEK
+
+en: NO POWER
+zh-CN: 没电
+ja: 電池切れ
+ko: 전력 없음
+es: SIN ENERGÍA
+pt-BR: SEM ENERGIA
+de: KEIN STROM
+fr: PLUS DE BATTERIE
+ru: НЕТ ЗАРЯДА
+pl: BRAK ZASILANIA
+
+en: ON YOUR PERSON
+zh-CN: 随身物品
+ja: 所持品
+ko: 소지품
+es: LO QUE LLEVAS
+pt-BR: COM VOCÊ
+de: AM KÖRPER
+fr: SUR VOUS
+ru: ПРИ СЕБЕ
+pl: PRZY SOBIE
+
+en: POCKETS
+zh-CN: 口袋
+ja: ポケット
+ko: 주머니
+es: BOLSILLOS
+pt-BR: BOLSOS
+de: TASCHEN
+fr: POCHES
+ru: КАРМАНЫ
+pl: KIESZENIE
+
+en: POCKET CONTENTS
+zh-CN: 口袋内容
+ja: ポケットの中身
+ko: 주머니 내용물
+es: CONTENIDO DE LOS BOLSILLOS
+pt-BR: CONTEÚDO DOS BOLSOS
+de: TASCHENINHALT
+fr: CONTENU DES POCHES
+ru: СОДЕРЖИМОЕ КАРМАНОВ
+pl: ZAWARTOŚĆ KIESZENI
+
+en: SHARED LOAD / {0:0.#} KG
+zh-CN: 合力搬运 / {0:0.#} 公斤
+ja: 共同運搬 / {0:0.#} KG
+ko: 함께 운반 / {0:0.#} KG
+es: CARGA COMPARTIDA / {0:0.#} KG
+pt-BR: CARGA DIVIDIDA / {0:0.#} KG
+de: GETEILTE LAST / {0:0.#} KG
+fr: CHARGE PARTAGÉE / {0:0.#} KG
+ru: ОБЩИЙ ГРУЗ / {0:0.#} КГ
+pl: WSPÓLNY ŁADUNEK / {0:0.#} KG
+
+en: DRAGGING / {0:0.#} KG
+zh-CN: 拖行 / {0:0.#} 公斤
+ja: 引きずり / {0:0.#} KG
+ko: 끄는 중 / {0:0.#} KG
+es: ARRASTRANDO / {0:0.#} KG
+pt-BR: ARRASTANDO / {0:0.#} KG
+de: ZIEHEN / {0:0.#} KG
+fr: TRACTION / {0:0.#} KG
+ru: ВОЛОКОМ / {0:0.#} КГ
+pl: CIĄGNIĘCIE / {0:0.#} KG
+
+en: LOAD / {0:0.#} KG
+zh-CN: 负重 / {0:0.#} 公斤
+ja: 荷重 / {0:0.#} KG
+ko: 하중 / {0:0.#} KG
+es: CARGA / {0:0.#} KG
+pt-BR: CARGA / {0:0.#} KG
+de: LAST / {0:0.#} KG
+fr: CHARGE / {0:0.#} KG
+ru: ГРУЗ / {0:0.#} КГ
+pl: ŁADUNEK / {0:0.#} KG
+
+en: {0} / SLOWED
+zh-CN: {0} / 减速
+ja: {0} / 減速
+ko: {0} / 감속
+es: {0} / MÁS LENTO
+pt-BR: {0} / LENTO
+de: {0} / LANGSAMER
+fr: {0} / RALENTI
+ru: {0} / МЕДЛЕННЕЕ
+pl: {0} / WOLNIEJ
+
+en: [{0}] INSPECT
+zh-CN: [{0}] 查看
+ja: [{0}] 確認
+ko: [{0}] 살펴보기
+es: [{0}] REVISAR
+pt-BR: [{0}] VER
+de: [{0}] ANSEHEN
+fr: [{0}] INSPECTER
+ru: [{0}] ОСМОТР
+pl: [{0}] SPRAWDŹ
+
+en: Empty hand
+zh-CN: 空手
+ja: 空き手
+ko: 빈손
+es: Mano vacía
+pt-BR: Mão vazia
+de: Leere Hand
+fr: Main vide
+ru: Пустая рука
+pl: Pusta ręka
+
+en: IN HAND
+zh-CN: 手持
+ja: 手持ち
+ko: 손에 듦
+es: EN MANO
+pt-BR: NA MÃO
+de: IN DER HAND
+fr: EN MAIN
+ru: В РУКЕ
+pl: W RĘCE
+
+en: STOWED
+zh-CN: 已收起
+ja: 収納中
+ko: 넣어 둠
+es: GUARDADO
+pt-BR: GUARDADO
+de: VERSTAUT
+fr: RANGÉ
+ru: УБРАНО
+pl: SCHOWANE
+
+en: Empty
+zh-CN: 空
+ja: 空
+ko: 비어 있음
+es: Vacío
+pt-BR: Vazio
+de: Leer
+fr: Vide
+ru: Пусто
+pl: Pusto
+
+en: {0:0.#}kg
+zh-CN: {0:0.#}公斤
+ja: {0:0.#}kg
+ko: {0:0.#}kg
+es: {0:0.#} kg
+pt-BR: {0:0.#} kg
+de: {0:0.#} kg
+fr: {0:0.#} kg
+ru: {0:0.#} кг
+pl: {0:0.#} kg
+
+en: Nothing recovered
+zh-CN: 尚未回收任何东西
+ja: 回収品なし
+ko: 회수한 것 없음
+es: Nada recuperado
+pt-BR: Nada recuperado
+de: Nichts geborgen
+fr: Rien de récupéré
+ru: Ничего не найдено
+pl: Nic nie odzyskano
+
+en: Your pockets are empty.
+zh-CN: 你的口袋是空的。
+ja: ポケットは空だ。
+ko: 주머니가 비어 있습니다.
+es: Tienes los bolsillos vacíos.
+pt-BR: Seus bolsos estão vazios.
+de: Deine Taschen sind leer.
+fr: Vos poches sont vides.
+ru: Ваши карманы пусты.
+pl: Masz puste kieszenie.
+
+en: POCKET {0:00} / {1:0.#} KG / ${2:N0}
+zh-CN: 口袋 {0:00} / {1:0.#} 公斤 / ${2:N0}
+ja: ポケット {0:00} / {1:0.#} KG / ${2:N0}
+ko: 주머니 {0:00} / {1:0.#} KG / ${2:N0}
+es: BOLSILLO {0:00} / {1:0.#} KG / ${2:N0}
+pt-BR: BOLSO {0:00} / {1:0.#} KG / ${2:N0}
+de: TASCHE {0:00} / {1:0.#} KG / ${2:N0}
+fr: POCHE {0:00} / {1:0.#} KG / ${2:N0}
+ru: КАРМАН {0:00} / {1:0.#} КГ / ${2:N0}
+pl: KIESZEŃ {0:00} / {1:0.#} KG / ${2:N0}
+
+en: POCKET {0:00} / {1:0.#} KG
+zh-CN: 口袋 {0:00} / {1:0.#} 公斤
+ja: ポケット {0:00} / {1:0.#} KG
+ko: 주머니 {0:00} / {1:0.#} KG
+es: BOLSILLO {0:00} / {1:0.#} KG
+pt-BR: BOLSO {0:00} / {1:0.#} KG
+de: TASCHE {0:00} / {1:0.#} KG
+fr: POCHE {0:00} / {1:0.#} KG
+ru: КАРМАН {0:00} / {1:0.#} КГ
+pl: KIESZEŃ {0:00} / {1:0.#} KG
+
+en: RECOVERED VALUE / ${0:N0}
+zh-CN: 回收价值 / ${0:N0}
+ja: 回収額 / ${0:N0}
+ko: 회수 가치 / ${0:N0}
+es: VALOR RECUPERADO / ${0:N0}
+pt-BR: VALOR RECUPERADO / ${0:N0}
+de: GEBORGENER WERT / ${0:N0}
+fr: VALEUR RÉCUPÉRÉE / ${0:N0}
+ru: СТОИМОСТЬ НАЙДЕННОГО / ${0:N0}
+pl: ODZYSKANA WARTOŚĆ / ${0:N0}
+
+en: CARRIED WEIGHT / {0:0.#} KG
+zh-CN: 携带重量 / {0:0.#} 公斤
+ja: 携行重量 / {0:0.#} KG
+ko: 소지 무게 / {0:0.#} KG
+es: PESO CARGADO / {0:0.#} KG
+pt-BR: PESO CARREGADO / {0:0.#} KG
+de: GETRAGENES GEWICHT / {0:0.#} KG
+fr: POIDS TRANSPORTÉ / {0:0.#} KG
+ru: ВЕС НОШИ / {0:0.#} КГ
+pl: NIESIONY CIĘŻAR / {0:0.#} KG
+
+en: Wheel / choose pocket\nHold [{0}] + [{1}] / drop selected
+zh-CN: 滚轮 / 选择口袋\n按住 [{0}] + [{1}] / 丢出所选物品
+ja: ホイール / ポケットを選ぶ\n[{0}] + [{1}] 長押し / 選択した物を落とす
+ko: 휠 / 주머니 선택\n[{0}] + [{1}] 누르기 / 선택한 물건 버리기
+es: Rueda / elegir bolsillo\nMantén [{0}] + [{1}] / soltar el elegido
+pt-BR: Roda / escolher bolso\nSegure [{0}] + [{1}] / soltar o selecionado
+de: Mausrad / Tasche wählen\n[{0}] + [{1}] halten / Auswahl ablegen
+fr: Molette / choisir la poche\nMaintenir [{0}] + [{1}] / lâcher la sélection
+ru: Колесо / выбор кармана\nУдерживать [{0}] + [{1}] / выбросить выбранное
+pl: Kółko / wybór kieszeni\nPrzytrzymaj [{0}] + [{1}] / upuść wybrane
+
+# Loot tags
+
+en: SCAN FOR LOOT
+zh-CN: 扫描战利品
+ja: スキャンで回収品を探す
+ko: 스캔해서 전리품 찾기
+es: ESCANEA PARA VER BOTÍN
+pt-BR: ESCANEIE PARA VER O SAQUE
+de: NACH BEUTE SCANNEN
+fr: SCANNEZ POUR VOIR LE BUTIN
+ru: СКАНИРУЙТЕ, ЧТОБЫ НАЙТИ ДОБЫЧУ
+pl: SKANUJ, BY ZNALEŹĆ ŁUPY
+
+en: POCKET
+zh-CN: 口袋
+ja: ポケット
+ko: 주머니
+es: BOLSILLO
+pt-BR: BOLSO
+de: TASCHE
+fr: POCHE
+ru: КАРМАН
+pl: KIESZEŃ
+
+en: ONE HAND
+zh-CN: 单手
+ja: 片手
+ko: 한 손
+es: UNA MANO
+pt-BR: UMA MÃO
+de: EINE HAND
+fr: UNE MAIN
+ru: ОДНА РУКА
+pl: JEDNA RĘKA
+
+en: TWO HANDS
+zh-CN: 双手
+ja: 両手
+ko: 양손
+es: DOS MANOS
+pt-BR: DUAS MÃOS
+de: ZWEI HÄNDE
+fr: DEUX MAINS
+ru: ДВЕ РУКИ
+pl: DWIE RĘCE
+
+en: HEAVY - 2 PEOPLE
+zh-CN: 重型 - 需 2 人
+ja: 重量物 - 2人
+ko: 무거움 - 2명
+es: PESADO - 2 PERSONAS
+pt-BR: PESADO - 2 PESSOAS
+de: SCHWER - 2 PERSONEN
+fr: LOURD - 2 PERSONNES
+ru: ТЯЖЁЛОЕ - 2 ЧЕЛОВЕКА
+pl: CIĘŻKIE - 2 OSOBY
+
+en: HUGE - A WHOLE CREW
+zh-CN: 巨型 - 需全队
+ja: 超大型 - クルー全員
+ko: 초대형 - 팀 전원
+es: ENORME - TODO EL EQUIPO
+pt-BR: ENORME - A EQUIPE INTEIRA
+de: RIESIG - DAS GANZE TEAM
+fr: ÉNORME - TOUTE L'ÉQUIPE
+ru: ОГРОМНОЕ - ВСЯ БРИГАДА
+pl: OGROMNE - CAŁA EKIPA
+
+en: VERY FRAGILE
+zh-CN: 极易碎
+ja: 非常に壊れやすい
+ko: 매우 깨지기 쉬움
+es: MUY FRÁGIL
+pt-BR: MUITO FRÁGIL
+de: SEHR ZERBRECHLICH
+fr: TRÈS FRAGILE
+ru: ОЧЕНЬ ХРУПКОЕ
+pl: BARDZO KRUCHE
+
+en: FRAGILE
+zh-CN: 易碎
+ja: 壊れやすい
+ko: 깨지기 쉬움
+es: FRÁGIL
+pt-BR: FRÁGIL
+de: ZERBRECHLICH
+fr: FRAGILE
+ru: ХРУПКОЕ
+pl: KRUCHE
+
+en: JACKPOT
+zh-CN: 大奖
+ja: 大当たり
+ko: 대박
+es: PREMIO GORDO
+pt-BR: BOLADA
+de: HAUPTGEWINN
+fr: GROS LOT
+ru: ДЖЕКПОТ
+pl: GŁÓWNA WYGRANA
+
+en: DAMAGED
+zh-CN: 已损坏
+ja: 破損
+ko: 손상됨
+es: DAÑADO
+pt-BR: DANIFICADO
+de: BESCHÄDIGT
+fr: ENDOMMAGÉ
+ru: ПОВРЕЖДЕНО
+pl: USZKODZONE
+
+# Pings
+
+en: LOOT
+zh-CN: 战利品
+ja: 回収品
+ko: 전리품
+es: BOTÍN
+pt-BR: SAQUE
+de: BEUTE
+fr: BUTIN
+ru: ДОБЫЧА
+pl: ŁUPY
+
+en: MONSTER!
+zh-CN: 怪物！
+ja: 怪物だ！
+ko: 괴물!
+es: ¡MONSTRUO!
+pt-BR: MONSTRO!
+de: MONSTER!
+fr: MONSTRE !
+ru: МОНСТР!
+pl: POTWÓR!
+
+en: WEAK FLOOR
+zh-CN: 地板不稳
+ja: 床が弱い
+ko: 약한 바닥
+es: SUELO DÉBIL
+pt-BR: PISO FRACO
+de: SCHWACHER BODEN
+fr: SOL FRAGILE
+ru: СЛАБЫЙ ПОЛ
+pl: SŁABA PODŁOGA
+
+en: HERE
+zh-CN: 这里
+ja: ここ
+ko: 여기
+es: AQUÍ
+pt-BR: AQUI
+de: HIER
+fr: ICI
+ru: ЗДЕСЬ
+pl: TUTAJ
+
+# Compass
+
+en: BEARING
+zh-CN: 方位
+ja: 方位
+ko: 방위
+es: RUMBO
+pt-BR: RUMO
+de: PEILUNG
+fr: CAP
+ru: АЗИМУТ
+pl: NAMIAR
+
+key: compass.N
+en: N
+zh-CN: 北
+ja: 北
+ko: 북
+es: N
+pt-BR: N
+de: N
+fr: N
+ru: С
+pl: N
+
+key: compass.NE
+en: NE
+zh-CN: 东北
+ja: 北東
+ko: 북동
+es: NE
+pt-BR: NE
+de: NO
+fr: NE
+ru: СВ
+pl: NE
+
+key: compass.E
+en: E
+zh-CN: 东
+ja: 東
+ko: 동
+es: E
+pt-BR: L
+de: O
+fr: E
+ru: В
+pl: E
+
+key: compass.SE
+en: SE
+zh-CN: 东南
+ja: 南東
+ko: 남동
+es: SE
+pt-BR: SE
+de: SO
+fr: SE
+ru: ЮВ
+pl: SE
+
+key: compass.S
+en: S
+zh-CN: 南
+ja: 南
+ko: 남
+es: S
+pt-BR: S
+de: S
+fr: S
+ru: Ю
+pl: S
+
+key: compass.SW
+en: SW
+zh-CN: 西南
+ja: 南西
+ko: 남서
+es: SO
+pt-BR: SO
+de: SW
+fr: SO
+ru: ЮЗ
+pl: SW
+
+key: compass.W
+en: W
+zh-CN: 西
+ja: 西
+ko: 서
+es: O
+pt-BR: O
+de: W
+fr: O
+ru: З
+pl: W
+
+key: compass.NW
+en: NW
+zh-CN: 西北
+ja: 北西
+ko: 북서
+es: NO
+pt-BR: NO
+de: NW
+fr: NO
+ru: СЗ
+pl: NW
+
+# Warnings, the building's radio, charging
+
+en: FLOOR GIVING WAY · MOVE
+zh-CN: 地板要塌了 · 快离开
+ja: 床が抜ける · 離れろ
+ko: 바닥 붕괴 임박 · 벗어나라
+es: EL SUELO CEDE · MUÉVETE
+pt-BR: O PISO ESTÁ CEDENDO · SAIA
+de: BODEN GIBT NACH · WEG DA
+fr: LE SOL CÈDE · BOUGEZ
+ru: ПОЛ ПРОВАЛИВАЕТСЯ · УХОДИТЕ
+pl: PODŁOGA SIĘ WALI · UCIEKAJ
+
+en: CHARGING FLASHLIGHT  {0:0}%
+zh-CN: 手电筒充电中  {0:0}%
+ja: 懐中電灯を充電中  {0:0}%
+ko: 손전등 충전 중  {0:0}%
+es: CARGANDO LINTERNA  {0:0}%
+pt-BR: CARREGANDO LANTERNA  {0:0}%
+de: TASCHENLAMPE LÄDT  {0:0}%
+fr: RECHARGE DE LA LAMPE  {0:0}%
+ru: ЗАРЯДКА ФОНАРИКА  {0:0}%
+pl: ŁADOWANIE LATARKI  {0:0}%
+
+en: COLLAPSE {0}s
+zh-CN: 坍塌 {0} 秒
+ja: 崩落まで {0}秒
+ko: 붕괴 {0}초
+es: DERRUMBE {0} s
+pt-BR: DESABAMENTO {0}s
+de: EINSTURZ {0} s
+fr: EFFONDREMENT {0} s
+ru: ОБРУШЕНИЕ {0} с
+pl: ZAWALENIE {0} s
+
+en: LOCKDOWN
+zh-CN: 封锁
+ja: 封鎖
+ko: 봉쇄
+es: CIERRE TOTAL
+pt-BR: BLOQUEIO
+de: ABRIEGELUNG
+fr: CONFINEMENT
+ru: БЛОКИРОВКА
+pl: BLOKADA
+
+en: OVERSTAY
+zh-CN: 逾时滞留
+ja: 時間超過
+ko: 시간 초과
+es: FUERA DE PLAZO
+pt-BR: TEMPO ESGOTADO
+de: ÜBERZOGEN
+fr: DÉLAI DÉPASSÉ
+ru: ВРЕМЯ ВЫШЛО
+pl: PO CZASIE
+
+en: BUILDING SIGNAL
+zh-CN: 建筑信号
+ja: 建物シグナル
+ko: 건물 신호
+es: SEÑAL DEL EDIFICIO
+pt-BR: SINAL DO PRÉDIO
+de: GEBÄUDESIGNAL
+fr: SIGNAL DU BÂTIMENT
+ru: СИГНАЛ ЗДАНИЯ
+pl: SYGNAŁ BUDYNKU
+
+en: DISPATCH / CH. 04
+zh-CN: 调度 / 04 频道
+ja: 配車係 / CH. 04
+ko: 배차 / 채널 04
+es: CENTRAL / CANAL 04
+pt-BR: DESPACHO / CANAL 04
+de: ZENTRALE / KANAL 04
+fr: DISPATCH / CANAL 04
+ru: ДИСПЕТЧЕР / КАНАЛ 04
+pl: DYSPOZYTOR / KANAŁ 04
+
+en: FIELD NOTE
+zh-CN: 现场提示
+ja: 現場メモ
+ko: 현장 메모
+es: NOTA DE CAMPO
+pt-BR: NOTA DE CAMPO
+de: FELDNOTIZ
+fr: NOTE DE TERRAIN
+ru: ПОЛЕВАЯ ЗАМЕТКА
+pl: NOTATKA TERENOWA
+
+en: ACHIEVEMENT UNLOCKED
+zh-CN: 成就已解锁
+ja: 実績解除
+ko: 도전 과제 달성
+es: LOGRO DESBLOQUEADO
+pt-BR: CONQUISTA DESBLOQUEADA
+de: ERFOLG FREIGESCHALTET
+fr: SUCCÈS DÉBLOQUÉ
+ru: ДОСТИЖЕНИЕ ПОЛУЧЕНО
+pl: OSIĄGNIĘCIE ODBLOKOWANE
+
+# Chat, crew toasts, ghosts
+
+en: CREW TRANSMISSIONS
+zh-CN: 队伍通讯
+ja: クルー通信
+ko: 팀 통신
+es: TRANSMISIONES DEL EQUIPO
+pt-BR: TRANSMISSÕES DA EQUIPE
+de: TEAMFUNK
+fr: TRANSMISSIONS DE L'ÉQUIPE
+ru: ПЕРЕГОВОРЫ БРИГАДЫ
+pl: ŁĄCZNOŚĆ EKIPY
+
+en: Message the crew. Enter sends; Escape closes.
+zh-CN: 给队伍发消息。回车发送，Esc 关闭。
+ja: クルーにメッセージを送る。Enterで送信、Escで閉じる。
+ko: 팀에게 메시지를 보냅니다. Enter로 전송, Esc로 닫기.
+es: Escribe al equipo. Intro envía; Esc cierra.
+pt-BR: Escreva para a equipe. Enter envia; Esc fecha.
+de: Nachricht ans Team. Enter sendet, Esc schließt.
+fr: Écrivez à l'équipe. Entrée envoie ; Échap ferme.
+ru: Сообщение бригаде. Enter — отправить, Esc — закрыть.
+pl: Napisz do ekipy. Enter wysyła, Esc zamyka.
+
+en: ENTER  SEND    /    ESC  CLOSE
+zh-CN: 回车  发送    /    ESC  关闭
+ja: ENTER  送信    /    ESC  閉じる
+ko: ENTER  전송    /    ESC  닫기
+es: INTRO  ENVIAR    /    ESC  CERRAR
+pt-BR: ENTER  ENVIAR    /    ESC  FECHAR
+de: ENTER  SENDEN    /    ESC  SCHLIESSEN
+fr: ENTRÉE  ENVOYER    /    ÉCHAP  FERMER
+ru: ENTER  ОТПРАВИТЬ    /    ESC  ЗАКРЫТЬ
+pl: ENTER  WYŚLIJ    /    ESC  ZAMKNIJ
+
+en: {0} (GHOST)
+zh-CN: {0}（幽灵）
+ja: {0}（幽霊）
+ko: {0} (유령)
+es: {0} (FANTASMA)
+pt-BR: {0} (FANTASMA)
+de: {0} (GEIST)
+fr: {0} (FANTÔME)
+ru: {0} (ПРИЗРАК)
+pl: {0} (DUCH)
+
+en: PLAYER {0} JOINED
+zh-CN: 玩家 {0} 已加入
+ja: プレイヤー {0} が参加
+ko: 플레이어 {0} 참가
+es: EL JUGADOR {0} SE HA UNIDO
+pt-BR: O JOGADOR {0} ENTROU
+de: SPIELER {0} IST DABEI
+fr: LE JOUEUR {0} A REJOINT
+ru: ИГРОК {0} ПРИСОЕДИНИЛСЯ
+pl: GRACZ {0} DOŁĄCZYŁ
+
+en: Another pair of hands.
+zh-CN: 又多了一双手。
+ja: 人手がまた一人増えた。
+ko: 일손이 하나 늘었습니다.
+es: Otro par de manos.
+pt-BR: Mais um par de mãos.
+de: Noch ein Paar Hände.
+fr: Une paire de bras en plus.
+ru: Ещё одна пара рук.
+pl: Kolejna para rąk.
+
+en: PLAYER {0} LEFT
+zh-CN: 玩家 {0} 已离开
+ja: プレイヤー {0} が退出
+ko: 플레이어 {0} 퇴장
+es: EL JUGADOR {0} SE HA IDO
+pt-BR: O JOGADOR {0} SAIU
+de: SPIELER {0} IST WEG
+fr: LE JOUEUR {0} EST PARTI
+ru: ИГРОК {0} ВЫШЕЛ
+pl: GRACZ {0} WYSZEDŁ
+
+en: One less on the crew.
+zh-CN: 队伍少了一个人。
+ja: クルーが一人減った。
+ko: 팀원이 한 명 줄었습니다.
+es: Uno menos en el equipo.
+pt-BR: Um a menos na equipe.
+de: Einer weniger im Team.
+fr: Un de moins dans l'équipe.
+ru: В бригаде на одного меньше.
+pl: O jednego mniej w ekipie.
+
+en: {0}  knock      {1}  flicker the lights      {2}  nudge something
+zh-CN: {0}  敲击      {1}  让灯闪烁      {2}  推动东西
+ja: {0}  ノック      {1}  明かりをちらつかせる      {2}  物を小突く
+ko: {0}  두드리기      {1}  조명 깜빡이기      {2}  물건 건드리기
+es: {0}  dar golpes      {1}  hacer parpadear las luces      {2}  empujar algo
+pt-BR: {0}  bater      {1}  piscar as luzes      {2}  empurrar algo
+de: {0}  klopfen      {1}  Lichter flackern lassen      {2}  etwas anstupsen
+fr: {0}  frapper      {1}  faire vaciller les lumières      {2}  pousser un objet
+ru: {0}  постучать      {1}  помигать светом      {2}  толкнуть что-нибудь
+pl: {0}  zapukaj      {1}  zamigocz światłem      {2}  trąć coś
+
+en: a crewmate can hire you back at the truck's radio
+zh-CN: 队友可以在卡车的电台把你重新雇回来
+ja: 仲間がトラックの無線であなたを雇い直せる
+ko: 동료가 트럭의 무전기로 당신을 다시 고용할 수 있습니다
+es: un compañero puede volver a contratarte en la radio del camión
+pt-BR: um colega pode recontratar você no rádio do caminhão
+de: ein Kollege kann dich am Funkgerät des Lasters neu anheuern
+fr: un coéquipier peut vous réembaucher à la radio du camion
+ru: напарник может нанять вас снова по рации грузовика
+pl: kolega może zatrudnić cię ponownie przez radio w ciężarówce
+
+en: Change clothes
+zh-CN: 更换服装
+ja: 着替える
+ko: 옷 갈아입기
+es: Cambiarse de ropa
+pt-BR: Trocar de roupa
+de: Umziehen
+fr: Changer de tenue
+ru: Переодеться
+pl: Przebierz się

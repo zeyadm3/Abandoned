@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Abandoned.Loot;
 using Unity.Netcode;
@@ -71,7 +72,7 @@ namespace Abandoned.Networking
         {
             ulong sender = rpcParams.Receive.SenderClientId;
             if (!LootServerActions.TryPlace(this, SenderCarrier(sender), velocity, spin, new Pose(position, rotation)))
-                HintRpc("No clear place to set it down", RpcTarget.Single(sender, RpcTargetUse.Temp));
+                HintRpc(Loc.Mark("No clear place to set it down"), RpcTarget.Single(sender, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]

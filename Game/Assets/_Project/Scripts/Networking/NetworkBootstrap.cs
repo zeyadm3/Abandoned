@@ -134,7 +134,7 @@ namespace Abandoned.Networking
             InteractionService.Handler = new NetworkInteractionHandler();
             if (networkManager == null || config == null)
             {
-                LastError = "Network setup is incomplete (no NetworkManager or NetworkConfig).";
+                LastError = Loc.Mark("Network setup is incomplete (no NetworkManager or NetworkConfig).");
                 Debug.LogError($"[Net] {LastError}", this);
                 return;
             }

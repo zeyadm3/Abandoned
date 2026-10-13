@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Networking;
 using Abandoned.Player;
 using Abandoned.Threats;
@@ -47,7 +48,7 @@ namespace Abandoned.Equipment
             else battery = Mathf.Min(config.ThermalSeconds, battery + config.ThermalRecharge * Time.deltaTime);
             if (on && volume == null) Build();
             if (volume != null) volume.weight = on ? 1f : 0f;
-            if (on) UI.HudCallout.Set(this, $"THERMAL  {battery:0} s");
+            if (on) UI.HudCallout.Set(this, Loc.T("THERMAL  {0:0} s", battery));
             else UI.HudCallout.Clear(this);
         }
 

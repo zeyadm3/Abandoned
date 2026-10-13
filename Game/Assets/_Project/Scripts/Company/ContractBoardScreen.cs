@@ -66,8 +66,8 @@ namespace Abandoned.Company
         // UI step 8: job sheets pinned to cork, each a little crooked; TAKEN is stamped on the chosen one.
         private static void Fill(VisualElement panel, CompanyService company)
         {
-            MenuKit.Text(panel, ContractBoard.FromTelephone ? "DISPATCH TELEPHONE" : "CONTRACT BOARD", "heading");
-            MenuKit.Text(panel, company.IsServer ? "Pick today's job, then take the van." : "The host picks the job.", "subtitle");
+            MenuKit.Text(panel, ContractBoard.FromTelephone ? Loc.T("DISPATCH TELEPHONE") : Loc.T("CONTRACT BOARD"), "heading");
+            MenuKit.Text(panel, company.IsServer ? Loc.T("Pick today's job, then take the van.") : Loc.T("The host picks the job."), "subtitle");
             if (ContractBoard.FromTelephone) Briefing(panel, company);
             var cards = new VisualElement();
             cards.AddToClassList("hud-cards");
@@ -85,40 +85,40 @@ namespace Abandoned.Company
                 var pin = new VisualElement { pickingMode = PickingMode.Ignore };
                 pin.AddToClassList("sheet__pin");
                 sheet.Add(pin);
-                Sheet(sheet, c.Location.ToUpperInvariant(), "sheet__place");
-                Sheet(sheet, c.ModifierName.ToUpperInvariant(), "sheet__job");
-                if (company.Messages != null && company.Messages.Quip(c.Seed) is string quip && quip.Length > 0) Sheet(sheet, $"\"{quip}\"", "sheet__quip");
-                if (company.ModifierOf(c) is ContractModifier m && !string.IsNullOrEmpty(m.Description)) Sheet(sheet, m.Description, "sheet__text");
+                Sheet(sheet, Loc.T(c.Location).ToUpperInvariant(), "sheet__place");
+                Sheet(sheet, Loc.T(c.ModifierName).ToUpperInvariant(), "sheet__job");
+                if (company.Messages != null && company.Messages.Quip(c.Seed) is string quip && quip.Length > 0) Sheet(sheet, $"\"{Loc.T(quip)}\"", "sheet__quip");
+                if (company.ModifierOf(c) is ContractModifier m && !string.IsNullOrEmpty(m.Description)) Sheet(sheet, m.LocalDescription, "sheet__text");
                 int crew = CompanyService.CrewSize;
-                Fact(sheet, "QUOTA", $"${company.QuotaFor(c):N0}", true, crew < 4 ? $"scaled for a crew of {crew}" : null);
-                Fact(sheet, "BONUS", $"+{c.PayoutBonus:P0}", false);
-                Fact(sheet, "LOOT", $"${c.LootMin / 1000}k - ${c.LootMax / 1000}k", false);
-                Fact(sheet, "THREAT", Contract.ThreatName(c.ThreatLevel), c.ThreatLevel >= 2, Contract.ThreatNote(c.ThreatLevel));
+                Fact(sheet, Loc.T("QUOTA"), $"${company.QuotaFor(c):N0}", true, crew < 4 ? Loc.T("scaled for a crew of {0}", crew) : null);
+                Fact(sheet, Loc.T("BONUS"), $"+{c.PayoutBonus:P0}", false);
+                Fact(sheet, Loc.T("LOOT"), $"${c.LootMin / 1000}k - ${c.LootMax / 1000}k", false);
+                Fact(sheet, Loc.T("THREAT"), Contract.ThreatName(c.ThreatLevel), c.ThreatLevel >= 2, Contract.ThreatNote(c.ThreatLevel));
                 // 0.20.6: the forecast upgrade names the first monster on site; without it, nobody knows.
                 string first = company.HasUpgrade(TruckUpgradeKind.Forecast) && Threats.ThreatForecast.Current != null ? Threats.ThreatForecast.Current.Opening(c.Seed) : null;
-                Fact(sheet, "KNOWN THREATS", first != null ? $"first on site: {first}" : "???", false,
-                    first == null && !company.HasUpgrade(TruckUpgradeKind.Forecast) ? "the threat forecast (company upgrade) would say" : null);
-                Fact(sheet, "STABILITY", $"{c.Stability:P0}", c.Stability < 0.6f);
-                Fact(sheet, "POWER", c.PowerOff ? "OFF" : "ON", c.PowerOff);
-                Fact(sheet, "WINDOW", $"{c.WindowSeconds / 60f:0} MIN", false);
+                Fact(sheet, Loc.T("KNOWN THREATS"), first != null ? Loc.T("first on site: {0}", Loc.T(first)) : "???", false,
+                    first == null && !company.HasUpgrade(TruckUpgradeKind.Forecast) ? Loc.T("the threat forecast (company upgrade) would say") : null);
+                Fact(sheet, Loc.T("STABILITY"), $"{c.Stability:P0}", c.Stability < 0.6f);
+                Fact(sheet, Loc.T("POWER"), c.PowerOff ? Loc.T("OFF") : Loc.T("ON"), c.PowerOff);
+                Fact(sheet, Loc.C("contract", "WINDOW"), Loc.T("{0:0} MIN", c.WindowSeconds / 60f), false);
                 // QA B-18: a Sealed job is a wasted trip without something to open shutters with.
                 if (company.ModifierOf(c) is ContractModifier sealedJob && sealedJob.Sealed)
-                    Fact(sheet, "TOOLS", "BOLT CUTTERS OR A CROWBAR", true, "every door is shuttered: bring one");
+                    Fact(sheet, Loc.T("TOOLS"), Loc.T("BOLT CUTTERS OR A CROWBAR"), true, Loc.T("every door is shuttered: bring one"));
                 if (company.IsServer)
                 {
                     int index = i;
-                    Button take = MenuKit.Button(sheet, taken ? "Taken - drive the van" : "Take this job", () => company.Select(index), Audio.SoundId.UiConfirm, small: true);
+                    Button take = MenuKit.Button(sheet, taken ? Loc.T("Taken - drive the van") : Loc.T("Take this job"), () => company.Select(index), Audio.SoundId.UiConfirm, small: true);
                     take.AddToClassList("sheet__take");
                     take.SetEnabled(!taken);
                 }
                 if (taken)
                 {
-                    Label stamp = UiKit.Stamp(sheet, "TAKEN", good: true);
+                    Label stamp = UiKit.Stamp(sheet, Loc.T("TAKEN"), good: true);
                     stamp.AddToClassList("sheet__stamp");
                     UiKit.Slam(stamp);
                 }
             }
-            MenuKit.Button(panel, ContractBoard.FromTelephone ? "Hang up" : "Close", () => ContractBoard.Open = false, Audio.SoundId.UiBack);
+            MenuKit.Button(panel, ContractBoard.FromTelephone ? Loc.T("Hang up") : Loc.T("Close"), () => ContractBoard.Open = false, Audio.SoundId.UiBack);
         }
 
         private static void Briefing(VisualElement panel, CompanyService company)
@@ -126,26 +126,27 @@ namespace Abandoned.Company
             var briefing = new VisualElement();
             briefing.AddToClassList("dispatch-briefing");
             panel.Add(briefing);
-            MenuKit.Text(briefing, "DISPATCH / LINE OPEN", "section");
+            MenuKit.Text(briefing, Loc.T("DISPATCH / LINE OPEN"), "section");
             if (company.Selected < 0 || company.Selected >= company.Board.Count)
             {
-                MenuKit.Text(briefing, "Choose a job sheet below. Dispatch will attach its briefing to this line.");
+                MenuKit.Text(briefing, Loc.T("Choose a job sheet below. Dispatch will attach its briefing to this line."));
                 return;
             }
             Contract c = company.Board[company.Selected];
-            MenuKit.Text(briefing, $"{c.Location.ToUpperInvariant()} / {c.ModifierName.ToUpperInvariant()}", "subtitle");
+            MenuKit.Text(briefing, $"{Loc.T(c.Location).ToUpperInvariant()} / {Loc.T(c.ModifierName).ToUpperInvariant()}", "subtitle");
             string spoken = DispatchBriefingAudio.TranscriptFor(company);
-            if (!string.IsNullOrEmpty(spoken)) MenuKit.Text(briefing, $"\"{spoken}\"");
-            MenuKit.Text(briefing, $"Recover ${company.QuotaFor(c):N0} for a crew of {CompanyService.CrewSize}. " +
-                $"The departure window is {c.WindowSeconds / 60f:0} minutes. Threat: {Contract.ThreatName(c.ThreatLevel)}. " +
-                $"Power is {(c.PowerOff ? "off; bring a charged flashlight" : "on")}. Floors start at {c.Stability:P0} stability.");
+            if (!string.IsNullOrEmpty(spoken)) MenuKit.Text(briefing, $"\"{Loc.T(spoken)}\"");
+            MenuKit.Text(briefing, Loc.T("Recover ${0:N0} for a crew of {1}. The departure window is {2:0} minutes. Threat: {3}.",
+                    company.QuotaFor(c), CompanyService.CrewSize, c.WindowSeconds / 60f, Contract.ThreatName(c.ThreatLevel)) + " " +
+                (c.PowerOff ? Loc.T("Power is off; bring a charged flashlight.") : Loc.T("Power is on.")) + " " +
+                Loc.T("Floors start at {0:P0} stability.", c.Stability));
             if (company.ModifierOf(c) is ContractModifier modifier)
             {
-                if (!string.IsNullOrEmpty(modifier.Description)) MenuKit.Text(briefing, modifier.Description);
-                if (modifier.Sealed) MenuKit.Text(briefing, "Shuttered access: pack bolt cutters or a crowbar.", "text--error");
+                if (!string.IsNullOrEmpty(modifier.Description)) MenuKit.Text(briefing, modifier.LocalDescription);
+                if (modifier.Sealed) MenuKit.Text(briefing, Loc.T("Shuttered access: pack bolt cutters or a crowbar."), "text--error");
             }
-            MenuKit.Text(briefing, "Load salvage into the truck and leave with the crew. The haul is appraised at departure.");
-            MenuKit.Button(briefing, "Reconnect briefing line", DispatchTelephone.PlayLine, Audio.SoundId.UiClick, small: true);
+            MenuKit.Text(briefing, Loc.T("Load salvage into the truck and leave with the crew. The haul is appraised at departure."));
+            MenuKit.Button(briefing, Loc.T("Reconnect briefing line"), DispatchTelephone.PlayLine, Audio.SoundId.UiClick, small: true);
         }
 
         private static Label Sheet(VisualElement parent, string text, string cls)

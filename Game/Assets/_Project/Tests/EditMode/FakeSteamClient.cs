@@ -17,6 +17,8 @@ namespace Abandoned.Tests
         public bool IsValid => valid;
         public ulong SteamId => valid ? 76561190000000001UL : 0UL;
         public string PlayerName => valid ? "Tester" : string.Empty;
+        /// <summary>Empty, as when Steam doesn't say: the game's language then follows the computer.</summary>
+        public string GameLanguage { get; set; } = string.Empty;
 
         public void Init(uint appId)
         {

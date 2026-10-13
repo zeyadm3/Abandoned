@@ -14,6 +14,9 @@ namespace Abandoned.Company
         [field: SerializeField] public string Id { get; private set; } = "truck_new";
         [field: SerializeField] public string DisplayName { get; private set; } = "New Upgrade";
         [field: SerializeField, TextArea] public string Description { get; private set; } = "";
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
+        public string LocalDescription => Loc.T(Description);
         [field: SerializeField] public TruckUpgradeKind Kind { get; private set; }
         [Tooltip("1 = the first of its kind; a higher tier needs the one below it.")]
         [field: SerializeField, Range(1, 5)] public int Tier { get; private set; } = 1;

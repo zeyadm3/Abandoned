@@ -157,8 +157,10 @@ namespace Abandoned.Tests
 
             RunResults results = null;
             yield return Depart(r => results = r);
-            Assert.IsTrue(results.Stats.Any(l => l.StartsWith("Most expensive mistake") && l.Contains("Player 1")), string.Join(" | ", results.Stats));
-            Assert.IsTrue(results.Stats.Any(l => l.StartsWith("Butterfingers: Player 1")), string.Join(" | ", results.Stats));
+            // 0.24.8: lines travel as English with their values and are worded where they are shown.
+            string[] shown = results.Stats.Select(Abandoned.Core.Loc.FromWire).ToArray();
+            Assert.IsTrue(shown.Any(l => l.StartsWith("Most expensive mistake") && l.Contains("Player 1")), string.Join(" | ", shown));
+            Assert.IsTrue(shown.Any(l => l.StartsWith("Butterfingers: Player 1")), string.Join(" | ", shown));
             Assert.IsNotNull(Object.FindAnyObjectByType<AppraisalScreen>().Showing ? (object)true : null, "the appraisal is up");
         }
 

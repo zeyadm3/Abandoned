@@ -14,20 +14,21 @@ namespace Abandoned.UI
     {
         private static readonly Dictionary<string, string> Names = new()
         {
-            ["Move"] = "Move", ["Sprint"] = "Sprint", ["Crouch"] = "Crouch", ["Jump"] = "Jump", ["Interact"] = "Interact / pick up",
-            ["Use"] = "Use / throw", ["Drop"] = "Drop / hold to set down", ["Rotate"] = "Rotate held object", ["Scan"] = "Scan", ["Flashlight"] = "Flashlight", ["HandSlot1"] = "Hand slot 1",
-            ["HandSlot2"] = "Hand slot 2", ["Inventory"] = "Inventory", ["PushToTalk"] = "Push to talk", ["Radio"] = "Radio",
-            ["GiveGear"] = "Give gear / take a fallen crewmate's", ["Chat"] = "Text chat", ["PhotoCamera"] = "Free camera (photo)", ["HideHud"] = "Hide the HUD (clips)",
-            ["Ping"] = "Ping", ["EmotePoint"] = "Emote: point", ["EmoteWave"] = "Emote: wave", ["EmotePanic"] = "Emote: panic",
+            ["Move"] = Loc.Mark("Move"), ["Sprint"] = Loc.Mark("Sprint"), ["Crouch"] = Loc.Mark("Crouch"), ["Jump"] = Loc.Mark("Jump"), ["Interact"] = Loc.Mark("Interact / pick up"),
+            ["Use"] = Loc.Mark("Use / throw"), ["Drop"] = Loc.Mark("Drop / hold to set down"), ["Rotate"] = Loc.Mark("Rotate held object"), ["Scan"] = Loc.Mark("Scan"), ["Flashlight"] = Loc.Mark("Flashlight"), ["HandSlot1"] = Loc.Mark("Hand slot 1"),
+            ["HandSlot2"] = Loc.Mark("Hand slot 2"), ["Inventory"] = Loc.Mark("Inventory"), ["PushToTalk"] = Loc.Mark("Push to talk"), ["Radio"] = Loc.Mark("Radio"),
+            ["GiveGear"] = Loc.Mark("Give gear / take a fallen crewmate's"), ["Chat"] = Loc.Mark("Text chat"), ["PhotoCamera"] = Loc.Mark("Free camera (photo)"), ["HideHud"] = Loc.Mark("Hide the HUD (clips)"),
+            ["Ping"] = Loc.Mark("Ping"), ["EmotePoint"] = Loc.Mark("Emote: point"), ["EmoteWave"] = Loc.Mark("Emote: wave"), ["EmotePanic"] = Loc.Mark("Emote: panic"),
         };
 
         // 0.23.2: an action's second key and its pad button are their own rows.
         private static string Label(string name, InputBinding b)
         {
-            string label = Names.TryGetValue(name, out string n) ? n : name;
-            if (b.isPartOfComposite) label += $" {b.name}";
-            if (b.groups != null && b.groups.Contains("Gamepad")) label += "  (pad)";
-            else if (b.name == "alt") label += "  (2nd key)";
+            string label = Names.TryGetValue(name, out string n) ? Loc.T(n) : name;
+            // The parts of Move are named by the input system. @loc:direction "up", "down", "left", "right"
+            if (b.isPartOfComposite) label += " " + Loc.C("direction", b.name);
+            if (b.groups != null && b.groups.Contains("Gamepad")) label = Loc.T("{0}  (pad)", label);
+            else if (b.name == "alt") label = Loc.T("{0}  (2nd key)", label);
             return label;
         }
 
@@ -52,9 +53,9 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
-            MenuKit.Text(panel, "FIELD CONTROLS / PERSONAL BINDINGS", "menu-record");
-            MenuKit.Text(panel, "CONTROLS", "heading");
-            MenuKit.Text(panel, "Click a key, then press the new one. Esc cancels.", "subtitle");
+            MenuKit.Text(panel, Loc.T("FIELD CONTROLS / PERSONAL BINDINGS"), "menu-record");
+            MenuKit.Text(panel, Loc.T("CONTROLS"), "heading");
+            MenuKit.Text(panel, Loc.T("Click a key, then press the new one. Esc cancels."), "subtitle");
             var scroll = MenuKit.Scroll(panel);
 
             foreach (string name in InputBindings.Rebindable)
@@ -80,7 +81,7 @@ namespace Abandoned.UI
             VisualElement buttons = MenuKit.Row(panel);
             buttons.AddToClassList("controls__footer");
             buttons.style.flexWrap = Wrap.Wrap;
-            MenuKit.Button(buttons, "Reset to defaults", () =>
+            MenuKit.Button(buttons, Loc.T("Reset to defaults"), () =>
             {
                 Cancel();
                 editing.asset.RemoveAllBindingOverrides();
@@ -88,7 +89,7 @@ namespace Abandoned.UI
                 warning.text = "";
                 Refresh();
             }, SoundId.UiConfirm).AddToClassList("grow");
-            Button back = MenuKit.Button(buttons, "Back", () =>
+            Button back = MenuKit.Button(buttons, Loc.T("Back"), () =>
             {
                 Cancel();
                 menu.Back();
@@ -102,7 +103,7 @@ namespace Abandoned.UI
             Cancel();
             Listening = true;
             foreach ((InputAction a, int i, Button b) in rows)
-                if (a == action && i == index) b.text = "Press a key...";
+                if (a == action && i == index) b.text = Loc.T("Press a key...");
             action.Disable();
             operation = action.PerformInteractiveRebinding(index)
                 .WithCancelingThrough("<Keyboard>/escape")
@@ -114,7 +115,7 @@ namespace Abandoned.UI
                 {
                     string path = action.bindings[index].effectivePath;
                     string clash = InputBindings.ConflictWith(editing.asset, action, index, path);
-                    warning.text = clash != null ? $"That key is also bound to {clash}." : "";
+                    warning.text = clash != null ? Loc.T("That key is also bound to {0}.", clash) : "";
                     InputBindings.Save(editing.asset);
                     GameAudio.PlayUi(SoundId.UiConfirm);
                     Finish();

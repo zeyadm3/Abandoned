@@ -49,9 +49,9 @@ namespace Abandoned.Extraction
         {
             NetworkPlayer me = user != null ? user.GetComponentInParent<NetworkPlayer>() : null;
             if (me == null || !me.IsSpawned || me.IsHiding || Find(duct, 1 - end) == null) return null;
-            if (me.Carrier != null && me.Carrier.Held != null) return "Too big to take through the vent";
-            if (!me.State.Crouching) return "Crouch to crawl into the vent";
-            return "Crawl into the vent";
+            if (me.Carrier != null && me.Carrier.Held != null) return Loc.T("Too big to take through the vent");
+            if (!me.State.Crouching) return Loc.T("Crouch to crawl into the vent");
+            return Loc.T("Crawl into the vent");
         }
 
         public void Use(GameObject user)
@@ -61,7 +61,7 @@ namespace Abandoned.Extraction
             if (me.Carrier != null && me.Carrier.Held != null) return;
             if (!me.State.Crouching)
             {
-                me.Carrier?.ShowHint($"Crouch ({InputBindings.Display("Crouch")}) to fit into the vent");
+                me.Carrier?.ShowHint(Loc.T("Crouch ({0}) to fit into the vent", InputBindings.Display("Crouch")));
                 return;
             }
             me.RequestVent(duct, end);

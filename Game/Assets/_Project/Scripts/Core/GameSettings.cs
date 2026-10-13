@@ -19,7 +19,7 @@ namespace Abandoned.Core
             CrosshairKey = "settings.crosshair", SubtitleSizeKey = "settings.subtitlesize", MuteUnfocusedKey = "settings.muteunfocused",
             ReduceFlashingKey = "settings.reduceflashing", FewerScaresKey = "settings.fewerscares", VitalsVolumeKey = "settings.vitalsvolume",
             PlayerNameKey = "settings.playername";
-        public static readonly string[] SubtitleSizeNames = { "Small", "Medium", "Large" };
+        public static readonly string[] SubtitleSizeNames = { "Small", "Medium", "Large" }; // @loc:size
         // Default raised from 1 (2026-10-09: testers found the HUD too small); a saved choice is kept as it is.
         public const float MinUiScale = 0.75f, MaxUiScale = 1.5f, DefaultUiScale = 1.25f;
 

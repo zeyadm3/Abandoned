@@ -71,13 +71,13 @@ namespace Abandoned.Extraction
         {
             if (!IsDown) return null;
             PlayerEquipment gear = user != null ? user.GetComponentInParent<PlayerEquipment>() : null;
-            if (gear != null && gear.Has(EquipmentKind.BoltCutters)) return "Cut the padlock (quiet)";
-            if (gear != null && gear.Has(EquipmentKind.Lockpick)) return $"Pick the lock (silent, {ToolConfig.Current.LockpickSeconds:0} s)";
-            if (gear != null && gear.Has(EquipmentKind.Crowbar)) return "Pry the shutter up (loud, a few goes)";
+            if (gear != null && gear.Has(EquipmentKind.BoltCutters)) return Loc.T("Cut the padlock (quiet)");
+            if (gear != null && gear.Has(EquipmentKind.Lockpick)) return Loc.T("Pick the lock (silent, {0:0} s)", ToolConfig.Current.LockpickSeconds);
+            if (gear != null && gear.Has(EquipmentKind.Crowbar)) return Loc.T("Pry the shutter up (loud, a few goes)");
             // The padlock is on the outside: from inside the store you can always heave it up (QA B-01).
             if (user != null && InRoom(user.transform.position))
-                return RunShutters.Current != null && RunShutters.Current.IsLifting(index) ? "Heaving it up..." : "Heave the shutter up from inside (slow, loud)";
-            return entrance ? "Shuttered. Bolt cutters or a crowbar would get you in" : "Locked. Bolt cutters or a crowbar would open it";
+                return RunShutters.Current != null && RunShutters.Current.IsLifting(index) ? Loc.T("Heaving it up...") : Loc.T("Heave the shutter up from inside (slow, loud)");
+            return entrance ? Loc.T("Shuttered. Bolt cutters or a crowbar would get you in") : Loc.T("Locked. Bolt cutters or a crowbar would open it");
         }
 
         public void Use(GameObject user) => RunShutters.Current?.RequestOpen(index);

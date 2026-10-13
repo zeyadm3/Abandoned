@@ -11,9 +11,9 @@ namespace Abandoned.Company
         {
             CompanyService company = CompanyService.Current;
             if (company == null) return null;
-            if (company.Selected < 0) return "Pick a contract at the board first";
+            if (company.Selected < 0) return Loc.T("Pick a contract at the board first");
             Contract c = company.Board[company.Selected];
-            return $"Drive to {c.Location} ({c.ModifierName}, quota ${company.QuotaFor(c):N0})";
+            return Loc.T("Drive to {0} ({1}, quota ${2:N0})", Loc.T(c.Location), Loc.T(c.ModifierName), company.QuotaFor(c));
         }
 
         public void Use(GameObject user)

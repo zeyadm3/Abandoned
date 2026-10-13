@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Unity.Netcode;
 
@@ -53,7 +54,7 @@ namespace Abandoned.Networking
             if (target != null && target.TryGetComponent(out NetworkObject no) && !no.IsSpawned &&
                 NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
             {
-                carrier.ShowHint("Not ready yet");
+                carrier.ShowHint(Loc.Mark("Not ready yet"));
                 return;
             }
             local.RequestPickup(carrier, target);

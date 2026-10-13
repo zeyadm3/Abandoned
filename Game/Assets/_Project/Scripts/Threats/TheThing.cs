@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Equipment;
 using Abandoned.Networking;
 using Unity.Netcode;
@@ -11,8 +12,8 @@ namespace Abandoned.Threats
         private readonly NetworkVariable<ThreatMotion> motion = new();
         private NetworkPlayer fixation;
         private float exposure, releaseAt;
-        public override string DisplayName => "The Thing";
-        public override string DeathLine => "You showed the Thing where you were.";
+        public override string DisplayName => Loc.Mark("The Thing");
+        public override string DeathLine => Loc.Mark("You showed the Thing where you were.");
         public override ThreatMotion DesiredMotion => motion.Value;
         // Awake and coming for this player: it can watch them climb into a locker (0.16.0).
         protected override bool Pursuing(NetworkPlayer p) => fixation == p && motion.Value == ThreatMotion.Chase;

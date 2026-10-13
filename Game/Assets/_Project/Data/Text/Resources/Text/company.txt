@@ -1,0 +1,943 @@
+# The HQ: dispatch telephone and contract board, the scrap depot, the answering machine, crew rules
+# (Company/*.cs, Contracts/*.cs). The spoken dispatch briefings stay English; these are their captions.
+
+en: DISPATCH TELEPHONE
+zh-CN: 调度电话
+ja: 配車電話
+ko: 배차 전화
+es: TELÉFONO DE DESPACHO
+pt-BR: TELEFONE DE DESPACHO
+de: EINSATZTELEFON
+fr: TÉLÉPHONE DU DISPATCH
+ru: ДИСПЕТЧЕРСКИЙ ТЕЛЕФОН
+pl: TELEFON DYSPOZYTORA
+
+en: CONTRACT BOARD
+zh-CN: 合同板
+ja: 契約ボード
+ko: 계약 게시판
+es: TABLÓN DE CONTRATOS
+pt-BR: QUADRO DE CONTRATOS
+de: AUFTRAGSTAFEL
+fr: TABLEAU DES CONTRATS
+ru: ДОСКА КОНТРАКТОВ
+pl: TABLICA KONTRAKTÓW
+
+en: Pick today's job, then take the van.
+zh-CN: 选好今天的任务，然后上厢式车。
+ja: 今日の仕事を選んで、バンに乗ろう。
+ko: 오늘의 작업을 고른 다음 밴에 타세요.
+es: Elige el trabajo de hoy y luego sube a la furgoneta.
+pt-BR: Escolha o trabalho de hoje e depois pegue a van.
+de: Wähl den heutigen Auftrag und nimm dann den Transporter.
+fr: Choisissez la mission du jour, puis prenez la camionnette.
+ru: Выберите сегодняшний заказ и садитесь в фургон.
+pl: Wybierz dzisiejsze zlecenie, a potem wsiadaj do furgonetki.
+
+en: The host picks the job.
+zh-CN: 由房主选择任务。
+ja: 仕事はホストが選ぶ。
+ko: 작업은 호스트가 고릅니다.
+es: El anfitrión elige el trabajo.
+pt-BR: O anfitrião escolhe o trabalho.
+de: Der Host wählt den Auftrag.
+fr: C'est l'hôte qui choisit la mission.
+ru: Заказ выбирает хост.
+pl: Zlecenie wybiera host.
+
+en: QUOTA
+zh-CN: 定额
+ja: ノルマ
+ko: 할당량
+es: CUOTA
+pt-BR: COTA
+de: SOLL
+fr: QUOTA
+ru: НОРМА
+pl: NORMA
+
+en: scaled for a crew of {0}
+zh-CN: 按 {0} 人队伍调整
+ja: クルー {0} 人に合わせて調整
+ko: 팀원 {0}명 기준으로 조정
+es: ajustada para un equipo de {0}
+pt-BR: ajustada para uma equipe de {0}
+de: angepasst an ein Team von {0}
+fr: ajusté pour une équipe de {0}
+ru: рассчитана на бригаду из {0}
+pl: dostosowana do ekipy {0}-osobowej
+
+en: BONUS
+zh-CN: 奖金
+ja: ボーナス
+ko: 보너스
+es: BONIFICACIÓN
+pt-BR: BÔNUS
+de: BONUS
+fr: PRIME
+ru: ПРЕМИЯ
+pl: PREMIA
+
+en: THREAT
+zh-CN: 威胁
+ja: 脅威
+ko: 위협
+es: AMENAZA
+pt-BR: AMEAÇA
+de: BEDROHUNG
+fr: MENACE
+ru: УГРОЗА
+pl: ZAGROŻENIE
+
+en: KNOWN THREATS
+zh-CN: 已知威胁
+ja: 判明している脅威
+ko: 알려진 위협
+es: AMENAZAS CONOCIDAS
+pt-BR: AMEAÇAS CONHECIDAS
+de: BEKANNTE BEDROHUNGEN
+fr: MENACES CONNUES
+ru: ИЗВЕСТНЫЕ УГРОЗЫ
+pl: ZNANE ZAGROŻENIA
+
+en: first on site: {0}
+zh-CN: 最先出现：{0}
+ja: 最初に現れる：{0}
+ko: 가장 먼저 출현: {0}
+es: el primero en aparecer: {0}
+pt-BR: primeiro no local: {0}
+de: zuerst vor Ort: {0}
+fr: premier sur place : {0}
+ru: первым появится: {0}
+pl: pierwszy na miejscu: {0}
+
+en: the threat forecast (company upgrade) would say
+zh-CN: 有了威胁预报（公司升级）就能知道
+ja: 脅威予報（会社のアップグレード）があればわかる
+ko: 위협 예보(회사 업그레이드)가 있으면 알 수 있습니다
+es: lo diría el pronóstico de amenazas (mejora de la empresa)
+pt-BR: a previsão de ameaças (melhoria da empresa) diria
+de: die Bedrohungsvorhersage (Firmen-Upgrade) wüsste es
+fr: les prévisions de menace (amélioration de l'entreprise) le diraient
+ru: это показал бы прогноз угроз (улучшение компании)
+pl: powiedziałaby to prognoza zagrożeń (ulepszenie firmy)
+
+en: STABILITY
+zh-CN: 稳定度
+ja: 安定度
+ko: 안정도
+es: ESTABILIDAD
+pt-BR: ESTABILIDADE
+de: STABILITÄT
+fr: STABILITÉ
+ru: ПРОЧНОСТЬ
+pl: STABILNOŚĆ
+
+en: POWER
+zh-CN: 电力
+ja: 電力
+ko: 전력
+es: CORRIENTE
+pt-BR: ENERGIA
+de: STROM
+fr: COURANT
+ru: ЭЛЕКТРИЧЕСТВО
+pl: PRĄD
+
+# The time a crew has before the truck must leave; not the application window of Settings.
+key: contract.WINDOW
+en: WINDOW
+zh-CN: 时限
+ja: 期限
+ko: 시한
+es: PLAZO
+pt-BR: JANELA
+de: FENSTER
+fr: FENÊTRE
+ru: ОКНО
+pl: OKNO
+
+en: {0:0} MIN
+zh-CN: {0:0} 分钟
+ja: {0:0} 分
+ko: {0:0}분
+es: {0:0} MIN
+pt-BR: {0:0} MIN
+de: {0:0} MIN
+fr: {0:0} MIN
+ru: {0:0} МИН
+pl: {0:0} MIN
+
+en: TOOLS
+zh-CN: 工具
+ja: 工具
+ko: 도구
+es: HERRAMIENTAS
+pt-BR: FERRAMENTAS
+de: WERKZEUG
+fr: OUTILS
+ru: ИНСТРУМЕНТЫ
+pl: NARZĘDZIA
+
+en: BOLT CUTTERS OR A CROWBAR
+zh-CN: 断线钳或撬棍
+ja: ボルトカッターかバール
+ko: 볼트 커터 또는 쇠지렛대
+es: CIZALLA O PALANCA
+pt-BR: ALICATE DE CORTE OU PÉ DE CABRA
+de: BOLZENSCHNEIDER ODER BRECHEISEN
+fr: COUPE-BOULONS OU PIED-DE-BICHE
+ru: БОЛТОРЕЗ ИЛИ ЛОМ
+pl: NOŻYCE DO METALU ALBO ŁOM
+
+en: every door is shuttered: bring one
+zh-CN: 每扇门都拉下了卷帘门：带上一样
+ja: どの入口もシャッターが降りている。どちらかを持って行こう
+ko: 모든 문에 셔터가 내려져 있습니다. 하나는 챙기세요
+es: todas las puertas tienen persiana: lleva una de las dos
+pt-BR: todas as portas estão fechadas com porta de enrolar: leve um deles
+de: jede Tür ist verrammelt: bring eins von beiden mit
+fr: toutes les portes sont fermées par un rideau : apportez-en un
+ru: все двери закрыты рольставнями: возьмите одно из двух
+pl: wszystkie drzwi są zasłonięte roletami: weź jedno z nich
+
+en: Taken - drive the van
+zh-CN: 已接下 - 去开厢式车
+ja: 受注済み - バンで出発
+ko: 수락됨 - 밴을 출발시키세요
+es: Aceptado - conduce la furgoneta
+pt-BR: Aceito - pegue a van
+de: Angenommen - fahr mit dem Transporter los
+fr: Acceptée - prenez la camionnette
+ru: Взят - садитесь в фургон
+pl: Przyjęte - jedź furgonetką
+
+en: Take this job
+zh-CN: 接下这份任务
+ja: この仕事を受ける
+ko: 이 작업 맡기
+es: Aceptar este trabajo
+pt-BR: Aceitar este trabalho
+de: Diesen Auftrag annehmen
+fr: Accepter cette mission
+ru: Взять этот заказ
+pl: Przyjmij to zlecenie
+
+en: TAKEN
+zh-CN: 已接下
+ja: 受注済み
+ko: 수락됨
+es: ACEPTADO
+pt-BR: ACEITO
+de: ANGENOMMEN
+fr: ACCEPTÉE
+ru: ВЗЯТ
+pl: PRZYJĘTE
+
+en: Hang up
+zh-CN: 挂断
+ja: 電話を切る
+ko: 전화 끊기
+es: Colgar
+pt-BR: Desligar
+de: Auflegen
+fr: Raccrocher
+ru: Повесить трубку
+pl: Odłóż słuchawkę
+
+en: Close
+zh-CN: 关闭
+ja: 閉じる
+ko: 닫기
+es: Cerrar
+pt-BR: Fechar
+de: Schließen
+fr: Fermer
+ru: Закрыть
+pl: Zamknij
+
+en: DISPATCH / LINE OPEN
+zh-CN: 调度 / 线路已接通
+ja: 配車係 / 回線接続中
+ko: 배차 / 회선 연결됨
+es: CENTRAL / LÍNEA ABIERTA
+pt-BR: DESPACHO / LINHA ABERTA
+de: ZENTRALE / LEITUNG OFFEN
+fr: DISPATCH / LIGNE OUVERTE
+ru: ДИСПЕТЧЕР / ЛИНИЯ ОТКРЫТА
+pl: DYSPOZYTOR / LINIA OTWARTA
+
+en: Choose a job sheet below. Dispatch will attach its briefing to this line.
+zh-CN: 请在下方选择一份任务单。调度会把它的简报接到这条线路上。
+ja: 下の作業票を選ぼう。配車係がその概要をこの回線に流す。
+ko: 아래에서 작업 명세서를 고르세요. 배차 담당이 이 회선으로 브리핑을 전달합니다.
+es: Elige una hoja de trabajo abajo. La central adjuntará su informe a esta línea.
+pt-BR: Escolha uma ficha de trabalho abaixo. O despacho vai anexar o resumo a esta linha.
+de: Wähl unten einen Auftragszettel. Die Zentrale hängt die Einweisung an diese Leitung.
+fr: Choisissez une fiche de mission ci-dessous. Le dispatch joindra son briefing à cette ligne.
+ru: Выберите наряд ниже. Диспетчер передаст по этой линии сводку.
+pl: Wybierz poniżej kartę zlecenia. Dyspozytor dołączy do tej linii odprawę.
+
+en: Recover ${0:N0} for a crew of {1}. The departure window is {2:0} minutes. Threat: {3}.
+zh-CN: 为 {1} 人的队伍回收 ${0:N0}。撤离时限为 {2:0} 分钟。威胁：{3}。
+ja: クルー {1} 人で ${0:N0} を回収すること。出発期限は {2:0} 分。脅威：{3}。
+ko: 팀원 {1}명 기준으로 ${0:N0}를 회수하세요. 출발 시한은 {2:0}분입니다. 위협: {3}.
+es: Recupera ${0:N0} para un equipo de {1}. El plazo de salida es de {2:0} minutos. Amenaza: {3}.
+pt-BR: Recupere ${0:N0} para uma equipe de {1}. A janela de saída é de {2:0} minutos. Ameaça: {3}.
+de: Bergt ${0:N0} mit einem Team von {1}. Das Abfahrtsfenster beträgt {2:0} Minuten. Bedrohung: {3}.
+fr: Récupérez ${0:N0} pour une équipe de {1}. La fenêtre de départ est de {2:0} minutes. Menace : {3}.
+ru: Вывезите добычи на ${0:N0} бригадой из {1}. Окно отъезда — {2:0} мин. Угроза: {3}.
+pl: Odzyskajcie ${0:N0} ekipą {1}-osobową. Okno odjazdu to {2:0} min. Zagrożenie: {3}.
+
+en: Power is off; bring a charged flashlight.
+zh-CN: 电力已中断；带上充好电的手电筒。
+ja: 電力は落ちている。充電した懐中電灯を持って行こう。
+ko: 전력이 끊겼습니다. 충전된 손전등을 가져가세요.
+es: No hay corriente; lleva una linterna cargada.
+pt-BR: Não há energia; leve uma lanterna carregada.
+de: Der Strom ist aus; bring eine geladene Taschenlampe mit.
+fr: Le courant est coupé ; apportez une lampe torche chargée.
+ru: Электричества нет; возьмите заряженный фонарик.
+pl: Nie ma prądu; weź naładowaną latarkę.
+
+en: Power is on.
+zh-CN: 电力正常。
+ja: 電力は通っている。
+ko: 전력이 들어옵니다.
+es: Hay corriente.
+pt-BR: Há energia.
+de: Der Strom ist an.
+fr: Le courant est actif.
+ru: Электричество есть.
+pl: Prąd jest.
+
+en: Floors start at {0:P0} stability.
+zh-CN: 地板初始稳定度为 {0:P0}。
+ja: 床の安定度は {0:P0} から始まる。
+ko: 바닥 안정도는 {0:P0}에서 시작합니다.
+es: Los suelos empiezan con una estabilidad del {0:P0}.
+pt-BR: Os pisos começam com {0:P0} de estabilidade.
+de: Die Böden starten mit {0:P0} Stabilität.
+fr: Les sols démarrent à {0:P0} de stabilité.
+ru: Начальная прочность полов — {0:P0}.
+pl: Podłogi zaczynają ze stabilnością {0:P0}.
+
+en: Shuttered access: pack bolt cutters or a crowbar.
+zh-CN: 入口有卷帘门：带上断线钳或撬棍。
+ja: 入口はシャッターで閉鎖。ボルトカッターかバールを持って行こう。
+ko: 출입구가 셔터로 막혀 있습니다. 볼트 커터나 쇠지렛대를 챙기세요.
+es: Acceso con persianas: lleva cizalla o palanca.
+pt-BR: Acesso fechado com portas de enrolar: leve alicate de corte ou pé de cabra.
+de: Zugang verrammelt: Pack Bolzenschneider oder Brecheisen ein.
+fr: Accès fermé par des rideaux : emportez un coupe-boulons ou un pied-de-biche.
+ru: Вход закрыт рольставнями: возьмите болторез или лом.
+pl: Wejścia za roletami: spakuj nożyce do metalu albo łom.
+
+en: Load salvage into the truck and leave with the crew. The haul is appraised at departure.
+zh-CN: 把回收品装上卡车，和队伍一起离开。收获会在出发时估价。
+ja: 回収品をトラックに積み、クルーと一緒に出発しよう。回収額は出発時に査定される。
+ko: 회수품을 트럭에 싣고 팀과 함께 떠나세요. 수확은 출발할 때 감정됩니다.
+es: Carga lo recuperado en el camión y márchate con el equipo. La carga se tasa al salir.
+pt-BR: Carregue o que recuperar no caminhão e saia com a equipe. A carga é avaliada na partida.
+de: Lad das Bergungsgut in den Laster und fahr mit dem Team ab. Die Ausbeute wird bei der Abfahrt geschätzt.
+fr: Chargez le matériel dans le camion et partez avec l'équipe. Le chargement est estimé au départ.
+ru: Грузите добычу в грузовик и уезжайте вместе с бригадой. Улов оценивают при отъезде.
+pl: Załaduj łupy do ciężarówki i odjedź z ekipą. Urobek jest wyceniany przy odjeździe.
+
+en: Reconnect briefing line
+zh-CN: 重新接通简报线路
+ja: 概要の回線をつなぎ直す
+ko: 브리핑 회선 다시 연결
+es: Reconectar la línea del informe
+pt-BR: Reconectar a linha do resumo
+de: Einweisung erneut verbinden
+fr: Reconnecter la ligne du briefing
+ru: Переподключить линию сводки
+pl: Połącz ponownie linię odprawy
+
+en: The demo is over - thanks for playing!
+zh-CN: 试玩版已结束 - 感谢游玩！
+ja: 体験版はここまで - プレイしてくれてありがとう！
+ko: 데모가 끝났습니다 - 플레이해 주셔서 감사합니다!
+es: La demo ha terminado - ¡gracias por jugar!
+pt-BR: A demo acabou - obrigado por jogar!
+de: Die Demo ist vorbei - danke fürs Spielen!
+fr: La démo est terminée - merci d'avoir joué !
+ru: Демо закончилось - спасибо за игру!
+pl: Demo dobiegło końca - dziękujemy za grę!
+
+en: Read the contract board
+zh-CN: 查看合同板
+ja: 契約ボードを見る
+ko: 계약 게시판 보기
+es: Leer el tablón de contratos
+pt-BR: Ler o quadro de contratos
+de: Auftragstafel lesen
+fr: Lire le tableau des contrats
+ru: Посмотреть доску контрактов
+pl: Przeczytaj tablicę kontraktów
+
+en: Call dispatch: contracts and briefing
+zh-CN: 呼叫调度：合同与简报
+ja: 配車係に電話：契約と概要
+ko: 배차에 전화: 계약과 브리핑
+es: Llamar a la central: contratos e informe
+pt-BR: Ligar para o despacho: contratos e resumo
+de: Zentrale anrufen: Aufträge und Einweisung
+fr: Appeler le dispatch : contrats et briefing
+ru: Позвонить диспетчеру: контракты и сводка
+pl: Zadzwoń do dyspozytora: kontrakty i odprawa
+
+en: Pick a contract at the board first
+zh-CN: 请先在合同板上选一份合同
+ja: 先にボードで契約を選ぼう
+ko: 먼저 게시판에서 계약을 고르세요
+es: Elige antes un contrato en el tablón
+pt-BR: Escolha um contrato no quadro primeiro
+de: Wähl zuerst einen Auftrag an der Tafel
+fr: Choisissez d'abord un contrat au tableau
+ru: Сначала выберите контракт на доске
+pl: Najpierw wybierz kontrakt na tablicy
+
+en: Drive to {0} ({1}, quota ${2:N0})
+zh-CN: 前往 {0}（{1}，定额 ${2:N0}）
+ja: {0} へ出発（{1}、ノルマ ${2:N0}）
+ko: {0}(으)로 출발 ({1}, 할당량 ${2:N0})
+es: Conducir a {0} ({1}, cuota ${2:N0})
+pt-BR: Dirigir até {0} ({1}, cota ${2:N0})
+de: Fahrt nach: {0} ({1}, Soll ${2:N0})
+fr: Rouler vers {0} ({1}, quota ${2:N0})
+ru: Ехать: {0} ({1}, норма ${2:N0})
+pl: Jedź: {0} ({1}, norma ${2:N0})
+
+en: Read the loot catalogue
+zh-CN: 查看战利品图鉴
+ja: 回収品カタログを読む
+ko: 전리품 도감 보기
+es: Leer el catálogo de botín
+pt-BR: Ler o catálogo de saque
+de: Beutekatalog lesen
+fr: Lire le catalogue du butin
+ru: Открыть каталог добычи
+pl: Przeczytaj katalog łupów
+
+en: Difficulty: {0} (turn the switch)
+zh-CN: 难度：{0}（拨动开关）
+ja: 難易度：{0}（スイッチを回す）
+ko: 난이도: {0} (스위치 돌리기)
+es: Dificultad: {0} (gira el interruptor)
+pt-BR: Dificuldade: {0} (gire a chave)
+de: Schwierigkeit: {0} (Schalter drehen)
+fr: Difficulté : {0} (tournez le sélecteur)
+ru: Сложность: {0} (поверните переключатель)
+pl: Trudność: {0} (przestaw przełącznik)
+
+en: Difficulty: {0} (the host sets it)
+zh-CN: 难度：{0}（由房主设定）
+ja: 難易度：{0}（ホストが設定）
+ko: 난이도: {0} (호스트가 설정)
+es: Dificultad: {0} (la fija el anfitrión)
+pt-BR: Dificuldade: {0} (o anfitrião define)
+de: Schwierigkeit: {0} (stellt der Host ein)
+fr: Difficulté : {0} (réglée par l'hôte)
+ru: Сложность: {0} (выбирает хост)
+pl: Trudność: {0} (ustawia host)
+
+key: difficulty.Relaxed
+en: Relaxed
+zh-CN: 轻松
+ja: やさしい
+ko: 여유
+es: Relajada
+pt-BR: Tranquila
+de: Entspannt
+fr: Détendue
+ru: Лёгкая
+pl: Luźny
+
+key: difficulty.Standard
+en: Standard
+zh-CN: 标准
+ja: 標準
+ko: 표준
+es: Estándar
+pt-BR: Padrão
+de: Standard
+fr: Standard
+ru: Обычная
+pl: Standardowy
+
+key: difficulty.Brutal
+en: Brutal
+zh-CN: 残酷
+ja: 過酷
+ko: 가혹
+es: Brutal
+pt-BR: Brutal
+de: Brutal
+fr: Brutale
+ru: Жестокая
+pl: Brutalny
+
+# Threat level on a contract, and the contract's place
+
+en: LOW
+zh-CN: 低
+ja: 低
+ko: 낮음
+es: BAJA
+pt-BR: BAIXA
+de: NIEDRIG
+fr: FAIBLE
+ru: НИЗКАЯ
+pl: NISKIE
+
+en: MEDIUM
+zh-CN: 中
+ja: 中
+ko: 중간
+es: MEDIA
+pt-BR: MÉDIA
+de: MITTEL
+fr: MOYENNE
+ru: СРЕДНЯЯ
+pl: ŚREDNIE
+
+en: HIGH
+zh-CN: 高
+ja: 高
+ko: 높음
+es: ALTA
+pt-BR: ALTA
+de: HOCH
+fr: ÉLEVÉE
+ru: ВЫСОКАЯ
+pl: WYSOKIE
+
+en: fewer monsters, slower to arrive, weaker hits
+zh-CN: 怪物更少，来得更慢，伤害更低
+ja: 怪物は少なく、現れるのが遅く、攻撃も弱い
+ko: 괴물이 적고, 늦게 나타나며, 공격이 약합니다
+es: menos monstruos, tardan más en llegar, pegan más flojo
+pt-BR: menos monstros, demoram mais a chegar, golpes mais fracos
+de: weniger Monster, später da, schwächere Treffer
+fr: moins de monstres, plus lents à arriver, coups plus faibles
+ru: монстров меньше, приходят позже, бьют слабее
+pl: mniej potworów, pojawiają się później, biją słabiej
+
+en: monsters arrive steadily
+zh-CN: 怪物会陆续出现
+ja: 怪物は一定の間隔で現れる
+ko: 괴물이 꾸준히 나타납니다
+es: los monstruos llegan a ritmo constante
+pt-BR: os monstros chegam em ritmo constante
+de: Monster kommen stetig
+fr: les monstres arrivent régulièrement
+ru: монстры появляются равномерно
+pl: potwory pojawiają się regularnie
+
+en: more monsters, sooner, harder hits
+zh-CN: 怪物更多，来得更早，伤害更高
+ja: 怪物は多く、早く現れ、攻撃も強い
+ko: 괴물이 많고, 일찍 나타나며, 공격이 강합니다
+es: más monstruos, antes, pegan más fuerte
+pt-BR: mais monstros, mais cedo, golpes mais fortes
+de: mehr Monster, früher, härtere Treffer
+fr: plus de monstres, plus tôt, coups plus forts
+ru: монстров больше, приходят раньше, бьют сильнее
+pl: więcej potworów, wcześniej, biją mocniej
+
+en: Daily job
+zh-CN: 每日任务
+ja: 日替わりの仕事
+ko: 일일 작업
+es: Trabajo diario
+pt-BR: Trabalho diário
+de: Tagesauftrag
+fr: Mission du jour
+ru: Заказ дня
+pl: Zlecenie dnia
+
+en: None
+zh-CN: 无
+ja: なし
+ko: 없음
+es: Ninguno
+pt-BR: Nenhum
+de: Keine
+fr: Aucun
+ru: Нет
+pl: Brak
+
+en: Abandoned Mall
+zh-CN: 废弃商场
+ja: 廃モール
+ko: 버려진 쇼핑몰
+es: Centro comercial abandonado
+pt-BR: Shopping abandonado
+de: Verlassenes Einkaufszentrum
+fr: Centre commercial abandonné
+ru: Заброшенный торговый центр
+pl: Opuszczona galeria handlowa
+
+en: Abandoned Mall (today's daily job)
+zh-CN: 废弃商场（今日每日任务）
+ja: 廃モール（今日の日替わりの仕事）
+ko: 버려진 쇼핑몰 (오늘의 일일 작업)
+es: Centro comercial abandonado (trabajo diario de hoy)
+pt-BR: Shopping abandonado (trabalho diário de hoje)
+de: Verlassenes Einkaufszentrum (heutiger Tagesauftrag)
+fr: Centre commercial abandonné (mission du jour)
+ru: Заброшенный торговый центр (сегодняшний заказ дня)
+pl: Opuszczona galeria handlowa (dzisiejsze zlecenie dnia)
+
+# The dispatch briefings' captions (the recordings are in English)
+
+en: Abandoned Salvaging dispatch. Review the job sheet before departure. Keep the crew together, listen for floor warnings, and load salvage into the truck. Bring everyone home.
+zh-CN: 这里是 Abandoned Salvaging 调度。出发前请查看任务单。队伍不要分散，留意地板的警示声，把回收品装上卡车。把所有人都带回来。
+ja: こちら Abandoned Salvaging 配車係。出発前に作業票を確認すること。クルーはまとまって行動し、床の警告音に注意し、回収品をトラックに積むこと。全員を連れて帰れ。
+ko: Abandoned Salvaging 배차입니다. 출발 전에 작업 명세서를 확인하세요. 팀은 함께 움직이고, 바닥 경고음에 귀를 기울이며, 회수품을 트럭에 실으세요. 모두 데리고 돌아오세요.
+es: Central de Abandoned Salvaging. Revisad la hoja de trabajo antes de salir. Mantened al equipo unido, atended a los avisos del suelo y cargad lo recuperado en el camión. Traed a todos de vuelta.
+pt-BR: Despacho da Abandoned Salvaging. Confiram a ficha de trabalho antes de sair. Mantenham a equipe unida, fiquem atentos aos avisos do piso e carreguem o que recuperarem no caminhão. Tragam todo mundo de volta.
+de: Zentrale von Abandoned Salvaging. Prüft den Auftragszettel vor der Abfahrt. Bleibt als Team zusammen, achtet auf Warnungen vom Boden und ladet das Bergungsgut in den Laster. Bringt alle heim.
+fr: Dispatch d'Abandoned Salvaging. Relisez la fiche de mission avant le départ. Restez groupés, écoutez les alertes du sol et chargez le matériel dans le camion. Ramenez tout le monde.
+ru: Диспетчер Abandoned Salvaging. Перед выездом изучите наряд. Держитесь вместе, слушайте, как трещит пол, и грузите добычу в грузовик. Привезите всех назад.
+pl: Dyspozytor Abandoned Salvaging. Przed wyjazdem przejrzyjcie kartę zlecenia. Trzymajcie się razem, nasłuchujcie ostrzeżeń podłogi i ładujcie łupy do ciężarówki. Przywieźcie wszystkich z powrotem.
+
+en: Abandoned Salvaging dispatch. This job has no power. Bring charged flashlights and keep the crew together. Review the job sheet, and listen for floor warnings.
+zh-CN: 这里是 Abandoned Salvaging 调度。这份任务没有电力。请带上充好电的手电筒，队伍不要分散。查看任务单，并留意地板的警示声。
+ja: こちら Abandoned Salvaging 配車係。この現場には電力がない。充電した懐中電灯を持ち、クルーはまとまって行動すること。作業票を確認し、床の警告音に注意せよ。
+ko: Abandoned Salvaging 배차입니다. 이번 작업에는 전력이 없습니다. 충전된 손전등을 챙기고 팀은 함께 움직이세요. 작업 명세서를 확인하고 바닥 경고음에 귀를 기울이세요.
+es: Central de Abandoned Salvaging. Este trabajo no tiene corriente. Llevad linternas cargadas y mantened al equipo unido. Revisad la hoja de trabajo y atended a los avisos del suelo.
+pt-BR: Despacho da Abandoned Salvaging. Este trabalho está sem energia. Levem lanternas carregadas e mantenham a equipe unida. Confiram a ficha de trabalho e fiquem atentos aos avisos do piso.
+de: Zentrale von Abandoned Salvaging. Dieser Auftrag hat keinen Strom. Bringt geladene Taschenlampen mit und bleibt als Team zusammen. Prüft den Auftragszettel und achtet auf Warnungen vom Boden.
+fr: Dispatch d'Abandoned Salvaging. Cette mission est sans courant. Apportez des lampes torches chargées et restez groupés. Relisez la fiche de mission et écoutez les alertes du sol.
+ru: Диспетчер Abandoned Salvaging. На этом заказе нет электричества. Возьмите заряженные фонарики и держитесь вместе. Изучите наряд и слушайте, как трещит пол.
+pl: Dyspozytor Abandoned Salvaging. Na tym zleceniu nie ma prądu. Weźcie naładowane latarki i trzymajcie się razem. Przejrzyjcie kartę zlecenia i nasłuchujcie ostrzeżeń podłogi.
+
+en: Abandoned Salvaging dispatch. This is a high threat job. Expect more monsters, sooner. Keep noise down, read the field guide, and bring the crew home together.
+zh-CN: 这里是 Abandoned Salvaging 调度。这是一份高威胁任务。怪物会更多，来得更早。保持安静，阅读现场手册，把队伍完整地带回来。
+ja: こちら Abandoned Salvaging 配車係。これは高脅威の仕事だ。怪物はより多く、より早く現れる。物音を抑え、フィールドガイドを読み、クルー全員で帰還せよ。
+ko: Abandoned Salvaging 배차입니다. 이번 작업은 위협 수준이 높습니다. 괴물이 더 많이, 더 일찍 나타납니다. 소음을 줄이고, 현장 안내서를 읽고, 팀 전원이 함께 돌아오세요.
+es: Central de Abandoned Salvaging. Este es un trabajo de amenaza alta. Esperad más monstruos y antes. No hagáis ruido, leed la guía de campo y traed al equipo de vuelta entero.
+pt-BR: Despacho da Abandoned Salvaging. Este é um trabalho de ameaça alta. Esperem mais monstros, e mais cedo. Façam pouco barulho, leiam o guia de campo e tragam a equipe inteira de volta.
+de: Zentrale von Abandoned Salvaging. Das ist ein Auftrag mit hoher Bedrohung. Rechnet mit mehr Monstern, und früher. Seid leise, lest das Feldhandbuch und bringt das Team gemeinsam heim.
+fr: Dispatch d'Abandoned Salvaging. C'est une mission à menace élevée. Attendez-vous à plus de monstres, plus tôt. Faites peu de bruit, lisez le guide de terrain et ramenez toute l'équipe.
+ru: Диспетчер Abandoned Salvaging. Это заказ с высокой угрозой. Монстров будет больше, и появятся они раньше. Не шумите, читайте полевой справочник и возвращайтесь всей бригадой.
+pl: Dyspozytor Abandoned Salvaging. To zlecenie o wysokim zagrożeniu. Spodziewajcie się więcej potworów, i to wcześniej. Zachowujcie się cicho, przeczytajcie przewodnik terenowy i wróćcie całą ekipą.
+
+en: Abandoned Salvaging dispatch. Access is shuttered on this job. Pack bolt cutters or a crowbar before departure. Review the job sheet, and leave room for salvage in the truck.
+zh-CN: 这里是 Abandoned Salvaging 调度。这份任务的入口都拉下了卷帘门。出发前请带上断线钳或撬棍。查看任务单，并在卡车里给回收品留出空间。
+ja: こちら Abandoned Salvaging 配車係。この現場は入口がシャッターで閉鎖されている。出発前にボルトカッターかバールを用意すること。作業票を確認し、トラックに回収品の場所を空けておけ。
+ko: Abandoned Salvaging 배차입니다. 이번 작업은 출입구가 셔터로 막혀 있습니다. 출발 전에 볼트 커터나 쇠지렛대를 챙기세요. 작업 명세서를 확인하고, 트럭에 회수품 실을 자리를 남겨 두세요.
+es: Central de Abandoned Salvaging. En este trabajo los accesos tienen persianas. Llevad cizalla o palanca antes de salir. Revisad la hoja de trabajo y dejad sitio en el camión para lo recuperado.
+pt-BR: Despacho da Abandoned Salvaging. Neste trabalho os acessos estão fechados com portas de enrolar. Levem alicate de corte ou pé de cabra antes de sair. Confiram a ficha de trabalho e deixem espaço no caminhão para o que recuperarem.
+de: Zentrale von Abandoned Salvaging. Bei diesem Auftrag sind die Zugänge verrammelt. Packt vor der Abfahrt Bolzenschneider oder Brecheisen ein. Prüft den Auftragszettel und lasst im Laster Platz für Bergungsgut.
+fr: Dispatch d'Abandoned Salvaging. Sur cette mission, les accès sont fermés par des rideaux. Emportez un coupe-boulons ou un pied-de-biche avant le départ. Relisez la fiche de mission et gardez de la place dans le camion.
+ru: Диспетчер Abandoned Salvaging. На этом заказе входы закрыты рольставнями. Перед выездом возьмите болторез или лом. Изучите наряд и оставьте в грузовике место для добычи.
+pl: Dyspozytor Abandoned Salvaging. Na tym zleceniu wejścia są za roletami. Przed wyjazdem spakujcie nożyce do metalu albo łom. Przejrzyjcie kartę zlecenia i zostawcie w ciężarówce miejsce na łupy.
+
+# HQ status ledger
+
+en: DEBT
+zh-CN: 负债
+ja: 負債
+ko: 부채
+es: DEUDA
+pt-BR: DÍVIDA
+de: SCHULDEN
+fr: DETTE
+ru: ДОЛГ
+pl: DŁUG
+
+en: BALANCE
+zh-CN: 余额
+ja: 残高
+ko: 잔액
+es: SALDO
+pt-BR: SALDO
+de: KONTOSTAND
+fr: SOLDE
+ru: БАЛАНС
+pl: SALDO
+
+en: {0} XP / MAX
+zh-CN: {0} 经验 / 已满
+ja: {0} XP / 最大
+ko: {0} XP / 최대
+es: {0} XP / MÁX.
+pt-BR: {0} XP / MÁX.
+de: {0} XP / MAX
+fr: {0} XP / MAX
+ru: {0} ОП / МАКС.
+pl: {0} PD / MAKS.
+
+en: {0}/{1} XP
+zh-CN: {0}/{1} 经验
+ja: {0}/{1} XP
+ko: {0}/{1} XP
+es: {0}/{1} XP
+pt-BR: {0}/{1} XP
+de: {0}/{1} XP
+fr: {0}/{1} XP
+ru: {0}/{1} ОП
+pl: {0}/{1} PD
+
+en: ASSIGNED
+zh-CN: 已分配
+ja: 担当中
+ko: 배정됨
+es: ASIGNADO
+pt-BR: DESIGNADO
+de: ZUGETEILT
+fr: AFFECTÉ
+ru: НАЗНАЧЕНО
+pl: PRZYDZIELONE
+
+en: NEXT STEP
+zh-CN: 下一步
+ja: 次の手順
+ko: 다음 단계
+es: SIGUIENTE PASO
+pt-BR: PRÓXIMO PASSO
+de: NÄCHSTER SCHRITT
+fr: ÉTAPE SUIVANTE
+ru: СЛЕДУЮЩИЙ ШАГ
+pl: NASTĘPNY KROK
+
+en: READ THE CONTRACT BOARD
+zh-CN: 查看合同板
+ja: 契約ボードを見る
+ko: 계약 게시판 보기
+es: LEE EL TABLÓN DE CONTRATOS
+pt-BR: LEIA O QUADRO DE CONTRATOS
+de: AUFTRAGSTAFEL LESEN
+fr: LISEZ LE TABLEAU DES CONTRATS
+ru: ПОСМОТРИТЕ ДОСКУ КОНТРАКТОВ
+pl: PRZECZYTAJ TABLICĘ KONTRAKTÓW
+
+en: CLEARANCE
+zh-CN: 权限
+ja: 権限
+ko: 권한
+es: ACCESO
+pt-BR: ACESSO
+de: FREIGABE
+fr: HABILITATION
+ru: ДОПУСК
+pl: DOSTĘP
+
+en: MISSED QUOTAS
+zh-CN: 未达定额次数
+ja: ノルマ未達
+ko: 할당량 미달
+es: CUOTAS FALLADAS
+pt-BR: COTAS PERDIDAS
+de: VERFEHLTES SOLL
+fr: QUOTAS MANQUÉS
+ru: ПРОВАЛЕННЫЕ НОРМЫ
+pl: NIEWYROBIONE NORMY
+
+en: TAKE THE VAN
+zh-CN: 上厢式车
+ja: バンに乗る
+ko: 밴에 타기
+es: SUBE A LA FURGONETA
+pt-BR: PEGUE A VAN
+de: TRANSPORTER NEHMEN
+fr: PRENEZ LA CAMIONNETTE
+ru: САДИТЕСЬ В ФУРГОН
+pl: WSIADAJ DO FURGONETKI
+
+# Save slots
+
+en: Empty: a new hire
+zh-CN: 空：新雇员
+ja: 空き：新人
+ko: 비어 있음: 신입
+es: Vacía: un nuevo empleado
+pt-BR: Vazio: um novo contratado
+de: Leer: ein Neuling
+fr: Vide : une nouvelle recrue
+ru: Пусто: новичок
+pl: Pusty: nowy pracownik
+
+en: Unreadable
+zh-CN: 无法读取
+ja: 読み込めない
+ko: 읽을 수 없음
+es: Ilegible
+pt-BR: Ilegível
+de: Unlesbar
+fr: Illisible
+ru: Не читается
+pl: Nieczytelny
+
+en: Level {0} - ${1:N0} - {2} jobs
+zh-CN: 等级 {0} - ${1:N0} - {2} 份任务
+ja: レベル {0} - ${1:N0} - 仕事 {2} 件
+ko: 레벨 {0} - ${1:N0} - 작업 {2}건
+es: Nivel {0} - ${1:N0} - {2} trabajos
+pt-BR: Nível {0} - ${1:N0} - {2} trabalhos
+de: Stufe {0} - ${1:N0} - {2} Aufträge
+fr: Niveau {0} - ${1:N0} - {2} missions
+ru: Уровень {0} - ${1:N0} - заказов: {2}
+pl: Poziom {0} - ${1:N0} - zlecenia: {2}
+
+# Answering machine
+
+en: Play the boss's message (1 new)
+zh-CN: 播放老板的留言（1 条新留言）
+ja: ボスの伝言を再生（新着1件）
+ko: 사장의 메시지 듣기(새 메시지 1개)
+es: Escuchar el mensaje del jefe (1 nuevo)
+pt-BR: Ouvir o recado do chefe (1 novo)
+de: Nachricht vom Chef abspielen (1 neue)
+fr: Écouter le message du patron (1 nouveau)
+ru: Прослушать сообщение начальника (1 новое)
+pl: Odtwórz wiadomość od szefa (1 nowa)
+
+en: Play the boss's message again
+zh-CN: 重新播放老板的留言
+ja: ボスの伝言をもう一度再生
+ko: 사장의 메시지 다시 듣기
+es: Escuchar otra vez el mensaje del jefe
+pt-BR: Ouvir de novo o recado do chefe
+de: Nachricht vom Chef noch einmal abspielen
+fr: Réécouter le message du patron
+ru: Прослушать сообщение начальника ещё раз
+pl: Odtwórz wiadomość od szefa jeszcze raz
+
+en: VOICEMAIL
+zh-CN: 语音留言
+ja: 留守番電話
+ko: 음성 메시지
+es: BUZÓN DE VOZ
+pt-BR: CORREIO DE VOZ
+de: ANRUFBEANTWORTER
+fr: MESSAGERIE VOCALE
+ru: АВТООТВЕТЧИК
+pl: POCZTA GŁOSOWA
+
+en: 1 message - from: THE BOSS
+zh-CN: 1 条留言 - 来自：老板
+ja: 伝言1件 - 発信者：ボス
+ko: 메시지 1개 - 보낸 사람: 사장
+es: 1 mensaje - de: EL JEFE
+pt-BR: 1 recado - de: O CHEFE
+de: 1 Nachricht - von: DER CHEF
+fr: 1 message - de : LE PATRON
+ru: 1 сообщение - от: НАЧАЛЬНИК
+pl: 1 wiadomość - od: SZEF
+
+# Crew rules and the break room
+
+en: HOST ONLY
+zh-CN: 仅限房主
+ja: ホスト専用
+ko: 호스트 전용
+es: SOLO EL ANFITRIÓN
+pt-BR: SÓ O ANFITRIÃO
+de: NUR DER HOST
+fr: HÔTE UNIQUEMENT
+ru: ТОЛЬКО ХОСТ
+pl: TYLKO HOST
+
+en: The host keeps the company card. Ask them, or they can allow crew spending in the pause menu.
+zh-CN: 公司的卡由房主保管。可以让房主来买，或者请房主在暂停菜单里允许队员消费。
+ja: 会社のカードはホストが持っている。頼むか、ポーズメニューでクルーの支出を許可してもらおう。
+ko: 회사 카드는 호스트가 갖고 있습니다. 호스트에게 부탁하거나, 일시정지 메뉴에서 팀원 지출을 허용해 달라고 하세요.
+es: El anfitrión guarda la tarjeta de la empresa. Pídeselo, o que permita gastar al equipo en el menú de pausa.
+pt-BR: O anfitrião fica com o cartão da empresa. Peça a ele, ou ele pode liberar os gastos da equipe no menu de pausa.
+de: Der Host hat die Firmenkarte. Frag ihn, oder er erlaubt Teamausgaben im Pausenmenü.
+fr: L'hôte garde la carte de l'entreprise. Demandez-lui, ou il peut autoriser les dépenses de l'équipe dans le menu pause.
+ru: Карта компании у хоста. Попросите его или пусть разрешит бригаде траты в меню паузы.
+pl: Firmową kartę trzyma host. Poproś go albo niech zezwoli ekipie na wydatki w menu pauzy.
+
+en: Only the host can start the van. They can allow it in the pause menu.
+zh-CN: 只有房主能发动厢式车。房主可以在暂停菜单里允许他人发动。
+ja: バンを出せるのはホストだけだ。ポーズメニューで許可してもらえる。
+ko: 호스트만 밴을 출발시킬 수 있습니다. 호스트가 일시정지 메뉴에서 허용할 수 있습니다.
+es: Solo el anfitrión puede arrancar la furgoneta. Puede permitirlo en el menú de pausa.
+pt-BR: Só o anfitrião pode dar partida na van. Ele pode liberar isso no menu de pausa.
+de: Nur der Host kann den Transporter starten. Er kann es im Pausenmenü erlauben.
+fr: Seul l'hôte peut démarrer la camionnette. Il peut l'autoriser dans le menu pause.
+ru: Завести фургон может только хост. Он может разрешить это в меню паузы.
+pl: Tylko host może odpalić furgonetkę. Może na to zezwolić w menu pauzy.
+
+en: Only the host can pull the lever on this crew.
+zh-CN: 在这支队伍里，只有房主能拉下拉杆。
+ja: このクルーでは、レバーを引けるのはホストだけだ。
+ko: 이 팀에서는 호스트만 레버를 당길 수 있습니다.
+es: En este equipo, solo el anfitrión puede tirar de la palanca.
+pt-BR: Nesta equipe, só o anfitrião pode puxar a alavanca.
+de: In diesem Team darf nur der Host den Hebel ziehen.
+fr: Dans cette équipe, seul l'hôte peut tirer le levier.
+ru: В этой бригаде рычаг может тянуть только хост.
+pl: W tej ekipie dźwignię może ciągnąć tylko host.
+
+en: The host hasn't allowed that.
+zh-CN: 房主没有允许这样做。
+ja: ホストが許可していない。
+ko: 호스트가 허용하지 않았습니다.
+es: El anfitrión no lo ha permitido.
+pt-BR: O anfitrião não liberou isso.
+de: Das hat der Host nicht erlaubt.
+fr: L'hôte ne l'a pas autorisé.
+ru: Хост этого не разрешил.
+pl: Host na to nie zezwolił.
+
+en: The crew is out on a job. Join when they're back at the HQ.
+zh-CN: 队伍正在外出执行任务。等他们回到总部后再加入。
+ja: クルーは仕事で出ている。本部に戻ってから参加しよう。
+ko: 팀이 작업을 나가 있습니다. 본부로 돌아오면 참가하세요.
+es: El equipo está en un trabajo. Únete cuando vuelvan a la central.
+pt-BR: A equipe está num trabalho. Entre quando voltarem ao QG.
+de: Das Team ist bei einem Auftrag. Tritt bei, wenn es zurück in der Zentrale ist.
+fr: L'équipe est en mission. Rejoignez-la quand elle sera de retour au QG.
+ru: Бригада на заказе. Присоединяйтесь, когда она вернётся на базу.
+pl: Ekipa jest na zleceniu. Dołącz, gdy wróci do bazy.
+
+en: BREAK ROOM
+zh-CN: 休息室
+ja: 休憩室
+ko: 휴게실
+es: SALA DE DESCANSO
+pt-BR: SALA DE DESCANSO
+de: PAUSENRAUM
+fr: SALLE DE PAUSE
+ru: КОМНАТА ОТДЫХА
+pl: POKÓJ SOCJALNY
+
+en: BULLSEYE! {0}
+zh-CN: 正中靶心！{0}
+ja: ど真ん中！ {0}
+ko: 정중앙! {0}
+es: ¡DIANA! {0}
+pt-BR: NA MOSCA! {0}
+de: VOLLTREFFER! {0}
+fr: DANS LE MILLE ! {0}
+ru: В ЯБЛОЧКО! {0}
+pl: W DZIESIĄTKĘ! {0}
+
+en: {0} scores {1}.
+zh-CN: {0} 得了 {1} 分。
+ja: {0} が {1} 点を獲得。
+ko: {0} 님이 {1}점을 얻었습니다.
+es: {0} anota {1}.
+pt-BR: {0} marca {1}.
+de: {0} trifft: {1} Punkte.
+fr: {0} marque {1}.
+ru: {0} набирает {1}.
+pl: {0} zdobywa {1} pkt.
+
+en: {0} sinks a basket!
+zh-CN: {0} 投篮命中！
+ja: {0} がシュートを決めた！
+ko: {0} 님이 골을 넣었습니다!
+es: ¡{0} encesta!
+pt-BR: {0} acerta a cesta!
+de: {0} versenkt einen Korb!
+fr: {0} marque un panier !
+ru: {0} попадает в корзину!
+pl: {0} trafia do kosza!

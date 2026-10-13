@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using System.IO;
 using UnityEngine;
@@ -50,15 +51,15 @@ namespace Abandoned.Company
         public static string Describe(int slot, string folder = null)
         {
             string file = System.IO.Path.Combine(folder ?? Application.persistentDataPath, FileFor(slot));
-            if (!File.Exists(file)) return "Empty: a new hire";
+            if (!File.Exists(file)) return Loc.T("Empty: a new hire");
             try
             {
                 CompanySave save = JsonUtility.FromJson<CompanySave>(File.ReadAllText(file));
-                return save == null ? "Unreadable" : $"Level {save.level} - ${save.money:N0} - {save.runs} jobs";
+                return save == null ? Loc.T("Unreadable") : Loc.T("Level {0} - ${1:N0} - {2} jobs", save.level, save.money, save.runs);
             }
             catch (Exception)
             {
-                return "Unreadable";
+                return Loc.T("Unreadable");
             }
         }
 

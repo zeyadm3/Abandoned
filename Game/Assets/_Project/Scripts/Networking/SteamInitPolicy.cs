@@ -14,8 +14,8 @@ namespace Abandoned.Networking
         public const string EnableFlag = "-steam";
         public const string DisableFlag = "-nosteam";
 
-        public const string DisabledByFlagMessage = "Steam is turned off for this session (-nosteam).";
-        public const string DisabledInBatchMessage = "Steam is off in batch mode and automated tests (run with -steam to allow it).";
+        public const string DisabledByFlagMessage = "Steam is turned off for this session (-nosteam)."; // @loc
+        public const string DisabledInBatchMessage = "Steam is off in batch mode and automated tests (run with -steam to allow it)."; // @loc
 
         /// <summary>
         /// True while a Unity Test Framework run is in progress. Set by the test assemblies' run callback

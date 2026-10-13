@@ -69,7 +69,7 @@ namespace Abandoned.Networking
 
         private void OnTransportFailure()
         {
-            LastError = "The network transport failed; the session ended.";
+            LastError = Loc.Mark("The network transport failed; the session ended.");
             StateChanged?.Invoke();
         }
 

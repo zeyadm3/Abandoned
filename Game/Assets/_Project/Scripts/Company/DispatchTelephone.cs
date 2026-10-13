@@ -12,8 +12,8 @@ namespace Abandoned.Company
         private void OnEnable() => Current = this;
 
         public override string UsePrompt(GameObject user) => CompanyService.Current == null ? null
-            : CompanyService.Current.DemoOver ? "The demo is over - thanks for playing!"
-            : "Call dispatch: contracts and briefing";
+            : CompanyService.Current.DemoOver ? Loc.T("The demo is over - thanks for playing!")
+            : Loc.T("Call dispatch: contracts and briefing");
 
         public override void Use(GameObject user)
         {

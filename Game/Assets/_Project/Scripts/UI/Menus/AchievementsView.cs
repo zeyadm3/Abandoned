@@ -18,12 +18,12 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Panel(Root, wide: true);
             panel.AddToClassList("achievements");
-            MenuKit.Text(panel, "RECOVERED RECORDS / WORKER HISTORY", "menu-record");
-            MenuKit.Text(panel, "ACHIEVEMENTS", "heading");
+            MenuKit.Text(panel, Loc.T("RECOVERED RECORDS / WORKER HISTORY"), "menu-record");
+            MenuKit.Text(panel, Loc.T("ACHIEVEMENTS"), "heading");
             summary = MenuKit.Text(panel, "", "subtitle");
             var scroll = MenuKit.Scroll(panel);
             list = scroll;
-            MenuKit.Button(panel, "Back", menu.Back, Audio.SoundId.UiBack);
+            MenuKit.Button(panel, Loc.T("Back"), menu.Back, Audio.SoundId.UiBack);
         }
 
         public void Refresh()
@@ -48,19 +48,19 @@ namespace Abandoned.UI
                 var details = new VisualElement();
                 details.AddToClassList("achievement-row__details");
                 row.Add(details);
-                MenuKit.Text(details, a.DisplayName, "achievement-row__name");
-                MenuKit.Text(details, a.Description, "text");
+                MenuKit.Text(details, a.LocalName, "achievement-row__name");
+                MenuKit.Text(details, a.LocalDescription, "text");
                 long progress = System.Math.Min(Achievements.Stat(a.Stat), a.Threshold);
-                MenuKit.Text(row, unlocked ? "EARNED" : a.Threshold > 1 ? $"{progress:N0} / {a.Threshold:N0}" : "LOCKED", "hud-cell").AddToClassList("achievement-row__status");
+                MenuKit.Text(row, unlocked ? Loc.T("EARNED") : a.Threshold > 1 ? $"{progress:N0} / {a.Threshold:N0}" : Loc.T("LOCKED"), "hud-cell").AddToClassList("achievement-row__status");
             }
-            summary.text = $"{got} / {catalog.Items.Count} UNLOCKED";
+            summary.text = Loc.T("{0} / {1} UNLOCKED", got, catalog.Items.Count);
             // 0.19.10: the stats page, below the list.
-            MenuKit.Text(list, "STATS", "section");
+            MenuKit.Text(list, Loc.T("STATS"), "section");
             foreach ((string stat, string label) in Achievements.StatLabels)
             {
                 VisualElement row = MenuKit.Row(list);
                 row.AddToClassList("hud-row");
-                MenuKit.Text(row, label, "text").AddToClassList("hud-cell--name");
+                MenuKit.Text(row, Loc.T(label), "text").AddToClassList("hud-cell--name");
                 MenuKit.Text(row, Achievements.Stat(stat).ToString("N0"), "hud-cell");
             }
         }

@@ -35,7 +35,7 @@ namespace Abandoned.Company
         public string UsePrompt(GameObject user)
         {
             if (CompanyService.Current == null) return null;
-            return receivingBay != null ? "Unload recovered salvage / cargo receipt" : "Read the scrap weight and quota receipt";
+            return receivingBay != null ? Loc.T("Unload recovered salvage / cargo receipt") : Loc.T("Read the scrap weight and quota receipt");
         }
 
         public void Use(GameObject user)
@@ -91,9 +91,9 @@ namespace Abandoned.Company
                         waitingValue += item.CurrentValue;
                     }
                 if (readout != null)
-                    readout.text = waitingItems > 0 ? $"INTAKE LOAD\n{waitingWeight:0.0} kg\n${waitingValue:N0}"
-                        : company == null || company.LastOutcome.Run <= 0 ? "DEPOT READY\n0.0 kg\nNO LOAD ON FILE"
-                        : $"LAST LOAD\n{(company.LastLoadedWeight >= 0f ? $"{company.LastLoadedWeight:0.0} kg" : "WEIGHT N/A")}\n${company.LastOutcome.Haul:N0}";
+                    readout.text = waitingItems > 0 ? Loc.T("INTAKE LOAD\n{0:0.0} kg\n${1:N0}", waitingWeight, waitingValue)
+                        : company == null || company.LastOutcome.Run <= 0 ? Loc.T("DEPOT READY\n0.0 kg\nNO LOAD ON FILE")
+                        : Loc.T("LAST LOAD\n{0}\n${1:N0}", (company.LastLoadedWeight >= 0f ? Loc.T("{0:0.0} kg", company.LastLoadedWeight) : Loc.T("WEIGHT N/A")), company.LastOutcome.Haul);
             }
             if (open && (company == null || Core.PadInput.BackPressed)) open = false;
             CursorOwner.Set(this, open);
@@ -113,38 +113,38 @@ namespace Abandoned.Company
 
         private void Fill(VisualElement panel, CompanyService company)
         {
-            MenuKit.Text(panel, "SCRAP & QUOTA DEPOT", "heading");
+            MenuKit.Text(panel, Loc.T("SCRAP & QUOTA DEPOT"), "heading");
             MenuKit.Text(panel, CompanySave.DefaultName.ToUpperInvariant(), "subtitle");
             OutcomeNet receipt = company.LastOutcome;
             if (receipt.Run > 0)
             {
-                MenuKit.Text(panel, "CARGO RECEIPT / SETTLED", "section");
-                MenuKit.Text(panel, $"Appraised salvage: ${receipt.Haul:N0}");
-                MenuKit.Text(panel, $"Quota: ${receipt.Quota:N0} / {(receipt.QuotaMet ? "MET" : "MISSED")}");
+                MenuKit.Text(panel, Loc.T("CARGO RECEIPT / SETTLED"), "section");
+                MenuKit.Text(panel, Loc.T("Appraised salvage: ${0:N0}", receipt.Haul));
+                MenuKit.Text(panel, Loc.T("Quota: ${0:N0} / {1}", receipt.Quota, (receipt.QuotaMet ? Loc.T("MET") : Loc.T("MISSED"))));
                 MenuKit.Text(panel, company.LastLoadedWeight >= 0f
-                    ? $"Loaded weight: {company.LastLoadedWeight:0.0} kg / {company.LastLoadedItems} items" : "Loaded weight: not recorded");
-                MenuKit.Text(panel, $"Payout: ${receipt.Payout:N0} / quota penalty: ${receipt.Penalty:N0}");
-                if (receipt.Costs > 0) MenuKit.Text(panel, $"Operating costs: ${receipt.Costs:N0}");
-                MenuKit.Text(panel, "Haul already credited. This receipt stays with the company after unloading.");
+                    ? Loc.T("Loaded weight: {0:0.0} kg / {1} items", company.LastLoadedWeight, company.LastLoadedItems) : Loc.T("Loaded weight: not recorded"));
+                MenuKit.Text(panel, Loc.T("Payout: ${0:N0} / quota penalty: ${1:N0}", receipt.Payout, receipt.Penalty));
+                if (receipt.Costs > 0) MenuKit.Text(panel, Loc.T("Operating costs: ${0:N0}", receipt.Costs));
+                MenuKit.Text(panel, Loc.T("Haul already credited. This receipt stays with the company after unloading."));
             }
-            else MenuKit.Text(panel, "No recovered load on file. Take a contract and bring the truck home.");
+            else MenuKit.Text(panel, Loc.T("No recovered load on file. Take a contract and bring the truck home."));
 
-            MenuKit.Text(panel, "INTAKE", "section");
-            MenuKit.Text(panel, waitingItems > 0 ? $"Waiting in intake: {waitingItems} items / {waitingWeight:0.0} kg / ${waitingValue:N0}"
-                : "No loose salvage in intake.");
-            if (company.IntakeItems > 0) MenuKit.Text(panel, $"Unloaded here: {company.IntakeItems} items / {company.IntakeWeight:0.0} kg");
-            MenuKit.Text(panel, "Use the reinforced chute to offload loose recovered salvage. Cargo credit stays on the settled receipt.");
+            MenuKit.Text(panel, Loc.T("INTAKE"), "section");
+            MenuKit.Text(panel, waitingItems > 0 ? Loc.T("Waiting in intake: {0} items / {1:0.0} kg / ${2:N0}", waitingItems, waitingWeight, waitingValue)
+                : Loc.T("No loose salvage in intake."));
+            if (company.IntakeItems > 0) MenuKit.Text(panel, Loc.T("Unloaded here: {0} items / {1:0.0} kg", company.IntakeItems, company.IntakeWeight));
+            MenuKit.Text(panel, Loc.T("Use the reinforced chute to offload loose recovered salvage. Cargo credit stays on the settled receipt."));
             if (receivingBay != null)
-                MenuKit.Button(panel, "Unload salvage", company.RequestScrapIntake, SoundId.UiConfirm, small: true);
+                MenuKit.Button(panel, Loc.T("Unload salvage"), company.RequestScrapIntake, SoundId.UiConfirm, small: true);
 
             if (company.Selected >= 0 && company.Selected < company.Board.Count)
             {
                 var contract = company.Board[company.Selected];
-                MenuKit.Text(panel, "NEXT LOAD", "section");
-                MenuKit.Text(panel, $"{contract.Location} / quota ${company.QuotaFor(contract):N0} for {CompanyService.CrewSize} crew");
+                MenuKit.Text(panel, Loc.T("NEXT LOAD"), "section");
+                MenuKit.Text(panel, Loc.T("{0} / quota ${1:N0} for {2} crew", Loc.T(contract.Location), company.QuotaFor(contract), CompanyService.CrewSize));
             }
-            MenuKit.Text(panel, $"Company balance: ${company.State.Money:N0}", "section");
-            MenuKit.Button(panel, "Close receipt", () => open = false, SoundId.UiBack);
+            MenuKit.Text(panel, Loc.T("Company balance: ${0:N0}", company.State.Money), "section");
+            MenuKit.Button(panel, Loc.T("Close receipt"), () => open = false, SoundId.UiBack);
         }
 
         public void EditorSetup(BoxCollider intakeBay, TextMesh scaleReadout = null)

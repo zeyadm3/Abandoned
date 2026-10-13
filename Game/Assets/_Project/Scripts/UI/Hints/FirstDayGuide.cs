@@ -66,14 +66,14 @@ namespace Abandoned.UI
             {
                 FirstDay.MarkDone();
                 Show(false);
-                ToastFeed.Show("FIRST DAY DONE", "That's the job. Tips can be replayed from Settings > Gameplay.");
+                ToastFeed.Show(Loc.T("FIRST DAY DONE"), Loc.T("That's the job. Tips can be replayed from Settings > Gameplay."));
                 return;
             }
             bool visible = !me.IsDead && (step <= Step.Van ? !inRun && company != null && company.IsSpawned && AtHq() : inRun);
             Show(visible);
             if (!visible) return;
             if (advanced) GameAudio.PlayUi(SoundId.UiConfirm, 0.4f);
-            Set(title, $"SURVIVAL INDUCTION  {(int)step + 1:00}/{(int)Step.Count:00}");
+            Set(title, Loc.T("SURVIVAL INDUCTION  {0:00}/{1:00}", (int)step + 1, (int)Step.Count));
             Set(text, TextFor(company));
             UiKit.SetSegments(progress, (float)step / (int)Step.Count);
         }
@@ -104,17 +104,17 @@ namespace Abandoned.UI
             {
                 case Step.Board:
                     return company != null && !company.IsServer
-                        ? "Wait for the host to take a job at the dispatch telephone."
-                        : $"Walk to the telephone on the central dispatch bench, press {K("Interact")} and take a job.";
-                case Step.Van: return $"Job taken. Get in the van ({K("Interact")}) to drive there. Gear is at the maintenance bench; the field guide is beside the phone.";
-                case Step.Light: return $"Turn your flashlight on ({K("Flashlight")}). Health and breath are bottom left; the compass is up top.";
-                case Step.Scan: return $"Scan ({K("Scan")}) to see what things are worth and how much you have hauled.";
-                case Step.Grab: return $"Pick something up ({K("Interact")}). Heavy things slow you down; fragile things lose value when they hit anything.";
-                case Step.Truck: return $"Carry it out to the truck in the loading bay and put it in the cargo bay ({K("Drop")} drops it).";
-                case Step.Floors: return "Floors have a load limit. Creaks and cracks mean too much weight: spread out, or get off before it gives way.";
-                case Step.Quiet: return $"You are not alone in here. Noise draws things: crouch ({K("Crouch")}) and don't run when something is close.";
-                case Step.Quota: return "Keep hauling until the quota is met. The truck's board shows it, and so does a scan.";
-                default: return "Pull the yellow lever on the truck to leave, and stay in the cargo bay until it goes.";
+                        ? Loc.T("Wait for the host to take a job at the dispatch telephone.")
+                        : Loc.T("Walk to the telephone on the central dispatch bench, press {0} and take a job.", K("Interact"));
+                case Step.Van: return Loc.T("Job taken. Get in the van ({0}) to drive there. Gear is at the maintenance bench; the field guide is beside the phone.", K("Interact"));
+                case Step.Light: return Loc.T("Turn your flashlight on ({0}). Health and breath are bottom left; the compass is up top.", K("Flashlight"));
+                case Step.Scan: return Loc.T("Scan ({0}) to see what things are worth and how much you have hauled.", K("Scan"));
+                case Step.Grab: return Loc.T("Pick something up ({0}). Heavy things slow you down; fragile things lose value when they hit anything.", K("Interact"));
+                case Step.Truck: return Loc.T("Carry it out to the truck in the loading bay and put it in the cargo bay ({0} drops it).", K("Drop"));
+                case Step.Floors: return Loc.T("Floors have a load limit. Creaks and cracks mean too much weight: spread out, or get off before it gives way.");
+                case Step.Quiet: return Loc.T("You are not alone in here. Noise draws things: crouch ({0}) and don't run when something is close.", K("Crouch"));
+                case Step.Quota: return Loc.T("Keep hauling until the quota is met. The truck's board shows it, and so does a scan.");
+                default: return Loc.T("Pull the yellow lever on the truck to leave, and stay in the cargo bay until it goes.");
             }
         }
 
@@ -148,7 +148,7 @@ namespace Abandoned.UI
             {
                 HudLayer.Remove(box);
                 box = HudLayer.Add(new VisualElement(), "hud-panel", "hud-hint", "first-day", "field-note");
-                title = MenuKit.Text(box, "SURVIVAL INDUCTION", "section");
+                title = MenuKit.Text(box, Loc.T("SURVIVAL INDUCTION"), "section");
                 title.pickingMode = PickingMode.Ignore;
                 text = MenuKit.Text(box, "", "text");
                 text.pickingMode = PickingMode.Ignore;

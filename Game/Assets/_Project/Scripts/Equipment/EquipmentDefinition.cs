@@ -11,6 +11,9 @@ namespace Abandoned.Equipment
         [field: SerializeField] public string Id { get; private set; } = "new_gear";
         [field: SerializeField] public string DisplayName { get; private set; } = "New Gear";
         [field: SerializeField, TextArea] public string Description { get; private set; } = "";
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
+        public string LocalDescription => Loc.T(Description);
         [field: SerializeField] public EquipmentKind Kind { get; private set; }
         [field: SerializeField, Min(0)] public int Price { get; private set; } = 100;
         [Tooltip("Company level that puts it in the shop (GDD 13).")]

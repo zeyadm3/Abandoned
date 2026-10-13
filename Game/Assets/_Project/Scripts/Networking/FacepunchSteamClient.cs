@@ -8,6 +8,7 @@ namespace Abandoned.Networking
         public bool IsValid => SteamClient.IsValid;
         public ulong SteamId => SteamClient.IsValid ? SteamClient.SteamId.Value : 0UL;
         public string PlayerName => SteamClient.IsValid ? SteamClient.Name : string.Empty;
+        public string GameLanguage => SteamClient.IsValid ? SteamApps.GameLanguage : string.Empty;
 
         // asyncCallbacks off: SteamBootstrap pumps RunCallbacks on the main thread so callbacks
         // (lobby joins, invites) can touch Unity objects safely.

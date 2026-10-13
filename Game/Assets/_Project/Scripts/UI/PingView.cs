@@ -73,7 +73,7 @@ namespace Abandoned.UI
                 markers[i].root.style.opacity = Mathf.Clamp01(left / 2f);
                 markers[i].root.Q(className: "ping-mark__diamond").style.backgroundColor = c;
                 markers[i].text.style.color = c;
-                string what = m.Kind switch { PingKind.Loot => "LOOT", PingKind.Monster => "MONSTER!", PingKind.WeakFloor => "WEAK FLOOR", _ => "HERE" };
+                string what = m.Kind switch { PingKind.Loot => Loc.T("LOOT"), PingKind.Monster => Loc.T("MONSTER!"), PingKind.WeakFloor => Loc.T("WEAK FLOOR"), _ => Loc.T("HERE") };
                 markers[i].text.text = $"{what}  {Vector3.Distance(cam.transform.position, at):0} m";
             }
         }

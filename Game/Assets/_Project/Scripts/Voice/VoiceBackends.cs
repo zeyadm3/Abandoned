@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace Abandoned.Voice
         public static IVoiceCapture CreateCapture(bool steamSession)
         {
             if (CaptureOverride != null) return CaptureOverride();
-            if (Application.isBatchMode) return new SilentVoiceCapture("No microphone in batch mode.");
+            if (Application.isBatchMode) return new SilentVoiceCapture(Loc.Mark("No microphone in batch mode."));
             return steamSession ? new SteamVoiceCapture() : new MicrophoneVoiceCapture();
         }
 

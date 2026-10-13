@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Interaction;
 using Unity.Netcode;
 using UnityEngine;
@@ -101,8 +102,8 @@ namespace Abandoned.Networking
                 PlayerCarrier lost = SharedCarryServer.CheckGrip(shared, i);
                 if (lost == null || lost.IsRagdolled) continue;
                 ulong owner = LootServerActions.OwnerOf(lost);
-                if (owner == NetworkManager.LocalClientId) lost.ShowHint("Lost your grip");
-                else HintRpc("Lost your grip", RpcTarget.Single(owner, RpcTargetUse.Temp));
+                if (owner == NetworkManager.LocalClientId) lost.ShowHint(Loc.Mark("Lost your grip"));
+                else HintRpc(Loc.Mark("Lost your grip"), RpcTarget.Single(owner, RpcTargetUse.Temp));
             }
         }
 

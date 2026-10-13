@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,8 @@ namespace Abandoned.Contracts
             int day = int.Parse(DayId(utc));
             Contract daily = Roll(c, null, 1, new System.Random(day * 7919 + 17), lootEstimate);
             daily.ModifierId = DailyId;
-            daily.ModifierName = "Daily job";
+            daily.ModifierName = Loc.Mark("Daily job");
+            // Sent as English; boards and the van word it. @loc "Abandoned Mall", "Abandoned Mall (today's daily job)"
             daily.Location = MallLocation + " (today's daily job)";
             return daily;
         }
@@ -88,7 +90,7 @@ namespace Abandoned.Contracts
                 Location = MallLocation,
                 Scene = MallScene,
                 ModifierId = m != null ? m.Id : "",
-                ModifierName = m != null ? m.DisplayName : "None",
+                ModifierName = m != null ? m.DisplayName : Loc.Mark("None"),
                 Seed = seed,
                 Quota = quota,
                 LootMin = Mathf.RoundToInt(lootEstimate * 0.6f * loot / 1000f) * 1000,

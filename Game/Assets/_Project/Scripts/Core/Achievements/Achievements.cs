@@ -21,13 +21,13 @@ namespace Abandoned.Core
         /// <summary>0.19.10: every stat with a name for the stats page, in the order shown.</summary>
         public static readonly (string stat, string label)[] StatLabels =
         {
-            (StatRuns, "Runs finished"), (StatEscapes, "Made it out"), (StatHaul, "Career haul ($)"), (StatQuotaMet, "Quotas met"),
-            (StatJackpots, "Jackpots carried out"), (StatCollapses, "Floors seen giving way"), (StatDeaths, "Deaths"),
-            (StatRevives, "Crewmates revived"), (StatHunterFalls, "Hunters seen falling"), (StatDarkEscapes, "Escapes in the dark"),
-            (StatBreakers, "Breakers thrown"), (StatVaults, "Vaults opened"), (StatLiftRides, "Freight lift rides"),
-            (StatVents, "Vent crawls"), (StatSets, "Sets completed"), (StatBossRequests, "Boss requests met"),
-            (StatRushOrders, "Rush orders delivered"), (StatHires, "Replacement workers called"), (StatPings, "Pings"),
-            (StatOvertime, "Jobs with overtime pay"),
+            (StatRuns, "Runs finished"), (StatEscapes, "Made it out"), (StatHaul, "Career haul ($)"), (StatQuotaMet, "Quotas met"), // @loc
+            (StatJackpots, "Jackpots carried out"), (StatCollapses, "Floors seen giving way"), (StatDeaths, "Deaths"), // @loc
+            (StatRevives, "Crewmates revived"), (StatHunterFalls, "Hunters seen falling"), (StatDarkEscapes, "Escapes in the dark"), // @loc
+            (StatBreakers, "Breakers thrown"), (StatVaults, "Vaults opened"), (StatLiftRides, "Freight lift rides"), // @loc
+            (StatVents, "Vent crawls"), (StatSets, "Sets completed"), (StatBossRequests, "Boss requests met"), // @loc
+            (StatRushOrders, "Rush orders delivered"), (StatHires, "Replacement workers called"), (StatPings, "Pings"), // @loc
+            (StatOvertime, "Jobs with overtime pay"), // @loc
         };
 
         private const string StatPrefix = "ach.stat.", UnlockPrefix = "ach.unlocked.";

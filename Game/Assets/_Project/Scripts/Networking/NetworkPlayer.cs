@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using System.Collections.Generic;
 using Abandoned.Interaction;
@@ -216,7 +217,7 @@ namespace Abandoned.Networking
         /// <summary>Host: this player dies (monster contact). Their body falls where they stood.</summary>
         public void ServerKill(string cause = null)
         {
-            DealDamage(MaxHealth, cause ?? "Something got you.");
+            DealDamage(MaxHealth, cause ?? Loc.Mark("Something got you."));
         }
 
         private void Die(string cause)
@@ -228,7 +229,7 @@ namespace Abandoned.Networking
             // Cut to the wire's 61 UTF-8 bytes at a character: 60 characters of another script are more
             // bytes than that, and the constructor throws rather than cuts.
             var causeText = new Unity.Collections.FixedString64Bytes();
-            Unity.Collections.FixedStringMethods.CopyFromTruncated(ref causeText, Truncate(cause ?? "Something got you.", 60));
+            Unity.Collections.FixedStringMethods.CopyFromTruncated(ref causeText, Truncate(cause ?? Loc.Mark("Something got you."), 60));
             deathCause.Value = causeText;
             dead.Value = true;
             // GDD 11: a dead player's pocket loot drops where they died, for the others to recover: in a ring

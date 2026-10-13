@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace Abandoned.Threats
     {
         [field: SerializeField] public ThreatKind Kind { get; private set; }
         [field: SerializeField] public string DisplayName { get; private set; }
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
         [field: SerializeField] public NetworkObject Prefab { get; private set; }
         [field: SerializeField, Min(0f)] public float OpeningWeight { get; private set; }
         [field: SerializeField, Range(0, 10)] public int MinimumDanger { get; private set; }

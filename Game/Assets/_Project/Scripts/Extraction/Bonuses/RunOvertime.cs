@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using Abandoned.Loot;
 using Abandoned.UI;
@@ -43,7 +44,7 @@ namespace Abandoned.Extraction
             }
         }
 
-        private string Goal() => metAt.Value > 0d ? $"OVERTIME x{Multiplier:0.00} on everything over quota" : null;
+        private string Goal() => metAt.Value > 0d ? Loc.T("OVERTIME x{0:0.00} on everything over quota", Multiplier) : null;
 
         private void Update()
         {
@@ -51,7 +52,7 @@ namespace Abandoned.Extraction
             if (metAt.Value > 0d && !toasted)
             {
                 toasted = true;
-                ToastFeed.Show("QUOTA MET", "Overtime from here: the longer you stay, the more everything over quota pays.", null, ToastFeed.Kind.Good);
+                ToastFeed.Show(Loc.T("QUOTA MET"), Loc.T("Overtime from here: the longer you stay, the more everything over quota pays."), null, ToastFeed.Kind.Good);
             }
             if (IsServer && metAt.Value <= 0d && run.State.Phase == RunPhase.Running && run.State.Quota > 0 && run.State.Haul >= run.State.Quota)
                 metAt.Value = run.Now;
@@ -67,7 +68,7 @@ namespace Abandoned.Extraction
                 if (item != null && !item.IsShattered) haul += item.CurrentValue;
             float over = haul - run.State.Quota;
             int pay = Mathf.RoundToInt(Mathf.Max(0f, over) * (Multiplier - 1f));
-            if (pay > 0) lines.Add((pay, $"OVERTIME x{Multiplier:0.00} on ${over:N0} over quota. +${pay:N0}"));
+            if (pay > 0) lines.Add((pay, Loc.Wire("OVERTIME x{0} on ${1} over quota. +${2}", Multiplier.ToString("0.00"), over.ToString("N0"), pay.ToString("N0"))));
         }
     }
 }

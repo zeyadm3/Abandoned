@@ -56,9 +56,9 @@ namespace Abandoned.Extraction
             if (run == null || !run.IsSpawned) return null;
             return run.Phase switch
             {
-                VaultPhase.Locked => $"Set the drill on the safe ({VaultConfig.Current.DrillSeconds:0} s, very loud)",
-                VaultPhase.Drilling => $"Drilling... {run.Progress01 * 100f:0}%",
-                VaultPhase.Jammed => $"The drill has jammed: free it ({run.Progress01 * 100f:0}%)",
+                VaultPhase.Locked => Loc.T("Set the drill on the safe ({0:0} s, very loud)", VaultConfig.Current.DrillSeconds),
+                VaultPhase.Drilling => Loc.T("Drilling... {0:0}%", run.Progress01 * 100f),
+                VaultPhase.Jammed => Loc.T("The drill has jammed: free it ({0:0}%)", run.Progress01 * 100f),
                 _ => null,
             };
         }

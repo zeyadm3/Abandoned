@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Loot
@@ -7,6 +8,8 @@ namespace Abandoned.Loot
     public class LootSet : ScriptableObject
     {
         [field: SerializeField] public string DisplayName { get; private set; } = "New Set";
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
         [field: SerializeField] public LootDefinition[] Members { get; private set; } = System.Array.Empty<LootDefinition>();
         [field: SerializeField, Min(0)] public int Bonus { get; private set; } = 1500;
 

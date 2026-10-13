@@ -76,11 +76,11 @@ namespace Abandoned.UI
             bool warning = player.Health <= config.WarningHp;
             vitals.EnableInClassList("h-vitals--warning", warning);
             vitals.EnableInClassList("h-vitals--critical", critical);
-            Set(healthState, player.Health <= config.NearDeathHp ? "FAILING" : critical ? "CRITICAL" : warning ? "WOUNDED" : "STABLE");
+            Set(healthState, player.Health <= config.NearDeathHp ? Loc.T("FAILING") : critical ? Loc.T("CRITICAL") : warning ? Loc.T("WOUNDED") : Loc.T("STABLE"));
             float reserve = stamina.Max > 0f ? Mathf.Clamp01(stamina.Current / stamina.Max) : 1f;
             int breathPercent = Mathf.CeilToInt(reserve * 100f);
             if (breathPercent != shownBreath) Set(breathValue, $"{shownBreath = breathPercent:00}%");
-            Set(breathState, stamina.IsExhausted ? "EXHAUSTED" : reserve >= .999f ? "STEADY" : stamina.Current > lastBreath + .01f ? "RECOVERING" : "STRAINED");
+            Set(breathState, stamina.IsExhausted ? Loc.T("EXHAUSTED") : reserve >= .999f ? Loc.T("STEADY") : stamina.Current > lastBreath + .01f ? Loc.T("RECOVERING") : Loc.T("STRAINED"));
             breath.EnableInClassList("h-breath--exhausted", stamina.IsExhausted);
             UiKit.SetBar(breathBar, reserve, stamina.IsExhausted ? "bad" : null);
             lastBreath = stamina.Current;
@@ -90,7 +90,7 @@ namespace Abandoned.UI
             {
                 // Rounded up, so 0 only ever means a flat battery.
                 int battery = equipment.Battery01 <= 0f ? 0 : Mathf.CeilToInt(equipment.Battery01 * 100f);
-                if (battery != shownBattery) Set(batteryValue, (shownBattery = battery) == 0 ? "NO POWER" : $"{battery:00}%");
+                if (battery != shownBattery) Set(batteryValue, (shownBattery = battery) == 0 ? Loc.T("NO POWER") : $"{battery:00}%");
                 batteryRow.EnableInClassList("h-power--low", equipment.Battery01 < .25f);
                 UiKit.SetBar(batteryBar, equipment.Battery01, equipment.Battery01 < .25f ? "bad" : null);
             }
@@ -115,45 +115,45 @@ namespace Abandoned.UI
             shownKey = null;
             shownHealth = shownMax = shownBreath = shownBattery = shownLoad = Unshown;
             vitals = HudLayer.Add(new VisualElement(), "player-stamina", "h-vitals");
-            Text(vitals, "SURVIVAL", "h-instrument-title");
+            Text(vitals, Loc.T("SURVIVAL"), "h-instrument-title");
             VisualElement row = Element(vitals, "h-vitals__row");
             body = Element(row, "h-vitals__body");
             body.generateVisualContent += PaintBody;
             VisualElement readout = Element(row, "h-vitals__readout");
-            Text(readout, "VITAL SIGNS", "h-micro");
+            Text(readout, Loc.T("VITAL SIGNS"), "h-micro");
             VisualElement number = Element(readout, "h-vitals__number");
             healthValue = Text(number, "100", "h-vitals__value");
             healthMax = Text(number, "/ 100", "h-vitals__max");
             pulse = Element(readout, "h-vitals__pulse");
             pulse.generateVisualContent += PaintPulse;
-            healthState = Text(readout, "STABLE", "h-vitals__state");
+            healthState = Text(readout, Loc.T("STABLE"), "h-vitals__state");
             breath = Element(vitals, "h-breath");
             row = Element(breath, "h-instrument-row");
-            Text(row, "BREATH", "h-instrument-caption");
+            Text(row, Loc.T("BREATH"), "h-instrument-caption");
             breathValue = Text(row, "100%", "h-instrument-value");
             breathBar = UiKit.Bar(breath, "h-breath__bar");
             breathBar.generateVisualContent += PaintBreath;
-            breathState = Text(breath, "STEADY", "h-breath__state");
+            breathState = Text(breath, Loc.T("STEADY"), "h-breath__state");
             batteryRow = Element(vitals, "h-power");
             row = Element(batteryRow, "h-instrument-row");
-            Text(row, "LIGHT", "h-instrument-caption");
+            Text(row, Loc.T("LIGHT"), "h-instrument-caption");
             batteryValue = Text(row, "", "h-instrument-value");
             batteryBar = UiKit.Bar(batteryRow, "h-power__bar");
             load = Text(vitals, "", "player-load", "h-vitals__load");
 
             slots = HudLayer.Add(new VisualElement(), "player-slots", "h-inventory");
             row = Element(slots, "h-inventory__header");
-            Text(row, "ON YOUR PERSON", "h-instrument-title");
+            Text(row, Loc.T("ON YOUR PERSON"), "h-instrument-title");
             slotHint = Text(row, "", "h-micro");
             VisualElement gear = Element(slots, "h-inventory__gear");
             for (int i = 0; i < hands.Length; i++) hands[i] = Slot(gear, true);
             row = Element(slots, "h-inventory__header");
-            Text(row, "POCKETS", "h-micro");
+            Text(row, Loc.T("POCKETS"), "h-micro");
             pocketCount = Text(row, "", "h-micro");
             pocketsRow = Element(slots, "h-inventory__pockets");
 
             details = HudLayer.Add(new VisualElement(), "h-inspection");
-            Text(details, "POCKET CONTENTS", "h-instrument-title");
+            Text(details, Loc.T("POCKET CONTENTS"), "h-instrument-title");
             row = Element(details, "h-inspection__selected");
             detailIcon = UiKit.Icon(row, "board/pouch", "large");
             VisualElement copy = Element(row, "h-inspection__copy");
@@ -186,10 +186,10 @@ namespace Abandoned.UI
                          (carrier.IsSharing ? 2 : carrier.IsDragging ? 1 : 0)) * 2 + (slowed ? 1 : 0);
             if (state == shownLoad) return;
             shownLoad = state;
-            string text = carrier.IsSharing ? $"SHARED LOAD / {weight:0.#} KG"
-                : carrier.IsDragging ? $"DRAGGING / {weight:0.#} KG"
-                : weight > .5f ? $"LOAD / {weight:0.#} KG" : "";
-            Set(load, text + (slowed ? " / SLOWED" : ""));
+            string text = carrier.IsSharing ? Loc.T("SHARED LOAD / {0:0.#} KG", weight)
+                : carrier.IsDragging ? Loc.T("DRAGGING / {0:0.#} KG", weight)
+                : weight > .5f ? Loc.T("LOAD / {0:0.#} KG", weight) : "";
+            Set(load, slowed ? Loc.T("{0} / SLOWED", text) : text);
             load.EnableInClassList("h-vitals__load--heavy", slowed);
             MenuKit.Show(load, text.Length > 0);
         }
@@ -206,13 +206,13 @@ namespace Abandoned.UI
             string now = key.ToString();
             if (now == shownKey) return;
             shownKey = now;
-            Set(slotHint, $"[{inventoryKey}] INSPECT");
+            Set(slotHint, Loc.T("[{0}] INSPECT", inventoryKey));
             Set(pocketCount, $"{carrier.Inventory.Count:00} / {carrier.Inventory.Capacity:00}");
             for (int i = 0; i < hands.Length; i++)
             {
                 EquipmentDefinition d = equipment.InSlot(i);
                 bool active = d != null && equipment.State.Active == i;
-                Fill(hands[i], d != null ? "item/" + d.Id : null, d != null ? d.DisplayName : "Empty hand", active ? "IN HAND" : d != null ? "STOWED" : "--");
+                Fill(hands[i], d != null ? "item/" + d.Id : null, d != null ? d.LocalName : Loc.T("Empty hand"), active ? Loc.T("IN HAND") : d != null ? Loc.T("STOWED") : "--");
                 Set(hands[i].Q<Label>("key"), $"[{(i == 0 ? hand1 : hand2)}]");
                 hands[i].EnableInClassList("slot--active", active);
                 hands[i].EnableInClassList("h-item--last", i == hands.Length - 1);
@@ -225,7 +225,7 @@ namespace Abandoned.UI
                 Grabbable g = i < carrier.Inventory.Count ? carrier.Inventory.Items[i] : null;
                 LootItem item = g != null ? g.GetComponent<LootItem>() : null;
                 Fill(pockets[i], item != null && item.Definition != null ? "loot/" + item.Definition.Id : g != null ? "board/pouch" : null,
-                    g != null ? g.DisplayName : "Empty", item != null && LootTags.ValuesVisible ? Money.Short(item.CurrentValue) : g != null ? $"{g.Weight:0.#}kg" : "--");
+                    g != null ? g.LocalName : Loc.T("Empty"), item != null && LootTags.ValuesVisible ? Money.Short(item.CurrentValue) : g != null ? Loc.T("{0:0.#}kg", g.Weight) : "--");
                 Set(pockets[i].Q<Label>("key"), $"P{i + 1:00}");
                 pockets[i].EnableInClassList("slot--active", g != null && i == carrier.Inventory.SelectedIndex);
                 pockets[i].EnableInClassList("h-item--last", i == capacity - 1);
@@ -266,14 +266,16 @@ namespace Abandoned.UI
             Grabbable selected = carrier.Inventory.Selected;
             LootItem loot = selected != null ? selected.GetComponent<LootItem>() : null;
             UiKit.SetIcon(detailIcon, loot != null && loot.Definition != null ? "loot/" + loot.Definition.Id : "board/pouch");
-            Set(detailName, selected != null ? selected.DisplayName : "Nothing recovered");
+            Set(detailName, selected != null ? selected.LocalName : Loc.T("Nothing recovered"));
             int value = selected != null && selected.TryGetComponent(out IValuable valuable) ? valuable.CurrentValue : 0;
-            Set(detailStats, selected == null ? "Your pockets are empty." : $"POCKET {carrier.Inventory.SelectedIndex + 1:00} / {selected.Weight:0.#} KG" + (LootTags.ValuesVisible ? $" / ${value:N0}" : ""));
+            Set(detailStats, selected == null ? Loc.T("Your pockets are empty.") : LootTags.ValuesVisible
+                ? Loc.T("POCKET {0:00} / {1:0.#} KG / ${2:N0}", carrier.Inventory.SelectedIndex + 1, selected.Weight, value)
+                : Loc.T("POCKET {0:00} / {1:0.#} KG", carrier.Inventory.SelectedIndex + 1, selected.Weight));
             int total = 0;
             foreach (Grabbable item in carrier.Inventory.Items)
                 if (item != null && item.TryGetComponent(out IValuable v)) total += v.CurrentValue;
-            Set(detailTotal, LootTags.ValuesVisible ? $"RECOVERED VALUE / ${total:N0}" : $"CARRIED WEIGHT / {carrier.Inventory.TotalWeight:0.#} KG");
-            Set(detailHint, $"Wheel / choose pocket\nHold [{InputBindings.Display("Inventory")}] + [{InputBindings.Display("Drop")}] / drop selected");
+            Set(detailTotal, LootTags.ValuesVisible ? Loc.T("RECOVERED VALUE / ${0:N0}", total) : Loc.T("CARRIED WEIGHT / {0:0.#} KG", carrier.Inventory.TotalWeight));
+            Set(detailHint, Loc.T("Wheel / choose pocket\nHold [{0}] + [{1}] / drop selected", InputBindings.Display("Inventory"), InputBindings.Display("Drop")));
         }
 
         private void PaintBody(MeshGenerationContext context)

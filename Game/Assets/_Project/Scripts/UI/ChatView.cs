@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using Abandoned.Networking;
 using Abandoned.Player;
@@ -82,7 +83,7 @@ namespace Abandoned.UI
             root.AddToClassList("crew-transmissions");
             root.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
             hud.parent.Add(root); // beside the HUD, so it stays while typing
-            heading = MenuKit.Text(root, "CREW TRANSMISSIONS", "crew-transmissions__heading");
+            heading = MenuKit.Text(root, Loc.T("CREW TRANSMISSIONS"), "crew-transmissions__heading");
             heading.pickingMode = PickingMode.Ignore;
             log = MenuKit.Scroll(root, "chat__log");
             log.style.maxHeight = 260f;
@@ -91,8 +92,8 @@ namespace Abandoned.UI
             field.AddToClassList("field");
             field.AddToClassList("chat__field");
             root.Add(field);
-            field.tooltip = "Message the crew. Enter sends; Escape closes.";
-            keys = MenuKit.Text(root, "ENTER  SEND    /    ESC  CLOSE", "crew-transmissions__keys");
+            field.tooltip = Loc.T("Message the crew. Enter sends; Escape closes.");
+            keys = MenuKit.Text(root, Loc.T("ENTER  SEND    /    ESC  CLOSE"), "crew-transmissions__keys");
             keys.pickingMode = PickingMode.Ignore;
             MenuKit.Show(field, false);
             MenuKit.Show(keys, false);
@@ -202,7 +203,8 @@ namespace Abandoned.UI
                 if (p != null && p.OwnerClientId == sender && p.GetComponent<PlayerCosmetics>() is PlayerCosmetics look && look.Catalog != null
                     && look.Catalog.Coverall(look.Choice.Coverall) is CosmeticDefinition suit)
                     color = suit.Color;
-            string name = NetworkPlayer.NameOf(sender).ToUpperInvariant() + (ghost ? " (GHOST)" : "");
+            string name = NetworkPlayer.NameOf(sender).ToUpperInvariant();
+            if (ghost) name = Loc.T("{0} (GHOST)", name);
             label.text = $"<color=#{ColorUtility.ToHtmlStringRGB(Color.Lerp(color, Color.white, 0.25f))}><b><noparse>{Plain(name)}</noparse></b></color>  <noparse>{Plain(text)}</noparse>";
             log.Add(label);
             if (log is ScrollView scroll) scroll.schedule.Execute(() => scroll.ScrollTo(label)).StartingIn(16);

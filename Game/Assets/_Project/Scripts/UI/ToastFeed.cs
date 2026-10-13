@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using Abandoned.Networking;
 using UnityEngine;
@@ -184,9 +185,9 @@ namespace Abandoned.UI
             if (crewKnown)
             {
                 foreach (ulong id in now)
-                    if (!crew.Contains(id)) Show($"PLAYER {id + 1} JOINED", "Another pair of hands.", "icon/multiplayer", Kind.Good);
+                    if (!crew.Contains(id)) Show(Loc.T("PLAYER {0} JOINED", id + 1), Loc.T("Another pair of hands."), "icon/multiplayer", Kind.Good);
                 foreach (ulong id in crew)
-                    if (!now.Contains(id)) Show($"PLAYER {id + 1} LEFT", "One less on the crew.", "icon/exitRight", Kind.Warn);
+                    if (!now.Contains(id)) Show(Loc.T("PLAYER {0} LEFT", id + 1), Loc.T("One less on the crew."), "icon/exitRight", Kind.Warn);
             }
             crew.Clear();
             crew.UnionWith(now);

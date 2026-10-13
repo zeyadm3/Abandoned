@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using Abandoned.Audio;
 using UnityEngine;
@@ -164,7 +165,7 @@ namespace Abandoned.UI
         }
 
         public static void Toggle(VisualElement parent, string label, bool value, Action<bool> commit) =>
-            Switch(parent, label, value, "On", "Off", commit);
+            Switch(parent, label, value, Loc.T("On"), Loc.T("Off"), commit);
 
         private static VisualElement Setting(VisualElement parent, string label, out Label value)
         {

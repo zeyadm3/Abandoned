@@ -10,7 +10,7 @@ namespace Abandoned.UI
     /// </summary>
     public class EarlyAccessWatermark
     {
-        public const string Text = "EXCLUSIVE EARLY ACCESS";
+        public const string Text = "EXCLUSIVE EARLY ACCESS"; // @loc
 
         private readonly Label label;
 
@@ -19,7 +19,7 @@ namespace Abandoned.UI
 
         public EarlyAccessWatermark(VisualElement root)
         {
-            label = new Label(Text) { pickingMode = PickingMode.Ignore };
+            label = new Label(Core.Loc.T(Text)) { pickingMode = PickingMode.Ignore };
             label.AddToClassList("ea-watermark");
             label.AddToClassList("font-display-semi");
             root.Add(label);

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -42,7 +43,7 @@ namespace Abandoned.Extraction
             RunNetState s = run.State;
             HaulGain(run, s.Haul);
             bool quotaMet = s.Haul >= s.Quota;
-            SetText(haulState, quotaMet ? "TARGET RECOVERED" : "RECOVERY TARGET");
+            SetText(haulState, quotaMet ? Loc.T("TARGET RECOVERED") : Loc.T("RECOVERY TARGET"));
             SetText(amount, $"${s.Haul:N0}");
             SetText(quota, $"/ ${s.Quota:N0}");
             UiKit.SetBar(haulBar, s.Quota > 0 ? (float)s.Haul / s.Quota : 1f, quotaMet ? "good" : null);
@@ -53,14 +54,14 @@ namespace Abandoned.Extraction
                 if (quotaMet && LootTags.ValuesVisible) UiKit.Jolt(met);
             }
             MenuKit.Show(met, quotaMet);
-            SetText(cargo, s.Overloaded ? $"CARGO / {s.CargoVolume:0.0} : {s.CargoCapacity:0} m\u00b3 / OVERLOADED" : $"CARGO / {s.CargoVolume:0.0} : {s.CargoCapacity:0} m\u00b3");
+            SetText(cargo, s.Overloaded ? Loc.T("CARGO / {0:0.0} : {1:0} m\u00b3 / OVERLOADED", s.CargoVolume, s.CargoCapacity) : Loc.T("CARGO / {0:0.0} : {1:0} m\u00b3", s.CargoVolume, s.CargoCapacity));
             cargo.EnableInClassList("run-haul__cargo--bad", s.Overloaded);
             string goalText = RunGoals.Text();
             SetText(goals, goalText);
             MenuKit.Show(goals, goalText.Length > 0);
             float w = run.WindowRemaining;
             SetText(time, run.WindowClosed ? "+00:00" : $"{(int)w / 60:00}:{(int)w % 60:00}");
-            SetText(clockState, run.WindowClosed ? "RECOVERY WINDOW CLOSED" : "RECOVERY WINDOW");
+            SetText(clockState, run.WindowClosed ? Loc.T("RECOVERY WINDOW CLOSED") : Loc.T("RECOVERY WINDOW"));
             clock.EnableInClassList("run-clock--late", run.WindowClosed);
 
             // The dead don't need the countdown (their death card and ghost bar have the screen).
@@ -78,7 +79,7 @@ namespace Abandoned.Extraction
             bool aboard = me != null && TruckCargo.Current != null &&
                           TruckCargo.Current.Carries(me.Ragdoll.IsRagdolled ? me.Ragdoll.BodyPosition : me.transform.position);
             bool dead = me == null || me.IsDead;
-            SetText(leavingStatus, dead ? "" : aboard ? "ABOARD / HOLD POSITION" : "GET TO THE TRUCK");
+            SetText(leavingStatus, dead ? "" : aboard ? Loc.T("ABOARD / HOLD POSITION") : Loc.T("GET TO THE TRUCK"));
             leavingStatus.EnableInClassList("truck-banner__status--good", aboard);
             MenuKit.Show(leavingStatus, !dead);
         }
@@ -107,7 +108,7 @@ namespace Abandoned.Extraction
             HudLayer.Remove(clock);
             HudLayer.Remove(leaving);
             top = HudLayer.Add(new VisualElement(), "run-haul", "h-recovery");
-            haulState = Text(top, "RECOVERY TARGET", "h-instrument-title");
+            haulState = Text(top, Loc.T("RECOVERY TARGET"), "h-instrument-title");
             VisualElement row = new() { pickingMode = PickingMode.Ignore };
             row.AddToClassList("run-haul__row");
             top.Add(row);
@@ -116,19 +117,19 @@ namespace Abandoned.Extraction
             haulBar = UiKit.Bar(top, "run-haul__bar");
             cargo = Text(top, "", "run-haul__cargo");
             goals = Text(top, "", "h-recovery__goals"); // 0.18+: boss request, rush order, sets, overtime
-            met = UiKit.Tag(top, "QUOTA MET / RETURN TO THE TRUCK");
+            met = UiKit.Tag(top, Loc.T("QUOTA MET / RETURN TO THE TRUCK"));
             met.AddToClassList("run-haul__met");
             clock = new VisualElement { pickingMode = PickingMode.Ignore };
             clock.AddToClassList("run-clock");
             clock.AddToClassList("h-window");
             top.Add(clock);
-            clockState = Text(clock, "RECOVERY WINDOW", "h-micro");
+            clockState = Text(clock, Loc.T("RECOVERY WINDOW"), "h-micro");
             time = Text(clock, "", "run-clock__time");
             leaving = HudLayer.Add(new VisualElement(), "truck-banner", "h-departure");
-            Text(leaving, "EVACUATION", "h-instrument-title");
-            Text(leaving, "THE TRUCK IS LEAVING", "truck-banner__title");
+            Text(leaving, Loc.T("EVACUATION"), "h-instrument-title");
+            Text(leaving, Loc.T("THE TRUCK IS LEAVING"), "truck-banner__title");
             leavingCount = Text(leaving, "", "truck-banner__count");
-            Text(leaving, "SECONDS TO DEPARTURE", "h-micro");
+            Text(leaving, Loc.T("SECONDS TO DEPARTURE"), "h-micro");
             leavingStatus = Text(leaving, "", "truck-banner__status");
         }
 
@@ -154,6 +155,6 @@ namespace Abandoned.Extraction
         }
 
         /// <summary>Tests: what the top bar says.</summary>
-        public string HaulText => amount != null ? $"HAUL {amount.text} {quota.text}" : null;
+        public string HaulText => amount != null ? Loc.T("HAUL {0} {1}", amount.text, quota.text) : null;
     }
 }

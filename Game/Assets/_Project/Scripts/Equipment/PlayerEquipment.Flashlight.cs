@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Extraction;
 using Abandoned.Threats;
 using Unity.Netcode;
@@ -44,7 +45,7 @@ namespace Abandoned.Equipment
         {
             if (!IsServer || IsDead || !Has(EquipmentKind.Flashlight) || Battery01 >= 0.999f)
             {
-                HintRpc("Keep a flashlight in your other slot; a fresh cell replaces a used battery.");
+                HintRpc(Loc.Mark("Keep a flashlight in your other slot; a fresh cell replaces a used battery."));
                 return false;
             }
             ServerResetBattery();

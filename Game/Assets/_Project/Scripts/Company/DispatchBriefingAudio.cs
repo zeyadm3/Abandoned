@@ -11,13 +11,13 @@ namespace Abandoned.Company
         private static SoundPlayback playback;
 
         public const string RoutineTranscript = "Abandoned Salvaging dispatch. Review the job sheet before departure. " +
-            "Keep the crew together, listen for floor warnings, and load salvage into the truck. Bring everyone home.";
+            "Keep the crew together, listen for floor warnings, and load salvage into the truck. Bring everyone home."; // @loc
         public const string PowerOffTranscript = "Abandoned Salvaging dispatch. This job has no power. " +
-            "Bring charged flashlights and keep the crew together. Review the job sheet, and listen for floor warnings.";
+            "Bring charged flashlights and keep the crew together. Review the job sheet, and listen for floor warnings."; // @loc
         public const string HighThreatTranscript = "Abandoned Salvaging dispatch. This is a high threat job. " +
-            "Expect more monsters, sooner. Keep noise down, read the field guide, and bring the crew home together.";
+            "Expect more monsters, sooner. Keep noise down, read the field guide, and bring the crew home together."; // @loc
         public const string SealedTranscript = "Abandoned Salvaging dispatch. Access is shuttered on this job. " +
-            "Pack bolt cutters or a crowbar before departure. Review the job sheet, and leave room for salvage in the truck.";
+            "Pack bolt cutters or a crowbar before departure. Review the job sheet, and leave room for salvage in the truck."; // @loc
 
         public static bool Play(CompanyService company, Vector3 position)
         {

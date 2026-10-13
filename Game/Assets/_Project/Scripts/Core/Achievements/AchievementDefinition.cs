@@ -12,6 +12,9 @@ namespace Abandoned.Core
         [field: SerializeField] public string Id { get; private set; }
         [field: SerializeField] public string DisplayName { get; private set; }
         [field: SerializeField, TextArea] public string Description { get; private set; }
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
+        public string LocalDescription => Loc.T(Description);
         [field: Tooltip("The stat it watches (see Achievements.Stat* names).")]
         [field: SerializeField] public string Stat { get; private set; }
         [field: SerializeField, Min(1)] public long Threshold { get; private set; } = 1;

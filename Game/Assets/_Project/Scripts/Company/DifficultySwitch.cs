@@ -23,7 +23,9 @@ namespace Abandoned.Company
             CompanyService company = CompanyService.Current;
             if (company == null || !company.IsSpawned) return null;
             bool host = NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
-            return host ? $"Difficulty: {company.Difficulty} (turn the switch)" : $"Difficulty: {company.Difficulty} (the host sets it)";
+            // The preset as the enum names it. @loc:difficulty "Relaxed", "Standard", "Brutal"
+            string preset = Loc.C("difficulty", company.Difficulty.ToString());
+            return host ? Loc.T("Difficulty: {0} (turn the switch)", preset) : Loc.T("Difficulty: {0} (the host sets it)", preset);
         }
 
         public void Use(GameObject user)

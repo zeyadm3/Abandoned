@@ -5,7 +5,7 @@ namespace Abandoned.Core
     /// <summary>Video options added in 0.23.4 (applied by VideoApplier and VideoExtras).</summary>
     public static partial class VideoSettings
     {
-        public static readonly string[] TextureNames = { "Full", "Half", "Quarter" };
+        public static readonly string[] TextureNames = { "Full", "Half", "Quarter" }; // @loc
 
         private static bool Flag(string key, bool fallback) => Prefs.GetInt(key, fallback ? 1 : 0) == 1;
         private static void SetFlag(string key, bool value)

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Linq;
 using Abandoned.Extraction;
 using Abandoned.Networking;
@@ -29,8 +30,8 @@ namespace Abandoned.Threats
         private readonly NetworkVariable<byte> dread = new();
         private StalkerState heardState;
 
-        public override string DisplayName => "Stalker";
-        public override string DeathLine => "You looked away from the Stalker.";
+        public override string DisplayName => Loc.Mark("Stalker");
+        public override string DeathLine => Loc.Mark("You looked away from the Stalker.");
         public StalkerState State => state.Value;
         public override ThreatMotion DesiredMotion => State == StalkerState.Frozen ? ThreatMotion.Special : State == StalkerState.Rush ? ThreatMotion.Chase : ThreatMotion.Idle;
         public NetworkPlayer Target => target;

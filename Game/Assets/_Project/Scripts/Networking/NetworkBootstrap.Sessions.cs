@@ -16,7 +16,7 @@ namespace Abandoned.Networking
         /// <summary>Chooses the transport for the next session. Refused while one is running.</summary>
         public bool SelectTransport(TransportMode mode)
         {
-            if (IsRunning) return Fail("Disconnect before switching transport.");
+            if (IsRunning) return Fail(Loc.Mark("Disconnect before switching transport."));
             Transport = mode;
             networkManager.NetworkConfig.NetworkTransport = mode == TransportMode.Steam
                 ? facepunchTransport
@@ -46,8 +46,8 @@ namespace Abandoned.Networking
             BeginSession();
             if (!networkManager.StartHost())
                 return Fail(Transport == TransportMode.UnityTransport
-                    ? $"Couldn't host on port {port}. Is another game already using it?"
-                    : "Couldn't host over Steam.");
+                    ? Loc.Wire("Couldn't host on port {0}. Is another game already using it?", port)
+                    : Loc.Mark("Couldn't host over Steam."));
             Debug.Log($"[Net] Hosting over {Transport}{(Transport == TransportMode.UnityTransport ? $" on port {HostPort}" : "")}.");
             StateChanged?.Invoke();
             return true;
@@ -61,14 +61,14 @@ namespace Abandoned.Networking
         {
             LastJoinTarget = port != 0 ? $"{address}:{port}" : address;
             if (!CanStart()) return false;
-            if (string.IsNullOrWhiteSpace(address)) return Fail("Enter an address to join.");
+            if (string.IsNullOrWhiteSpace(address)) return Fail(Loc.Mark("Enter an address to join."));
             NetworkLaunchArgs.SplitAddress(address, out string host, out ushort parsedPort);
             if (port == 0) port = parsedPort != 0 ? parsedPort : config.Port;
 
             if (Transport == TransportMode.Steam)
             {
                 if (!ulong.TryParse(host, out ulong steamId) || steamId == 0)
-                    return Fail("For Steam, enter the host's SteamID64 (invites arrive with the lobby).");
+                    return Fail(Loc.Mark("For Steam, enter the host's SteamID64 (invites arrive with the lobby)."));
                 facepunchTransport.targetSteamId = steamId;
                 JoinTarget = $"Steam {steamId}";
                 if (!EnsureSteam()) return false;
@@ -81,7 +81,7 @@ namespace Abandoned.Networking
 
             LastError = string.Empty;
             BeginSession();
-            if (!networkManager.StartClient()) return Fail($"Couldn't start joining {JoinTarget}.");
+            if (!networkManager.StartClient()) return Fail(Loc.Wire("Couldn't start joining {0}.", JoinTarget));
             Debug.Log($"[Net] Joining {JoinTarget} over {Transport}.");
             StateChanged?.Invoke();
             return true;
@@ -116,20 +116,21 @@ namespace Abandoned.Networking
         {
             get
             {
-                if (networkManager == null) return "No NetworkManager";
-                if (networkManager.ShutdownInProgress) return "Disconnecting...";
-                if (!networkManager.IsListening) return "Offline";
+                if (networkManager == null) return Loc.T("No NetworkManager");
+                if (networkManager.ShutdownInProgress) return Loc.T("Disconnecting...");
+                if (!networkManager.IsListening) return Loc.T("Offline");
                 if (networkManager.IsHost)
-                    return $"Hosting ({networkManager.ConnectedClientsIds.Count}/{config.MaxPlayers}) over {Transport}" +
-                           (Transport == TransportMode.UnityTransport ? $", port {HostPort}" : "");
-                return networkManager.IsConnectedClient ? $"Connected to {JoinTarget}" : $"Connecting to {JoinTarget}...";
+                    return Transport == TransportMode.UnityTransport
+                        ? Loc.T("Hosting ({0}/{1}) over {2}, port {3}", networkManager.ConnectedClientsIds.Count, config.MaxPlayers, Transport, HostPort)
+                        : Loc.T("Hosting ({0}/{1}) over {2}", networkManager.ConnectedClientsIds.Count, config.MaxPlayers, Transport);
+                return networkManager.IsConnectedClient ? Loc.T("Connected to {0}", JoinTarget) : Loc.T("Connecting to {0}...", JoinTarget);
             }
         }
 
         private bool CanStart()
         {
-            if (networkManager == null || config == null) return Fail("Network setup is incomplete.");
-            if (networkManager.IsListening || networkManager.ShutdownInProgress) return Fail("Already in a session; disconnect first.");
+            if (networkManager == null || config == null) return Fail(Loc.Mark("Network setup is incomplete."));
+            if (networkManager.IsListening || networkManager.ShutdownInProgress) return Fail(Loc.Mark("Already in a session; disconnect first."));
             return true;
         }
 

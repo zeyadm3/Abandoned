@@ -123,7 +123,7 @@ namespace Abandoned.Networking
                 UI.MenuKit.Show(ghostBar, on);
                 if (on)
                 {
-                    string line = $"GHOST   Watching {Following.DisplayName}   [{InputBindings.Display("Drop")}] previous   [{InputBindings.Display("Use")}] next";
+                    string line = Loc.T("GHOST   Watching {0}   [{1}] previous   [{2}] next", Following.DisplayName, InputBindings.Display("Drop"), InputBindings.Display("Use"));
                     if (line != ghostShown)
                     {
                         ghostShown = line;
@@ -140,7 +140,7 @@ namespace Abandoned.Networking
                     if (!on) continue;
                     mark = UI.HudLayer.Label("hud-marker", "threat-mark");
                     if (mark == null) continue;
-                    mark.text = $"\u25BC {t.DisplayName.ToUpperInvariant()}";
+                    mark.text = $"\u25BC {Loc.T(t.DisplayName).ToUpperInvariant()}";
                     threatMarks[t] = mark;
                 }
                 UI.MenuKit.Show(mark, on && cam != null);
@@ -164,17 +164,19 @@ namespace Abandoned.Networking
             {
                 if (!show || UI.HudLayer.Root == null) return;
                 deathCard = UI.HudLayer.Add(new UnityEngine.UIElements.VisualElement(), "death-card");
-                var title = new UnityEngine.UIElements.Label("YOU DIED") { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
+                var title = new UnityEngine.UIElements.Label(Loc.T("YOU DIED")) { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
                 title.AddToClassList("death-card__title");
                 deathCard.Add(title);
                 deathCause = new UnityEngine.UIElements.Label { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
                 deathCause.AddToClassList("death-card__cause");
                 deathCard.Add(deathCause);
-                var note = new UnityEngine.UIElements.Label("Your pockets dropped where you fell. Watch your crew, or wait for a medkit.") { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
+                var note = new UnityEngine.UIElements.Label(Loc.T("Your pockets dropped where you fell. Watch your crew, or wait for a medkit.")) { pickingMode = UnityEngine.UIElements.PickingMode.Ignore };
                 note.AddToClassList("death-card__note");
                 deathCard.Add(note);
             }
-            if (show && deathCause.text != player.DeathCause) deathCause.text = player.DeathCause;
+            // The host writes the cause in English; each machine words it.
+            string cause = show ? Loc.T(player.DeathCause) : null;
+            if (show && deathCause.text != cause) deathCause.text = cause;
             UI.MenuKit.Show(deathCard, show);
         }
 

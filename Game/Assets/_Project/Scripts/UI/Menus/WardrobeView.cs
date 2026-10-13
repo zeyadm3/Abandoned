@@ -17,7 +17,7 @@ namespace Abandoned.UI
     /// </summary>
     public class WardrobeView
     {
-        private static readonly string[] Tabs = { "COVERALLS", "HATS", "ACCESSORIES" };
+        private static readonly string[] Tabs = { "COVERALLS", "HATS", "ACCESSORIES" }; // @loc
         private static readonly CosmeticKind[] Kinds = { CosmeticKind.Coverall, CosmeticKind.Hat, CosmeticKind.Accessory };
 
         private readonly VisualElement preview, grid, swatch;
@@ -41,11 +41,11 @@ namespace Abandoned.UI
             panel.style.width = 1500f;
             panel.style.maxWidth = Length.Percent(96f);
 
-            MenuKit.Text(panel, "WORKER KIT / ISSUE AND IDENTIFICATION", "menu-record");
+            MenuKit.Text(panel, Loc.T("WORKER KIT / ISSUE AND IDENTIFICATION"), "menu-record");
             VisualElement header = MenuKit.Row(panel);
             header.AddToClassList("wardrobe__header");
             header.style.flexWrap = Wrap.Wrap;
-            MenuKit.Text(header, "WARDROBE", "heading").AddToClassList("wardrobe__title");
+            MenuKit.Text(header, Loc.T("WARDROBE"), "heading").AddToClassList("wardrobe__title");
             var money = new VisualElement();
             money.AddToClassList("wardrobe__money");
             header.Add(money);
@@ -62,7 +62,7 @@ namespace Abandoned.UI
             preview = new VisualElement();
             preview.AddToClassList("wardrobe__preview");
             stage.Add(preview);
-            MenuKit.Text(stage, "Drag to turn. Anything you select is tried on.", "wardrobe__hint");
+            MenuKit.Text(stage, Loc.T("Drag to turn. Anything you select is tried on."), "wardrobe__hint");
             DragToTurn(preview);
 
             var shelf = new VisualElement();
@@ -74,7 +74,7 @@ namespace Abandoned.UI
             for (int i = 0; i < Tabs.Length; i++)
             {
                 int index = i;
-                Button b = MenuKit.Button(bar, Tabs[i], () => { tab = index; selected = Worn(); Rebuild(); }, SoundId.UiClick, small: true);
+                Button b = MenuKit.Button(bar, Loc.T(Tabs[i]), () => { tab = index; selected = Worn(); Rebuild(); }, SoundId.UiClick, small: true);
                 tabs.Add(b);
             }
             ScrollView scroll = MenuKit.Scroll(shelf, "wardrobe__scroll");
@@ -95,7 +95,7 @@ namespace Abandoned.UI
             action = MenuKit.Button(detail, "", Act, SoundId.UiConfirm);
             action.AddToClassList("wardrobe__action");
 
-            MenuKit.Button(panel, "Done", menu.Back, SoundId.UiBack).AddToClassList("wardrobe__done");
+            MenuKit.Button(panel, Loc.T("Done"), menu.Back, SoundId.UiBack).AddToClassList("wardrobe__done");
             // Purchases answer from the host a moment later; the money can change while it's open.
             Root.schedule.Execute(Poll).Every(150);
         }
@@ -125,8 +125,8 @@ namespace Abandoned.UI
             Poll();
             if (me == null || me.Catalog == null)
             {
-                title.text = "Nobody to dress";
-                about.text = "The wardrobe works in a game, at the HQ lockers.";
+                title.text = Loc.T("Nobody to dress");
+                about.text = Loc.T("The wardrobe works in a game, at the HQ lockers.");
                 unlock.text = "";
                 MenuKit.Show(action, false);
                 return;
@@ -146,9 +146,9 @@ namespace Abandoned.UI
                 var chip = new VisualElement { pickingMode = PickingMode.Ignore };
                 chip.AddToClassList("wardrobe__chip");
                 if (Kind == CosmeticKind.Coverall) chip.style.backgroundColor = d.Color;
-                else chip.Add(new Label(d.DisplayName.Substring(0, 1)) { pickingMode = PickingMode.Ignore });
+                else chip.Add(new Label(d.LocalName.Substring(0, 1)) { pickingMode = PickingMode.Ignore });
                 card.Add(chip);
-                var name = new Label(d.DisplayName) { pickingMode = PickingMode.Ignore };
+                var name = new Label(d.LocalName) { pickingMode = PickingMode.Ignore };
                 name.AddToClassList("wardrobe__card-name");
                 card.Add(name);
                 var tag = new Label(Tag(d, i == worn)) { pickingMode = PickingMode.Ignore };
@@ -162,9 +162,9 @@ namespace Abandoned.UI
 
         private static string Tag(CosmeticDefinition d, bool worn)
         {
-            if (worn) return "WEARING";
-            if (PlayerProfile.Unlocked(d)) return d.Unlock == CosmeticUnlock.Free ? "FREE" : "OWNED";
-            return d.Unlock == CosmeticUnlock.Buy ? $"${d.Price:N0}" : "REWARD";
+            if (worn) return Loc.T("WEARING");
+            if (PlayerProfile.Unlocked(d)) return d.Unlock == CosmeticUnlock.Free ? Loc.T("FREE") : Loc.T("OWNED");
+            return d.Unlock == CosmeticUnlock.Buy ? $"${d.Price:N0}" : Loc.T("REWARD");
         }
 
         private void ShowDetail()
@@ -173,40 +173,40 @@ namespace Abandoned.UI
             if (d == null) return;
             // Try it on: the preview wears the selection even before it's yours.
             preview.style.backgroundImage = Background.FromRenderTexture(WardrobePreview.Show(me.Catalog, With(me.Choice, selected)));
-            title.text = d.DisplayName;
-            about.text = d.Description;
+            title.text = d.LocalName;
+            about.text = d.LocalDescription;
             swatch.style.backgroundColor = Kind == CosmeticKind.Coverall ? d.Color : new Color(0f, 0f, 0f, 0f);
             bool unlocked = PlayerProfile.Unlocked(d), worn = selected == Worn();
             MenuKit.Show(action, true);
             action.SetEnabled(true);
             if (worn)
             {
-                unlock.text = "You're wearing it.";
-                action.text = "Wearing";
+                unlock.text = Loc.T("You're wearing it.");
+                action.text = Loc.T("Wearing");
                 action.SetEnabled(false);
             }
             else if (unlocked)
             {
-                unlock.text = d.Unlock == CosmeticUnlock.Reward ? $"Earned: {AchievementName(d)}." : d.Unlock == CosmeticUnlock.Buy ? "Bought. It's yours." : "Free for every crew member.";
-                action.text = "Wear it";
+                unlock.text = d.Unlock == CosmeticUnlock.Reward ? Loc.T("Earned: {0}.", AchievementName(d)) : d.Unlock == CosmeticUnlock.Buy ? Loc.T("Bought. It's yours.") : Loc.T("Free for every crew member.");
+                action.text = Loc.T("Wear it");
             }
             else if (d.Unlock == CosmeticUnlock.Buy)
             {
                 int money = CompanyService.Current != null ? CompanyService.Current.State.Money : 0;
-                unlock.text = CompanyService.Current == null ? $"${d.Price:N0}, paid by the company at the HQ." : $"${d.Price:N0} from the company's ${money:N0}.";
-                action.text = me.PurchasePending ? "Paying..." : $"Buy for ${d.Price:N0}";
+                unlock.text = CompanyService.Current == null ? Loc.T("${0:N0}, paid by the company at the HQ.", d.Price) : Loc.T("${0:N0} from the company's ${1:N0}.", d.Price, money);
+                action.text = me.PurchasePending ? Loc.T("Paying...") : Loc.T("Buy for ${0:N0}", d.Price);
                 action.SetEnabled(!me.PurchasePending && CompanyService.Current != null && money >= d.Price);
             }
             else
             {
                 AchievementDefinition a = PlayerProfile.Achievement(d.RewardAchievement);
-                unlock.text = a != null ? $"Reward for \"{a.DisplayName}\": {a.Description}" : "A reward for an achievement.";
-                action.text = "Locked";
+                unlock.text = a != null ? Loc.T("Reward for \"{0}\": {1}", a.LocalName, a.LocalDescription) : Loc.T("A reward for an achievement.");
+                action.text = Loc.T("Locked");
                 action.SetEnabled(false);
             }
         }
 
-        private static string AchievementName(CosmeticDefinition d) => PlayerProfile.Achievement(d.RewardAchievement)?.DisplayName ?? "an achievement";
+        private static string AchievementName(CosmeticDefinition d) => PlayerProfile.Achievement(d.RewardAchievement)?.LocalName ?? Loc.T("an achievement");
 
         private void Act()
         {
@@ -220,7 +220,7 @@ namespace Abandoned.UI
         private void Poll()
         {
             CompanyService company = CompanyService.Current;
-            funds.text = company != null && company.IsSpawned ? $"COMPANY FUNDS  ${company.State.Money:N0}" : "COMPANY FUNDS  -";
+            funds.text = company != null && company.IsSpawned ? Loc.T("COMPANY FUNDS  ${0:N0}", company.State.Money) : Loc.T("COMPANY FUNDS  -");
             status.text = me != null ? me.PurchaseMessage : "";
             bool pending = me != null && me.PurchasePending;
             // The host answered: show what changed (owned, worn, money).

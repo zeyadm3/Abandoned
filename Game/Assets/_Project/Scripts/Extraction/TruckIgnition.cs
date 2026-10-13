@@ -23,12 +23,12 @@ namespace Abandoned.Extraction
             if (run == null) return null;
             RunNetState s = run.State;
             if (s.Phase == RunPhase.Honking)
-                return run.CanCancel ? $"Stop the truck (leaving in {run.HonkRemaining:0} s)" : null;
+                return run.CanCancel ? Loc.T("Stop the truck (leaving in {0:0} s)", run.HonkRemaining) : null;
             if (s.Phase != RunPhase.Running) return null;
-            if (s.Overloaded) return $"Overloaded ({s.CargoVolume:0.0}/{s.CargoCapacity:0} m³) - unload something";
+            if (s.Overloaded) return Loc.T("Overloaded ({0:0.0}/{1:0} m³) - unload something", s.CargoVolume, s.CargoCapacity);
             if (s.Haul < s.Quota && Confirming)
-                return $"BELOW QUOTA (${s.Haul:N0} / ${s.Quota:N0}): pull again to leave anyway";
-            return $"Start the truck: it leaves in {run.HonkSeconds:0} s (haul ${s.Haul:N0} / quota ${s.Quota:N0})";
+                return Loc.T("BELOW QUOTA (${0:N0} / ${1:N0}): pull again to leave anyway", s.Haul, s.Quota);
+            return Loc.T("Start the truck: it leaves in {0:0} s (haul ${1:N0} / quota ${2:N0})", run.HonkSeconds, s.Haul, s.Quota);
         }
 
         public void Use(GameObject user)

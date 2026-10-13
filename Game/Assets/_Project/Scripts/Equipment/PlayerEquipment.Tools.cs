@@ -63,7 +63,7 @@ namespace Abandoned.Equipment
             SoundRpc(Audio.SoundId.SledgeHit, hit.point);
             if (section == null || !section.CanCollapse)
             {
-                HintRpc("Nothing gives here: this floor won't break");
+                HintRpc(Loc.Mark("Nothing gives here: this floor won't break"));
                 return;
             }
             section.ApplyImpact(config.SledgeMomentum);
@@ -77,7 +77,7 @@ namespace Abandoned.Equipment
             if (Physics.Linecast(Eye, probe, wallMask, QueryTriggerInteraction.Ignore) ||
                 !Physics.Raycast(probe, Vector3.down, out RaycastHit floor, 2f, wallMask, QueryTriggerInteraction.Ignore))
             {
-                HintRpc("No room to lay the mat here");
+                HintRpc(Loc.Mark("No room to lay the mat here"));
                 return false;
             }
             return SpawnGear(EquipmentKind.CrashMat, floor.point, Quaternion.Euler(0f, transform.eulerAngles.y, 0f)) != null;
@@ -130,12 +130,12 @@ namespace Abandoned.Equipment
                 ? hit.collider.GetComponentInParent<Networking.NetworkLoot>() : null;
             if (loot == null)
             {
-                HintRpc("Look at the item you want to wrap");
+                HintRpc(Loc.Mark("Look at the item you want to wrap"));
                 return false;
             }
             if (!loot.ServerWrap())
             {
-                HintRpc("That one is already wrapped");
+                HintRpc(Loc.Mark("That one is already wrapped"));
                 return false;
             }
             return true;
@@ -149,7 +149,7 @@ namespace Abandoned.Equipment
             if (Physics.Linecast(Eye, probe, wallMask, QueryTriggerInteraction.Ignore) ||
                 !Physics.Raycast(probe, Vector3.down, out RaycastHit floor, 2f, wallMask, QueryTriggerInteraction.Ignore))
             {
-                HintRpc("No room to stand the floodlight here");
+                HintRpc(Loc.Mark("No room to stand the floodlight here"));
                 return false;
             }
             return SpawnGear(EquipmentKind.Floodlight, floor.point, yaw) != null;
@@ -166,7 +166,7 @@ namespace Abandoned.Equipment
             Vector3 at = Eye + Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward * 0.8f;
             if (Physics.Linecast(Eye, at, wallMask, QueryTriggerInteraction.Ignore))
             {
-                HintRpc("No room to launch the drone here");
+                HintRpc(Loc.Mark("No room to launch the drone here"));
                 return;
             }
             drone = NetworkManager.SpawnManager.InstantiateAndSpawn(prefab, OwnerClientId, position: at, rotation: Quaternion.Euler(0f, transform.eulerAngles.y, 0f));

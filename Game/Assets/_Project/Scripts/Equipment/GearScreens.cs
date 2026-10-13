@@ -52,7 +52,7 @@ namespace Abandoned.Equipment
                     return;
                 }
                 Rack(panel, company, mine);
-                MenuKit.Button(panel, "Close", () => ShopTerminal.Open = GearRack.Open = false, SoundId.UiBack);
+                MenuKit.Button(panel, Loc.T("Close"), () => ShopTerminal.Open = GearRack.Open = false, SoundId.UiBack);
             });
         }
 
@@ -68,20 +68,20 @@ namespace Abandoned.Equipment
             lines.style.backgroundImage = Scanlines();
 
             int money = company.State.Money;
-            Crt(screenArea, $"{CompanySave.DefaultName.ToUpperInvariant()} - SUPPLY TERMINAL v2.1", "crt__title");
-            Crt(screenArea, $"FUNDS {(money < 0 ? $"-${-money:N0} (DEBT)" : $"${money:N0}")}     CLEARANCE LEVEL {company.State.Level}", "crt__line");
+            Crt(screenArea, Loc.T("{0} - SUPPLY TERMINAL v2.1", CompanySave.DefaultName.ToUpperInvariant()), "crt__title");
+            Crt(screenArea, Loc.T("FUNDS {0}     CLEARANCE LEVEL {1}", (money < 0 ? Loc.T("-${0:N0} (DEBT)", -money) : $"${money:N0}"), company.State.Level), "crt__line");
             Crt(screenArea, new string('=', 72), "crt__rule");
             VisualElement tabs = MenuKit.Row(screenArea);
-            CrtButton(tabs, page == 0 ? "[ GEAR ]" : "  GEAR  ", () => page = 0).EnableInClassList("crt__button--on", page == 0);
-            CrtButton(tabs, page == 1 ? "[ TRUCK ]" : "  TRUCK  ", () => page = 1).EnableInClassList("crt__button--on", page == 1);
+            CrtButton(tabs, page == 0 ? $"[ {Loc.T("GEAR")} ]" : $"  {Loc.T("GEAR")}  ", () => page = 0).EnableInClassList("crt__button--on", page == 0);
+            CrtButton(tabs, page == 1 ? $"[ {Loc.T("TRUCK")} ]" : $"  {Loc.T("TRUCK")}  ", () => page = 1).EnableInClassList("crt__button--on", page == 1);
             Crt(tabs, "", "crt__line").style.flexGrow = 1;
-            CrtButton(tabs, "[ LOG OFF ]", () => ShopTerminal.Open = false);
+            CrtButton(tabs, Loc.T("[ LOG OFF ]"), () => ShopTerminal.Open = false);
             Crt(screenArea, new string('-', 72), "crt__rule");
 
             var list = new ScrollView(ScrollViewMode.Vertical) { horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             list.AddToClassList("crt__list");
             screenArea.Add(list);
-            Label about = Crt(screenArea, "> POINT AT AN ITEM FOR ITS SPEC SHEET.", "crt__about");
+            Label about = Crt(screenArea, Loc.T("> POINT AT AN ITEM FOR ITS SPEC SHEET."), "crt__about");
             if (page == 0) GearPage(list, about, company);
             else TruckPage(list, about, company);
             Crt(screenArea, "_", "crt__cursor");
@@ -97,9 +97,9 @@ namespace Abandoned.Equipment
                 EquipmentDefinition d = catalog.Items[i];
                 bool locked = d.UnlockLevel > company.State.Level;
                 int index = i;
-                string name = (d.DisplayName + (d.Consumable ? " (1 USE)" : "")).ToUpperInvariant();
-                string right = locked ? $"LEVEL {d.UnlockLevel}" : $"${d.Price:N0}";
-                Row(list, about, $"{name}", $"OWNED {company.OwnedCount(i)}", right, d.Description,
+                string name = (d.Consumable ? Loc.T("{0} (1 USE)", d.LocalName) : d.LocalName).ToUpperInvariant();
+                string right = locked ? Loc.T("LEVEL {0}", d.UnlockLevel) : $"${d.Price:N0}";
+                Row(list, about, $"{name}", Loc.T("OWNED {0}", company.OwnedCount(i)), right, d.LocalDescription,
                     locked || money < d.Price ? null : () => company.RequestBuy(index), locked);
             }
         }
@@ -118,8 +118,8 @@ namespace Abandoned.Equipment
                 if (!owned && previous != null && !company.OwnsUpgrade(upgrades.IndexOf(previous))) continue;
                 int index = i;
                 bool locked = !owned && d.UnlockLevel > company.State.Level;
-                string right = owned ? "FITTED" : locked ? $"LEVEL {d.UnlockLevel}" : $"${d.Price:N0}";
-                Row(list, about, d.DisplayName.ToUpperInvariant(), owned ? "" : "UPGRADE", right, d.Description,
+                string right = owned ? Loc.T("FITTED") : locked ? Loc.T("LEVEL {0}", d.UnlockLevel) : $"${d.Price:N0}";
+                Row(list, about, d.LocalName.ToUpperInvariant(), owned ? "" : Loc.T("UPGRADE"), right, d.LocalDescription,
                     owned || !company.UpgradeAvailable(index) || money < d.Price ? null : () => company.RequestBuyUpgrade(index), locked);
             }
         }
@@ -181,18 +181,18 @@ namespace Abandoned.Equipment
 
         private static void Rack(VisualElement panel, CompanyService company, PlayerEquipment mine)
         {
-            MenuKit.Text(panel, "GEAR RACK", "heading");
+            MenuKit.Text(panel, Loc.T("GEAR RACK"), "heading");
             if (mine == null) return;
-            MenuKit.Text(panel, "Fill your two hand slots from what the company owns.", "subtitle");
+            MenuKit.Text(panel, Loc.T("Fill your two hand slots from what the company owns."), "subtitle");
             EquipmentCatalog catalog = mine.Catalog;
             for (int slot = 0; slot < 2; slot++)
             {
                 EquipmentDefinition held = mine.InSlot(slot);
-                MenuKit.Text(panel, $"HAND SLOT {slot + 1} ({InputBindings.Display(slot == 0 ? "HandSlot1" : "HandSlot2")}): {(held != null ? held.DisplayName : "empty")}", "section");
+                MenuKit.Text(panel, Loc.T("HAND SLOT {0} ({1}): {2}", slot + 1, InputBindings.Display(slot == 0 ? "HandSlot1" : "HandSlot2"), (held != null ? held.LocalName : Loc.T("empty"))), "section");
                 VisualElement row = MenuKit.Row(panel);
                 row.AddToClassList("wrap");
                 int s = slot;
-                MenuKit.Button(row, "Empty", () => mine.RequestEquip(s, -1), SoundId.UiClick, small: true);
+                MenuKit.Button(row, Loc.T("Empty"), () => mine.RequestEquip(s, -1), SoundId.UiClick, small: true);
                 for (int i = 0; i < catalog.Items.Count; i++)
                 {
                     if (company.OwnedCount(i) <= 0) continue;
@@ -201,13 +201,13 @@ namespace Abandoned.Equipment
                     Button b = MenuKit.Button(row, "", () => mine.RequestEquip(s, index), SoundId.UiConfirm, small: true);
                     b.AddToClassList("rack__item");
                     Prepend(b, UiKit.Icon(null, "item/" + catalog.Items[i].Id, "small"));
-                    MenuKit.Text(b, $"{catalog.Items[i].DisplayName} ({Mathf.Max(0, free)})", "rack__name").pickingMode = PickingMode.Ignore;
+                    MenuKit.Text(b, $"{catalog.Items[i].LocalName} ({Mathf.Max(0, free)})", "rack__name").pickingMode = PickingMode.Ignore;
                     b.SetEnabled(free > 0 || mine.State[slot] == i);
                     b.EnableInClassList("menu-button--on", mine.State[slot] == i);
                 }
             }
-            MenuKit.Text(panel, $"{InputBindings.Display("Flashlight")}: flashlight. Hold {InputBindings.Display("Radio")}: radio. " +
-                                $"Single-use gear is used with {InputBindings.Display("Use")} when your hands are empty.", "text").AddToClassList("text--small");
+            MenuKit.Text(panel, Loc.T("{0}: flashlight. Hold {1}: radio. Single-use gear is used with {2} when your hands are empty.",
+                InputBindings.Display("Flashlight"), InputBindings.Display("Radio"), InputBindings.Display("Use")), "text").AddToClassList("text--small");
         }
 
         private static VisualElement Prepend(VisualElement button, VisualElement icon)

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using Abandoned.Networking;
 using Abandoned.Structure;
 using Unity.Netcode;
@@ -19,8 +20,8 @@ namespace Abandoned.Threats
         }
         private Bounds huntBounds;
         public void SetHuntBounds(Bounds bounds) => huntBounds = bounds;
-        public override string DisplayName => "The Last Hunter";
-        public override string DeathLine => "You stayed too long.";
+        public override string DisplayName => Loc.Mark("The Last Hunter");
+        public override string DeathLine => Loc.Mark("You stayed too long.");
         public override ThreatMotion DesiredMotion => hunting.Value ? ThreatMotion.Chase : ThreatMotion.Special;
         // It knows where every living crew member is: a locker hides no one, and no door holds it (0.16.0).
         protected override bool FindsHider(NetworkPlayer p) => true;

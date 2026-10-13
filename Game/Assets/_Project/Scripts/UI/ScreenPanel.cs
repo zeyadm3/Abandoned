@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -77,7 +78,7 @@ namespace Abandoned.UI
             var head = MenuKit.Row(Panel);
             head.AddToClassList("archive-panel__masthead");
             MenuKit.Text(head, "ABANDONED", "archive-panel__brand").pickingMode = PickingMode.Ignore;
-            MenuKit.Text(head, "SALVAGE DIVISION / RECOVERED RECORDS", "archive-panel__classification").pickingMode = PickingMode.Ignore;
+            MenuKit.Text(head, Loc.T("SALVAGE DIVISION / RECOVERED RECORDS"), "archive-panel__classification").pickingMode = PickingMode.Ignore;
             ScrollView scroll = MenuKit.Scroll(Panel, "screen-panel__scroll");
             scroll.contentContainer.style.width = Length.Percent(100f);
             build(scroll.contentContainer);

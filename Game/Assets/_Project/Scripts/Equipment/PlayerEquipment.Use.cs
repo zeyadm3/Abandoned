@@ -56,7 +56,7 @@ namespace Abandoned.Equipment
             if (Physics.CheckBox(at, half - Vector3.one * 0.02f, rotation, wallMask, QueryTriggerInteraction.Ignore) ||
                 Physics.Linecast(Eye, at, wallMask, QueryTriggerInteraction.Ignore))
             {
-                HintRpc("No room to lay the planks here");
+                HintRpc(Loc.Mark("No room to lay the planks here"));
                 return false;
             }
             return Spawn(plankPrefab, at, rotation) != null;
@@ -68,7 +68,7 @@ namespace Abandoned.Equipment
             Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
             if (pulleyPrefab == null || !Pulley.FindHole(transform.position, forward, 3.2f, wallMask, out Vector3 at, out float drop))
             {
-                HintRpc("Face a hole in the floor (a drop of 2 m or more) to rig the pulley");
+                HintRpc(Loc.Mark("Face a hole in the floor (a drop of 2 m or more) to rig the pulley"));
                 return false;
             }
             NetworkObject rig = Spawn(pulleyPrefab, at, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
@@ -85,14 +85,14 @@ namespace Abandoned.Equipment
             StructuralSection section = SectionQuery.Under(transform.position);
             if (supportJackPrefab == null || section == null || !section.CanCollapse || section.Reinforcement > 1f)
             {
-                HintRpc(section != null && section.Reinforcement > 1f ? "This floor is already braced" : "Stand on a floor that could give way to brace it");
+                HintRpc(section != null && section.Reinforcement > 1f ? Loc.Mark("This floor is already braced") : Loc.Mark("Stand on a floor that could give way to brace it"));
                 return false;
             }
             Vector3 centre = section.transform.position;
             float underside = centre.y - 0.35f;
             if (!Physics.Raycast(new Vector3(centre.x, underside - 0.05f, centre.z), Vector3.down, out RaycastHit below, 8f, wallMask, QueryTriggerInteraction.Ignore))
             {
-                HintRpc("Nothing below to brace it against");
+                HintRpc(Loc.Mark("Nothing below to brace it against"));
                 return false;
             }
             NetworkObject jack = Spawn(supportJackPrefab, below.point, Quaternion.identity);
@@ -162,7 +162,7 @@ namespace Abandoned.Equipment
             }
             if (best != null) return best.ServerHeal(best.HealthConfig.MedkitHeal);
             if (player.ServerHeal(player.HealthConfig.MedkitHeal)) return true;
-            HintRpc("No injury to treat. Aim at an injured crewmate, or use the medkit when hurt.");
+            HintRpc(Loc.Mark("No injury to treat. Aim at an injured crewmate, or use the medkit when hurt."));
             return false;
         }
 

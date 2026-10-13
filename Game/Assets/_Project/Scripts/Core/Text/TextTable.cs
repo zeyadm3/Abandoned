@@ -5,37 +5,35 @@ using UnityEngine;
 namespace Abandoned.Core
 {
     /// <summary>
-    /// Player-facing text out of code (0.19.9), so the game can be translated later: Resources/Text/&lt;language&gt;
-    /// is a JSON list of key/text pairs. Code asks for a key and keeps its English as the fallback, so a
-    /// missing line never shows a key. "{key:Interact}" in a text is the player's own key for that action.
-    /// Moved so far: the first-time tips ("hint.&lt;HintId&gt;").
+    /// The translated text of the language in use (0.19.9; every language since 0.24.8). Each sheet in
+    /// Resources/Text is a list of blocks, one line per language, split by a blank line:
+    /// <code>
+    /// en: Back
+    /// de: Zurück
+    /// ja: 戻る
+    /// </code>
+    /// The English line is what code asks for (<see cref="Loc.T(string)"/>), so a line with no translation simply
+    /// stays English and never shows a key. A block may start with "key: some.id" when code asks by id instead
+    /// (the tips, "hint.&lt;HintId&gt;"). "#" starts a comment; "\n" is a line break. Format and checks:
+    /// Docs/LOCALIZATION_0.24.8.md and Tools/Text/check.py.
     /// </summary>
     public static class TextTable
     {
-        [Serializable]
-        private class Entry
-        {
-            public string key;
-            public string text;
-        }
-
-        [Serializable]
-        private class File
-        {
-            public List<Entry> entries = new();
-        }
+        public const string Folder = "Text";
+        private const string KeyTag = "key";
 
         private static Dictionary<string, string> table;
-        private static string loaded;
 
-        /// <summary>The language in use ("en" until there are translations; a Settings choice later).</summary>
-        public static string Language { get; set; } = "en";
+        /// <summary>Lines loaded for the language in use (the F1 text line).</summary>
+        public static int Count => Table.Count;
 
-        public static string Get(string key)
-        {
-            if (table == null || loaded != Language) Load();
-            return table.TryGetValue(key, out string text) ? text : null;
-        }
+        private static Dictionary<string, string> Table => table ??= Load(Languages.Current.Code);
+
+        /// <summary>The text for a key or an English line in the language in use, or null when there is none.</summary>
+        public static string Get(string key) => key != null && Table.TryGetValue(key, out string text) ? text : null;
+
+        /// <summary>The language changed: the next question reads the sheets again.</summary>
+        public static void Reload() => table = null;
 
         /// <summary>Fills in the player's keys: "{key:Interact}" becomes "E" (or their own binding).</summary>
         public static string Format(string text)
@@ -52,29 +50,68 @@ namespace Abandoned.Core
             return text;
         }
 
-        private static void Load()
+        private static Dictionary<string, string> Load(string language)
         {
-            loaded = Language;
-            table = new Dictionary<string, string>();
-            var asset = Resources.Load<TextAsset>($"Text/{Language}");
-            if (asset == null) return;
-            File file;
-            // A broken translation file must fall back to the English in code, not throw into whatever asked.
-            try { file = JsonUtility.FromJson<File>(asset.text); }
-            catch (Exception e)
+            var lines = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (TextAsset sheet in Resources.LoadAll<TextAsset>(Folder))
             {
-                Debug.LogWarning($"[Text] Resources/Text/{Language} is not valid JSON ({e.Message}); using the built-in text.");
-                return;
+                // A broken sheet must fall back to the English in code, not throw into whatever asked.
+                try { Read(sheet.text, language, lines); }
+                catch (Exception e) { Debug.LogWarning($"[Text] Resources/{Folder}/{sheet.name} could not be read ({e.Message}); its lines stay English."); }
             }
-            if (file?.entries == null) return;
-            foreach (Entry e in file.entries) if (!string.IsNullOrEmpty(e.key)) table[e.key] = e.text;
+            return lines;
+        }
+
+        /// <summary>Adds one sheet's lines for <paramref name="language"/>. Public for the tests and the sheet checks.</summary>
+        public static void Read(string sheet, string language, Dictionary<string, string> into)
+        {
+            if (string.IsNullOrEmpty(sheet)) return;
+            string key = null, english = null, local = null;
+            int start = 0;
+            while (start <= sheet.Length)
+            {
+                int end = sheet.IndexOf('\n', start);
+                if (end < 0) end = sheet.Length;
+                string line = sheet.Substring(start, end - start).Trim();
+                start = end + 1;
+                if (line.Length == 0)
+                {
+                    Store(key, english, local, into);
+                    key = english = local = null;
+                    continue;
+                }
+                int colon = line.IndexOf(':');
+                if (line[0] == '#' || colon <= 0) continue;
+                string tag = line.Substring(0, colon);
+                string text = Unescape(line.Substring(colon + 1).Trim());
+                if (tag == KeyTag) key = text;
+                else
+                {
+                    if (tag == Languages.English) english = text;
+                    if (tag == language && text.Length > 0) local = text;
+                }
+            }
+            Store(key, english, local, into);
+        }
+
+        private static void Store(string key, string english, string local, Dictionary<string, string> into)
+        {
+            // By id: a missing translation gives the sheet's English. By English line: nothing is stored, and
+            // the caller keeps the English it asked with.
+            if (!string.IsNullOrEmpty(key))
+            {
+                if ((local ?? english) != null) into[key] = local ?? english;
+            }
+            else if (!string.IsNullOrEmpty(english) && local != null && !ReferenceEquals(local, english)) into[english] = local;
+        }
+
+        private static string Unescape(string text)
+        {
+            if (text.IndexOf('\\') < 0) return text;
+            return text.Replace("\\n", "\n").Replace("\\\\", "\\");
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics()
-        {
-            table = null;
-            Language = "en";
-        }
+        private static void ResetStatics() => table = null;
     }
 }

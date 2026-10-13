@@ -18,6 +18,8 @@ namespace Abandoned.Loot
         [field: Header("Identity")]
         [field: SerializeField] public string Id { get; private set; } = "new_item";
         [field: SerializeField] public string DisplayName { get; private set; } = "New Item";
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
 
         [field: Header("Value")]
         [field: SerializeField, Min(0)] public int ValueMin { get; private set; } = 100;

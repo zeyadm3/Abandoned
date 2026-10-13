@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using Unity.Netcode;
 
@@ -46,14 +47,14 @@ namespace Abandoned.Contracts
 
         public bool Equals(Contract o) => Seed == o.Seed && Scene == o.Scene && ModifierId == o.ModifierId && Quota == o.Quota;
 
-        public static string ThreatName(byte level) => level switch { 0 => "LOW", 1 => "MEDIUM", _ => "HIGH" };
+        public static string ThreatName(byte level) => level switch { 0 => Loc.T("LOW"), 1 => Loc.T("MEDIUM"), _ => Loc.T("HIGH") };
 
         /// <summary>What the level does to the job's monsters (ThreatPacingConfig), in the board's words.</summary>
         public static string ThreatNote(byte level) => level switch
         {
-            0 => "fewer monsters, slower to arrive, weaker hits",
-            1 => "monsters arrive steadily",
-            _ => "more monsters, sooner, harder hits",
+            0 => Loc.T("fewer monsters, slower to arrive, weaker hits"),
+            1 => Loc.T("monsters arrive steadily"),
+            _ => Loc.T("more monsters, sooner, harder hits"),
         };
     }
 }

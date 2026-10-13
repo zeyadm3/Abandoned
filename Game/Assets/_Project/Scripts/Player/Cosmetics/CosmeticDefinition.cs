@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 
 namespace Abandoned.Player
@@ -18,6 +19,9 @@ namespace Abandoned.Player
         [field: SerializeField] public CosmeticKind Kind { get; private set; }
         [field: Tooltip("One line for the wardrobe's detail panel.")]
         [field: SerializeField, TextArea] public string Description { get; private set; }
+        /// <summary>The name as screens show it, in the player's language; <see cref="DisplayName"/> stays English for logic and the network.</summary>
+        public string LocalName => Loc.T(DisplayName);
+        public string LocalDescription => Loc.T(Description);
         [field: Tooltip("Coverall colour.")]
         [field: SerializeField] public Color Color { get; private set; } = Color.white;
         [field: Tooltip("Hat or accessory model, origin at the crown of the head (a hat sits on it; face and body pieces are offset from it). Empty = none.")]

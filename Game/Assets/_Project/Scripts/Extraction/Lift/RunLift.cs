@@ -135,7 +135,7 @@ namespace Abandoned.Extraction
             {
                 // Hit the bottom: everyone riding it is hurt, and the whole building hears it.
                 foreach (NetworkPlayer p in NetworkPlayer.All)
-                    if (p != null && !p.IsDead && lift.OnDeck(p.transform.position)) p.DealDamage(LiftConfig.Current.DropDamage, "fell with the freight lift");
+                    if (p != null && !p.IsDead && lift.OnDeck(p.transform.position)) p.DealDamage(LiftConfig.Current.DropDamage, Loc.Mark("fell with the freight lift"));
                 NoiseSystem.Emit(lift.Deck, 1f, NoiseSource.Other);
                 SoundRpc(SoundId.Crash);
                 return;

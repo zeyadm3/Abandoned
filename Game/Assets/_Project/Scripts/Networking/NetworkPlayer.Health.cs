@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System;
 using Abandoned.Player;
 using Unity.Netcode;
@@ -111,7 +112,7 @@ namespace Abandoned.Networking
             // 0.17.1: landing on a crash mat. A fall's height goes with the square of its speed.
             float soft = Core.ImpactCushion.At(transform.position + Vector3.up * 0.3f);
             fallHeight *= soft * soft;
-            DealDamage(HealthConfig.FallDamage(fallHeight, weight), "Fell");
+            DealDamage(HealthConfig.FallDamage(fallHeight, weight), Loc.Mark("Fell"));
         }
     }
 }

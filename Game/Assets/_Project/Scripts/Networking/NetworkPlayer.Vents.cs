@@ -95,7 +95,7 @@ namespace Abandoned.Networking
             motor.ApplyRemoteState(true, false, true);
             VentGrille exit = VentGrille.Find(duct, 1 - ventFrom.Value);
             OwnerTeleport((exit != null ? exit.OutPoint : transform.position) + Vector3.down * DuctDepth);
-            if (hideHud != null) hideHud.Override = "Crawling through the vent...";
+            if (hideHud != null) hideHud.Override = Loc.T("Crawling through the vent...");
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Abandoned.Networking
         // Owner: the crawl is dark, cramped and a few seconds long (0.22.2: the HUD's blackout).
         private void TickOwnerVentScreen()
         {
-            if (ventHere) UI.HudCallout.Blackout(this, $"crawling...  {VentRemaining:0}");
+            if (ventHere) UI.HudCallout.Blackout(this, Loc.T("crawling...  {0:0}", VentRemaining));
             else UI.HudCallout.Blackout(this, null);
         }
     }
