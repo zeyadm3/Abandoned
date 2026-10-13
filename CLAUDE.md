@@ -106,7 +106,10 @@ after any new text). A language change re-words the whole game at once: menus ar
 languages are in Tools/Steam. `Tools/unity.sh compile` passed (the user asked for the builds); never played.
 The language fonts (**Tools > Abandoned > UI > Language Fonts (0.24.8)**) are already authored. How it works, the
 sheet format, the wording table and what stays English on purpose: Docs/LOCALIZATION_0.24.8.md. Translations
-are Claude's, with no native review.
+are Claude's, with no native review. Mac + Windows shareable builds were made from clean commit 1f93ff49 at the
+user's request (Abandoned-0.24.8-1f93ff49-*.zip in ~/Documents/Abandoned-builds/dev/; the 4d0db969 zips beside
+them are the earlier pass without the data text): zips test clean, the Mac app's signature verifies, the new
+sheets are in both; not played.
 
 **0.24.7c (2026-10-12): pre-launch fixes.** From a readiness review before 0.25.0; no features. The feedback
 contact comes from `Core.Launch` (never a hard-coded address), the 25 voice clips were regenerated with a voice
