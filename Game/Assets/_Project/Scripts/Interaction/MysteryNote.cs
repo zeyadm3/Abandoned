@@ -30,8 +30,8 @@ namespace Abandoned.Interaction
             if (open)
                 screen.Build(title, p =>
                 {
-                    MenuKit.Text(p, title.ToUpperInvariant(), "heading");
-                    MenuKit.Text(p, text);
+                    MenuKit.Text(p, Loc.T(title).ToUpperInvariant(), "heading");
+                    MenuKit.Text(p, Loc.T(text));
                     MenuKit.Button(p, Loc.T("Fold it away"), () => open = false);
                 });
         }

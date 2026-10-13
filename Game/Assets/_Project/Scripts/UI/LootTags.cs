@@ -66,6 +66,7 @@ namespace Abandoned.UI
         private void Update()
         {
             if (!Mine || HudLayer.Root == null) return;
+            DropStale();
             Camera camera = Camera.main;
             bool alive = !player.IsDead;
             scanAction ??= inputReader.Actions?.FindAction("Gameplay/Scan");
@@ -73,6 +74,15 @@ namespace Abandoned.UI
             UpdateFocus(camera, alive && ValuesVisible);
             UpdateScan(camera);
             UpdateReady(alive);
+        }
+
+        // The HUD was emptied (a new language): tags and the reminder are made again, worded anew.
+        private void DropStale()
+        {
+            if (ready != null && ready.panel == null) { ready = scanCap = null; scanBinding = null; }
+            if (ring != null && ring.panel == null) ring = null;
+            if (focusTag != null && focusTag.Root.panel == null) focusTag = null;
+            if (scanTags.Count > 0 && scanTags[0].Root.panel == null) scanTags.Clear();
         }
 
         // A quiet reminder that the scan exists, when it's ready.

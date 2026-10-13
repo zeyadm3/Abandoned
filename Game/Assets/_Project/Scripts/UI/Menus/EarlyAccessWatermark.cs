@@ -25,6 +25,9 @@ namespace Abandoned.UI
             root.Add(label);
         }
 
+        /// <summary>The language changed.</summary>
+        public void Reword() => label.text = Core.Loc.T(Text);
+
         /// <summary>
         /// Screens, toasts and panels are added to the same document later (some bring themselves to the
         /// front when they open), so the watermark climbs back on top whenever something lands over it.

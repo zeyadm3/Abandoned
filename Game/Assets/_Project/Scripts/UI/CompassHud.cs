@@ -42,7 +42,7 @@ namespace Abandoned.UI
             float heading = Mathf.Repeat(view.transform.eulerAngles.y, 360f);
             string degrees = $"{Mathf.RoundToInt(heading) % 360:000}\u00b0";
             if (bearing.text != degrees) bearing.text = degrees;
-            string point = Points[Mathf.RoundToInt(heading / 45f) % Points.Length];
+            string point = Loc.C("compass", Points[Mathf.RoundToInt(heading / 45f) % Points.Length]);
             if (direction.text != point) direction.text = point;
             // Translate, not left: sliding the tape every frame must not re-run layout.
             float visibleWidth = window.layout.width > 0f ? window.layout.width : Width;

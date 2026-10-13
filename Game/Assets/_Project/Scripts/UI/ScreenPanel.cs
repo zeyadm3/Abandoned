@@ -72,6 +72,8 @@ namespace Abandoned.UI
         /// <summary>Rebuilds the contents when <paramref name="key"/> differs from the last build.</summary>
         public void Build(string key, Action<VisualElement> build)
         {
+            // An open screen is worded when it is built, so a new language is a new build too.
+            key = Languages.Version + "|" + key;
             if (key == builtFor) return;
             builtFor = key;
             Panel.Clear();

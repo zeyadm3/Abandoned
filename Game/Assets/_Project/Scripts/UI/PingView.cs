@@ -42,6 +42,8 @@ namespace Abandoned.UI
             RunPings pings = RunPings.Current;
             Camera cam = Camera.main;
             int count = pings != null && pings.IsSpawned && cam != null && HudLayer.World != null ? pings.Marks.Count : 0;
+            // A HUD built again (a new language) left the old markers behind.
+            if (count > 0 && markers.Count > 0 && markers[0].root.panel == null) markers.Clear();
             while (markers.Count < count)
             {
                 var root = new VisualElement { pickingMode = PickingMode.Ignore };

@@ -96,15 +96,17 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
-**0.24.8 (2026-10-12, in progress): nine languages.** Simplified Chinese, Japanese, Korean, Spanish, Brazilian
+**0.24.8 (2026-10-13): nine languages.** Simplified Chinese, Japanese, Korean, Spanish, Brazilian
 Portuguese, German, French, Russian, Polish, on the game's own text sheets (the user chose this over Unity's
-Localization package). All runtime code is converted (`Loc.T`, English is the key) and every line the code asks
-for is translated (1,087 lines x 9). **Still open: the ~364 names and descriptions in data assets** (loot,
-cosmetics, gear, achievements, modifiers, truck upgrades, voicemails; `python3 Tools/Text/check.py --missing`
-lists them), the Steam rich-presence files, and the HUD's fixed labels on a mid-game language switch. Compiled
-outside Unity only (dotnet); never run. The user must run **Tools > Abandoned > UI > Language Fonts (0.24.8)**
-once. How it works, the sheet format and the wording table: Docs/LOCALIZATION_0.24.8.md. Translations are
-Claude's, with no native review. Not committed.
+Localization package). All runtime code is converted (`Loc.T`, English is the key) and every line the code and
+the content assets ask for is translated (1,462 lines x 9; `python3 Tools/Text/check.py` must report 0 missing
+after any new text). A language change re-words the whole game at once: menus are rebuilt, the HUD is emptied
+(`HudLayer.Clear`) and its pieces build themselves again, so **every HUD piece must keep the
+`if (x == null || x.panel == null) Build();` pattern**. Steam's rich-presence files and the achievements in nine
+languages are in Tools/Steam. `Tools/unity.sh compile` passed (the user asked for the builds); never played.
+The language fonts (**Tools > Abandoned > UI > Language Fonts (0.24.8)**) are already authored. How it works, the
+sheet format, the wording table and what stays English on purpose: Docs/LOCALIZATION_0.24.8.md. Translations
+are Claude's, with no native review.
 
 **0.24.7c (2026-10-12): pre-launch fixes.** From a readiness review before 0.25.0; no features. The feedback
 contact comes from `Core.Launch` (never a hard-coded address), the 25 voice clips were regenerated with a voice

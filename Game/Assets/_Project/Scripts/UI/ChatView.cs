@@ -30,6 +30,7 @@ namespace Abandoned.UI
         private TextField field;
         private PlayerInputReader frozen;
         private VisualElement layoutParent, voice, vitals;
+        private int wordedFor;
 
         private const float LayoutGap = 12f, ScreenInset = 24f, MaxWidth = 440f;
 
@@ -76,6 +77,8 @@ namespace Abandoned.UI
                     ReleaseLayout();
                     hud.parent.Add(root);
                 }
+                // The log keeps its lines through a language change; only the fixed words are set again.
+                if (wordedFor != Languages.Version) Word();
                 return true;
             }
             root = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -83,7 +86,7 @@ namespace Abandoned.UI
             root.AddToClassList("crew-transmissions");
             root.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
             hud.parent.Add(root); // beside the HUD, so it stays while typing
-            heading = MenuKit.Text(root, Loc.T("CREW TRANSMISSIONS"), "crew-transmissions__heading");
+            heading = MenuKit.Text(root, "", "crew-transmissions__heading");
             heading.pickingMode = PickingMode.Ignore;
             log = MenuKit.Scroll(root, "chat__log");
             log.style.maxHeight = 260f;
@@ -92,12 +95,20 @@ namespace Abandoned.UI
             field.AddToClassList("field");
             field.AddToClassList("chat__field");
             root.Add(field);
-            field.tooltip = Loc.T("Message the crew. Enter sends; Escape closes.");
-            keys = MenuKit.Text(root, Loc.T("ENTER  SEND    /    ESC  CLOSE"), "crew-transmissions__keys");
+            keys = MenuKit.Text(root, "", "crew-transmissions__keys");
             keys.pickingMode = PickingMode.Ignore;
+            Word();
             MenuKit.Show(field, false);
             MenuKit.Show(keys, false);
             return true;
+        }
+
+        private void Word()
+        {
+            wordedFor = Languages.Version;
+            heading.text = Loc.T("CREW TRANSMISSIONS");
+            field.tooltip = Loc.T("Message the crew. Enter sends; Escape closes.");
+            keys.text = Loc.T("ENTER  SEND    /    ESC  CLOSE");
         }
 
         private void BindLayout()

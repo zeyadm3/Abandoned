@@ -116,6 +116,7 @@ namespace Abandoned.Networking
         private void Update()
         {
             bool on = Spectating;
+            DropStale();
             DeathCard();
             if (on && ghostBar == null) ghostBar = UI.HudLayer.Add(new UnityEngine.UIElements.VisualElement(), "ghost-bar");
             if (ghostBar != null)
@@ -154,6 +155,16 @@ namespace Abandoned.Networking
                 UI.HudLayer.Remove(threatMarks[gone]);
                 threatMarks.Remove(gone);
             }
+        }
+
+        // The HUD was emptied (a new language): the bar, the card and the marks are made again, worded anew.
+        private void DropStale()
+        {
+            if (ghostBar != null && ghostBar.panel == null) { ghostBar = null; ghostShown = null; }
+            if (deathCard != null && deathCard.panel == null) deathCard = null;
+            bool marksGone = false;
+            foreach (UnityEngine.UIElements.Label mark in threatMarks.Values) marksGone |= mark.panel == null;
+            if (marksGone) threatMarks.Clear();
         }
 
         // YOU DIED and what did it, between the death camera and the ghost.

@@ -85,7 +85,7 @@ namespace Abandoned.Company
                 MenuKit.Text(panel, Loc.T("VOICEMAIL"), "heading");
                 MenuKit.Text(panel, Loc.T("1 message - from: THE BOSS"), "subtitle");
                 MenuKit.Text(panel, $"\"{Loc.T(text)}\"");
-                MenuKit.Text(panel, "<i>*beep*</i>", "text").AddToClassList("text--small");
+                MenuKit.Text(panel, $"<i>{Loc.T("*beep*")}</i>", "text").AddToClassList("text--small");
                 MenuKit.Button(panel, Loc.T("Hang up"), () => open = false, SoundId.UiBack);
             });
         }

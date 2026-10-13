@@ -4,9 +4,15 @@ The game is written in English and translated into nine languages: Simplified Ch
 Korean (`ko`), Spanish (`es`, one neutral Spanish for Spain and Latin America), Brazilian Portuguese (`pt-BR`),
 German (`de`), French (`fr`), Russian (`ru`) and Polish (`pl`).
 
-**Status: written, compiled outside Unity only, never run.** The translations are Claude's, with no native review.
+**Status: written and compiled in Unity (`Tools/unity.sh compile`), never played.** The translations are Claude's,
+with no native review.
 Steam's language table should say Interface and Subtitles for these languages, not Full Audio: the 25 spoken
 clips stay English and their captions are translated.
+
+Every line the code and the content assets ask for is translated: 1,462 lines x 9 (`python3 Tools/Text/check.py`
+reports 0 missing). The second pass (2026-10-13) added the names and descriptions kept in data assets (loot,
+loot sets, gear, cosmetics, achievements, contract modifiers, truck upgrades, the boss's voicemails and the
+contract cards' quips), made a language change re-word the whole game at once, and wrote Steam's files.
 
 ## How it works
 
@@ -26,7 +32,15 @@ clips stay English and their captions are translated.
   Player names and chat are never translated.
 - The language is the player's pick in Settings > Gameplay > Language; without one it follows the game's language
   in Steam, then the computer's, then English. Batch runs (tests, nettests) are always English.
-- Changing the language rebuilds the menu screens at once. HUD pieces re-word as they next update.
+- **Changing the language re-words everything at once**, in the menus or in the middle of a job:
+  - the menu screens are built again (`MenuUi.RebuildForLanguage`);
+  - the HUD is emptied (`HudLayer.Clear`) and each piece builds itself again the same frame, the way it already
+    does when it finds its elements gone. A new HUD piece must follow that pattern
+    (`if (x == null || x.panel == null) Build();`) and reset what it remembers having shown inside `Build`;
+  - a world-opened screen (`ScreenPanel`) has the language's version in its build key, so one that is open
+    rebuilds too; the truck's board, which is its own document, does the same;
+  - the chat keeps its lines and only sets its fixed words again.
+  What is already on screen for a few seconds (a toast, a caption, a radio line) keeps its wording until it goes.
 
 Code: `Scripts/Core/Text/` (`Loc`, `TextTable`, `Languages`, `LanguageInfo`, `Plurals`, `TextDebugOverlay`),
 `Scripts/UI/LanguageFonts.cs`, `Scripts/UI/Menus/MenuUi.Language.cs`.
@@ -43,6 +57,9 @@ ja: 戻る
 de: Zurück
 ```
 
+- The sheets named `data_*.txt` hold what the content assets say (`data_loot`, `data_gear`, `data_cosmetics`,
+  `data_achievements`, `data_jobs` for contract modifiers and truck upgrades, `data_voicemail`) and `data_world`
+  the words saved in scenes or made up at run time (camera labels, "Player 2", the credits' headings).
 - The `en:` line must match the English in the code exactly. A block may start with `key: some.id` instead.
 - A missing language line means that language shows the English.
 - `#` starts a comment line. `\n` is a line break. No line may start or end with a space.
@@ -58,6 +75,25 @@ python3 Tools/Text/check.py
 
 It lists English lines the code asks for that no sheet has, sheet lines nothing asks for, languages missing from
 a block, placeholders that differ from the English, and lines in the wrong script.
+
+## What stays English on purpose
+
+- The 25 spoken clips (their captions are translated).
+- Player names and chat, and the game's and the company's names.
+- Lettering that is part of the world's art: the EXIT sign in the mall and the store logos and sale posters
+  (they are pictures).
+- Key names on key caps ("Space", "LMB", "D-Pad Up"): they come from the input system and name the icons.
+- The credits' entries (makers and licences); their two headings are translated.
+- F1 debug lines and anything else only developer builds show.
+
+## Steam's own files
+
+Steam shows these outside the game, so they are uploaded on the partner site, not read by the game:
+
+- `Tools/Steam/rich_presence_<language>.vdf`: what friends see under your name, one file per Steam language
+  (Spain and Latin America share the Spanish text). Upload each under Rich Presence localization.
+- `Tools/Steam/achievements_languages.csv`: every achievement's name and description per Steam language, made
+  from the sheets by `python3 Tools/Text/steam_achievements.py` (run it again after changing the wording).
 
 ## Fonts
 

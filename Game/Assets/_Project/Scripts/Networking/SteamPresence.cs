@@ -7,7 +7,8 @@ namespace Abandoned.Networking
     /// <summary>
     /// Steam rich presence (0.19.11): what friends see under your name ("At the HQ with a crew of 3", "On a
     /// salvage job: $12,400 of $20,000") and the crew grouped together. Needs the game's own App ID: the
-    /// "#Status_*" tokens come from Tools/Steam/rich_presence_english.vdf, uploaded on the partner site.
+    /// "#Status_*" tokens come from Tools/Steam/rich_presence_&lt;language&gt;.vdf, uploaded on the partner site
+    /// (one per language since 0.24.8, so a friend reads it in their own language).
     /// Under App ID 480 Steam shows nothing; the plain "status" key still fills "view game info".
     /// </summary>
     public class SteamPresence : MonoBehaviour

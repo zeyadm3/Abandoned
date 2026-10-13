@@ -140,7 +140,7 @@ namespace Abandoned.Extraction
             if (screen == null || feed == null || current >= SecurityCamera.All.Count) return;
             screen.style.display = UnityEngine.UIElements.DisplayStyle.Flex;
             screen.style.backgroundImage = UnityEngine.UIElements.Background.FromRenderTexture(feed);
-            caption.text = $"{SecurityCamera.All[current].Label}     {System.TimeSpan.FromSeconds(Time.time):hh\\:mm\\:ss}";
+            caption.text = $"{SecurityCamera.All[current].LocalLabel}     {System.TimeSpan.FromSeconds(Time.time):hh\\:mm\\:ss}";
             help.text = Loc.T("A / D or click   next camera          {0}   get up", InputBindings.Display("Interact"));
         }
 

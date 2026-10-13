@@ -74,7 +74,8 @@ namespace Abandoned.Extraction
             RunState run = RunState.Current;
             if (run == null || !run.IsSpawned) return;
             RunNetState s = run.State;
-            string key = $"{s.Haul}|{s.Quota}|{s.CargoVolume}|{s.CargoCapacity}|{s.Phase}";
+            // The language's version is in the key: the board is its own document, outside the HUD that is built again.
+            string key = $"{s.Haul}|{s.Quota}|{s.CargoVolume}|{s.CargoCapacity}|{s.Phase}|{Languages.Version}";
             if (key == shown) return;
             shown = key;
             bool met = s.Haul >= s.Quota;

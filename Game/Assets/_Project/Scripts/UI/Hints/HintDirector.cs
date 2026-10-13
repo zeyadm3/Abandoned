@@ -41,7 +41,10 @@ namespace Abandoned.UI
             if (view == null || !view.Valid)
             {
                 if (HudLayer.Root == null) return;
+                HintId? open = view?.Showing;
                 view = new HintView();
+                // The HUD was built again (a new language): the tip on screen comes back in the new wording.
+                if (open is HintId again && view.Valid) view.Show(again, Hints.Text(again));
             }
             view.Tick();
             if (!Hints.Enabled || Time.time < nextCheck) return;

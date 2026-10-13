@@ -7,8 +7,9 @@ namespace Abandoned.UI
 {
     /// <summary>
     /// The menu screens, and building them again when the language changes (0.24.8). A screen is a plain tree
-    /// of elements with its wording fixed when it is built, so another language means new screens; the HUD,
-    /// world-opened panels and captions stay where they are and word themselves as they next update.
+    /// of elements with its wording fixed when it is built, so another language means new screens. The HUD is
+    /// emptied and its pieces build themselves again (0.24.8); world-opened panels rebuild when they see the
+    /// language's version change (<see cref="ScreenPanel.Build"/>).
     /// </summary>
     public partial class MenuUi
     {
@@ -24,6 +25,8 @@ namespace Abandoned.UI
             LanguageFonts.Order();
             if (document == null || document.rootVisualElement == null) return;
             BuildViews(document.rootVisualElement);
+            HudLayer.Clear();
+            watermark?.Reword();
             foreach (MenuScreen open in pushed)
             {
                 if (open == MenuScreen.HowToPlay) howToPlay.Refresh();

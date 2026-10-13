@@ -107,6 +107,7 @@ namespace Abandoned.Extraction
             HudLayer.Remove(top);
             HudLayer.Remove(clock);
             HudLayer.Remove(leaving);
+            metShown = false;
             top = HudLayer.Add(new VisualElement(), "run-haul", "h-recovery");
             haulState = Text(top, Loc.T("RECOVERY TARGET"), "h-instrument-title");
             VisualElement row = new() { pickingMode = PickingMode.Ignore };

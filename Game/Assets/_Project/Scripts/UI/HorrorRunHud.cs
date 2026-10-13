@@ -116,6 +116,7 @@ namespace Abandoned.UI
             line.style.flexShrink = 0;
             line.style.minWidth = 0;
             line.AddToClassList("horror-radio__line");
+            if (shownRadio != null) line.text = shownRadio; // built again mid-message (a new language)
             radio.Add(line);
             // It is also a caption, so menus must not hide an arrival or evacuation warning.
             VisualElement surface = MenuUi.Current != null ? MenuUi.Current.Surface : HudLayer.Root;

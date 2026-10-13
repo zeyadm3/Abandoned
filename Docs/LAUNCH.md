@@ -9,7 +9,9 @@ Ready in the repo:
   and rewrites Game/steam_appid.txt; after it, `Tools/unity.sh build-release` builds MacRelease/WindowsRelease.
 - Tools/Steam/achievements.csv: all 22 achievements (API name, name, description) and their icon pairs in
   Tools/Steam/AchievementIcons (256 px, achieved and locked).
-- Tools/Steam/rich_presence_english.vdf (0.19.11): upload under Rich Presence localization.
+- Tools/Steam/rich_presence_english.vdf (0.19.11): upload under Rich Presence localization. 0.24.8 adds one
+  file per language beside it (rich_presence_german.vdf ...) and Tools/Steam/achievements_languages.csv, the
+  achievements' names and descriptions in the nine languages (Docs/LOCALIZATION_0.24.8.md, "Steam's own files").
 - Tools/Steam/steampipe/*.vdf and Tools/Steam/upload.sh <app> <win depot> <mac depot> <login>: SteamPipe upload
   (install steamcmd first); it sets the build live on a "beta" branch, not the default.
 - Docs/StoreArt: draft capsules at the current sizes, six screenshots, trailer_draft.mp4 (0.24.4/0.24.5).

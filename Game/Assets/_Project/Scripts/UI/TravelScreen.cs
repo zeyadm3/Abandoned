@@ -108,7 +108,7 @@ namespace Abandoned.UI
             Set(true);
         }
 
-        private static string Location(string level) => level == Contracts.ContractGenerator.MallScene ? Contracts.ContractGenerator.MallLocation.ToUpperInvariant() : level.ToUpperInvariant();
+        private static string Location(string level) => level == Contracts.ContractGenerator.MallScene ? Loc.T(Contracts.ContractGenerator.MallLocation).ToUpperInvariant() : level.ToUpperInvariant();
 
         private bool Build()
         {

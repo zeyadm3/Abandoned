@@ -25,7 +25,9 @@ namespace Abandoned.UI
                 string t = line.TrimEnd('\r');
                 if (t.Length == 0) continue;
                 bool header = t.StartsWith("#");
-                MenuKit.Text(scroll, header ? t.TrimStart('#', ' ') : t, header ? "section" : "text");
+                // The entries name their makers and licences, so they stay as written; the headings are worded.
+                // @loc "ART, SOUND AND FONTS", "TECHNOLOGY"
+                MenuKit.Text(scroll, header ? Loc.T(t.TrimStart('#', ' ')) : t, header ? "section" : "text");
             }
             MenuKit.Button(panel, Loc.T("Back"), menu.Back, Audio.SoundId.UiBack);
         }

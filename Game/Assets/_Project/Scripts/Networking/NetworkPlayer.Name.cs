@@ -42,7 +42,7 @@ namespace Abandoned.Networking
                 // 0.19.7: streamer mode shows crewmates by seat on this screen, never their names.
                 if (Core.GameSettings.StreamerMode && !IsOwner) return Loc.T("Crewmate {0}", Mathf.Max(0, CrewSeat) + 1);
                 string chosen = displayName.Value.ToString();
-                return string.IsNullOrWhiteSpace(chosen) ? $"Player {Mathf.Max(0, CrewSeat) + 1}" : chosen;
+                return string.IsNullOrWhiteSpace(chosen) ? Loc.T("Player {0}", Mathf.Max(0, CrewSeat) + 1) : chosen;
             }
         }
 
@@ -51,7 +51,7 @@ namespace Abandoned.Networking
         {
             foreach (NetworkPlayer p in Spawned)
                 if (p != null && p.OwnerClientId == clientId) return p.DisplayName;
-            return $"Player {clientId + 1}";
+            return Loc.T("Player {0}", clientId + 1);
         }
 
         private void SpawnName()

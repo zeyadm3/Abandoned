@@ -34,6 +34,17 @@ namespace Abandoned.UI
 
         public static Label Label(params string[] classes) => Add(new Label(), classes);
 
+        /// <summary>
+        /// Empties the HUD (0.24.8, the language changed). Every piece already builds itself again when it
+        /// finds its elements gone, so they all come back worded in the new language.
+        /// </summary>
+        internal static void Clear()
+        {
+            if (root == null) return;
+            root.Clear();
+            world = null;
+        }
+
         /// <summary>The visible border box in an ancestor's coordinates, after layout has settled.</summary>
         public static bool TryLocalRect(VisualElement element, VisualElement ancestor, out Rect rect)
         {
