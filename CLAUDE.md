@@ -101,7 +101,9 @@ worded where it is shown (crew-spending refusals, player stand-in names in resul
 toasts, the radio, hints); the main menu's session-end notice and the Controls key-conflict warning are worded;
 sheet escapes read in one pass (game and check.py); `steam_achievements.py` reuses check.py's reader; key lines
 count in the F1 missing report; EditMode tests for the sheet reader, plurals and wired text. Details:
-Docs/PROGRESS.md "0.24.8c". Compiled outside Unity (dotnet), `check.py` 0 missing; never played.
+Docs/PROGRESS.md "0.24.8c". Compiled outside Unity (dotnet), `check.py` 0 missing; never played. Mac + Windows
+shareable builds from clean commit 2eb1ca26 at the user's request (Abandoned-0.24.8c-2eb1ca26-*.zip in
+~/Documents/Abandoned-builds/dev/): zips test clean, the Mac app's signature verifies, matching stamps; not played.
 
 **0.24.8 (2026-10-13): nine languages.** Simplified Chinese, Japanese, Korean, Spanish, Brazilian
 Portuguese, German, French, Russian, Polish, on the game's own text sheets (the user chose this over Unity's

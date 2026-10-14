@@ -34,6 +34,13 @@ Checks: the dotnet compile of Runtime, Editor and EditMode tests (new tests thro
 passed; `python3 Tools/Text/check.py`: 1,463 lines x 9, 0 missing, no problems. Version 0.24.8c in BuildScript
 and Player Settings.
 
+**Builds.** `Tools/unity.sh build` passed from clean commit 2eb1ca26: Mac universal and Windows x64 shareable
+players, version **0.24.8c**, both stamped **2026-10-14T14:57:18Z**. Both ZIPs pass `unzip -t`; the Mac app's
+signature verifies (`codesign --verify --deep --strict`); the build left the tree clean. Not played.
+
+- `~/Documents/Abandoned-builds/dev/Abandoned-0.24.8c-2eb1ca26-Mac.zip`
+- `~/Documents/Abandoned-builds/dev/Abandoned-0.24.8c-2eb1ca26-Windows.zip`
+
 ## 0.24.7c: pre-launch fixes from the readiness review (2026-10-12; compiled outside Unity, not played)
 
 The user asked what still stands between the game and Steam, then: "do whatever you think is best, save
