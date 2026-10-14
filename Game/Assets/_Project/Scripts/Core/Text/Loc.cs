@@ -36,7 +36,9 @@ namespace Abandoned.Core
         public static string K(string key, string english)
         {
             LanguageInfo language = Languages.Current;
-            string text = TextTable.Get(key) ?? english;
+            string text = TextTable.Get(key);
+            if (text == null && !language.IsEnglish && !language.Stretched) MissKey(key);
+            text ??= english;
             return language.Stretched && text != null ? Stretch(text) : text;
         }
 
@@ -70,7 +72,10 @@ namespace Abandoned.Core
             return Fill(form, english, values);
         }
 
-        private const char WireSeparator = '\u001f', WordMark = '\u001e';
+        private const char WireSeparator = '\u001f', WordMark = '\u001e', WordSeparator = '\u001d';
+
+        /// <summary>How a key line is listed in <see cref="Missing"/>; any other entry is an English line.</summary>
+        public const string KeyLine = "key: ";
 
         /// <summary>
         /// English with its values, for text that leaves this machine or is kept for later (a refusal the host
@@ -84,16 +89,37 @@ namespace Abandoned.Core
         public static string FromWire(string text)
         {
             if (string.IsNullOrEmpty(text)) return text;
-            if (text.IndexOf(WireSeparator) < 0) return T(text);
+            if (text.IndexOf(WireSeparator) < 0) return text[0] == WordMark ? Value(text) : T(text);
             string[] parts = text.Split(WireSeparator);
             var values = new object[parts.Length - 1];
-            for (int i = 1; i < parts.Length; i++)
-                values[i - 1] = parts[i].Length > 0 && parts[i][0] == WordMark ? T(parts[i].Substring(1)) : parts[i];
+            for (int i = 1; i < parts.Length; i++) values[i - 1] = Value(parts[i]);
             return T(parts[0], values);
         }
 
-        /// <summary>A value for <see cref="Wire"/> that is itself text to translate (an item's English name), not a number or a player's name.</summary>
-        public static string Word(string english) => string.IsNullOrEmpty(english) ? english : WordMark + english;
+        /// <summary>
+        /// A value for <see cref="Wire"/> that is itself text to translate (an item's English name), not a number or a
+        /// player's name. It may carry values of its own: <c>Loc.Word("Player {0}", 2)</c>, worded by <see cref="Value"/>.
+        /// </summary>
+        public static string Word(string english, params object[] values)
+        {
+            if (string.IsNullOrEmpty(english)) return english;
+            if (values == null || values.Length == 0) return WordMark + english;
+            return WordMark + english + WordSeparator + string.Join(WordSeparator.ToString(), values);
+        }
+
+        /// <summary>
+        /// Text made by <see cref="Word"/>, worded in this machine's language; anything else (a player's own name)
+        /// passes through untouched, so a name that happens to match a sheet line is never translated.
+        /// </summary>
+        public static string Value(string text)
+        {
+            if (string.IsNullOrEmpty(text) || text[0] != WordMark) return text;
+            string[] parts = text.Substring(1).Split(WordSeparator);
+            if (parts.Length == 1) return T(parts[0]);
+            var values = new object[parts.Length - 1];
+            Array.Copy(parts, 1, values, 0, values.Length);
+            return T(parts[0], values);
+        }
 
         /// <summary>
         /// Leaves the text as it is and only marks it for the sheets: English the host sends, or that is kept in
@@ -124,6 +150,9 @@ namespace Abandoned.Core
             if (missing.Count < 2000) missing.Add(english);
             return english;
         }
+
+        // A key with no sheet block at all (a block without this language already falls back to its own English).
+        private static void MissKey(string key) => Miss(KeyLine + key);
 
         // About a third longer, as German and Russian run, and bracketed so unconverted text stands out.
         private static string Stretch(string english) => "[" + english + " " + new string('~', (english.Length + 2) / 3) + "]";

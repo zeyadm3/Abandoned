@@ -7,26 +7,21 @@ languages, read from the text sheets, for Steam's achievement localization (0.24
 Run it again after changing an achievement's wording in data_achievements.txt. The "steam" column is Steam's
 own name for the language (Spanish is listed twice: Spain and Latin America share one translation).
 """
-import csv, glob, os
+import csv, os
+# The sheets are read exactly as check.py (and the game) read them: blocks split by any blank line, \n escapes.
+from check import read_sheets
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-SHEETS = os.path.join(ROOT, "Game", "Assets", "_Project", "Data", "Text", "Resources", "Text")
 STEAM = os.path.join(ROOT, "Tools", "Steam")
 LANGUAGES = [("zh-CN", "schinese"), ("ja", "japanese"), ("ko", "koreana"), ("es", "spanish"), ("es", "latam"),
              ("pt-BR", "brazilian"), ("de", "german"), ("fr", "french"), ("ru", "russian"), ("pl", "polish")]
 
 
 def sheets():
-    lines = {}
-    for path in sorted(glob.glob(os.path.join(SHEETS, "*.txt"))):
-        for block in open(path, encoding="utf-8").read().split("\n\n"):
-            entry = {}
-            for line in block.split("\n"):
-                if line.startswith("#") or ":" not in line: continue
-                tag, text = line.split(":", 1)
-                entry[tag.strip()] = text.strip()
-            if "en" in entry and "key" not in entry: lines[entry["en"]] = entry
-    return lines
+    problems = []
+    blocks = read_sheets(problems)
+    for problem in problems: print("sheet problem: " + problem)
+    return {b.lines["en"]: b.lines for b in blocks if b.key is None and "en" in b.lines}
 
 
 def main():

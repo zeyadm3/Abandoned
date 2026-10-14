@@ -7,9 +7,13 @@ namespace Abandoned.Interaction
     /// <summary>Taking, letting go of and pocketing items: applied only after the rules (or the host) said yes.</summary>
     public partial class PlayerCarrier
     {
+        /// <summary>
+        /// A short line under the crosshair. Pass English (<see cref="Core.Loc.Mark"/>, or <see cref="Core.Loc.Wire"/>
+        /// with values), never text already worded: refusals also arrive that way from the host.
+        /// </summary>
         public void ShowHint(string message)
         {
-            // Refusals arrive as English, also from the host: each machine words them itself (0.24.8).
+            // Each machine words it itself (0.24.8).
             Hint = Core.Loc.FromWire(message);
             HintTime = Time.time;
         }

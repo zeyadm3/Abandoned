@@ -114,7 +114,7 @@ namespace Abandoned.Extraction
             // Nothing bigger than a pocket fits in there with you (the prompt is hidden while hands are full).
             if (me.Carrier != null && me.Carrier.Held != null)
             {
-                me.Carrier.ShowHint(Loc.T("Put that down to hide in the locker"));
+                me.Carrier.ShowHint(Loc.Mark("Put that down to hide in the locker"));
                 return;
             }
             me.RequestHide(index);

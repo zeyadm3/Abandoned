@@ -207,7 +207,7 @@ namespace Abandoned.Extraction
             if (!warned && !run.TotalCollapse && elapsed >= config.TotalCollapseAt - WarningLead && elapsed < config.TotalCollapseAt)
             {
                 warned = true;
-                RunHorrorDirector.Say(Loc.T("DISPATCH: That building won't last two more minutes. Get out."), 8f);
+                RunHorrorDirector.Say(Loc.Mark("DISPATCH: That building won't last two more minutes. Get out."), 8f);
             }
             if (!run.TotalCollapse) return;
             Vector3 ear = Ear();
@@ -223,7 +223,7 @@ namespace Abandoned.Extraction
             if (Time.time >= nextRadio && remaining > 0f)
             {
                 nextRadio = Time.time + RadioInterval;
-                RunHorrorDirector.Say(Loc.T("STRUCTURE FAILING / GET OUT NOW / {0} s", Mathf.CeilToInt(remaining)), RadioInterval + 0.5f);
+                RunHorrorDirector.Say(Loc.Wire("STRUCTURE FAILING / GET OUT NOW / {0} s", Mathf.CeilToInt(remaining)), RadioInterval + 0.5f);
                 GameAudio.PlayUi(SoundId.Siren, 0.6f);
             }
             if (Time.time >= nextRumble && remaining > 0f)

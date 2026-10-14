@@ -34,7 +34,8 @@ class Block:
     def id(self): return self.key if self.key is not None else self.lines.get("en")
 
 
-def unescape_sheet(text): return text.replace("\\n", "\n").replace("\\\\", "\\")
+# One pass, as TextTable.Unescape: an escaped backslash before an n ("\\n" in the sheet) stays a backslash and an n.
+def unescape_sheet(text): return re.sub(r"\\([n\\])", lambda m: "\n" if m.group(1) == "n" else "\\", text)
 
 
 def read_sheets(problems):
@@ -317,4 +318,5 @@ def main():
     sys.exit(1 if problems else 0)
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -163,9 +163,13 @@ namespace Abandoned.Extraction
             MenuKit.Text(side, Loc.T("APPRAISAL"), "heading");
             MenuKit.Text(side, Loc.T("CREW"), "section");
             foreach (RunResults.Player p in r.Players)
-                MenuKit.Text(side, p.Extracted ? Loc.T("<color=#7ee07e>\u25CF</color> {0}: made it out", p.Name) : p.Died ? Loc.T("<color=#ff5c4a>\u2716</color> {0}: died in there", p.Name) :
-                    p.PocketValueLost > 0 ? Loc.T("<color=#ff5c4a>\u25CB</color> {0}: left behind (lost ${1:N0} in their pockets)", p.Name, p.PocketValueLost)
-                    : Loc.T("<color=#ff5c4a>\u25CB</color> {0}: left behind", p.Name));
+            {
+                // The host sends a stand-in name ("Player 2") as a word for each machine to word.
+                string name = Loc.Value(p.Name);
+                MenuKit.Text(side, p.Extracted ? Loc.T("<color=#7ee07e>\u25CF</color> {0}: made it out", name) : p.Died ? Loc.T("<color=#ff5c4a>\u2716</color> {0}: died in there", name) :
+                    p.PocketValueLost > 0 ? Loc.T("<color=#ff5c4a>\u25CB</color> {0}: left behind (lost ${1:N0} in their pockets)", name, p.PocketValueLost)
+                    : Loc.T("<color=#ff5c4a>\u25CB</color> {0}: left behind", name));
+            }
             if (r.Blame.Length > 0)
             {
                 // 0.19.3: the blame sheet, a job title for everyone.

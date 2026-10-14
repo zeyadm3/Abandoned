@@ -4,6 +4,36 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.24.8c: localization review fixes (2026-10-14; compiled outside Unity, not played)
+
+A code review of 0.24.8 (nine languages) found 15 issues; 12 were fixed, 2 turned out not to happen in the game
+and 1 was left on purpose. The user asked: "fix all", then "commit it, push it, and make a build for mac and win
+0.24.8c". No features.
+
+- **Host-sent text stays English.** `CompanyService.Refusal` returns English (it was worded on the host, so a
+  refused purchase reached the client in the host's language). Player stand-in names ("Player 2", "Crewmate 2")
+  travel as `Loc.Word` values: `NetworkPlayer.WireName` / `WireNameOf` feed the job results, blame and award
+  lines, the hire toast and the break-room toasts; the travel screen's waiting list now carries client ids and
+  each machine names them. The toys' "Someone" is a word too (new sheet line in data_world.txt).
+- **`Loc.Word` takes values** (`Loc.Word("Player {0}", 2)`), shown alone with the new `Loc.Value`, which leaves a
+  chosen name untouched even when it matches a sheet line. `Loc.K`/`Loc.C` record keys with no sheet block in
+  the F1 missing list (as "key: id").
+- **Worded where shown:** the main menu's session-end notice (`Loc.FromWire`); the Controls key-conflict warning
+  (the action's own name, not "HandSlot1"); the radio (`RunHorrorDirector.Say` takes English, the HUD words it,
+  again after a language change); hints (`PlayerCarrier.ShowHint` takes English; the vent and locker hints were
+  worded twice).
+- **Sheets:** escapes are read in one pass in `TextTable` and check.py (`\\n` in a sheet stays a backslash and an n).
+  `Tools/Text/steam_achievements.py` reuses check.py's reader (check.py now runs `main()` only as a script); the
+  regenerated CSV is unchanged.
+- **Tests (new, EditMode, not run):** TextTableTests, PluralsTests, LocWireTests.
+- **Not changed:** VoiceHud's speaker marks already come back after a language change (the detached voice line
+  releases them); no scene holds a MysteryNote (its builder is never called); a HUD-wide rebuild counter was
+  left out, the one real stale case (the radio) is fixed directly.
+
+Checks: the dotnet compile of Runtime, Editor and EditMode tests (new tests through a scratch project copy)
+passed; `python3 Tools/Text/check.py`: 1,463 lines x 9, 0 missing, no problems. Version 0.24.8c in BuildScript
+and Player Settings.
+
 ## 0.24.7c: pre-launch fixes from the readiness review (2026-10-12; compiled outside Unity, not played)
 
 The user asked what still stands between the game and Steam, then: "do whatever you think is best, save

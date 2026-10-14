@@ -135,7 +135,8 @@ namespace Abandoned.UI
         /// <summary>Every frame while showing: the last game's notice, the memo, the logo's signal.</summary>
         public void Refresh()
         {
-            string message = SessionEndNotice.Message;
+            // Kept (and sent by the host) as English with its values, like the Play screen's errors; worded here.
+            string message = Loc.FromWire(SessionEndNotice.Message);
             column.SetEnabled(!earlyAccess.Visible);
             links.SetEnabled(!earlyAccess.Visible);
             MenuKit.Show(noticeBox, message.Length > 0);

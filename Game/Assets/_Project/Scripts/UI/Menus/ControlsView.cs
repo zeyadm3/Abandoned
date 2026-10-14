@@ -24,12 +24,25 @@ namespace Abandoned.UI
         // 0.23.2: an action's second key and its pad button are their own rows.
         private static string Label(string name, InputBinding b)
         {
-            string label = Names.TryGetValue(name, out string n) ? Loc.T(n) : name;
-            // The parts of Move are named by the input system. @loc:direction "up", "down", "left", "right"
-            if (b.isPartOfComposite) label += " " + Loc.C("direction", b.name);
+            string label = ActionName(name, b.isPartOfComposite ? b.name : null);
             if (b.groups != null && b.groups.Contains("Gamepad")) label = Loc.T("{0}  (pad)", label);
             else if (b.name == "alt") label = Loc.T("{0}  (2nd key)", label);
             return label;
+        }
+
+        // An action as this screen names it, with the part of a composite (Move up) when there is one.
+        private static string ActionName(string name, string part)
+        {
+            string label = Names.TryGetValue(name, out string n) ? Loc.T(n) : name;
+            // The parts of Move are named by the input system. @loc:direction "up", "down", "left", "right"
+            return string.IsNullOrEmpty(part) ? label : label + " " + Loc.C("direction", part);
+        }
+
+        // InputBindings.ConflictWith answers with the action's id and, for a composite, its part ("Move up").
+        private static string ConflictName(string clash)
+        {
+            int space = clash.IndexOf(' ');
+            return space < 0 ? ActionName(clash, null) : ActionName(clash.Substring(0, space), clash.Substring(space + 1));
         }
 
         private readonly AbandonedInput editing = new();
@@ -115,7 +128,7 @@ namespace Abandoned.UI
                 {
                     string path = action.bindings[index].effectivePath;
                     string clash = InputBindings.ConflictWith(editing.asset, action, index, path);
-                    warning.text = clash != null ? Loc.T("That key is also bound to {0}.", clash) : "";
+                    warning.text = clash != null ? Loc.T("That key is also bound to {0}.", ConflictName(clash)) : "";
                     InputBindings.Save(editing.asset);
                     GameAudio.PlayUi(SoundId.UiConfirm);
                     Finish();

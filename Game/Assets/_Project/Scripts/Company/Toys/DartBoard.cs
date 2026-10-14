@@ -23,9 +23,9 @@ namespace Abandoned.Company
             Rigidbody body = collision.rigidbody;
             body.isKinematic = true;
             StartCoroutine(Release(body));
-            string who = HqToys.Current != null ? HqToys.Current.Thrower(dart) : null;
-            CompanyService.Current?.// English and its values: every machine words the toast itself (CompanyService.Toys).
-            ServerToyScore(score == 50 ? Core.Loc.Wire("BULLSEYE! {0}", who ?? "Someone") : Core.Loc.Wire("{0} scores {1}.", who ?? "Someone", score));
+            string who = (HqToys.Current != null ? HqToys.Current.Thrower(dart) : null) ?? Core.Loc.Word("Someone");
+            // English and its values: every machine words the toast itself (CompanyService.Toys).
+            CompanyService.Current?.ServerToyScore(score == 50 ? Core.Loc.Wire("BULLSEYE! {0}", who) : Core.Loc.Wire("{0} scores {1}.", who, score));
         }
 
         private static System.Collections.IEnumerator Release(Rigidbody body)

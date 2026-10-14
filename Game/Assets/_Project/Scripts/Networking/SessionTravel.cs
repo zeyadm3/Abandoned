@@ -23,7 +23,7 @@ namespace Abandoned.Networking
 
         private readonly NetworkVariable<FixedString64Bytes> level = new();
         private readonly NetworkVariable<int> travel = new();
-        // Host-written: who the crew is waiting for ("" when nobody), for the travel screen.
+        // Host-written: who the crew is waiting for, as comma-separated client ids ("" when nobody), for the travel screen.
         private readonly NetworkVariable<FixedString128Bytes> waitingFor = new();
         private readonly Dictionary<ulong, int> readyFor = new();
         private int loadedTravel = -1;
@@ -36,7 +36,20 @@ namespace Abandoned.Networking
         public string Level => level.Value.ToString();
 
         /// <summary>Names of the players everyone is waiting on to finish loading (empty when nobody).</summary>
-        public string WaitingFor => waitingFor.Value.ToString();
+        public string WaitingFor
+        {
+            get
+            {
+                // The host sends client ids, not names (0.24.8): each machine names them in its own language
+                // ("Player 2") and with its own streamer mode.
+                string ids = waitingFor.Value.ToString();
+                if (ids.Length == 0) return ids;
+                var names = new List<string>();
+                foreach (string id in ids.Split(','))
+                    if (ulong.TryParse(id, out ulong client)) names.Add(NetworkPlayer.NameOf(client));
+                return string.Join(", ", names);
+            }
+        }
 
         /// <summary>This machine's progress loading the level (0-1; 1 when not loading).</summary>
         public float LoadProgress => loading == null || loading.isDone ? 1f : Mathf.Clamp01(loading.progress / 0.9f);
@@ -186,10 +199,8 @@ namespace Abandoned.Networking
                 }
                 return;
             }
-            string names = string.Join(", ", late.Select(NetworkPlayer.NameOf));
-            if (names.Length > 100) names = names.Substring(0, 100) + "...";
             var text = new FixedString128Bytes();
-            text.CopyFromTruncated(names); // names may be any script: cut at a character, never mid-byte
+            text.CopyFromTruncated(string.Join(",", late)); // at most three ids: always fits
             if (!text.Equals(waitingFor.Value)) waitingFor.Value = text;
         }
 

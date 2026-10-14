@@ -241,7 +241,7 @@ namespace Abandoned.Extraction
                     if (extracted) items.Add(new RunResults.Item { Name = item.Definition.DisplayName, Id = item.Definition.Id, StartValue = item.FullValue, FinalValue = item.CurrentValue, Weight = item.Definition.GameplayWeight, Pocketed = true, Jackpot = item.Definition.Jackpot });
                     else lost += item.CurrentValue;
                 }
-                players.Add(new RunResults.Player { ClientId = p.OwnerClientId, Name = p.DisplayName, Extracted = extracted, Died = p.IsDead, PocketValueLost = lost });
+                players.Add(new RunResults.Player { ClientId = p.OwnerClientId, Name = p.WireName, Extracted = extracted, Died = p.IsDead, PocketValueLost = lost });
             }
 
             RunResults results = RunResults.From(items, players, State.Quota, State.Seed, Time.time - startedAt);

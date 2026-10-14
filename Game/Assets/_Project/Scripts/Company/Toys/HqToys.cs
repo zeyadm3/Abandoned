@@ -31,8 +31,11 @@ namespace Abandoned.Company
             if (Current == this) Current = null;
         }
 
-        /// <summary>Host: the player who last held this toy, or null.</summary>
-        public string Thrower(LootItem toy) => toy != null && lastHolder.TryGetValue(toy, out ulong c) ? NetworkPlayer.NameOf(c) : null;
+        /// <summary>
+        /// Host: the player who last held this toy, or null. A <see cref="Core.Loc.Wire"/> value: a stand-in name
+        /// ("Player 2") is worded by each machine.
+        /// </summary>
+        public string Thrower(LootItem toy) => toy != null && lastHolder.TryGetValue(toy, out ulong c) ? NetworkPlayer.WireNameOf(c) : null;
 
         private void Update()
         {

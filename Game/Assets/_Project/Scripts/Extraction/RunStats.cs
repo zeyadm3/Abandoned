@@ -156,6 +156,7 @@ namespace Abandoned.Extraction
             return lines.ToArray();
         }
 
-        private static string Name(ulong client) => NetworkPlayer.NameOf(client);
+        // A stand-in name travels as a word (Loc.Wire value): each machine words "Player 2" itself.
+        private static string Name(ulong client) => NetworkPlayer.WireNameOf(client);
     }
 }

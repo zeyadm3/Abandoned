@@ -56,7 +56,7 @@ namespace Abandoned.Extraction
         {
             Company.CompanyService company = Company.CompanyService.Current;
             if (company == null || company.LocalMay(Company.CrewRule.Lever)) return false;
-            UI.ToastFeed.Show(Loc.T("HOST ONLY"), Company.CompanyService.Refusal(Company.CrewRule.Lever), null, UI.ToastFeed.Kind.Warn);
+            UI.ToastFeed.Show(Loc.T("HOST ONLY"), Loc.T(Company.CompanyService.Refusal(Company.CrewRule.Lever)), null, UI.ToastFeed.Kind.Warn);
             return true;
         }
 

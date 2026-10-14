@@ -40,20 +40,23 @@ namespace Abandoned.Company
             if (IsServer) crewRules.Value = (byte)Prefs.GetInt(CrewRulesKey, (int)DefaultCrewRules);
         }
 
-        /// <summary>What a crew member is told when the host keeps something to themselves.</summary>
+        /// <summary>
+        /// What a crew member is told when the host keeps something to themselves, in English: the host also sends
+        /// it (a refused purchase), so the machine that shows it words it (<see cref="Loc.T(string)"/> or Loc.FromWire).
+        /// </summary>
         public static string Refusal(CrewRule rule) => rule switch
         {
-            CrewRule.Spend => Loc.T("The host keeps the company card. Ask them, or they can allow crew spending in the pause menu."),
-            CrewRule.Drive => Loc.T("Only the host can start the van. They can allow it in the pause menu."),
-            CrewRule.Lever => Loc.T("Only the host can pull the lever on this crew."),
-            _ => Loc.T("The host hasn't allowed that."),
+            CrewRule.Spend => Loc.Mark("The host keeps the company card. Ask them, or they can allow crew spending in the pause menu."),
+            CrewRule.Drive => Loc.Mark("Only the host can start the van. They can allow it in the pause menu."),
+            CrewRule.Lever => Loc.Mark("Only the host can pull the lever on this crew."),
+            _ => Loc.Mark("The host hasn't allowed that."),
         };
 
         // Client side: say no at once instead of sending a request the host will refuse.
         private bool RefuseLocally(CrewRule rule)
         {
             if (LocalMay(rule)) return false;
-            UI.ToastFeed.Show(Loc.T("HOST ONLY"), Refusal(rule), null, UI.ToastFeed.Kind.Warn);
+            UI.ToastFeed.Show(Loc.T("HOST ONLY"), Loc.T(Refusal(rule)), null, UI.ToastFeed.Kind.Warn);
             return true;
         }
 

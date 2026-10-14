@@ -75,11 +75,12 @@ namespace Abandoned.UI
             radio.EnableInClassList("horror-radio--urgent", urgent);
         }
 
+        // The radio's lines arrive as English with their values (RunHorrorDirector.Say) and are worded here.
         private void Present(string text, float until)
         {
             shownRadio = text;
-            line.text = text;
-            readUntil = Mathf.Max(until, Time.time + Mathf.Clamp(text.Length * 0.065f, 5f, 10f));
+            line.text = Loc.FromWire(text);
+            readUntil = Mathf.Max(until, Time.time + Mathf.Clamp(line.text.Length * 0.065f, 5f, 10f));
         }
 
         private void Build()
@@ -116,7 +117,7 @@ namespace Abandoned.UI
             line.style.flexShrink = 0;
             line.style.minWidth = 0;
             line.AddToClassList("horror-radio__line");
-            if (shownRadio != null) line.text = shownRadio; // built again mid-message (a new language)
+            if (shownRadio != null) line.text = Loc.FromWire(shownRadio); // built again mid-message: in the new language
             radio.Add(line);
             // It is also a caption, so menus must not hide an arrival or evacuation warning.
             VisualElement surface = MenuUi.Current != null ? MenuUi.Current.Surface : HudLayer.Root;

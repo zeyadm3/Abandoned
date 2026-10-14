@@ -54,7 +54,7 @@ namespace Abandoned.Extraction
             Vector3 at = NetworkPlayer.Local != null ? NetworkPlayer.Local.transform.position : Vector3.zero;
             GameAudio.Play(SoundId.DeepRumble, at + Vector3.down * 3f, 1f);
             GameAudio.PlayDelayed(SoundId.DeepRumble, at + Vector3.down * 3f, seconds * 0.5f);
-            RunHorrorDirector.Say(Loc.T("TREMOR / brace yourselves"), seconds);
+            RunHorrorDirector.Say(Loc.Mark("TREMOR / brace yourselves"), seconds);
             LightFixture.Disturb(seconds);
         }
 

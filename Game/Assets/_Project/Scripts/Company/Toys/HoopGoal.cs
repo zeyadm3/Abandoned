@@ -19,8 +19,8 @@ namespace Abandoned.Company
             if (!other.attachedRigidbody || other.attachedRigidbody.linearVelocity.y > -0.3f) return; // through it, downwards
             if (scoredAt.TryGetValue(ball, out float t) && Time.time - t < 1.5f) return;
             scoredAt[ball] = Time.time;
-            string who = HqToys.Current != null ? HqToys.Current.Thrower(ball) : null;
-            CompanyService.Current?.ServerToyScore(Core.Loc.Wire("{0} sinks a basket!", who ?? "Someone"));
+            string who = (HqToys.Current != null ? HqToys.Current.Thrower(ball) : null) ?? Core.Loc.Word("Someone");
+            CompanyService.Current?.ServerToyScore(Core.Loc.Wire("{0} sinks a basket!", who));
         }
     }
 }

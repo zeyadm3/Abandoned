@@ -30,6 +30,15 @@ contract cards' quips), made a language change re-word the whole game at once, a
 - **Nothing about language is networked.** Each machine words everything itself. Where the host sends a sentence
   (a refusal, a death cause, a kick reason) it sends the English, and the receiving machine looks that up.
   Player names and chat are never translated.
+  - A sentence with values travels as `Loc.Wire("...{0}...", value)` and is shown with `Loc.FromWire`. A value
+    that is itself text to word (an item's name) goes in as `Loc.Word(name)`; a word may carry values of its own:
+    `Loc.Word("Player {0}", 2)`, shown on its own with `Loc.Value`.
+  - Player names for text the host sends or keeps come from `NetworkPlayer.WireName` / `WireNameOf`: a chosen
+    name as it is, the stand-ins ("Player 2", "Crewmate 2") as words. The travel screen's waiting list carries
+    client ids and each machine names them.
+  - Functions shared by the host and the screen return English (`Loc.Mark`), never worded text:
+    `CompanyService.Refusal`, the radio (`RunHorrorDirector.Say`) and hints (`PlayerCarrier.ShowHint`) take English
+    and word it where it is shown.
 - The language is the player's pick in Settings > Gameplay > Language; without one it follows the game's language
   in Steam, then the computer's, then English. Batch runs (tests, nettests) are always English.
 - **Changing the language re-words everything at once**, in the menus or in the middle of a job:
@@ -40,7 +49,8 @@ contract cards' quips), made a language change re-word the whole game at once, a
   - a world-opened screen (`ScreenPanel`) has the language's version in its build key, so one that is open
     rebuilds too; the truck's board, which is its own document, does the same;
   - the chat keeps its lines and only sets its fixed words again.
-  What is already on screen for a few seconds (a toast, a caption, a radio line) keeps its wording until it goes.
+  What is already on screen for a few seconds (a toast, a caption) keeps its wording until it goes; the radio line
+  is kept in English and worded again.
 
 Code: `Scripts/Core/Text/` (`Loc`, `TextTable`, `Languages`, `LanguageInfo`, `Plurals`, `TextDebugOverlay`),
 `Scripts/UI/LanguageFonts.cs`, `Scripts/UI/Menus/MenuUi.Language.cs`.

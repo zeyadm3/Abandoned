@@ -61,7 +61,7 @@ namespace Abandoned.Extraction
             if (me.Carrier != null && me.Carrier.Held != null) return;
             if (!me.State.Crouching)
             {
-                me.Carrier?.ShowHint(Loc.T("Crouch ({0}) to fit into the vent", InputBindings.Display("Crouch")));
+                me.Carrier?.ShowHint(Loc.Wire("Crouch ({0}) to fit into the vent", InputBindings.Display("Crouch")));
                 return;
             }
             me.RequestVent(duct, end);

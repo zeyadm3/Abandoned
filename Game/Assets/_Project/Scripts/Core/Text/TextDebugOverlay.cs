@@ -27,7 +27,9 @@ namespace Abandoned.Core
         {
             if (!visible || Loc.Missing.Count == 0) return;
             var list = new StringBuilder($"[Text] {Loc.Missing.Count} lines shown in English because '{Languages.Current.Code}' has no translation for them:\n");
-            foreach (string english in Loc.Missing) list.Append("en: ").Append(english.Replace("\n", "\\n")).Append('\n');
+            // Key lines arrive already as "key: id"; the rest are English lines to paste as "en:".
+            foreach (string line in Loc.Missing)
+                list.Append(line.StartsWith(Loc.KeyLine, System.StringComparison.Ordinal) ? "" : "en: ").Append(line.Replace("\n", "\\n")).Append('\n');
             Debug.Log(list.ToString());
         }
 

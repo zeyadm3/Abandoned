@@ -101,13 +101,13 @@ namespace Abandoned.Extraction
             if (Physics.Raycast(at + Vector3.up * 2f, Vector3.down, out RaycastHit floor, 4f, ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot), QueryTriggerInteraction.Ignore))
                 at = floor.point + Vector3.up * 0.05f;
             dead.ServerRespawn(new Pose(at, truck.transform.rotation));
-            HiredRpc(dead.DisplayName, fee);
+            HiredRpc(dead.WireName, fee);
             Debug.Log($"[Run] {dead.DisplayName} replaced by a new hire for ${fee:N0}.");
         }
 
         [Rpc(SendTo.Everyone)]
         private void HiredRpc(string name, int fee) =>
-            ToastFeed.Show(Loc.T("NEW HIRE"), Loc.T("The agency sent a replacement for {0}. ${1:N0} comes off the payout.", name, fee), null, ToastFeed.Kind.Warn);
+            ToastFeed.Show(Loc.T("NEW HIRE"), Loc.T("The agency sent a replacement for {0}. ${1:N0} comes off the payout.", Loc.Value(name), fee), null, ToastFeed.Kind.Warn);
 
         private void Settle(IReadOnlyCollection<LootItem> aboard, List<(int pay, string line)> lines)
         {

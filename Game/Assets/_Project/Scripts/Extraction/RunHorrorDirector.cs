@@ -88,7 +88,7 @@ namespace Abandoned.Extraction
             {
                 arrivalPlayed = true;
                 GameAudio.Play(SoundId.EngineStop, TruckCargo.Current != null ? TruckCargo.Current.transform.position : Vector3.zero, 0.7f);
-                Say(Loc.T("DISPATCH: Don't stay past dark. Last crew didn't."), 8f);
+                Say(Loc.Mark("DISPATCH: Don't stay past dark. Last crew didn't."), 8f);
             }
             if (run.State.Phase != RunPhase.Running && run.State.Phase != RunPhase.Honking) return;
             if (IsServer) HostPressure();
@@ -96,7 +96,7 @@ namespace Abandoned.Extraction
             if (final.Value && !announced)
             {
                 announced = true;
-                Say(Loc.T("LOCKDOWN / IT IS HERE / GET TO THE TRUCK"), 12f);
+                Say(Loc.Mark("LOCKDOWN / IT IS HERE / GET TO THE TRUCK"), 12f);
                 GameAudio.PlayUi(SoundId.Roar, 1f);
                 nextSiren = 0f;
                 LightFixture.Disturb(8f);
@@ -113,7 +113,7 @@ namespace Abandoned.Extraction
                 Vector3 truck = TruckCargo.Current.transform.position;
                 GameAudio.Play(SoundId.DoorSlam, truck, 1f);
                 GameAudio.Play(SoundId.EngineEscape, truck, 0.9f);
-                Say(Loc.T("DOORS SHUT. HOLD ON."), 4f);
+                Say(Loc.Mark("DOORS SHUT. HOLD ON."), 4f);
             }
         }
 
@@ -227,7 +227,7 @@ namespace Abandoned.Extraction
             if (shownDanger != danger)
             {
                 shownDanger = danger;
-                if (danger > 0) Say(danger >= 5 ? Loc.T("SIGNAL FAILING / LEAVE") : Loc.T("BUILDING STATUS {0} / deteriorating", new string('|', danger)), 4f);
+                if (danger > 0) Say(danger >= 5 ? Loc.Mark("SIGNAL FAILING / LEAVE") : Loc.Wire("BUILDING STATUS {0} / deteriorating", new string('|', danger)), 4f);
             }
         }
 
@@ -257,7 +257,10 @@ namespace Abandoned.Extraction
             shape.AddComponent<HorrorScare>().Setup(kind);
         }
 
-        /// <summary>Every machine: show a line on the crew's radio for a while (also BuildingDecay's collapse alarm).</summary>
+        /// <summary>
+        /// Every machine: show a line on the crew's radio for a while (also BuildingDecay's collapse alarm). Pass English
+        /// (<see cref="Loc.Mark"/>, or <see cref="Loc.Wire"/> with values): the radio words it, again after a language change.
+        /// </summary>
         public static void Say(string text, float seconds)
         {
             RadioLine = text;

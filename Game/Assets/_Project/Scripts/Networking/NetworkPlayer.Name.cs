@@ -35,23 +35,34 @@ namespace Abandoned.Networking
             return null;
         }
 
-        public string DisplayName
+        /// <summary>The name as this machine shows it, in its own language.</summary>
+        public string DisplayName => Loc.Value(WireName);
+
+        /// <summary>
+        /// The name for text the host sends or keeps (results, toasts, the travel screen): a chosen name as it is,
+        /// the stand-ins as <see cref="Loc.Word"/>, so every machine words "Player 2" in its own language (0.24.8).
+        /// Show it through <see cref="Loc.Value"/> or as a <see cref="Loc.Wire"/> value.
+        /// </summary>
+        public string WireName
         {
             get
             {
                 // 0.19.7: streamer mode shows crewmates by seat on this screen, never their names.
-                if (Core.GameSettings.StreamerMode && !IsOwner) return Loc.T("Crewmate {0}", Mathf.Max(0, CrewSeat) + 1);
+                if (Core.GameSettings.StreamerMode && !IsOwner) return Loc.Word("Crewmate {0}", Mathf.Max(0, CrewSeat) + 1);
                 string chosen = displayName.Value.ToString();
-                return string.IsNullOrWhiteSpace(chosen) ? Loc.T("Player {0}", Mathf.Max(0, CrewSeat) + 1) : chosen;
+                return string.IsNullOrWhiteSpace(chosen) ? Loc.Word("Player {0}", Mathf.Max(0, CrewSeat) + 1) : chosen;
             }
         }
 
         /// <summary>The display name of a connected client's player ("Player N" when they have none yet).</summary>
-        public static string NameOf(ulong clientId)
+        public static string NameOf(ulong clientId) => Loc.Value(WireNameOf(clientId));
+
+        /// <summary><see cref="WireName"/> of a connected client's player.</summary>
+        public static string WireNameOf(ulong clientId)
         {
             foreach (NetworkPlayer p in Spawned)
-                if (p != null && p.OwnerClientId == clientId) return p.DisplayName;
-            return Loc.T("Player {0}", clientId + 1);
+                if (p != null && p.OwnerClientId == clientId) return p.WireName;
+            return Loc.Word("Player {0}", clientId + 1);
         }
 
         private void SpawnName()

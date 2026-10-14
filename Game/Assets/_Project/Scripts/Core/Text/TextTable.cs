@@ -105,10 +105,22 @@ namespace Abandoned.Core
             else if (!string.IsNullOrEmpty(english) && local != null && !ReferenceEquals(local, english)) into[english] = local;
         }
 
+        // One pass, so an escaped backslash before an n ("\\n" in the sheet) stays a backslash and an n.
         private static string Unescape(string text)
         {
             if (text.IndexOf('\\') < 0) return text;
-            return text.Replace("\\n", "\n").Replace("\\\\", "\\");
+            var sb = new System.Text.StringBuilder(text.Length);
+            for (int i = 0; i < text.Length; i++)
+            {
+                char next = i + 1 < text.Length ? text[i + 1] : '\0';
+                if (text[i] == '\\' && (next == 'n' || next == '\\'))
+                {
+                    sb.Append(next == 'n' ? '\n' : '\\');
+                    i++;
+                }
+                else sb.Append(text[i]);
+            }
+            return sb.ToString();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
