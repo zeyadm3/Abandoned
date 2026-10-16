@@ -47,6 +47,18 @@ namespace Abandoned.Tests
             foreach (string scene in BuildScenes.All) FileAssert.Exists(scene);
             Assert.AreEqual(HqBuilder.ScenePath, BuildScenes.All[0], "first scene is what a build opens: the HQ");
             CollectionAssert.Contains(BuildScenes.All, MallBuilder.ScenePath);
+            CollectionAssert.AreEquivalent(new[]
+            {
+                MallBuilder.ScenePath,
+                SchoolBuilder.ScenePath,
+                FactoryBuilder.ScenePath,
+                PrisonBuilder.ScenePath,
+            }, BuildScenes.SalvageScenes, "every contract destination ships in every player build");
+            foreach (string scene in BuildScenes.SalvageScenes)
+            {
+                CollectionAssert.Contains(BuildScenes.ForPlayer(BuildFlavor.Shareable), scene, $"ship playable location {scene}");
+                CollectionAssert.Contains(BuildScenes.ForPlayer(BuildFlavor.Release), scene, $"ship playable location {scene}");
+            }
             CollectionAssert.Contains(BuildScenes.All, TestMapBuilder.ScenePath, "nettests run in TestMap");
             CollectionAssert.Contains(BuildScenes.ForPlayer(BuildFlavor.Dev), TestMapBuilder.ScenePath, "the nettest build carries it");
             CollectionAssert.DoesNotContain(BuildScenes.ForPlayer(BuildFlavor.Shareable), TestMapBuilder.ScenePath, "not a level: never shipped");

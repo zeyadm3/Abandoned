@@ -108,7 +108,14 @@ namespace Abandoned.UI
             Set(true);
         }
 
-        private static string Location(string level) => level == Contracts.ContractGenerator.MallScene ? Loc.T(Contracts.ContractGenerator.MallLocation).ToUpperInvariant() : level.ToUpperInvariant();
+        private static string Location(string level)
+        {
+            CompanyService company = CompanyService.Current;
+            Contracts.Contract active = company != null ? company.Active : default;
+            if (active.IsValid && active.Scene == level) return Loc.T(active.Location).ToUpperInvariant();
+            Contracts.LocationDefinition definition = Contracts.LocationCatalog.Current?.FindByScene(level);
+            return definition != null ? definition.LocalName.ToUpperInvariant() : level.ToUpperInvariant();
+        }
 
         private bool Build()
         {

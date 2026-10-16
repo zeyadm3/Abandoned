@@ -8,6 +8,8 @@ namespace Abandoned.Contracts
     [CreateAssetMenu(menuName = "Abandoned/Contracts/Contract Config", fileName = "ContractConfig")]
     public class ContractConfig : ScriptableObject, IValidatable
     {
+        [Tooltip("All destinations the contract board can offer. Each run carries the chosen id and scene over the network.")]
+        [field: SerializeField] public LocationCatalog Locations { get; private set; }
         [field: SerializeField] public ContractModifier[] Modifiers { get; private set; } = System.Array.Empty<ContractModifier>();
         [field: SerializeField, Range(1, 6)] public int Offers { get; private set; } = 3;
         [Tooltip("Rolled structural stability range (before modifiers).")]
@@ -32,16 +34,22 @@ namespace Abandoned.Contracts
         public float CrewScale(int crew) => CrewQuotaScale == null || CrewQuotaScale.Length == 0 ? 1f
             : CrewQuotaScale[Mathf.Clamp(crew, 1, CrewQuotaScale.Length) - 1];
 
+        /// <summary>Old test fixtures and an incomplete project still get the original Mall-only board.</summary>
+        public IReadOnlyList<LocationDefinition> AvailableLocations(int companyLevel) =>
+            Locations != null ? Locations.Available(companyLevel) : new[] { LocationCatalog.LegacyMall };
+
         public void Validate(List<string> errors)
         {
             if (StabilityMax < StabilityMin) errors.Add($"{name}: StabilityMax below StabilityMin.");
             if (WindowMax < WindowMin) errors.Add($"{name}: WindowMax below WindowMin.");
+            if (Locations == null) errors.Add($"{name}: Locations catalog is not assigned.");
             if (Modifiers.Length == 0) errors.Add($"{name}: no modifiers.");
             foreach (ContractModifier m in Modifiers) if (m == null) errors.Add($"{name}: a modifier slot is empty.");
         }
 
 #if UNITY_EDITOR
         public void EditorSetModifiers(ContractModifier[] modifiers) => Modifiers = modifiers;
+        public void EditorSetLocations(LocationCatalog locations) => Locations = locations;
 #endif
     }
 }

@@ -11,7 +11,7 @@ namespace Abandoned.Contracts
     [Serializable]
     public struct Contract : INetworkSerializable, IEquatable<Contract>
     {
-        public string Location, Scene, ModifierId, ModifierName;
+        public string LocationId, Location, Scene, ModifierId, ModifierName;
         public int Seed, Quota, LootMin, LootMax;
         public float Stability, WindowSeconds, PayoutBonus;
         public bool PowerOff;
@@ -23,11 +23,13 @@ namespace Abandoned.Contracts
             // "No contract" is the default struct: its strings are null, which NGO can't write.
             if (s.IsWriter)
             {
+                LocationId ??= "";
                 Location ??= "";
                 Scene ??= "";
                 ModifierId ??= "";
                 ModifierName ??= "";
             }
+            s.SerializeValue(ref LocationId);
             s.SerializeValue(ref Location);
             s.SerializeValue(ref Scene);
             s.SerializeValue(ref ModifierId);
@@ -45,7 +47,7 @@ namespace Abandoned.Contracts
 
         public bool IsValid => !string.IsNullOrEmpty(Scene) && Seed != 0;
 
-        public bool Equals(Contract o) => Seed == o.Seed && Scene == o.Scene && ModifierId == o.ModifierId && Quota == o.Quota;
+        public bool Equals(Contract o) => Seed == o.Seed && LocationId == o.LocationId && Scene == o.Scene && ModifierId == o.ModifierId && Quota == o.Quota;
 
         public static string ThreatName(byte level) => level switch { 0 => Loc.T("LOW"), 1 => Loc.T("MEDIUM"), _ => Loc.T("HIGH") };
 

@@ -114,6 +114,11 @@ namespace Abandoned.EditorTools
         private static Texture2D Map(string name, Color32[] pixels, bool srgb, bool normal)
         {
             string path = Folder + "/Redo_" + name + ".png";
+            // These generated maps are deterministic and shared by every scene truck. Rewriting an already
+            // imported PNG once per scene can race Unity's Windows texture importer, so reuse the configured
+            // asset unless it is genuinely absent.
+            Texture2D existing = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (existing != null) return existing;
             var texture = new Texture2D(512, 512, TextureFormat.RGBA32, false);
             texture.SetPixels32(pixels); texture.Apply();
             File.WriteAllBytes(path, texture.EncodeToPNG()); Object.DestroyImmediate(texture);

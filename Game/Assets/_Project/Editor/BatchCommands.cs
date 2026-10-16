@@ -47,6 +47,9 @@ namespace Abandoned.EditorTools
             NetworkContentBuilder.RegisterNetworkPrefabs();
             TestMapBuilder.Build();
             MallBuilder.Build();
+            SchoolBuilder.Build();
+            FactoryBuilder.Build();
+            PrisonBuilder.Build();
             HqBuilder.Build();
             GeneratedMaterialRepair.Rebuild();
             // Last: it opens its own empty scene to render in. Then the icon registry picks the new ones up.
@@ -80,7 +83,8 @@ namespace Abandoned.EditorTools
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing(); MenuEffectsBuilder.Create();
             MaterialAudit.RemapThirdPartyMaterials(); // before the scenes so their models already use URP copies
             GarageDoorBuilder.Create();
-            MallBuilder.Build(); HqBuilder.Build(); GeneratedMaterialRepair.Rebuild(); BuildScenes.ApplyToEditorSettings();
+            MallBuilder.Build(); SchoolBuilder.Build(); FactoryBuilder.Build(); PrisonBuilder.Build(); HqBuilder.Build();
+            GeneratedMaterialRepair.Rebuild(); BuildScenes.ApplyToEditorSettings();
             int materialProblems=MaterialAudit.Run(); // reads both saved scenes and all prefab materials
             AssetDatabase.SaveAssets(); return materialProblems==0;
         });

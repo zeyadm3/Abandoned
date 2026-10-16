@@ -87,6 +87,8 @@ namespace Abandoned.Company
                 sheet.Add(pin);
                 Sheet(sheet, Loc.T(c.Location).ToUpperInvariant(), "sheet__place");
                 Sheet(sheet, Loc.T(c.ModifierName).ToUpperInvariant(), "sheet__job");
+                LocationDefinition location = company.Contracts?.Locations?.Resolve(c) ?? LocationCatalog.Current?.Resolve(c);
+                if (location != null && !string.IsNullOrEmpty(location.Description)) Sheet(sheet, location.LocalDescription, "sheet__text");
                 if (company.Messages != null && company.Messages.Quip(c.Seed) is string quip && quip.Length > 0) Sheet(sheet, $"\"{Loc.T(quip)}\"", "sheet__quip");
                 if (company.ModifierOf(c) is ContractModifier m && !string.IsNullOrEmpty(m.Description)) Sheet(sheet, m.LocalDescription, "sheet__text");
                 int crew = CompanyService.CrewSize;

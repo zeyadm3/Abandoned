@@ -43,7 +43,7 @@ namespace Abandoned.UI
             column = MenuKit.Scroll(Root, "main__column");
 
             title = new MenuTitle(column, "ABANDONED", menu.TitleFont, MenuEffectsConfig.Current);
-            MenuKit.Text(column, Demo.IsDemo ? Loc.T("DEMO / {0} JOBS AT THE ABANDONED MALL", Demo.MaxJobs) : Loc.T("TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN."), "subtitle");
+            MenuKit.Text(column, Demo.IsDemo ? Loc.T("DEMO / {0} SALVAGE JOBS", Demo.MaxJobs) : Loc.T("TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN."), "subtitle");
             var fracture = new VisualElement { pickingMode = PickingMode.Ignore };
             fracture.AddToClassList("main__fracture");
             column.Add(fracture);

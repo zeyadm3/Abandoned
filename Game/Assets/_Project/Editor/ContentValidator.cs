@@ -32,6 +32,25 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Interaction.PlayerInteractor), typeof(Abandoned.Interaction.CarrierLoad),
         };
 
+        /// <summary>Component types every contract destination must contain at least once.</summary>
+        private static readonly Type[] SalvageSceneRequirements =
+        {
+            typeof(PlayerSpawnPoint),
+            typeof(Abandoned.Networking.NetworkBootstrap),
+            typeof(Abandoned.Structure.StructureSimulation),
+            typeof(Abandoned.Structure.StructuralSection),
+            typeof(Abandoned.Networking.StructureNetSpawner),
+            typeof(Abandoned.Loot.LootSpawnPoint),
+            typeof(Abandoned.Networking.NetworkLootSpawner),
+            typeof(Abandoned.Extraction.RunDirector),
+            typeof(Abandoned.Extraction.TruckCargo),
+            typeof(Abandoned.Extraction.TruckIgnition),
+            typeof(Abandoned.Threats.ThreatSpawnPoint),
+            typeof(Abandoned.Threats.ThreatDirector),
+            typeof(Abandoned.Threats.DangerDirector),
+            typeof(Abandoned.Extraction.PowerController),
+        };
+
         /// <summary>Component types each scene must contain at least once.</summary>
         private static readonly Dictionary<string, Type[]> SceneRequirements = new()
         {
@@ -42,6 +61,12 @@ namespace Abandoned.EditorTools
                 typeof(Abandoned.Structure.StructuralSection), typeof(NoiseDebugView), typeof(Abandoned.Networking.StructureNetSpawner)
             }
         };
+
+        static ContentValidator()
+        {
+            foreach (string path in BuildScenes.SalvageScenes)
+                SceneRequirements[path] = SalvageSceneRequirements;
+        }
 
         [MenuItem("Tools/Abandoned/Validate Content")]
         public static void RunFromMenu()
@@ -98,8 +123,16 @@ namespace Abandoned.EditorTools
                 {
                     string path = AssetDatabase.GUIDToAssetPath(guid);
                     Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
-                    foreach (GameObject root in scene.GetRootGameObjects())
+                    GameObject[] roots = scene.GetRootGameObjects();
+                    foreach (GameObject root in roots)
                         ValidateHierarchy(root, path, errors);
+
+                    if (Array.IndexOf(BuildScenes.SalvageScenes, path) >= 0)
+                    {
+                        string expectedRoot = System.IO.Path.GetFileNameWithoutExtension(path);
+                        if (!roots.Any(root => root.name == expectedRoot))
+                            errors.Add($"{path}: needs a top-level '{expectedRoot}' root for level-specific content.");
+                    }
                     if (Object.FindFirstObjectByType<Abandoned.Networking.NetworkBootstrap>(FindObjectsInactive.Include) != null)
                         NetworkValidation.ValidateSessionScene(path, errors);
 
@@ -125,6 +158,7 @@ namespace Abandoned.EditorTools
                 ValidateCrew(definition, errors);
             }
             ValidateCatalog(errors);
+            ValidateLocationCatalog(errors);
 
             foreach (string guid in AssetDatabase.FindAssets("t:ScriptableObject", new[] { DataRoot }))
             {
@@ -145,6 +179,40 @@ namespace Abandoned.EditorTools
                 var d = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
                 if (d != null && catalog.PrefabFor(d) == null) errors.Add($"{d.name}: not in the loot catalog (Tools/Abandoned/Generate Loot Prefabs).");
             }
+        }
+
+        // Contract locations travel by scene name, while the player build carries scene paths. Keeping these
+        // two independent lists in lockstep catches the otherwise silent "board offers an unloaded map" bug.
+        private static void ValidateLocationCatalog(List<string> errors)
+        {
+            string[] catalogGuids = AssetDatabase.FindAssets("t:LocationCatalog", new[] { DataRoot });
+            if (catalogGuids.Length != 1)
+            {
+                errors.Add($"Contracts: expected exactly one LocationCatalog under {DataRoot}, found {catalogGuids.Length}.");
+                return;
+            }
+
+            string path = AssetDatabase.GUIDToAssetPath(catalogGuids[0]);
+            var catalog = AssetDatabase.LoadAssetAtPath<Abandoned.Contracts.LocationCatalog>(path);
+            if (catalog == null)
+            {
+                errors.Add($"{path}: failed to load LocationCatalog.");
+                return;
+            }
+
+            var builtScenes = new HashSet<string>(BuildScenes.SalvageScenes
+                .Select(System.IO.Path.GetFileNameWithoutExtension), System.StringComparer.Ordinal);
+            var catalogScenes = new HashSet<string>(System.StringComparer.Ordinal);
+            foreach (Abandoned.Contracts.LocationDefinition location in catalog.All)
+            {
+                if (location == null) continue; // IValidatable writes the clearer per-slot error.
+                if (!builtScenes.Contains(location.Scene))
+                    errors.Add($"{path}: location '{location.Id}' targets scene '{location.Scene}', which is not in BuildScenes.SalvageScenes.");
+                if (!catalogScenes.Add(location.Scene))
+                    errors.Add($"{path}: more than one location targets scene '{location.Scene}'.");
+            }
+            foreach (string scene in builtScenes)
+                if (!catalogScenes.Contains(scene)) errors.Add($"{path}: BuildScenes.SalvageScenes contains '{scene}' with no contract location.");
         }
 
         // A definition that leaves RequiredCarriers to its class but authors fewer handles than that crew

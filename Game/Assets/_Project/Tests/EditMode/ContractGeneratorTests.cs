@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Abandoned.Contracts;
 using NUnit.Framework;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Abandoned.Tests
 {
@@ -9,6 +12,8 @@ namespace Abandoned.Tests
     {
         private ContractConfig config;
         private ContractModifier[] modifiers;
+        private LocationCatalog locations;
+        private LocationDefinition[] definitions;
 
         [SetUp]
         public void SetUp()
@@ -20,6 +25,16 @@ namespace Abandoned.Tests
             };
             config = ScriptableObject.CreateInstance<ContractConfig>();
             config.EditorSetModifiers(modifiers);
+            definitions = new[]
+            {
+                Location("mall", "Abandoned Mall", "Mall"),
+                Location("school", "Abandoned School", "School", stability: -0.03f, quota: 0.82f),
+                Location("factory", "Abandoned Factory", "Factory", stability: -0.08f, window: 1.05f, quota: 1.1f),
+                Location("prison", "Abandoned Prison", "Prison", stability: -0.06f, window: 0.9f),
+            };
+            locations = ScriptableObject.CreateInstance<LocationCatalog>();
+            locations.EditorSet(definitions);
+            config.EditorSetLocations(locations);
         }
 
         [TearDown]
@@ -27,6 +42,8 @@ namespace Abandoned.Tests
         {
             Object.DestroyImmediate(config);
             foreach (ContractModifier m in modifiers) Object.DestroyImmediate(m);
+            foreach (LocationDefinition location in definitions) Object.DestroyImmediate(location);
+            Object.DestroyImmediate(locations);
         }
 
         private static ContractModifier Mod(string id, bool powerOff = false, float stability = 0f, float window = 1f, float bonus = 0f, float fragile = 1f, int minLevel = 1)
@@ -36,16 +53,50 @@ namespace Abandoned.Tests
             return m;
         }
 
+        private static LocationDefinition Location(string id, string displayName, string scene, float stability = 0f,
+            float window = 1f, float quota = 1f)
+        {
+            var location = ScriptableObject.CreateInstance<LocationDefinition>();
+            location.EditorSetup(id, displayName, "", scene, stabilityDelta: stability, windowMultiplier: window,
+                quotaMultiplier: quota);
+            return location;
+        }
+
         [Test]
-        public void TheBoardShowsThreeDifferentContractsTheSameOnEveryMachine()
+        public void TheBoardUsesDistinctEligibleLocationsAndIsSeeded()
         {
             var a = ContractGenerator.Roll(config, 1, 77, 300000);
             var b = ContractGenerator.Roll(config, 1, 77, 300000);
-            Assert.AreEqual(3, a.Count);
+            Assert.AreEqual(config.Offers + 1, a.Count, "normal offers plus the daily");
             CollectionAssert.AreEqual(a, b, "seeded");
-            Assert.AreEqual(3, a.Select(c => c.ModifierId).Distinct().Count(), "no modifier twice on one board");
-            Assert.IsTrue(a.All(c => c.IsValid && c.Scene == ContractGenerator.MallScene));
+            Assert.AreEqual(config.Offers + 1, a.Select(c => c.ModifierId).Distinct().Count(), "no modifier twice on one board");
+            Assert.IsTrue(a.All(c => c.IsValid && locations.Find(c.LocationId) != null));
+            Assert.AreEqual(config.Offers, a.Take(config.Offers).Select(c => c.LocationId).Distinct().Count(),
+                "ordinary offers cover different destinations while four are eligible");
             Assert.IsFalse(a.Any(c => c.ModifierId == "late_game"), "level-gated modifiers stay off early boards");
+        }
+
+        [Test]
+        public void BoardsEventuallyOfferEveryCatalogLocation()
+        {
+            var seen = new HashSet<string>();
+            for (int seed = 1; seed <= 32; seed++)
+                foreach (Contract contract in ContractGenerator.Roll(config, 1, seed, 300000)) seen.Add(contract.LocationId);
+
+            CollectionAssert.AreEquivalent(definitions.Select(x => x.Id), seen);
+        }
+
+        [Test]
+        public void DailyLocationAndSeedAreStableForItsDay()
+        {
+            DateTime day = new(2026, 10, 15, 12, 0, 0, DateTimeKind.Utc);
+            Contract one = ContractGenerator.Daily(config, 300000, day);
+            Contract two = ContractGenerator.Daily(config, 300000, day);
+
+            Assert.AreEqual(one, two);
+            Assert.AreEqual(ContractGenerator.DailyId, one.ModifierId);
+            Assert.IsNotNull(locations.Find(one.LocationId));
+            Assert.AreEqual(ContractGenerator.DayId(day), ContractGenerator.DailyDay(config, one, day));
         }
 
         [Test]
@@ -58,10 +109,11 @@ namespace Abandoned.Tests
                     Assert.Greater(c.Quota, 0);
                     Assert.Less(c.LootMin, c.LootMax);
                     if (c.ModifierId == "power_off") Assert.IsTrue(c.PowerOff);
-                    if (c.ModifierId == "unstable") Assert.LessOrEqual(c.Stability, config.StabilityMax - 0.2f + 0.011f);
+                    LocationDefinition location = locations.Find(c.LocationId);
+                    if (c.ModifierId == "unstable") Assert.LessOrEqual(c.Stability, config.StabilityMax + location.StabilityDelta - 0.2f + 0.011f);
                     if (c.ModifierId == "rush_job")
                     {
-                        Assert.LessOrEqual(c.WindowSeconds, config.WindowMax * 0.6f + 15f);
+                        Assert.LessOrEqual(c.WindowSeconds, config.WindowMax * location.WindowMultiplier * 0.6f + 15f);
                         Assert.GreaterOrEqual(c.PayoutBonus, 0.25f - 0.001f);
                     }
                 }

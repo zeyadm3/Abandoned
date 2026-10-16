@@ -149,6 +149,13 @@ namespace Abandoned.Structure
         {
             lamp = light; panel = glowPanel; faulty = isFaulty; dead = isDead; seed = fixtureSeed;
         }
+
+        /// <summary>Editor builder variant for a deliberately coloured single-panel fixture.</summary>
+        public void EditorSetup(Light light, Renderer glowPanel, bool isFaulty, bool isDead, int fixtureSeed, Color panelGlow)
+        {
+            EditorSetup(light, glowPanel, isFaulty, isDead, fixtureSeed);
+            glow = panelGlow;
+        }
 #endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

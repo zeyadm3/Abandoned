@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Rebuild-time material audit for everything players see: the Mall and HQ scenes, every prefab
+    /// Rebuild-time material audit for everything players see: every shipped scene, every prefab
     /// (loot, threats, cosmetics, the player) and our material assets. Third-party FBX materials are
     /// remapped to editable URP copies; non-URP shaders become URP Lit; materials without a main texture
     /// get an original procedural map (no flat-grey or blank-white surfaces). Whatever can't be fixed is
@@ -83,7 +83,7 @@ namespace Abandoned.EditorTools
         {
             var used = new Dictionary<Material, string>();
             missing = new List<string>();
-            foreach (string scenePath in new[] { MallBuilder.ScenePath, HqBuilder.ScenePath })
+            foreach (string scenePath in BuildScenes.ForPlayer(BuildFlavor.Shareable))
             {
                 Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
                 foreach (GameObject root in scene.GetRootGameObjects())

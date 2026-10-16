@@ -72,6 +72,7 @@ namespace Abandoned.Company
         public static string SaveFolderOverride { get; set; }
 
         public CompanyConfig Config => config;
+        public ContractConfig Contracts => contracts;
         public CompanyNetState State => state.Value;
         public int Selected => selected.Value;
         public Contract Active => active.Value;

@@ -14,7 +14,7 @@ using static Abandoned.Tests.PlayerTestRig;
 
 namespace Abandoned.Tests
 {
-    /// <summary>The company loop, solo: HQ -> contract -> the mall on its terms -> payday (saved) -> back to HQ.</summary>
+    /// <summary>The company loop, solo: HQ -> selected contract location -> payday (saved) -> back to HQ.</summary>
     public class CompanyLoopTests
     {
         private string folder;
@@ -48,7 +48,8 @@ namespace Abandoned.Tests
             yield return WaitUntil(() => CompanyService.Current != null && SessionTravel.Current != null, 3f, "the session's company and travel");
             CompanyService company = CompanyService.Current;
             Assert.AreEqual(0, company.State.Money, "a new company");
-            Assert.AreEqual(3, company.Board.Count, "three contracts on the board");
+            Assert.AreEqual(company.Contracts.Offers + 1, company.Board.Count,
+                "the configured offers plus today's daily contract are on the board");
             Assert.IsNull(NetworkBootstrap.JoinBlocker(), "anyone can join at the HQ");
 
             var van = Object.FindAnyObjectByType<HqVan>();
@@ -58,8 +59,8 @@ namespace Abandoned.Tests
             StringAssert.StartsWith("Drive to", van.UsePrompt(null));
             van.Use(null);
 
-            yield return WaitUntil(() => SceneManager.GetActiveScene().name == "Mall" && RunState.Current != null && RunState.Current.IsSpawned,
-                10f, "everyone drove to the mall");
+            yield return WaitUntil(() => SceneManager.GetActiveScene().name == job.Scene && RunState.Current != null && RunState.Current.IsSpawned,
+                10f, "everyone drove to the selected job location");
             RunNetState s = RunState.Current.State;
             Assert.AreEqual(company.QuotaFor(job), s.Quota, "the contract's quota for this crew");
             Assert.AreEqual(job.WindowSeconds, s.Window, 0.01f, "the contract's window");
@@ -70,8 +71,18 @@ namespace Abandoned.Tests
 
             // Load one item, get in, leave.
             var truck = TruckCargo.Current;
+            // This scenario deliberately exercises a missed quota. Selecting the first spawned object made
+            // the assertion seed-dependent once contracts could send the crew to any location: a jackpot can
+            // legitimately be worth more than a low-tier quota. Pocket/one-hand pieces are never boss-request
+            // targets and sorting by the rolled value keeps the outcome deterministic across map rotations.
             NetworkLoot cargo = Object.FindAnyObjectByType<NetworkLootSpawner>().Spawned
-                .First(l => l != null && l.Item.Definition.CarryClass == CarryClass.OneHand && l.Item.Definition.Fragility <= Abandoned.Loot.Fragility.Medium);
+                .Where(l => l != null && l.Item != null && l.Grabbable != null
+                            && l.Item.CurrentValue > 0
+                            && l.Item.CurrentValue < s.Quota
+                            && l.Item.CarryClass < CarryClass.TwoHand)
+                .OrderBy(l => l.Item.CurrentValue)
+                .FirstOrDefault();
+            Assert.IsNotNull(cargo, "the selected contract spawned low-value cargo for the missed-quota scenario");
             Vector3 bay = truck.transform.TransformPoint(new Vector3(0f, 1.2f, -1.2f));
             cargo.Grabbable.Body.position = bay;
             cargo.transform.position = bay;
@@ -102,7 +113,7 @@ namespace Abandoned.Tests
             Assert.AreEqual(-1, company.Selected, "a fresh board");
             Assert.AreNotEqual(oldBoard, company.Board[0].Seed);
             Assert.IsFalse(company.Active.IsValid);
-            Assert.IsNull(RunState.Current, "the run stayed at the mall");
+            Assert.IsNull(RunState.Current, "the run stayed at the job location");
             Assert.IsNull(NetworkBootstrap.JoinBlocker(), "friends can join again");
         }
     }

@@ -7,15 +7,28 @@ namespace Abandoned.EditorTools
     /// The one list of scenes, first scene first. <see cref="ApplyToEditorSettings"/> copies all of it into
     /// File > Build Profiles (the editor and tests load the TestMap from there); a player gets
     /// <see cref="ForPlayer"/>: the TestMap is a feature-testing map, not a level, so only dev builds
-    /// (nettest) carry it.
+    /// (nettest) carry it. <see cref="SalvageScenes"/> is the set of contract destinations: keep it
+    /// separate from the HQ and test fixture so new locations cannot accidentally be omitted from a player.
     /// </summary>
     public static class BuildScenes
     {
+        /// <summary>Scenes a contract may send a crew to. Their order is the stable build order.</summary>
+        public static readonly string[] SalvageScenes =
+        {
+            MallBuilder.ScenePath,
+            SchoolBuilder.ScenePath,
+            FactoryBuilder.ScenePath,
+            PrisonBuilder.ScenePath,
+        };
+
         public static readonly string[] All =
         {
-            // The company HQ (M6): builds open here; players join here; contracts drive everyone to the mall.
+            // The company HQ (M6): builds open here; players join here; contracts drive everyone to a selected location.
             HqBuilder.ScenePath,
             MallBuilder.ScenePath,
+            SchoolBuilder.ScenePath,
+            FactoryBuilder.ScenePath,
+            PrisonBuilder.ScenePath,
             TestMapBuilder.ScenePath,
         };
 
