@@ -82,7 +82,8 @@ namespace Abandoned.Loot
             if (ConditionMin <= 0f) errors.Add($"{n}: ConditionMin must be above 0.");
             if (Size.x <= 0f || Size.y <= 0f || Size.z <= 0f) errors.Add($"{n}: Size must be positive.");
             if (CarryClass == CarryClass.Pocket && GameplayWeight > 1f) errors.Add($"{n}: Pocket items should weigh under 1 kg.");
-            if (CarryClass >= CarryClass.Heavy && GameplayWeight < 50f) errors.Add($"{n}: Heavy/Huge items should weigh 50 kg or more.");
+            // Gear that behaves like loot is exempt: the 0.18.4 shopping cart is Heavy so it rolls and drags, at 18 kg.
+            if (!Utility && CarryClass >= CarryClass.Heavy && GameplayWeight < 50f) errors.Add($"{n}: Heavy/Huge items should weigh 50 kg or more.");
             if (CarryClass < CarryClass.Heavy && (RequiredCarriers > 0 || (CarryPoints?.Length ?? 0) > 0))
                 errors.Add($"{n}: only Heavy/Huge items are carried together; clear RequiredCarriers/CarryPoints.");
             int authored = CarryPoints?.Length ?? 0;

@@ -26,6 +26,7 @@ namespace Abandoned.Tests
 
         private void FixedUpdate()
         {
+            SoloMounds();
             int count = 0;
             foreach (var machine in net.Machines)
                 if (machine != null && machine.Manager != null && machine.Manager.SpawnManager != null)
@@ -33,6 +34,17 @@ namespace Abandoned.Tests
             if (count == lastCount) return;
             lastCount = count;
             Separate();
+        }
+
+        // Every machine builds the same rubble mound for a fallen section (2026-10-08). On real machines each sees one;
+        // here they share one physics world and would stack, so only the host's copy stays solid.
+        private void SoloMounds()
+        {
+            foreach (Abandoned.Structure.RubbleMound mound in FindObjectsByType<Abandoned.Structure.RubbleMound>(FindObjectsSortMode.None))
+            {
+                if (mound.Fallen == null || mound.Fallen == kit.Section(net.Host, mound.Fallen.name)) continue;
+                foreach (Collider c in mound.GetComponentsInChildren<Collider>()) c.enabled = false;
+            }
         }
 
         private void Separate()

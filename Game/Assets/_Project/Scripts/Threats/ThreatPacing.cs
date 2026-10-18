@@ -18,7 +18,7 @@ namespace Abandoned.Threats
     {
         private const float TickInterval = 1f, HintRefresh = 6f;
 
-        private class Track { public float lastNear, lastClose, hintAt; }
+        private class Track { public float lastNear, lastClose, hintAt; public bool retreating; }
 
         private readonly Dictionary<Threat, Track> tracks = new();
         private readonly List<Threat> gone = new();
@@ -26,7 +26,7 @@ namespace Abandoned.Threats
         private ThreatDirector director;
         private float nextTick;
         private System.Random random = new(7);
-        private int drifting, withdrawing;
+        private int drifting, retreating, withdrawing;
         // One path for every route question (made on first use: it can't be built in a field initialiser).
         private NavMeshPath routePath;
 
@@ -55,7 +55,8 @@ namespace Abandoned.Threats
             foreach (Threat t in tracks.Keys) if (t == null || !t.IsSpawned) gone.Add(t);
             foreach (Threat t in gone) tracks.Remove(t);
             ThreatPacingConfig config = ThreatPacingConfig.Current;
-            drifting = withdrawing = 0;
+            drifting = retreating = withdrawing = 0;
+            bool quiet = CrewDirector.Quiet;
             // A copy: relocating despawns and spawns while we walk the roster.
             foreach (Threat t in new List<Threat>(Threat.All))
             {
@@ -65,7 +66,15 @@ namespace Abandoned.Threats
                 if (!tracks.TryGetValue(t, out Track track)) tracks[t] = track = new Track { lastNear = Time.time, lastClose = Time.time };
                 // Recovery is earned space. Neither hidden coordinates nor an old relocation clock
                 // may pull it back to the locker the player just escaped into.
-                if (t.IsWithdrawing || alive.Count == 0)
+                if (t.IsWithdrawing)
+                {
+                    track.lastNear = track.lastClose = Time.time;
+                    t.RoamHint = null;
+                    continue;
+                }
+                if (quiet) { Retreat(t, track); continue; }
+                if (track.retreating) { track.retreating = false; t.RoamHint = null; }
+                if (alive.Count == 0)
                 {
                     track.lastNear = track.lastClose = Time.time;
                     t.RoamHint = null;
@@ -87,6 +96,38 @@ namespace Abandoned.Threats
                 track.hintAt = Time.time;
                 t.RoamHint = DriftPoint(t, config.DriftScatter);
             }
+        }
+
+        // 0.24.10, the Crew Director's quiet: no drift toward the crew and no relocation near it (their clocks
+        // stand still), and each monster's wandering centres on a spawn point well away from everyone. The hint
+        // only steers wandering, so a hunt or a fight already on ends on its own first, then it leaves.
+        private void Retreat(Threat t, Track track)
+        {
+            track.lastNear = track.lastClose = Time.time;
+            retreating++;
+            if (track.retreating && t.RoamHint.HasValue) return;
+            track.retreating = true;
+            track.hintAt = Time.time;
+            t.RoamHint = RetreatPoint(CrewDirectorConfig.Current.RetreatDistance);
+        }
+
+        private Vector3? RetreatPoint(float distance)
+        {
+            if (director == null || director.Points.Count == 0) return null;
+            var far = new List<Vector3>();
+            Vector3? farthest = null;
+            float best = -1f;
+            foreach (ThreatSpawnPoint point in director.Points)
+            {
+                if (point == null) continue;
+                Vector3 at = point.transform.position;
+                float nearest = float.MaxValue;
+                foreach (NetworkPlayer p in alive) nearest = Mathf.Min(nearest, Vector3.Distance(at, p.transform.position));
+                if (nearest >= distance) far.Add(at);
+                if (nearest > best) { best = nearest; farthest = at; }
+            }
+            Vector3? pick = far.Count > 0 ? far[random.Next(far.Count)] : farthest;
+            return pick is Vector3 v && NavMesh.SamplePosition(v, out NavMeshHit hit, 2f, NavMesh.AllAreas) ? hit.position : pick;
         }
 
         // Monsters with their own way of finding people keep it.
@@ -135,7 +176,7 @@ namespace Abandoned.Threats
             if (!DebugView.Visible || director == null || !GameAuthority.IsHost || RunState.Current == null) return;
             float next = director.NextArrivalIn;
             GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
-                $"THREATS {Contracts.Contract.ThreatName((byte)RunState.Current.Terms.ThreatLevel)} {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drift {drifting} retries {director.PlacementRetries}");
+                $"THREATS {Contracts.Contract.ThreatName((byte)RunState.Current.Terms.ThreatLevel)} {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drift {drifting} away {retreating} retries {director.PlacementRetries}");
             GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f), $"Withdrawing {withdrawing} (no drift / relocation)");
         }
 #endif

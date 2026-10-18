@@ -24,6 +24,13 @@ namespace Abandoned.Tests
         {
             foreach (SurfaceMaterial m in Enum.GetValues(typeof(SurfaceMaterial)))
             {
+                if (m == SurfaceMaterial.Water)
+                {
+                    // No splash recording in the CC0 packs: Water keeps an empty row and plays its synthesised splash.
+                    Assert.IsNotNull(bank.Impact(m, 0.2f), "Water: an impact row (synthesised)");
+                    Assert.IsNotNull(bank.Footstep(m), "Water: a footstep row (synthesised)");
+                    continue;
+                }
                 Assert.IsTrue(bank.Impact(m, 0.2f)?.HasClips == true, $"{m}: light impact");
                 Assert.IsTrue(bank.Impact(m, 1f)?.HasClips == true, $"{m}: heavy impact");
                 Assert.IsTrue(bank.Footstep(m)?.HasClips == true, $"{m}: footsteps");

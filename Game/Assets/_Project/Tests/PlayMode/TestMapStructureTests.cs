@@ -77,7 +77,8 @@ namespace Abandoned.Tests
             }
             Assert.IsTrue(rotten.IsCollapsed, $"rotten tile ended at {rotten.Stage}, load {rotten.Load:0}/{rotten.Capacity:0}");
             yield return WaitFixed(1.5f);
-            Assert.Less(rack.transform.position.y, 2.5f, "the rack fell through to the ground floor");
+            // Onto the ground floor or the rotten tile's rubble mound (2026-10-08, up to 1.8 m).
+            Assert.Less(rack.transform.position.y, rotten.SurfaceBounds.max.y - 1.2f, "the rack fell through to the ground floor");
             ScreenshotCapture.CaptureFrom(new Vector3(12f, 8f, 9f), new Vector3(14f, 1f, 14f), "M2_rack_fell_through");
         }
 
@@ -93,7 +94,7 @@ namespace Abandoned.Tests
             Assert.IsTrue(balcony.IsCollapsed, "a 2-ton statue on a 30%-stability balcony should not hold");
             LootItem statue = Object.FindObjectsByType<LootItem>(FindObjectsSortMode.None).First(l => l.Definition.Id == "marble_statue");
             yield return WaitFixed(2f);
-            Assert.Less(statue.transform.position.y, 2.5f, "into the atrium");
+            Assert.Less(statue.transform.position.y, balcony.SurfaceBounds.max.y - 1.2f, "into the atrium (onto the floor or the balcony's rubble)");
             Assert.Greater(statue.CurrentValue, 0, "the statue survives the fall, damaged");
             ScreenshotCapture.CaptureFrom(new Vector3(6f, 7f, 2f), new Vector3(12f, 1f, 9f), "M2_statue_in_atrium");
         }

@@ -110,6 +110,8 @@ namespace Abandoned.Player
 
         public void Simulate(PlayerInputFrame input, float dt)
         {
+            // Off while ragdolled (the motor is off too) or mid-teleport: Move would log an error and do nothing.
+            if (!controller.enabled) return;
             clock += dt;
             float now = clock;
             IsGrounded = controller.isGrounded;

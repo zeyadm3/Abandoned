@@ -20,13 +20,17 @@ namespace Abandoned.Tests
         {
             yield return TestMapScene.Load("Mall");
             NetworkLootSpawner spawner = Object.FindAnyObjectByType<NetworkLootSpawner>();
-            LootSpawnPoint bridge = spawner.Points().FirstOrDefault(p => p.name == "LootPoint_1_06_05_J");
+            // The jackpot point standing on the collapsible bridge across the atrium (floor 1).
+            StructureSimulation sim = Object.FindAnyObjectByType<StructureSimulation>();
+            var bridgeTiles = sim.Sections.Where(s => s.Type == SectionType.Balcony && s.CanCollapse).ToList();
+            StructuralSection Under(Vector3 at) => bridgeTiles.FirstOrDefault(s => s.SurfaceBounds.Contains(new Vector3(at.x, s.SurfaceBounds.center.y, at.z)));
+            LootSpawnPoint bridge = spawner.Points().FirstOrDefault(p => p.IsJackpot && Under(p.transform.position) != null);
             Assert.IsNotNull(bridge, "a jackpot point on the bridge");
             var definitions = Resources.FindObjectsOfTypeAll<LootDefinition>().Where(d => d.Jackpot).ToList();
             Assert.IsTrue(definitions.Where(bridge.Fits).All(d => d.Id == "grand_piano") && definitions.Any(bridge.Fits),
                 "only the piano fits there (a 2-ton statue would break the bridge before anyone arrived)");
 
-            StructuralSection tile = Object.FindAnyObjectByType<StructureSimulation>().Sections.First(s => s.name == "Walk_1_6_5");
+            StructuralSection tile = Under(bridge.transform.position);
             NetworkLoot piano = spawner.Spawned.FirstOrDefault(l => l != null && l.Item.Definition.Id == "grand_piano");
             if (piano == null) Assert.Ignore("this run's seed put no piano in the mall"); // seed 1 does; a changed planner might not
             piano.Grabbable.Body.position = tile.transform.position + Vector3.up * 0.6f;

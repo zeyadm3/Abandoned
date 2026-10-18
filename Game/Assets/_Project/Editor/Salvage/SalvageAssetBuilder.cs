@@ -69,6 +69,18 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets();
         }
 
+        /// <summary>Authors one scenery-only family (model and dressing prefab); loot prefabs are left alone.</summary>
+        public static void AuthorScenery(string id)
+        {
+            SalvageAssetSpec spec = SalvageAssetCatalog.Find(id);
+            if (spec == null || spec.IsLoot) throw new ArgumentException($"'{id}' is not a scenery-only salvage asset.", nameof(id));
+            PolishAssets.EnsureFolder(ModelFolder);
+            PolishAssets.EnsureFolder(MeshFolder);
+            PolishAssets.EnsureFolder(DressingFolder);
+            SalvageMaterials.Prepare();
+            AuthorDressing(spec, AuthorModel(spec, out _));
+        }
+
         /// <summary>Places an owned/static dressing variant with its bottom pivot at a local position.</summary>
         public static GameObject Place(string id, Transform parent, Vector3 at, float yaw = 0f)
         {
@@ -101,7 +113,8 @@ namespace Abandoned.EditorTools
                         || SalvageFurnitureModels.Build(spec.Id, level.transform, lod)
                         || SalvageHardwareModels.Build(spec.Id, level.transform, lod)
                         || SalvageApparelModels.Build(spec.Id, level.transform, lod)
-                        || SalvageOperationsModels.Build(spec.Id, level.transform, lod);
+                        || SalvageOperationsModels.Build(spec.Id, level.transform, lod)
+                        || SalvageFixtureModels.Build(spec.Id, level.transform, lod);
                     if (!authored) throw new InvalidOperationException($"No geometry recipe for salvage asset '{spec.Id}'.");
                     triangles[lod] = CombineAndPersist(level.transform, spec.Id, lod);
                     lods[lod] = new LOD(thresholds[lod], level.GetComponentsInChildren<Renderer>());

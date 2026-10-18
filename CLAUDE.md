@@ -104,8 +104,28 @@ The user's answers and the 8-step build order: Docs/IRON_FACTORY_PLAN.md. Steps 
 machinery-floor maze, 38 hiding places via `HidingLocker` + `HideSpotKind`, Breaker Hall whose breakers also
 start that sector's machines via `MachineHazard`; mains power never starts them; 21 factory loot items on the
 factory-only tags foundry/workshop/machinery/records with 178 spawn points; 19 threat spawns incl. catwalks,
-occlusion bake, rail dock; rail yard/towers/stacks, high-bay lights, lava rumble) written and compiled outside
-Unity (dotnet), never rebuilt or played, not committed. Next: step 8, the user's Unity compile and rebuild.
+occlusion bake, rail dock; rail yard/towers/stacks, high-bay lights, lava rumble) committed on iron-factory (443151be), merged with main
+(0.24.9-0.24.11, the Crew Director) on 2026-10-19. Rebuilt in Unity by the user; never played.
+
+**0.24.11 (2026-10-18): bug fixes, test suite repaired, audits back.** The mall basement was unreachable on foot (the
+district ground collider ran through its flights), the Prison tunnel and gallery stairs and the School archive stair
+were blocked (location builder fixed, School and Prison rebuilt), about 260 props could be walked through (now solid),
+plus "E | " prompts, the Stalker freezing on contact and utility gear in validation. The 0.15.0 rebuild had dropped the
+mall's audits: `Tools > Abandoned > Mall > Audit Saved Mall / Audit All Levels` (`Editor/Mall/MallAudit`) runs them on
+every level with a stair-headroom sweep; keep them at 0. Test suite repaired: mall tests find their spots from the live
+NavMesh (`Tests/PlayMode/MallTestSpots`), never the pre-0.15 coordinates. EditMode 290/290, PlayMode 0 failures,
+verify OK, all 12 nettests, `LevelSmokeTests` and `LevelWalkTests` pass. Never played. Open for the user: the render
+budget, 6 loot items that spawn nowhere, 12 unreferenced scripts (Docs/PROGRESS.md "0.24.11").
+
+**0.24.10 (2026-10-18): the Crew Director.** Left 4 Dead-style pacing: a hidden stress number per player (hurt, knocked
+down, chased, near a failing floor or a crewmate's death); when the most stressed one peaks, no new monsters for up
+to a minute and idle ones wander away (`Threats/CrewDirector`, tunables and an Enabled switch in
+Data/Threats/Resources/CrewDirectorConfig). Changes when monsters come, never how hard they hit. Compiled and tested in
+batch mode (EditMode + a PlayMode test in the mall), never played. Details: Docs/CREW_DIRECTOR_0.24.10.md.
+**0.24.9 (2026-10-18): no loot look-alikes.** Fix for "two identical items, only one grabbable": a loot model never
+stands as scenery. The saved mall's 595 static copies became fixed fittings, dust sheets or packaging in place
+(colliders kept, NavMesh not rebaked); `[MallValidation] ... static loot look-alikes: 0`. Authored in batch mode,
+never played, no builds. Details: Docs/LOOT_LOOKALIKES_0.24.9.md. All commits go to `main`.
 
 **0.24.8c (2026-10-14): localization review fixes.** No features. Text the host sends or keeps is English and
 worded where it is shown (crew-spending refusals, player stand-in names in results/toasts/travel screen, toy
@@ -187,6 +207,24 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-18 (user, after a reel on Left 4 Dead's AI Director: "implement that and run and test the game"): **0.24.10,
+  the Crew Director.** Pacing follows the crew, not only the clock: the host keeps one hidden stress number per living
+  player and runs Booth's loop (build up, sustain peak, fade, relax) on the highest. During the fade and relax no later
+  arrival or unlocked danger wave spawns, monsters are not drifted or relocated toward the crew, and drift-paced
+  monsters wander to a spawn point at least 28 m from everyone (the Stalker, Collector and Last Hunter keep their
+  own rules; nothing despawns). The opening wave, threat level, damage, alive cap, danger level, decay, total collapse,
+  Last Hunter and monster songs are untouched. The longest quiet is about 60 s, and a build-up always lasts 20 s, so
+  leftover stress can't stall arrivals. Arrivals were really every 28-42 s, not the "90-150 s" in the 2026-10-08 entry.
+- 2026-10-18 (user: two identical items side by side, only one grabbable, "needs an immediate fix"; chose option C
+  "remove them and fill the gaps", then "keep loot, build fixed versions" for the fixtures): **0.24.9, no loot
+  look-alikes.** If it looks like loot, it is loot: a loot model never stands in a level as scenery
+  (`Editor/Salvage/LootLookalikes`, built from the loot catalogs so new families are covered). Static copies become
+  fixed fittings (gondola shelving, garment rail, service counter, plastic pallet, waste compactor; same footprint
+  and shelf heights), a dust sheet over floor items, or crushed packaging for shelf/display stock. Stand-ins keep the
+  original's colliders, so the NavMesh is **not** rebaked (a rebake now would bake the 0.16.0 doors and lockers in).
+  The saved mall was changed in place (batched props cut out of their batch meshes triangle by triangle); future
+  rebuilds apply the rule in the placement helpers. Keep `[MallValidation] ... static loot look-alikes` at 0.
+  Details: Docs/LOOT_LOOKALIKES_0.24.9.md. From now on **all commits go to `main`** (user, 2026-10-18).
 - 2026-10-12 (user: "do whatever you think is best, save everything to 0.24.7c"; calls made under that brief,
   the user can reverse any of them):
   - **Voices come from Kokoro-82M, never from `say`.** The first dispatch and voicemail clips were spoken by

@@ -19,7 +19,6 @@ namespace Abandoned.UI
 
         private float nextMove;
         private Vector2 held;
-        private Focusable lastFocus;
 
         private void Update()
         {

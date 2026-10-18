@@ -153,7 +153,9 @@ namespace Abandoned.EditorTools
             if (body == null || !Mathf.Approximately(body.mass, definition.PhysicsMass))
                 errors.Add($"{n}: Rigidbody mass differs from PhysicsMass; run Generate Loot Prefabs.");
             Transform visual = prefab.transform.Find("Visual");
-            if (visual == null || (visual.localScale - VisualScale(ColliderShape(definition), definition.Size)).sqrMagnitude > 1e-6f)
+            // Utility gear may replace the generated box with its own art (the 0.18.4 cart's wire basket).
+            bool customArt = definition.Utility && visual == null && prefab.transform.childCount > 0;
+            if (!customArt && (visual == null || (visual.localScale - VisualScale(ColliderShape(definition), definition.Size)).sqrMagnitude > 1e-6f))
                 errors.Add($"{n}: visual size differs from Size; run Generate Loot Prefabs.");
             if ((definition.Model != null) != (prefab.transform.Find("Model") != null))
                 errors.Add($"{n}: model differs from the definition's; run Generate Loot Prefabs.");

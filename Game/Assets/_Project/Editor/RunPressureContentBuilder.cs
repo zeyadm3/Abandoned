@@ -13,6 +13,7 @@ namespace Abandoned.EditorTools
     public static class RunPressureContentBuilder
     {
         public const string PacingPath = "Assets/_Project/Data/Threats/Resources/ThreatPacingConfig.asset";
+        public const string DirectorPath = "Assets/_Project/Data/Threats/Resources/CrewDirectorConfig.asset";
         public const string DecayPath = "Assets/_Project/Data/Extraction/Resources/BuildingDecayConfig.asset";
 
         [MenuItem("Tools/Abandoned/Content/Create Pacing And Decay Configs")]
@@ -21,6 +22,7 @@ namespace Abandoned.EditorTools
             PolishAssets.EnsureFolder("Assets/_Project/Data/Threats/Resources");
             PolishAssets.EnsureFolder("Assets/_Project/Data/Extraction/Resources");
             SerializedWiring.LoadOrCreateAsset<ThreatPacingConfig>(PacingPath);
+            SerializedWiring.LoadOrCreateAsset<CrewDirectorConfig>(DirectorPath); // 0.24.10
             SerializedWiring.LoadOrCreateAsset<BuildingDecayConfig>(DecayPath);
             AssetDatabase.SaveAssets();
         }

@@ -102,7 +102,8 @@ namespace Abandoned.Tests
             Assert.IsTrue(tile.IsCollapsed);
             foreach (Collider c in tile.GetComponentsInChildren<Collider>()) Assert.IsFalse(c.enabled);
             yield return WaitFixed(1.5f);
-            Assert.Less(laptop.transform.position.y, 1f, "the laptop should have fallen to the floor below");
+            // It lands on the floor below or on the fallen section's solid rubble mound (2026-10-08, up to 1.8 m).
+            Assert.Less(laptop.transform.position.y, Upper.y - 1.5f, "the laptop should have fallen to the floor below");
         }
 
         [UnityTest]
@@ -117,7 +118,7 @@ namespace Abandoned.Tests
             tile.Collapse();
             Assert.IsTrue(players.Player.GetComponent<PlayerRagdoll>().IsRagdolled);
             yield return WaitFixed(1.5f);
-            Assert.Less(players.Player.GetComponent<PlayerRagdoll>().Pelvis.position.y, 1.5f);
+            Assert.Less(players.Player.GetComponent<PlayerRagdoll>().Pelvis.position.y, Upper.y - 1.5f, "down on the floor below or its rubble");
         }
 
         [Test]

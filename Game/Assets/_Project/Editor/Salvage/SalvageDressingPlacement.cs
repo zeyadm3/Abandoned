@@ -26,12 +26,17 @@ namespace Abandoned.EditorTools
         {
             GameObject item = SalvageAssetBuilder.Place(id, parent,
                 new Vector3(x, MallLayout.FloorY(floor) + lift, z), yaw);
+            // 0.24.9: a loot model never stands as scenery; its place goes to a fixture or a dust sheet.
+            if (item != null && LootLookalikes.Is(id)) item = LootLookalikeStandIns.Swap(item, id, false);
             if (item != null) Bind(item, floor, x, z);
             return item;
         }
 
         public GameObject Inside(string id, Transform parent, Vector3 at, float yaw = 0)
-            => SalvageAssetBuilder.Place(id, parent, at, yaw);
+        {
+            GameObject item = SalvageAssetBuilder.Place(id, parent, at, yaw);
+            return LootLookalikes.Is(id) ? LootLookalikeStandIns.Swap(item, id, true) : item;
+        }
 
         public void Sign(Transform parent, Vector3 at, float yaw, string text, float width, float height)
         {

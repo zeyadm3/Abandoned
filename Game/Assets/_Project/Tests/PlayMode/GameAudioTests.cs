@@ -33,8 +33,13 @@ namespace Abandoned.Tests
             yield return TestMapScene.Load("Mall");
             LevelAmbience ambience = Object.FindAnyObjectByType<LevelAmbience>();
             Assert.IsNotNull(ambience, "the mall has ambience");
+            // The hum follows the share of lit fixtures; the horror director cuts some sectors each job, so restore them.
+            foreach (LightFixture f in LightFixture.All.ToList()) f.SetHorrorPower(true);
             yield return new WaitForSeconds(0.8f);
-            Assert.Greater(ambience.HumLevel, 0.8f, "lights on: humming");
+            // Its level is the share of fixtures lit (most of the salvage mall's tubes are dead by design).
+            float litShare = LightFixture.All.Count(f => f.Lit) / (float)LightFixture.All.Count;
+            Assert.Greater(ambience.HumLevel, 0.05f, "lights on: humming");
+            Assert.AreEqual(litShare, ambience.HumLevel, 0.05f, "as loud as the share of tubes lit");
             foreach (LightFixture f in LightFixture.All.ToList()) f.SetPowered(false);
             yield return new WaitForSeconds(0.8f);
             Assert.AreEqual(0f, ambience.HumLevel, 1e-3f, "power off: silence but the wind");

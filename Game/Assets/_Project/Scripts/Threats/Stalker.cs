@@ -201,6 +201,9 @@ namespace Abandoned.Threats
             Vector3 eye = PositionOf(p) + Vector3.up * 1.6f, chest = transform.position + Vector3.up * 1.5f;
             Vector3 to = chest - eye;
             if (to.magnitude > config.WatchRange) return false;
+            // Right on top of you there is no direction to look in (Vector3.Angle of a zero vector is 0, which read as
+            // "watched"): after a strike it froze inside its prey for as long as they stood still.
+            if (Flat(to).sqrMagnitude < 0.09f) return false;
             if (Vector3.Angle(Flat(p.transform.forward), Flat(to)) > config.WatchAngle) return false;
             return LineOfSight(eye, chest);
         }

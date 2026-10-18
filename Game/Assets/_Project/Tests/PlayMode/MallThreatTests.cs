@@ -37,20 +37,22 @@ namespace Abandoned.Tests
         [Test]
         public void TheNavMeshReachesEveryFloorButNotOutside()
         {
-            Vector3 parking = new(24f, 0f, 3f); // just inside the entrance
-            Assert.IsFalse(NavMesh.SamplePosition(new Vector3(24f, 0f, -8f), out _, 1f, NavMesh.AllAreas), "the parking lot isn't its territory");
-            Assert.IsFalse(NavMesh.SamplePosition(new Vector3(6f, 12.3f, 6f), out _, 1f, NavMesh.AllAreas), "nor the roof");
-            Assert.IsTrue(Reachable(parking, new Vector3(6f, 0f, 30f)), "ground floor clothing store");
-            Assert.IsTrue(Reachable(parking, new Vector3(6f, 4f, 20f)), "floor 1 furniture store");
-            Assert.IsTrue(Reachable(parking, new Vector3(22f, 8f, 37f)), "floor 2 gallery");
-            Assert.IsTrue(Reachable(parking, new Vector3(42f, 0f, 30f)), "loading bay");
+            Vector3 inside = new(28f, 0f, 3f); // just inside the entrance
+            Assert.IsFalse(NavMesh.SamplePosition(new Vector3(28f, 0f, -8f), out _, 1f, NavMesh.AllAreas), "the front court isn't its territory");
+            Assert.IsFalse(NavMesh.SamplePosition(new Vector3(28f, 8.3f, 24f), out _, 1f, NavMesh.AllAreas), "nor the roof");
+            Assert.IsTrue(Reachable(inside, new Vector3(8f, 0f, 24f)), "ground floor clothing store");
+            Assert.IsTrue(Reachable(inside, new Vector3(8f, 4f, 24f)), "floor 1 offices");
+            Assert.IsTrue(Reachable(inside, new Vector3(22f, 4f, 34f)), "floor 1 rear gallery");
+            Assert.IsTrue(Reachable(inside, new Vector3(46f, -4f, 30f)), "the basement");
         }
 
         [UnityTest]
         public IEnumerator ACollapsedFloorCarvesAHoleInItsPaths()
         {
             StructureSimulation sim = Object.FindAnyObjectByType<StructureSimulation>();
-            StructuralSection tile = sim.Sections.First(s => s.name == "Floor_1_1_5");
+            // An upper tile that can fall with clear floor (NavMesh) at its centre.
+            StructuralSection tile = sim.Sections.Where(s => s.CanCollapse && s.Type == SectionType.Floor && s.transform.position.y > 3f
+                    && NavMesh.SamplePosition(s.transform.position, out _, 0.3f, NavMesh.AllAreas)).OrderBy(s => s.name).First();
             Vector3 top = tile.transform.position;
             Assert.IsTrue(NavMesh.SamplePosition(top, out _, 0.3f, NavMesh.AllAreas), "walkable before");
             tile.Collapse();
@@ -66,16 +68,21 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheBlindOneHuntsANoiseAndKillsOnContact()
         {
+            yield return MallTestSpots.StepInside();
             BlindOne monster = ThreatDirector.Current.Spawn();
             Assert.IsNotNull(monster);
+            MallTestSpots.SkipWarning(monster);
+            // Somewhere open: the crash it hears is 4 m away in a straight, walkable line.
+            (Vector3 at, Vector3 crash) = MallTestSpots.OpenLine(4f);
+            monster.GetComponent<NavMeshAgent>().Warp(at);
             yield return null;
-            Assert.AreEqual(BlindOneState.Wander, monster.State);
+            // The mall is never silent (a route change dropping a floor, a splash): it may be investigating, never hunting.
+            Assert.AreNotEqual(BlindOneState.Hunt, monster.State);
 
             // A quiet step across the building: nothing. A crash next to it: a hunt.
             NoiseSystem.Emit(monster.transform.position + new Vector3(30f, 0f, 30f), 0.05f, NoiseSource.Footstep);
             yield return null;
-            Assert.AreEqual(BlindOneState.Wander, monster.State);
-            Vector3 crash = monster.transform.position + Vector3.right * 4f;
+            Assert.AreNotEqual(BlindOneState.Hunt, monster.State, "a quiet step far off doesn't start a hunt");
             NoiseSystem.Emit(crash, 1f, NoiseSource.LootImpact);
             yield return new WaitForSeconds(0.6f);
             Assert.AreEqual(BlindOneState.Hunt, monster.State);
@@ -95,8 +102,20 @@ namespace Abandoned.Tests
 
             NetworkPlayer me = NetworkPlayer.Local;
             me.OwnerTeleport(monster.transform.position + Vector3.forward * 0.6f);
-            yield return new WaitForSeconds(0.3f);
-            Assert.IsTrue(me.IsDead, "contact kills");
+            // It is blind: it strikes what it hears, and walking into it makes steps. Since the rebuilt threats it is
+            // no longer a one-touch kill (70 a strike): keep blundering into it.
+            float health = me.Health, until = Time.time + 10f;
+            bool hurt = false;
+            while (!me.IsDead && Time.time < until)
+            {
+                me.OwnerTeleport(monster.transform.position + monster.transform.forward * 0.6f);
+                yield return null;
+                NoiseSystem.Emit(me.transform.position, 0.6f, NoiseSource.Footstep);
+                yield return new WaitForSeconds(0.3f);
+                hurt |= me.Health < health;
+            }
+            Assert.IsTrue(hurt, "contact hurts");
+            Assert.IsTrue(me.IsDead, "and keeps hurting until you're down");
             Assert.IsTrue(me.Ragdoll.IsRagdolled);
             Assert.IsFalse(pocket.Grabbable.IsPocketed, "the pocket loot dropped where they died");
             Assert.AreEqual(LootHoldMode.Free, pocket.Hold.Mode);

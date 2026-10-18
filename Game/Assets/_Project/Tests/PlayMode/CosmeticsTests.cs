@@ -52,7 +52,10 @@ namespace Abandoned.Tests
                 Assert.IsTrue(seen.HatInstance.GetComponentsInChildren<Renderer>().All(r => r.shadowCastingMode == ShadowCastingMode.On), "visible on others");
                 Assert.IsTrue(mine.HatInstance.GetComponentsInChildren<Renderer>().All(r => r.shadowCastingMode == ShadowCastingMode.ShadowsOnly), "only a shadow on its wearer");
 
-                var body = seen.transform.Find("Body").GetComponent<Renderer>();
+                // The coverall is every renderer wearing the coverall material (the worker model has no single "Body").
+                var coverall = (Renderer[])typeof(PlayerCosmetics).GetField("coverall", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(seen);
+                Assert.IsNotEmpty(coverall, "the worker model has coverall renderers");
+                Renderer body = coverall[0];
                 var block = new MaterialPropertyBlock();
                 body.GetPropertyBlock(block);
                 Color shown = block.GetColor("_BaseColor"), navyColor = catalog.Coverall(navy).Color;

@@ -30,7 +30,9 @@ namespace Abandoned.Tests
             Assert.Less(sun.intensity, daySun * 0.2f, "the sun is down");
             Assert.Less(RenderSettings.ambientSkyColor.grayscale, dayAmbient * 0.5f, "the building is darker");
 
+            yield return MallTestSpots.StepInside();
             BlindOne blind = ThreatDirector.Current.Spawn();
+            Assert.IsNotNull(blind, "a Blind One to listen");
             yield return new WaitForSeconds(1.2f); // the danger director re-applies scales every frame
             Assert.Less(blind.HearingScale, 1f, "the storm covers footsteps");
             Assert.Greater(Object.FindAnyObjectByType<Abandoned.Structure.StructureSimulation>().DangerDecay, 1.3f, "and works on the structure");

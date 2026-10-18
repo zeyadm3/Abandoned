@@ -13,14 +13,19 @@ namespace Abandoned.Tests
     /// </summary>
     public class MallRenderBudgetTests
     {
-        private const long BatchBudget = 2200; // ~1.75k measured at M7.6 (concourse, 2 shadow cascades)
+        // A regression guard, not a target. M7.6's greybox mall measured ~1.75k (budget 2200); the dressed 0.15+ salvage
+        // mall measured 5.2k-11.3k batches on 2026-10-18 (concourse worst). Whether that is acceptable on players'
+        // machines is still unmeasured: see Docs/PROGRESS.md 0.24.10 "Render budget".
+        private const long BatchBudget = 12500;
 
         private static readonly (Vector3 from, Vector3 to, string name)[] Views =
         {
-            (new Vector3(10f, 1.6f, 1f), new Vector3(2f, 0.8f, 18f), "electronics"),
-            (new Vector3(24f, 1.6f, 4f), new Vector3(24f, 3f, 30f), "concourse"),
-            (new Vector3(13f, 5.6f, 9f), new Vector3(26f, 5f, 22f), "walkway"),
-            (new Vector3(38f, 9.6f, 1f), new Vector3(46f, 8.8f, 20f), "offices"),
+            // The 0.15 plan: electronics front left, the court through the entrance, the floor-1 walkway, the
+            // furniture floor front right.
+            (new Vector3(20f, 1.6f, 6f), new Vector3(4f, 0.8f, 10f), "electronics"),
+            (new Vector3(28f, 1.6f, 4f), new Vector3(28f, 3f, 32f), "concourse"),
+            (new Vector3(18f, 5.6f, 14f), new Vector3(34f, 5f, 30f), "walkway"),
+            (new Vector3(36f, 5.6f, 6f), new Vector3(52f, 4.8f, 12f), "furniture"),
         };
 
         [UnityTest]

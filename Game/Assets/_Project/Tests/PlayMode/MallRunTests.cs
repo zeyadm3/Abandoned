@@ -76,11 +76,13 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(RunPhase.Running, run.State.Phase, "nobody at the ignition: ignored");
 
-            rig.Teleport(truck.transform.position + Vector3.up * 0.45f + Vector3.forward * 0.8f);
+            // Stand at the ignition, inside the cargo bay (the 0.15.7b truck's deck is 1.05 m up).
+            rig.Teleport(truck.Ignition.position + Vector3.up * 0.1f);
             rig.Settle();
             // Something sturdy: it's dropped onto the bay floor.
             NetworkLoot item = Spawned(l => l.Item.Definition.CarryClass == CarryClass.TwoHand && l.Item.Definition.Fragility <= Abandoned.Loot.Fragility.Medium);
-            Move(item, BayCenter + Vector3.back * 0.8f);
+            Move(item, BayCenter + Vector3.back * 0.8f + Vector3.up * 0.3f);
+            yield return new WaitForSeconds(0.5f);
             StringAssert.StartsWith("Start departure", ignition.UsePrompt(rig.Player));
             ignition.Use(rig.Player);
             yield return null;

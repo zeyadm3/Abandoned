@@ -24,7 +24,10 @@ namespace Abandoned.Tests
         {
             LightFixture[] fixtures = Object.FindObjectsByType<LightFixture>(FindObjectsSortMode.None);
             Assert.Greater(fixtures.Length, 60, "fixtures over every floor");
-            Assert.Greater(fixtures.Count(f => f.Lit), fixtures.Length * 0.85f, "most tubes still work");
+            // The 0.15.5 salvage mall is mostly dark by design: 75 % dead tubes, 10 % faulty (MeridianPresentationConfig;
+            // Docs/SALVAGE_MALL_UNITY_SETUP.md), and the horror director cuts some sectors' power each job.
+            Assert.That(fixtures.Count(f => f.Dead) / (float)fixtures.Length, Is.InRange(0.5f, 0.9f), "most tubes are dead");
+            Assert.IsTrue(fixtures.Any(f => f.Lit), "but some still light the way");
             Assert.IsTrue(fixtures.Any(f => f.Faulty), "some tubes flicker");
             foreach (LightFixture f in fixtures.Where(f => f.Dead))
                 Assert.IsFalse(f.Lamp.enabled, $"{f.name} is a dead tube");
@@ -35,7 +38,7 @@ namespace Abandoned.Tests
         public IEnumerator PowerAndCeilingSwitchAFixture()
         {
             LightFixture fixture = Object.FindObjectsByType<LightFixture>(FindObjectsSortMode.None)
-                .First(f => !f.Dead && !f.Faulty && f.GetComponent<SectionProp>() != null);
+                .First(f => f.Lit && !f.Faulty && f.GetComponent<SectionProp>() != null && f.GetComponent<SectionProp>().Section.CanCollapse);
             Light lamp = fixture.Lamp;
             float full = fixture.FullIntensity;
             Assert.IsTrue(lamp.enabled);

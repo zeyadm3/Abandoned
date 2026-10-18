@@ -40,21 +40,32 @@ namespace Abandoned.Tests
         {
             ThreatDirector director = ThreatDirector.Current;
             var counts = Enumerable.Range(1, 400).GroupBy(director.Opening).ToDictionary(g => g.Key, g => g.Count());
-            Assert.AreEqual(4, counts.Count, "all four kinds can open a run");
-            Assert.Greater(counts[0], counts[1], "the Blind One most often");
+            Assert.GreaterOrEqual(counts.Count, 3, "several kinds can open a run");
+            // Every opener can hurt the crew; one-touch killers, the Collector and the final hunter come later.
+            var roster = (Unity.Netcode.NetworkObject[])typeof(ThreatDirector).GetField("roster", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(director);
+            foreach (int index in counts.Keys)
+            {
+                Assert.GreaterOrEqual(index, 0, "a run always opens with something");
+                ThreatDefinition d = roster[index].GetComponent<Threat>().Definition;
+                Assert.IsFalse(d != null && (d.LethalContact || d.Kind == ThreatKind.Collector || d.FinalOnly),
+                    $"{roster[index].name} must not open a run");
+            }
         }
 
         [UnityTest]
         public IEnumerator TheStalkerFreezesWhenWatchedAndKillsWhenIgnored()
         {
+            yield return MallTestSpots.StepInside();
             var stalker = (Stalker)ThreatDirector.Current.SpawnOf<Stalker>();
             Assert.IsNotNull(stalker);
             Fast<StalkerConfig>(stalker, "config", ("RushAfter", 1.5f));
-            Vector3 spot = stalker.transform.position;
+            MallTestSpots.SkipWarning(stalker);
+            // Put it at the far end of an open 6 m line on the ground floor.
+            (Vector3 me, Vector3 spot) = MallTestSpots.OpenLine(6f);
+            stalker.GetComponent<UnityEngine.AI.NavMeshAgent>().Warp(spot);
             yield return new WaitForSeconds(0.2f);
 
             // Face it from a few metres: it stops.
-            Vector3 me = spot + Vector3.back * 6f;
             rig.Teleport(new Vector3(me.x, spot.y + 0.05f, me.z), 0f);
             rig.Settle();
             yield return new WaitForSeconds(0.5f);
@@ -75,9 +86,11 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator TheCollectorStealsUnattendedLootAndDropsItWhenCaught()
         {
+            yield return MallTestSpots.StepInside();
             var collector = (Collector)ThreatDirector.Current.SpawnOf<Collector>();
+            Assert.IsNotNull(collector);
             Fast<CollectorConfig>(collector, "config", ("Cooldown", 0f), ("HideDistance", 8f));
-            rig.Teleport(new Vector3(24f, 0.05f, -8f)); // out in the parking lot: nothing is guarded
+            rig.Teleport(new Vector3(24f, 0.05f, -8f)); // out in the front court: nothing is guarded
             rig.Settle();
             float end = Time.time + 25f;
             while (collector.Carried == null && Time.time < end) yield return null;

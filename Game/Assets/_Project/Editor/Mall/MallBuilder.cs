@@ -46,6 +46,7 @@ namespace Abandoned.EditorTools
 
             MallGameplayData.Apply();
             ThreatPressure0156.Apply();
+            LootLookalikeStandIns.TakeSpots(); // only this build's swaps go in the F1 report
             int tiles = MallFloorBuilder.Build(Group(TilesGroup, mall));
             Transform flights = Group(FlightsGroup, mall);
             foreach (Flight flight in AllFlights) MallFlights.Build(flight, flights);
@@ -83,6 +84,8 @@ namespace Abandoned.EditorTools
             MallRooms0160.Build(mall);
             MeridianLightLayers.Apply(mall);
             ShadowCasterPass.Apply(mall, "Mall");
+            int lookalikes = LootLookalikeAudit.Run(mall, "Mall");
+            LootLookalikeAudit.Report(mall, LootLookalikeStandIns.TakeSpots(), lookalikes);
             PlayerSettings.bundleVersion = BuildScript.Version;
             EditorSceneManager.SaveScene(scene, ScenePath);
             BuildScenes.ApplyToEditorSettings();

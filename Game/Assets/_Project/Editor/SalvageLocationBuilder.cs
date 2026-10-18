@@ -65,10 +65,12 @@ namespace Abandoned.EditorTools
             public readonly int Floor;
             public readonly bool Tall;
             public readonly RoomDoor Doors;
+            /// <summary>World x of the south/north doorway's centre (NaN: the wall's middle), to line it up with a stair.</summary>
+            public readonly float DoorAt;
             public Room(string name, string tag, int floor, int x, int z, int width, int depth, bool tall = false,
-                RoomDoor doors = RoomDoor.South)
+                RoomDoor doors = RoomDoor.South, float doorAt = float.NaN)
             {
-                Name = name; Tag = tag; Floor = floor; Cells = new RectInt(x, z, width, depth); Tall = tall; Doors = doors;
+                Name = name; Tag = tag; Floor = floor; Cells = new RectInt(x, z, width, depth); Tall = tall; Doors = doors; DoorAt = doorAt;
             }
         }
 
@@ -128,6 +130,9 @@ namespace Abandoned.EditorTools
             if (plan.Theme == Theme.School) SchoolAtmosphereBuilder.Apply(root);
             if (plan.Theme == Theme.Prison) PrisonAtmosphereBuilder.Apply(root);
             PopulateGameplay(root, plan, simulation);
+            BakeNavMesh(root, plan);
+            // Solid props (0.24.11), guarded by the first bake so no box cuts a route; then bake around them.
+            LevelSolidity.Apply(root, plan.Name);
             BakeNavMesh(root, plan);
             ConfigureHorrorScenes();
 
@@ -239,21 +244,21 @@ namespace Abandoned.EditorTools
                 float x1 = room.Cells.xMax * Tile;
                 float z0 = room.Cells.y * Tile;
                 float z1 = room.Cells.yMax * Tile;
-                float midX = (x0 + x1) * .5f, midZ = (z0 + z1) * .5f;
+                float midX = (x0 + x1) * .5f, midZ = (z0 + z1) * .5f, doorX = float.IsNaN(room.DoorAt) ? midX : room.DoorAt;
                 float horizontalDoor = Mathf.Min(2.6f, x1 - x0 - .4f);
                 float verticalDoor = Mathf.Min(2.6f, z1 - z0 - .4f);
                 if (room.Doors.HasFlag(RoomDoor.South))
-                    WallWithOpening(holder, "DoorwaySouth", new Vector3(midX, y, z0), x1 - x0, wallHeight, false, midX, horizontalDoor, m.WallFor(room.Tag));
-                else Wall(holder, "SouthWall", new Vector3(midX, y + wallHeight * .5f, z0), new Vector3(x1 - x0, wallHeight, .18f), m.WallFor(room.Tag));
+                    WallWithOpening(holder, "DoorwaySouth", new Vector3(midX, y, z0), x1 - x0, wallHeight, false, doorX, horizontalDoor, m.WallFor(room.Tag));
+                else PlainWall(plan, room, holder, "SouthWall", new Vector3(midX, y, z0), x1 - x0, wallHeight, false, m.WallFor(room.Tag));
                 if (room.Doors.HasFlag(RoomDoor.North))
-                    WallWithOpening(holder, "DoorwayNorth", new Vector3(midX, y, z1), x1 - x0, wallHeight, false, midX, horizontalDoor, m.WallFor(room.Tag));
-                else Wall(holder, "NorthWall", new Vector3(midX, y + wallHeight * .5f, z1), new Vector3(x1 - x0, wallHeight, .18f), m.WallFor(room.Tag));
+                    WallWithOpening(holder, "DoorwayNorth", new Vector3(midX, y, z1), x1 - x0, wallHeight, false, doorX, horizontalDoor, m.WallFor(room.Tag));
+                else PlainWall(plan, room, holder, "NorthWall", new Vector3(midX, y, z1), x1 - x0, wallHeight, false, m.WallFor(room.Tag));
                 if (room.Doors.HasFlag(RoomDoor.West))
                     WallWithOpening(holder, "DoorwayWest", new Vector3(x0, y, midZ), z1 - z0, wallHeight, true, midZ, verticalDoor, m.WallFor(room.Tag));
-                else Wall(holder, "WestWall", new Vector3(x0, y + wallHeight * .5f, midZ), new Vector3(.18f, wallHeight, z1 - z0), m.WallFor(room.Tag));
+                else PlainWall(plan, room, holder, "WestWall", new Vector3(x0, y, midZ), z1 - z0, wallHeight, true, m.WallFor(room.Tag));
                 if (room.Doors.HasFlag(RoomDoor.East))
                     WallWithOpening(holder, "DoorwayEast", new Vector3(x1, y, midZ), z1 - z0, wallHeight, true, midZ, verticalDoor, m.WallFor(room.Tag));
-                else Wall(holder, "EastWall", new Vector3(x1, y + wallHeight * .5f, midZ), new Vector3(.18f, wallHeight, z1 - z0), m.WallFor(room.Tag));
+                else PlainWall(plan, room, holder, "EastWall", new Vector3(x1, y, midZ), z1 - z0, wallHeight, true, m.WallFor(room.Tag));
                 Nameplate(holder, room, m);
             }
             MarkStatic(rooms);
@@ -261,6 +266,30 @@ namespace Abandoned.EditorTools
 
         private static void Wall(Transform parent, string name, Vector3 center, Vector3 size, Material material) =>
             Box(name, parent, center, size, material);
+
+        // A ground-floor wall standing over a stairwell (open ground on both sides of its line) gets an opening there:
+        // the School's auditorium wall crossed the archive stair with 2 m of headroom and stopped players (0.24.11).
+        private static void PlainWall(Plan plan, Room room, Transform holder, string name, Vector3 baseCentre, float length,
+            float height, bool alongZ, Material material)
+        {
+            float lineAt = alongZ ? baseCentre.x : baseCentre.z, start = (alongZ ? baseCentre.z : baseCentre.x) - length * .5f;
+            int line = Mathf.RoundToInt(lineAt / Tile);
+            float spanStart = float.NaN, spanEnd = float.NaN;
+            for (int i = Mathf.FloorToInt(start / Tile); i * Tile < start + length - .01f; i++)
+            {
+                Vector2Int before = alongZ ? new Vector2Int(line - 1, i) : new Vector2Int(i, line - 1);
+                Vector2Int after = alongZ ? new Vector2Int(line, i) : new Vector2Int(i, line);
+                if (room.Floor != 0 || !plan.GroundHoles.Contains(before) || !plan.GroundHoles.Contains(after)) continue;
+                if (float.IsNaN(spanStart)) spanStart = i * Tile;
+                spanEnd = (i + 1) * Tile;
+            }
+            if (float.IsNaN(spanStart))
+            {
+                Wall(holder, name, baseCentre + Vector3.up * (height * .5f), alongZ ? new Vector3(.18f, height, length) : new Vector3(length, height, .18f), material);
+                return;
+            }
+            WallWithOpening(holder, name + "OverStairwell", baseCentre, length, height, alongZ, (spanStart + spanEnd) * .5f, spanEnd - spanStart, material);
+        }
 
         private static void WallWithOpening(Transform parent, string name, Vector3 wallCenter, float length, float height,
             bool alongZ, float openingCenter, float openingWidth, Material material)
@@ -322,7 +351,35 @@ namespace Abandoned.EditorTools
                     PrisonDressing(props, m);
                     break;
             }
+            ClearStairwells(props, plan);
             MarkStatic(props);
+        }
+
+        // Dressing is laid out on a fixed grid (rows of cells, desks, machines): nothing may stand on a stair or over a
+        // stairwell. The Prison's cell bars and bunks did, across both of its ground-floor stairs (0.24.11).
+        private static void ClearStairwells(Transform props, Plan plan)
+        {
+            var keepOut = new List<Bounds>();
+            foreach (Stair stair in plan.Stairs)
+            {
+                Vector3 top = stair.Foot + stair.Direction * 8f + Vector3.up * stair.Rise;
+                var b = new Bounds(stair.Foot, Vector3.zero);
+                b.Encapsulate(top);
+                Vector3 across = Vector3.Cross(Vector3.up, stair.Direction) * 1.9f;
+                b.Encapsulate(stair.Foot + across); b.Encapsulate(stair.Foot - across);
+                b.Encapsulate(top + Vector3.up * 2.2f - stair.Direction * .5f);
+                b.Encapsulate(stair.Foot - stair.Direction * .5f);
+                keepOut.Add(b);
+            }
+            foreach (Vector2Int hole in plan.GroundHoles)
+                keepOut.Add(new Bounds(new Vector3((hole.x + .5f) * Tile, 1.25f, (hole.y + .5f) * Tile), new Vector3(Tile, 3.5f, Tile)));
+            foreach (Transform child in props.Cast<Transform>().ToList())
+            {
+                Renderer r = child.GetComponentInChildren<Renderer>();
+                if (r == null || !keepOut.Any(k => k.Intersects(r.bounds))) continue;
+                Debug.Log($"[Locations] {plan.Name}: {child.name} left out, it stood in a stairwell.");
+                UnityEngine.Object.DestroyImmediate(child.gameObject);
+            }
         }
 
         private static void SchoolDressing(Transform p, Materials m)
@@ -504,7 +561,9 @@ namespace Abandoned.EditorTools
                 new Room("Cafeteria", "food", 0, 7, 0, 3, 2, doors: RoomDoor.North), new Room("Auditorium", "cinema", 0, 0, 3, 4, 2, true),
                 // The east door keeps the library tied into the central hall even when the south approach is obstructed.
                 new Room("Library", "gallery", 0, 0, 6, 4, 3, doors: RoomDoor.South | RoomDoor.East), new Room("Gymnasium", "furniture", 0, 7, 4, 5, 5, true),
-                new Room("Science_Wing", "office", 1, 2, 0, 4, 2, doors: RoomDoor.North), new Room("Basement_Archive", "stock", -1, 0, 6, 4, 3),
+                new Room("Science_Wing", "office", 1, 2, 0, 4, 2, doors: RoomDoor.North),
+                // The archive's doorway faces its stair (x 6), not the wall's middle: it left a 0.8 m way on (0.24.11).
+                new Room("Basement_Archive", "stock", -1, 0, 6, 4, 3, doorAt: 6f),
             });
             p.Stairs.Add(new Stair("MainStair", new Vector3(26f, 0f, 16f), Vector3.forward, Story));
             p.Stairs.Add(new Stair("ArchiveStair", new Vector3(6f, -Story, 24f), Vector3.back, Story));
@@ -532,11 +591,13 @@ namespace Abandoned.EditorTools
                 new Room("Visitation", "office", 0, 0, 0, 5, 2, doors: RoomDoor.North), new Room("Kitchen", "food", 0, 7, 0, 5, 2, doors: RoomDoor.North),
                 new Room("Cellblock_A", "office", 0, 0, 3, 5, 4, true), new Room("Cellblock_B", "office", 0, 7, 3, 5, 4, true),
                 new Room("Laundry", "stock", 0, 6, 7, 4, 2, doors: RoomDoor.North), new Room("Upper_Gallery_A", "office", 1, 0, 3, 3, 5),
-                new Room("Upper_Gallery_B", "office", 1, 9, 3, 3, 5), new Room("Service_Tunnel", "stock", -1, 0, 6, 6, 3),
+                // The tunnel stair, its shaft (column 3) and the tunnel doorway line up at x 14. The stair stood at x 12,
+                // half under the ground floor, beside a drop into nothing (0.24.11).
+                new Room("Upper_Gallery_B", "office", 1, 9, 3, 3, 5), new Room("Service_Tunnel", "stock", -1, 0, 6, 6, 3, doorAt: 14f),
             });
             p.Stairs.Add(new Stair("GalleryStair", new Vector3(6f, 0f, 16f), Vector3.forward, Story));
             p.Stairs.Add(new Stair("EastGalleryStair", new Vector3(42f, 0f, 16f), Vector3.forward, Story));
-            p.Stairs.Add(new Stair("TunnelStair", new Vector3(12f, -Story, 24f), Vector3.back, Story));
+            p.Stairs.Add(new Stair("TunnelStair", new Vector3(14f, -Story, 24f), Vector3.back, Story));
             AddLoot(p, "prison", new[] { ("office", 8f, 6f, 0), ("food", 35f, 6f, 0), ("office", 8f, 24f, 0), ("office", 38f, 24f, 0), ("stock", 29f, 32f, 0), ("office", 6f, 22f, 1), ("office", 42f, 22f, 1), ("stock", 4f, 33f, -1) }, 4, 7);
             Threats(p, new Vector3(43f, 0f, 31f), new Vector3(33f, 0f, 24f), new Vector3(9f, 0f, 24f), new Vector3(5f, 4f, 24f), new Vector3(43f, 4f, 24f), new Vector3(12f, -4f, 30f));
             return p;

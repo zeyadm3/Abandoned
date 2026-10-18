@@ -49,7 +49,8 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(rig.Visuals.CracksWhenCracking, view.CrackCount);
             Assert.AreEqual(rig.Visuals.CrackingDust, view.DustRate, 1e-3f);
-            Assert.Greater(GameAudio.StructureSoundCount, sounds, "getting worse is announced");
+            // 2026-10-08 (user): a cracked concrete floor is silent (no creak drone); cracks, tint and dust show it.
+            Assert.AreEqual(sounds, GameAudio.StructureSoundCount, "cracking concrete makes no sound");
             var block = new MaterialPropertyBlock();
             visual.GetPropertyBlock(block);
             Assert.AreNotEqual(Color.white, block.GetColor("_BaseColor"), "tinted");
@@ -59,6 +60,7 @@ namespace Abandoned.Tests
             yield return null;
             Assert.AreEqual(rig.Visuals.CracksWhenFailing, view.CrackCount);
             Assert.Less(tile.Visual.localPosition.y, -0.15f - rig.Visuals.SagDepth * 0.5f, "sagging before it goes");
+            Assert.Greater(GameAudio.StructureSoundCount, sounds, "failing is announced");
             Assert.AreEqual(StructureSound.Snap, GameAudio.LastStructureSound);
         }
 
