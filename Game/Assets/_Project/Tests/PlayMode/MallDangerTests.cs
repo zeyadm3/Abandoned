@@ -41,7 +41,13 @@ namespace Abandoned.Tests
             StructureSimulation sim = Object.FindAnyObjectByType<StructureSimulation>();
             float healthBefore = sim.Sections.Where(s => s.CanCollapse).Sum(s => s.HealthFraction);
             var startedAbove = sim.Sections.Where(s => s.CanCollapse && s.HealthFraction >= fast.AgingFloor).ToList();
+            yield return MallTestSpots.StepInside();
             BlindOne monster = ThreatDirector.Current.Spawn();
+            Assert.IsNotNull(monster, "a Blind One to sharpen");
+            // Danger waves come after the opening wave: count it as done, and no clock arrivals, so only danger adds.
+            var hidden = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            typeof(ThreatDirector).GetField("spawnAt", hidden).SetValue(ThreatDirector.Current, 0f);
+            typeof(ThreatDirector).GetField("nextArrival", hidden).SetValue(ThreatDirector.Current, Time.time + 999f);
             Light light = Object.FindObjectsByType<LightFixture>(FindObjectsSortMode.None).First(f => f.Lit && !f.Faulty).Lamp;
             float lit = light.intensity;
             bool flickered = false;
@@ -58,10 +64,15 @@ namespace Abandoned.Tests
             Assert.Greater(monster.HearingScale, 1f);
             Assert.Greater(monster.SpeedScale, 1f);
             Assert.Less(sim.Sections.Where(s => s.CanCollapse).Sum(s => s.HealthFraction), healthBefore, "the building ages");
-            Assert.IsTrue(startedAbove.Where(s => !s.IsCollapsed).All(s => s.HealthFraction >= fast.AgingFloor - 0.01f || s.Load > 0f),
-                "ageing alone never pushes a floor below its floor (pre-damage may start some lower)");
+            // The job's seeded route changes (0.16.2, RunRoutes) drop a few sections on purpose: those aren't ageing.
+            var routes = RunRoutes.Current != null ? RunRoutes.Current.Fallen : System.Array.Empty<string>();
+            var below = startedAbove.Where(s => !s.IsCollapsed && s.HealthFraction < fast.AgingFloor - 0.01f && s.Load <= 0f && !routes.Contains(s.name)).ToList();
+            Assert.IsEmpty(below, "ageing alone never pushes a floor below its floor (pre-damage may start some lower): " +
+                string.Join(", ", below.Select(s => $"{s.name} {s.HealthFraction:0.00} stage {s.Stage}")));
             Assert.IsTrue(flickered, "the lights flickered when the level rose");
-            if (level >= fast.ExtraThreatLevel) Assert.GreaterOrEqual(Threat.All.Count, 2, "danger brought another threat");
+            float wave = Time.time + 6f; // a blocked spawn point is retried every few seconds
+            while (Threat.All.Count < 2 && Time.time < wave) yield return null;
+            Assert.GreaterOrEqual(Threat.All.Count, 2, "danger brought another threat");
         }
 
         [UnityTest]

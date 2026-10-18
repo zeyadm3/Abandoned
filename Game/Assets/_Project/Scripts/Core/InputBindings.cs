@@ -57,7 +57,18 @@ namespace Abandoned.Core
                 foreach (InputBinding b in a.bindings)
                     if (b.groups != null && b.groups.Contains("Gamepad") && !b.isComposite) return PadInput.Glyph(b.effectivePath);
             }
-            return a.GetBindingDisplayString(InputBinding.MaskByGroup("Keyboard&Mouse"));
+            // 0.23.2 gave every key an empty second slot for an alternate key: leave unset slots out, or the
+            // prompt reads "E | ".
+            var shown = new System.Collections.Generic.List<string>(2);
+            for (int i = 0; i < a.bindings.Count; i++)
+            {
+                InputBinding b = a.bindings[i];
+                if (b.isPartOfComposite || b.groups == null || !b.groups.Contains("Keyboard&Mouse")) continue;
+                if (!b.isComposite && string.IsNullOrEmpty(b.effectivePath)) continue;
+                string text = a.GetBindingDisplayString(i);
+                if (!string.IsNullOrEmpty(text)) shown.Add(text);
+            }
+            return string.Join(" | ", shown);
         }
 
         public static string Json => Prefs.GetString(Key, string.Empty);

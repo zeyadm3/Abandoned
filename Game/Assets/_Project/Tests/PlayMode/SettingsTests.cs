@@ -66,7 +66,7 @@ namespace Abandoned.Tests
             Assert.IsNotNull(ear);
             MenuUi menu = MenuUi.Current;
             Vector3 behind = ear.transform.position - ear.transform.forward * 6f;
-            Assert.IsFalse(GameSettings.Subtitles, "subtitles are off by default (2026-10-08: keep players guessing)");
+            Assert.IsTrue(GameSettings.Subtitles, "subtitles are on by default (0.12.6 accessibility pass); captions still never give direction");
             GameSettings.Subtitles = false;
             GameAudio.Play(SoundId.Creak, behind);
             yield return null;
@@ -80,7 +80,7 @@ namespace Abandoned.Tests
             GameAudio.Play(SoundId.LootPickup, behind); // not a warning: no caption
             SubtitleFeed.Heard -= Listen;
             yield return null;
-            Assert.AreEqual("[floor creaks]", heard);
+            Assert.AreEqual("[BUILDING: floor creaks]", heard, "the source, never the direction (0.23.1)");
             Assert.AreEqual(1, menu.Subtitles.Count);
             GameAudio.Play(SoundId.Creak, ear.transform.position + Vector3.right * 500f);
             yield return null;

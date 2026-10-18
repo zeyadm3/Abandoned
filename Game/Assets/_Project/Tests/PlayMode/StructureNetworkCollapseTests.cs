@@ -55,15 +55,18 @@ namespace Abandoned.Tests
             HostSection(A).Collapse();
             float lowest = top, hostSeen = top;
             float end = Time.realtimeSinceStartup + 5f;
-            while (Time.realtimeSinceStartup < end && (lowest > top - 2f || hostSeen > top - 2f))
+            // Down off the tile onto the floor or A's rubble mound (up to 1.8 m on a 3 m drop).
+            const float Fell = 0.6f;
+            while (Time.realtimeSinceStartup < end && (lowest > top - Fell || hostSeen > top - Fell))
             {
                 lowest = Mathf.Min(lowest, HeightOf(own));
                 hostSeen = Mathf.Min(hostSeen, HeightOf(PlayerOf(net.Host, Id(client1))));
                 yield return null;
             }
             Assert.IsFalse(kit.Section(client1, A).CollidersEnabled, "client 1's own copy let go of its player");
-            Assert.Less(lowest, top - 2f, "client 1's player fell through A on client 1's machine");
-            Assert.Less(hostSeen, top - 2f, "and the host saw client 1 go down");
+            Assert.Less(lowest, top - Fell, "client 1's player fell through A on client 1's machine: " + Below(own.transform.position)
+                + $" ragdolled {own.Ragdoll.IsRagdolled}");
+            Assert.Less(hostSeen, top - Fell, "and the host saw client 1 go down");
             Assert.IsTrue(own.Ragdoll.IsRagdolled, "standing on a collapse knocks you down");
         }
 
@@ -76,7 +79,16 @@ namespace Abandoned.Tests
             yield return WaitFor(() => net.Machines.All(m => kit.Section(m, B).IsCollapsed), "the rack to break B on every machine", 15f);
             yield return WaitSeconds(2f);
             foreach (NetworkBootstrap m in net.Machines)
-                Assert.Less(NetLootKit.CopyOn(m, id).transform.position.y, TileB.y - 1.5f, $"{m.name} sees the rack fall through");
+                Assert.Less(NetLootKit.CopyOn(m, id).GetComponentInChildren<Collider>().bounds.min.y, TileB.y - 0.9f, $"{m.name} sees the rack fall through (onto the floor or B's rubble): "
+                    + Below(NetLootKit.CopyOn(m, id).transform.position) + $" kinematic {NetLootKit.CopyOn(m, id).GetComponent<Rigidbody>().isKinematic}");
+        }
+
+        // Test diagnostics: what is under a point.
+        private static string Below(Vector3 at)
+        {
+            var hits = Physics.RaycastAll(at + Vector3.up * 0.2f, Vector3.down, 6f, ~0, QueryTriggerInteraction.Ignore);
+            return $"at {at}, below: " + string.Join("; ", hits.OrderBy(h => h.distance).Select(h =>
+                $"{h.collider.name} ({LayerMask.LayerToName(h.collider.gameObject.layer)}) y {h.point.y:0.00} parent {(h.collider.transform.parent ? h.collider.transform.parent.name : "-")}"));
         }
 
         private static ulong Id(NetworkBootstrap machine) => machine.Manager.LocalClientId;

@@ -63,6 +63,11 @@ namespace Abandoned.Tests
             for (int i = 0; i < 20; i++) yield return null; // settled on the ground
             NetworkLoot look = loot.First(l => l.Grabbable.CarryClass == CarryClass.TwoHand && !l.Grabbable.IsPocketed);
             Place(look, carrier.EyePosition + carrier.EyeForward * 1.4f - Vector3.up * 0.15f);
+            // The crew spawns in the front court, far from the stock: set a few pieces out in view for the scan to find.
+            foreach ((NetworkLoot l, int n) in loot.Where(l => l != look && !l.Grabbable.IsPocketed && l.Grabbable.CarryClass == CarryClass.OneHand)
+                         .Take(3).Select((l, n) => (l, n)))
+                // 6-8 m out: close ones end up on the ground below the bottom of the view.
+                Place(l, me.transform.position + me.transform.forward * (6f + n) + me.transform.right * (n - 1) * 1.5f + Vector3.up * 0.6f);
             for (int i = 0; i < 6; i++) yield return null;
             var tags = me.GetComponent<LootTags>();
             tags.Scan();
@@ -87,8 +92,17 @@ namespace Abandoned.Tests
             var rig = PlayerTestRig.ForExisting(me);
             ToastFeed.Show("PLAYER 2 JOINED", "Another pair of hands.", "icon/multiplayer", ToastFeed.Kind.Good);
             ToastFeed.Show("ACHIEVEMENT UNLOCKED", "Occupational Hazard: die on the job.", "icon/trophy", ToastFeed.Kind.Good);
-            yield return new WaitForSeconds(0.5f);
-            Assert.AreEqual(2, Object.FindAnyObjectByType<ToastFeed>().Titles.Count(), "two toasts up");
+            // A small window stacks one toast at a time (compact layout): both must show, in turn.
+            var feed = Object.FindAnyObjectByType<ToastFeed>();
+            bool first = false, second = false;
+            float shown = Time.time + 12f;
+            while (!(first && second) && Time.time < shown)
+            {
+                first |= feed.Titles.Contains("PLAYER 2 JOINED");
+                second |= feed.Titles.Contains("ACHIEVEMENT UNLOCKED");
+                yield return null;
+            }
+            Assert.IsTrue(first && second, "both toasts show");
 
             // Start the truck from the lever, then stand on the ramp looking at the board.
             var truck = Extraction.TruckCargo.Current;

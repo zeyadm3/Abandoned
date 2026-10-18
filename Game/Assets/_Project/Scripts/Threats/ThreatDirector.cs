@@ -194,7 +194,7 @@ namespace Abandoned.Threats
             string name = threat.DisplayName;
             threat.NetworkObject.Despawn(true);
             NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at, rotation: facing);
-            Debug.Log($"[Threat] The {name} returns near the crew at {marker}.");
+            Debug.Log($"[Threat] {Named(name)} returns near the crew at {marker}.");
             return spawned != null ? spawned.GetComponent<Threat>() : null;
         }
         private NetworkObject PrefabOf(Threat threat)
@@ -233,9 +233,11 @@ namespace Abandoned.Threats
             if (spawned == null) return null;
             Threat threat = spawned.GetComponent<Threat>();
             if (threat is LastHunter final) final.SetHuntBounds(HuntBounds());
-            Debug.Log($"[Threat] The {threat.DisplayName} appears at {marker}.");
+            Debug.Log($"[Threat] {Named(threat.DisplayName)} appears at {marker}.");
             return threat;
         }
+        // "The Blind One", but "The Weight" (not "The The Weight").
+        private static string Named(string name) => name.StartsWith("The ") ? name : "The " + name;
         private static Bounds HuntBounds()
         {
             var bounds = new Bounds(Vector3.zero, Vector3.zero);

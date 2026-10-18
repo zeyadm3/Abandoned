@@ -13,7 +13,6 @@ namespace Abandoned.Tests
     /// </summary>
     public class TestMapNavigationTests
     {
-        private const string SceneName = "TestMap";
         private static readonly Vector2 Forward = Vector2.up;
         private PlayerTestRig rig;
 

@@ -13,7 +13,6 @@ namespace Abandoned.UI
     public class AchievementWatcher : MonoBehaviour
     {
         private RunState hooked;
-        private int shownBreakers, shownPings;
         private bool wasDead, wasInVent, wasOnLift;
         private VaultPhase shownVault;
 

@@ -33,13 +33,17 @@ namespace Abandoned.Tests
             var definitions = spawner.Points().Count > 0 ? Resources.FindObjectsOfTypeAll<LootDefinition>().Where(d => d.SpawnTags != null && d.SpawnTags.Length > 0).ToList() : null;
             foreach (LootSpawnPoint p in spawner.Points())
                 Assert.IsTrue(definitions.Any(p.Fits), $"{p.name} ({p.Tag}, {p.MinClass}-{p.MaxClass}) can never be filled");
-            foreach (LootDefinition d in definitions)
-                Assert.IsTrue(spawner.Points().Any(p => p.Fits(d)), $"{d.Id} can never spawn in the mall");
+            // Since 0.15.5 most of the mall's points take only its own salvage families (allowed ids), so the older
+            // items (fridges, sofas...) are left to the other maps: check the mall's stock instead.
+            int stocked = definitions.Count(d => spawner.Points().Any(p => p.Fits(d)));
+            Assert.Greater(stocked, 60, "the mall can stock a wide range of items");
+            var never = definitions.Where(d => !spawner.Points().Any(p => p.Fits(d))).Select(d => d.Id).OrderBy(id => id);
+            Debug.Log($"[MallLoot] {stocked} items can spawn in the mall; not here: {string.Join(", ", never)}");
 
             // Let everything settle: nothing falls through the floors or out of the building.
             yield return new WaitForSeconds(2f);
             foreach (NetworkLoot l in spawner.Spawned.Where(l => l != null))
-                Assert.Greater(l.transform.position.y, -0.5f, $"{l.name} fell through the world");
+                Assert.Greater(l.transform.position.y, -4.5f, $"{l.name} fell through the world (the basement floor is at -4 m)");
         }
     }
 }

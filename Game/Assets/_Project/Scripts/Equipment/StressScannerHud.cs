@@ -19,7 +19,6 @@ namespace Abandoned.Equipment
         private VisualElement panel, condition;
         private VisualElement layoutHud, lower;
         private Label status, load;
-        private readonly RaycastHit[] hits = new RaycastHit[8];
 
         public StructuralSection Target { get; private set; }
 

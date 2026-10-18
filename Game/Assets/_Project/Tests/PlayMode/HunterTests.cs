@@ -24,17 +24,20 @@ namespace Abandoned.Tests
             yield return TestMapScene.Load("Mall");
             rig = ForExisting(TestMapScene.Player);
             for (int i = 0; i < 60 && ThreatDirector.Current == null; i++) yield return null;
+            yield return MallTestSpots.StepInside();
             hunter = (Hunter)ThreatDirector.Current.SpawnOf<Hunter>();
             Assert.IsNotNull(hunter, "the Hunter is on the mall's roster");
+            MallTestSpots.SkipWarning(hunter);
             yield return new WaitForSeconds(0.3f);
         }
 
         [UnityTest]
         public IEnumerator ItChasesWhatItSeesAndKillsOnContact()
         {
-            // The open ground floor under the atrium: it faces the player 7 m away.
-            Place(new Vector3(24f, 0f, 9f), Vector3.forward);
-            rig.Teleport(new Vector3(24f, 0.05f, 16f));
+            // Open ground floor: it faces the player 7 m away.
+            (Vector3 from, Vector3 to) = MallTestSpots.OpenLine(7f);
+            Place(from, Vector3.forward);
+            rig.Teleport(to + Vector3.up * 0.05f);
             rig.Settle();
             bool chased = false;
             float end = Time.time + 8f;
@@ -50,7 +53,7 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator ACrouchingPlayerFarOffStaysHidden()
         {
-            Vector3 at = new(24f, 0f, 6f), spot = new(24f, 0f, 19f); // 13 m across the open atrium floor
+            (Vector3 at, Vector3 spot) = MallTestSpots.OpenLine(13f); // 13 m across open floor
             Place(at, Vector3.back);
             // Crouch first, out of its sight (it faces away), then turn it to look.
             Face(at - (spot - at));

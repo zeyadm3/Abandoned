@@ -151,7 +151,8 @@ namespace Abandoned.Tests
         public void HeavyImpactNearbyShakesTheCamera()
         {
             CameraShake.Emit(rig.Player.transform.position + Vector3.forward * 2f, settings.ShakeFullMomentum);
-            Assert.Greater(feel.Trauma, 0.5f);
+            // 0.11's calmer camera caps an impact's shake at ImpactShakeLimit; a full hit 2 m away comes close to it.
+            Assert.Greater(feel.Trauma, settings.ImpactShakeLimit * 0.5f);
             Run(Frame(), 2f);
             Assert.AreEqual(0f, feel.Trauma, 1e-4f, "shake decays away");
         }

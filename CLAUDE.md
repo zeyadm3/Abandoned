@@ -96,12 +96,21 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.11 (2026-10-18): bug fixes, test suite repaired, audits back.** The mall basement was unreachable on foot (the
+district ground collider ran through its flights), the Prison tunnel and gallery stairs and the School archive stair
+were blocked (location builder fixed, School and Prison rebuilt), about 260 props could be walked through (now solid),
+plus "E | " prompts, the Stalker freezing on contact and utility gear in validation. The 0.15.0 rebuild had dropped the
+mall's audits: `Tools > Abandoned > Mall > Audit Saved Mall / Audit All Levels` (`Editor/Mall/MallAudit`) runs them on
+every level with a stair-headroom sweep; keep them at 0. Test suite repaired: mall tests find their spots from the live
+NavMesh (`Tests/PlayMode/MallTestSpots`), never the pre-0.15 coordinates. EditMode 290/290, PlayMode 0 failures,
+verify OK, all 12 nettests, `LevelSmokeTests` and `LevelWalkTests` pass. Never played. Open for the user: the render
+budget, 6 loot items that spawn nowhere, 12 unreferenced scripts (Docs/PROGRESS.md "0.24.11").
+
 **0.24.10 (2026-10-18): the Crew Director.** Left 4 Dead-style pacing: a hidden stress number per player (hurt, knocked
 down, chased, near a failing floor or a crewmate's death); when the most stressed one peaks, no new monsters for up
 to a minute and idle ones wander away (`Threats/CrewDirector`, tunables and an Enabled switch in
 Data/Threats/Resources/CrewDirectorConfig). Changes when monsters come, never how hard they hit. Compiled and tested in
 batch mode (EditMode + a PlayMode test in the mall), never played. Details: Docs/CREW_DIRECTOR_0.24.10.md.
-
 **0.24.9 (2026-10-18): no loot look-alikes.** Fix for "two identical items, only one grabbable": a loot model never
 stands as scenery. The saved mall's 595 static copies became fixed fittings, dust sheets or packaging in place
 (colliders kept, NavMesh not rebaked); `[MallValidation] ... static loot look-alikes: 0`. Authored in batch mode,

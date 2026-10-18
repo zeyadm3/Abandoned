@@ -44,6 +44,9 @@ namespace Abandoned.Networking
             if (ctx.Aborted) yield break;
             foreach (NetTestMessage m in seen.Where(m => m.Payload != "ok")) ctx.Fail($"client {m.Sender} board: {m.Payload}");
 
+            // The crew may only pull the lever by default (0.12.6 host crew rules): the host lets them drive first.
+            company.SetCrewRule(CrewRule.Drive, true);
+            yield return NetTestContext.Seconds(0.5f);
             ctx.Channel.Send(driver, Drive, "");
             yield return ctx.WaitFor(() => SceneManager.GetActiveScene().name == job.Scene && RunState.Current != null && RunState.Current.IsSpawned,
                 "the van to take everyone to the job", StepTimeout);
