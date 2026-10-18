@@ -4,6 +4,32 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.24.9: no loot look-alikes (2026-10-18; authored in batch mode, not played)
+
+Bug from the user's co-op session: two identical items side by side (e.g. two chairs), only one grabbable. The
+other was scenery built from the same model: 0.15.5 authored every salvage family as loot AND static dressing, and
+0.15.7 made 16 scenery families loot without removing their scenery copies. Rule now: **if it looks like loot, it
+is loot.** The user chose to fill the gaps (option C) and to keep the five fixture items as loot with new fixed
+versions. Full write-up: Docs/LOOT_LOOKALIKES_0.24.9.md.
+
+- Fixed fittings (`SalvageFixtureModels`, catalog entries): gondola shelving, garment rail, service counter,
+  plastic pallet, waste compactor, each on the replaced item's footprint and shelf heights.
+- Other floor items get a dust sheet over their bounds (`DustSheetMesh`); shelf/display stock becomes crushed
+  packaging. Stand-ins carry the original's colliders, so the NavMesh was not rebaked.
+- `Release0249` swapped the saved mall in place: prefab instances directly; batched props by cutting their exact
+  triangles out of the slab batch meshes (`BatchTriangleSet`). Future rebuilds swap in the placement helpers.
+- Checks: `[MallValidation] Mall: static loot look-alikes` (must be 0) and an F1 line + amber gizmos
+  (`Loot.LootLookalikeDebug`).
+
+Result of `Tools/unity.sh exec Abandoned.EditorTools.Release0249.AuthorAndExit` (OK): **104 placed and 491
+batched look-alikes swapped, 341,976 batch triangles cut, 0 batches unmatched, 0 left.** Also: dotnet compile of
+Runtime + Editor 0 errors; `check.py` 0 missing. Version 0.24.9. Not played; no player builds.
+
+Verified (LookalikeVerify0249 against the committed scene and meshes): 341,976 triangles removed, 0 of them not a
+look-alike's, 0 look-alike triangles left; 595 stand-ins all sound; no loot model is scenery in any scene.
+EditMode 283/286: the 5 new tests pass; the 3 failures predate this change (input prompt, shopping-cart weight,
+water impact sound) and are left for a separate fix.
+
 ## 0.24.8c: localization review fixes (2026-10-14; compiled outside Unity, not played)
 
 A code review of 0.24.8 (nine languages) found 15 issues; 12 were fixed, 2 turned out not to happen in the game

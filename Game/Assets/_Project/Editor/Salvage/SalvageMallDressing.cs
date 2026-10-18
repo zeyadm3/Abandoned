@@ -105,9 +105,9 @@ namespace Abandoned.EditorTools
                 fit.Model("oak_conference_table", room, floor, 49.6f, 2.5f);
                 foreach (float z in new[] { 1.8f, 9.3f, 12.0f })
                     fit.Model("steel_filing_cabinet", room, floor, 55.15f, z, 270);
+                // 0.24.9: the tipped executive chair was a loot look-alike; packaging is left where it lay.
                 Transform tipped = fit.Assembly(room, "TippedExecutiveChair", floor, 39.5f, 2.5f);
-                GameObject chair = fit.Inside("executive_chair", tipped, new Vector3(0, .35f, 0));
-                if (chair != null) chair.transform.localRotation = Quaternion.Euler(0, 12, 90);
+                fit.Inside("executive_chair", tipped, Vector3.zero, 12);
                 fit.Tag(room, floor, 49.5f, 1.84f, "HOLD - RECOVER\nHIGH VALUE", 180, .75f);
                 fit.Tracks(room, floor, 47.2f, 6.0f, 90);
                 fit.Tracks(room, floor, 43.2f, 6.0f, 90);

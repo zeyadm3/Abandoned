@@ -96,6 +96,11 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.9 (2026-10-18): no loot look-alikes.** Fix for "two identical items, only one grabbable": a loot model never
+stands as scenery. The saved mall's 595 static copies became fixed fittings, dust sheets or packaging in place
+(colliders kept, NavMesh not rebaked); `[MallValidation] ... static loot look-alikes: 0`. Authored in batch mode,
+never played, no builds. Details: Docs/LOOT_LOOKALIKES_0.24.9.md. All commits go to `main`.
+
 **0.24.8c (2026-10-14): localization review fixes.** No features. Text the host sends or keeps is English and
 worded where it is shown (crew-spending refusals, player stand-in names in results/toasts/travel screen, toy
 toasts, the radio, hints); the main menu's session-end notice and the Controls key-conflict warning are worded;
@@ -176,6 +181,16 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-18 (user: two identical items side by side, only one grabbable, "needs an immediate fix"; chose option C
+  "remove them and fill the gaps", then "keep loot, build fixed versions" for the fixtures): **0.24.9, no loot
+  look-alikes.** If it looks like loot, it is loot: a loot model never stands in a level as scenery
+  (`Editor/Salvage/LootLookalikes`, built from the loot catalogs so new families are covered). Static copies become
+  fixed fittings (gondola shelving, garment rail, service counter, plastic pallet, waste compactor; same footprint
+  and shelf heights), a dust sheet over floor items, or crushed packaging for shelf/display stock. Stand-ins keep the
+  original's colliders, so the NavMesh is **not** rebaked (a rebake now would bake the 0.16.0 doors and lockers in).
+  The saved mall was changed in place (batched props cut out of their batch meshes triangle by triangle); future
+  rebuilds apply the rule in the placement helpers. Keep `[MallValidation] ... static loot look-alikes` at 0.
+  Details: Docs/LOOT_LOOKALIKES_0.24.9.md. From now on **all commits go to `main`** (user, 2026-10-18).
 - 2026-10-12 (user: "do whatever you think is best, save everything to 0.24.7c"; calls made under that brief,
   the user can reverse any of them):
   - **Voices come from Kokoro-82M, never from `say`.** The first dispatch and voicemail clips were spoken by

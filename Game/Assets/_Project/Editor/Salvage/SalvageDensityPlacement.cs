@@ -49,6 +49,9 @@ namespace Abandoned.EditorTools
                 Object.DestroyImmediate(item);
                 return null;
             }
+            // 0.24.9: a loot model never stands as scenery; fitted on the original's bounds, then swapped.
+            string lookalike = LootLookalikes.IdOf(prefab);
+            if (lookalike != null) item = LootLookalikeStandIns.Swap(item, lookalike, surfaceStock);
             if (surfaceStock) VisualOnly(item, "Packed stock rests inside its supporting display or pallet collision.");
             else fittings.Add(bounds);
             Bind(item, floor, x, z);

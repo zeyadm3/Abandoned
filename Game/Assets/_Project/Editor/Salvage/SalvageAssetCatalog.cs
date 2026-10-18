@@ -55,12 +55,19 @@ namespace Abandoned.EditorTools
             Dressing("cable_bundle", "Zip-tied Power Cable Bundle", Material),
             Dressing("salvage_tag", "Salvage Status Tag", Material, false),
             Dressing("tire_track", "Forklift Tire Track", Material, false),
-            Dressing("broken_glass", "Broken Display Glass", Material, false)
+            Dressing("broken_glass", "Broken Display Glass", Material, false),
+            // 0.24.9 fixed fittings standing where loot models used to be scenery (LootLookalikes).
+            Dressing("fixed_gondola_shelving", "Fixed Gondola Shelving", Furniture),
+            Dressing("fixed_garment_rail", "Fixed Garment Rail", Furniture),
+            Dressing("fixed_service_counter", "Fixed Service Counter", Furniture, surface: SurfaceMaterial.Concrete),
+            Dressing("plastic_pallet", "Plastic Pallet", Material, surface: SurfaceMaterial.Plastic),
+            Dressing("waste_compactor", "Waste Compactor", Hardware)
         };
 
         public static SalvageAssetSpec Find(string id) => All.FirstOrDefault(a => a.Id == id || a.DefinitionId == id);
-        private static SalvageAssetSpec Dressing(string id, string name, SalvageCategory category, bool lods = true)
-            => new(id, name, category, 0, 0, 0, OneHand, "concourse", SurfaceMaterial.Metal,
+        private static SalvageAssetSpec Dressing(string id, string name, SalvageCategory category, bool lods = true,
+            SurfaceMaterial surface = SurfaceMaterial.Metal)
+            => new(id, name, category, 0, 0, 0, OneHand, "concourse", surface,
                 isLoot:false, hasLods:lods);
     }
 }
