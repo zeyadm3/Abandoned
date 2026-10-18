@@ -26,7 +26,7 @@ namespace Abandoned.Threats
         private ThreatDirector director;
         private float nextTick;
         private System.Random random = new(7);
-        private int drifting;
+        private int drifting, withdrawing;
         // One path for every route question (made on first use: it can't be built in a field initialiser).
         private NavMeshPath routePath;
 
@@ -49,19 +49,28 @@ namespace Abandoned.Threats
             if (run == null || !run.IsSpawned || run.State.Phase != RunPhase.Running) return;
             alive.Clear();
             foreach (NetworkPlayer p in NetworkPlayer.All)
-                if (p != null && p.IsSpawned && !p.IsDead) alive.Add(p);
+                if (p != null && p.IsSpawned && p.NetworkManager == run.NetworkManager && !p.IsDead
+                    && !p.IsConcealed && !run.Shelters(p.transform.position)) alive.Add(p);
             gone.Clear();
             foreach (Threat t in tracks.Keys) if (t == null || !t.IsSpawned) gone.Add(t);
             foreach (Threat t in gone) tracks.Remove(t);
-            if (alive.Count == 0) return;
-
             ThreatPacingConfig config = ThreatPacingConfig.Current;
-            drifting = 0;
+            drifting = withdrawing = 0;
             // A copy: relocating despawns and spawns while we walk the roster.
             foreach (Threat t in new List<Threat>(Threat.All))
             {
-                if (t == null || !t.IsSpawned || !Paced(t)) continue;
+                if (t == null || !t.IsSpawned || t.NetworkManager != run.NetworkManager) continue;
+                if (t.IsWithdrawing) withdrawing++;
+                if (!Paced(t)) continue;
                 if (!tracks.TryGetValue(t, out Track track)) tracks[t] = track = new Track { lastNear = Time.time, lastClose = Time.time };
+                // Recovery is earned space. Neither hidden coordinates nor an old relocation clock
+                // may pull it back to the locker the player just escaped into.
+                if (t.IsWithdrawing || alive.Count == 0)
+                {
+                    track.lastNear = track.lastClose = Time.time;
+                    t.RoamHint = null;
+                    continue;
+                }
                 float nearest = NearestRoute(t);
                 if (nearest <= config.DriftRange) { track.lastNear = Time.time; t.RoamHint = null; }
                 if (nearest <= config.RelocateDistance) track.lastClose = Time.time;
@@ -127,6 +136,7 @@ namespace Abandoned.Threats
             float next = director.NextArrivalIn;
             GUI.Label(new Rect(Screen.width - 360f, 52f, 350f, 22f),
                 $"THREATS {Contracts.Contract.ThreatName((byte)RunState.Current.Terms.ThreatLevel)} {director.Alive}/{director.AliveCap}  next {(next < 0f ? "opening" : next.ToString("0") + "s")}  drift {drifting} retries {director.PlacementRetries}");
+            GUI.Label(new Rect(Screen.width - 360f, 74f, 350f, 22f), $"Withdrawing {withdrawing} (no drift / relocation)");
         }
 #endif
 
@@ -139,6 +149,13 @@ namespace Abandoned.Threats
                 {
                     Gizmos.DrawLine(t.transform.position + Vector3.up, hint + Vector3.up);
                     Gizmos.DrawWireSphere(hint, 1f);
+                }
+            Gizmos.color = Color.cyan;
+            foreach (Threat t in Threat.All)
+                if (t != null && t.WithdrawalDestination is Vector3 destination)
+                {
+                    Gizmos.DrawLine(t.transform.position + Vector3.up, destination + Vector3.up);
+                    Gizmos.DrawWireSphere(destination, 1f);
                 }
         }
     }

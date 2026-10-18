@@ -22,7 +22,8 @@ namespace Abandoned.Threats
         private NavMeshAgent agent;
         private StalkerBrain brain;
         private NetworkPlayer target;
-        private float nextRetarget, nextBreath, nextHalt;
+        private float nextRetarget, nextBreath, nextHalt, lastSightAt;
+        private Vector3 lastKnown;
         // Replicated so the prey's own machine can warn them (2026-10-09: testers never understood it): who it
         // is after, and how close to a rush it is in sixteenths (changes a couple of times a second, not every frame).
         private const int DreadSteps = 16;
@@ -75,19 +76,50 @@ namespace Abandoned.Threats
                 return;
             }
             bool active = RunState.Current == null || RunState.Current.State.Phase != RunPhase.Departed;
-            if (Time.time >= nextRetarget || target == null || target.IsDead) PickTarget();
-            if (target == null || !active)
+            if (!active) { agent.isStopped = true; return; }
+            if (TickWithdrawal(agent, config.FollowSpeed, target != null, lastKnown))
             {
-                agent.isStopped = true;
-                if (prey.Value != ulong.MaxValue) prey.Value = ulong.MaxValue;
+                ClearPrey();
+                return;
+            }
+            if (target != null && (!target.IsSpawned || target.IsDead || Sheltered(PositionOf(target))))
+            {
+                LeaveEncounter();
+                return;
+            }
+            if (Time.time >= nextRetarget || target == null) PickTarget();
+            if (target == null)
+            {
+                ClearPrey();
+                IdleRoam(agent, config.FollowSpeed, config.WatchRange);
+                return;
+            }
+
+            bool visible = !HiddenFromMe(target) && Sees(target);
+            if (visible) { lastKnown = SpotOf(target); lastSightAt = Time.time; }
+            else
+            {
+                // A wall or an unwitnessed hiding place stops live tracking. Check the last lead,
+                // then actually leave instead of standing outside the locker until the player exits.
+                brain.Reset();
+                state.Value = StalkerState.Follow;
+                dread.Value = 0;
+                if (Time.time - lastSightAt >= ThreatPacingConfig.Current.LostSightSearchSeconds)
+                {
+                    LeaveEncounter();
+                    return;
+                }
+                agent.isStopped = false;
+                agent.speed = config.FollowSpeed * SpeedScale;
+                Steer(agent, lastKnown);
                 return;
             }
 
             // A prey it watched climb into a locker is reached at the locker's door.
-            Vector3 at = SpotOf(target);
+            Vector3 at = lastKnown;
             brain.Config = config;
-            // Dread only builds while it has eyes on its prey: behind walls or a floor away it just follows.
-            brain.Tick(IsWatchedBy(target), IsIsolated(target) && Sees(target), Time.deltaTime * Aggression);
+            // Only a visible, isolated prey builds dread; a lost trail is handled by the bounded search above.
+            brain.Tick(IsWatchedBy(target), IsIsolated(target), Time.deltaTime * Aggression);
             state.Value = brain.State;
             byte build = (byte)Mathf.RoundToInt(Mathf.Clamp01(brain.Dread / config.RushAfter) * DreadSteps);
             if (dread.Value != build) dread.Value = build;
@@ -103,11 +135,7 @@ namespace Abandoned.Threats
                     // Hang back: walk to a point FollowDistance short of them.
                     Vector3 away = Flat(transform.position - at).normalized;
                     if (away.sqrMagnitude < 0.01f) away = -target.transform.forward;
-                    // Its prey is in a locker and it doesn't know which: it waits where it stands until they show themselves.
-                    if (HiddenFromMe(target)) agent.isStopped = true;
-                    // Follow through the doorway first. An offset across a wall can strand it forever.
-                    else if (!Sees(target)) Steer(agent, at);
-                    else if (Flat(transform.position - at).magnitude <= config.FollowDistance) agent.isStopped = true;
+                    if (Flat(transform.position - at).magnitude <= config.FollowDistance) agent.isStopped = true;
                     else Steer(agent, at + away * config.FollowDistance);
                     break;
                 case StalkerState.Rush:
@@ -115,8 +143,8 @@ namespace Abandoned.Threats
                     agent.speed = config.RushSpeed * SpeedScale;
                     Steer(agent, at);
                     // Prey it can't reach (at the truck, off the NavMesh): give up rather than camp the doorway.
-                    if (!agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete) brain.Reset();
-                    else if (DamageWithinReach(config.AttackRange, 85f) != null) brain.Reset();
+                    if (!agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete) LeaveEncounter();
+                    else if (DamageWithinReach(config.AttackRange, 85f) != null) LeaveEncounter();
                     break;
             }
             // Frozen, it keeps staring at its target (moving, the agent turns it).
@@ -124,22 +152,41 @@ namespace Abandoned.Threats
                 transform.rotation = Quaternion.LookRotation(Flat(at - transform.position));
         }
 
-        // The most alone living player (the one furthest from their nearest teammate).
+        private void ClearPrey()
+        {
+            target = null;
+            brain.Reset();
+            state.Value = StalkerState.Follow;
+            dread.Value = 0;
+            prey.Value = ulong.MaxValue;
+        }
+
+        private void LeaveEncounter()
+        {
+            BeginWithdrawal(agent, lastKnown);
+            ClearPrey();
+        }
+
+        // Isolation chooses among players it can actually perceive, never the entire building.
         private void PickTarget()
         {
             nextRetarget = Time.time + config.RetargetInterval;
             var alive = NetworkPlayer.All.Where(p => p != null && p.IsSpawned && p.NetworkManager == NetworkManager && !p.IsDead && !Sheltered(PositionOf(p))).ToList();
             // Two players are always equally far from each other: then the nearer one to it.
-            NetworkPlayer picked = alive
+            NetworkPlayer picked = alive.Where(p => !HiddenFromMe(p) && Sees(p))
                 .OrderByDescending(p => alive.Where(o => o != p).Select(o => Vector3.Distance(PositionOf(o), PositionOf(p))).DefaultIfEmpty(float.MaxValue).Min())
                 .ThenBy(p => Vector3.Distance(PositionOf(p), transform.position))
                 .FirstOrDefault();
             // A new prey hasn't been stalked yet: the dread built on someone else doesn't carry over.
-            if (picked != target) brain.Reset();
-            target = picked;
+            if (picked != null)
+            {
+                if (picked != target) brain.Reset();
+                target = picked;
+            }
         }
 
-        private bool Sees(NetworkPlayer p) => LineOfSight(transform.position + Vector3.up * 1.5f, PositionOf(p) + Vector3.up * 1.2f);
+        private bool Sees(NetworkPlayer p) => Vector3.Distance(transform.position, SpotOf(p)) <= config.WatchRange
+            && (p.IsConcealed && FindsHider(p) || LineOfSight(transform.position + Vector3.up * 1.5f, p.SightPoint));
 
         // Already rushing this player: it can watch them climb into a locker, and then it reaches in (0.16.0).
         protected override bool Pursuing(NetworkPlayer p) => target == p && brain != null && brain.State == StalkerState.Rush;

@@ -90,5 +90,26 @@ namespace Abandoned.Tests
             brain.Tick(Vector3.zero, false, 10f + config.AttackPause + 0.1f);
             Assert.AreEqual(BlindOneState.Hunt, brain.State);
         }
+
+        [Test]
+        public void AnUnreachableNoiseIsForgottenWithoutArriving()
+        {
+            brain.Hear(Vector3.right * 20f, 0.2f, 0f);
+            brain.Tick(Vector3.zero, false, config.Memory + 0.1f);
+            Assert.AreEqual(BlindOneState.Wander, brain.State, "a shut door cannot keep the search alive forever");
+            Assert.IsFalse(brain.HasTarget);
+        }
+
+        [Test]
+        public void WithdrawalClearsNoiseHistoryBeforeTheNextEncounter()
+        {
+            for (int i = 0; i < config.HuntNoiseCount; i++) brain.Hear(Vector3.one, 0.1f, i * 0.1f);
+            Assert.AreEqual(BlindOneState.Hunt, brain.State);
+            brain.Attacked(1f);
+            brain.Reset();
+            brain.Hear(Vector3.right, 0.1f, 1.1f);
+            Assert.AreEqual(BlindOneState.Investigate, brain.State, "old noises and the attack pause do not survive withdrawal");
+            Assert.AreEqual(Vector3.right, brain.Target);
+        }
     }
 }

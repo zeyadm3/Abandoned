@@ -12,6 +12,7 @@ namespace Abandoned.Threats
         private readonly NetworkVariable<ThreatMotion> motion = new();
         private NetworkPlayer fixation;
         private float exposure, releaseAt;
+        private Vector3 lastKnown;
         public override string DisplayName => Loc.Mark("The Thing");
         public override string DeathLine => Loc.Mark("You showed the Thing where you were.");
         public override ThreatMotion DesiredMotion => motion.Value;
@@ -19,31 +20,50 @@ namespace Abandoned.Threats
         protected override bool Pursuing(NetworkPlayer p) => fixation == p && motion.Value == ThreatMotion.Chase;
         protected override void HostTick()
         {
+            if (TickWithdrawal(Agent, WalkSpeed, fixation != null, lastKnown))
+            {
+                fixation = null;
+                exposure = 0f;
+                motion.Value = ThreatMotion.Idle;
+                return;
+            }
             NetworkPlayer lit = null;
             foreach (NetworkPlayer p in NetworkPlayer.All)
-                if (p != null && !p.IsDead && p.NetworkManager == NetworkManager && !Sheltered(PositionOf(p)) && Illuminates(p)) { lit = p; break; }
+                if (p != null && p.IsSpawned && !p.IsDead && p.NetworkManager == NetworkManager
+                    && !Sheltered(PositionOf(p)) && !HiddenFromMe(p) && Illuminates(p)) { lit = p; break; }
             if (lit != null)
             {
                 if (fixation != lit) exposure = 0f;
                 fixation = lit;
                 exposure += Time.deltaTime * Aggression;
                 releaseAt = Time.time + Interval;
+                lastKnown = SpotOf(lit);
             }
             else exposure = Mathf.Max(0f, exposure - Time.deltaTime * 0.25f);
-            if (fixation == null || fixation.IsDead || Sheltered(PositionOf(fixation)) || Time.time > releaseAt)
+            if (fixation == null || !fixation.IsSpawned || fixation.IsDead || Sheltered(PositionOf(fixation)) || Time.time > releaseAt)
             {
-                fixation = null; exposure = 0f; motion.Value = ThreatMotion.Idle; Wander(); return;
+                if (fixation != null) BeginWithdrawal(Agent, lastKnown);
+                fixation = null; exposure = 0f; motion.Value = ThreatMotion.Idle;
+                if (!IsWithdrawing) Wander();
+                return;
             }
+            if (!HiddenFromMe(fixation) && Sees(fixation)) lastKnown = SpotOf(fixation);
             if (exposure < 2.4f)
             {
                 motion.Value = ThreatMotion.Special; Stop();
-                Vector3 face = Vector3.ProjectOnPlane(PositionOf(fixation) - transform.position, Vector3.up);
+                Vector3 face = Vector3.ProjectOnPlane(lastKnown - transform.position, Vector3.up);
                 if (face.sqrMagnitude > 0.01f) transform.rotation = Quaternion.LookRotation(face);
                 return;
             }
             motion.Value = ThreatMotion.Chase;
-            Move(SpotOf(fixation), ChaseSpeed);
-            if (DamageWithinReach(Reach, 70f) != null) { fixation = null; exposure = 0f; }
+            Move(lastKnown, ChaseSpeed);
+            if (DamageWithinReach(Reach, 70f) != null)
+            {
+                BeginWithdrawal(Agent, lastKnown);
+                fixation = null;
+                exposure = 0f;
+                motion.Value = ThreatMotion.Idle;
+            }
         }
         private bool Illuminates(NetworkPlayer p)
         {

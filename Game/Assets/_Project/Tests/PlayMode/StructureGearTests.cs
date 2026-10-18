@@ -59,12 +59,16 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
-        public IEnumerator TheBackpackAddsPockets()
+        public IEnumerator TheBackpackEasesTheLoad()
         {
-            int before = rig.Player.GetComponent<Interaction.PlayerCarrier>().Inventory.Capacity;
+            // Pockets are four fixed slots (Docs/FIELD_HUD.md); a worn backpack eases carried weight instead.
+            var carrier = rig.Player.GetComponent<Interaction.PlayerCarrier>();
+            int pockets = carrier.Inventory.Capacity;
+            Assert.IsFalse(carrier.Backpack);
             yield return Equip("backpack");
             yield return null;
-            Assert.AreEqual(before + 2, rig.Player.GetComponent<Interaction.PlayerCarrier>().Inventory.Capacity);
+            Assert.IsTrue(carrier.Backpack, "worn from a pocket");
+            Assert.AreEqual(pockets, carrier.Inventory.Capacity, "no extra pockets");
         }
 
         [UnityTest]

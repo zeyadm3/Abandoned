@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>0.15.6 threat tuning and additive spawn coverage; run after original threat generators.</summary>
+    /// <summary>Threat tuning and additive spawn coverage; includes the 2026-10-18 escape windows.</summary>
     public static class ThreatPressure0156
     {
         private const string Data = "Assets/_Project/Data/Threats/";
@@ -13,16 +13,18 @@ namespace Abandoned.EditorTools
         public static void Apply()
         {
             var pacing = Edit(Data + "Resources/ThreatPacingConfig.asset");
-            Set(pacing, "OpeningDelay", 12f); Set(pacing, "OpeningCount", 2); Set(pacing, "OpeningStagger", 4f);
-            Set(pacing, "SpawnRetry", 3f); Set(pacing, "FirstJobOpeningDelay", 20f);
-            pacing.FindProperty("<ArrivalInterval>k__BackingField").vector2Value = new Vector2(28f, 42f);
-            Set(pacing, "BaseAlive", 4); Set(pacing, "PerPlayer", 1); Set(pacing, "MaxAlive", 10);
-            Set(pacing, "DriftAfter", 10f); Set(pacing, "DriftRange", 16f); Set(pacing, "DriftScatter", 9f);
-            Set(pacing, "RelocateDistance", 34f); Set(pacing, "RelocateAfter", 55f);
+            Set(pacing, "OpeningDelay", 30f); Set(pacing, "OpeningCount", 1); Set(pacing, "OpeningStagger", 12f);
+            Set(pacing, "SpawnRetry", 3f); Set(pacing, "FirstJobOpeningDelay", 45f);
+            pacing.FindProperty("<ArrivalInterval>k__BackingField").vector2Value = new Vector2(60f, 95f);
+            Set(pacing, "BaseAlive", 2); Set(pacing, "PerPlayer", 1); Set(pacing, "MaxAlive", 6);
+            Set(pacing, "MaxEncounterSeconds", 25f); Set(pacing, "LostSightSearchSeconds", 6f);
+            Set(pacing, "RecoverySeconds", 25f); Set(pacing, "WithdrawalDistance", 22f);
+            Set(pacing, "DriftAfter", 40f); Set(pacing, "DriftRange", 24f); Set(pacing, "DriftScatter", 18f);
+            Set(pacing, "RelocateDistance", 60f); Set(pacing, "RelocateAfter", 120f);
             Array(pacing, "LevelGapScale", 1.15f, 1f, 0.75f);
             Array(pacing, "LevelOpeningScale", 1.2f, 1f, 0.75f);
             Array(pacing, "LevelDamageScale", 0.9f, 1.1f, 1.25f);
-            IntArray(pacing, "LevelAliveBonus", -1, 0, 1); IntArray(pacing, "LevelOpeningExtras", 0, 1, 2);
+            IntArray(pacing, "LevelAliveBonus", -1, 0, 1); IntArray(pacing, "LevelOpeningExtras", 0, 0, 1);
             pacing.ApplyModifiedPropertiesWithoutUndo();
 
             var blind = Edit(Data + "BlindOneConfig.asset");
@@ -55,7 +57,7 @@ namespace Abandoned.EditorTools
             var danger = Edit("Assets/_Project/Data/Extraction/DangerConfig.asset");
             Set(danger, "LevelInterval", 120f); danger.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
-            Debug.Log("[ThreatPressure0156] Opening 2/3/4 after 14.4/12/9s (first job20s), arrivals28-42s, solo caps4/5/6; warning15s.");
+            Debug.Log("[ThreatPressure0156] Opening 1/1/2 after 36/30/22.5s (first job45s), arrivals60-95s before level/difficulty scaling, solo caps2/3/4; encounter25s/recovery25s; warning15s.");
         }
 
         public static void AuthorSpawns(Transform mall)

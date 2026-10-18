@@ -75,6 +75,7 @@ namespace Abandoned.Threats
 
         private void OnNoise(NoiseEvent e)
         {
+            if (IsWithdrawing) return;
             Vector3 ear = transform.position + Vector3.up * 1.8f;
             float reach = NoiseSystem.RadiusOf(e) * config.Hearing * HearingScale;
             if ((e.Position - ear).sqrMagnitude > reach * reach) return;
@@ -107,11 +108,29 @@ namespace Abandoned.Threats
                 return;
             }
 
+            if (TickWithdrawal(agent, config.WalkSpeed, brain.HasTarget, brain.Target))
+            {
+                brain.Reset();
+                heard.Clear();
+                hasWanderTarget = hasGoal = false;
+                state.Value = BlindOneState.Wander;
+                return;
+            }
+
             Vector3 goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;
             // "Arrived" only counts for the goal it is walking to now, not the one before it heard something.
             bool arrived = hasGoal && (goal - pathGoal).sqrMagnitude < 1f && !agent.pathPending &&
                            agent.pathStatus == NavMeshPathStatus.PathComplete && (transform.position - goal).sqrMagnitude <= ArrivedDistance * ArrivedDistance;
+            BlindOneState before = brain.State;
             brain.Tick(transform.position, arrived, Time.time);
+            if (before != BlindOneState.Wander && brain.State == BlindOneState.Wander)
+            {
+                BeginWithdrawal(agent, goal);
+                heard.Clear();
+                hasWanderTarget = hasGoal = false;
+                state.Value = BlindOneState.Wander;
+                return;
+            }
             if (brain.State == BlindOneState.Wander && (arrived || !hasWanderTarget || !agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete)) PickWanderTarget();
             agent.speed = brain.Speed * SpeedScale;
             goal = brain.State == BlindOneState.Wander || !brain.HasTarget ? wanderTarget : brain.Target;

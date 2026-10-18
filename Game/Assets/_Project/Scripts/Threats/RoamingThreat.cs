@@ -64,18 +64,19 @@ namespace Abandoned.Threats
                 return;
             }
         }
-        protected NetworkPlayer Nearest(float range = float.MaxValue)
+        protected NetworkPlayer Nearest(float range)
         {
             NetworkPlayer best = null;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || !p.IsSpawned || p.NetworkManager != NetworkManager || p.IsDead || Sheltered(PositionOf(p)) || HiddenFromMe(p)) continue;
                 float d = Vector3.Distance(PositionOf(p), transform.position);
-                if (d < range) { best = p; range = d; }
+                if (d < range && Sees(p)) { best = p; range = d; }
             }
             return best;
         }
-        protected bool Sees(NetworkPlayer p) => LineOfSight(transform.position + Vector3.up * 1.3f, PositionOf(p) + Vector3.up * 1.1f);
+        protected bool Sees(NetworkPlayer p) => LineOfSight(transform.position + Vector3.up * 1.3f,
+            p.IsConcealed && FindsHider(p) ? SpotOf(p) + Vector3.up * 1.1f : p.SightPoint);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {

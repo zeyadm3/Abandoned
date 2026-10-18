@@ -81,11 +81,12 @@ namespace Abandoned.Tests
             // Something sturdy: it's dropped onto the bay floor.
             NetworkLoot item = Spawned(l => l.Item.Definition.CarryClass == CarryClass.TwoHand && l.Item.Definition.Fragility <= Abandoned.Loot.Fragility.Medium);
             Move(item, BayCenter + Vector3.back * 0.8f);
-            StringAssert.StartsWith("Start the truck", ignition.UsePrompt(rig.Player));
+            StringAssert.StartsWith("Start departure", ignition.UsePrompt(rig.Player));
             ignition.Use(rig.Player);
             yield return null;
             Assert.AreEqual(RunPhase.Honking, run.State.Phase);
-            Assert.IsNull(ignition.UsePrompt(rig.Player), "can't start it twice");
+            // Docs/FIELD_HUD.md: one press starts the countdown; only its starter may stop it again.
+            StringAssert.StartsWith("Stop the truck", ignition.UsePrompt(rig.Player), "the starter can cancel, not start it twice");
 
             RunResults results = null;
             run.Departed += r => results = r;

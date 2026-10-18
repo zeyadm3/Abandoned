@@ -40,6 +40,8 @@ namespace Abandoned.Interaction
         [field: SerializeField, Min(0f)] public float ExtraStaminaDrainAtMaxWeight { get; private set; } = 1.5f;
         [field: Tooltip("Fewer occupied carry handles reduce pace even after the normal weight slowdown reaches its limit.")]
         [field: SerializeField, Range(0f, 1f)] public float SharedCrewBurdenPower { get; private set; } = .5f;
+        [field: Tooltip("With a backpack in a pocket, carried weight counts this much toward slowdown and stamina. Structural load is unchanged.")]
+        [field: SerializeField, Range(0.1f, 1f)] public float BackpackHandlingScale { get; private set; } = .75f;
         [field: SerializeField] public CarryClass HeaviestSoloClass { get; private set; } = CarryClass.TwoHand;
 
         [field: Header("Solo drag (stand-in for the hand trolley until equipment exists)")]

@@ -11,8 +11,9 @@ namespace Abandoned.Threats
     public class CrawlerSwarm : RoamingThreat
     {
         private readonly NetworkVariable<ThreatMotion> motion = new();
-        private float scatterUntil, nextKnock;
-        private Vector3 fleeFrom;
+        private float scatterUntil, nextKnock, lastSightAt;
+        private Vector3 fleeFrom, lastKnown;
+        private NetworkPlayer prey;
         private Light[] areaLights;
         protected override void Awake()
         {
@@ -27,6 +28,12 @@ namespace Abandoned.Threats
         protected override bool FindsHider(NetworkPlayer p) => true;
         protected override void HostTick()
         {
+            if (TickWithdrawal(Agent, WalkSpeed, prey != null, lastKnown))
+            {
+                prey = null;
+                motion.Value = ThreatMotion.Idle;
+                return;
+            }
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || p.IsDead || p.NetworkManager != NetworkManager) continue;
@@ -42,15 +49,32 @@ namespace Abandoned.Threats
             }
             if (Time.time < scatterUntil)
             {
+                prey = null;
                 motion.Value = ThreatMotion.Special;
                 Vector3 away = Vector3.ProjectOnPlane(transform.position - fleeFrom, Vector3.up).normalized;
                 Move(transform.position + away * 9f, ChaseSpeed * 1.2f);
                 return;
             }
-            NetworkPlayer prey = Nearest(SenseRange);
+            if (scatterUntil > 0f)
+            {
+                scatterUntil = 0f;
+                BeginWithdrawal(Agent, fleeFrom);
+                motion.Value = ThreatMotion.Idle;
+                return;
+            }
+            NetworkPlayer seen = Nearest(SenseRange);
+            if (seen != null) { prey = seen; lastKnown = SpotOf(seen); lastSightAt = Time.time; }
+            if (prey != null && (prey.IsDead || !prey.IsSpawned || Sheltered(PositionOf(prey))
+                || BrightAt(transform.position) || Time.time - lastSightAt >= ThreatPacingConfig.Current.LostSightSearchSeconds))
+            {
+                BeginWithdrawal(Agent, lastKnown);
+                prey = null;
+                motion.Value = ThreatMotion.Idle;
+                return;
+            }
             if (prey == null || BrightAt(transform.position)) { motion.Value = ThreatMotion.Idle; Wander(); return; }
-            motion.Value = ThreatMotion.Chase;
-            Move(SpotOf(prey), ChaseSpeed);
+            motion.Value = seen != null ? ThreatMotion.Chase : ThreatMotion.Walk;
+            Move(lastKnown, seen != null ? ChaseSpeed : WalkSpeed);
             if (Time.time < nextKnock) return;
             NetworkPlayer bitten = DamageWithinReach(Reach, 8f);
             if (bitten == null) return;

@@ -126,7 +126,8 @@ namespace Abandoned.Tests
             Grabbable item = Spawn(OnTable, CarryClass.Pocket, 0.2f, 0.1f);
             yield return Steps(2);
             InteractionService.Handler.RequestPickup(carrier, item);
-            interactor.Tick(Input(drop: true, inventory: true), PlayerTestRig.Dt);
+            // Discarding a pocket is PlayerEquipment's (inventory open + drop); with nothing in hand it ends here.
+            InteractionService.Handler.RequestDropFromPocket(carrier);
             Assert.AreEqual(0, carrier.Inventory.Count);
             Assert.IsFalse(item.IsPocketed);
             Assert.IsTrue(item.GetComponent<Renderer>().enabled);
@@ -164,14 +165,37 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
+        public IEnumerator ABackpackEasesTheLoadButNotTheFloor()
+        {
+            Grabbable item = Spawn(OnTable, CarryClass.TwoHand, 30f, 0.5f);
+            yield return Steps(2);
+            carrier.Backpack = true; // PlayerEquipment sets this from the pockets in a networked game
+            InteractionService.Handler.RequestPickup(carrier, item);
+            yield return null;
+            float eased = 30f * config.BackpackHandlingScale;
+            Assert.AreEqual(eased, carrier.HandlingWeight, 0.01f, "legs and lungs feel less");
+            Assert.AreEqual(30f, carrier.CarriedWeight, 0.01f, "the floor still takes all of it");
+            Assert.AreEqual(config.SpeedMultiplierFor(eased), rig.Motor.SpeedMultiplier, 0.001f);
+            Assert.AreEqual(config.StaminaDrainMultiplierFor(eased), rig.Motor.StaminaDrainMultiplier, 0.001f);
+            carrier.Backpack = false;
+        }
+
+        [UnityTest]
         public IEnumerator DropReleasesWithGravity()
         {
             Grabbable item = Spawn(OnTable, CarryClass.OneHand, 2f);
             yield return Steps(2);
             InteractionService.Handler.RequestPickup(carrier, item);
             yield return Steps(10);
+            // Docs/FIELD_HUD.md: the drop key lowers the item onto a clear support and lets go once it rests there.
             interactor.Tick(Input(drop: true), PlayerTestRig.Dt);
-            Assert.IsNull(carrier.Held);
+            Assert.IsTrue(carrier.IsPlacing, "the drop key starts a gentle placement");
+            for (float t = 0f; carrier.Held != null && t < config.PlaceTimeout + 1f; t += PlayerTestRig.Dt)
+            {
+                yield return new WaitForFixedUpdate();
+                interactor.Tick(Input(), PlayerTestRig.Dt);
+            }
+            Assert.IsNull(carrier.Held, "set down");
             Assert.IsTrue(item.Body.useGravity);
             Assert.IsTrue(item.IsAvailable);
         }
@@ -182,7 +206,13 @@ namespace Abandoned.Tests
             Grabbable item = Spawn(OnTable, CarryClass.OneHand, 1f);
             yield return Steps(2);
             InteractionService.Handler.RequestPickup(carrier, item);
+            // A quick click never throws (CarryConfig.ThrowMinimumHold): only a deliberate hold does.
             interactor.Tick(Input(useHeld: true), PlayerTestRig.Dt);
+            interactor.Tick(Input(), PlayerTestRig.Dt);
+            Assert.AreEqual(item, carrier.Held, "a click keeps it in hand");
+            for (float t = 0f; t < config.ThrowMinimumHold + PlayerTestRig.Dt; t += PlayerTestRig.Dt)
+                interactor.Tick(Input(useHeld: true), PlayerTestRig.Dt);
+            float shortCharge = interactor.Charge;
             interactor.Tick(Input(), PlayerTestRig.Dt);
             float tapSpeed = item.Body.linearVelocity.magnitude;
             Assert.IsNull(carrier.Held);
@@ -201,7 +231,8 @@ namespace Abandoned.Tests
             float fullSpeed = item.Body.linearVelocity.magnitude;
 
             Assert.AreEqual(config.ThrowMaxSpeed, fullSpeed, 0.5f);
-            Assert.Less(tapSpeed, config.ThrowMinSpeed + 1f);
+            Assert.AreEqual(config.ThrowSpeedFor(shortCharge, 1f), tapSpeed, 0.5f, "the shortest throw goes as fast as its little charge");
+            Assert.Less(tapSpeed, fullSpeed - 3f);
         }
 
         [Test]

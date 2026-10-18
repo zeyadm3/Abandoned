@@ -41,7 +41,14 @@ namespace Abandoned.Interaction
 
         /// <summary>Everything this player carries, in kg; also what they add to structural load.</summary>
         public float CarriedWeight => (Held != null ? Held.WeightOnHolder : 0f) + Inventory.TotalWeight;
-        public float HandlingWeight => (IsSharing ? Held.Weight / Mathf.Max(1, Held.Shared.CarrierCount) : Held != null ? Held.Weight : 0f) + Inventory.TotalWeight;
+        /// <summary>What the player's legs and lungs feel (speed, stamina, the HUD gauge). A backpack eases it; the floor
+        /// still takes the full <see cref="CarriedWeight"/>.</summary>
+        public float HandlingWeight =>
+            ((IsSharing ? Held.Weight / Mathf.Max(1, Held.Shared.CarrierCount) : Held != null ? Held.Weight : 0f) + Inventory.TotalWeight)
+            * (Backpack ? config.BackpackHandlingScale : 1f);
+
+        /// <summary>A backpack in one of the pockets; set on every machine from the replicated slots.</summary>
+        public bool Backpack { get; set; }
 
         public bool IsDragging => Held != null && Held.IsDragged;
 
@@ -86,7 +93,9 @@ namespace Abandoned.Interaction
 
         /// <summary>A flatbed trolley in hand (M10.2): Heavy and Huge items can be dragged short-handed, Huge ones slowly.</summary>
         public bool FlatbedDrag { get; set; }
-        public bool CanSoloDrag(CarryClass carryClass) => carryClass >= CarryClass.Heavy;
+        // Anyone may drag Heavy loot alone; Huge loot needs the flatbed or a crew (alone it only nudges).
+        public bool CanSoloDrag(CarryClass carryClass) =>
+            carryClass == CarryClass.Heavy || carryClass == CarryClass.Huge && FlatbedDrag;
 
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;

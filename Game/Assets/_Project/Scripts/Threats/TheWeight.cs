@@ -13,10 +13,18 @@ namespace Abandoned.Threats
         private readonly NetworkVariable<bool> pressing = new();
         private float nextPress, strikeAt;
         private StructuralSection pressureSection;
+        private NetworkPlayer pressurePrey;
+        private Vector3 lastKnown;
         public override string DisplayName => Loc.Mark("The Weight");
         public override ThreatMotion DesiredMotion => pressing.Value ? ThreatMotion.Special : ThreatMotion.Idle;
         protected override void HostTick()
         {
+            if (TickWithdrawal(Agent, WalkSpeed, pressing.Value || pressurePrey != null, lastKnown))
+            {
+                pressing.Value = false;
+                pressurePrey = null;
+                return;
+            }
             if (WarningRemaining > 0f) { Wander(); return; }
             if (pressing.Value)
             {
@@ -30,9 +38,19 @@ namespace Abandoned.Threats
                 }
                 pressing.Value = false;
                 nextPress = Time.time + Interval;
+                BeginWithdrawal(Agent, lastKnown);
+                pressurePrey = null;
                 return;
             }
-            NetworkPlayer prey = Nearest();
+            NetworkPlayer prey = Nearest(SenseRange);
+            if (prey == null && pressurePrey != null)
+            {
+                pressurePrey = null;
+                BeginWithdrawal(Agent, lastKnown);
+                return;
+            }
+            pressurePrey = prey;
+            lastKnown = prey != null ? PositionOf(prey) : transform.position;
             if (prey != null) Move(PositionOf(prey), WalkSpeed); else Wander();
             if (Time.time < nextPress) return;
             pressureSection = null;

@@ -12,7 +12,7 @@ namespace Abandoned.Threats
     /// everyone sees it through its NetworkTransform, danger scales it, ghosts see it, and killing is
     /// "touching, not through a wall".
     /// </summary>
-    public abstract class Threat : NetworkBehaviour
+    public abstract partial class Threat : NetworkBehaviour
     {
         private static readonly List<Threat> Spawned = new();
         [SerializeField] private ThreatDefinition definition;

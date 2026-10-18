@@ -4,6 +4,16 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Monster escape windows (2026-10-18; written, not compiled or played)
+
+The user reported continuous pursuit forcing players to wait in corners/cover indefinitely. Ordinary
+monsters now have bounded encounters and a 25-second withdrawal period; sight-based pursuit uses last
+known positions, the Stalker leaves after a failed search, and unreachable Blind One sound leads expire.
+Pacing respects recovery and uses slower arrivals/lower population. The existing mall tuning builder
+matches the saved settings. Host authority and the final Last Hunter remain. Regression tests were
+authored but not run; no scene/prefab rebuild or player builds. Details, tuning and Unity steps:
+`Docs/THREAT_ESCAPE_WINDOWS.md`.
+
 ## 0.24.8c: localization review fixes (2026-10-14; compiled outside Unity, not played)
 
 A code review of 0.24.8 (nine languages) found 15 issues; 12 were fixed, 2 turned out not to happen in the game

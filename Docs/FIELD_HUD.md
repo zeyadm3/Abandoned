@@ -38,7 +38,7 @@ Tools and pocket-sized loot share four stable slots. Equipped pocket loot stays 
 
 Scanning is personal and optional for pickup. Scanned items are remembered locally for inventory inspection. Estimates are derived from the loot definition and a stable item bias; true value becomes visible after the host appraises it aboard the truck. Appraisal state is replicated. Cargo includes the pockets of living players aboard without counting presented pocket loot twice.
 
-Large loot retains the physical spring, sway and weight. Any player may drag heavy loot alone. Shared handling weight is divided across current carriers and transfers when a carrier leaves; insufficient carriers drag rather than lift. Structural load continues to count supported weight separately from handling effort.
+Large loot retains the physical spring, sway and weight. Any player may drag Heavy loot alone; Huge loot needs the flatbed trolley or a crew, and one person alone only nudges it (user, 2026-10-19). Shared handling weight is divided across current carriers and transfers when a carrier leaves; insufficient carriers drag rather than lift. Structural load continues to count supported weight separately from handling effort.
 
 Normal drops lower loot onto checked support. Throws require a minimum hold. Outside the building, lower-fragility loot uses a fresh 50-condition-point threshold for each impact; only the excess reduces value. High and Extreme fragility bypass that protection. Protection is never a cumulative pool. These settings live in CarryConfig and LootDamageConfig.
 

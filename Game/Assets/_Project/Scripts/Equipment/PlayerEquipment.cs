@@ -146,6 +146,7 @@ namespace Abandoned.Equipment
             }
             if (carrier != null) carrier.SoloDragAllowed = true;
             if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
+            if (carrier != null) carrier.Backpack = Has(EquipmentKind.Backpack);
             if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = 0;
         }
 
@@ -156,6 +157,7 @@ namespace Abandoned.Equipment
             // The company can appear or change after we spawned (HQ load): keep the effects current.
             if (carrier != null) carrier.SoloDragAllowed = true;
             if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
+            if (carrier != null) carrier.Backpack = Has(EquipmentKind.Backpack);
             TickFlashlight();
             // Preserve the switch position while hands are occupied: setting down restores the beam.
             // Automatic hand changes are silent; the click belongs to deliberately using the switch.

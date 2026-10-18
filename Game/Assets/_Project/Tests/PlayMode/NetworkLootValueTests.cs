@@ -107,7 +107,16 @@ namespace Abandoned.Tests
                 Assert.AreEqual(weight, carrier.CarriedWeight, 0.001f, $"{m.name}: pocket weight counts");
             }
 
-            Handler.RequestDropFromPocket(Own(client1));
+            // Docs/FIELD_HUD.md: pockets are four stable slots. Selecting the pocket brings the loot into the
+            // hand (still reserved in its slot); discarding with the inventory open then lets go of it.
+            var gear = Abandoned.Equipment.PlayerEquipment.Of(client1.Manager, Id(client1));
+            int slot = CarrierOf(net.Host, client1).Inventory.SlotOf(NetLootKit.CopyOn(net.Host, id).Grabbable);
+            Assert.GreaterOrEqual(slot, 0, "the pocket has a stable slot");
+            gear.RequestSelect(slot);
+            yield return NetLootKit.WaitForHold(net, id, HeldBy(client1, LootHoldMode.PocketHeld), "every machine to see it brought out of the pocket");
+            foreach (NetworkBootstrap m in net.Machines)
+                Assert.IsTrue(NetLootKit.CopyOn(m, id).GetComponentsInChildren<Renderer>().All(r => r.enabled), $"{m.name}: visible in the hand");
+            gear.RequestDiscardPocket();
             yield return NetLootKit.WaitForHold(net, id, LootHoldState.Free, "every machine to see it taken out");
             yield return WaitSeconds(0.3f);
             Vector3 eye = CarrierOf(net.Host, client1).EyePosition;
@@ -117,7 +126,8 @@ namespace Abandoned.Tests
                 Assert.IsFalse(copy.Grabbable.IsPocketed, $"{m.name}: out of the pocket");
                 Assert.IsTrue(copy.GetComponentsInChildren<Renderer>().All(r => r.enabled), $"{m.name}: visible again");
                 Assert.IsEmpty(CarrierOf(m, client1).Inventory.Items, $"{m.name}: pockets empty");
-                Assert.Less(Vector3.Distance(copy.transform.position, eye), 2f, $"{m.name}: reappears in front of client 1");
+                // Discarding loot in hand is a light toss (PlayerEquipment.DiscardPocketRpc), so it lands a little way off.
+                Assert.Less(Vector3.Distance(copy.transform.position, eye), 6f, $"{m.name}: lands in front of client 1");
             }
         }
 

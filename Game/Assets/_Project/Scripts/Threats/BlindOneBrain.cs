@@ -54,6 +54,16 @@ namespace Abandoned.Threats
             attackUntil = t + c.AttackPause;
         }
 
+        public void Reset()
+        {
+            State = BlindOneState.Wander;
+            HasTarget = false;
+            recentHeard.Clear();
+            lastHeard = float.NegativeInfinity;
+            arrivedAt = -1f;
+            attackUntil = 0f;
+        }
+
         /// <summary>Every frame: where it is and whether it reached its destination.</summary>
         public void Tick(Vector3 position, bool arrived, float t)
         {
@@ -70,7 +80,8 @@ namespace Abandoned.Threats
                 case BlindOneState.Investigate:
                     if (!HasTarget) { State = BlindOneState.Wander; break; }
                     if (arrived && arrivedAt < 0f) arrivedAt = t;
-                    if (arrivedAt >= 0f && t - arrivedAt >= c.Linger)
+                    // A shut door or broken route must not keep an unreachable noise alive forever.
+                    if (t - targetTime >= c.Memory || arrivedAt >= 0f && t - arrivedAt >= c.Linger)
                     {
                         State = BlindOneState.Wander;
                         HasTarget = false;

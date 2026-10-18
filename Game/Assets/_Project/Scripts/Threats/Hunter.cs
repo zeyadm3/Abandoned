@@ -82,6 +82,15 @@ namespace Abandoned.Threats
             bool active = RunState.Current == null || RunState.Current.State.Phase != RunPhase.Departed;
             if (!active) { agent.isStopped = true; return; }
 
+            if (TickWithdrawal(agent, config.PatrolSpeed, State == HunterState.Chase || State == HunterState.Breach || State == HunterState.Search, lastSeen))
+            {
+                target = null;
+                breaching = null;
+                atDoor = false;
+                Set(HunterState.Patrol);
+                return;
+            }
+
             NetworkPlayer seen = Spotted();
             if (seen != null)
             {
@@ -103,15 +112,24 @@ namespace Abandoned.Threats
                     Set(HunterState.Chase);
                     agent.isStopped = false;
                     Steer(agent, lastSeen);
-                    if (KillWithinReach(config.AttackRange) != null) { target = null; Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
-                    else if (seen == null && Time.time - lostAt > config.LoseAfter * Mathf.Min(Aggression, 1.8f)) { Set(HunterState.Search); searchUntil = Time.time + config.SearchSeconds; }
+                    if (KillWithinReach(config.AttackRange) != null) { target = null; SearchFrom(Time.time); }
+                    else if (seen == null && Time.time - lostAt > Mathf.Min(config.LoseAfter * Mathf.Min(Aggression, 1.8f),
+                        ThreatPacingConfig.Current.LostSightSearchSeconds * 0.5f)) SearchFrom(lostAt);
                     break;
                 case HunterState.Search:
                     agent.isStopped = false;
                     agent.speed = config.PatrolSpeed * SpeedScale;
                     if (!agent.pathPending && agent.remainingDistance < 1f) transform.Rotate(0f, 90f * Time.deltaTime, 0f); // looking around
                     Steer(agent, lastSeen);
-                    if (Time.time > searchUntil) Set(HunterState.Patrol);
+                    if (Time.time > searchUntil)
+                    {
+                        target = null;
+                        breaching = null;
+                        atDoor = false;
+                        BeginWithdrawal(agent, lastSeen);
+                        Set(HunterState.Patrol);
+                        return;
+                    }
                     break;
                 default:
                     agent.isStopped = false;
@@ -126,6 +144,12 @@ namespace Abandoned.Threats
         private void Set(HunterState s)
         {
             if (state.Value != s) state.Value = s;
+        }
+
+        private void SearchFrom(float trailTime)
+        {
+            Set(HunterState.Search);
+            searchUntil = Mathf.Min(Time.time + config.SearchSeconds, trailTime + ThreatPacingConfig.Current.LostSightSearchSeconds);
         }
 
         // The living player it sees best: in its cone, in range (crouchers only up close), in the open; or anyone right next to it.
@@ -226,9 +250,8 @@ namespace Abandoned.Threats
             if (Time.time < stunnedUntil) return;
             agent.enabled = true;
             if (NavMesh.SamplePosition(transform.position, out NavMeshHit nav, 3f, NavMesh.AllAreas)) agent.Warp(nav.position);
-            Set(HunterState.Search);
             lastSeen = transform.position;
-            searchUntil = Time.time + config.SearchSeconds;
+            SearchFrom(Time.time);
         }
 
         [Rpc(SendTo.Everyone)]
