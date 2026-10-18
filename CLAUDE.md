@@ -96,6 +96,17 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**Iron Factory (2026-10-18, in progress): the Factory location is replaced** by a 120 x 100 m iron works built
+the way the mall is (Editor/Factory, menu **Tools > Abandoned > Factory > Rebuild Iron Factory**): a 20 x 60 m
+molten channel that kills players and destroys loot (host-side `LavaVolume`), three catwalk tiers (5/10/15 m)
+with protected spines, stairs and ladders (`Core/Ladder`, owner-side climbing in `PlayerMotor.Ladders`).
+The user's answers and the 8-step build order: Docs/IRON_FACTORY_PLAN.md. Steps 1-4 (shell, lava, catwalks,
+machinery-floor maze, 38 hiding places via `HidingLocker` + `HideSpotKind`, Breaker Hall whose breakers also
+start that sector's machines via `MachineHazard`; mains power never starts them; 21 factory loot items on the
+factory-only tags foundry/workshop/machinery/records with 178 spawn points; 19 threat spawns incl. catwalks,
+occlusion bake, rail dock; rail yard/towers/stacks, high-bay lights, lava rumble) written and compiled outside
+Unity (dotnet), never rebuilt or played, not committed. Next: step 8, the user's Unity compile and rebuild.
+
 **0.24.8c (2026-10-14): localization review fixes.** No features. Text the host sends or keeps is English and
 worded where it is shown (crew-spending refusals, player stand-in names in results/toasts/travel screen, toy
 toasts, the radio, hints); the main menu's session-end notice and the Controls key-conflict warning are worded;

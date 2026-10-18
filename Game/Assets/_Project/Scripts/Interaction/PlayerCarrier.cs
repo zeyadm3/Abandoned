@@ -41,6 +41,7 @@ namespace Abandoned.Interaction
 
         /// <summary>Everything this player carries, in kg; also what they add to structural load.</summary>
         public float CarriedWeight => (Held != null ? Held.WeightOnHolder : 0f) + Inventory.TotalWeight;
+        public float HandlingWeight => (IsSharing ? Held.Weight / Mathf.Max(1, Held.Shared.CarrierCount) : Held != null ? Held.Weight : 0f) + Inventory.TotalWeight;
 
         public bool IsDragging => Held != null && Held.IsDragged;
 
@@ -85,8 +86,7 @@ namespace Abandoned.Interaction
 
         /// <summary>A flatbed trolley in hand (M10.2): Heavy and Huge items can be dragged short-handed, Huge ones slowly.</summary>
         public bool FlatbedDrag { get; set; }
-        public bool CanSoloDrag(CarryClass carryClass) =>
-            (SoloDragAllowed || FlatbedDrag) && config.CanSoloDrag(carryClass) || FlatbedDrag && carryClass == CarryClass.Huge;
+        public bool CanSoloDrag(CarryClass carryClass) => carryClass >= CarryClass.Heavy;
 
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;
@@ -151,7 +151,7 @@ namespace Abandoned.Interaction
             // Threats live on the host, so the host makes the scraping noise for every dragging player.
             if (IsDragging && GameAuthority.IsHost) EmitDragNoise();
             if (motor == null) return;
-            float weight = CarriedWeight;
+            float weight = HandlingWeight;
             motor.SpeedMultiplier = IsDragging ? config.DragSpeedMultiplier : config.SpeedMultiplierFor(weight);
             motor.StaminaDrainMultiplier = config.StaminaDrainMultiplierFor(weight);
             ApplySharedLimits();
@@ -177,12 +177,14 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>Top speed (m/s) this player could carry at right now: gait (crouch/walk/sprint) times their load slowdown.</summary>
+        private float CrewPace => IsSharing ? Mathf.Pow((float)Held.Shared.CarrierCount / Held.Shared.PointCount, config.SharedCrewBurdenPower) : 1f;
+
         public float CarrySpeedCapability(bool allowSprint)
         {
             if (motor == null) return float.PositiveInfinity;
             PlayerMovementConfig m = motor.Config;
             float gait = motor.IsCrouching ? m.CrouchSpeed : allowSprint && motor.IsSprinting ? m.SprintSpeed : m.WalkSpeed;
-            return gait * config.SpeedMultiplierFor(CarriedWeight);
+            return gait * config.SpeedMultiplierFor(HandlingWeight) * CrewPace;
         }
 
         /// <summary>Top speed (m/s) dragging something heavy alone: gait times the drag slowdown.</summary>
@@ -191,7 +193,7 @@ namespace Abandoned.Interaction
             if (motor == null) return float.PositiveInfinity;
             PlayerMovementConfig m = motor.Config;
             float gait = motor.IsCrouching ? m.CrouchSpeed : motor.IsSprinting ? m.SprintSpeed : m.WalkSpeed;
-            return gait * config.DragSpeedMultiplier * (carryClass == CarryClass.Huge ? config.HugeDragSpeedScale : 1f);
+            return gait * config.DragSpeedMultiplier * CrewPace * (carryClass == CarryClass.Huge ? config.HugeDragSpeedScale : 1f);
         }
 
         private void FixedUpdate()

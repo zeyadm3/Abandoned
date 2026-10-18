@@ -33,6 +33,13 @@ namespace Abandoned.Loot
         public float Condition { get; private set; }
         public int CurrentValue { get; private set; }
         public bool IsShattered { get; private set; }
+        public bool IsAppraised { get; private set; }
+        public void Appraise()
+        {
+            if (!HasValueAuthority || IsAppraised) return;
+            IsAppraised = true;
+            ValueChanged?.Invoke(this);
+        }
         public int Seed => seed;
         public bool IsInitialized => initialized;
         public LootDamageConfig DamageConfig => damageConfig;
@@ -149,12 +156,13 @@ namespace Abandoned.Loot
         }
 
         /// <summary>Client: the host's value state arrived.</summary>
-        public void ApplyNetworkValue(int fullValue, int currentValue, float condition, bool shattered)
+        public void ApplyNetworkValue(int fullValue, int currentValue, float condition, bool shattered, bool appraised = false)
         {
             FullValue = fullValue;
             CurrentValue = currentValue;
             Condition = condition;
             IsShattered = shattered;
+            IsAppraised = appraised;
             initialized = true;
         }
 
@@ -206,6 +214,12 @@ namespace Abandoned.Loot
             speed *= ImpactCushion.At(point) * Cushion;
 
             int loss = LootMath.ImpactLoss(damageConfig.Profile(definition.Fragility), FullValue, speed, out bool shatters);
+            Extraction.RunHorrorDirector building = Extraction.RunHorrorDirector.Current;
+            if (definition.Fragility < Fragility.High && building != null && !building.Inside(transform.position))
+            {
+                loss = LootMath.ProtectedImpactLoss(loss, FullValue, damageConfig.OutdoorImpactThreshold);
+                shatters = false;
+            }
             if (shatters)
             {
                 lastDamageTime = Time.time;

@@ -20,6 +20,7 @@ namespace Abandoned.Interaction
         private bool suppressUseUntilRelease;
         private bool dropPending;
         private float dropTime;
+        private float throwTime;
         private Grabbable dropItem;
         public bool IsRotating { get; private set; }
         public bool IsPlacing => carrier != null && carrier.IsPlacing;
@@ -59,6 +60,7 @@ namespace Abandoned.Interaction
                 if (look.CaptureFrame == Time.frameCount) suppressUseUntilRelease = true;
             }
             if (!input.UseHeld) suppressUseUntilRelease = false;
+            if (input.InventoryHeld) { ResetCharge(); return; }
             bool useHeld = input.UseHeld && !suppressUseUntilRelease;
 
             UseTarget = null;
@@ -73,12 +75,12 @@ namespace Abandoned.Interaction
                 UseTarget.Use(gameObject); // levers, shutters, notes: usable with loot in hand too (QA B-11)
 
             // Inventory key + wheel picks which pocket the drop key empties (QA B-16).
-            if (input.InventoryHeld && input.Scroll != 0f) carrier.Inventory.Cycle(input.Scroll > 0f ? -1 : 1);
+            if (!TryGetComponent(out Equipment.PlayerEquipment gear) && input.Scroll != 0f)
+                carrier.Inventory.Cycle(input.Scroll > 0f ? -1 : 1);
 
             if (carrier.Held == null)
             {
                 ResetHandling();
-                if (input.InventoryHeld && input.DropPressed) handler.RequestDropFromPocket(carrier);
                 return;
             }
 
@@ -98,26 +100,22 @@ namespace Abandoned.Interaction
                 dropTime = 0f;
                 charging = false;
                 Charge = 0f;
+                carrier.BeginPlacement();
             }
             if (dropPending)
             {
                 IsRotating = false;
-                if (input.DropHeld)
+                dropTime += dt;
+                if (carrier.PlacementBlocked || dropTime > carrier.Config.PlaceTimeout)
                 {
-                    dropTime += dt;
-                    if (dropTime >= carrier.Config.PlaceHoldTime)
-                    {
-                        if (!carrier.IsPlacing) carrier.BeginPlacement();
-                        // The network guard rate-limits retries; a rejected/stale host view must not strand the hold.
-                        if (carrier.PlacementReady) handler.RequestPlace(carrier);
-                    }
-                }
-                else if (input.DropReleased || !input.DropHeld)
-                {
-                    bool tapped = dropTime < carrier.Config.PlaceHoldTime;
+                    carrier.ShowHint(Loc.Mark("No clear place to set it down"));
                     ResetHandling();
-                    if (tapped) handler.RequestDrop(carrier);
                 }
+                else if (input.UsePressed)
+                {
+                    ResetHandling();
+                }
+                else if (carrier.PlacementReady) handler.RequestPlace(carrier);
                 return;
             }
 
@@ -132,13 +130,16 @@ namespace Abandoned.Interaction
 
             if (useHeld)
             {
+                if (!charging) throwTime = 0f;
                 charging = true;
+                throwTime += dt;
                 Charge = Mathf.Clamp01(Charge + dt / carrier.Config.ThrowChargeTime);
             }
             else if (charging)
             {
                 float speed = carrier.Config.ThrowSpeedFor(Charge, carrier.Held.Weight);
-                handler.RequestThrow(carrier, carrier.EyeForward * speed + carrier.DropVelocity);
+                if (throwTime >= carrier.Config.ThrowMinimumHold)
+                    handler.RequestThrow(carrier, carrier.EyeForward * speed + carrier.DropVelocity);
                 charging = false;
                 Charge = 0f;
             }

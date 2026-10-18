@@ -17,7 +17,7 @@ namespace Abandoned.Equipment
         [Rpc(SendTo.Server)]
         private void UseRpc(int slot, RpcParams rpcParams = default)
         {
-            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot > 1) return;
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot >= EquipState.SlotCount) return;
             // A knocked-down player's root stays where they fell from: nothing is used from there.
             if (player == null || player.IsDead || carrier.Held != null || carrier.IsRagdolled) return;
             EquipmentDefinition d = InSlot(slot);

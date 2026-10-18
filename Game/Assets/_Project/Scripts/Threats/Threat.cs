@@ -111,9 +111,10 @@ namespace Abandoned.Threats
 
         /// <summary>Host: does it know where this hiding player is? By default only if it watched them climb in.</summary>
         protected virtual bool FindsHider(NetworkPlayer p) => watchedHide.Contains(p.OwnerClientId);
+        protected void RememberHider(NetworkPlayer p) { if (p.IsHiding) watchedHide.Add(p.OwnerClientId); }
 
         /// <summary>Host: hiding in a locker, and this threat has no idea.</summary>
-        protected bool HiddenFromMe(NetworkPlayer p) => p.IsHiding && (p.InVent || !FindsHider(p)); // 0.16.4: nothing follows into a vent
+        protected bool HiddenFromMe(NetworkPlayer p) => p.IsConcealed && (p.InVent || !FindsHider(p)); // Vents remain concealed; open cover and peeking use normal sight checks.
 
         /// <summary>
         /// Where to go for a player and reach them from: for one in a locker, the floor in front of its door
@@ -140,6 +141,7 @@ namespace Abandoned.Threats
                 if (senses != null && !senses(p)) continue;
                 // Someone it knows is in a locker is reached at the locker's door, and dragged out.
                 bool hiding = p.IsHiding;
+                if (hiding && !FindsHider(p) && !LineOfSight(transform.position + Vector3.up * 1.3f, p.SightPoint)) continue;
                 Vector3 at = SpotOf(p);
                 Vector3 d = at - transform.position;
                 if (Mathf.Abs(d.y) > 1.8f || new Vector2(d.x, d.z).sqrMagnitude > range * range) continue;

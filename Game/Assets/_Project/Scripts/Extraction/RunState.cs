@@ -33,7 +33,7 @@ namespace Abandoned.Extraction
         public float WindowRemaining => Mathf.Max(0f, (float)(State.WindowEnd - Now));
         public bool WindowClosed => IsSpawned && Now >= State.WindowEnd;
         /// <summary>How long the truck honks before it leaves this run (the engine upgrade shortens it).</summary>
-        public float HonkSeconds => State.HonkSeconds > 0f ? State.HonkSeconds : config.HonkSeconds;
+        public float HonkSeconds => State.HonkSeconds > 0f ? State.HonkSeconds : config.DepartureSeconds;
         /// <summary>
         /// Host: nothing touches you inside the truck once it's honking to leave, or all job long with the
         /// Armored Bay upgrade (M10.1). Before QA B-03 the truck sheltered everyone always, so the upgrade did
@@ -109,7 +109,7 @@ namespace Abandoned.Extraction
                 Quota = terms.Quota,
                 Seed = SeedSource?.Invoke() ?? 0,
                 CargoCapacity = config.CargoCapacity * Mathf.Max(1f, terms.CargoMultiplier),
-                HonkSeconds = terms.HonkSeconds > 0f ? terms.HonkSeconds : config.HonkSeconds,
+                HonkSeconds = config.DepartureSeconds,
                 Window = terms.Window,
                 Bonus = terms.Bonus,
                 PowerOff = terms.PowerOff,
@@ -175,8 +175,21 @@ namespace Abandoned.Extraction
             float volume = 0f;
             foreach (LootItem item in Cargo(truck))
             {
+                item.Appraise();
                 haul += item.CurrentValue;
                 volume += TruckCargo.VolumeOf(item);
+            }
+            foreach (NetworkPlayer player in NetworkPlayer.All)
+            {
+                if (player == null || player.NetworkManager != NetworkManager || player.IsDead ||
+                    !truck.Carries(player.Ragdoll.IsRagdolled ? player.Ragdoll.BodyPosition : player.transform.position)) continue;
+                foreach (Grabbable pocket in player.Carrier.Inventory.Items)
+                    if (pocket != null && pocket.TryGetComponent(out LootItem item) && !item.IsShattered)
+                    {
+                        item.Appraise();
+                        haul += item.CurrentValue;
+                        volume += TruckCargo.VolumeOf(item);
+                    }
             }
             RunNetState s = State;
             s.Haul = haul;
@@ -191,12 +204,17 @@ namespace Abandoned.Extraction
         private HashSet<LootItem> Cargo(TruckCargo truck)
         {
             cargo.Clear();
-            foreach (LootItem item in truck.ItemsInside()) cargo.Add(item);
+            foreach (LootItem item in truck.ItemsInside())
+            {
+                Grabbable grabbable = item.GetComponent<Grabbable>();
+                if (grabbable != null && grabbable.Holder != null && grabbable.Holder.Inventory.Contains(grabbable)) continue;
+                cargo.Add(item);
+            }
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || p.NetworkManager != NetworkManager || p.IsDead || p.Carrier.Held == null) continue;
                 if (!truck.Carries(p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position)) continue;
-                if (p.Carrier.Held.TryGetComponent(out LootItem held) && !held.IsShattered) cargo.Add(held);
+                if (!p.Carrier.Inventory.Contains(p.Carrier.Held) && p.Carrier.Held.TryGetComponent(out LootItem held) && !held.IsShattered) cargo.Add(held);
             }
             return cargo;
         }

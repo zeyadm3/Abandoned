@@ -41,7 +41,7 @@ namespace Abandoned.Networking
         private void SendQueuedThrow()
         {
             if (queuedThrowUntil <= 0f) return;
-            bool stillOurs = grabbable.Holder != null && grabbable.Holder.IsLocal && hold.Value.Mode == LootHoldMode.Held;
+            bool stillOurs = grabbable.Holder != null && grabbable.Holder.IsLocal && (hold.Value.Mode == LootHoldMode.Held || hold.Value.Mode == LootHoldMode.PocketHeld);
             if (Time.time > queuedThrowUntil || !stillOurs)
             {
                 queuedThrowUntil = 0f;

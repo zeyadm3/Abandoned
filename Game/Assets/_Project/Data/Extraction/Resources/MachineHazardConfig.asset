@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab08bc5b97d97d43b565f61fa4872bf, type: 3}
+  m_Name: MachineHazardConfig
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Extraction.MachineHazardConfig
+  pressPeriod: 5
+  pressWarning: 1.2
+  pressStrike: 0.35
+  pressDamage: 45
+  pressNoise: 0.85
+  rollerPeriod: 1
+  rollerStrike: 0.25
+  rollerDamage: 10
+  rollerNoise: 0.3
+  steamPeriod: 7
+  steamWarning: 1.5
+  steamStrike: 1
+  steamDamage: 20
+  steamNoise: 0.5
+  beltSpeed: 1.3
+  knock: 2.2
+  <PressDeathLine>k__BackingField: Crushed in a press.
+  <RollerDeathLine>k__BackingField: Pulled into the rolls.
+  <SteamDeathLine>k__BackingField: Scalded by steam.

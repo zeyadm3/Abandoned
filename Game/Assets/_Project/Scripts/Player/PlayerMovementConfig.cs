@@ -31,6 +31,10 @@ namespace Abandoned.Player
         [field: SerializeField, Min(0f)] public float CoyoteTime { get; private set; } = 0.1f;
         [field: SerializeField, Min(0f)] public float JumpBufferTime { get; private set; } = 0.1f;
 
+        [field: Header("Ladders")]
+        [field: Tooltip("Climbing speed on a fixed ladder (hands empty; pockets are fine).")]
+        [field: SerializeField, Min(0.5f)] public float LadderClimbSpeed { get; private set; } = 2.8f;
+
         [field: Header("Stamina")]
         [field: SerializeField, Min(1f)] public float MaxStamina { get; private set; } = 100f;
         [field: SerializeField, Min(0f)] public float SprintDrainPerSecond { get; private set; } = 20f;

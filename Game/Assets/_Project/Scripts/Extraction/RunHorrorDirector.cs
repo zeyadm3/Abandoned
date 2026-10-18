@@ -41,9 +41,11 @@ namespace Abandoned.Extraction
         public static float RadioUntil { get; private set; }
         public bool FinalPhase => final.Value;
         public HorrorConfig Config => config;
+        // A level too big for the shared box (the Iron Factory) carries its own.
+        private Bounds Building => LevelBuildingBounds.Current != null ? LevelBuildingBounds.Current.Bounds : config.Building;
 
         public bool Inside(Vector3 at) =>
-            config != null && config.Building.Contains(at) && (TruckCargo.Current == null || !TruckCargo.Current.Carries(at));
+            config != null && Building.Contains(at) && (TruckCargo.Current == null || !TruckCargo.Current.Carries(at));
 
         public override void OnNetworkSpawn()
         {
@@ -183,7 +185,7 @@ namespace Abandoned.Extraction
 
         private Vector3 ClampToBuilding(Vector3 at, float margin)
         {
-            Bounds b = config.Building;
+            Bounds b = Building;
             at.x = Mathf.Clamp(at.x, b.min.x + margin, b.max.x - margin);
             at.z = Mathf.Clamp(at.z, b.min.z + margin, b.max.z - margin);
             return at;

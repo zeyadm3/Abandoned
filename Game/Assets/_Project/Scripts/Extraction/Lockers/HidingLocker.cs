@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Abandoned.Audio;
 using Abandoned.Core;
+using Abandoned.Interaction;
 using Abandoned.Networking;
 using Abandoned.Structure;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace Abandoned.Extraction
         [Tooltip("The floor it stands on: when that collapses the locker is gone and whoever was in it is out.")]
         [OptionalReference, SerializeField] private StructuralSection floor;
         [SerializeField, Range(30f, 120f)] private float doorSwing = 95f;
+        [Tooltip("What it is to the player: a locker, a bay under a machine, a cold furnace, a cabinet. Same rules.")]
+        [SerializeField] private HideSpotKind kind = HideSpotKind.Locker;
 
         private NetworkPlayer shownOccupant;
         private float doorOpenUntil, doorShown;
@@ -38,6 +41,7 @@ namespace Abandoned.Extraction
 
         public static IReadOnlyList<HidingLocker> All => Live;
         public int Index => index;
+        public bool ConcealsOccupant => kind == HideSpotKind.Locker || kind == HideSpotKind.Cabinet;
         public Vector3 InsidePoint => inside != null ? inside.position : transform.position;
         public Quaternion Facing => Quaternion.Euler(0f, (inside != null ? inside : transform).eulerAngles.y, 0f);
         public Vector3 ExitPoint => exit != null ? exit.position : transform.position + transform.forward * 1.1f;
@@ -78,7 +82,7 @@ namespace Abandoned.Extraction
                 shutSoundDue = true;
                 GameAudio.Play(SoundId.LockerOpen, DoorPoint, 1f);
             }
-            float target = Time.time < doorOpenUntil ? 1f : 0f;
+            float target = Time.time < doorOpenUntil ? 1f : occupant != null ? occupant.Peek01 * .35f : 0f;
             if (Mathf.Approximately(doorShown, target)) return;
             doorShown = Mathf.MoveTowards(doorShown, target, Time.deltaTime / DoorSwingSeconds);
             // Hinged on its left edge; the free edge swings out toward the room.
@@ -98,7 +102,13 @@ namespace Abandoned.Extraction
             if (me == null || !me.IsSpawned || !Usable) return null;
             if (me.HidingIn == index) return Loc.T("Climb out");
             if (Occupant != null) return Loc.T("Someone is hiding in here");
-            return Loc.T("Hide in the locker");
+            return Loc.T(kind switch
+            {
+                HideSpotKind.Machine => Loc.Mark("Hide under the machine"),
+                HideSpotKind.Furnace => Loc.Mark("Hide in the cold furnace"),
+                HideSpotKind.Cabinet => Loc.Mark("Hide in the cabinet"),
+                _ => Loc.Mark("Hide in the locker"),
+            });
         }
 
         public void Use(GameObject user)
@@ -112,9 +122,9 @@ namespace Abandoned.Extraction
             }
             if (Occupant != null) return;
             // Nothing bigger than a pocket fits in there with you (the prompt is hidden while hands are full).
-            if (me.Carrier != null && me.Carrier.Held != null)
+            if (me.Carrier != null && me.Carrier.Held != null && me.Carrier.Held.CarryClass >= CarryClass.TwoHand)
             {
-                me.Carrier.ShowHint(Loc.Mark("Put that down to hide in the locker"));
+                me.Carrier.ShowHint(kind == HideSpotKind.Locker ? Loc.Mark("Put that down to hide in the locker") : Loc.Mark("Put that down to hide"));
                 return;
             }
             me.RequestHide(index);
@@ -137,6 +147,13 @@ namespace Abandoned.Extraction
             inside = insidePoint;
             exit = exitPoint;
             floor = standsOn;
+        }
+
+        public void EditorSetup(int lockerIndex, Transform doorLeaf, Transform insidePoint, Transform exitPoint, StructuralSection standsOn,
+            HideSpotKind spotKind)
+        {
+            EditorSetup(lockerIndex, doorLeaf, insidePoint, exitPoint, standsOn);
+            kind = spotKind;
         }
 #endif
 

@@ -16,7 +16,7 @@ namespace Abandoned.Core
         public static readonly string[] Rebindable =
         {
             "Move", "Sprint", "Crouch", "Jump", "Interact", "Use", "Drop", "Scan", "Flashlight",
-            "HandSlot1", "HandSlot2", "Inventory", "PushToTalk", "Radio", "Rotate", "GiveGear", "Chat", "PhotoCamera", "HideHud", "Ping", "EmotePoint", "EmoteWave", "EmotePanic",
+            "HandSlot1", "HandSlot2", "HandSlot3", "HandSlot4", "Inventory", "PushToTalk", "Radio", "Rotate", "GiveGear", "Chat", "PhotoCamera", "HideHud", "Ping", "EmotePoint", "EmoteWave", "EmotePanic",
         };
 
         // Menu-level keys read outside the player (chat, free camera, clip mode): one always-on copy of the
@@ -66,6 +66,17 @@ namespace Abandoned.Core
         public static void Apply(InputActionAsset asset)
         {
             if (asset == null) return;
+            InputActionMap map = asset.FindActionMap("Gameplay");
+            if (map != null && !map.enabled)
+                for (int slot = 3; slot <= 4; slot++)
+                    if (map.FindAction("HandSlot" + slot) == null)
+                        map.AddAction("HandSlot" + slot, InputActionType.Button).AddBinding(new InputBinding
+                        {
+                            path = "<Keyboard>/" + slot,
+                            groups = "Keyboard&Mouse",
+                            // Saved overrides must identify the same binding in every input reader.
+                            id = new Guid(slot == 3 ? "7f77e677-2a18-4e42-a948-865a5d3c43d0" : "6fc84962-9efe-4f38-872d-e450f9e9224a"),
+                        });
             asset.RemoveAllBindingOverrides();
             string json = Json;
             if (!string.IsNullOrEmpty(json)) asset.LoadBindingOverridesFromJson(json);

@@ -5,41 +5,25 @@ using UnityEngine.UIElements;
 
 namespace Abandoned.Interaction
 {
-    /// <summary>
-    /// The player's interaction HUD (M8.1; key caps in UI step 2): crosshair (a ring on something usable),
-    /// what you can do with what you're looking at or holding, rejection hints and the throw charge. Keys
-    /// follow the player's bindings. The pockets moved to UI.PlayerHud. F1 adds carry debug numbers.
-    /// </summary>
+    /// <summary>Compact object-anchored prompts and a small deliberate-throw charge.</summary>
     public class InteractionHud : MonoBehaviour
     {
         [SerializeField] private PlayerInteractor interactor;
         [SerializeField] private PlayerCarrier carrier;
         [SerializeField] private PlayerInputReader inputReader;
-
-        private GUIStyle box;
         private VisualElement crosshair, charge, chargeFill, prompt, promptRow;
-        private Label context, chargeReadout;
         private string shownPrompt;
-
-        /// <summary>Tests: the prompt under the crosshair (null when none).</summary>
+        private Vector3 lastAnchor;
         public string Prompt { get; private set; }
-
-        /// <summary>
-        /// Shown instead of everything else while set: the player is somewhere the usual prompts don't apply
-        /// (hiding in a locker, where the only thing to do is climb out).
-        /// </summary>
         public string Override { get; set; }
-
         private void Update()
         {
-            Prompt = BuildPrompt(out bool hint);
+            Prompt = BuildPrompt();
             if (crosshair == null || crosshair.panel == null)
             {
                 if (UI.HudLayer.Root == null) return;
-                UI.HudLayer.Remove(crosshair);
-                UI.HudLayer.Remove(prompt);
-                UI.HudLayer.Remove(charge);
-                crosshair = UI.HudLayer.Add(new VisualElement(), "hud-crosshair", "h-reticle");
+                UI.HudLayer.Remove(crosshair); UI.HudLayer.Remove(prompt); UI.HudLayer.Remove(charge);
+                crosshair = UI.HudLayer.Add(new VisualElement(), "hud-crosshair", "h-reticle", "field-reticle");
                 foreach (string corner in new[] { "nw", "ne", "sw", "se" })
                 {
                     var bracket = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -47,138 +31,64 @@ namespace Abandoned.Interaction
                     bracket.AddToClassList("h-reticle__corner--" + corner);
                     crosshair.Add(bracket);
                 }
-                prompt = UI.HudLayer.Add(new VisualElement(), "h-interaction");
-                context = new Label(Loc.T("RECOVER")) { pickingMode = PickingMode.Ignore };
-                context.AddToClassList("h-interaction__context");
-                prompt.Add(context);
-                promptRow = new VisualElement { pickingMode = PickingMode.Ignore };
-                promptRow.AddToClassList("hud-prompt-row");
-                promptRow.AddToClassList("h-interaction__actions");
-                prompt.Add(promptRow);
-                charge = UI.HudLayer.Add(new VisualElement(), "hud-charge", "h-throw");
-                chargeReadout = new Label(Loc.T("THROW / 00%")) { pickingMode = PickingMode.Ignore };
-                chargeReadout.AddToClassList("h-throw__label");
-                charge.Add(chargeReadout);
-                chargeFill = new VisualElement { pickingMode = PickingMode.Ignore };
-                chargeFill.AddToClassList("hud-charge__fill");
-                charge.Add(chargeFill);
+                prompt = UI.HudLayer.Add(new VisualElement(), "field-prompt");
+                promptRow = UI.FieldHud.Element(prompt, "hud-prompt-row");
+                charge = UI.HudLayer.Add(new VisualElement(), "field-throw");
+                chargeFill = UI.FieldHud.Element(charge, "field-throw-fill");
                 shownPrompt = null;
             }
-            // Key caps for [key] markers; rebuilt only when the words change.
-            // The pockets list (Inventory held) takes the bottom of the screen; the prompt steps aside.
-            UI.MenuKit.Show(prompt, Prompt != null && !inputReader.Current.InventoryHeld);
+            bool show = Prompt != null && !inputReader.Current.InventoryHeld;
+            UI.MenuKit.Show(prompt, show);
             if (Prompt != shownPrompt)
             {
                 shownPrompt = Prompt;
                 UI.UiKit.Prompt(promptRow, Prompt);
-                prompt.BringToFront(); // over any value tags behind it
             }
-            string caption = hint ? Loc.T("OBSTRUCTED") : !string.IsNullOrEmpty(Override) ? Loc.T("INTERACT") : interactor.IsPlacing ? Loc.T("SET DOWN")
-                : interactor.IsRotating ? Loc.T("ORIENT") : interactor.Target != null ? Loc.T("RECOVER") : carrier.Held != null ? Loc.T("CARRY") : Loc.T("INTERACT");
-            if (context.text != caption) context.text = caption;
-            prompt.EnableInClassList("h-interaction--hint", hint);
-            promptRow.EnableInClassList("hud-prompt-row--hint", hint);
-            // Use the same measured lane as dispatch and captions when corner instruments intrude.
-            VisualElement root = UI.HudLayer.Root;
-            float promptY = root.layout.height * .55f;
-            bool crowded = UI.HudLayer.TryLocalRect(root.Q(className: "h-inventory"), root, out Rect inventory) &&
-                           inventory.yMin < promptY + Mathf.Max(110f, prompt.layout.height);
-            if (crowded) UI.HudLayer.FitCenterLane(prompt, root, 720f);
-            else { prompt.style.left = Length.Percent(22f); prompt.style.right = Length.Percent(22f); }
-            bool target = interactor.Target != null || (carrier.Held == null && interactor.UseTarget != null);
+            bool target = interactor.Target != null || interactor.UseTarget != null;
             crosshair.EnableInClassList("hud-crosshair--target", target);
-            // Settings > Gameplay > Crosshair: off hides the dot, but the ring still shows on something usable.
             crosshair.EnableInClassList("hud-crosshair--hidden", !GameSettings.ShowCrosshair && !target);
+            if (show)
+            {
+                Camera view = Camera.main;
+                if (interactor.Target != null)
+                {
+                    Bounds bounds = interactor.Target.GetBounds();
+                    lastAnchor = bounds.center + (view != null ? view.transform.right : Vector3.right) * (bounds.extents.magnitude * .6f + .1f);
+                }
+                else if (interactor.UseTarget is Component usable)
+                    lastAnchor = usable.GetComponent<Collider>() is Collider collider ? collider.bounds.center : usable.transform.position + Vector3.up;
+                else if (carrier.Held != null) lastAnchor = carrier.Held.GetBounds().center;
+                UI.HudLayer.Place(prompt, lastAnchor, view);
+                VisualElement root = UI.HudLayer.Root;
+                float width = UI.HudLayer.Finite(prompt.layout.width) ? prompt.layout.width : 200;
+                float height = UI.HudLayer.Finite(prompt.layout.height) ? prompt.layout.height : 32;
+                prompt.style.left = Mathf.Clamp(prompt.style.left.value.value, 12, Mathf.Max(12, root.layout.width - width - 18));
+                prompt.style.top = Mathf.Clamp(prompt.style.top.value.value, height * .5f + 12, Mathf.Max(height * .5f + 12, root.layout.height - height * .5f - 12));
+            }
             UI.MenuKit.Show(charge, interactor.Charge > 0f);
-            float strength = Mathf.Clamp01(interactor.Charge);
-            chargeFill.style.width = Length.Percent(strength * 100f);
-            string chargeText = Loc.T("THROW / {0:00}%", Mathf.CeilToInt(strength * 100f));
-            if (chargeReadout.text != chargeText) chargeReadout.text = chargeText;
-            if (UI.HudLayer.TryLocalRect(prompt, root, out Rect actions))
-            {
-                charge.style.top = actions.yMax + 8f;
-                charge.style.left = actions.center.x;
-            }
-            else
-            {
-                charge.style.top = Length.Percent(62f);
-                charge.style.left = Length.Percent(50f);
-            }
+            chargeFill.style.width = Length.Percent(Mathf.Clamp01(interactor.Charge) * 100f);
         }
-
-        private void OnDisable()
+        private string BuildPrompt()
         {
-            foreach (VisualElement e in new[] { crosshair, prompt, charge }) if (e != null) UI.MenuKit.Show(e, false);
-        }
-
-        private void OnEnable()
-        {
-            if (crosshair != null) UI.MenuKit.Show(crosshair, true);
-        }
-
-        private void OnDestroy()
-        {
-            UI.HudLayer.Remove(crosshair);
-            UI.HudLayer.Remove(prompt);
-            UI.HudLayer.Remove(charge);
-        }
-
-        private string BuildPrompt(out bool hint)
-        {
-            hint = false;
-            string interact = InputBindings.Display("Interact"), use = InputBindings.Display("Use"), drop = InputBindings.Display("Drop"), rotate = InputBindings.Display("Rotate");
             if (!string.IsNullOrEmpty(Override)) return Override;
-            if (carrier.HintVisible) { hint = true; return carrier.Hint; }
-            if (interactor.IsPlacing)
-            {
-                hint = interactor.PlacementBlocked;
-                return interactor.PlacementBlocked ? Loc.T("No support / release [{0}] to reposition", drop) : Loc.T("[{0}] hold to place / release to cancel", drop);
-            }
-            if (interactor.IsRotating) return Loc.T("[{0}] hold + mouse / rotate   release / look", rotate);
-            if (interactor.Target != null && interactor.Target.Shared != null)
-                return Loc.T("[{0}] Grab {1} - {2}", interact, Describe(interactor.Target), SharedCarryText.Crew(interactor.Target.Shared.CarrierCount, interactor.Target.Shared.RequiredCarriers));
-            if (interactor.Target != null) return Loc.T("[{0}] Pick up {1}", interact, Describe(interactor.Target));
-            if (carrier.Held == null && interactor.UseTarget?.UsePrompt(interactor.gameObject) is string usable) return $"[{interact}] {usable}";
-            if (carrier.IsSharing) return Loc.T("{0}: {1}   [{2}] let go", carrier.Held.LocalName, SharedCarryText.Of(carrier.Held.Shared), drop);
-            if (carrier.IsDragging) return Loc.T("Dragging {0}   [{1}] let go", Describe(carrier.Held), drop);
-            if (carrier.Held != null) return Loc.T("[{0}] hold / throw   [{1}] tap / drop, hold / place   [{2}] rotate", use, drop, rotate);
+            if (carrier.HintVisible) return carrier.Hint;
+            string interact = InputBindings.Display("Interact"), drop = InputBindings.Display("Drop");
+            if (interactor.IsPlacing) return interactor.PlacementBlocked ? Loc.T("No clear place to set it down") : Loc.T("SET DOWN");
+            if (interactor.IsRotating) return Loc.T("ORIENT");
+            if (interactor.Target != null)
+                return Loc.T("[{0}] Pick up {1}", interact, interactor.Target.LocalName);
+            if (interactor.UseTarget?.UsePrompt(interactor.gameObject) is string usable)
+                return $"[{interact}] {usable}";
             return null;
         }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private void OnGUI()
+        private void OnDisable()
         {
-            if (!DebugView.Visible) return;
-            box ??= new GUIStyle(GUI.skin.box) { alignment = TextAnchor.UpperLeft, fontSize = 14, richText = true };
-            DrawDebug();
+            UI.MenuKit.Show(crosshair, false); UI.MenuKit.Show(prompt, false); UI.MenuKit.Show(charge, false);
         }
-#endif
-
-        private void DrawDebug()
+        private void OnEnable() => UI.MenuKit.Show(crosshair, true);
+        private void OnDestroy()
         {
-            string held = carrier.Held != null ? $"{carrier.Held.DisplayName} ({carrier.Held.CarryClass}, {carrier.Held.Weight:F1} kg)" : "-";
-            string content =
-                "<b>CARRY</b>\n" +
-                $"Held       {held}\n" +
-                $"Carried    {carrier.CarriedWeight:F1} kg\n" +
-                $"Speed x    {carrier.Config.SpeedMultiplierFor(carrier.CarriedWeight):F2}\n" +
-                $"Charge     {interactor.Charge:F2}" + SharedDebug();
-            var gc = new GUIContent(content);
-            Vector2 size = box.CalcSize(gc);
-            GUI.Box(new Rect(Screen.width - size.x - 10, 230, size.x, size.y), gc, box);
+            UI.HudLayer.Remove(crosshair); UI.HudLayer.Remove(prompt); UI.HudLayer.Remove(charge);
         }
-
-        private string SharedDebug()
-        {
-            if (!carrier.IsSharing) return "";
-            SharedCarryable shared = carrier.Held.Shared;
-            int point = shared.IndexOf(carrier);
-            float tether = point >= 0 ? Vector3.ProjectOnPlane(carrier.transform.position - shared.AnchorFor(point), Vector3.up).magnitude : 0f;
-            return $"\nShared     point {point}, {shared.CarrierCount}/{shared.RequiredCarriers}, share {shared.SharePerCarrier:0} kg" +
-                   $"\nCrew cap   {shared.CarrierMaxSpeed:0.0} m/s, tether {tether:0.00}/{shared.Config.TetherSlack:0.0} m";
-        }
-
-        // The value tag over the item says what it's worth (UI.LootTags); the prompt says what it is and weighs.
-        private static string Describe(Grabbable g) => Loc.T("{0} ({1:0.#} kg)", g.LocalName, g.Weight);
     }
 }

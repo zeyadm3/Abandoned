@@ -53,10 +53,10 @@ namespace Abandoned.Equipment
             int index = state.Value[slot];
             if (index < 0)
             {
-                HintRpc(Loc.Mark("Nothing in your hand to give. Pick a slot with 1 or 2."));
+                HintRpc(Loc.Mark("Select a tool pocket to give gear."));
                 return;
             }
-            int free = other.state.Value[0] < 0 ? 0 : other.state.Value[1] < 0 ? 1 : -1;
+            int free = other.FreePocket;
             if (free < 0)
             {
                 HintRpc(Loc.Mark("Their hands are full."));
@@ -72,11 +72,11 @@ namespace Abandoned.Equipment
         private void TakeFrom(PlayerEquipment fallen)
         {
             bool took = false;
-            for (int from = 0; from < 2; from++)
+            for (int from = 0; from < EquipState.SlotCount; from++)
             {
                 int index = fallen.state.Value[from];
                 if (index < 0) continue;
-                int free = state.Value[0] < 0 ? 0 : state.Value[1] < 0 ? 1 : -1;
+                int free = FreePocket;
                 if (free < 0) break;
                 state.Value = state.Value.With(free, index);
                 EquipState theirs = fallen.state.Value.With(from, -1);
@@ -84,7 +84,7 @@ namespace Abandoned.Equipment
                 fallen.state.Value = theirs;
                 took = true;
             }
-            HintRpc(took ? Loc.Mark("You took their gear.") : fallen.state.Value[0] < 0 && fallen.state.Value[1] < 0 ? Loc.Mark("They had nothing on them.") : Loc.Mark("Your hands are full."));
+            HintRpc(took ? Loc.Mark("You took their gear.") : fallen.OccupiedCount == 0 ? Loc.Mark("They had nothing on them.") : Loc.Mark("Your hands are full."));
         }
 
         // Host: the nearest crewmate (alive or fallen) within reach, roughly where this player is looking, in sight.

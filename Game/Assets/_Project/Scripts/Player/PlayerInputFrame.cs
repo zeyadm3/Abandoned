@@ -25,6 +25,7 @@ namespace Abandoned.Player
         public readonly bool RadioHeld;
         public readonly bool Slot1Pressed;
         public readonly bool Slot2Pressed;
+        public readonly bool Slot3Pressed, Slot4Pressed;
         public readonly bool FlashlightPressed;
         public readonly bool RotateHeld;
         public readonly bool DropHeld;
@@ -38,7 +39,8 @@ namespace Abandoned.Player
             bool jumpPressed, bool usePressed, bool useHeld, bool interactPressed, bool dropPressed,
             bool inventoryHeld, bool pausePressed, bool debugRagdollPressed = false, bool talkHeld = false, bool radioHeld = false,
             bool slot1Pressed = false, bool slot2Pressed = false, bool flashlightPressed = false,
-            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false, float scroll = 0f, bool giveGearPressed = false)
+            bool rotateHeld = false, bool dropHeld = false, bool dropReleased = false, float scroll = 0f, bool giveGearPressed = false,
+            bool slot3Pressed = false, bool slot4Pressed = false)
         {
             Move = move;
             Look = look;
@@ -57,6 +59,8 @@ namespace Abandoned.Player
             RadioHeld = radioHeld;
             Slot1Pressed = slot1Pressed;
             Slot2Pressed = slot2Pressed;
+            Slot3Pressed = slot3Pressed;
+            Slot4Pressed = slot4Pressed;
             FlashlightPressed = flashlightPressed;
             RotateHeld = rotateHeld;
             DropHeld = dropHeld;

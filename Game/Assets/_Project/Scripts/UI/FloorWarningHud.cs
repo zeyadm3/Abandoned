@@ -28,7 +28,7 @@ namespace Abandoned.UI
                 HudLayer.Remove(label);
                 label = HudLayer.Label("hud-floor", "h-floor-warning");
             }
-            MenuKit.Show(label, Warning != null);
+            MenuKit.Show(label, false);
             if (Warning == null) return;
             string text = Loc.T("FLOOR GIVING WAY · MOVE");
             if (label.text != text) label.text = text;

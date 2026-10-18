@@ -10,7 +10,7 @@ namespace Abandoned.Networking
     /// the same <see cref="PickupRules"/> as single-player (against the host's view of the player),
     /// apply, publish the hold state and move physics ownership. Also mirrors that state on clients.
     /// </summary>
-    public static class LootServerActions
+    public static partial class LootServerActions
     {
         public static bool TryPickup(NetworkLoot loot, PlayerCarrier carrier, out string reason)
         {
@@ -124,16 +124,24 @@ namespace Abandoned.Networking
             // A holder who's still here (died, rather than left) also has it taken out of their inventory.
             if (item.IsPocketed && item.PocketHolder != null) item.PocketHolder.ApplyUnpocket(item, drop, item.transform.rotation, Vector3.zero);
             else if (item.IsPocketed) item.Unpocket(drop, item.transform.rotation, Vector3.zero);
+            else if (item.Holder != null) item.Holder.ReleaseItem(item, Vector3.zero);
             else item.EndHold(Vector3.zero);
             loot.ServerSetHold(LootHoldMode.Free, null);
             loot.ServerTeleport();
         }
 
         /// <summary>Client: make this machine's copies match the host's hold state.</summary>
-        public static void Mirror(Grabbable item, LootHoldMode mode, PlayerCarrier target)
+        public static void Mirror(Grabbable item, LootHoldMode mode, PlayerCarrier target, int pocketSlot = -1)
         {
-            if (mode != LootHoldMode.Held && item.Holder != null) item.Holder.ReleaseItem(item, CurrentVelocity(item));
+            if (mode != LootHoldMode.Held && mode != LootHoldMode.PocketHeld && item.Holder != null) item.Holder.ReleaseItem(item, CurrentVelocity(item));
             if (mode != LootHoldMode.Pocketed && item.IsPocketed) UnpocketInPlace(item);
+
+            if (mode == LootHoldMode.PocketHeld)
+            {
+                target.Inventory.Add(item, pocketSlot);
+                if (item.Holder != target) target.ApplyHold(item);
+                return;
+            }
 
             if (mode == LootHoldMode.Held && item.Holder != target)
             {
@@ -143,7 +151,7 @@ namespace Abandoned.Networking
             else if (mode == LootHoldMode.Pocketed && (!item.IsPocketed || item.PocketHolder != target))
             {
                 if (item.IsPocketed) UnpocketInPlace(item);
-                target.ApplyPocket(item);
+                target.ApplyPocket(item, pocketSlot);
             }
         }
 

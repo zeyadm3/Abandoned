@@ -25,11 +25,8 @@ namespace Abandoned.Extraction
         [Rpc(SendTo.Server)]
         private void RequestDepartRpc(RpcParams rpcParams = default) => TryDepart(rpcParams.Receive.SenderClientId);
 
-        /// <summary>The honk can still be called off (not once the doors are closing).</summary>
-        public bool CanCancel => State.Phase == RunPhase.Honking && HonkRemaining > CancelCutoff;
-
-        // The doors close in the last two seconds (TruckSanctuary); after that it's going.
-        private const float CancelCutoff = 2f;
+        /// <summary>Only the player who started departure can cancel, throughout the countdown.</summary>
+        public bool CanCancel => State.Phase == RunPhase.Honking && HonkRemaining > 0f && NetworkManager != null && NetworkManager.LocalClientId == State.DepartureInitiator;
 
         /// <summary>This machine's player pulled the lever again while the truck honks: stay (QA B-09).</summary>
         public void RequestCancelDepart()
@@ -43,7 +40,7 @@ namespace Abandoned.Extraction
 
         private void TryCancelDepart(ulong client)
         {
-            if (!CanCancel || !AtLever(client)) return;
+            if (State.Phase != RunPhase.Honking || HonkRemaining <= 0f || client != State.DepartureInitiator || !AtLever(client)) return;
             RunNetState s = State;
             s.Phase = RunPhase.Running;
             s.HonkEnd = 0d;
@@ -80,6 +77,7 @@ namespace Abandoned.Extraction
             RunNetState s = State;
             s.Phase = RunPhase.Honking;
             s.HonkEnd = Now + HonkSeconds;
+            s.DepartureInitiator = client;
             state.Value = s;
             Debug.Log($"[Run] {NetworkPlayer.NameOf(client)} started the truck; leaving in {HonkSeconds:0} s.");
         }

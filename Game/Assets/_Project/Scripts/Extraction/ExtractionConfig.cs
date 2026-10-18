@@ -14,6 +14,8 @@ namespace Abandoned.Extraction
         [field: SerializeField, Min(30f)] public float WindowSeconds { get; private set; } = 900f;
         [Tooltip("The truck honks this long (s) before it leaves with whoever is inside.")]
         [field: SerializeField, Range(1f, 30f)] public float HonkSeconds { get; private set; } = 10f;
+        [field: Tooltip("Approved departure countdown, including the starter's full cancellation window.")]
+        [field: SerializeField, Range(1f, 30f)] public float DepartureSeconds { get; private set; } = 6f;
         [Tooltip("Cargo space (m3 of item bounding boxes). Upgradeable later (GDD 13).")]
         [field: SerializeField, Min(1f)] public float CargoCapacity { get; private set; } = 14f;
         [Tooltip("How close (m) a player must be to the ignition to start the truck (host check).")]

@@ -137,7 +137,7 @@ namespace Abandoned.Networking
             // A carrier without a network player (test rigs) can't be named; leave it free for everyone else.
             if (id == 0) mode = LootHoldMode.Free;
             if (mode != LootHoldMode.Free) LastHolderPosition = carrier.transform.position;
-            hold.Value = LootHoldState.For(mode, id);
+            hold.Value = LootHoldState.For(mode, id, carrier != null ? carrier.Inventory.SlotOf(grabbable) : -1);
         }
 
         /// <summary>Host: others jump to the new pose instead of interpolating across the room.</summary>
@@ -150,7 +150,7 @@ namespace Abandoned.Networking
         private void WriteValue(LootItem _)
         {
             if (item.IsInitialized)
-                value.Value = new LootValueState(item.FullValue, item.CurrentValue, item.Condition, item.IsShattered);
+                value.Value = new LootValueState(item.FullValue, item.CurrentValue, item.Condition, item.IsShattered, item.IsAppraised);
         }
 
         private void RemoveByDespawn(LootItem _)
@@ -165,7 +165,7 @@ namespace Abandoned.Networking
 
         private void ApplyValue(LootValueState s)
         {
-            if (s.Rolled) item.ApplyNetworkValue(s.FullValue, s.CurrentValue, s.Condition, s.Shattered);
+            if (s.Rolled) item.ApplyNetworkValue(s.FullValue, s.CurrentValue, s.Condition, s.Shattered, s.Appraised);
         }
 
         private void OnHoldChanged(LootHoldState previous, LootHoldState current)
@@ -186,7 +186,7 @@ namespace Abandoned.Networking
             // The holder's player may not have spawned here yet; try again next frame.
             reconcilePending = s.Mode != LootHoldMode.Free && target == null;
             if (reconcilePending) return;
-            LootServerActions.Mirror(grabbable, s.Mode, target);
+            LootServerActions.Mirror(grabbable, s.Mode, target, s.PocketSlot);
         }
 
         internal PlayerCarrier ResolveCarrier(ulong objectId)

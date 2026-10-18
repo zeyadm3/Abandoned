@@ -47,6 +47,22 @@ namespace Abandoned.UI
         private static float revealUntil;
         private static NetworkPlayer revealPlayer;
         private static int revealTravel = -1;
+        private static readonly HashSet<LootItem> inspected = new();
+        public static bool Knows(LootItem item) => item != null && (item.IsAppraised || inspected.Contains(item));
+        public static string ValueText(LootItem item)
+        {
+            if (item == null || item.Definition == null) return "--";
+            if (item.IsAppraised) return "$" + item.CurrentValue.ToString("N0");
+            LootDefinition definition = item.Definition;
+            NetworkLoot network = NetworkLoot.Of(item.GetComponent<Grabbable>());
+            uint identity = network != null ? (uint)network.NetworkObjectId : unchecked((uint)item.GetInstanceID());
+            identity = unchecked((identity ^ 0x9e3779b9u) * 2654435761u);
+            float bias = .85f + identity % 1000 / 1000f * .3f;
+            float estimate = (definition.ValueMin * .5f + definition.ValueMax * .5f) * (definition.ConditionMin + definition.ConditionMax) * .5f * bias;
+            if (item.FullValue > 0) estimate *= (float)item.CurrentValue / item.FullValue;
+            int step = estimate >= 10000 ? 500 : estimate >= 1000 ? 100 : estimate >= 100 ? 10 : 5;
+            return (Mathf.Max(0, Mathf.RoundToInt(estimate / step) * step)).ToString("N0") + "~";
+        }
 
         /// <summary>Local Q-scan reveal, shared by exploration HUDs; financial screens stay contextual.</summary>
         public static bool ValuesVisible => revealPlayer != null && revealPlayer == NetworkPlayer.Local &&
@@ -107,7 +123,7 @@ namespace Abandoned.UI
                 scanCap = UiKit.Key(null, binding);
                 ready.Insert(0, scanCap);
             }
-            MenuKit.Show(ready, alive && !ValuesVisible && Time.time >= nextScan && (carrier.Held != null || interactor.Target != null));
+            MenuKit.Show(ready, false); // Scan is available through its binding; no permanent reminder panel.
         }
 
         // ---- The tag on what you look at or hold ----
@@ -115,7 +131,7 @@ namespace Abandoned.UI
         private void UpdateFocus(Camera camera, bool alive)
         {
             focusTag ??= MakeTag(scan: false);
-            Grabbable g = carrier.Held != null ? carrier.Held : interactor.Target;
+            Grabbable g = interactor.Target != null ? interactor.Target : carrier.Held;
             LootItem item = alive && g != null ? g.GetComponent<LootItem>() : null;
             if (item == null || item.Definition == null || camera == null)
             {
@@ -124,27 +140,12 @@ namespace Abandoned.UI
                 return;
             }
             Focus = item;
+            inspected.Add(item);
             Fill(focusTag, item, full: true);
             focusTag.Root.RemoveFromClassList("loot-tag--hidden");
-            bool held = carrier.Held != null;
-            focusTag.Root.EnableInClassList("loot-tag--held", held);
-            if (held)
-            {
-                // A held tag is a central record; leave the measured inventory and survival columns clear.
-                HudLayer.FitCenterLane(focusTag.Root, HudLayer.World, 400f);
-                float top = HudLayer.Root.layout.height * 0.65f;
-                if (HudLayer.TryLocalRect(HudLayer.Root.Q(className: "h-interaction"), HudLayer.Root, out Rect prompt))
-                    top = Mathf.Max(top, prompt.yMax + 12f);
-                if (HudLayer.TryLocalRect(HudLayer.Root.Q(className: "h-throw"), HudLayer.Root, out Rect meter))
-                    top = Mathf.Max(top, meter.yMax + 12f);
-                focusTag.Root.style.top = top;
-                MenuKit.Show(focusTag.Root, true);
-            }
-            else
-            {
-                focusTag.Root.style.right = StyleKeyword.Null;
-                Place(focusTag, g.GetBounds(), camera);
-            }
+            focusTag.Root.RemoveFromClassList("loot-tag--held");
+            focusTag.Root.style.right = StyleKeyword.Null;
+            Place(focusTag, g.GetBounds(), camera);
         }
 
         // ---- Tags ----
@@ -173,33 +174,34 @@ namespace Abandoned.UI
         {
             t.Item = item;
             LootDefinition d = item.Definition;
+            string valueText = ValueText(item);
             int value = item.CurrentValue;
-            string key = $"{d.Id}|{value}|{full}";
+            string key = $"{d.Id}|{valueText}|{full}";
             if (key == t.Key) return;
             t.Key = key;
-            t.Value.text = $"${value:N0}";
+            t.Value.text = valueText;
             t.Name.text = d.LocalName;
-            int tier = d.Jackpot ? 3 : Money.Tier(value);
+            // Before appraisal, styling must not reveal a hidden price tier or jackpot.
+            int tier = item.IsAppraised ? Money.Tier(value) : 0;
             for (int i = 1; i <= 3; i++) t.Root.EnableInClassList($"loot-tag--t{i}", tier == i);
             t.Root.EnableInClassList("loot-tag--broken", item.FullValue > 0 && value < item.FullValue * 0.5f);
             t.Meta.Clear();
             MenuKit.Show(t.Name, full);
             MenuKit.Show(t.Meta, full);
             if (!full) return;
-            string carry = d.CarryClass switch
-            {
-                CarryClass.Pocket => Loc.T("POCKET"),
-                CarryClass.OneHand => Loc.T("ONE HAND"),
-                CarryClass.TwoHand => Loc.T("TWO HANDS"),
-                CarryClass.Heavy => Loc.T("HEAVY - 2 PEOPLE"),
-                _ => Loc.T("HUGE - A WHOLE CREW"),
-            };
-            UiKit.Tag(t.Meta, carry).AddToClassList("tag--dim");
-            if (d.Fragility >= Fragility.High) UiKit.Tag(t.Meta, d.Fragility == Fragility.Extreme ? Loc.T("VERY FRAGILE") : Loc.T("FRAGILE")).AddToClassList("tag--warn");
-            if (d.Jackpot) UiKit.Tag(t.Meta, Loc.T("JACKPOT"));
-            if (item.FullValue > 0 && value < item.FullValue * 0.5f)
-                UiKit.Tag(t.Meta, Loc.T("DAMAGED")).AddToClassList("tag--warn");
+            string fragility = FragilityText(d.Fragility);
+            UiKit.Tag(t.Meta, Loc.T("{0:0.#} kg", d.GameplayWeight)).AddToClassList("tag--dim");
+            UiKit.Tag(t.Meta, fragility).AddToClassList(d.Fragility >= Fragility.High ? "tag--warn" : "tag--dim");
         }
+
+        public static string FragilityText(Fragility fragility) => fragility switch
+            {
+                Fragility.None => Loc.T("NOT FRAGILE"),
+                Fragility.Low => Loc.T("LOW FRAGILITY"),
+                Fragility.Medium => Loc.T("MEDIUM FRAGILITY"),
+                Fragility.High => Loc.T("FRAGILE"),
+                _ => Loc.T("VERY FRAGILE"),
+            };
 
         private static void Place(Tag t, Bounds bounds, Camera camera)
         {
@@ -240,7 +242,7 @@ namespace Abandoned.UI
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() { revealUntil = 0f; revealPlayer = null; revealTravel = -1; }
+        private static void ResetStatics() { revealUntil = 0f; revealPlayer = null; revealTravel = -1; inspected.Clear(); }
 
 #if UNITY_EDITOR
         public void EditorSetup(NetworkPlayer owner, PlayerInteractor playerInteractor, PlayerCarrier playerCarrier, PlayerInputReader reader)

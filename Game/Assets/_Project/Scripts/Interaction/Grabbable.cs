@@ -206,7 +206,7 @@ namespace Abandoned.Interaction
         private void OnDestroy()
         {
             // Shattered or despawned while carried: nobody may keep a reference to a dead item.
-            if (Holder != null) Holder.ForgetHeld(this);
+            if (Holder != null) { Holder.Inventory.Remove(this); Holder.ForgetHeld(this); }
             if (IsPocketed && PocketHolder != null) PocketHolder.Inventory.Remove(this);
         }
     }

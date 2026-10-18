@@ -78,6 +78,11 @@ namespace Abandoned.Audio
                 case SoundId.CabToot: return Patch.Mono(id, take, GearPatches2.CabToot(), 0.9f);
                 // 0.24.1: the menu's own music (never pitched, never positioned).
                 case SoundId.MusicMenu: return MusicPatches2.Menu();
+                // Iron Factory: machines brought back by a breaker.
+                case SoundId.MachineStart: return Patch.Mono(id, take, FactoryPatches.MachineStart(), 0.9f);
+                case SoundId.PressSlam: return Patch.Mono(id, take, FactoryPatches.PressSlam(take), 0.95f);
+                case SoundId.SteamBlast: return Patch.Mono(id, take, FactoryPatches.SteamBlast(take), 0.8f);
+                case SoundId.LavaRumble: return new SynthSamples("Synth_LavaRumble", Synth.Normalize(FactoryPatches.LavaRumble(), 0.7f), 1, Synth.LoopRate);
                 // @@cases
                 default: return null;
             }

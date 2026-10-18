@@ -20,10 +20,15 @@ namespace Abandoned.UI
         {
             if (Time.time < nextScan || !Mine || player.IsDead) return;
             nextScan = Time.time + scanCooldown;
+            int travel = SessionTravel.Current != null ? SessionTravel.Current.TravelId : -1;
+            if (revealPlayer != player || revealTravel != travel) inspected.Clear();
             revealUntil = Time.time + scanSeconds + 0.45f;
             revealPlayer = player;
             revealTravel = SessionTravel.Current != null ? SessionTravel.Current.TravelId : -1;
             Camera camera = Camera.main;
+            foreach (Grabbable pocket in carrier.Inventory.Items)
+                if (pocket != null && pocket.TryGetComponent(out LootItem pocketLoot)) inspected.Add(pocketLoot);
+            if (carrier.Held != null && carrier.Held.TryGetComponent(out LootItem heldLoot)) inspected.Add(heldLoot);
             Audio.GameAudio.PlayUi(Audio.SoundId.ScanPing, 0.7f);
             Ring();
             foreach (Tag t in scanTags) { Hide(t); t.Item = null; }
@@ -43,16 +48,17 @@ namespace Abandoned.UI
                 found.Add((item, d));
             }
             found.Sort((a, b) => a.distance.CompareTo(b.distance));
-            int n = Mathf.Min(found.Count, maxScanTags);
+            int n = Mathf.Min(found.Count, Mathf.Min(maxScanTags, 4));
             while (scanTags.Count < n) scanTags.Add(MakeTag(scan: true));
             for (int i = 0; i < n; i++)
             {
                 Tag t = scanTags[i];
                 t.Item = found[i].item;
+                inspected.Add(t.Item);
                 // The ring reaches the far ones a moment later.
                 t.ShowAt = Time.time + found[i].distance / scanRange * 0.45f;
                 t.HideAt = t.ShowAt + scanSeconds;
-                Fill(t, t.Item, full: false);
+                Fill(t, t.Item, full: true);
             }
             ScanCount = n;
         }

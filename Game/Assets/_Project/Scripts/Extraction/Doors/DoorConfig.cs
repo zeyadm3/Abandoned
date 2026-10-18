@@ -76,6 +76,8 @@ namespace Abandoned.Extraction
         public float HideLookAngle => hideLookAngle;
         public float LockerDoorSeconds => lockerDoorSeconds;
         public float LockerNoise => lockerNoise;
+        [field: SerializeField, Range(0f, .6f)] public float PeekDistance { get; private set; } = .3f;
+        [field: SerializeField, Range(30f, 360f)] public float PeekReturnSpeed { get; private set; } = 160f;
 
         private static DoorConfig current;
 

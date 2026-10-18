@@ -41,9 +41,11 @@ namespace Abandoned.Equipment
             PlayerEquipment mine = Mine();
             key.Clear().Append(ShopTerminal.Open ? "shop" : "rack").Append(page).Append('|').Append(company.State.Money).Append('|').Append(company.State.Level)
                 .Append('|').Append(company.State.TruckUpgrades);
-            for (int i = 0; i < company.Equipment.Items.Count; i++) key.Append('|').Append(company.OwnedCount(i));
-            if (mine != null) key.Append('|').Append(mine.State[0]).Append(',').Append(mine.State[1]);
-            foreach (PlayerEquipment e in PlayerEquipment.All) if (e != null) key.Append(';').Append(e.State[0]).Append(',').Append(e.State[1]);
+            for (int i = 0; i < company.Equipment.Items.Count; i++) key.Append('|').Append(company.OwnedCount(i)).Append(':').Append(mine != null ? mine.Available(i, mine) : 0);
+            foreach (PlayerEquipment e in PlayerEquipment.All)
+                if (e != null)
+                    for (int slot = 0; slot < EquipState.SlotCount; slot++) key.Append(';').Append(e.State[slot]);
+            if (mine != null) key.Append('|').Append(mine.GetComponent<Interaction.PlayerCarrier>().Inventory.OccupiedCount);
             screen.Build(key.ToString(), panel =>
             {
                 if (ShopTerminal.Open)
@@ -183,26 +185,29 @@ namespace Abandoned.Equipment
         {
             MenuKit.Text(panel, Loc.T("GEAR RACK"), "heading");
             if (mine == null) return;
-            MenuKit.Text(panel, Loc.T("Fill your two hand slots from what the company owns."), "subtitle");
+            MenuKit.Text(panel, Loc.T("Four pockets are shared by tools and small loot."), "subtitle");
             EquipmentCatalog catalog = mine.Catalog;
-            for (int slot = 0; slot < 2; slot++)
+            for (int slot = 0; slot < EquipState.SlotCount; slot++)
             {
                 EquipmentDefinition held = mine.InSlot(slot);
-                MenuKit.Text(panel, Loc.T("HAND SLOT {0} ({1}): {2}", slot + 1, InputBindings.Display(slot == 0 ? "HandSlot1" : "HandSlot2"), (held != null ? held.LocalName : Loc.T("empty"))), "section");
+                Interaction.Grabbable pocket = mine.GetComponent<Interaction.PlayerCarrier>().Inventory.AtSlot(slot);
+                MenuKit.Text(panel, Loc.T("POCKET {0} ({1}): {2}", slot + 1, InputBindings.Display("HandSlot" + (slot + 1)), held != null ? held.LocalName : pocket != null ? pocket.LocalName : Loc.T("empty")), "section");
                 VisualElement row = MenuKit.Row(panel);
                 row.AddToClassList("wrap");
                 int s = slot;
-                MenuKit.Button(row, Loc.T("Empty"), () => mine.RequestEquip(s, -1), SoundId.UiClick, small: true);
+                MenuKit.Button(row, Loc.T("Empty"), () => mine.RequestEquip(s, -1), SoundId.UiClick, small: true).SetEnabled(pocket == null);
                 for (int i = 0; i < catalog.Items.Count; i++)
                 {
                     if (company.OwnedCount(i) <= 0) continue;
-                    int free = mine.Available(i, mine) - (mine.State[1 - slot] == i ? 1 : 0);
+                    int free = mine.Available(i, mine);
+                    for (int other = 0; other < EquipState.SlotCount; other++)
+                        if (other != slot && mine.State[other] == i) free--;
                     int index = i;
                     Button b = MenuKit.Button(row, "", () => mine.RequestEquip(s, index), SoundId.UiConfirm, small: true);
                     b.AddToClassList("rack__item");
                     Prepend(b, UiKit.Icon(null, "item/" + catalog.Items[i].Id, "small"));
                     MenuKit.Text(b, $"{catalog.Items[i].LocalName} ({Mathf.Max(0, free)})", "rack__name").pickingMode = PickingMode.Ignore;
-                    b.SetEnabled(free > 0 || mine.State[slot] == i);
+                    b.SetEnabled(pocket == null && (free > 0 || mine.State[slot] == i));
                     b.EnableInClassList("menu-button--on", mine.State[slot] == i);
                 }
             }

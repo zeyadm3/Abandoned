@@ -46,6 +46,7 @@ namespace Abandoned.Interaction
             }
             Grabbable item = Held;
             Held = null;
+            Inventory.Remove(item);
             item.EndHold(velocity);
         }
 
@@ -60,10 +61,10 @@ namespace Abandoned.Interaction
             else if (item.Holder == this) item.EndHold(velocity);
         }
 
-        internal void ApplyPocket(Grabbable target)
+        internal void ApplyPocket(Grabbable target, int slot = -1)
         {
             target.Pocket(this);
-            Inventory.Add(target);
+            Inventory.Add(target, slot);
         }
 
         internal void ApplyUnpocketSelected()

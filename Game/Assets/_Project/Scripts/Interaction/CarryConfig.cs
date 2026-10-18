@@ -38,6 +38,8 @@ namespace Abandoned.Interaction
         [field: SerializeField, Min(1f)] public float MaxSoloWeight { get; private set; } = 40f;
         [field: SerializeField, Range(0.1f, 1f)] public float MinSpeedMultiplier { get; private set; } = 0.55f;
         [field: SerializeField, Min(0f)] public float ExtraStaminaDrainAtMaxWeight { get; private set; } = 1.5f;
+        [field: Tooltip("Fewer occupied carry handles reduce pace even after the normal weight slowdown reaches its limit.")]
+        [field: SerializeField, Range(0f, 1f)] public float SharedCrewBurdenPower { get; private set; } = .5f;
         [field: SerializeField] public CarryClass HeaviestSoloClass { get; private set; } = CarryClass.TwoHand;
 
         [field: Header("Solo drag (stand-in for the hand trolley until equipment exists)")]
@@ -61,6 +63,8 @@ namespace Abandoned.Interaction
         [field: SerializeField, Min(0f)] public float ThrowMinSpeed { get; private set; } = 3f;
         [field: SerializeField, Min(0f)] public float ThrowMaxSpeed { get; private set; } = 13f;
         [field: SerializeField, Min(0.05f)] public float ThrowChargeTime { get; private set; } = 0.8f;
+        [field: Tooltip("Ignore a quick click with loot in hand; throwing requires this deliberate hold.")]
+        [field: SerializeField, Min(0.05f)] public float ThrowMinimumHold { get; private set; } = 0.2f;
         [field: Tooltip("Objects heavier than this are thrown proportionally slower (by sqrt of the ratio).")]
         [field: SerializeField, Min(0.1f)] public float ThrowReferenceWeight { get; private set; } = 3f;
 
@@ -71,6 +75,7 @@ namespace Abandoned.Interaction
         [field: SerializeField, Min(0f)] public float RotateSensitivity { get; private set; } = 0.18f;
         [field: SerializeField, Min(0.1f)] public float MaxRotationSpeed { get; private set; } = 4f;
         [field: SerializeField, Min(0.1f)] public float PlaceHoldTime { get; private set; } = 0.22f;
+        [field: SerializeField, Min(0.1f)] public float PlaceTimeout { get; private set; } = 6f;
         [field: SerializeField, Min(0.1f)] public float PlaceLowerSpeed { get; private set; } = 0.45f;
         [field: SerializeField, Min(0.01f)] public float PlaceReleaseSpeed { get; private set; } = 0.18f;
         [field: SerializeField, Min(0.01f)] public float PlaceReleaseAngularSpeed { get; private set; } = 0.3f;

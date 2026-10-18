@@ -87,7 +87,7 @@ namespace Abandoned.UI
             {
                 if (TryLocalRect(hud.Q(className: "h-vitals"), hud, out Rect vitals))
                     left = Mathf.Max(left, hud.ChangeCoordinatesTo(surface, vitals).xMax + 16f);
-                if (TryLocalRect(hud.Q(className: "h-inventory"), hud, out Rect inventory))
+                if (TryLocalRect(hud.Q(className: "h-inventory") ?? hud.Q(className: "field-cargo"), hud, out Rect inventory))
                     right = Mathf.Min(right, hud.ChangeCoordinatesTo(surface, inventory).xMin - 16f);
             }
             float available = Mathf.Max(0f, right - left);

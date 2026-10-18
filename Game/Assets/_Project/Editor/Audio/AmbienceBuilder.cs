@@ -12,6 +12,9 @@ namespace Abandoned.EditorTools
         /// <summary>The HQ: quieter wind, a steady hum from its lamps, nothing settling (it's safe).</summary>
         public static void Hq(Transform root) => Add(root, wind: 0.08f, hum: 0.06f, plainHum: 0.06f, settleEvery: Vector2.zero);
 
+        /// <summary>The Iron Factory: draughts through a big hall, a low hum, iron ticking and settling often.</summary>
+        public static void Factory(Transform root) => Add(root, wind: 0.26f, hum: 0.08f, plainHum: 0.04f, settleEvery: new Vector2(15f, 40f));
+
         private static void Add(Transform root, float wind, float hum, float plainHum, Vector2 settleEvery)
         {
             var go = new GameObject("Ambience");

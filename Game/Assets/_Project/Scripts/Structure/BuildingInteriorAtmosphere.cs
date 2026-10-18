@@ -53,6 +53,13 @@ namespace Abandoned.Structure
 
 #if UNITY_EDITOR
         public void EditorSetup(Bounds bounds) => building = bounds;
+
+        public void EditorSetup(Bounds bounds, Color fog, float density)
+        {
+            building = bounds;
+            interiorFog = fog;
+            interiorDensity = density;
+        }
 #endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

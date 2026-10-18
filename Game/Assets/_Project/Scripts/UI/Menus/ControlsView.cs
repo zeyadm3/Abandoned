@@ -15,8 +15,8 @@ namespace Abandoned.UI
         private static readonly Dictionary<string, string> Names = new()
         {
             ["Move"] = Loc.Mark("Move"), ["Sprint"] = Loc.Mark("Sprint"), ["Crouch"] = Loc.Mark("Crouch"), ["Jump"] = Loc.Mark("Jump"), ["Interact"] = Loc.Mark("Interact / pick up"),
-            ["Use"] = Loc.Mark("Use / throw"), ["Drop"] = Loc.Mark("Drop / hold to set down"), ["Rotate"] = Loc.Mark("Rotate held object"), ["Scan"] = Loc.Mark("Scan"), ["Flashlight"] = Loc.Mark("Flashlight"), ["HandSlot1"] = Loc.Mark("Hand slot 1"),
-            ["HandSlot2"] = Loc.Mark("Hand slot 2"), ["Inventory"] = Loc.Mark("Inventory"), ["PushToTalk"] = Loc.Mark("Push to talk"), ["Radio"] = Loc.Mark("Radio"),
+            ["Use"] = Loc.Mark("Use / hold to throw"), ["Drop"] = Loc.Mark("Set down / discard pocket"), ["Rotate"] = Loc.Mark("Rotate held object"), ["Scan"] = Loc.Mark("Scan"), ["Flashlight"] = Loc.Mark("Flashlight"), ["HandSlot1"] = Loc.Mark("Pocket 1"),
+            ["HandSlot2"] = Loc.Mark("Pocket 2"), ["HandSlot3"] = Loc.Mark("Pocket 3"), ["HandSlot4"] = Loc.Mark("Pocket 4"), ["Inventory"] = Loc.Mark("Inventory"), ["PushToTalk"] = Loc.Mark("Push to talk"), ["Radio"] = Loc.Mark("Radio"),
             ["GiveGear"] = Loc.Mark("Give gear / take a fallen crewmate's"), ["Chat"] = Loc.Mark("Text chat"), ["PhotoCamera"] = Loc.Mark("Free camera (photo)"), ["HideHud"] = Loc.Mark("Hide the HUD (clips)"),
             ["Ping"] = Loc.Mark("Ping"), ["EmotePoint"] = Loc.Mark("Emote: point"), ["EmoteWave"] = Loc.Mark("Emote: wave"), ["EmotePanic"] = Loc.Mark("Emote: panic"),
         };

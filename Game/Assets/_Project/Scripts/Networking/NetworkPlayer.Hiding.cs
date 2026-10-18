@@ -71,7 +71,7 @@ namespace Abandoned.Networking
             DoorConfig config = DoorConfig.Current;
             if (Vector3.Distance(transform.position, target.ExitPoint) > config.HideReach) return;
             // Nothing bigger than a pocket fits in there with you.
-            if (carrier != null && carrier.Held != null) return;
+            if (carrier != null && carrier.Held != null && carrier.Held.CarryClass >= CarryClass.TwoHand) return;
             hidingIn.Value = locker;
             NoiseSystem.Emit(target.ExitPoint, config.LockerNoise, NoiseSource.Other);
         }
@@ -83,6 +83,7 @@ namespace Abandoned.Networking
             HidingLocker locker = InVent ? null : HidingLocker.ByIndex(hidingIn.Value);
             DoorConfig config = DoorConfig.Current;
             hidingIn.Value = -1;
+            hidePeek.Value = 0f;
             nextHideAt = Time.time + config.HideCooldown;
             if (locker != null) NoiseSystem.Emit(locker.ExitPoint, config.LockerNoise, NoiseSource.Other);
         }
@@ -116,6 +117,8 @@ namespace Abandoned.Networking
             if (locker == null || hiddenHere) return;
             hiddenHere = true;
             hiddenIn = locker;
+            nextPeekReport = 0f;
+            sentPeek = -1f;
             if (hideInput == null) hideInput = GetComponent<PlayerInputReader>();
             if (hideStamina == null) hideStamina = GetComponent<PlayerStamina>();
             if (hideHud == null) hideHud = GetComponent<InteractionHud>();
@@ -126,10 +129,12 @@ namespace Abandoned.Networking
             OwnerTeleport(locker.InsidePoint);
             if (look != null)
             {
+                look.RequirePeekButton = true;
+                hidingEyeRest = look.EyeRoot.localPosition;
                 look.SyncYawFromTransform();
                 look.LimitYaw(transform.eulerAngles.y, DoorConfig.Current.HideLookAngle);
             }
-            if (hideHud != null) hideHud.Override = Loc.T("[{0}] Climb out", InputBindings.Display("Interact"));
+            if (hideHud != null) hideHud.Override = Loc.T("[{0}] Climb out · Hold [{1}] + mouse to peek", InputBindings.Display("Interact"), InputBindings.Display("Rotate"));
         }
 
         /// <summary>
@@ -142,7 +147,7 @@ namespace Abandoned.Networking
             hiddenHere = false;
             HidingLocker locker = hiddenIn;
             hiddenIn = null;
-            if (look != null) look.ClearYawLimit();
+            if (look != null) { look.RequirePeekButton = false; look.EyeRoot.localPosition = hidingEyeRest; look.ClearYawLimit(); }
             if (hideHud != null) hideHud.Override = null;
             if (stepOut && locker != null)
             {
@@ -160,6 +165,7 @@ namespace Abandoned.Networking
             if (hideStamina != null) hideStamina.Tick(Time.deltaTime);
             if (hideInput == null) return;
             PlayerInputFrame input = hideInput.Current;
+            TickOwnerPeek(input);
             if (input.InteractPressed || input.JumpPressed) RequestLeaveHiding();
         }
 

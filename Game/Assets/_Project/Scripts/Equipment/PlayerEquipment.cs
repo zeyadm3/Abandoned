@@ -29,8 +29,6 @@ namespace Abandoned.Equipment
         [SerializeField] private NetworkObject noiseMakerPrefab;
         [SerializeField] private NetworkObject supportJackPrefab;
         [SerializeField] private NetworkObject pulleyPrefab;
-        [Tooltip("Pocket slots a backpack adds.")]
-        [SerializeField, Range(0, 6)] private int backpackSlots = 2;
         [Tooltip("Crowbar: reach (m), strike momentum (kg·m/s, before the structure's threshold) and seconds between strikes.")]
         [SerializeField] private float crowbarReach = 2.6f;
         [SerializeField] private float crowbarMomentum = 1500f;
@@ -58,8 +56,18 @@ namespace Abandoned.Equipment
         public bool HandsFreeForLight => carrier == null || carrier.Held == null ||
             (carrier.Held.CarryClass < CarryClass.TwoHand && !carrier.IsSharing && !carrier.IsDragging);
 
-        public bool Has(EquipmentKind kind) =>
-            (InSlot(0) is EquipmentDefinition a && a.Kind == kind) || (InSlot(1) is EquipmentDefinition b && b.Kind == kind);
+        public bool Has(EquipmentKind kind)
+        {
+            for (int slot = 0; slot < EquipState.SlotCount; slot++)
+                if (InSlot(slot) is EquipmentDefinition item && item.Kind == kind) return true;
+            return false;
+        }
+        public int OccupiedCount
+        {
+            get { int count = 0; for (int slot = 0; slot < EquipState.SlotCount; slot++) if (State[slot] >= 0) count++; return count; }
+        }
+        public int FreePocket => carrier != null ? carrier.Inventory.FirstFreeSlot : -1;
+        public void RequestSelect(int slot) => SelectRpc(slot);
 
         public static PlayerEquipment Of(NetworkManager manager, ulong clientId)
         {
@@ -80,6 +88,7 @@ namespace Abandoned.Equipment
         public override void OnNetworkSpawn()
         {
             Spawned.Add(this);
+            SpawnPockets();
             InitializeFlashlight();
             state.OnValueChanged += OnChanged;
             // Walkie-talkies need a radio in hand slots once there's a company to buy them from.
@@ -96,6 +105,7 @@ namespace Abandoned.Equipment
         public override void OnNetworkDespawn()
         {
             Spawned.Remove(this);
+            DespawnPockets();
             state.OnValueChanged -= OnChanged;
         }
 
@@ -119,8 +129,10 @@ namespace Abandoned.Equipment
             if (!CompanyService.RulesApply) return int.MaxValue;
             int used = 0;
             foreach (PlayerEquipment e in Spawned)
+                if (e != null && e.NetworkManager == NetworkManager) used += e.DroppedCount(index);
+            foreach (PlayerEquipment e in Spawned)
                 if (e != null && e != except && e.NetworkManager == NetworkManager)
-                    used += (e.State.Slot0 == index ? 1 : 0) + (e.State.Slot1 == index ? 1 : 0);
+                    for (int slot = 0; slot < EquipState.SlotCount; slot++) if (e.State[slot] == index) used++;
             return company.OwnedCount(index) - used;
         }
 
@@ -132,16 +144,17 @@ namespace Abandoned.Equipment
                 if (on != flashlight.enabled && !IsDead) Audio.GameAudio.Play(Audio.SoundId.FlashlightClick, flashlight.transform.position, 0.6f);
                 flashlight.enabled = on;
             }
-            if (carrier != null) carrier.SoloDragAllowed = TrolleyAvailable;
+            if (carrier != null) carrier.SoloDragAllowed = true;
             if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
-            if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = Has(EquipmentKind.Backpack) ? backpackSlots : 0;
+            if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = 0;
         }
 
         private void Update()
         {
             if (!IsSpawned) return;
+            TickDroppedTools();
             // The company can appear or change after we spawned (HQ load): keep the effects current.
-            if (carrier != null) carrier.SoloDragAllowed = TrolleyAvailable;
+            if (carrier != null) carrier.SoloDragAllowed = true;
             if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
             TickFlashlight();
             // Preserve the switch position while hands are occupied: setting down restores the beam.
@@ -154,9 +167,16 @@ namespace Abandoned.Equipment
             TickGiveGear(input);
             if (input.Slot1Pressed) SelectRpc(0);
             if (input.Slot2Pressed) SelectRpc(1);
+            if (input.Slot3Pressed) SelectRpc(2);
+            if (input.Slot4Pressed) SelectRpc(3);
             // 0.23.2: the wheel flips between the hand slots while the hands are empty (and not sorting pockets).
-            if (GameSettings.WheelSwitchesSlots && input.Scroll != 0f && !input.InventoryHeld && !input.RotateHeld && carrier != null && carrier.Held == null)
-                SelectRpc(1 - state.Value.Active);
+            if (input.Scroll != 0f && !input.RotateHeld && carrier != null)
+                SelectRpc((state.Value.Active + (input.Scroll > 0f ? 3 : 1)) % EquipState.SlotCount);
+            if (input.InventoryHeld)
+            {
+                if (input.DropPressed) RequestDiscardPocket();
+                return;
+            }
             if (input.FlashlightPressed && Has(EquipmentKind.Flashlight))
             {
                 if (HandsFreeForLight) LightRpc(!state.Value.LightOn);
@@ -187,8 +207,11 @@ namespace Abandoned.Equipment
         [Rpc(SendTo.Server)]
         private void EquipRpc(int slot, int index, RpcParams rpcParams = default)
         {
-            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot > 1) return;
-            if (index >= 0 && (catalog.At(index) == null || state.Value[slot] != index && Available(index, this) - (state.Value[1 - slot] == index ? 1 : 0) <= 0)) return;
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot >= EquipState.SlotCount) return;
+            if (carrier != null && carrier.Inventory.AtSlot(slot) != null) return;
+            int usedHere = 0;
+            for (int other = 0; other < EquipState.SlotCount; other++) if (other != slot && state.Value[other] == index) usedHere++;
+            if (index >= 0 && (catalog.At(index) == null || state.Value[slot] != index && Available(index, this) - usedHere <= 0)) return;
             // Gear is changed at the HQ, not mid-run (when a company exists).
             if (CompanyService.RulesApply && Networking.SessionTravel.Current != null && Networking.SessionTravel.Current.Level != CompanyService.HomeLevel) return;
             state.Value = state.Value.With(slot, index);
@@ -197,7 +220,8 @@ namespace Abandoned.Equipment
         [Rpc(SendTo.Server)]
         private void SelectRpc(int slot, RpcParams rpcParams = default)
         {
-            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot > 1 || IsDead) return;
+            if (rpcParams.Receive.SenderClientId != OwnerClientId || slot < 0 || slot >= EquipState.SlotCount || IsDead || carrier.IsRagdolled) return;
+            if (!LootServerActions.SelectPocket(carrier, slot)) return;
             EquipState s = state.Value;
             s.Active = (byte)slot;
             state.Value = s;
@@ -233,11 +257,23 @@ namespace Abandoned.Equipment
             CompanyService company = CompanyService.Current;
             if (manager == null || !manager.IsServer || company == null || !CompanyService.RulesApply) return;
             Remaining.Clear();
+            // Ground tools reserve stock too, including after a stock reset or bankruptcy.
+            foreach (PlayerEquipment e in Spawned)
+            {
+                if (e == null || e.NetworkManager != manager || !e.IsSpawned) continue;
+                for (int i = e.droppedTools.Count - 1; i >= 0; i--)
+                {
+                    int index = e.droppedTools[i].CatalogIndex;
+                    if (!Remaining.TryGetValue(index, out int left)) left = company.OwnedCount(index);
+                    if (left <= 0) e.droppedTools.RemoveAt(i);
+                    else Remaining[index] = left - 1;
+                }
+            }
             foreach (PlayerEquipment e in Spawned)
             {
                 if (e == null || e.NetworkManager != manager || !e.IsSpawned) continue;
                 EquipState s = e.state.Value;
-                for (int slot = 0; slot < 2; slot++)
+                for (int slot = 0; slot < EquipState.SlotCount; slot++)
                 {
                     int index = s[slot];
                     if (index < 0) continue;

@@ -1,161 +1,65 @@
 using Abandoned.Core;
+using Abandoned.Networking;
 using Abandoned.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Abandoned.Extraction
 {
-    /// <summary>
-    /// A scan reveals haul and quota; the compact clock and departure countdown remain readable without
-    /// covering exploration. The truck's own haul board is always available at the loading bay.
-    /// </summary>
+    /// <summary>Top-centre objective/extraction; bottom-right appraised cargo and carried load.</summary>
     public class RunHud : MonoBehaviour
     {
-        private static readonly Color GainColor = new(0.76f, 0.65f, 0.45f);
-
-        private VisualElement top, haulBar, clock, leaving;
-        private Label amount, quota, cargo, met, time, leavingCount, leavingStatus, goals, clockState, haulState;
-        private RunState shownRun;
-        private int shownHaul;
-        private bool metShown;
-
+        private VisualElement mission, cargo, loadBar;
+        private Label objective, clockTitle, clock, status, haul, weight;
         private void Update()
         {
             RunState run = RunState.Current;
-            bool showing = run != null && run.IsSpawned && run.State.Phase != RunPhase.Departed;
-            if (top == null || top.panel == null)
+            NetworkPlayer me = NetworkPlayer.Local;
+            bool show = run != null && run.IsSpawned && run.State.Phase != RunPhase.Departed && me != null && !me.IsDead;
+            if (mission == null || mission.panel == null)
             {
-                if (!showing || HudLayer.Root == null) return;
+                if (!show || HudLayer.Root == null) return;
                 Build();
             }
-            // The inspection ledger and tool readouts share this corner; the haul returns when it closes.
-            bool inspecting = HudLayer.TryLocalRect(HudLayer.Root?.Q(className: "h-inspection"), HudLayer.Root, out _);
-            MenuKit.Show(top, showing && LootTags.ValuesVisible && !inspecting);
-            MenuKit.Show(clock, showing && LootTags.ValuesVisible && !inspecting);
-            if (HudLayer.Root != null)
-                top.EnableInClassList("h-recovery--compact", Mathf.Min(340f, HudLayer.Root.layout.width * .28f) < 320f);
-            if (!showing)
-            {
-                MenuKit.Show(leaving, false);
-                return;
-            }
-
-            RunNetState s = run.State;
-            HaulGain(run, s.Haul);
-            bool quotaMet = s.Haul >= s.Quota;
-            SetText(haulState, quotaMet ? Loc.T("TARGET RECOVERED") : Loc.T("RECOVERY TARGET"));
-            SetText(amount, $"${s.Haul:N0}");
-            SetText(quota, $"/ ${s.Quota:N0}");
-            UiKit.SetBar(haulBar, s.Quota > 0 ? (float)s.Haul / s.Quota : 1f, quotaMet ? "good" : null);
-            if (quotaMet != metShown)
-            {
-                metShown = quotaMet;
-                met.EnableInClassList("run-haul__met--on", quotaMet);
-                if (quotaMet && LootTags.ValuesVisible) UiKit.Jolt(met);
-            }
-            MenuKit.Show(met, quotaMet);
-            SetText(cargo, s.Overloaded ? Loc.T("CARGO / {0:0.0} : {1:0} m\u00b3 / OVERLOADED", s.CargoVolume, s.CargoCapacity) : Loc.T("CARGO / {0:0.0} : {1:0} m\u00b3", s.CargoVolume, s.CargoCapacity));
-            cargo.EnableInClassList("run-haul__cargo--bad", s.Overloaded);
-            string goalText = RunGoals.Text();
-            SetText(goals, goalText);
-            MenuKit.Show(goals, goalText.Length > 0);
-            float w = run.WindowRemaining;
-            SetText(time, run.WindowClosed ? "+00:00" : $"{(int)w / 60:00}:{(int)w % 60:00}");
-            SetText(clockState, run.WindowClosed ? Loc.T("RECOVERY WINDOW CLOSED") : Loc.T("RECOVERY WINDOW"));
-            clock.EnableInClassList("run-clock--late", run.WindowClosed);
-
-            // The dead don't need the countdown (their death card and ghost bar have the screen).
-            Networking.NetworkPlayer local = Networking.NetworkPlayer.Local;
-            bool honking = s.Phase == RunPhase.Honking && (local == null || !local.IsDead);
-            MenuKit.Show(leaving, honking);
-            if (honking) Leaving(run);
+            MenuKit.Show(mission, show); MenuKit.Show(cargo, show);
+            if (!show) return;
+            RunNetState state = run.State;
+            bool leaving = state.Phase == RunPhase.Honking;
+            mission.EnableInClassList("field-mission--departing", leaving);
+            string goal = RunGoals.Text();
+            FieldHud.Set(objective, string.IsNullOrEmpty(goal) ? Loc.T("Locate and extract salvage") : goal);
+            FieldHud.Set(clockTitle, leaving ? Loc.T("DEPARTING") : Loc.T("EXTRACT"));
+            float remaining = leaving ? run.HonkRemaining : run.WindowRemaining;
+            int seconds = Mathf.CeilToInt(remaining);
+            FieldHud.Set(clock, $"{seconds / 60:00}:{seconds % 60:00}");
+            bool aboard = TruckCargo.Current != null && TruckCargo.Current.Carries(me.Ragdoll.IsRagdolled ? me.Ragdoll.BodyPosition : me.transform.position);
+            FieldHud.Set(status, aboard ? Loc.T("ABOARD / HOLD POSITION") : Loc.T("GET TO THE TRUCK"));
+            MenuKit.Show(status, leaving);
+            FieldHud.Set(haul, "$" + state.Haul.ToString("N0"));
+            float load = me.Carrier.HandlingWeight;
+            FieldHud.Set(weight, Loc.T("{0:0.#} kg", load));
+            UiKit.SetBar(loadBar, me.Carrier.Config.WeightFraction(load));
         }
-
-        // The truck is going: how long, and whether you're on it (the death card covers the dead).
-        private void Leaving(RunState run)
-        {
-            SetText(leavingCount, Mathf.CeilToInt(run.HonkRemaining).ToString());
-            Networking.NetworkPlayer me = Networking.NetworkPlayer.Local;
-            bool aboard = me != null && TruckCargo.Current != null &&
-                          TruckCargo.Current.Carries(me.Ragdoll.IsRagdolled ? me.Ragdoll.BodyPosition : me.transform.position);
-            bool dead = me == null || me.IsDead;
-            SetText(leavingStatus, dead ? "" : aboard ? Loc.T("ABOARD / HOLD POSITION") : Loc.T("GET TO THE TRUCK"));
-            leavingStatus.EnableInClassList("truck-banner__status--good", aboard);
-            MenuKit.Show(leavingStatus, !dead);
-        }
-
-        // Loot landing in the truck: "+$X" over the cargo bay and the till (every machine).
-        private void HaulGain(RunState run, int haulNow)
-        {
-            if (run != shownRun)
-            {
-                shownRun = run;
-                shownHaul = haulNow;
-                return;
-            }
-            if (haulNow > shownHaul && TruckCargo.Current != null)
-            {
-                Vector3 at = TruckCargo.Current.transform.position + Vector3.up * 2.6f;
-                FloatingText.Show(at, $"+${haulNow - shownHaul:N0}", GainColor);
-                Audio.GameAudio.Play(Audio.SoundId.Coins, at, 0.6f);
-            }
-            shownHaul = haulNow;
-        }
-
         private void Build()
         {
-            HudLayer.Remove(top);
-            HudLayer.Remove(clock);
-            HudLayer.Remove(leaving);
-            metShown = false;
-            top = HudLayer.Add(new VisualElement(), "run-haul", "h-recovery");
-            haulState = Text(top, Loc.T("RECOVERY TARGET"), "h-instrument-title");
-            VisualElement row = new() { pickingMode = PickingMode.Ignore };
-            row.AddToClassList("run-haul__row");
-            top.Add(row);
-            amount = Text(row, "", "run-haul__amount");
-            quota = Text(row, "", "run-haul__quota");
-            haulBar = UiKit.Bar(top, "run-haul__bar");
-            cargo = Text(top, "", "run-haul__cargo");
-            goals = Text(top, "", "h-recovery__goals"); // 0.18+: boss request, rush order, sets, overtime
-            met = UiKit.Tag(top, Loc.T("QUOTA MET / RETURN TO THE TRUCK"));
-            met.AddToClassList("run-haul__met");
-            clock = new VisualElement { pickingMode = PickingMode.Ignore };
-            clock.AddToClassList("run-clock");
-            clock.AddToClassList("h-window");
-            top.Add(clock);
-            clockState = Text(clock, Loc.T("RECOVERY WINDOW"), "h-micro");
-            time = Text(clock, "", "run-clock__time");
-            leaving = HudLayer.Add(new VisualElement(), "truck-banner", "h-departure");
-            Text(leaving, Loc.T("EVACUATION"), "h-instrument-title");
-            Text(leaving, Loc.T("THE TRUCK IS LEAVING"), "truck-banner__title");
-            leavingCount = Text(leaving, "", "truck-banner__count");
-            Text(leaving, Loc.T("SECONDS TO DEPARTURE"), "h-micro");
-            leavingStatus = Text(leaving, "", "truck-banner__status");
+            HudLayer.Remove(mission); HudLayer.Remove(cargo);
+            mission = HudLayer.Add(new VisualElement(), "field-mission");
+            VisualElement row = FieldHud.Element(mission, "field-objective", "field-panel");
+            FieldHud.Text(row, Loc.T("OBJECTIVE"), "field-objective__caption");
+            objective = FieldHud.Text(row, "", "field-objective__text");
+            row = FieldHud.Element(mission, "field-extraction", "field-panel");
+            clockTitle = FieldHud.Text(row, Loc.T("EXTRACT"), "field-extraction__caption");
+            clock = FieldHud.Text(row, "", "field-extraction__time");
+            status = FieldHud.Text(mission, "", "field-departure-status");
+            cargo = HudLayer.Add(new VisualElement(), "field-cargo", "field-panel");
+            row = FieldHud.Element(cargo, "field-cargo__row");
+            FieldHud.Text(row, Loc.T("CARGO"), "field-cargo__caption");
+            haul = FieldHud.Text(row, "", "field-cargo__value");
+            row = FieldHud.Element(cargo, "field-cargo__row", "field-cargo__row--last");
+            weight = FieldHud.Text(row, "", "field-cargo__weight");
+            loadBar = UiKit.Bar(row, "field-meter", "field-load");
         }
-
-        private static Label Text(VisualElement parent, string text, string cls)
-        {
-            var label = new Label(text) { pickingMode = PickingMode.Ignore };
-            label.AddToClassList(cls);
-            parent.Add(label);
-            return label;
-        }
-
-        // Labels re-layout on every text set; only touch them when the text changed.
-        private static void SetText(Label label, string text)
-        {
-            if (label.text != text) label.text = text;
-        }
-
-        private void OnDestroy()
-        {
-            HudLayer.Remove(top);
-            HudLayer.Remove(clock);
-            HudLayer.Remove(leaving);
-        }
-
-        /// <summary>Tests: what the top bar says.</summary>
-        public string HaulText => amount != null ? Loc.T("HAUL {0} {1}", amount.text, quota.text) : null;
+        private void OnDestroy() { HudLayer.Remove(mission); HudLayer.Remove(cargo); }
+        public string HaulText => haul != null ? Loc.T("HAUL {0} {1}", haul.text, "") : null;
     }
 }

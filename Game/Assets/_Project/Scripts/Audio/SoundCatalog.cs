@@ -226,6 +226,12 @@ namespace Abandoned.Audio
             Set(SoundId.CabToot, Fx, 40, 6f, 90f, Syn, Open, 1, Loc.Mark("a short toot of the truck's horn"));
             // 0.24.1: the menu's own music (never pitched, never positioned).
             Set(SoundId.MusicMenu, Song, 10, 1f, 5f, pitch: 0f, flat: true, loop: true);
+            // Iron Factory: machines brought back by a breaker (motors, presses and steam; never a creak).
+            Set(SoundId.MachineStart, Fx, 50, 4f, 60f, Syn, Dull, 1, Loc.Mark("machinery grinds into motion"));
+            Set(SoundId.PressSlam, Fx, 40, 5f, 70f, Syn, Dull, 2, Loc.Mark("A PRESS SLAMS"));
+            Set(SoundId.SteamBlast, Fx, 60, 3f, 45f, Syn, Dull, 2, Loc.Mark("steam blasts"));
+            // The molten channel's low roar and slow plops, along its length (ambience, so no caption).
+            Set(SoundId.LavaRumble, Bed, 160, 3f, 28f, pitch: 0f, loop: true);
             // @@catalog
             return t;
         }

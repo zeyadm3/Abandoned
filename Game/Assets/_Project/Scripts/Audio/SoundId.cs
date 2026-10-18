@@ -192,6 +192,11 @@ namespace Abandoned.Audio
         CabToot,
         // 0.24.1: the menu's own music (never pitched, never positioned).
         MusicMenu,
+        // Iron Factory: machines brought back by a breaker (motors, presses and steam; never a creak).
+        MachineStart,
+        PressSlam,
+        SteamBlast,
+        LavaRumble,
         // @@ids
     }
 }

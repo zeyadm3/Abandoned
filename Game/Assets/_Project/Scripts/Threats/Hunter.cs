@@ -137,21 +137,22 @@ namespace Abandoned.Threats
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {
                 if (p == null || p.NetworkManager != NetworkManager || p.IsDead || !p.IsSpawned || Sheltered(PositionOf(p))) continue;
-                if (p.IsHiding)
+                if (p.IsConcealed)
                 {
                     // In a locker: only if it watched them climb in, and then it knows exactly where they are.
-                    if (!FindsHider(p)) continue;
+                    if (p.InVent || !FindsHider(p)) continue;
                     float away = Vector3.Distance(transform.position, SpotOf(p));
                     if (away < bestDistance) { best = p; bestDistance = away; }
                     continue;
                 }
-                Vector3 at = PositionOf(p) + Vector3.up * 1.2f;
+                Vector3 at = p.SightPoint;
                 Vector3 to = at - eye;
                 float distance = to.magnitude;
                 bool close = distance < config.CloseSense;
                 float range = (p.State.Crouching ? config.CrouchSightRange : config.SightRange) * Mathf.Min(Aggression, 1.4f);
                 if (!close && (distance > range || Vector3.Angle(transform.forward, new Vector3(to.x, 0f, to.z)) > config.SightAngle / 2f)) continue;
                 if (!LineOfSight(eye, at)) continue;
+                RememberHider(p);
                 if (distance < bestDistance) { best = p; bestDistance = distance; }
             }
             return best;

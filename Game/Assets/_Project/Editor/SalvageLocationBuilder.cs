@@ -23,7 +23,7 @@ using static Abandoned.EditorTools.GreyboxFactory;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Authors the three post-mall salvage locations from repeatable layout data.  The maps deliberately
+    /// Authors the School and Prison salvage locations (the Iron Factory has its own builder in Editor/Factory) from repeatable layout data.  The maps deliberately
     /// share the same run plumbing as the mall (network session, truck, loot, structure, threats and power)
     /// while keeping their floor plans, weak routes, dressing and colour language distinct.
     /// </summary>
@@ -35,7 +35,7 @@ namespace Abandoned.EditorTools
         private const int Width = 12;
         private const int Depth = 10;
 
-        private enum Theme { School, Factory, Prison }
+        private enum Theme { School, Prison }
 
         [Flags]
         private enum RoomDoor { South = 1, North = 2, West = 4, East = 8 }
@@ -103,7 +103,6 @@ namespace Abandoned.EditorTools
 
         /// <summary>Builds a location scene in a clean scene, then writes a reusable NavMesh asset beside it.</summary>
         public static void BuildSchool() => Build(CreateSchool());
-        public static void BuildFactory() => Build(CreateFactory());
         public static void BuildPrison() => Build(CreatePrison());
 
         private static void Build(Plan plan)
@@ -127,7 +126,6 @@ namespace Abandoned.EditorTools
             BuildLights(root, plan, materials);
             StructureSimulation simulation = SetupStructuralGameplay(plan, pieces, stairs);
             if (plan.Theme == Theme.School) SchoolAtmosphereBuilder.Apply(root);
-            if (plan.Theme == Theme.Factory) FactoryAtmosphereBuilder.Apply(root);
             if (plan.Theme == Theme.Prison) PrisonAtmosphereBuilder.Apply(root);
             PopulateGameplay(root, plan, simulation);
             BakeNavMesh(root, plan);
@@ -320,9 +318,6 @@ namespace Abandoned.EditorTools
                 case Theme.School:
                     SchoolDressing(props, m);
                     break;
-                case Theme.Factory:
-                    FactoryDressing(props, m);
-                    break;
                 case Theme.Prison:
                     PrisonDressing(props, m);
                     break;
@@ -341,23 +336,6 @@ namespace Abandoned.EditorTools
                 Box("GymBleacher", p, new Vector3(33f + i * 1.2f, .25f + i * .2f, 35f), new Vector3(1f, .5f + i * .1f, 4f), m.Metal);
             Box("AuditoriumStage", p, new Vector3(11.5f, .5f, 18f), new Vector3(7f, 1f, 2f), m.Wood);
             Box("BasementBoiler", p, new Vector3(14f, -3.1f, 29f), new Vector3(2.6f, 1.8f, 1.5f), m.Metal);
-        }
-
-        private static void FactoryDressing(Transform p, Materials m)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                float x = 12f + i * 6f;
-                Box("Conveyor_" + i, p, new Vector3(x, .75f, 16f), new Vector3(4f, 1.1f, 1.4f), m.Metal);
-                Box("Machine_" + i, p, new Vector3(x, 1.3f, 23f), new Vector3(2.4f, 2.6f, 2.4f), m.Prop);
-            }
-            for (int i = 0; i < 4; i++)
-                Box("Boiler_" + i, p, new Vector3(34f + i * 2.5f, 1.4f, 31f), new Vector3(1.7f, 2.8f, 1.7f), m.Accent);
-            // Preserve wide gaps at the two upper-office doors (x=6 and x=42) so rails do not become invisible blockers.
-            float[] railCenters = { 2f, 10f, 16f, 21.5f, 27f, 32.5f, 37.5f, 46f };
-            for (int i = 0; i < railCenters.Length; i++)
-                Box("CatwalkRail_" + i, p, new Vector3(railCenters[i], 5.1f, 9f), new Vector3(3.2f, 1.1f, .12f), m.Metal);
-            Box("LoadingCrates", p, new Vector3(39f, .75f, 7f), new Vector3(5f, 1.5f, 3f), m.Wood);
         }
 
         private static void PrisonDressing(Transform p, Materials m)
@@ -418,7 +396,7 @@ namespace Abandoned.EditorTools
                 lamp.type = LightType.Spot;
                 lamp.range = 12f;
                 lamp.spotAngle = 104f;
-                lamp.intensity = plan.Theme == Theme.Factory ? 7f : 5.2f;
+                lamp.intensity = 5.2f;
                 lamp.color = plan.Theme == Theme.Prison ? new Color(.72f, .84f, .96f) : new Color(1f, .89f, .70f);
                 lamp.shadows = LightShadows.None;
                 holder.gameObject.AddComponent<LightFixture>().EditorSetup(lamp, glow.GetComponent<Renderer>(), index % 7 == 0, index % 19 == 0, 300 + index);
@@ -461,7 +439,7 @@ namespace Abandoned.EditorTools
             // A fixed grid makes every facility navigable under a power-off contract while the theme changes the colour and density.
             for (int z = 1; z < Depth; z += 2)
             for (int x = 1; x < Width; x += 2)
-                if ((x + z) % (plan.Theme == Theme.Factory ? 3 : 2) == 0)
+                if ((x + z) % 2 == 0)
                     yield return new Vector3(x * Tile, 0f, z * Tile);
             foreach (Vector2Int cell in plan.Upper.Where(c => (c.x + c.y) % 3 == 0))
                 yield return TileTop(cell, 1);
@@ -489,124 +467,17 @@ namespace Abandoned.EditorTools
 
         private static void PopulateGameplay(Transform root, Plan plan, StructureSimulation simulation)
         {
-            new GameObject("DebugView", typeof(DebugViewToggle), typeof(PerfOverlay));
-            Camera camera = Object.FindFirstObjectByType<Camera>();
-            if (camera != null && camera.GetComponent<CinemachineBrain>() == null) camera.gameObject.AddComponent<CinemachineBrain>();
-
-            Transform spawns = Group("Spawns", root);
-            for (int i = 0; i < 4; i++)
-            {
-                Transform spawn = Group("PlayerSpawn_" + i, spawns);
-                spawn.SetPositionAndRotation(new Vector3(20f + i * 1.5f, .05f, -6.5f), Quaternion.LookRotation(Vector3.forward));
-                spawn.gameObject.AddComponent<PlayerSpawnPoint>().EditorSetup(i);
-            }
-
-            NetworkBootstrap bootstrap = NetworkSceneBuilder.Add();
-            Transform points = Group("LootPoints", root);
-            foreach (LootSite site in plan.Loot)
-            {
-                Transform point = Group(site.Name, points);
-                point.position = site.At;
-                point.gameObject.AddComponent<LootSpawnPoint>().EditorSetup(site.Tag, site.Min, site.Max, site.IsJackpot);
-            }
-            var spawner = new GameObject("LootSpawner").AddComponent<NetworkLootSpawner>();
-            spawner.Setup(bootstrap, AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath),
-                AssetDatabase.LoadAssetAtPath<LootSpawnConfig>(LootCatalogBuilder.SpawnConfigPath), autoSpawn: false);
-
-            var run = new GameObject("Run");
-            var director = run.AddComponent<RunDirector>();
-            GameObject runState = AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.RunStatePrefabPath);
-            director.Setup(bootstrap, runState != null ? runState.GetComponent<NetworkObject>() : null, spawner, simulation);
-            run.AddComponent<RunHud>();
-            run.AddComponent<PowerController>();
-            SerializedWiring.Set(run.AddComponent<AppraisalScreen>(), "director", director);
-
-            Transform spawnPoints = Group("ThreatSpawns", root);
-            foreach (Vector3 at in plan.Threats)
-            {
-                Transform marker = Group("ThreatSpawn_" + spawnPoints.childCount.ToString("00"), spawnPoints);
-                marker.position = at;
-                marker.gameObject.AddComponent<ThreatSpawnPoint>();
-            }
-            BuildThreats(bootstrap, simulation);
-            var views = new GameObject("DebugViews");
-            views.AddComponent<NoiseDebugView>();
-            views.AddComponent<LootDebugView>();
-            views.AddComponent<SharedCarryDebugView>();
+            var crew = Enumerable.Range(0, 4).Select(i => new Vector3(20f + i * 1.5f, .05f, -6.5f)).ToList();
+            var loot = plan.Loot.Select(s => new LootPointSpec(s.Name, s.Tag, s.At, s.Min, s.Max, s.IsJackpot));
+            LocationPlumbing.Populate(root, crew, loot, plan.Threats, simulation);
         }
 
-        private static void BuildThreats(NetworkBootstrap bootstrap, StructureSimulation simulation)
-        {
-            NetworkObject Prefab(string path)
-            {
-                GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                return go != null ? go.GetComponent<NetworkObject>() : null;
-            }
-            NetworkObject blind = Prefab(ThreatContentBuilder.BlindOnePrefabPath);
-            var threats = new GameObject("Threats");
-            var director = threats.AddComponent<ThreatDirector>();
-            director.Setup(bootstrap, blind, new[]
-            {
-                blind, Prefab(ThreatContentBuilder.StalkerPrefabPath), Prefab(ThreatContentBuilder.CollectorPrefabPath), Prefab(ThreatContentBuilder.HunterPrefabPath)
-            }, new[] { .4f, .2f, .2f, .2f });
-            director.SetupCatalog(AssetDatabase.LoadAssetAtPath<ThreatCatalog>(NewThreatContentBuilder.CatalogPath));
-            var danger = threats.AddComponent<DangerDirector>();
-            danger.Setup(AssetDatabase.LoadAssetAtPath<DangerConfig>(NetworkContentBuilder.DangerConfigPath), simulation);
-        }
+        // The outdoor staging area is intentionally not a threat-navigation island: crews must enter the
+        // building before a threat can route to them. Roof and truck collider islands are likewise cosmetic.
+        private static void BakeNavMesh(Transform root, Plan plan) =>
+            LocationPlumbing.BakeNavMesh(root, plan.Name, new[] { "Exterior", "Truck", "Shell/Roof", "MeridianCollectionBay" });
 
-        private static void BakeNavMesh(Transform root, Plan plan)
-        {
-            var surface = root.gameObject.AddComponent<NavMeshSurface>();
-            surface.collectObjects = CollectObjects.Children;
-            surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
-            // Collapsible floors own disabled carving obstacles. Include their floor colliders in the initial bake;
-            // the obstacle only carves its tile later if that section actually collapses.
-            surface.ignoreNavMeshObstacle = false;
-            surface.layerMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast");
-            // The outdoor staging area is intentionally not a threat-navigation island: crews must enter the
-            // building before a threat can route to them. Roof and truck collider islands are likewise cosmetic.
-            foreach (string groupPath in new[] { "Exterior", "Truck", "Shell/Roof", "MeridianCollectionBay" })
-            {
-                Transform group = root.Find(groupPath);
-                if (group == null) continue;
-                var modifier = group.GetComponent<NavMeshModifier>() ?? group.gameObject.AddComponent<NavMeshModifier>();
-                modifier.ignoreFromBuild = true;
-            }
-            surface.BuildNavMesh();
-            string path = $"Assets/_Project/Scenes/{plan.Name}_NavMesh.asset";
-            var previous = AssetDatabase.LoadAssetAtPath<UnityEngine.AI.NavMeshData>(path);
-            if (previous == null)
-            {
-                surface.navMeshData.name = plan.Name + "_NavMesh";
-                AssetDatabase.CreateAsset(surface.navMeshData, path);
-            }
-            else
-            {
-                surface.RemoveData();
-                EditorUtility.CopySerialized(surface.navMeshData, previous);
-                Object.DestroyImmediate(surface.navMeshData);
-                surface.navMeshData = previous;
-                previous.name = plan.Name + "_NavMesh";
-                surface.AddData();
-                EditorUtility.SetDirty(previous);
-            }
-        }
-
-        private static void ConfigureHorrorScenes()
-        {
-            HorrorConfig config = AssetDatabase.LoadAssetAtPath<HorrorConfig>(HorrorContentBuilder.Path);
-            if (config == null) return;
-            var serialized = new SerializedObject(config);
-            SerializedProperty levels = serialized.FindProperty("levels");
-            if (levels != null)
-            {
-                string[] names = { "Mall", "School", "Factory", "Prison" };
-                levels.arraySize = names.Length;
-                for (int i = 0; i < names.Length; i++) levels.GetArrayElementAtIndex(i).stringValue = names[i];
-                serialized.ApplyModifiedPropertiesWithoutUndo();
-                EditorUtility.SetDirty(config);
-            }
-        }
+        private static void ConfigureHorrorScenes() => LocationPlumbing.ConfigureHorrorScenes();
 
         private static void PlaceCamera(Plan plan)
         {
@@ -642,31 +513,6 @@ namespace Abandoned.EditorTools
             return p;
         }
 
-        private static Plan CreateFactory()
-        {
-            var p = Base(Theme.Factory, "Factory", FactoryBuilder.ScenePath, new Color(.22f, .24f, .25f), new Color(.25f, .28f, .27f), new Color(.78f, .39f, .08f));
-            FillUpper(p, c => (c.x <= 2 || c.x >= 9 || c.y <= 1 || c.y >= 8)
-                              && c != new Vector2Int(1, 4) && c != new Vector2Int(1, 5)
-                              && c != new Vector2Int(10, 4) && c != new Vector2Int(10, 5));
-            p.GroundHoles.UnionWith(new[] { new Vector2Int(1, 4), new Vector2Int(1, 5), new Vector2Int(10, 4), new Vector2Int(10, 5) });
-            p.ProtectedUpper.UnionWith(p.Upper.Where(c => c.y == 1 || c.y == 8));
-            p.WeakUpper[new Vector2Int(9, 5)] = new Vector2(.48f, .34f);
-            p.WeakUpper[new Vector2Int(10, 5)] = new Vector2(.62f, .48f);
-            p.Rooms.AddRange(new[]
-            {
-                new Room("Receiving_Dock", "stock", 0, 8, 0, 4, 3, doors: RoomDoor.West | RoomDoor.North),
-                // A low equipment divider preserves a continuous catwalk route between the hall and upper offices.
-                new Room("Machine_Hall", "stock", 0, 0, 2, 8, 5, doors: RoomDoor.South | RoomDoor.North),
-                new Room("Boiler_Room", "stock", 0, 8, 6, 4, 3, doors: RoomDoor.West), new Room("Admin_Office", "office", 1, 0, 0, 3, 2, doors: RoomDoor.North),
-                new Room("Control_Room", "office", 1, 9, 0, 3, 2, doors: RoomDoor.North), new Room("Break_Room", "food", 1, 9, 8, 3, 2),
-            });
-            p.Stairs.Add(new Stair("CatwalkStair", new Vector3(6f, 0f, 16f), Vector3.forward, Story));
-            p.Stairs.Add(new Stair("ControlCatwalkStair", new Vector3(42f, 0f, 16f), Vector3.forward, Story));
-            AddLoot(p, "factory", new[] { ("stock", 8f, 13f, 0), ("stock", 16f, 21f, 0), ("stock", 27f, 17f, 0), ("stock", 34f, 9f, 0), ("stock", 45f, 31f, 0), ("office", 6f, 6f, 1), ("office", 42f, 6f, 1), ("food", 42f, 34f, 1) }, 3, 4);
-            Threats(p, new Vector3(42f, 0f, 34f), new Vector3(31f, 0f, 26f), new Vector3(10f, 0f, 30f), new Vector3(6f, 4f, 34f), new Vector3(42f, 4f, 34f));
-            return p;
-        }
-
         private static Plan CreatePrison()
         {
             var p = Base(Theme.Prison, "Prison", PrisonBuilder.ScenePath, new Color(.35f, .37f, .38f), new Color(.31f, .33f, .34f), new Color(.48f, .62f, .72f));
@@ -699,8 +545,8 @@ namespace Abandoned.EditorTools
         private static Plan Base(Theme theme, string name, string path, Color shell, Color floor, Color accent) => new()
         {
             Theme = theme, Name = name, Path = path, Shell = shell, Floor = floor, Accent = accent,
-            Prop = Color.Lerp(floor, accent, .25f), Stability = theme == Theme.Factory ? .68f : theme == Theme.Prison ? .72f : .76f,
-            Seed = theme == Theme.School ? 1209 : theme == Theme.Factory ? 2209 : 3209
+            Prop = Color.Lerp(floor, accent, .25f), Stability = theme == Theme.Prison ? .72f : .76f,
+            Seed = theme == Theme.School ? 1209 : 3209
         };
 
         private static void FillUpper(Plan plan, Func<Vector2Int, bool> include)
@@ -740,7 +586,6 @@ namespace Abandoned.EditorTools
         private static LevelAtmosphere.Mood MoodFor(Theme theme) => theme switch
         {
             Theme.School => new LevelAtmosphere.Mood(new Color(.055f, .075f, .085f), new Color(.028f, .040f, .045f), new Color(.012f, .018f, .020f), new Color(.105f, .135f, .135f), .030f, .20f, .30f, .19f, -39f, 13f, new Color(.72f, .86f, .82f), .095f, new Vector3(60f, -33f, 0f)),
-            Theme.Factory => new LevelAtmosphere.Mood(new Color(.075f, .075f, .065f), new Color(.05f, .047f, .038f), new Color(.02f, .018f, .014f), new Color(.18f, .15f, .11f), .028f, .20f, .27f, .2f, -42f, 15f, new Color(1f, .68f, .42f), .10f, new Vector3(62f, -35f, 0f)),
             _ => new LevelAtmosphere.Mood(new Color(.035f, .055f, .072f), new Color(.022f, .035f, .043f), new Color(.008f, .013f, .016f), new Color(.095f, .135f, .15f), .034f, .13f, .36f, .22f, -46f, 17f, new Color(.48f, .67f, .88f), .075f, new Vector3(58f, -31f, 0f)),
         };
 
@@ -780,14 +625,6 @@ namespace Abandoned.EditorTools
         [MenuItem("Tools/Abandoned/Create School")]
         public static void Create() => SalvageLocationBuilder.BuildSchool();
         public static void Build() => SalvageLocationBuilder.BuildSchool();
-    }
-
-    public static class FactoryBuilder
-    {
-        public const string ScenePath = "Assets/_Project/Scenes/Factory.unity";
-        [MenuItem("Tools/Abandoned/Create Factory")]
-        public static void Create() => SalvageLocationBuilder.BuildFactory();
-        public static void Build() => SalvageLocationBuilder.BuildFactory();
     }
 
     public static class PrisonBuilder

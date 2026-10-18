@@ -37,7 +37,7 @@ namespace Abandoned.UI
                 pending.Clear();
                 readUntil = 0f;
             }
-            MenuKit.Show(clock, active && me != null && !me.IsDead && run.State.Phase != RunPhase.Honking);
+            MenuKit.Show(clock, false); // Building strain is read from the world; the approved HUD has no threat meter.
             if (active)
             {
                 bool final = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase || run.TotalCollapse;
@@ -69,6 +69,13 @@ namespace Abandoned.UI
             bool menuOpen = MenuUi.Current != null && MenuUi.Current.Showing != MenuScreen.None;
             // The centre is left open by the corner instruments; captions stack above this record.
             float bottom = menuOpen ? 12f : 28f;
+            if (!menuOpen && radio.parent != null)
+            {
+                if (HudLayer.TryLocalRect(HudLayer.Root.Q(className: "field-carry"), radio.parent, out Rect carry))
+                    bottom = Mathf.Max(bottom, radio.parent.layout.height - carry.yMin + 10f);
+                if (HudLayer.TryLocalRect(HudLayer.Root.Q(className: "field-switch"), radio.parent, out Rect tool))
+                    bottom = Mathf.Max(bottom, radio.parent.layout.height - tool.yMin + 10f);
+            }
             radio.style.bottom = bottom;
             HudLayer.FitCenterLane(radio, radio.parent);
             MenuUi.Current?.Subtitles?.PlaceAbove(radio, showRadio, bottom);

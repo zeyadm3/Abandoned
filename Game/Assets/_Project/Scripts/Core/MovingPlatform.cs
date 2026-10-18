@@ -29,6 +29,9 @@ namespace Abandoned.Core
             transform.position = position;
         }
 
+        /// <summary>A belt (Iron Factory): carries its riders this far this frame without moving itself.</summary>
+        public void Drift(Vector3 frameDelta) => FrameDelta = frameDelta;
+
         /// <summary>The platform under a point (feet), if any.</summary>
         public static MovingPlatform Under(Vector3 feet, float reach = 0.45f)
         {

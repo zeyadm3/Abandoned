@@ -28,6 +28,8 @@ namespace Abandoned.Loot
         [field: SerializeField, Min(0f)] public float MinSoundSpeed { get; private set; } = 0.6f;
         [field: Tooltip("Impact speed that plays at full volume.")]
         [field: SerializeField, Min(0.1f)] public float FullVolumeSpeed { get; private set; } = 8f;
+        [field: Tooltip("Outside the salvage building, non-fragile loot ignores this many condition points per impact (not a cumulative shield).")]
+        [field: SerializeField, Range(0f, 100f)] public float OutdoorImpactThreshold { get; private set; } = 50f;
 
         public FragilityProfile Profile(Fragility fragility)
         {

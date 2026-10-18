@@ -15,7 +15,9 @@ namespace Abandoned.Player
         private InputAction ragdollDebugAction, giveGearAction, pingAction;
         private InputAction[] emoteActions;
         private InputAction padLook;
-        private bool sprintOn, talkOn, radioOn;
+        private bool sprintOn, talkOn, radioOn, inventoryOpen;
+        private InputAction slot3, slot4;
+        public bool InventoryOpen => isActiveAndEnabled && (Override.HasValue ? Current.InventoryHeld : inventoryOpen);
 
         public PlayerInputFrame Current { get; private set; }
 
@@ -65,6 +67,8 @@ namespace Abandoned.Player
                 input.asset.FindAction("Gameplay/EmotePanic", false),
             };
             InputBindings.Apply(input.asset);
+            slot3 = input.asset.FindAction("Gameplay/HandSlot3");
+            slot4 = input.asset.FindAction("Gameplay/HandSlot4");
             InputBindings.Changed += Rebind;
         }
 
@@ -81,6 +85,7 @@ namespace Abandoned.Player
             input.Gameplay.Disable();
             ragdollDebugAction.Disable();
             Current = default;
+            inventoryOpen = false;
         }
 
         private void OnDestroy()
@@ -101,6 +106,8 @@ namespace Abandoned.Player
             if (g.Sprint.WasPressedThisFrame()) sprintOn = !sprintOn;
             if (g.PushToTalk.WasPressedThisFrame()) talkOn = !talkOn;
             if (g.Radio.WasPressedThisFrame()) radioOn = !radioOn;
+            if (g.Inventory.WasPressedThisFrame() && !CursorOwner.UiActive) inventoryOpen = !inventoryOpen;
+            if (g.Pause.WasPressedThisFrame()) inventoryOpen = false;
             Current = new PlayerInputFrame(
                 g.Move.ReadValue<Vector2>(),
                 g.Look.ReadValue<Vector2>() + PadLook(),
@@ -112,7 +119,7 @@ namespace Abandoned.Player
                 g.Use.IsPressed(),
                 g.Interact.WasPressedThisFrame(),
                 g.Drop.WasPressedThisFrame(),
-                g.Inventory.IsPressed(),
+                inventoryOpen,
                 g.Pause.WasPressedThisFrame(),
                 ragdollDebugAction.WasPressedThisFrame() && DevTools.Enabled,
                 GameSettings.TalkToggle ? talkOn : g.PushToTalk.IsPressed(),
@@ -124,7 +131,9 @@ namespace Abandoned.Player
                 g.Drop.IsPressed(),
                 g.Drop.WasReleasedThisFrame(),
                 Mouse.current != null ? Mathf.Sign(Mouse.current.scroll.ReadValue().y) * (Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0.01f ? 1f : 0f) : 0f,
-                giveGearAction.WasPressedThisFrame());
+                giveGearAction.WasPressedThisFrame(),
+                slot3 != null && slot3.WasPressedThisFrame(),
+                slot4 != null && slot4.WasPressedThisFrame());
         }
     }
 }

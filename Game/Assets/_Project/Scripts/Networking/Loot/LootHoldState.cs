@@ -11,11 +11,12 @@ namespace Abandoned.Networking
         public LootHoldMode Mode;
         /// <summary>NetworkObjectId of the holder's player object (unused when <see cref="Mode"/> is Free).</summary>
         public ulong HolderObjectId;
+        public sbyte PocketSlot;
 
         public static LootHoldState Free => default;
 
-        public static LootHoldState For(LootHoldMode mode, ulong holderObjectId) =>
-            mode == LootHoldMode.Free ? Free : new LootHoldState { Mode = mode, HolderObjectId = holderObjectId };
+        public static LootHoldState For(LootHoldMode mode, ulong holderObjectId, int pocketSlot = -1) =>
+            mode == LootHoldMode.Free ? Free : new LootHoldState { Mode = mode, HolderObjectId = holderObjectId, PocketSlot = (sbyte)pocketSlot };
 
         public bool IsHeldBy(ulong holderObjectId) => Mode != LootHoldMode.Free && HolderObjectId == holderObjectId;
 

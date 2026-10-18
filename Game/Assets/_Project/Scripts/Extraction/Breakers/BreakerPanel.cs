@@ -18,6 +18,8 @@ namespace Abandoned.Extraction
         [SerializeField, Range(0, RunBreakers.MaxSectors - 1)] private int sector;
         [SerializeField] private Transform handle;
         [OptionalReference, SerializeField] private Renderer lamp;
+        [Tooltip("Iron Factory: this breaker also starts the sector's machines (MachineHazard). Only the prompt differs.")]
+        [SerializeField] private bool startsMachines;
 
         private bool shownOn;
         private MaterialPropertyBlock block;
@@ -59,7 +61,8 @@ namespace Abandoned.Extraction
             if (run.Restored(sector)) return Loc.T("Breaker on ({0:0} s left)", run.Remaining(sector));
             float wait = run.Cooldown(sector);
             if (wait > 0f) return Loc.T("Breaker cooling down ({0:0} s)", wait);
-            return Loc.T("Throw the breaker (lights this sector, loudly)");
+            return Loc.T(startsMachines ? Loc.Mark("Throw the breaker (lights and machines in this sector, loudly)")
+                : Loc.Mark("Throw the breaker (lights this sector, loudly)"));
         }
 
         public void Use(GameObject user)
@@ -83,6 +86,12 @@ namespace Abandoned.Extraction
             sector = powerSector;
             handle = lever;
             lamp = indicator;
+        }
+
+        public void EditorSetup(int powerSector, Transform lever, Renderer indicator, bool machines)
+        {
+            EditorSetup(powerSector, lever, indicator);
+            startsMachines = machines;
         }
 #endif
 

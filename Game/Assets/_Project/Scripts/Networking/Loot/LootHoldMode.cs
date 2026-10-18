@@ -6,5 +6,6 @@ namespace Abandoned.Networking
         Free = 0,
         Held = 1,
         Pocketed = 2,
+        PocketHeld = 3,
     }
 }

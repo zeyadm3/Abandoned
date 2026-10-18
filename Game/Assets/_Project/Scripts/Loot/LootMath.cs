@@ -8,6 +8,9 @@ namespace Abandoned.Loot
     /// </summary>
     public static class LootMath
     {
+        /// <summary>Per-impact condition threshold: repeated soft bumps never wear a protection pool down.</summary>
+        public static int ProtectedImpactLoss(int loss, int fullValue, float conditionThreshold) =>
+            Mathf.Max(0, loss - Mathf.RoundToInt(Mathf.Max(0, fullValue) * Mathf.Clamp01(conditionThreshold / 100f)));
         public readonly struct Roll
         {
             public readonly int BaseValue;

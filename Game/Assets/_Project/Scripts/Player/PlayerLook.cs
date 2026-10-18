@@ -28,6 +28,14 @@ namespace Abandoned.Player
         private float yawCentre, yawHalfAngle;
 
         public float Pitch => pitch;
+        public bool RequirePeekButton { get; set; }
+        public void ReturnHidingLook(float centre, float step)
+        {
+            yaw = Mathf.MoveTowardsAngle(yaw, centre, step);
+            pitch = Mathf.MoveTowards(pitch, 0f, step);
+            transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+            cameraRoot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        }
 
         private void Awake() => carrier = GetComponent<PlayerCarrier>();
 
@@ -84,8 +92,8 @@ namespace Abandoned.Player
             else if (!CursorCaptured && (input.UsePressed || CursorOwner.ConsumeCaptureRequest())) SetCaptured(true);
 
             // The rotation modifier gives the mouse to the held object without turning the camera too.
-            bool rotatesItem = input.RotateHeld && carrier != null && carrier.CanRotate && !carrier.IsPlacing;
-            if (CursorCaptured && !rotatesItem) ApplyLook(input.Look);
+            bool rotatesItem = !RequirePeekButton && input.RotateHeld && carrier != null && carrier.CanRotate && !carrier.IsPlacing;
+            if (CursorCaptured && !rotatesItem && (!RequirePeekButton || input.RotateHeld)) ApplyLook(input.Look);
         }
 
         /// <summary>Applies a mouse delta (already a per-frame distance, so no deltaTime).</summary>

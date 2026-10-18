@@ -30,6 +30,8 @@ namespace Abandoned.Structure
             if (surface.size.x < 0.5f || surface.size.z < 0.5f) return null;
             if (!Landing(fallen, surface, config.RubbleMaxDrop, out Vector3 floor, out StructuralSection support)) return null;
             if (support != null && (support.Type == SectionType.Stair || support.GetComponent<SectionKeepClear>() != null)) return null;
+            // A section that falls into molten iron is gone; a mound there would be a bridge across it.
+            if (LavaVolume.Covers(floor)) return null;
 
             var random = new System.Random(fallen.CollapseSeed ^ (fallen.Id * 3571 + 101));
             float Next() => (float)random.NextDouble();

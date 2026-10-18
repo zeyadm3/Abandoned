@@ -10,7 +10,7 @@ namespace Abandoned.Player
     /// <see cref="PlayerInputFrame"/>. The pivot is at the feet.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerMotor : MonoBehaviour
+    public partial class PlayerMotor : MonoBehaviour
     {
         // A speed cap must leave at least this much (m/s) above walking pace for sprinting to cost stamina.
         private const float SprintPaceMargin = 0.05f;
@@ -119,6 +119,7 @@ namespace Abandoned.Player
             UpdateCrouch(input, dt);
             UpdateHorizontal(input, dt);
             UpdateVertical(now, dt);
+            UpdateLadder(input, now);
             stamina.Tick(dt);
 
             Vector3 before = transform.position;
@@ -136,6 +137,7 @@ namespace Abandoned.Player
             CollisionFlags flags = controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
             TrackFall(before.y, fallSpeed);
             if (onRope && airborne) airPeakY = transform.position.y;
+            if (IsClimbing) airborne = false;
 
             // Feed back what actually happened so speed doesn't build up against walls or ceilings.
             // Computed from our own dt rather than controller.velocity, which uses Time.deltaTime.
