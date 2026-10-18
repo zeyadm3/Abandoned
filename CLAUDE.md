@@ -96,6 +96,12 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.10 (2026-10-18): the Crew Director.** Left 4 Dead-style pacing: a hidden stress number per player (hurt, knocked
+down, chased, near a failing floor or a crewmate's death); when the most stressed one peaks, no new monsters for up
+to a minute and idle ones wander away (`Threats/CrewDirector`, tunables and an Enabled switch in
+Data/Threats/Resources/CrewDirectorConfig). Changes when monsters come, never how hard they hit. Compiled and tested in
+batch mode (EditMode + a PlayMode test in the mall), never played. Details: Docs/CREW_DIRECTOR_0.24.10.md.
+
 **0.24.9 (2026-10-18): no loot look-alikes.** Fix for "two identical items, only one grabbable": a loot model never
 stands as scenery. The saved mall's 595 static copies became fixed fittings, dust sheets or packaging in place
 (colliders kept, NavMesh not rebaked); `[MallValidation] ... static loot look-alikes: 0`. Authored in batch mode,
@@ -181,6 +187,14 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-18 (user, after a reel on Left 4 Dead's AI Director: "implement that and run and test the game"): **0.24.10,
+  the Crew Director.** Pacing follows the crew, not only the clock: the host keeps one hidden stress number per living
+  player and runs Booth's loop (build up, sustain peak, fade, relax) on the highest. During the fade and relax no later
+  arrival or unlocked danger wave spawns, monsters are not drifted or relocated toward the crew, and drift-paced
+  monsters wander to a spawn point at least 28 m from everyone (the Stalker, Collector and Last Hunter keep their
+  own rules; nothing despawns). The opening wave, threat level, damage, alive cap, danger level, decay, total collapse,
+  Last Hunter and monster songs are untouched. The longest quiet is about 60 s, and a build-up always lasts 20 s, so
+  leftover stress can't stall arrivals. Arrivals were really every 28-42 s, not the "90-150 s" in the 2026-10-08 entry.
 - 2026-10-18 (user: two identical items side by side, only one grabbable, "needs an immediate fix"; chose option C
   "remove them and fill the gaps", then "keep loot, build fixed versions" for the fixtures): **0.24.9, no loot
   look-alikes.** If it looks like loot, it is loot: a loot model never stands in a level as scenery

@@ -22,6 +22,7 @@ namespace Abandoned.Threats
         private System.Random arrivals = new(1);
         private bool finalSpawned;
         private ThreatSpawnPoint[] points = System.Array.Empty<ThreatSpawnPoint>();
+        public IReadOnlyList<ThreatSpawnPoint> Points => points;
         public static ThreatDirector Current { get; private set; }
         public int PlacementRetries { get; private set; }
         public void Setup(NetworkBootstrap networkBootstrap, NetworkObject prefab, NetworkObject[] threats = null, float[] weights = null)
@@ -41,6 +42,8 @@ namespace Abandoned.Threats
             Current = this;
             RunDirector.RunStarted += OnRunStarted;
             if (!TryGetComponent(out ThreatPacing _)) gameObject.AddComponent<ThreatPacing>();
+            if (!TryGetComponent(out CrewDirector _)) gameObject.AddComponent<CrewDirector>(); // 0.24.10
+            if (!TryGetComponent(out CrewDirectorDebug _)) gameObject.AddComponent<CrewDirectorDebug>();
         }
         private static ThreatPacingConfig Pacing => ThreatPacingConfig.Current;
         public float NextArrivalIn => spawnAt != 0f ? -1f : Mathf.Max(0f, nextArrival - Time.time);
@@ -99,7 +102,9 @@ namespace Abandoned.Threats
                 spawnAt = 0f;
                 nextArrival = Time.time + NextGap();
             }
-            if (Time.time >= nextArrival)
+            // 0.24.10: the Crew Director's quiet holds later arrivals and unlocked waves; the opening wave above never waits.
+            bool quiet = CrewDirector.Quiet;
+            if (!quiet && Time.time >= nextArrival)
             {
                 // A blocked point is retried soon; it cannot quietly lose a full arrival interval.
                 bool full = Alive >= AliveCap;
@@ -109,7 +114,7 @@ namespace Abandoned.Threats
             if (spawnedTier < run.State.Danger && Alive < AliveCap)
             {
                 // Keep an unlocked wave pending if all fair spots are temporarily blocked.
-                if (Time.time < openingRetryAt) return;
+                if (quiet || Time.time < openingRetryAt) return;
                 Threat arrived = SpawnExtra();
                 openingRetryAt = Time.time + Pacing.SpawnRetry;
                 if (arrived != null) spawnedTier++;

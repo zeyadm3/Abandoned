@@ -4,6 +4,28 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## 0.24.10: the Crew Director (2026-10-18; compiled and tested in batch mode, not played)
+
+Left 4 Dead-style pacing. Each living player carries a hidden stress number. When the most stressed one peaks, no
+new monsters come for up to a minute and idle ones wander away from the crew. It changes when monsters come, never
+how hard they hit. Full write-up: Docs/CREW_DIRECTOR_0.24.10.md.
+
+- Code: `Scripts/Threats/CrewDirector*.cs` and `IntensityTrack.cs`. Hooks in ThreatDirector (holds arrivals) and
+  ThreatPacing (retreat instead of drift).
+- Tunables: Data/Threats/Resources/CrewDirectorConfig, with an Enabled switch for comparing against the old pacing.
+- F1 shows the phase, a stress graph and each player's number.
+- Tests: CrewDirectorTests (EditMode, 4) and MallCrewDirectorTests (PlayMode in the mall, 2) pass. EditMode is 290
+  total with the 3 older failures. MallThreatTests, MallThreatMixTests and MallDangerTests fail 7 of 8 with or
+  without this change (player left in the parking lot, pre-0.15 coordinates).
+- Second round (full pass):
+  - The full PlayMode suite has no new failures (the same 39 as the unchanged code).
+  - nettest `basic`, `run` and `soak` pass 4/4 with 1 host + 3 clients.
+  - Verify: setup OK; the 2 content errors are the 0.18.4 shopping cart.
+  - 5-minute mall soak, on vs off: 8 vs 16 arrivals, 485 vs 781 HP lost, 1 vs 2 deaths, 0 arrivals in a quiet.
+- Try it (3 min): play the mall with F1 open. Get hurt or chased until the stress line passes the peak. Watch
+  DIRECTOR go PEAK, then PEAK FADE and RELAX with "holding monsters", the THREATS countdown stall, and `away N` count
+  the monsters leaving. About a minute later it says BUILD UP and arrivals resume.
+
 ## 0.24.9: no loot look-alikes (2026-10-18; authored in batch mode, not played)
 
 Bug from the user's co-op session: two identical items side by side (e.g. two chairs), only one grabbable. The
