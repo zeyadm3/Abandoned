@@ -17,20 +17,38 @@ namespace Abandoned.EditorTools
         private const string CrustPath = ArtFolder + "/LavaCrust.png";
         private const string LavaConfigPath = "Assets/_Project/Data/Structure/Resources/LavaConfig.asset";
 
-        public readonly Material Wall, Floor, Steel, Rust, Lining, Bed, Lava, Safety, Lamp, Concrete, Asphalt, Dirt;
+        public readonly Material Wall, RoomWall, Floor, Steel, Rust, Lining, Bed, Lava, Safety, Lamp, Concrete, Asphalt, Dirt;
+        /// <summary>L1: see-through catwalk decks and treads, their rusted version, and the mesh guard panels.</summary>
+        public readonly Material Grating, RustGrating, Guard;
+        /// <summary>L1 decals: oil, the soot veil on the walls, and the mall's scorch, crack and damp moss.</summary>
+        public readonly Material Oil, SootVeil, Scorch, Crack, Moss;
+        /// <summary>Metres per texture repeat (u, v) for each tiled material: the world-UV pass reads it.</summary>
+        public readonly System.Collections.Generic.Dictionary<Material, Vector2> Tiling = new();
 
         public IronFactoryArt()
         {
-            Wall = GetMaterial("IronFactory_Wall", new Color(.20f, .15f, .13f));
-            Floor = GetMaterial("IronFactory_Floor", new Color(.21f, .21f, .20f));
-            Steel = GetMaterial("IronFactory_Steel", new Color(.17f, .18f, .19f));
-            Rust = GetMaterial("IronFactory_Rust", new Color(.33f, .17f, .09f));
-            Lining = GetMaterial("IronFactory_Lining", new Color(.30f, .20f, .16f));
+            // L1: real surfaces. The factory's own maps are made in code; the rest come from the mall's PBR kit,
+            // copied into factory materials so nothing the mall, school or prison uses is touched.
+            IronFactoryTextures.EnsureAll();
+            Wall = Tile(IronFactoryMaterialKit.Textured("IronFactory_Wall", "SootBrick", Color.white), 4f);
+            RoomWall = Tile(IronFactoryMaterialKit.FromMall("IronFactory_RoomWall", "Block", new Color(.62f, .6f, .55f)), 2.5f);
+            Floor = Tile(IronFactoryMaterialKit.FromMall("IronFactory_Floor", "Concrete", new Color(.58f, .56f, .52f)), 4f);
+            Steel = Tile(IronFactoryMaterialKit.Textured("IronFactory_Steel", "RivetedPlate", Color.white), 2f);
+            Rust = Tile(IronFactoryMaterialKit.FromMall("IronFactory_Rust", "Rust", Color.white), 2f);
+            Lining = Tile(IronFactoryMaterialKit.Textured("IronFactory_Lining", "FireBrick", new Color(.85f, .72f, .65f)), 2f);
             Bed = GetMaterial("IronFactory_Bed", new Color(.06f, .04f, .03f));
-            Safety = GetMaterial("IronFactory_Safety", new Color(.78f, .58f, .10f));
-            Concrete = GetMaterial("Location_Concrete", new Color(.34f, .35f, .34f));
-            Asphalt = GetMaterial("Location_Asphalt", new Color(.10f, .11f, .12f));
-            Dirt = GetMaterial("Location_Dirt", new Color(.20f, .22f, .18f));
+            Safety = Tile(IronFactoryMaterialKit.Textured("IronFactory_Safety", "WornPaint", Color.white), 1f);
+            Concrete = Tile(IronFactoryMaterialKit.FromMall("IronFactory_Concrete", "Concrete", Color.white), 4f);
+            Asphalt = Tile(IronFactoryMaterialKit.FromMall("IronFactory_Asphalt", "Asphalt", Color.white), 6f);
+            Dirt = Tile(IronFactoryMaterialKit.Textured("IronFactory_Cinder", "Cinder", Color.white), 4f);
+            Grating = Tile(IronFactoryMaterialKit.Textured("IronFactory_Grating", "Grating", Color.white, IronFactoryMaterialKit.Surface.CutoutTwoSided), .5f);
+            RustGrating = Tile(IronFactoryMaterialKit.Textured("IronFactory_RustGrating", "Grating", new Color(.9f, .55f, .38f), IronFactoryMaterialKit.Surface.CutoutTwoSided), .5f);
+            Guard = Tile(IronFactoryMaterialKit.Textured("IronFactory_Guard", "MeshGuard", Color.white, IronFactoryMaterialKit.Surface.CutoutTwoSided), .5f);
+            Oil = IronFactoryMaterialKit.Textured("IronFactory_Oil", "OilStain", Color.white, IronFactoryMaterialKit.Surface.Cutout);
+            SootVeil = IronFactoryMaterialKit.Textured("IronFactory_SootVeil", "SootVeil", Color.white, IronFactoryMaterialKit.Surface.Transparent);
+            Scorch = MeridianArt.Material("Scorch");
+            Crack = MeridianArt.Material("Crack");
+            Moss = MeridianArt.Material("Moss");
 
             Lamp = GetMaterial("IronFactory_Lamp", new Color(1f, .90f, .70f));
             Lamp.SetColor("_EmissionColor", new Color(1.7f, 1.35f, .8f));
@@ -38,6 +56,12 @@ namespace Abandoned.EditorTools
 
             Lava = LavaMaterial();
             EnsureLavaConfig();
+        }
+
+        private Material Tile(Material m, float metres)
+        {
+            Tiling[m] = new Vector2(metres, metres);
+            return m;
         }
 
         private static Material LavaMaterial()

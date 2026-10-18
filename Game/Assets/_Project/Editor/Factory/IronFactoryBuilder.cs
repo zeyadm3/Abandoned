@@ -22,7 +22,8 @@ namespace Abandoned.EditorTools
     {
         /// <summary>Warm sodium-and-ember night: heavier bloom for the lava, haze that eats the far wall.</summary>
         private static readonly LevelAtmosphere.Mood Mood = new(
-            sky: new Color(.075f, .07f, .062f), equator: new Color(.05f, .045f, .038f), ground: new Color(.022f, .016f, .012f),
+            // L2: darker ambient so the dead lamps leave real darkness and the working ones make pools of light.
+            sky: new Color(.05f, .047f, .042f), equator: new Color(.032f, .028f, .024f), ground: new Color(.014f, .011f, .009f),
             fog: new Color(.17f, .13f, .10f), fogDensity: .024f, bloom: .3f, vignette: .27f, grain: .2f,
             saturation: -36f, contrast: 15f, sunColor: new Color(1f, .68f, .42f), sunIntensity: .10f, sunEuler: new Vector3(62f, -35f, 0f));
 
@@ -51,6 +52,10 @@ namespace Abandoned.EditorTools
             IronFactoryDock.Build(root, art);
             IronFactorySurroundings.Build(root, art);
             int highBays = IronFactoryLighting.Build(root, art);
+            // L3 set pieces: moonlight through the roof holes, the crane over the lava, the cold blast furnace.
+            IronFactoryRoof.BuildMoonlight(root, art);
+            IronFactoryCrane.Build(root, art);
+            IronFactoryBlastFurnace.Build(root, art);
             // The mall's mountain basin, centred on the plant (its ridges stand 330 m+ out, clear of the yard).
             MeridianMountainHorizon.Build(root);
             root.Find(MeridianMountainHorizon.GroupName).localPosition = new Vector3(L.Width * L.Tile * .5f, -.49f, L.Depth * L.Tile * .5f);
@@ -67,6 +72,15 @@ namespace Abandoned.EditorTools
             int hiding = IronFactoryHiding.Build(root, art, clearance);
             int breakers = IronFactoryPower.BuildBreakers(root, art);
             int hazards = IronFactoryPower.AddHazards(builtMachines, art);
+            List<LootPointSpec> loot = IronFactoryLootPlan.Points(builtMachines, cells, out int lootRejected);
+            List<Vector3> threats = IronFactoryThreatPlan.Points(cells, out List<string> threatProblems);
+            foreach (string problem in threatProblems) Debug.LogWarning("[IronFactory] Left out threat spawn: " + problem);
+            // L4: clutter, kept off every route, door, danger zone, hiding place and loot or threat point.
+            IronFactoryClutter.Counts clutter = IronFactoryClutter.Build(root, art, clearance, builtMachines, cells, loot, threats);
+
+            // L1: real surfaces. Decals first, then every tiled box gets world-scale UVs.
+            int decals = IronFactoryDecals.Build(root, art, cells);
+            int uvBoxes = IronFactorySurfaces.Apply(root, art.Tiling);
 
             var setup = new StructureSceneSetup();
             if (!setup.IsValid) throw new InvalidOperationException("Missing structural content for the Iron Factory build.");
@@ -75,9 +89,6 @@ namespace Abandoned.EditorTools
             IronFactoryAccess.AddSections(setup, stairs);
             StructureSimulation simulation = setup.AddSimulation(stability: .66f, seed: 4409);
 
-            List<LootPointSpec> loot = IronFactoryLootPlan.Points(builtMachines, cells, out int lootRejected);
-            List<Vector3> threats = IronFactoryThreatPlan.Points(cells, out List<string> threatProblems);
-            foreach (string problem in threatProblems) Debug.LogWarning("[IronFactory] Left out threat spawn: " + problem);
             LocationPlumbing.Populate(root, L.CrewSpawns, loot, threats, simulation);
             // Crews must come in through the dock before a monster can reach them; the roof, truck and the dock's
             // canopy and boxcars are not floors, and nothing walks on the light rigs.
@@ -103,7 +114,9 @@ namespace Abandoned.EditorTools
                       $"{machines}/{IronFactoryMachinePlan.Machines.Length} machines ({hazards} come alive on a breaker), " +
                       $"{breakers} breakers, {hiding}/{IronFactoryMachinePlan.Spots.Length} hiding places, " +
                       $"{loot.Count} loot points ({loot.Count(p => p.IsJackpot)} jackpot, {lootRejected} left out), " +
-                      $"{threats.Count} threat spawns ({threats.Count(t => t.y > 1f)} on catwalks), {highBays} high-bay lamps.");
+                      $"{threats.Count} threat spawns ({threats.Count(t => t.y > 1f)} on catwalks), {highBays} high-bay lamps, " +
+                      $"{decals} decals, {uvBoxes} boxes with world-scale UVs, clutter: {clutter.Solid} solid props, " +
+                      $"{clutter.Litter} litter, {clutter.Chains} chains, {clutter.Cables} cables.");
             for (int level = 1; level < cells.Length; level++)
                 Debug.Log($"[IronFactory] Tier {level} ({IronFactoryCatwalkPlan.Height(level):0} m), north up:\n{IronFactoryCatwalkPlan.Map(cells, level)}");
         }

@@ -198,15 +198,49 @@ Steps (each one a commit, each testable in a few minutes):
   grating (cut-out, see-through), riveted steel plate for machines and tanks, hazard paint. Heat tells the story:
   scorch and cooled spatter near the lava, damp stains and moss in the cold corners. Oil and rust-drip decals under
   the catwalks.
+  *L1 written (2026-10-18), compiled outside Unity, not yet rebuilt or seen:* `IronFactoryTextures` (code-made
+  SootBrick, FireBrick, RivetedPlate, Grating, MeshGuard, WornPaint, Cinder, OilStain, SootVeil; each a tileable
+  BaseColor/Normal/Mask in Art/Factory/Textures), `IronFactoryMaterialKit` (URP Lit materials in
+  Art/Factory/Materials; the mall's Concrete, Block, Rust and Asphalt maps are copied into factory materials, so the
+  mall, school and prison are untouched), `IronFactorySurfaces` (swaps every tiled cube for a world-scale-UV cube,
+  shared mesh assets in Art/Factory/UvBoxes, so textures repeat at real size instead of stretching),
+  `IronFactoryDecals` (scorch and spatter along the lava, oil under the catwalks, cracks, damp in the cold corners,
+  soot veils up the walls). Catwalk decks and stair treads are see-through grating, guards are wire mesh, room
+  walls are painted block.
 - **L2 Darkness and flicker.** Fewer working pendants, more dead and faulty ones: pools of light, not a lit hall. A
   buzz-and-stutter flicker for faulty pendants (with the existing light buzz sound). Lamps hang from chains and
   swing (local, cosmetic): after a press slams or a section collapses nearby, and when a monster walks the
   catwalk above them, so a swinging lamp is a tell.
+  *L2 written (2026-10-18), compiled outside Unity, not yet rebuilt or seen:* pendants now hang on 0.8 m chains
+  from a pivot just under the catwalk deck (`Structure/SwingingLamp`, cosmetic, every machine its own). They swing
+  from press slams and collapses nearby (`CameraShake` events) and when a monster walks the walkway right above
+  them. Pendant mix: about 35 % dead, 25 % stuttering with a buzz (`LightFixture` new `stutter` option, off
+  everywhere else, still calm under Reduce flashing), 15 % sputtering, 25 % steady. High bays: 40 % dead, 25 %
+  failing. Ambient light lowered so dead areas are actually dark; the lava and working lamps make the pools.
 - **L3 Set pieces.** Roof holes with cold moonlight shafts and drifting dust (landmarks, light pools). The overhead
   crane on the tier-3 rails, its hook and a crucible hanging over the lava, swaying and creaking (scenery; the
   loot crucible stays separate). A cold blast furnace tower on the west bank, its open mouth a dark doorway.
+  *L3 written (2026-10-18), compiled outside Unity, not yet rebuilt or seen:* `IronFactoryRoof`: the roof is laid
+  in strips around four 8 x 8 m holes (`IronFactoryLayout.RoofHoles`: over the rolling mill, the machine shop, the
+  dock's west stair and the east presses), torn sheets hang from the rims and lie on the floor; each hole has a
+  narrow cold moon beam, two crossed planes of lit air and drifting dust (a ParticleSystem). `IronFactoryCrane`: the
+  bridge crane on the tier-3 runways at z 70, its hook and a crucible with a not-quite-cooled crust hanging 7 m
+  over the lava, swaying slowly (`Structure/IdleSway`); no colliders, clear of every walkway. `IronFactoryBlastFurnace`:
+  a hollow riveted tower (7 m across, 18 m tall) in the west bank's south corner at (5, 24), walkable through a
+  3 m mouth facing east, with bustle pipe, tuyeres, a slag hearth and one ember that never went out. New
+  `Core/PowerIndependentLight`: the power controller leaves the moonlight, the ember and the lava glow alone (the
+  lava used to go dark on power-off contracts).
 - **L4 Clutter.** Scrap piles, cable runs sagging between columns, hanging chains, drums, tool carts, slag
   lumps, broken pallets: dense but outside every route the clearance check protects, batched per area.
+  *L4 written (2026-10-18), compiled outside Unity, not yet rebuilt or seen:* `IronFactoryProps` (drums standing
+  and toppled with an oil spill, scrap heaps bristling with bars and plates, crate stacks, tool carts, gas
+  bottles, broken pallets, slag lumps, hanging chains, sagging cables) placed by `IronFactoryClutter` and checked
+  by `IronFactoryClutterKeep`. Solid props hug the outer walls, the quiet machines (never a press or boiler: their
+  striped zones stay clean) and the rooms' walls, with a 0.5 m gap between props, and never sit on a stair,
+  ladder foot, doorway (inside or out), the dock lane, the lava edge, a danger zone, a hiding place or the floor in
+  front of it, or a loot or threat point. Litter is walk-over and keeps only off machines, stairs and the lava.
+  Chains hang under tier 1 (bottom at least 2.4 m up) and from the trusses where no walkway is below; cables sag
+  between the frame columns (none across the dock). Counts are in the rebuild's Console line.
 - **L5 Glowing hiding spots.** A faint pilot light on each one, emissive only (no extra lights): a blue pilot flame
   in each cold furnace, an amber fuse lamp on each cabinet, a dim tag light on the lockers and bays.
 - **L6 Distant chains.** A synthesised chain rattle, played now and then far from the crew in an empty part of the

@@ -53,8 +53,9 @@ namespace Abandoned.EditorTools
             Transform root = Group($"Walk_{level}_{cell.x}_{cell.y}", tier);
             root.position = L.CellCentre(cell, height);
             Transform visual = Group("Visual", root);
-            Material deck = kind == Kind.Weak ? art.Rust : art.Steel;
-            Material guard = kind == Kind.Weak ? art.Rust : art.Steel;
+            // See-through grating underfoot and mesh at the sides: from below you see who is up there.
+            Material deck = kind == Kind.Weak ? art.RustGrating : art.Grating;
+            Material guard = art.Guard;
 
             float half = (kind == Kind.Narrow ? 1.2f : 2f) * .5f;
             float arm = L.Tile * .5f - half;

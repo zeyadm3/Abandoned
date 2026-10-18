@@ -49,7 +49,7 @@ namespace Abandoned.EditorTools
             {
                 float t = (i + .5f) / Steps;
                 Box($"Tread_{i:00}", visual, new Vector3(0f, rise * t - .06f, FlightLength * t),
-                    new Vector3(FlightWidth, .06f, FlightLength / Steps * .9f), art.Steel, false);
+                    new Vector3(FlightWidth, .06f, FlightLength / Steps * .9f), art.Grating, false);
             }
             foreach (float side in new[] { -1f, 1f })
             {

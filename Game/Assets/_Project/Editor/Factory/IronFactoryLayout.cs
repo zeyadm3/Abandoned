@@ -64,6 +64,13 @@ namespace Abandoned.EditorTools
             new("Weighbridge_Office", 0, 0, 4, 3, Door.North | Door.East),
         };
 
+        /// <summary>L3: where the roof has fallen in (metres, on the 4 m grid): moonlight shafts and landmarks. One
+        /// over the rolling mill, one over the machine shop, one over the dock's west stair, one by the east presses.</summary>
+        public static readonly Rect[] RoofHoles =
+        {
+            new(20f, 60f, 8f, 8f), new(88f, 36f, 8f, 8f), new(36f, 8f, 8f, 8f), new(76f, 60f, 8f, 8f),
+        };
+
         public static Vector3 SizeMeters => new(Width * Tile, WallHeight, Depth * Tile);
 
         /// <summary>"Inside the building" for the horror director and the total collapse: down to the channel bed.</summary>

@@ -55,6 +55,8 @@ namespace Abandoned.EditorTools
 
             Transform lava = Group("Lava", channel);
             lava.gameObject.AddComponent<LavaVolume>().EditorSetup(L.LavaKill);
+            // Molten iron glows with the power off too.
+            lava.gameObject.AddComponent<PowerIndependentLight>();
             lava.gameObject.AddComponent<LavaSurface>().EditorSetup(surfaceRenderer, Glow(lava, c));
 
             Rails(Group("ChannelRails", root), c, art);

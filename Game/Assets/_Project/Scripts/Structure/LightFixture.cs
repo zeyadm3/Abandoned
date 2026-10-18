@@ -19,6 +19,9 @@ namespace Abandoned.Structure
         [SerializeField] private bool faulty;
         [SerializeField] private bool dead;
         [SerializeField] private int seed;
+        [Tooltip("Iron Factory: a dying tube that stutters often and buzzes each time (implies faulty).")]
+        [SerializeField] private bool stutter;
+        private bool inBurst;
 
         private readonly List<GlowSurface> surfaces = new();
         private MaterialPropertyBlock block;
@@ -93,8 +96,13 @@ namespace Abandoned.Structure
             if (!faulty && !disturbed) { Apply(1f); return; }
 
             float clock = Time.time + seed * 0.137f;
-            float period = 7f + seed % 9;
+            // A stuttering tube fails every few seconds instead of every few breaths, and buzzes as it goes.
+            float period = stutter ? 2.4f + seed % 5 * .55f : 7f + seed % 9;
             float phase = Mathf.Repeat(clock, period);
+            bool burst = disturbed || phase <= 1.35f;
+            if (stutter && burst && !inBurst && lamp != null)
+                Audio.GameAudio.Play(Audio.SoundId.LightBuzz, lamp.transform.position, .8f);
+            inBurst = burst;
             // Failing ballasts sputter in bursts, with a short complete blackout between strikes.
             if (!disturbed && phase > 1.35f) { Apply(1f); return; }
             if (!disturbed && phase > 0.72f && phase < 1.02f) { Apply(0f); return; }
@@ -148,6 +156,13 @@ namespace Abandoned.Structure
         public void EditorSetup(Light light, Renderer glowPanel, bool isFaulty, bool isDead, int fixtureSeed)
         {
             lamp = light; panel = glowPanel; faulty = isFaulty; dead = isDead; seed = fixtureSeed;
+        }
+
+        /// <summary>Iron Factory: a stuttering, buzzing tube (always faulty).</summary>
+        public void EditorSetupStutter(Light light, Renderer glowPanel, int fixtureSeed)
+        {
+            EditorSetup(light, glowPanel, true, false, fixtureSeed);
+            stutter = true;
         }
 
         /// <summary>Editor builder variant for a deliberately coloured single-panel fixture.</summary>

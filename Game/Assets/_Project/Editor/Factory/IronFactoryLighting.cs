@@ -58,8 +58,10 @@ namespace Abandoned.EditorTools
                 lamp.intensity = 9f;
                 lamp.color = new Color(1f, .82f, .58f);
                 lamp.shadows = LightShadows.None;
+                // L2: the heights stay mostly dark: four in ten dead, a quarter failing.
+                int roll = Mathf.Abs((index * 6151 + 911) % 100);
                 holder.gameObject.AddComponent<LightFixture>().EditorSetup(lamp, glow.GetComponent<Renderer>(),
-                    index % 5 == 0, index % 13 == 0, 2400 + index);
+                    roll >= 40 && roll < 65, roll < 40, 2400 + index);
                 index++;
             }
             return index;

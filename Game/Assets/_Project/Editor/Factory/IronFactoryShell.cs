@@ -27,7 +27,8 @@ namespace Abandoned.EditorTools
             Box("North", shell, new Vector3(size.x * .5f, h * .5f, size.z), new Vector3(size.x, h, t), art.Wall);
             Box("West", shell, new Vector3(0f, h * .5f, size.z * .5f), new Vector3(t, h, size.z), art.Wall);
             Box("East", shell, new Vector3(size.x, h * .5f, size.z * .5f), new Vector3(t, h, size.z), art.Wall);
-            Box("Roof", shell, new Vector3(size.x * .5f, h + L.Slab * .5f, size.z * .5f), new Vector3(size.x, L.Slab, size.z), art.Steel);
+            // L3: the roof has fallen in in places (moonlight comes through them).
+            IronFactoryRoof.BuildRoof(shell, art);
             Columns(Group("Frame", shell), art);
             MarkStatic(shell);
 
@@ -81,9 +82,9 @@ namespace Abandoned.EditorTools
         private static void Side(Transform holder, string name, Vector3 baseCentre, float length, bool alongZ, bool door,
             float height, IronFactoryArt art)
         {
-            if (door) Wall(holder, name, baseCentre, length, height, alongZ, alongZ ? baseCentre.z : baseCentre.x, DoorWidth, DoorHeight, RoomWall, art.Wall);
+            if (door) Wall(holder, name, baseCentre, length, height, alongZ, alongZ ? baseCentre.z : baseCentre.x, DoorWidth, DoorHeight, RoomWall, art.RoomWall);
             else Box(name, holder, baseCentre + Vector3.up * height * .5f,
-                alongZ ? new Vector3(RoomWall, height, length) : new Vector3(length, height, RoomWall), art.Wall);
+                alongZ ? new Vector3(RoomWall, height, length) : new Vector3(length, height, RoomWall), art.RoomWall);
         }
 
         /// <summary>A straight wall with one opening (a door, or the dock) and the lintel over it.</summary>
@@ -111,28 +112,42 @@ namespace Abandoned.EditorTools
         private static void Lights(Transform lights, IronFactoryArt art)
         {
             Rect channel = L.ChannelMeters;
-            const float hang = 4.55f;
             int index = 0;
             for (float z = 6f; z < L.Depth * L.Tile; z += 12f)
             for (float x = 6f; x < L.Width * L.Tile; x += 12f)
             {
                 if (x > channel.xMin - 2f && x < channel.xMax + 2f && z > channel.yMin - 2f && z < channel.yMax + 2f) continue;
-                Transform holder = Group("Fixture_" + index, lights);
-                holder.position = new Vector3(x, hang, z);
-                if (!InsideRoom(x, z))
-                    Box("Drop", holder, Vector3.up * (L.WallHeight - hang) * .5f, new Vector3(.04f, L.WallHeight - hang, .04f), art.Steel, false);
+                bool inRoom = InsideRoom(x, z);
+                // L2: each lamp hangs on a short chain from a pivot just under the catwalk deck (or a room's roof),
+                // so it can swing; the drop rod above the pivot stays put.
+                float pivotY = inRoom ? L.RoomHeight - L.Slab - .05f : L.Tiers[0] - .2f;
+                const float chain = .8f;
+                if (!inRoom)
+                    Box($"Drop_{index}", lights, new Vector3(x, (L.WallHeight + pivotY) * .5f, z), new Vector3(.04f, L.WallHeight - pivotY, .04f), art.Steel, false);
+                Transform pivot = Group("Fixture_" + index, lights);
+                pivot.position = new Vector3(x, pivotY, z);
+                Box("Chain", pivot, Vector3.down * chain * .5f, new Vector3(.03f, chain, .03f), art.Steel, false);
+                Transform holder = Group("Lamp", pivot);
+                holder.localPosition = Vector3.down * chain;
                 GameObject glow = Box("Diffuser", holder, Vector3.zero, new Vector3(1.25f, .12f, .48f), art.Lamp, false);
+                Box("Shade", holder, Vector3.up * .1f, new Vector3(1.35f, .08f, .58f), art.Steel, false);
                 Transform lampRoot = Group("Light", holder);
                 lampRoot.localRotation = Quaternion.Euler(90f, 0f, 0f);
                 Light lamp = lampRoot.gameObject.AddComponent<Light>();
                 lamp.type = LightType.Spot;
                 lamp.range = 12f;
-                lamp.spotAngle = 108f;
+                lamp.spotAngle = 100f;
                 lamp.intensity = 7f;
                 lamp.color = new Color(1f, .86f, .64f);
                 lamp.shadows = LightShadows.None;
-                holder.gameObject.AddComponent<LightFixture>().EditorSetup(lamp, glow.GetComponent<Renderer>(),
-                    index % 7 == 0, index % 17 == 0, 2200 + index);
+                var fixture = holder.gameObject.AddComponent<LightFixture>();
+                // Mostly dark, pools of light: about a third dead, a quarter stuttering and buzzing, a sixth
+                // sputtering now and then, and only a quarter burning steady.
+                int roll = Mathf.Abs((index * 7919 + 2203) % 100);
+                if (roll < 35) fixture.EditorSetup(lamp, glow.GetComponent<Renderer>(), false, true, 2200 + index);
+                else if (roll < 60) fixture.EditorSetupStutter(lamp, glow.GetComponent<Renderer>(), 2200 + index);
+                else fixture.EditorSetup(lamp, glow.GetComponent<Renderer>(), roll < 75, false, 2200 + index);
+                pivot.gameObject.AddComponent<SwingingLamp>().EditorSetup(chain);
                 index++;
             }
         }
