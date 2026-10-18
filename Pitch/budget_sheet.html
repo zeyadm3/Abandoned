@@ -1,0 +1,183 @@
+<title>Sarab Studio Budget</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+:root {
+  /* A spreadsheet in the studio's signage look: hazard yellow on cool paper, blue for cells you can edit. */
+  --bg: #F2F4F6; --panel: #FFFFFF; --fg: #0E1116; --muted: #5B6572; --line: #D5DAE0;
+  --accent: #F2C230; --accent-fg: #0E1116; --input: #1D4ED8; --total-bg: #FBEFC0; --head-bg: #0E1116; --head-fg: #F2F4F6;
+  --ok: #17803D; --bad: #B42318;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "Barlow", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1116; --panel: #161B22; --fg: #F2F4F6; --muted: #98A2B0; --line: #2A323C;
+  --accent: #F2C230; --accent-fg: #0E1116; --input: #7AA2FF; --total-bg: #3A3210; --head-bg: #F2C230; --head-fg: #0E1116;
+  --ok: #4ADE80; --bad: #F97066; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0E1116; --panel: #161B22; --fg: #F2F4F6; --muted: #98A2B0; --line: #2A323C;
+  --accent: #F2C230; --accent-fg: #0E1116; --input: #7AA2FF; --total-bg: #3A3210; --head-bg: #F2C230; --head-fg: #0E1116;
+  --ok: #4ADE80; --bad: #F97066; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; margin: 0;
+  padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 700 34px/1.05 var(--display); letter-spacing: .02em; text-transform: uppercase; margin: 0; text-wrap: balance; }
+h2 { font: 700 20px/1.1 var(--display); letter-spacing: .04em; text-transform: uppercase; margin: 0 0 10px; }
+.sub { color: var(--muted); margin: 6px 0 0; max-width: 62ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+button { font: 600 14px var(--body); background: var(--panel); color: var(--fg); border: 1px solid var(--line); padding: 7px 12px; cursor: pointer; }
+button:hover { border-color: var(--fg); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--input); outline-offset: 1px; }
+.legend { color: var(--muted); font-size: 13px; }
+.legend b { color: var(--input); font-weight: 600; }
+.wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-variant-numeric: tabular-nums; }
+th, td { padding: 0; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:last-child, td:last-child { border-right: 0; }
+thead th { background: var(--head-bg); color: var(--head-fg); font: 700 15px var(--display); letter-spacing: .06em; text-transform: uppercase; padding: 9px 12px; }
+th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 240px; }
+td.label { padding: 8px 12px; }
+td.num { padding: 8px 12px; }
+input { font: inherit; font-variant-numeric: tabular-nums; width: 100%; border: 0; background: transparent; color: var(--input); text-align: right; padding: 8px 12px; min-width: 90px; }
+input:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+select { font: inherit; background: transparent; color: var(--input); border: 0; padding: 8px 12px; width: 100%; text-align: right; }
+tr.sum td { font-weight: 600; background: color-mix(in srgb, var(--line) 35%, var(--panel)); }
+tr.total td { background: var(--total-bg); font: 700 18px var(--display); letter-spacing: .03em; }
+tr.total td.num, tr.total input { font-size: 18px; font-weight: 700; }
+tr.total td.label { text-transform: uppercase; }
+tr.mute td { color: var(--muted); }
+.ok { color: var(--ok); } .bad { color: var(--bad); }
+.note { color: var(--muted); font-size: 13px; margin: 8px 0 0; max-width: 78ch; }
+@media (max-width: 520px) { h1 { font-size: 28px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <h1>Sarab Studio Budget</h1>
+    <p class="sub">Three funding options for ABANDONED, November 2026 to December 2027 (14 months). Every amount is in dirhams (AED).</p>
+    <div class="bar">
+      <span class="legend"><b>Blue cells</b> can be edited and every total recalculates.</span>
+      <button id="reset" type="button">Reset to proposal</button>
+    </div>
+  </header>
+
+  <section>
+    <h2>Budget</h2>
+    <div class="wrap"><table id="budget"></table></div>
+    <p class="note">The reserve is whatever is left between the subtotal and the round total ask. The last column sets which tranche pays each line.</p>
+  </section>
+
+  <section>
+    <h2>Funding release</h2>
+    <div class="wrap"><table id="release"></table></div>
+    <p class="note">Tranche 1 is released at the start. It pays the founders, the full marketing budget and the software the game is built with. Tranche 2 pays setups, the Steam Deck, legal and language checks, and needs 10,000 copies sold and 75% positive reviews. Tranche 3 pays events, freelancers and interns, and needs 20,000 copies sold.</p>
+  </section>
+
+  <section>
+    <h2>Software, 14 months</h2>
+    <div class="wrap"><table id="software"></table></div>
+    <p class="note">List prices converted to dirhams. Check them against the live plans before the pitch.</p>
+  </section>
+
+  <section>
+    <h2>Assumptions</h2>
+    <div class="wrap"><table id="assume"></table></div>
+  </section>
+</main>
+
+<script>
+const TIERS = ["Lean", "Standard", "Max"];
+const DEFAULTS = () => ({
+  a: { peg: 3.6725, net: 16.46, fz: 30000, fy: 30000, fj: 15000, setupN: 3, setupP: 20000, deck: 2400,
+       langN: 11, langP: 1000, internN: 3, internPay: 3000, internMo: 6, legal: 20000, events: 10000, unity: 200000, software: 25000 },
+  sw: [["Claude Max (Zeyad, Yousef)", 370, 2], ["ChatGPT Pro (Zeyad, Yousef)", 375, 2], ["Claude Pro (Jihad)", 75, 1],
+       ["Google Workspace mailboxes", 26, 3], ["Website hosting and builder", 75, 1]],
+  domain: 55,
+  marketing: [160000, 263000, 375000], freelancers: [0, 15000, 30000], total: [400000, 530000, 730000],
+  tr: { founders: 1, software: 1, legal: 2, setups: 2, deck: 2, marketing: 1, langs: 2, events: 3, freelancers: 3, interns: 3 },
+});
+let S = DEFAULTS();
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const $ = id => document.getElementById(id);
+const num = (v, d = 0) => { const x = parseFloat(String(v).replace(/,/g, "")); return isFinite(x) ? x : d; };
+
+function inp(path, val, dec) {
+  return `<td><input inputmode="decimal" id="${path}" data-path="${path}" value="${dec ? val : fmt(val)}" aria-label="${path}"></td>`;
+}
+function setPath(path, v) {
+  const p = path.split("."); let o = S;
+  for (let i = 0; i < p.length - 1; i++) o = o[p[i]];
+  o[p[p.length - 1]] = v;
+}
+function lines() {
+  const a = S.a, t = S.tr;
+  return [
+    ["Founder pay, one-time at start", [0, 1, 2].map(() => a.fz + a.fy + a.fj), "founders"],
+    ["Software, website, domain", [0, 1, 2].map(() => a.software), "software"],
+    ["Legal, accounting, bookkeeping", [0, 1, 2].map(() => a.legal), "legal"],
+    ["Work setups", [0, 1, 2].map(() => a.setupN * a.setupP), "setups"],
+    ["Steam Deck for testing", [0, 1, 2].map(() => a.deck), "deck"],
+    ["Marketing and community", S.marketing, "marketing", "marketing"],
+    ["Language verification", [0, 1, 2].map(() => a.langN * a.langP), "langs"],
+    ["Events", [0, 1, 2].map(() => a.events), "events"],
+    ["UAE freelancers (art, sound)", S.freelancers, "freelancers", "freelancers"],
+    ["UAE interns (Max only)", [0, 0, a.internN * a.internPay * a.internMo], "interns"],
+  ];
+}
+function render() {
+  const L = lines(), sub = [0, 1, 2].map(i => L.reduce((s, l) => s + l[1][i], 0));
+  const total = S.total, reserve = sub.map((s, i) => total[i] - s);
+  let h = `<thead><tr><th>Line</th>${TIERS.map(t => `<th>${t}</th>`).join("")}<th>Paid in tranche</th></tr></thead><tbody>`;
+  for (const [name, vals, key, arr] of L) {
+    h += `<tr><td class="label">${name}</td>` + vals.map((v, i) => arr ? inp(`${arr}.${i}`, v) : `<td class="num">${fmt(v)}</td>`).join("");
+    h += `<td><select data-path="tr.${key}" id="tr.${key}" aria-label="Tranche for ${name}">${[1, 2, 3].map(n => `<option value="${n}"${S.tr[key] == n ? " selected" : ""}>${n}</option>`).join("")}</select></td></tr>`;
+  }
+  h += `<tr class="sum"><td class="label">Subtotal</td>${sub.map(v => `<td class="num">${fmt(v)}</td>`).join("")}<td></td></tr>`;
+  h += `<tr><td class="label">Reserve</td>${reserve.map(v => `<td class="num ${v < 0 ? "bad" : ""}">${fmt(v)}</td>`).join("")}<td></td></tr>`;
+  h += `<tr class="total"><td class="label">Total ask</td>${total.map((v, i) => inp(`total.${i}`, v)).join("")}<td></td></tr>`;
+  h += `<tr class="mute"><td class="label">Reserve as share of subtotal</td>${reserve.map((r, i) => `<td class="num">${(r / sub[i] * 100).toFixed(1)}%</td>`).join("")}<td></td></tr>`;
+  h += `<tr class="mute"><td class="label">Total ask in USD</td>${total.map(v => `<td class="num">${fmt(v / S.a.peg)}</td>`).join("")}<td></td></tr>`;
+  h += `<tr class="mute"><td class="label">Room under Unity's USD limit, before game sales</td>${total.map(v => { const r = S.a.unity - v / S.a.peg; return `<td class="num ${r < 0 ? "bad" : ""}">${fmt(r)}</td>`; }).join("")}<td></td></tr>`;
+  h += `<tr class="mute"><td class="label">Marketing share of spend</td>${sub.map((s, i) => `<td class="num">${Math.round(S.marketing[i] / s * 100)}%</td>`).join("")}<td></td></tr>`;
+  h += `<tr class="mute"><td class="label">Break-even copies</td>${total.map(v => `<td class="num">${fmt(Math.round(v / S.a.net / 100) * 100)}</td>`).join("")}<td></td></tr></tbody>`;
+  $("budget").innerHTML = h;
+
+  const trSum = n => [0, 1, 2].map(i => L.filter(l => S.tr[l[2]] == n).reduce((s, l) => s + l[1][i], 0));
+  const T = [1, 2, 3].map(trSum), labs = ["Tranche 1, at start", "Tranche 2, Mar to Aug (gated)", "Tranche 3, Sep to Dec (gated)"];
+  let r = `<thead><tr><th>Release</th>${TIERS.map(t => `<th>${t}</th>`).join("")}</tr></thead><tbody>`;
+  T.forEach((row, k) => { r += `<tr><td class="label">${labs[k]}</td>${row.map(v => `<td class="num">${fmt(v)}</td>`).join("")}</tr>`; });
+  r += `<tr><td class="label">Reserve held back</td>${reserve.map(v => `<td class="num">${fmt(v)}</td>`).join("")}</tr>`;
+  r += `<tr class="total"><td class="label">Total ask</td>${total.map(v => `<td class="num">${fmt(v)}</td>`).join("")}</tr>`;
+  r += `<tr class="mute"><td class="label">Tranche 1 as share of total ask</td>${T[0].map((v, i) => `<td class="num">${Math.round(v / total[i] * 100)}%</td>`).join("")}</tr></tbody>`;
+  $("release").innerHTML = r;
+
+  let w = `<thead><tr><th>Item</th><th>AED a month</th><th>Count</th><th>14 months</th></tr></thead><tbody>`, it = 0;
+  S.sw.forEach((s, i) => { const t = s[1] * s[2] * 14; it += t;
+    w += `<tr><td class="label">${s[0]}</td>${inp(`sw.${i}.1`, s[1])}${inp(`sw.${i}.2`, s[2])}<td class="num">${fmt(t)}</td></tr>`; });
+  const dom = S.domain * 14 / 12; it += dom;
+  w += `<tr><td class="label">Domain (AED a year)</td>${inp("domain", S.domain)}<td class="num">1</td><td class="num">${fmt(dom)}</td></tr>`;
+  w += `<tr class="sum"><td class="label">Itemised total</td><td></td><td></td><td class="num">${fmt(it)}</td></tr>`;
+  w += `<tr class="total"><td class="label">Budgeted (rounded up)</td><td></td><td></td>${inp("a.software", S.a.software)}</tr></tbody>`;
+  $("software").innerHTML = w;
+
+  const A = [["AED per USD (peg)", "a.peg", 1], ["Studio keeps per copy (AED)", "a.net", 1], ["Founder pay, Zeyad", "a.fz"], ["Founder pay, Yousef", "a.fy"],
+    ["Founder pay, Jihad", "a.fj"], ["Work setups (count)", "a.setupN"], ["Price per setup", "a.setupP"], ["Steam Deck", "a.deck"],
+    ["Languages verified (count)", "a.langN"], ["Price per language", "a.langP"], ["Interns in Max (count)", "a.internN"],
+    ["Intern pay per month", "a.internPay"], ["Intern months", "a.internMo"], ["Legal, accounting, bookkeeping", "a.legal"],
+    ["Events", "a.events"], ["Unity Personal limit (USD)", "a.unity"]];
+  $("assume").innerHTML = `<thead><tr><th>Input</th><th>Value</th></tr></thead><tbody>` +
+    A.map(([n, p, d]) => `<tr><td class="label">${n}</td>${inp(p, p.split(".").reduce((o, k) => o[k], S), d)}</tr>`).join("") + `</tbody>`;
+}
+document.addEventListener("change", e => {
+  const p = e.target.dataset && e.target.dataset.path; if (!p) return;
+  const v = e.target.tagName === "SELECT" ? num(e.target.value) : num(e.target.value);
+  const parts = p.split(".");
+  if (parts[0] === "sw") S.sw[+parts[1]][+parts[2]] = v; else setPath(p, v);
+  const focus = e.target.id; render();
+  const next = document.getElementById(focus); if (next) next.focus({ preventScroll: true });
+});
+document.addEventListener("focusin", e => { if (e.target.tagName === "INPUT") e.target.select(); });
+$("reset").addEventListener("click", () => { S = DEFAULTS(); render(); });
+render();
+</script>
