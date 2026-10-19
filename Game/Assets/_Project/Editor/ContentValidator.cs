@@ -30,6 +30,7 @@ namespace Abandoned.EditorTools
             typeof(PlayerMotor), typeof(PlayerLook), typeof(PlayerInputReader), typeof(PlayerStamina), typeof(PlayerRagdoll),
             typeof(PlayerCameraFeel), typeof(PlayerFootsteps), typeof(Abandoned.Interaction.PlayerCarrier),
             typeof(Abandoned.Interaction.PlayerInteractor), typeof(Abandoned.Interaction.CarrierLoad),
+            typeof(PlayerPerspective),
         };
 
         /// <summary>Component types every contract destination must contain at least once.</summary>

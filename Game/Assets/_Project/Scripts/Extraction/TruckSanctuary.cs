@@ -22,8 +22,8 @@ namespace Abandoned.Extraction
         [SerializeField] private Vector2 bayLamp = new(1.7f, 8f);
         [SerializeField] private Vector3 headlights = new(4f, 17f, 55f);
         [SerializeField, Range(0f, 1f)] private float idleVolume = 0.15f;
-        [SerializeField] private Transform leftRearDoor;
-        [SerializeField] private Transform rightRearDoor;
+        [Abandoned.Core.OptionalReference, SerializeField] private Transform leftRearDoor;
+        [Abandoned.Core.OptionalReference, SerializeField] private Transform rightRearDoor;
         [SerializeField] private float leftClosedYaw;
         [SerializeField] private float rightClosedYaw;
 

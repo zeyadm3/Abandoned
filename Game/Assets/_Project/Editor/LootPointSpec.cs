@@ -11,7 +11,7 @@ namespace Abandoned.EditorTools
         public readonly CarryClass Min, Max;
         public readonly bool IsJackpot;
 
-        public LootPointSpec(string name, string tag, Vector3 at, CarryClass min, CarryClass max, bool isJackpot)
+        public LootPointSpec(string name, string tag, Vector3 at, CarryClass min, CarryClass max, bool isJackpot = false)
         { Name = name; Tag = tag; At = at; Min = min; Max = max; IsJackpot = isJackpot; }
     }
 }

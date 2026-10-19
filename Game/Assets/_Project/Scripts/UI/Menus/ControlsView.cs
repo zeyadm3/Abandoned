@@ -18,6 +18,7 @@ namespace Abandoned.UI
             ["Use"] = Loc.Mark("Use / hold to throw"), ["Drop"] = Loc.Mark("Set down / discard pocket"), ["Rotate"] = Loc.Mark("Rotate held object"), ["Scan"] = Loc.Mark("Scan"), ["Flashlight"] = Loc.Mark("Flashlight"), ["HandSlot1"] = Loc.Mark("Pocket 1"),
             ["HandSlot2"] = Loc.Mark("Pocket 2"), ["HandSlot3"] = Loc.Mark("Pocket 3"), ["HandSlot4"] = Loc.Mark("Pocket 4"), ["Inventory"] = Loc.Mark("Inventory"), ["PushToTalk"] = Loc.Mark("Push to talk"), ["Radio"] = Loc.Mark("Radio"),
             ["GiveGear"] = Loc.Mark("Give gear / take a fallen crewmate's"), ["Chat"] = Loc.Mark("Text chat"), ["PhotoCamera"] = Loc.Mark("Free camera (photo)"), ["HideHud"] = Loc.Mark("Hide the HUD (clips)"),
+            ["TogglePerspective"] = Loc.Mark("Switch perspective (1st/3rd person)"),
             ["Ping"] = Loc.Mark("Ping"), ["EmotePoint"] = Loc.Mark("Emote: point"), ["EmoteWave"] = Loc.Mark("Emote: wave"), ["EmotePanic"] = Loc.Mark("Emote: panic"),
         };
 

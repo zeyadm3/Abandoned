@@ -89,6 +89,18 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets(); return materialProblems==0;
         });
 
+        public static void ApplyCharacterRedesign() => RunAndExit(() =>
+        {
+            CharacterRedesignBuilder.ApplyExported();
+            return true;
+        });
+
+        public static void BuildSoundBank() => RunAndExit(() =>
+        {
+            SoundBankBuilder.CreateMissing();
+            return true;
+        });
+
         public static void BuildMac() => RunAndExit(() => BuildScript.Build(BuildPlatform.Mac, BuildFlavor.Shareable));
         public static void BuildWindows() => RunAndExit(() => BuildScript.Build(BuildPlatform.Windows, BuildFlavor.Shareable));
         public static void BuildBoth() => RunAndExit(BuildScript.BuildBoth);

@@ -38,7 +38,7 @@ namespace Abandoned.Player
             if (NetworkPlayer.Local != me) Rebuild();
             if (me == null || eye == null) return;
             ApplySuit();
-            bool visible = !me.IsDead && !me.IsHiding && !me.Ragdoll.IsRagdolled && Camera.main != null && Camera.main.enabled;
+            bool visible = !me.IsDead && !me.IsHiding && !me.Ragdoll.IsRagdolled && Camera.main != null && Camera.main.enabled && !PlayerPerspective.IsThirdPerson;
             for (int i = 0; i < 2; i++)
             {
                 if (arms[i] != null) arms[i].gameObject.SetActive(visible);

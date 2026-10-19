@@ -177,7 +177,29 @@ namespace Abandoned.Player
             CosmeticDefinition extra = catalog.Accessory(c.Accessory);
             accessory = Wearable(extra);
             accessoryOnBody = extra != null && extra.BodyMounted;
+            UpdateCosmeticsShadowMode();
             LateUpdate();
+        }
+
+        private bool isThirdPerson;
+
+        /// <summary>Switches owner hat and accessory visibility between first person (shadows only) and third person (fully rendered).</summary>
+        public void SetThirdPerson(bool thirdPerson)
+        {
+            isThirdPerson = thirdPerson;
+            UpdateCosmeticsShadowMode();
+        }
+
+        private void UpdateCosmeticsShadowMode()
+        {
+            if (!IsOwner) return;
+            ShadowCastingMode mode = isThirdPerson ? ShadowCastingMode.On : ShadowCastingMode.ShadowsOnly;
+            if (hat != null)
+                foreach (Renderer r in hat.GetComponentsInChildren<Renderer>())
+                    if (r != null) r.shadowCastingMode = mode;
+            if (accessory != null)
+                foreach (Renderer r in accessory.GetComponentsInChildren<Renderer>())
+                    if (r != null) r.shadowCastingMode = mode;
         }
 
         private GameObject Wearable(CosmeticDefinition d)
@@ -187,7 +209,10 @@ namespace Abandoned.Player
             foreach (Collider col in worn.GetComponentsInChildren<Collider>()) Destroy(col);
             // Inside your own head it would fill the screen when you look around; you still see its shadow.
             if (IsOwner)
-                foreach (Renderer r in worn.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+            {
+                ShadowCastingMode mode = isThirdPerson ? ShadowCastingMode.On : ShadowCastingMode.ShadowsOnly;
+                foreach (Renderer r in worn.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = mode;
+            }
             return worn;
         }
 
