@@ -100,7 +100,8 @@ namespace Abandoned.EditorTools
             // canopy and boxcars are not floors, and nothing walks on the light rigs.
             LocationPlumbing.BakeNavMesh(root, L.SceneName,
                 new[] { "Exterior", "Truck", "Shell/Roof", "MeridianCollectionBay", "RailDock", "Lights", "Ladders",
-                    IronFactorySurroundings.GroupName, MeridianMountainHorizon.GroupName, "Trusses", "YardLights", "CowperStoves" });
+                    IronFactorySurroundings.GroupName, MeridianMountainHorizon.GroupName, "Trusses", "YardLights", "CowperStoves",
+                    "ElectricalSubstation", "SecurityGatehouse", "YardClutter" });
             LocationPlumbing.ConfigureHorrorScenes();
 
             LevelAtmosphere.Apply(L.SceneName, Mood, root);

@@ -30,6 +30,25 @@ namespace Abandoned.EditorTools
             GameObject apron = Box("DockApron", ground, new Vector3(L.DockX, -.16f, -4.5f),
                 new Vector3(MeridianCollectionBayBuilder.ApproachWidth + .6f, .12f, 4.4f), art.Concrete);
             apron.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
+
+            // Painted yellow loading zone hatch lines and approach lane guides
+            Transform markings = Group("LotMarkings", ground);
+            foreach (float side in new[] { -1f, 1f })
+            {
+                float x = L.DockX + side * (MeridianCollectionBayBuilder.ApproachWidth * .5f + .4f);
+                Box("ApronStripe", markings, new Vector3(x, -.08f, -4.5f), new Vector3(.2f, .02f, 4.4f), art.Safety, false);
+            }
+            // Yellow centerline guide running south toward the entrance gatehouse
+            Box("ApproachLine", markings, new Vector3(L.DockX, -.08f, -15.5f), new Vector3(.18f, .02f, 8f), art.Safety, false);
+
+            // Oil drip stains on the asphalt where trucks idle
+            Box("OilStain_1", markings, new Vector3(L.DockX, -.085f, -8.5f), new Vector3(2.4f, .01f, 3.2f), art.Oil, false);
+            Box("OilStain_2", markings, new Vector3(L.DockX - 8f, -.085f, -6f), new Vector3(1.6f, .01f, 2.2f), art.Oil, false);
+
+            // Concrete wheel stops along the parking boundary
+            foreach (float px in new[] { 45f, 50f, 70f, 75f })
+                Box("WheelStop", ground, new Vector3(px, -.05f, -2.2f), new Vector3(2.2f, .18f, .35f), art.Concrete, true);
+
             ground.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
 
             TruckCargo cargo = TruckBuilder.Build(Group("Truck", root), L.TruckRear, Vector3.back);

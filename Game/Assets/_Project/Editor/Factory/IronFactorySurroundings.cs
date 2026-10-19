@@ -40,6 +40,13 @@ namespace Abandoned.EditorTools
             CoolingTower(group, new Vector3(250f, 0f, 75f), concrete);
             foreach (float x in new[] { 16f, 34f, 104f }) Smokestack(group, new Vector3(x, 0f, L.Depth * L.Tile + 9f), brick, art);
             WaterTower(group, new Vector3(-36f, 0f, -48f), art);
+
+            // Exterior scenery compounds
+            IronFactoryYardLights.Build(root, art);
+            IronFactorySubstation.Build(root, art);
+            IronFactoryGatehouse.Build(root, art);
+            IronFactoryYardClutter.Build(root, art);
+
             MarkStatic(group);
         }
 
@@ -56,10 +63,10 @@ namespace Abandoned.EditorTools
             Slab("East", Yard.xMax, Yard.yMin, x1, Yard.yMax);
         }
 
-        // Chain-link on posts: thin wires to look through, one solid line per side to stop anyone walking off.
+        // Chain-link on posts: real woven wire mesh, tension rails, and 3-strand angled barbed wire outriggers.
         private static void BuildFence(Transform g, IronFactoryArt art)
         {
-            const float height = 2.6f;
+            const float height = 2.8f;
             Vector2[] corners = { new(Fence.xMin, Fence.yMin), new(Fence.xMax, Fence.yMin), new(Fence.xMax, Fence.yMax), new(Fence.xMin, Fence.yMax) };
             for (int side = 0; side < 4; side++)
             {
@@ -73,11 +80,29 @@ namespace Abandoned.EditorTools
                 var stop = line.gameObject.AddComponent<BoxCollider>();
                 stop.center = Vector3.up * height * .5f;
                 stop.size = new Vector3(.2f, height, length);
-                foreach (float y in new[] { .1f, .9f, 1.7f, height })
-                    Box("Wire", line, new Vector3(0f, y, 0f), new Vector3(.03f, .03f, length), art.Steel, false);
-                int posts = Mathf.CeilToInt(length / 6f);
+
+                // Real see-through woven chain-link mesh panel
+                Box("ChainlinkMesh", line, Vector3.up * (height * .5f), new Vector3(.02f, height, length), art.Guard, false);
+
+                // Top and bottom tubular steel tension rails
+                Box("TopRail", line, Vector3.up * height, new Vector3(.06f, .06f, length), art.Steel, false);
+                Box("BottomRail", line, Vector3.up * .1f, new Vector3(.06f, .06f, length), art.Steel, false);
+
+                int posts = Mathf.CeilToInt(length / 4f);
                 for (int i = 0; i <= posts; i++)
-                    Box("Post", line, new Vector3(0f, height * .5f, -length * .5f + length * i / posts), new Vector3(.1f, height, .1f), art.Rust, false);
+                {
+                    float pz = -length * .5f + length * i / posts;
+                    Box("Post", line, new Vector3(0f, height * .5f, pz), new Vector3(.1f, height, .1f), art.Rust, false);
+
+                    // Angled barbed-wire outrigger arm facing outward
+                    GameObject outrigger = Box("Outrigger", line, new Vector3(-.18f, height + .22f, pz),
+                        new Vector3(.03f, .5f, .03f), art.Steel, false);
+                    outrigger.transform.localRotation = Quaternion.Euler(0f, 0f, 40f);
+                }
+
+                // 3 strands of barbed wire running along the top
+                foreach (float y in new[] { height + .1f, height + .25f, height + .4f })
+                    Box("BarbedWire", line, new Vector3(-.18f, y, 0f), new Vector3(.02f, .02f, length), art.Steel, false);
             }
         }
 
@@ -91,23 +116,71 @@ namespace Abandoned.EditorTools
                 foreach (float side in new[] { -.72f, .72f })
                     Box("Rail", g, new Vector3((x0 + x1) * .5f, .08f, z + side), new Vector3(x1 - x0, .14f, .07f), art.Steel, false);
             }
-            // Dead rolling stock: a line of boxcars and a cut of ore hoppers.
-            for (int i = 0; i < 5; i++) Car(g, new Vector3(-10f + i * 15f, 0f, -40f), boxcar, art, false);
-            for (int i = 0; i < 4; i++) Car(g, new Vector3(110f + i * 13f, 0f, -46f), art.Rust, art, true);
-            for (int i = 0; i < 3; i++) Car(g, new Vector3(-80f + i * 15f, 0f, -52f), boxcar, art, false);
+            // Dead rolling stock: detailed cuts of boxcars and ore hoppers
+            for (int i = 0; i < 5; i++) Car(g, new Vector3(-10f + i * 16f, 0f, -40f), boxcar, art, false);
+            for (int i = 0; i < 4; i++) Car(g, new Vector3(110f + i * 14f, 0f, -46f), art.Rust, art, true);
+            for (int i = 0; i < 3; i++) Car(g, new Vector3(-80f + i * 16f, 0f, -52f), boxcar, art, false);
         }
 
         private static void Car(Transform g, Vector3 at, Material body, IronFactoryArt art, bool hopper)
         {
             Transform car = Group(hopper ? "OreHopperCar" : "Boxcar", g);
             car.position = at;
-            float length = hopper ? 11f : 14f, height = hopper ? 2.6f : 3.4f;
-            Box("Body", car, new Vector3(0f, 1.1f + height * .5f, 0f), new Vector3(length, height, 3f), body, false);
+            float length = hopper ? 11.5f : 14.5f, height = hopper ? 2.8f : 3.5f;
+
+            // Main Car Body
+            Box("Body", car, new Vector3(0f, 1.1f + height * .5f, 0f), new Vector3(length, height, 3.1f), body, false);
+
             if (hopper)
-                foreach (float x in new[] { -2.5f, 2.5f })
-                    Box("Chute", car, new Vector3(x, .9f, 0f), new Vector3(2f, .8f, 2.2f), art.Rust, false);
+            {
+                // Tapered hopper slope chutes and discharge gates
+                foreach (float x in new[] { -2.8f, 2.8f })
+                {
+                    Box("Chute", car, new Vector3(x, .85f, 0f), new Vector3(2.4f, .9f, 2.4f), art.Rust, false);
+                    Box("GateWheel", car, new Vector3(x, .65f, 1.3f), new Vector3(.3f, .3f, .05f), art.Safety, false);
+                }
+                Box("TopRim", car, new Vector3(0f, 1.1f + height + .06f, 0f), new Vector3(length + .2f, .12f, 3.3f), art.Steel, false);
+            }
+            else
+            {
+                // Boxcar exterior structural side ribs
+                for (float x = -length * .45f; x <= length * .45f; x += 1.4f)
+                {
+                    Box("SideRib_L", car, new Vector3(x, 1.1f + height * .5f, 1.58f), new Vector3(.08f, height, .06f), art.Rust, false);
+                    Box("SideRib_R", car, new Vector3(x, 1.1f + height * .5f, -1.58f), new Vector3(.08f, height, .06f), art.Rust, false);
+                }
+                // Sliding cargo doors in center
+                Box("Door_L", car, new Vector3(0f, 1.1f + height * .5f, 1.6f), new Vector3(2.2f, height - .4f, .1f), art.Steel, false);
+                Box("Door_R", car, new Vector3(0f, 1.1f + height * .5f, -1.6f), new Vector3(2.2f, height - .4f, .1f), art.Steel, false);
+                Box("DoorGuide", car, new Vector3(0f, 1.1f + height - .1f, 1.62f), new Vector3(4.8f, .08f, .06f), art.Rust, false);
+
+                // Roof running board catwalk
+                Box("RoofCatwalk", car, new Vector3(0f, 1.1f + height + .06f, 0f), new Vector3(length + .4f, .1f, .8f), art.Grating, false);
+
+                // End ladder
+                for (float y = 1.2f; y < 1.1f + height; y += .45f)
+                    Box("LadderRung", car, new Vector3(length * .5f + .05f, y, .8f), new Vector3(.04f, .03f, .45f), art.Steel, false);
+            }
+
+            // Wheel bogies (two 2-axle trucks) with actual steel wheels
             foreach (float end in new[] { -1f, 1f })
-                Box("Truck", car, new Vector3(end * (length * .5f - 2f), .5f, 0f), new Vector3(2.6f, .7f, 2.2f), art.Bed, false);
+            {
+                Transform truck = Group("Bogie", car);
+                truck.localPosition = new Vector3(end * (length * .5f - 2f), .5f, 0f);
+                Box("BogieFrame", truck, Vector3.zero, new Vector3(2.6f, .4f, 2.2f), art.Bed, false);
+
+                // 4 cylindrical wheels per truck (2 axles)
+                foreach (float ax in new[] { -.75f, .75f })
+                foreach (float az in new[] { -1.05f, 1.05f })
+                {
+                    Primitive(PrimitiveType.Cylinder, "Wheel", truck, new Vector3(ax, -.05f, az),
+                        new Vector3(.68f, .14f, .68f), art.Steel, false).transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                }
+            }
+
+            // Coupler draft gear on ends
+            foreach (float end in new[] { -1f, 1f })
+                Box("Coupler", car, new Vector3(end * (length * .5f + .35f), .6f, 0f), new Vector3(.7f, .25f, .25f), art.Rust, false);
         }
 
         // A hyperboloid of stacked rings: wide foot, narrow waist, a slight flare at the lip.
@@ -133,6 +206,15 @@ namespace Abandoned.EditorTools
                 Primitive(PrimitiveType.Cylinder, "Band", stack, new Vector3(0f, y, 0f), new Vector3(r * 2.2f, .6f, r * 2.2f), art.Rust, false);
             // The flue duct from the plant's wall to the stack's foot.
             Box("Flue", stack, new Vector3(0f, 14f, -5f), new Vector3(2.2f, 2.2f, 8f), art.Steel, false);
+
+            // Red aviation warning beacon on the top rim
+            Transform beacon = Group("Beacon", stack);
+            beacon.localPosition = Vector3.up * (height + .4f);
+            Box("BeaconBase", beacon, Vector3.zero, new Vector3(.4f, .3f, .4f), art.Steel, false);
+            Material redGlow = GetMaterial("IronFactory_RedBeacon", new Color(1f, .1f, .05f));
+            redGlow.SetColor("_EmissionColor", new Color(3f, .2f, .1f));
+            redGlow.EnableKeyword("_EMISSION");
+            Primitive(PrimitiveType.Cylinder, "BeaconLamp", beacon, Vector3.up * .25f, new Vector3(.3f, .35f, .3f), redGlow, false);
         }
 
         private static void WaterTower(Transform g, Vector3 at, IronFactoryArt art)

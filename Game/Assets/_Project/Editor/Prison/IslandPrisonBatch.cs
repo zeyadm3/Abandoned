@@ -202,6 +202,7 @@ namespace Abandoned.EditorTools
             ("16-quay", new Vector3(120f, 1.7f, 4f), new Vector3(70f, 6f, 12f)),
             ("17-southwest-rocks", new Vector3(-10f, 4f, -10f), new Vector3(30f, 10f, 40f)),
             ("18-lighthouse-top", new Vector3(62f, 29.7f, 109.5f), new Vector3(150f, 10f, 40f)),
+            ("19-west-bridge", new Vector3(8f, 13.5f, 54f), new Vector3(-700f, 50f, -140f)),
         };
 
         private static void Render(Transform root)
