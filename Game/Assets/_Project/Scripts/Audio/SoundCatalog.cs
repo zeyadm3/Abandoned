@@ -232,6 +232,16 @@ namespace Abandoned.Audio
             Set(SoundId.SteamBlast, Fx, 60, 3f, 45f, Syn, Dull, 2, Loc.Mark("steam blasts"));
             // The molten channel's low roar and slow plops, along its length (ambience, so no caption).
             Set(SoundId.LavaRumble, Bed, 160, 3f, 28f, pitch: 0f, loop: true);
+            // Island prison: a far foghorn (open air, never dulled, captioned), the surf and the lamp motor (ambience).
+            Set(SoundId.Foghorn, Bed, 120, 60f, 400f, Syn, Open, 2, Loc.Mark("a foghorn, far off"), pitch: 0f);
+            Set(SoundId.SurfLoop, Bed, 170, 6f, 45f, pitch: 0f, loop: true);
+            Set(SoundId.LighthouseMotor, Fx, 150, 2f, 24f, pitch: 0f, loop: true);
+            // Iron Factory L6: distant chains and thermal groans (local cosmetic ambience).
+            Set(SoundId.FactoryChainRattle, Bed, 140, 15f, 90f, Syn, Dull, 3, null, 0.65f);
+            Set(SoundId.FactoryThermalGroan, Bed, 140, 20f, 100f, Syn, Dull, 2, null, 0.7f);
+            // Loot quirks: hot metal sizzling and liquid sloshing
+            Set(SoundId.LootSizzle, Fx, 150, 1f, 12f, Syn, Wall, 3, Loc.Mark("hot metal hisses"), 0.6f);
+            Set(SoundId.LootSlosh, Fx, 130, 1f, 15f, Syn, Wall, 3, null, 0.7f);
             // @@catalog
             return t;
         }

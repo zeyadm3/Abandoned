@@ -19,8 +19,8 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class IronFactoryClutter
     {
-        private static readonly K[] WallKinds = { K.Drums, K.Drums, K.Crates, K.Crates, K.ScrapHeap, K.GasBottles, K.ToolCart, K.ToppledDrum };
-        private static readonly K[] MachineKinds = { K.Drums, K.ScrapHeap, K.ToppledDrum, K.ToolCart, K.Crates };
+        private static readonly K[] WallKinds = { K.Drums, K.Drums, K.Crates, K.Crates, K.ScrapHeap, K.GasBottles, K.ToolCart, K.ToppledDrum, K.OxyTorchCart, K.BilletStack, K.SafetyBollards };
+        private static readonly K[] MachineKinds = { K.Drums, K.ScrapHeap, K.ToppledDrum, K.ToolCart, K.Crates, K.OxyTorchCart, K.SlagThimble, K.BilletStack };
 
         public readonly struct Counts
         {

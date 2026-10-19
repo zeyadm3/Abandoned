@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Abandoned.Core;
 using Abandoned.Equipment;
 using Abandoned.Interaction;
 using Abandoned.Networking;
@@ -24,6 +26,10 @@ namespace Abandoned.Player
         private Vector3 lastPos;
         private GameObject tool;
         private EquipmentDefinition shownTool;
+        private readonly List<Renderer> coverall = new();
+        private readonly MaterialPropertyBlock suitBlock = new();
+        private Color shownSuit = new(-1f, -1f, -1f, -1f);
+        private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
 
         public Transform RightHand => hands[1];
 
@@ -31,8 +37,13 @@ namespace Abandoned.Player
         {
             if (NetworkPlayer.Local != me) Rebuild();
             if (me == null || eye == null) return;
+            ApplySuit();
             bool visible = !me.IsDead && !me.IsHiding && !me.Ragdoll.IsRagdolled && Camera.main != null && Camera.main.enabled;
-            for (int i = 0; i < 2; i++) if (arms[i] != null) arms[i].gameObject.SetActive(visible);
+            for (int i = 0; i < 2; i++)
+            {
+                if (arms[i] != null) arms[i].gameObject.SetActive(visible);
+                if (hands[i] != null) hands[i].gameObject.SetActive(visible);
+            }
             if (!visible) return;
             float speed = Time.deltaTime > 0f ? Vector3.ProjectOnPlane(me.transform.position - lastPos, Vector3.up).magnitude / Time.deltaTime : 0f;
             lastPos = me.transform.position;
@@ -93,7 +104,7 @@ namespace Abandoned.Player
             Vector3 along = hand - shoulder;
             arms[side].localPosition = shoulder + along * 0.5f;
             arms[side].localRotation = Quaternion.FromToRotation(Vector3.up, along.normalized);
-            arms[side].localScale = new Vector3(0.085f, along.magnitude * 0.5f, 0.085f);
+            arms[side].localScale = new Vector3(1f, along.magnitude, 1f);
             hands[side].localPosition = hand;
             hands[side].localRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
         }
@@ -105,6 +116,11 @@ namespace Abandoned.Player
                 if (arms[i] != null) Destroy(arms[i].gameObject);
                 if (hands[i] != null) Destroy(hands[i].gameObject);
             }
+            if (tool != null) Destroy(tool);
+            tool = null;
+            shownTool = null;
+            coverall.Clear();
+            shownSuit = new Color(-1f, -1f, -1f, -1f);
             me = NetworkPlayer.Local;
             if (me == null) return;
             var look = me.GetComponent<PlayerLook>();
@@ -112,27 +128,41 @@ namespace Abandoned.Player
             carrier = me.Carrier;
             if (eye == null) return;
             lastPos = me.transform.position;
-            Color suit = new(0.85f, 0.45f, 0.12f), glove = new(0.12f, 0.12f, 0.12f);
             for (int i = 0; i < 2; i++)
             {
-                arms[i] = Part(PrimitiveType.Cylinder, $"Sleeve{i}", suit);
-                hands[i] = Part(PrimitiveType.Cube, $"Glove{i}", glove);
-                hands[i].localScale = new Vector3(0.09f, 0.05f, 0.12f);
-                hands[i].SetParent(arms[i].parent, false);
+                arms[i] = WorkerHandArt.Sleeve(eye, i);
+                hands[i] = WorkerHandArt.Glove(eye, i);
+                foreach (Renderer renderer in arms[i].GetComponentsInChildren<Renderer>())
+                    if (renderer.sharedMaterial == CharacterSurfaceLibrary.Get("CrewFabric")) coverall.Add(renderer);
                 shown[i] = new Vector3(i == 0 ? -0.24f : 0.24f, -0.62f, 0.32f);
+            }
+            ApplySuit();
+        }
+
+        private void ApplySuit()
+        {
+            PlayerCosmetics cosmetics = me != null ? me.GetComponent<PlayerCosmetics>() : null;
+            CosmeticDefinition outfit = cosmetics != null && cosmetics.Catalog != null ? cosmetics.Catalog.Coverall(cosmetics.Choice.Coverall) : null;
+            Color colour = outfit != null ? outfit.Color : new Color(.88f, .39f, .085f);
+            if (colour == shownSuit) return;
+            shownSuit = colour;
+            foreach (Renderer renderer in coverall)
+            {
+                if (renderer == null) continue;
+                renderer.GetPropertyBlock(suitBlock);
+                suitBlock.SetColor(BaseColor, colour);
+                renderer.SetPropertyBlock(suitBlock);
             }
         }
 
-        private Transform Part(PrimitiveType type, string name, Color colour)
+        private void OnDestroy()
         {
-            GameObject go = GameObject.CreatePrimitive(type);
-            go.name = "FirstPersonHands_" + name;
-            Destroy(go.GetComponent<Collider>());
-            go.transform.SetParent(eye, false);
-            var r = go.GetComponent<Renderer>();
-            r.material.color = colour;
-            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            return go.transform;
+            for (int i = 0; i < 2; i++)
+            {
+                if (arms[i] != null) Destroy(arms[i].gameObject);
+                if (hands[i] != null) Destroy(hands[i].gameObject);
+            }
+            if (tool != null) Destroy(tool);
         }
     }
 }

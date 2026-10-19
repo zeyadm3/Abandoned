@@ -56,10 +56,13 @@ namespace Abandoned.EditorTools
             IronFactoryRoof.BuildMoonlight(root, art);
             IronFactoryCrane.Build(root, art);
             IronFactoryBlastFurnace.Build(root, art);
+            IronFactoryCowperStoves.Build(root, art);
+            IronFactoryPiping.Build(root, art);
             // The mall's mountain basin, centred on the plant (its ridges stand 330 m+ out, clear of the yard).
             MeridianMountainHorizon.Build(root);
             root.Find(MeridianMountainHorizon.GroupName).localPosition = new Vector3(L.Width * L.Tile * .5f, -.49f, L.Depth * L.Tile * .5f);
             AmbienceBuilder.Factory(root);
+            IronFactorySoundscape.Build(root);
 
             Dictionary<Vector2Int, IronFactoryCatwalkPlan.Kind>[] cells = IronFactoryCatwalkPlan.Cells();
             foreach (string problem in IronFactoryCatwalkPlan.Problems(cells)) Debug.LogWarning("[IronFactory] Catwalk plan: " + problem);
@@ -67,6 +70,8 @@ namespace Abandoned.EditorTools
             List<Transform> stairs = IronFactoryAccess.BuildStairs(root, art);
             IronFactoryAccess.BuildLadders(root, art);
             var clearance = new IronFactoryClearance();
+            IronFactoryPulpit.Build(root, art);
+            IronFactoryMoldBay.Build(root, art);
             var builtMachines = IronFactoryMachines.Build(root, art, clearance);
             int machines = builtMachines.Count;
             int hiding = IronFactoryHiding.Build(root, art, clearance);
@@ -77,6 +82,7 @@ namespace Abandoned.EditorTools
             foreach (string problem in threatProblems) Debug.LogWarning("[IronFactory] Left out threat spawn: " + problem);
             // L4: clutter, kept off every route, door, danger zone, hiding place and loot or threat point.
             IronFactoryClutter.Counts clutter = IronFactoryClutter.Build(root, art, clearance, builtMachines, cells, loot, threats);
+            IronFactoryLore.Build(root);
 
             // L1: real surfaces. Decals first, then every tiled box gets world-scale UVs.
             int decals = IronFactoryDecals.Build(root, art, cells);
@@ -94,7 +100,7 @@ namespace Abandoned.EditorTools
             // canopy and boxcars are not floors, and nothing walks on the light rigs.
             LocationPlumbing.BakeNavMesh(root, L.SceneName,
                 new[] { "Exterior", "Truck", "Shell/Roof", "MeridianCollectionBay", "RailDock", "Lights", "Ladders",
-                    IronFactorySurroundings.GroupName, MeridianMountainHorizon.GroupName, "Trusses", "YardLights" });
+                    IronFactorySurroundings.GroupName, MeridianMountainHorizon.GroupName, "Trusses", "YardLights", "CowperStoves" });
             LocationPlumbing.ConfigureHorrorScenes();
 
             LevelAtmosphere.Apply(L.SceneName, Mood, root);

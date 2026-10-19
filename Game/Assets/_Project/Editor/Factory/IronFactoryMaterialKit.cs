@@ -16,21 +16,23 @@ namespace Abandoned.EditorTools
 
         public enum Surface { Opaque, Cutout, CutoutTwoSided, Transparent }
 
-        public static Material Textured(string name, string set, Color tint, Surface surface = Surface.Opaque) =>
-            Apply(Asset(name), IronFactoryTextures.Get(set, "BaseColor"), IronFactoryTextures.Get(set, "Normal"),
+        /// <param name="folder">Where the material asset lives (default: the factory's). The island prison keeps its own.</param>
+        public static Material Textured(string name, string set, Color tint, Surface surface = Surface.Opaque, string folder = null) =>
+            Apply(Asset(name, folder), IronFactoryTextures.Get(set, "BaseColor"), IronFactoryTextures.Get(set, "Normal"),
                 IronFactoryTextures.Get(set, "Mask"), tint, surface);
 
-        public static Material FromMall(string name, string mallKey, Color tint)
+        public static Material FromMall(string name, string mallKey, Color tint, string folder = null, Surface surface = Surface.Opaque)
         {
             Material mall = MeridianArt.Material(mallKey);
-            return Apply(Asset(name), mall.GetTexture("_BaseMap") as Texture2D, mall.GetTexture("_BumpMap") as Texture2D,
-                mall.GetTexture("_MetallicGlossMap") as Texture2D, tint, Surface.Opaque);
+            return Apply(Asset(name, folder), mall.GetTexture("_BaseMap") as Texture2D, mall.GetTexture("_BumpMap") as Texture2D,
+                mall.GetTexture("_MetallicGlossMap") as Texture2D, tint, surface);
         }
 
-        private static Material Asset(string name)
+        private static Material Asset(string name, string folder = null)
         {
-            PolishAssets.EnsureFolder(Folder);
-            string path = $"{Folder}/{name}.mat";
+            folder ??= Folder;
+            PolishAssets.EnsureFolder(folder);
+            string path = $"{folder}/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (m == null)
             {

@@ -12,12 +12,9 @@ namespace Abandoned.EditorTools
     {
         public const string ArtFolder = "Assets/_Project/Art/Custom/Threats";
         private static readonly string[] Names = { "Ash", "Charcoal", "Canvas", "Bone", "Iron", "Eyes", "Rust" };
-        private static readonly Color[] Colors = {
-            new(0.43f,0.47f,0.43f),new(0.105f,0.135f,0.14f),new(0.31f,0.29f,0.23f),new(0.56f,0.58f,0.49f),
-            new(0.21f,0.24f,0.25f),new(0.39f,0.50f,0.41f),new(0.30f,0.18f,0.13f)
-        };
         public static void Install(GameObject root, string modelName)
         {
+            CharacterMaterialBuilder.Prepare();
             Transform old = root.transform.Find("Visual");
             if (old != null) UnityEngine.Object.DestroyImmediate(old.gameObject);
             foreach (ThreatPresentation presentation in root.GetComponents<ThreatPresentation>()) UnityEngine.Object.DestroyImmediate(presentation);
@@ -82,23 +79,12 @@ namespace Abandoned.EditorTools
         public static void ConfigureMaterial(Material material, string importedName)
         {
             int index = MaterialIndex(importedName);
-            material.shader = Shader.Find("Universal Render Pipeline/Lit");
-            Texture2D grime = AssetDatabase.LoadAssetAtPath<Texture2D>(ArtFolder + "/ThreatGrime.png");
-            material.SetColor("_BaseColor", Colors[index]);
-            material.SetTexture("_BaseMap", grime);
-            material.SetFloat("_Smoothness", 0.08f);
-            material.SetFloat("_Metallic", index == 4 ? 0.45f : 0f);
-            if (index == 5)
-            {
-                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
-                material.EnableKeyword("_EMISSION");
-                material.SetColor("_EmissionColor", Colors[index] * 0.18f);
-            }
+            CharacterMaterialBuilder.ConfigureThreat(material, Names[index]);
         }
         private static Material Material(string importedName)
         {
-            int index = MaterialIndex(importedName);
-            Material material = PolishAssets.Material("CustomThreat_" + Names[index], Colors[index], emission: index == 5 ? 0.18f : 0f);
+            CharacterMaterialBuilder.Prepare();
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath(importedName));
             ConfigureMaterial(material, importedName);
             EditorUtility.SetDirty(material);
             return material;

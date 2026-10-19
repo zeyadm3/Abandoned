@@ -3,96 +3,77 @@ using UnityEngine;
 
 namespace Abandoned.Equipment
 {
-    /// <summary>
-    /// Held tools in view (0.21.1): a small code-built model of each piece of gear, the same one in your own
-    /// first-person hand and in your body's hand as crewmates see it. Shapes by kind; anything without its own
-    /// shape is a box in the gear's colour. Grip at the origin, pointing along +Z.
-    /// </summary>
+    /// <summary>One finished salvage-tool design in first person, on crewmates and on the floor. Grip is zero, +Z forward.</summary>
     public static class ToolModels
     {
-        public static GameObject Build(EquipmentDefinition d, Transform parent, float scale = 1f)
+        private static readonly Dictionary<string, List<(Mesh mesh, Material material)>> Models = new();
+
+        public static GameObject Build(EquipmentDefinition definition, Transform parent, float scale = 1f)
         {
-            var root = new GameObject($"Tool_{d.Id}");
+            string key = $"{(int)definition.Kind}_{ColorUtility.ToHtmlStringRGBA(definition.Color)}";
+            if (!Models.TryGetValue(key, out var parts))
+            {
+                var art = new ToolArtBuilder(definition.Color);
+                switch (definition.Kind)
+                {
+                    case EquipmentKind.Flashlight: ToolElectronicModels.Flashlight(art); break;
+                    case EquipmentKind.Radio: ToolElectronicModels.Radio(art); break;
+                    case EquipmentKind.StressScanner: ToolElectronicModels.Detector(art, 0); break;
+                    case EquipmentKind.MotionDetector: ToolElectronicModels.Detector(art, 1); break;
+                    case EquipmentKind.ThermalCamera: ToolElectronicModels.Detector(art, 2); break;
+                    case EquipmentKind.NightVision: ToolElectronicModels.NightVision(art); break;
+                    case EquipmentKind.Battery: ToolElectronicModels.Battery(art); break;
+                    case EquipmentKind.NoiseMaker: ToolElectronicModels.NoiseMaker(art); break;
+                    case EquipmentKind.Drone: ToolElectronicModels.Drone(art); break;
+                    case EquipmentKind.Floodlight: ToolElectronicModels.Floodlight(art); break;
+                    case EquipmentKind.Crowbar: ToolHandModels.Crowbar(art); break;
+                    case EquipmentKind.Sledgehammer: ToolHandModels.Sledgehammer(art); break;
+                    case EquipmentKind.BoltCutters: ToolHandModels.BoltCutters(art); break;
+                    case EquipmentKind.Lockpick: ToolHandModels.Lockpick(art); break;
+                    case EquipmentKind.SprayChalk: ToolHandModels.Canister(art, 0); break;
+                    case EquipmentKind.GlowSticks: ToolHandModels.Canister(art, 1); break;
+                    case EquipmentKind.Flares: ToolHandModels.Canister(art, 2); break;
+                    case EquipmentKind.Planks: ToolHandModels.Planks(art); break;
+                    case EquipmentKind.Medkit: ToolUtilityModels.Medkit(art); break;
+                    case EquipmentKind.Backpack: ToolUtilityModels.Backpack(art); break;
+                    case EquipmentKind.CrashMat: ToolUtilityModels.Fabric(art, true); break;
+                    case EquipmentKind.MovingBlanket: ToolUtilityModels.Fabric(art, false); break;
+                    case EquipmentKind.SupportJack: ToolUtilityModels.SupportJack(art); break;
+                    case EquipmentKind.RopePulley: ToolUtilityModels.RopePulley(art); break;
+                    case EquipmentKind.HandTrolley: ToolUtilityModels.Trolley(art, false); break;
+                    case EquipmentKind.Flatbed: ToolUtilityModels.Trolley(art, true); break;
+                    default: ToolUtilityModels.TransitCase(art); break;
+                }
+                parts = art.Finish("Equipment_" + definition.Kind);
+                Models[key] = parts;
+            }
+            var root = new GameObject($"Tool_{definition.Id}");
             root.transform.SetParent(parent, false);
             root.transform.localScale = Vector3.one * scale;
-            Color steel = new(0.5f, 0.52f, 0.55f), dark = new(0.1f, 0.1f, 0.11f);
-            switch (d.Kind)
+            foreach (var part in parts)
             {
-                case EquipmentKind.Flashlight:
-                    Part(root, PrimitiveType.Cylinder, new Vector3(0f, 0f, 0.08f), new Vector3(0.04f, 0.1f, 0.04f), dark, 90f);
-                    Part(root, PrimitiveType.Cylinder, new Vector3(0f, 0f, 0.19f), new Vector3(0.055f, 0.02f, 0.055f), new Color(1f, 0.95f, 0.75f), 90f);
-                    break;
-                case EquipmentKind.Crowbar:
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0f, 0.25f), new Vector3(0.025f, 0.025f, 0.6f), d.Color);
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0.04f, 0.56f), new Vector3(0.025f, 0.1f, 0.025f), d.Color);
-                    break;
-                case EquipmentKind.Sledgehammer:
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0f, 0.3f), new Vector3(0.03f, 0.03f, 0.7f), new Color(0.5f, 0.35f, 0.2f));
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0f, 0.66f), new Vector3(0.09f, 0.09f, 0.18f), steel);
-                    break;
-                case EquipmentKind.Medkit:
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0f, 0.1f), new Vector3(0.2f, 0.12f, 0.14f), d.Color);
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0.061f, 0.1f), new Vector3(0.1f, 0.002f, 0.03f), Color.white);
-                    break;
-                case EquipmentKind.Radio:
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0.04f, 0.06f), new Vector3(0.06f, 0.16f, 0.04f), dark);
-                    Part(root, PrimitiveType.Cylinder, new Vector3(0.02f, 0.17f, 0.06f), new Vector3(0.008f, 0.06f, 0.008f), dark);
-                    break;
-                case EquipmentKind.BoltCutters:
-                    Part(root, PrimitiveType.Cube, new Vector3(-0.02f, 0f, 0.25f), new Vector3(0.02f, 0.02f, 0.5f), d.Color);
-                    Part(root, PrimitiveType.Cube, new Vector3(0.02f, 0f, 0.25f), new Vector3(0.02f, 0.02f, 0.5f), d.Color);
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0f, 0.52f), new Vector3(0.05f, 0.03f, 0.08f), steel);
-                    break;
-                case EquipmentKind.SprayChalk:
-                case EquipmentKind.Flares:
-                case EquipmentKind.GlowSticks:
-                    Part(root, PrimitiveType.Cylinder, new Vector3(0f, 0.04f, 0.05f), new Vector3(0.05f, 0.08f, 0.05f), d.Color);
-                    break;
-                default:
-                    Part(root, PrimitiveType.Cube, new Vector3(0f, 0f, 0.08f), new Vector3(0.12f, 0.1f, 0.16f), d.Color);
-                    break;
+                var item = new GameObject(part.material.name);
+                item.transform.SetParent(root.transform, false);
+                item.AddComponent<MeshFilter>().sharedMesh = part.mesh;
+                var renderer = item.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = part.material;
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             return root;
         }
 
-        private static void Part(GameObject root, PrimitiveType type, Vector3 at, Vector3 size, Color colour, float tilt = 0f)
-        {
-            GameObject go = GameObject.CreatePrimitive(type);
-            // Off at once (Destroy waits for the end of the frame): a solid shape in a hand, in front of
-            // the eyes, is in the way of that frame's interaction ray and of whatever is carried.
-            Collider solid = go.GetComponent<Collider>();
-            if (solid != null)
-            {
-                solid.enabled = false;
-                Object.Destroy(solid);
-            }
-            go.transform.SetParent(root.transform, false);
-            go.transform.localPosition = at;
-            go.transform.localScale = size;
-            if (tilt != 0f) go.transform.localRotation = Quaternion.Euler(tilt, 0f, 0f);
-            var r = go.GetComponent<Renderer>();
-            Material shared = MaterialFor(r, colour);
-            if (shared != null) r.sharedMaterial = shared;
-            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        }
-
-        // One material per colour, shared by every tool model. A model is rebuilt each time the gear in a
-        // hand changes (for every player, on every machine), and renderer.material made a new material
-        // for every part every time; destroying the model does not destroy those, so they piled up all session.
-        private static readonly Dictionary<int, Material> Materials = new();
-
-        private static Material MaterialFor(Renderer part, Color colour)
-        {
-            Color32 c = colour;
-            int key = (c.r << 24) | (c.g << 16) | (c.b << 8) | c.a;
-            if (Materials.TryGetValue(key, out Material material) && material != null) return material;
-            if (part.sharedMaterial == null) return null;
-            material = new Material(part.sharedMaterial) { name = "ToolPart", color = colour };
-            Materials[key] = material;
-            return material;
-        }
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => Materials.Clear();
+        private static void ResetStatics()
+        {
+            foreach (var model in Models.Values)
+            foreach (var part in model)
+                if (part.mesh != null)
+                {
+                    if (Application.isPlaying) Object.Destroy(part.mesh);
+                    else Object.DestroyImmediate(part.mesh);
+                }
+            Models.Clear();
+            ToolArtMeshes.Reset();
+        }
     }
 }

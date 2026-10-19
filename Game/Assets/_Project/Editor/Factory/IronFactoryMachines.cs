@@ -104,6 +104,32 @@ namespace Abandoned.EditorTools
                     Part(v, "Firebox", 0f, .6f, -d * .45f, w * .6f, 1.2f, .3f, art.Lining);
                     Part(v, "Flue", 0f, h + 1.5f, 0f, .4f, 3f, .4f, art.Steel);
                     break;
+                case K.SteamHammer:
+                    Part(v, "Anvil", 0f, .6f, 0f, w * .65f, 1.2f, d * .65f, art.Steel);
+                    Part(v, "BottomDie", 0f, 1.25f, 0f, w * .35f, .25f, d * .35f, art.Rust);
+                    foreach (float x in new[] { -1f, 1f })
+                        Part(v, "Column", x * (w * .5f - .4f), h * .52f, 0f, .7f, h * .8f, .85f, art.Steel);
+                    Part(v, "Crown", 0f, h - .4f, 0f, w, .7f, d * .8f, art.Steel);
+                    Primitive(PrimitiveType.Cylinder, "Cylinder", v, new Vector3(0f, h + .8f, 0f), new Vector3(1.1f, .9f, 1.1f), art.Rust, false);
+                    Part(v, "Ram", 0f, h * .48f, 0f, w * .4f, 1.3f, d * .45f, art.Rust);
+                    Part(v, "SteamFeed", w * .35f, h + .8f, 0f, .18f, 1.4f, .18f, art.Steel);
+                    break;
+                case K.SoakingPit:
+                    Part(v, "Curb", 0f, .4f, 0f, w, .8f, d, art.Lining);
+                    Part(v, "Hearth", 0f, .15f, 0f, w - .8f, .3f, d - .8f, art.Bed);
+                    Part(v, "CoverS", 0f, .85f, -d * .25f, w - .2f, .18f, d * .48f, art.Steel);
+                    Part(v, "CoverN", 0f, .9f, d * .35f, w - .2f, .18f, d * .48f, art.Steel);
+                    Part(v, "HeatGlow", 0f, .22f, d * .08f, w - .9f, .05f, .7f, art.Lava);
+                    Part(v, "EyeLug", -.8f, 1.05f, -d * .25f, .12f, .22f, .12f, art.Steel);
+                    Part(v, "EyeLug", .8f, 1.05f, -d * .25f, .12f, .22f, .12f, art.Steel);
+                    break;
+                case K.CastingBed:
+                    Part(v, "Frame", 0f, .35f, 0f, w, .7f, d, art.Steel);
+                    for (float z = -d * .5f + .5f; z < d * .5f; z += .8f)
+                        Part(v, "SkidRail", 0f, .75f, z, w - .1f, .1f, .12f, art.Rust);
+                    for (float z = -d * .4f; z < d * .4f; z += 1.4f)
+                        Part(v, "Billet", 0f, .9f, z, w * .75f, .22f, .35f, art.Lava);
+                    break;
                 case K.Pallet:
                     Part(v, "Pallet", 0f, .07f, 0f, w, .14f, d, art.Steel);
                     Part(v, "Ingots", 0f, .14f + (h - .14f) * .5f, 0f, w * .9f, h - .14f, d * .9f, art.Rust);

@@ -28,6 +28,7 @@ namespace Abandoned.Interaction
         private Quaternion placementRotation;
 
         public CarryConfig Config => config;
+        public PlayerMotor Motor => motor;
         public PlayerInventory Inventory { get; private set; }
         public CharacterController Controller => controller;
         public Grabbable Held { get; private set; }

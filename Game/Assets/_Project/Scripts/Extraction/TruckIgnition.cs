@@ -11,7 +11,9 @@ namespace Abandoned.Extraction
             RunState run = RunState.Current;
             if (run == null || !run.IsSpawned) return null;
             if (run.State.Phase == RunPhase.Honking)
-                return run.CanCancel ? Loc.T("Stop the truck (leaving in {0:0} s)", run.HonkRemaining) : null;
+                return !run.CanCancel ? null : TruckCargo.BoatJob
+                    ? Loc.T("Stop the boat (casting off in {0:0} s)", run.HonkRemaining)
+                    : Loc.T("Stop the truck (leaving in {0:0} s)", run.HonkRemaining);
             if (run.State.Phase != RunPhase.Running) return null;
             if (run.State.Overloaded) return Loc.T("Overloaded ({0:0.0}/{1:0} m³) - unload something", run.State.CargoVolume, run.State.CargoCapacity);
             return Loc.T("Start departure · {0:0} seconds", run.HonkSeconds);

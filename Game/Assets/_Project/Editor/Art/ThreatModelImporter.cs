@@ -34,8 +34,13 @@ namespace Abandoned.EditorTools
         }
         private void OnPostprocessMaterial(Material material)
         {
-            if (IsThreat && material.name.StartsWith("THREAT_", StringComparison.Ordinal))
-                ThreatRigBuilder.ConfigureMaterial(material, material.name);
+            if (!IsThreat || !material.name.StartsWith("THREAT_", StringComparison.Ordinal)) return;
+            // Imports can happen before the artist runs the authoring menu. Never generate/import texture assets
+            // recursively inside a model-import callback; the rig installer prepares persistent surfaces later.
+            Material surface = AssetDatabase.LoadAssetAtPath<Material>(ThreatRigBuilder.MaterialPath(material.name));
+            if (surface == null) return;
+            material.shader = surface.shader;
+            material.CopyPropertiesFromMaterial(surface);
         }
         private void OnPreprocessTexture()
         {

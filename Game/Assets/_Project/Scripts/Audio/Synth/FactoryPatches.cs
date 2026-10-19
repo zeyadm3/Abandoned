@@ -64,5 +64,32 @@ namespace Abandoned.Audio
             Patch.Layer(d, Synth.Fade(Synth.Noise(1.6f, 2122 + take, 420f, 220f, 0.05f, 1.1f), 0.05f, 0.5f), 0.5f);
             return SynthReverb.Apply(d, 1.1f, 0.25f);
         }
+
+        /// <summary>L6: Heavy forged links sliding and chinking far away up in the roof steel.</summary>
+        public static float[] ChainRattle(int take)
+        {
+            float[] d = Synth.Buffer(2.2f);
+            var rng = new Rng(2141 + take * 17);
+            for (int k = 0; k < 7; k++)
+            {
+                float at = rng.Range(0.05f, 1.3f);
+                float hz = rng.Range(1200f, 2800f);
+                float[] clink = Synth.Modal(0.35f, hz, Patch.Hollow, null, 7f);
+                Synth.MixWrapped(d, Synth.Fade(clink, 0.005f, 0.15f), at, rng.Range(0.2f, 0.5f), Synth.Rate);
+            }
+            Patch.Debris(d, 2142 + take, 12, 0.1f, 1.4f, 3200f);
+            return SynthReverb.Apply(Synth.LowPass(d, 3500f), 2.2f, 0.45f);
+        }
+
+        /// <summary>L6: High thermal stress in massive girders near the molten channel: a low groan and resonant pop.</summary>
+        public static float[] ThermalGroan(int take)
+        {
+            float[] d = Synth.Buffer(2.6f);
+            float baseHz = 65f + take * 12f;
+            Patch.Layer(d, Synth.Fade(Synth.Sweep(2.2f, baseHz, baseHz * 0.88f, 0.3f, 40f, 2), 0.25f, 0.8f), 0.55f);
+            Patch.Layer(d, Synth.Fade(Synth.Resonant(2.0f, 2151 + take, 280f, 160f, 3f, 0.2f, 45f), 0.1f, 0.7f), 0.3f);
+            Patch.Layer(d, Synth.Thump(0.4f, 220f, 80f, 8f), 0.45f, 0.15f);
+            return SynthReverb.Apply(Patch.Heavy(d, 1.3f), 2.5f, 0.4f);
+        }
     }
 }

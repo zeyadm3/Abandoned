@@ -110,11 +110,17 @@ namespace Abandoned.UI
                 case Step.Light: return Loc.T("Turn your flashlight on ({0}). Health and breath are bottom left; the compass is up top.", K("Flashlight"));
                 case Step.Scan: return Loc.T("Scan ({0}) to see what things are worth and how much you have hauled.", K("Scan"));
                 case Step.Grab: return Loc.T("Pick something up ({0}). Heavy things slow you down; fragile things lose value when they hit anything.", K("Interact"));
-                case Step.Truck: return Loc.T("Carry it out to the truck in the loading bay and put it in the cargo bay ({0} drops it).", K("Drop"));
+                case Step.Truck: return Extraction.TruckCargo.BoatJob
+                    ? Loc.T("Carry it down to the boat at the dock and put it in the hold ({0} drops it).", K("Drop"))
+                    : Loc.T("Carry it out to the truck in the loading bay and put it in the cargo bay ({0} drops it).", K("Drop"));
                 case Step.Floors: return Loc.T("Floors have a load limit. Creaks and cracks mean too much weight: spread out, or get off before it gives way.");
                 case Step.Quiet: return Loc.T("You are not alone in here. Noise draws things: crouch ({0}) and don't run when something is close.", K("Crouch"));
-                case Step.Quota: return Loc.T("Keep hauling until the quota is met. The truck's board shows it, and so does a scan.");
-                default: return Loc.T("Pull the yellow lever on the truck to leave, and stay in the cargo bay until it goes.");
+                case Step.Quota: return Extraction.TruckCargo.BoatJob
+                    ? Loc.T("Keep hauling until the quota is met. The boat's board shows it, and so does a scan.")
+                    : Loc.T("Keep hauling until the quota is met. The truck's board shows it, and so does a scan.");
+                default: return Extraction.TruckCargo.BoatJob
+                    ? Loc.T("Pull the yellow lever on the boat to leave, and stay in the hold until it casts off.")
+                    : Loc.T("Pull the yellow lever on the truck to leave, and stay in the cargo bay until it goes.");
             }
         }
 

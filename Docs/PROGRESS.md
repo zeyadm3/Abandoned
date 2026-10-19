@@ -4,6 +4,89 @@ Living log for autonomous work. Read CLAUDE.md, then this file. Detailed per-tas
 `Docs/progress/M<N>.md` (read only when a task needs them); implementation-level decisions in
 `Docs/progress/DECISIONS.md`; task prompts in Docs/PLAYBOOK.md.
 
+## Iron Factory: genuine iron works overhaul & lava pit expansion (2026-10-19; written, untested per user instruction)
+
+User requested: "keep building and improving the iron factory map and make it feel like a geneuine true iron factory and keep the lava pit 😂" with explicit instruction "dont test or verify ill do all the testing and verification".
+- **The Molten Channel / Lava Pit:**
+  - Added refractory blast furnace tapping runner (`IronFactoryChannel.Runner`) flowing molten iron across the casthouse floor at z=24 m directly into the channel, complete with skimmer dam block, slag branch pit, steel armor bands, and an arched steel footbridge at x=32 m for clean crossing.
+  - Added rising golden molten sparks and heat particle system (`IronFactoryChannel.Sparks` ParticleSystem).
+  - Added heavy curved radiant heat blast shields along the channel banks and catwalks.
+  - Added 50-ton pouring ladle on a broad-gauge rail transfer flatcar with trunnions and slag crust.
+  - Added tapping tool racks with 3.5 m steel poking rods, slag rakes, and sampling spoons.
+- **Heavy Machinery:**
+  - Steam drop forging hammer (`K.SteamHammer` at (38, 44)): A-frame uprights, steam cylinder, die block, anvil, and cycling press hazard.
+  - Ingot soaking reheat pit (`K.SoakingPit` at (14, 48)): sunken refractory furnace pit with sliding steel covers and glowing interior heat hazard.
+  - Continuous billet cooling bed (`K.CastingBed` at (44, 50)): heavy steel skid frame holding cooling cast steel billets.
+- **Overhead Industrial Piping & Ducting (`IronFactoryPiping`):**
+  - High-pressure insulated steam distribution mains under roof trusses with authentic thermal expansion U-loops and vertical machine feeds.
+  - Blast furnace dirty gas downcomer duct connecting furnace top to west-wall cyclone dust catcher.
+  - Overhead cable trays hung beneath tier-1 catwalks with cable bundles and junction boxes.
+  - Water quenching spray manifolds with downward nozzles over rolling mill stands.
+- **Casthouse Equipment (`IronFactoryBlastFurnace`):**
+  - Swivelling mud plugging gun, rotary taphole drill, skip hoist incline bridge with stalled skip car, and gas warning sign.
+- **Foundry Props (`IronFactoryProps`):**
+  - Oxy-acetylene welding torch carts, heavy conical slag thimbles, criss-crossed steel billet stacks, safety bollards.
+- **L5 Glowing Hiding Spots (`IronFactoryHiding`):**
+  - Emissive pilot burner flame in cold furnaces, amber fuse indicator in cabinets, green inspection tag lights on lockers, caution markers on machine bays (zero dynamic lights).
+- **L6 Distant Chains & Thermal Stress Groans (`FactorySoundscape` & `FactoryPatches`):**
+  - Ambient cosmetic audio triggers for distant forged chain rattles in roof steel and low thermal expansion groans near the molten channel.
+- **Safety Decals (`IronFactoryDecals`):**
+  - Yellow chevron warning borders along channel gaps, crane runway clearance aisle lines on dispatch floor, and runner scorch.
+No Unity rebuild, tests or verification run per user instruction. Rebuild with **Tools > Abandoned > Factory > Rebuild Iron Factory**.
+
+## Island prison visual overhaul (2026-10-19; implementation only, untested)
+
+Follow-up: more detail inside the cells, corridors, dining/kitchen, admin/control room, library and visiting hall.
+Shared furnishing variations, cell hardware, overhead services, gallery metalwork and richer fixed room fittings;
+`IslandInteriorSupport` connects dining/kitchen furnishings to their supporting collapsible tiles. Same rebuild
+menu and same explicit **no testing or verification** instruction. Details: `Docs/PRISON_VISUAL_POLISH.md`.
+
+The user's request for mall-level prison graphics, missing texture/render-distance fixes and a repaired laundry /
+showers / boiler basement. Added shared architectural detail, precision UVs (including merged fittings), material
+repairs, prison-specific occlusion/camera handling, clearer noon/basement atmosphere, stronger fixtures, local
+reflections and lit dust. Fixed tiled doorway skins, stair downstand beam, cart lids, shower headroom and several
+basement fittings. Details and application: `Docs/PRISON_VISUAL_POLISH.md`.
+**User explicitly requested no tests or verification.** No Unity rebuild, compile, audit, tests or review renders
+were run. Apply with **Tools > Abandoned > Prison > Rebuild Island Prison**; the saved scene has not been updated.
+
+## Island prison outside pass (2026-10-19; compiled outside Unity, not rebuilt or seen)
+
+After the user's walk ("it feels like a dot in the ocean with nothing else"): a real landform (terrain mesh with
+slopes, coves, a point and a goat path), vegetation, exterior detail (wall, gatehouse, powerhouse ruin, power line,
+jetty, roof plant) and a backdrop (mainland, city, bridge, islands, freighter, moon) on an unlit haze shader; thinner
+outdoor fog and the overcast sky. Details: Docs/ISLAND_PRISON_PLAN.md "Outside pass". Monsters are still switched off
+(`ThreatDirector.ExploreWithoutMonsters`) at the user's request.
+
+## Island prison: Gallows Rock Penitentiary (2026-10-19; written and compiled outside Unity, never rebuilt or played)
+
+The user's "build everything, don't test or verify" for the Alcatraz-style map with mall-level detail. It replaces
+the old greybox Prison (same scene, same location asset, contracts unchanged). Plan, answers and layout:
+`Docs/ISLAND_PRISON_PLAN.md`. Code: `Editor/Prison/` (24 files, one per area), menu
+**Tools > Abandoned > Prison > Rebuild Island Prison** (also `PrisonBuilder.Build()` / Create Prison).
+- The island: a 12 m plateau with sheer cliffs, a quay and slip below its south face, the sea as a kill volume
+  (`LavaVolume` gained its own death line: "Lost to the sea."), a switchback road that never falls, and a rusted cliff
+  stair (three flights, collapsible) as the shortcut.
+- The cellhouse (48 x 52 m, 13 m to the eaves): B and C blocks (three tiers, 144 cells as mesh kits, galleries one
+  walkway section per 4 m, protected stair towers, end wraps and one tier-1 spine each; B-block's tier-2 west gallery
+  already has a section down), D-block solitary and A-block on the outer walls, the dining hall, kitchen, library
+  (a scavenger camp), admin with the control-room gun cage, the entrance hall with visiting booths, and a basement
+  (laundry, showers, boiler) under the dining band whose floor tiles can fall in.
+- Outbuildings: barracks on the quay (armoury, mess, guard lockers, collapsible timber upper floors), a guard tower
+  (ladder, pocket loot only), the burned warden's house (upright piano jackpot, weak upper floor), the lighthouse
+  (ramps round a core, the lamp switch at the top), the rec yard, the water tower, the burned officers' club.
+- The boat replaces the truck: the same `TruckCargo`/ignition/board/floodlights/sanctuary in a launch hull,
+  `TruckCargo.BoatJob` switches the in-job wording to "boat" (9 languages).
+- Hiding: barred cells (the door slides), laundry carts, solitary cells, guard lockers (new `HideSpotKind` values).
+- Lighthouse beam: `Extraction/Island/LighthouseBeam` + `LighthouseConfig`, thrown like a breaker on sector 7
+  (`BreakerPanel` lighthouse flag); it dazzles monsters it sweeps (`Threat.Daze`: no strike for 2.5 s, 12 s cooldown).
+- 24 island loot items (`IslandLootItems`/`IslandLootModels`), tags contraband, armoury, warden, maritime (plus the
+  factory's records/workshop and the mall's gallery tag in a few rooms); jackpots: gun safe, piano, Fresnel lens.
+- Sound: foghorn, surf and lamp-motor patches (`IslandPatches`), `IslandSoundscape`, island ambience.
+- New: `Structure/SectionNavLinks` (a collapsible flight drops its NavMesh link when it falls).
+- Tests touched: `SalvageMapTests` (per-map entry; the tower's ladder-only loot skipped), `SalvageMapLocalizationTests`.
+Checked: `dotnet build` of Runtime, Editor and both test assemblies (0 errors, 0 warnings), `check.py` 0 missing.
+Not done: the Unity rebuild, NavMesh/occlusion bake, audits, any play. What to check first: the plan doc's list.
+
 ## Monster escape windows (2026-10-18; written, not compiled or played)
 
 The user reported continuous pursuit forcing players to wait in corners/cover indefinitely. Ordinary

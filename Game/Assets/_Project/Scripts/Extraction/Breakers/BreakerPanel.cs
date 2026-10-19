@@ -20,6 +20,8 @@ namespace Abandoned.Extraction
         [OptionalReference, SerializeField] private Renderer lamp;
         [Tooltip("Iron Factory: this breaker also starts the sector's machines (MachineHazard). Only the prompt differs.")]
         [SerializeField] private bool startsMachines;
+        [Tooltip("Island prison: this switch starts the lighthouse lamp (LighthouseBeam) on its own sector. Only the prompt differs.")]
+        [SerializeField] private bool startsLighthouse;
 
         private bool shownOn;
         private MaterialPropertyBlock block;
@@ -58,6 +60,13 @@ namespace Abandoned.Extraction
         {
             RunBreakers run = RunBreakers.Current;
             if (run == null) return null;
+            if (startsLighthouse)
+            {
+                if (run.Restored(sector)) return Loc.T("The lamp is turning ({0:0} s left)", run.Remaining(sector));
+                float cooling = run.Cooldown(sector);
+                if (cooling > 0f) return Loc.T("The lamp motor is cooling down ({0:0} s)", cooling);
+                return Loc.T("Start the lighthouse lamp (lights the paths outside, loudly)");
+            }
             if (run.Restored(sector)) return Loc.T("Breaker on ({0:0} s left)", run.Remaining(sector));
             float wait = run.Cooldown(sector);
             if (wait > 0f) return Loc.T("Breaker cooling down ({0:0} s)", wait);
@@ -92,6 +101,12 @@ namespace Abandoned.Extraction
         {
             EditorSetup(powerSector, lever, indicator);
             startsMachines = machines;
+        }
+
+        public void EditorSetupLighthouse(int powerSector, Transform lever, Renderer indicator)
+        {
+            EditorSetup(powerSector, lever, indicator);
+            startsLighthouse = true;
         }
 #endif
 

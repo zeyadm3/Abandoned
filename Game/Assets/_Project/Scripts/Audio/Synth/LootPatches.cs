@@ -29,5 +29,23 @@ namespace Abandoned.Audio
                 Patch.Layer(d, Synth.Modal(0.12f, 1650f + (i % 2) * 40f, Patch.Bar, null, 30f), 0.45f, i * 0.025f + (i >= 8 ? 0.3f : 0f));
             return d;
         }
+
+        /// <summary>Hot iron or fresh slag hissing and sizzling when handled.</summary>
+        public static float[] Sizzle(int take)
+        {
+            float[] d = Synth.Buffer(0.45f);
+            Patch.Layer(d, Synth.Noise(0.4f, 1820 + take, 4500f, 2500f, 0.01f, 15f), 0.6f);
+            Patch.Pings(d, 1821 + take, 6, 0.05f, 0.35f, 2200f, 4800f, Patch.Bar, 90f, 0.2f, 0.4f);
+            return d;
+        }
+
+        /// <summary>Liquid sloshing inside a heavy container or metal drum.</summary>
+        public static float[] Slosh(int take)
+        {
+            float[] d = Synth.Buffer(0.4f);
+            Patch.Layer(d, Synth.Sweep(0.25f, 140f + take * 30f, 90f, 0.05f, 12f), 0.7f);
+            Patch.Layer(d, Synth.Noise(0.3f, 1830 + take, 1200f, 900f, 0.02f, 25f), 0.45f);
+            return d;
+        }
     }
 }

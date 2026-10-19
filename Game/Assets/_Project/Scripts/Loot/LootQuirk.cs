@@ -16,5 +16,9 @@ namespace Abandoned.Loot
         Rings = 4,
         /// <summary>Top-heavy: its weight sits high, so it tips over easily.</summary>
         TopHeavy = 8,
+        /// <summary>Hot: fresh cast metal or hot slag that radiates heat, sizzles and drains stamina while carried.</summary>
+        Hot = 16,
+        /// <summary>Sloshes: fluid inside shifts dynamically on turns and sprints, creating liquid inertia.</summary>
+        Sloshes = 32,
     }
 }

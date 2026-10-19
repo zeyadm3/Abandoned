@@ -54,6 +54,7 @@ namespace Abandoned.Player
         public bool IsSprinting { get; private set; }
         public bool IsCrouching { get; private set; }
         public float CurrentHeight => controller.height;
+        public PlayerStamina Stamina => stamina;
 
         /// <summary>0–1 scale on move speed; the carry system lowers it for heavy loot.</summary>
         public float SpeedMultiplier

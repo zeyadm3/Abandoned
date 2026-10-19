@@ -65,7 +65,8 @@ namespace Abandoned.EditorTools
         }
 
         // UI step 3: the haul board on the bay's front wall, facing the ramp (a quad shows its front to -z viewers).
-        private static void AddDisplay(Transform root, float half)
+        /// <summary>Also fitted to the island prison's boat (IslandBoat), on its hold's forward bulkhead.</summary>
+        public static void AddDisplay(Transform root, float half)
         {
             Material housing = GetMaterial("Greybox_TruckLightBar", new Color(0.15f, 0.15f, 0.16f));
             Box("DisplayFrame", root, new Vector3(0f, FloorHeight + 1.55f, half - 0.03f), new Vector3(2.45f, 1.27f, 0.04f), housing, withCollider: false);
@@ -78,7 +79,7 @@ namespace Abandoned.EditorTools
         }
 
         // QA B-21: an asset, so URP Unlit ships with the build (the mirror's render texture is set at runtime).
-        private static Material TruckMirrorMaterial()
+        public static Material TruckMirrorMaterial()
         {
             const string path = "Assets/_Project/Art/Greybox/TruckMirror.mat";
             var m = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -102,7 +103,7 @@ namespace Abandoned.EditorTools
         }
 
         // M10.1 truck upgrade: a light bar on the cab roof aimed back over the bay and the lot; off until bought.
-        private static void AddFloodlights(Transform root, float half)
+        public static void AddFloodlights(Transform root, float half)
         {
             Material glow = GetMaterial("Greybox_TruckFloodlight", new Color(1f, 0.95f, 0.8f));
             glow.SetColor("_EmissionColor", new Color(3f, 2.8f, 2.3f));

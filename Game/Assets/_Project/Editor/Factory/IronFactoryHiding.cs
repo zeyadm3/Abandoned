@@ -72,6 +72,9 @@ namespace Abandoned.EditorTools
             if (spot.Kind == HideSpotKind.Machine)
                 Box("Hazard", body, new Vector3(0f, h - .12f, d + .01f), new Vector3(w, .2f, .02f), art.Steel, false);
 
+            // L5: glowing pilot light on each hiding spot (emissive only: zero dynamic light cost, readable in darkness)
+            PilotLight(body, spot.Kind, w, h, d, wall);
+
             Transform door = Door(root, spot.Kind == HideSpotKind.Furnace ? art.Steel : shell, doorWidth, doorHeight, d, art);
 
             var solid = root.gameObject.AddComponent<BoxCollider>();
@@ -110,6 +113,41 @@ namespace Abandoned.EditorTools
             }
             Box("Handle", door, new Vector3(width - .1f, 1.05f, .03f), new Vector3(.03f, .16f, .04f), art.Bed, false);
             return door;
+        }
+
+        private static void PilotLight(Transform body, HideSpotKind kind, float w, float h, float d, float wall)
+        {
+            switch (kind)
+            {
+                case HideSpotKind.Furnace:
+                    // Faint blue pilot burner flame inside the cold hearth
+                    Material flame = Emissive("IronFactory_PilotFlame", new Color(.2f, .7f, 1f), new Color(.4f, 1.8f, 2.5f));
+                    Box("PilotBurner", body, new Vector3(-.35f, .12f, wall + .35f), new Vector3(.05f, .12f, .05f), flame, false);
+                    break;
+                case HideSpotKind.Cabinet:
+                    // Amber fuse indicator lamp on the front face
+                    Material fuse = Emissive("IronFactory_FuseLamp", new Color(1f, .6f, .1f), new Color(2.5f, 1.4f, .2f));
+                    Box("FuseLamp", body, new Vector3(w * .5f - .14f, h - .22f, d + .01f), new Vector3(.04f, .04f, .02f), fuse, false);
+                    break;
+                case HideSpotKind.Machine:
+                    // Dim caution yellow strip on the maintenance bay opening
+                    Material caution = Emissive("IronFactory_CautionLamp", new Color(1f, .85f, .2f), new Color(2.2f, 1.8f, .3f));
+                    Box("CautionMarker", body, new Vector3(0f, h - .06f, d + .02f), new Vector3(.24f, .04f, .02f), caution, false);
+                    break;
+                default: // Lockers
+                    // Pale green inspection tag lamp above the locker frame
+                    Material tag = Emissive("IronFactory_LockerTag", new Color(.4f, .9f, .5f), new Color(.8f, 2.2f, 1f));
+                    Box("TagLight", body, new Vector3(0f, h - .08f, d + .01f), new Vector3(.18f, .04f, .02f), tag, false);
+                    break;
+            }
+        }
+
+        private static Material Emissive(string name, Color baseCol, Color emitCol)
+        {
+            Material m = GetMaterial(name, baseCol);
+            m.SetColor("_EmissionColor", emitCol);
+            m.EnableKeyword("_EMISSION");
+            return m;
         }
     }
 }

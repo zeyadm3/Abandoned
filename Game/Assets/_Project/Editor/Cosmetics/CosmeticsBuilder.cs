@@ -134,6 +134,7 @@ namespace Abandoned.EditorTools
         {
             var root = new GameObject($"{prefix}_{id}");
             CustomMallArt.Place($"Cosmetics/{prefix}_{id}", root.transform, Vector3.zero, Quaternion.identity);
+            WardrobeArtDetails.Build(root.transform, prefix, id);
             foreach (Collider c in root.GetComponentsInChildren<Collider>()) Object.DestroyImmediate(c);
             string path = $"{PrefabFolder}/{prefix}_{id}.prefab";
             keep.Add(path);

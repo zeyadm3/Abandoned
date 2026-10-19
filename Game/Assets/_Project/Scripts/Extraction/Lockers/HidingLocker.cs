@@ -18,6 +18,7 @@ namespace Abandoned.Extraction
     public class HidingLocker : MonoBehaviour, IUsable
     {
         private const float DoorSwingSeconds = 0.18f;
+        private const float CellDoorSlide = 0.8f;
 
         private static readonly List<HidingLocker> Live = new();
 
@@ -36,12 +37,15 @@ namespace Abandoned.Extraction
         [SerializeField] private HideSpotKind kind = HideSpotKind.Locker;
 
         private NetworkPlayer shownOccupant;
+        private Vector3 doorShut;
+        private bool doorShutKnown;
         private float doorOpenUntil, doorShown;
         private bool shutSoundDue;
 
         public static IReadOnlyList<HidingLocker> All => Live;
         public int Index => index;
-        public bool ConcealsOccupant => kind == HideSpotKind.Locker || kind == HideSpotKind.Cabinet;
+        // A barred cell hides nobody from view: the bars only keep the monster out until it knows you are there.
+        public bool ConcealsOccupant => kind is HideSpotKind.Locker or HideSpotKind.Cabinet or HideSpotKind.Cart or HideSpotKind.Solitary;
         public Vector3 InsidePoint => inside != null ? inside.position : transform.position;
         public Quaternion Facing => Quaternion.Euler(0f, (inside != null ? inside : transform).eulerAngles.y, 0f);
         public Vector3 ExitPoint => exit != null ? exit.position : transform.position + transform.forward * 1.1f;
@@ -85,8 +89,14 @@ namespace Abandoned.Extraction
             float target = Time.time < doorOpenUntil ? 1f : occupant != null ? occupant.Peek01 * .35f : 0f;
             if (Mathf.Approximately(doorShown, target)) return;
             doorShown = Mathf.MoveTowards(doorShown, target, Time.deltaTime / DoorSwingSeconds);
+            if (door != null && kind == HideSpotKind.Cell)
+            {
+                // A cell's barred door slides along the front, behind the bars beside it.
+                if (!doorShutKnown) { doorShut = door.localPosition; doorShutKnown = true; }
+                door.localPosition = doorShut + Vector3.left * (CellDoorSlide * doorShown);
+            }
             // Hinged on its left edge; the free edge swings out toward the room.
-            if (door != null) door.localRotation = Quaternion.Euler(0f, -doorSwing * doorShown, 0f);
+            else if (door != null) door.localRotation = Quaternion.Euler(0f, -doorSwing * doorShown, 0f);
             if (shutSoundDue && doorShown <= 0f)
             {
                 shutSoundDue = false;
@@ -107,6 +117,9 @@ namespace Abandoned.Extraction
                 HideSpotKind.Machine => Loc.Mark("Hide under the machine"),
                 HideSpotKind.Furnace => Loc.Mark("Hide in the cold furnace"),
                 HideSpotKind.Cabinet => Loc.Mark("Hide in the cabinet"),
+                HideSpotKind.Cell => Loc.Mark("Hide in the cell"),
+                HideSpotKind.Cart => Loc.Mark("Hide in the laundry cart"),
+                HideSpotKind.Solitary => Loc.Mark("Hide in the solitary cell"),
                 _ => Loc.Mark("Hide in the locker"),
             });
         }

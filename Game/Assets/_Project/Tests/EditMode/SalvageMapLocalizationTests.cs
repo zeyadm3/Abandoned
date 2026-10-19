@@ -20,9 +20,9 @@ namespace Abandoned.Tests
             "Abandoned Factory",
             "Machine halls, loading docks and high catwalks over a live production floor.",
             "Abandoned Factory (today's daily job)",
-            "Abandoned Prison",
-            "Cell blocks, service tunnels and narrow galleries with nowhere to hide.",
-            "Abandoned Prison (today's daily job)",
+            "Gallows Rock Penitentiary",
+            "An island prison in a foggy bay: three-tier cell blocks, a cliff road down to the boat and a dead lighthouse. The sea keeps whatever falls.",
+            "Gallows Rock Penitentiary (today's daily job)",
         };
 
         [Test]

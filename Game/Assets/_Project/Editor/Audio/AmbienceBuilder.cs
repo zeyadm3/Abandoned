@@ -15,6 +15,9 @@ namespace Abandoned.EditorTools
         /// <summary>The Iron Factory: draughts through a big hall, a low hum, iron ticking and settling often.</summary>
         public static void Factory(Transform root) => Add(root, wind: 0.26f, hum: 0.08f, plainHum: 0.04f, settleEvery: new Vector2(15f, 40f));
 
+        /// <summary>The island prison: sea wind through every gap, no hum (the power plant is long dead), the cellhouse settling.</summary>
+        public static void Island(Transform root) => Add(root, wind: 0.34f, hum: 0f, plainHum: 0.02f, settleEvery: new Vector2(18f, 45f));
+
         private static void Add(Transform root, float wind, float hum, float plainHum, Vector2 settleEvery)
         {
             var go = new GameObject("Ambience");

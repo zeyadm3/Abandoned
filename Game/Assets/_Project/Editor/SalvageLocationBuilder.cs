@@ -23,7 +23,8 @@ using static Abandoned.EditorTools.GreyboxFactory;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Authors the School and Prison salvage locations (the Iron Factory has its own builder in Editor/Factory) from repeatable layout data.  The maps deliberately
+    /// Authors the School salvage location (the Iron Factory has its own builder in Editor/Factory, the island prison in
+    /// Editor/Prison; the old greybox prison's plan stays here, unused, until the user says it can go) from repeatable layout data.  The maps deliberately
     /// share the same run plumbing as the mall (network session, truck, loot, structure, threats and power)
     /// while keeping their floor plans, weak routes, dressing and colour language distinct.
     /// </summary>
@@ -688,11 +689,4 @@ namespace Abandoned.EditorTools
         public static void Build() => SalvageLocationBuilder.BuildSchool();
     }
 
-    public static class PrisonBuilder
-    {
-        public const string ScenePath = "Assets/_Project/Scenes/Prison.unity";
-        [MenuItem("Tools/Abandoned/Create Prison")]
-        public static void Create() => SalvageLocationBuilder.BuildPrison();
-        public static void Build() => SalvageLocationBuilder.BuildPrison();
-    }
 }

@@ -243,8 +243,31 @@ Steps (each one a commit, each testable in a few minutes):
   between the frame columns (none across the dock). Counts are in the rebuild's Console line.
 - **L5 Glowing hiding spots.** A faint pilot light on each one, emissive only (no extra lights): a blue pilot flame
   in each cold furnace, an amber fuse lamp on each cabinet, a dim tag light on the lockers and bays.
-- **L6 Distant chains.** A synthesised chain rattle, played now and then far from the crew in an empty part of the
-  plant (local, cosmetic, never near a real threat, never pointing anywhere).
+  *L5 written (2026-10-19):* `IronFactoryHiding.PilotLight` fits an emissive burner flame to each cold furnace (`IronFactory_PilotFlame`),
+  an amber indicator to electrical cabinets (`IronFactory_FuseLamp`), caution marker strips to machine bays, and green tag lights
+  to worker lockers. Visible in darkness, zero dynamic lights.
+- **L6 Distant chains and thermal groans.** A synthesised chain rattle and structural thermal expansion groan, played now and then
+  far from the crew in an empty part of the plant (local, cosmetic, never near a real threat, never pointing anywhere).
+  *L6 written (2026-10-19):* `FactoryPatches.ChainRattle` (forged links clinking with modal reverb) and `FactoryPatches.ThermalGroan`
+  (low sweeping resonant iron groan), hooked into `SoundCatalog` and driven by `FactorySoundscape` across high truss nodes and
+  molten channel banks via `IronFactorySoundscape`.
+- **L7 Genuine Iron Works Foundry & Heavy Machinery.**
+  *L7 written (2026-10-19):*
+  - **Tapping Runner Trough:** Refractory runner channel (`IronFactoryChannel.Runner`) flowing from the blast furnace taphole
+    at (8.5, 24) straight into the molten channel at (52.2, 24) with glowing cooling iron stream, skimmer dam block, slag branch pit,
+    armor bands, pouring spout, and an arched steel footbridge at x=32 m for seamless crossing.
+  - **Molten Sparks & Smoke:** `IronFactoryChannel.Sparks` ParticleSystem with rising golden embers and heat wisps over the lava.
+  - **Heavy Machinery:** Steam forging drop hammer (`K.SteamHammer` at (38, 44)), ingot soaking reheat furnace pit (`K.SoakingPit`
+    at (14, 48) with cracked cover and glowing interior heat), and continuous billet cooling bed (`K.CastingBed` at (44, 50) with
+    hot cast billets). Machine hazards wired up in `IronFactoryPower`.
+  - **Overhead Industrial Piping:** `IronFactoryPiping` adds high-pressure insulated steam mains with thermal expansion U-loops
+    under the trusses, vertical machine downcomers, blast furnace gas downcomer duct to west wall cyclone dust catcher, cable trays
+    hung under catwalk tier 1, and water spray manifolds over rolling mill stands.
+  - **Casthouse Equipment:** Blast furnace gained mud plugging gun, rotary taphole drill, skip hoist incline bridge with stalled
+    skip car, and gas warning signage (`IronFactoryBlastFurnace`).
+  - **Foundry Dressing & Props:** Ladle transfer car on broad-gauge rails with 50-ton pouring ladle, radiant heat blast shields,
+    tapping tool racks with 3 m poking bars, oxy-acetylene torch carts, slag thimbles, and criss-cross billet stacks (`IronFactoryProps`).
+  - **Safety Decals:** Lava channel warning chevron borders, crane runway clearance aisle lines on dispatch floor, and runner scorch.
 
 ## Decisions taken without asking (reversible)
 

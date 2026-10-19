@@ -96,6 +96,20 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**Prison visual overhaul (2026-10-19, implementation only).** New architectural detailing, basement repairs,
+precision world UVs including merged fittings, prison PBR material recovery, occlusion/camera-range handling,
+clearer noon atmosphere, stronger fixtures and local reflections/dust. `Docs/PRISON_VISUAL_POLISH.md` lists changes
+and the single rebuild menu. **The user explicitly requested no testing or verification.** This pass has not been
+compiled, rebuilt, audited, rendered or tested; the saved scene still needs **Rebuild Island Prison** in Unity.
+Follow-up adds shared cell furnishing variants/hardware, corridor services/gallery fittings, richer interior
+room detail and `IslandInteriorSupport` for floor-mounted dining/kitchen props; the same no-verification rule applies.
+
+**Island prison (2026-10-19): Gallows Rock Penitentiary replaces the Prison.** An Alcatraz-style island built to the
+mall's level of detail (Docs/ISLAND_PRISON_PLAN.md, code in `Editor/Prison/`, menu **Tools > Abandoned > Prison >
+Rebuild Island Prison**): cliffs and the sea (kill volume), a boat instead of the truck, three-tier cell galleries,
+four hiding kinds, the lighthouse beam, 24 loot items. Compiled outside Unity (dotnet, 0 errors) and `check.py` 0
+missing; never rebuilt, baked or played. Not committed (the user decides).
+
 **Iron Factory (2026-10-18, in progress): the Factory location is replaced** by a 120 x 100 m iron works built
 the way the mall is (Editor/Factory, menu **Tools > Abandoned > Factory > Rebuild Iron Factory**): a 20 x 60 m
 molten channel that kills players and destroys loot (host-side `LavaVolume`), three catwalk tiers (5/10/15 m)
@@ -105,7 +119,13 @@ machinery-floor maze, 38 hiding places via `HidingLocker` + `HideSpotKind`, Brea
 start that sector's machines via `MachineHazard`; mains power never starts them; 21 factory loot items on the
 factory-only tags foundry/workshop/machinery/records with 178 spawn points; 19 threat spawns incl. catwalks,
 occlusion bake, rail dock; rail yard/towers/stacks, high-bay lights, lava rumble) committed on iron-factory (443151be), merged with main
-(0.24.9-0.24.11, the Crew Director) on 2026-10-19. Rebuilt in Unity by the user; never played.
+(0.24.9-0.24.11, the Crew Director) on 2026-10-19.
+2026-10-19 pass (L5-L7): genuine iron works detailing — refractory tapping runner trough from the blast furnace to the lava pit
+with arched footbridge, ladle transfer car on broad-gauge rails with 50-ton pouring ladle, radiant heat blast shields, rising molten sparks
+particle system, steam drop hammer, ingot soaking reheat furnace pit, continuous billet cooling bed, overhead insulated steam mains with
+expansion U-loops, blast gas downcomer duct to cyclone dust catcher, cable trays and water manifolds (`IronFactoryPiping`), blast furnace
+mud gun/tap drill/skip incline, oxy-acetylene torch carts, slag thimbles, billet stacks, safety bollards, L5 glowing hiding spot pilot lights,
+and L6 distant chain rattles and thermal structural groans (`FactorySoundscape`).
 
 **0.24.11 (2026-10-18): bug fixes, test suite repaired, audits back.** The mall basement was unreachable on foot (the
 district ground collider ran through its flights), the Prison tunnel and gallery stairs and the School archive stair
@@ -207,6 +227,14 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-19 (user: "now it's an Alcatraz prison", "build everything, don't test or verify", "like the mall map in terms
+  of detail and level design"; answers in Docs/ISLAND_PRISON_PLAN.md): **the island prison replaces the Prison.**
+  Fictional name (Gallows Rock Penitentiary), ~3x the mall, the boat replaces the truck (the truck's components on a
+  launch, `TruckCargo.BoatJob` words prompts as "boat"), cliffs and the sea kill (loot lost), the cell galleries are the
+  signature collapse with protected stair towers and spines, hiding in barred cells (seen through the bars), laundry
+  carts, solitary and guard lockers, the lighthouse lamp is thrown like a breaker (sector 7) and dazzles monsters
+  (`Threat.Daze`), the existing roster. The quay is in the NavMesh (the whole island is the level). Commits wait for
+  the user (they said they'll say when).
 - 2026-10-18 (user, after a reel on Left 4 Dead's AI Director: "implement that and run and test the game"): **0.24.10,
   the Crew Director.** Pacing follows the crew, not only the clock: the host keeps one hidden stress number per living
   player and runs Booth's loop (build up, sustain peak, fade, relax) on the highest. During the fade and relax no later

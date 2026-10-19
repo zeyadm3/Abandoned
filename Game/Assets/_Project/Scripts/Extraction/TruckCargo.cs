@@ -17,6 +17,8 @@ namespace Abandoned.Extraction
         [Tooltip("Where someone has to stand to ride along (bay + cab), in this object's space.")]
         [SerializeField] private Bounds rideZone = new(Vector3.zero, new Vector3(8f, 3f, 3f));
         [SerializeField] private Transform ignition;
+        [Tooltip("Island prison: this cargo hold is a boat's, so prompts and guide lines say \"boat\".")]
+        [SerializeField] private bool boat;
 
         private readonly Collider[] hits = new Collider[256];
         private readonly HashSet<LootItem> found = new();
@@ -24,6 +26,9 @@ namespace Abandoned.Extraction
         public Transform Ignition => ignition;
 
         public static TruckCargo Current { get; private set; }
+
+        /// <summary>Is this job's way out a boat (the island prison) rather than the truck?</summary>
+        public static bool BoatJob => Current != null && Current.boat;
 
         private void OnEnable() => Current = this;
 
@@ -62,6 +67,8 @@ namespace Abandoned.Extraction
             rideZone = zone;
             ignition = ignitionPoint;
         }
+
+        public void EditorSetBoat(bool isBoat) => boat = isBoat;
 
         private void OnDrawGizmos()
         {

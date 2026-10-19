@@ -11,7 +11,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class IronFactoryMachinePlan
     {
-        public enum MachineKind : byte { Press, MillStand, RollerTable, Hopper, MouldRow, Lathe, Mill, Boiler, Pallet, Conveyor }
+        public enum MachineKind : byte { Press, MillStand, RollerTable, Hopper, MouldRow, Lathe, Mill, Boiler, Pallet, Conveyor, SteamHammer, SoakingPit, CastingBed }
 
         public readonly struct Machine
         {
@@ -47,6 +47,9 @@ namespace Abandoned.EditorTools
             MachineKind.Mill => new Vector3(2f, 2.4f, 2f),
             MachineKind.Boiler => new Vector3(3f, 3.8f, 3f),
             MachineKind.Pallet => new Vector3(2f, 1.2f, 2f),
+            MachineKind.SteamHammer => new Vector3(4.2f, 5.2f, 3.6f),
+            MachineKind.SoakingPit => new Vector3(4.2f, 1.4f, 4.2f),
+            MachineKind.CastingBed => new Vector3(3.2f, 1.1f, 7.5f),
             _ => new Vector3(1.2f, 1f, 6f),
         };
 
@@ -70,6 +73,9 @@ namespace Abandoned.EditorTools
             // Ore handling against the west wall, presses and casting moulds toward the lava.
             new(MachineKind.Hopper, 8f, 60f), new(MachineKind.Hopper, 8f, 72f),
             new(MachineKind.Press, 36f, 30f), new(MachineKind.Press, 36f, 56f), new(MachineKind.Press, 40f, 78f),
+            new(MachineKind.SteamHammer, 38f, 44f),
+            new(MachineKind.SoakingPit, 14f, 48f),
+            new(MachineKind.CastingBed, 44f, 50f),
             new(MachineKind.MouldRow, 43f, 34f), new(MachineKind.MouldRow, 43f, 40f),
             new(MachineKind.MouldRow, 43f, 58f), new(MachineKind.MouldRow, 43f, 66f),
             new(MachineKind.Boiler, 20f, 78f),

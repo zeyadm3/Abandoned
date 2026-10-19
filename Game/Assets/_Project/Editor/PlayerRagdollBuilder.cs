@@ -36,20 +36,7 @@ namespace Abandoned.EditorTools
             Rigidbody shinL = CapsulePart(root, "ShinL", new(-0.1f, 0.21f, 0f), 0.07f, 0.42f, 0.06f, totalMass, material);
             Rigidbody shinR = CapsulePart(root, "ShinR", new(0.1f, 0.21f, 0f), 0.07f, 0.42f, 0.06f, totalMass, material);
 
-            Material dark = WorkerVisualBuilder.Dark, tape = WorkerVisualBuilder.Tape;
-            GreyboxFactory.Box("Zip", chest.transform, new Vector3(0f, 0f, 0.13f), new Vector3(0.015f, 0.35f, 0.015f), dark, false);
-            foreach (float side in new[] { -1f, 1f })
-                GreyboxFactory.Box("ReflectiveTape", chest.transform, new Vector3(side * 0.14f, 0.08f, 0.13f), new Vector3(0.055f, 0.22f, 0.02f), tape, false);
-            GreyboxFactory.Box("Brow", head.transform, new Vector3(0f, 0.035f, 0.122f), new Vector3(0.18f, 0.022f, 0.015f), dark, false);
-            PolishAssets.Shape("Hair", head.transform, new Vector3(0f, 0.11f, -0.015f), new Vector3(0.28f, 0.08f, 0.26f), dark, true);
-            foreach (Rigidbody arm in new[] { armL, armR })
-                PolishAssets.Shape("Glove", arm.transform, new Vector3(0f, -0.27f, 0.015f), new Vector3(0.14f, 0.14f, 0.17f), dark);
-            foreach (Rigidbody shin in new[] { shinL, shinR })
-            {
-                GreyboxFactory.Box("Boot", shin.transform, new Vector3(0f, -0.13f, 0.04f), new Vector3(0.2f, 0.16f, 0.31f), dark, false);
-                PolishAssets.Shape("AnkleTape", shin.transform, new Vector3(0f, -0.045f, 0f), new Vector3(0.16f, 0.035f, 0.17f), tape);
-            }
-            WorkerVisualBuilder.NumberBadge(chest.transform, new Vector3(0.09f, -0.045f, 0.145f));
+            Dress(player, pelvis, chest, head, armL, armR, thighL, thighR, shinL, shinR);
 
             // Anchors sit at the top of each child part, where it hangs from its parent.
             Joint(chest, pelvis, new(0f, -0.22f, 0f), 15f, 25f);
@@ -64,11 +51,33 @@ namespace Abandoned.EditorTools
             return new Result(root, pelvis, head.transform);
         }
 
+        private static void Dress(Transform player, params Rigidbody[] bodies)
+        {
+            // The physics remains the same nine parts. Reuse the authored outfit so going down never changes
+            // the worker into primitive capsules or loses the reinforced clothing, boots and equipment harness.
+            GameObject source = WorkerVisualBuilder.Build(player);
+            string[] paths =
+            {
+                "HipsVisual", "Torso/TorsoVisual", "Torso/Head/HeadVisual", "Torso/ArmL/ArmVisual", "Torso/ArmR/ArmVisual",
+                "LegL/ThighVisual", "LegR/ThighVisual", "LegL/Knee/ShinVisual", "LegR/Knee/ShinVisual",
+            };
+            try
+            {
+                for (int i = 0; i < bodies.Length; i++)
+                {
+                    Transform visual = source.transform.Find(paths[i]);
+                    if (visual == null) continue;
+                    GameObject copy = Object.Instantiate(visual.gameObject, bodies[i].transform, true);
+                    copy.name = "Visual";
+                }
+            }
+            finally { Object.DestroyImmediate(source); }
+        }
+
         private static Rigidbody BoxPart(Transform root, string name, Vector3 pos, Vector3 size, float massShare, float total, Material m)
         {
             Rigidbody body = Part(root, name, pos, massShare, total);
             body.gameObject.AddComponent<BoxCollider>().size = size;
-            PolishAssets.Shape("Visual", body.transform, Vector3.zero, size, m);
             return body;
         }
 
@@ -76,7 +85,6 @@ namespace Abandoned.EditorTools
         {
             Rigidbody body = Part(root, name, pos, massShare, total);
             body.gameObject.AddComponent<SphereCollider>().radius = radius;
-            PolishAssets.Shape("Visual", body.transform, Vector3.zero, Vector3.one * radius * 2f, m, true);
             return body;
         }
 
@@ -87,7 +95,6 @@ namespace Abandoned.EditorTools
             capsule.radius = radius;
             capsule.height = height;
             capsule.direction = 1;
-            PolishAssets.Shape("Visual", body.transform, Vector3.zero, new Vector3(radius * 2f, height, radius * 2f), m);
             return body;
         }
 

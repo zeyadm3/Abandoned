@@ -197,6 +197,16 @@ namespace Abandoned.Audio
         PressSlam,
         SteamBlast,
         LavaRumble,
+        // Island prison: the foghorn across the bay, surf below the cliffs, the lighthouse motor.
+        Foghorn,
+        SurfLoop,
+        LighthouseMotor,
+        // Iron Factory L6: distant chains and thermal stress
+        FactoryChainRattle,
+        FactoryThermalGroan,
+        // Loot quirks: hot metal sizzling and liquid sloshing
+        LootSizzle,
+        LootSlosh,
         // @@ids
     }
 }

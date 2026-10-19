@@ -12,10 +12,10 @@ namespace Abandoned.EditorTools
     /// </summary>
     public sealed class IronFactoryProps
     {
-        public enum Kind { Drums, ToppledDrum, ScrapHeap, Crates, ToolCart, GasBottles, BrokenPallet, SlagLump }
+        public enum Kind { Drums, ToppledDrum, ScrapHeap, Crates, ToolCart, GasBottles, BrokenPallet, SlagLump, OxyTorchCart, SlagThimble, BilletStack, SafetyBollards }
 
         private readonly IronFactoryArt art;
-        private readonly Material red, blue, black, wood, scrap;
+        private readonly Material red, blue, black, wood, scrap, green, brass;
 
         public IronFactoryProps(IronFactoryArt art)
         {
@@ -25,6 +25,8 @@ namespace Abandoned.EditorTools
             black = GetMaterial("IronFactory_DrumBlack", new Color(.06f, .06f, .065f));
             wood = IronFactoryMaterialKit.FromMall("IronFactory_Wood", "Wood", new Color(.7f, .62f, .5f));
             scrap = GetMaterial("IronFactory_Scrap", new Color(.13f, .1f, .08f));
+            green = GetMaterial("IronFactory_GasGreen", new Color(.08f, .28f, .14f));
+            brass = GetMaterial("IronFactory_Brass", new Color(.78f, .62f, .22f));
         }
 
         /// <summary>Footprint (x, z) and height of each kind, for the placement checks.</summary>
@@ -37,6 +39,10 @@ namespace Abandoned.EditorTools
             Kind.ToolCart => new Vector3(1f, .95f, .65f),
             Kind.GasBottles => new Vector3(.9f, 1.5f, .4f),
             Kind.BrokenPallet => new Vector3(1.2f, .14f, 1f),
+            Kind.OxyTorchCart => new Vector3(1.1f, 1.45f, .9f),
+            Kind.SlagThimble => new Vector3(1.8f, 1.6f, 1.8f),
+            Kind.BilletStack => new Vector3(1.6f, .85f, 1.4f),
+            Kind.SafetyBollards => new Vector3(1.4f, 1.1f, .4f),
             _ => new Vector3(.6f, .3f, .5f),
         };
 
@@ -105,6 +111,43 @@ namespace Abandoned.EditorTools
                     {
                         GameObject board = Box("Board", root, new Vector3(R(-.3f, .3f), .04f + i * .025f, -.4f + i * .27f), new Vector3(R(.7f, 1.2f), .025f, .12f), wood, false);
                         board.transform.localRotation = Quaternion.Euler(0f, R(-25f, 25f), R(-6f, 6f));
+                    }
+                    break;
+                case Kind.OxyTorchCart:
+                    Box("Frame", root, new Vector3(0f, .55f, 0f), new Vector3(.85f, .1f, .55f), art.Steel, false);
+                    foreach (float x in new[] { -.45f, .45f })
+                        Primitive(PrimitiveType.Cylinder, "Wheel", root, new Vector3(x, .16f, 0f), new Vector3(.32f, .05f, .32f), art.Bed, false)
+                            .transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                    Box("Handle", root, new Vector3(0f, .9f, -.25f), new Vector3(.7f, .9f, .05f), art.Steel, false);
+                    Primitive(PrimitiveType.Cylinder, "Oxygen", root, new Vector3(-.2f, .85f, 0f), new Vector3(.26f, .65f, .26f), green, false);
+                    Primitive(PrimitiveType.Cylinder, "Acetylene", root, new Vector3(.2f, .75f, 0f), new Vector3(.3f, .5f, .3f), red, false);
+                    Box("RegOxy", root, new Vector3(-.2f, 1.55f, 0f), new Vector3(.14f, .14f, .12f), brass, false);
+                    Box("RegAcet", root, new Vector3(.2f, 1.3f, 0f), new Vector3(.14f, .14f, .12f), brass, false);
+                    Box("Hose", root, new Vector3(0f, .95f, .15f), new Vector3(.35f, .35f, .15f), red, false);
+                    break;
+                case Kind.SlagThimble:
+                    Box("Base", root, new Vector3(0f, .12f, 0f), new Vector3(1.7f, .24f, 1.7f), art.Bed, false);
+                    Primitive(PrimitiveType.Cylinder, "Pot", root, new Vector3(0f, .85f, 0f), new Vector3(1.5f, .75f, 1.5f), scrap, false);
+                    Primitive(PrimitiveType.Cylinder, "Rim", root, new Vector3(0f, 1.6f, 0f), new Vector3(1.7f, .08f, 1.7f), art.Steel, false);
+                    Primitive(PrimitiveType.Cylinder, "Crust", root, new Vector3(0f, 1.5f, 0f), new Vector3(1.4f, .05f, 1.4f), art.Lava, false);
+                    foreach (float side in new[] { -1f, 1f })
+                        Box("Trunnion", root, new Vector3(side * .85f, 1.1f, 0f), new Vector3(.25f, .25f, .25f), art.Steel, false);
+                    break;
+                case Kind.BilletStack:
+                    foreach (float z in new[] { -.5f, .5f })
+                        Box("Dunnage", root, new Vector3(0f, .08f, z), new Vector3(1.6f, .16f, .18f), wood, false);
+                    for (int i = 0; i < 4; i++)
+                        Box("BilletA", root, new Vector3(0f, .22f, -.45f + i * .3f), new Vector3(1.5f, .14f, .18f), art.Steel, false);
+                    for (int i = 0; i < 4; i++)
+                        Box("BilletB", root, new Vector3(-.5f + i * .33f, .38f, 0f), new Vector3(.18f, .14f, 1.3f), art.Rust, false);
+                    for (int i = 0; i < 3; i++)
+                        Box("BilletC", root, new Vector3(0f, .54f, -.35f + i * .35f), new Vector3(1.4f, .14f, .18f), art.Steel, false);
+                    break;
+                case Kind.SafetyBollards:
+                    foreach (float x in new[] { -.5f, .5f })
+                    {
+                        Primitive(PrimitiveType.Cylinder, "Bollard", root, new Vector3(x, .5f, 0f), new Vector3(.24f, .5f, .24f), art.Safety, false);
+                        Box("Band", root, new Vector3(x, .7f, 0f), new Vector3(.26f, .1f, .26f), black, false);
                     }
                     break;
                 default:

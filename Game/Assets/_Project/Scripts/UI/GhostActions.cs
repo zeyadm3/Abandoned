@@ -29,7 +29,7 @@ namespace Abandoned.UI
             // 0.22.4: and the way back, when the agency will still send someone.
             string line = Core.Loc.T("{0}  knock      {1}  flicker the lights      {2}  nudge something",
                 Core.InputBindings.Display("Interact"), Core.InputBindings.Display("Flashlight"), Core.InputBindings.Display("Jump"));
-            if (RunHires.Current != null && RunHires.Current.HiresLeft) line += "      " + Core.Loc.T("a crewmate can hire you back at the truck's radio");
+            if (RunHires.Current != null && RunHires.Current.HiresLeft) line += "      " + (Extraction.TruckCargo.BoatJob ? Core.Loc.T("a crewmate can hire you back at the boat's radio") : Core.Loc.T("a crewmate can hire you back at the truck's radio"));
             HudCallout.Set(this, line);
             if (Core.CursorOwner.UiActive) return;
             var reader = me.GetComponent<PlayerInputReader>();

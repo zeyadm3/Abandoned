@@ -57,7 +57,9 @@ namespace Abandoned.Extraction
             if (rushUntil.Value > toastedUntil && Left > 0f)
             {
                 toastedUntil = rushUntil.Value;
-                ToastFeed.Show(Loc.T("RUSH ORDER"), Loc.T("Any {0} in the truck in the next {1:0.#} minutes pays x{2:0.#}.", Loc.T(rushName.Value.ToString()), BonusConfig.Current.RushSeconds / 60f, BonusConfig.Current.RushMultiplier), null, ToastFeed.Kind.Info);
+                ToastFeed.Show(Loc.T("RUSH ORDER"), TruckCargo.BoatJob
+                    ? Loc.T("Any {0} in the boat in the next {1:0.#} minutes pays x{2:0.#}.", Loc.T(rushName.Value.ToString()), BonusConfig.Current.RushSeconds / 60f, BonusConfig.Current.RushMultiplier)
+                    : Loc.T("Any {0} in the truck in the next {1:0.#} minutes pays x{2:0.#}.", Loc.T(rushName.Value.ToString()), BonusConfig.Current.RushSeconds / 60f, BonusConfig.Current.RushMultiplier), null, ToastFeed.Kind.Info);
                 RunHorrorDirector.Say(Loc.Wire("RUSH ORDER / {0}", Loc.Word(rushName.Value.ToString())), 6f);
             }
             if (!IsServer || run.State.Phase != RunPhase.Running) return;

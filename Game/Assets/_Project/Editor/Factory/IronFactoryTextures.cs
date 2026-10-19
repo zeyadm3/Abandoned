@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
     /// out), a Normal built from a height field, and a Mask (R metallic, G occlusion, A smoothness) like the mall's.
     /// Made once; delete a set's PNGs to make it again.
     /// </summary>
-    public static class IronFactoryTextures
+    public static partial class IronFactoryTextures
     {
         public const string Folder = "Assets/_Project/Art/Factory/Textures";
 
@@ -43,6 +43,11 @@ namespace Abandoned.EditorTools
             Make("OilStain", OilStain);
             Make("SootVeil", SootVeil);
             Make("LightShaft", LightShaft);
+            // The island prison's ground (IronFactoryTextures.Island.cs).
+            Make("Turf", Turf);
+            Make("Earth", Earth);
+            Make("SeaRock", SeaRock);
+            Make("Shingle", Shingle);
         }
 
         // Moonlight falling through dusty air: brightest under the hole, fading toward the floor, soft at the sides.
@@ -252,7 +257,9 @@ namespace Abandoned.EditorTools
 
         private static void Make(string set, Func<Map> recipe)
         {
-            if (File.Exists($"{Folder}/{set}_BaseColor.png")) return;
+            // An interrupted generation can leave only the colour map. Rebuild the set as one unit.
+            if (File.Exists($"{Folder}/{set}_BaseColor.png") && File.Exists($"{Folder}/{set}_Normal.png") &&
+                File.Exists($"{Folder}/{set}_Mask.png")) return;
             Directory.CreateDirectory(Folder);
             Map m = recipe();
             Write($"{set}_BaseColor", m.W, m.H, m.Colour);

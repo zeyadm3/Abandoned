@@ -106,6 +106,26 @@ namespace Abandoned.EditorTools
                         count++;
                         break;
                     }
+                    case K.SteamHammer:
+                    {
+                        Transform ram = root.Find("Visual/Ram");
+                        Movable(ram);
+                        var zone = new Bounds(new Vector3(0f, 1.25f, 0f), new Vector3(s.x * .7f, 2.5f, s.z * .7f));
+                        Stripes(root, zone, art);
+                        root.gameObject.AddComponent<MachineHazard>().EditorSetup(MachineHazardKind.Press, zone, phase, ram, null,
+                            Lamp(root, new Vector3(0f, s.y + .15f, 0f), lampGlass), null);
+                        count++;
+                        break;
+                    }
+                    case K.SoakingPit:
+                    {
+                        var zone = new Bounds(new Vector3(0f, 1.2f, 0f), new Vector3(s.x, 2.4f, s.z));
+                        Stripes(root, zone, art);
+                        root.gameObject.AddComponent<MachineHazard>().EditorSetup(MachineHazardKind.Steam, zone, phase, null,
+                            Jets(root, s, steam), Lamp(root, new Vector3(s.x * .5f + .05f, 1.6f, 0f), lampGlass), null);
+                        count++;
+                        break;
+                    }
                     case K.RollerTable:
                     case K.Conveyor:
                     {

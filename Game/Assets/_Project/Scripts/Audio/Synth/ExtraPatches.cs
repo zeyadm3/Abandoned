@@ -83,6 +83,16 @@ namespace Abandoned.Audio
                 case SoundId.PressSlam: return Patch.Mono(id, take, FactoryPatches.PressSlam(take), 0.95f);
                 case SoundId.SteamBlast: return Patch.Mono(id, take, FactoryPatches.SteamBlast(take), 0.8f);
                 case SoundId.LavaRumble: return new SynthSamples("Synth_LavaRumble", Synth.Normalize(FactoryPatches.LavaRumble(), 0.7f), 1, Synth.LoopRate);
+                // Island prison.
+                case SoundId.Foghorn: return Patch.Mono(id, take, IslandPatches.Foghorn(take), 0.85f);
+                case SoundId.SurfLoop: return new SynthSamples("Synth_SurfLoop", Synth.Normalize(IslandPatches.Surf(), 0.7f), 1, Synth.LoopRate);
+                case SoundId.LighthouseMotor: return new SynthSamples("Synth_LighthouseMotor", Synth.Normalize(IslandPatches.LighthouseMotor(), 0.6f), 1, Synth.LoopRate);
+                // Iron Factory L6: distant chains and thermal stress
+                case SoundId.FactoryChainRattle: return Patch.Mono(id, take, FactoryPatches.ChainRattle(take), 0.75f);
+                case SoundId.FactoryThermalGroan: return Patch.Mono(id, take, FactoryPatches.ThermalGroan(take), 0.8f);
+                // Loot quirks: hot metal sizzling and liquid sloshing
+                case SoundId.LootSizzle: return Patch.Mono(id, take, LootPatches.Sizzle(take), 0.7f);
+                case SoundId.LootSlosh: return Patch.Mono(id, take, LootPatches.Slosh(take), 0.75f);
                 // @@cases
                 default: return null;
             }

@@ -54,6 +54,27 @@ namespace Abandoned.EditorTools
                 if (cold && rng.NextDouble() < .5) { Floor(group, art.Moss, at, R(1.4f, 3f), R(0f, 360f)); count++; }
             }
 
+            // Scorch along the tapping runner from the blast furnace
+            for (float rx = 10f; rx < c.xMin - 2f; rx += 3.5f)
+            {
+                Floor(group, art.Scorch, new Vector3(rx, 0f, 24f + R(-.7f, .7f)), R(1.4f, 2.2f), R(0f, 360f));
+                count++;
+            }
+
+            // Yellow safety warning borders along open channel gaps
+            float[] gapZ = { 33.5f, 49.5f, 66.5f };
+            foreach (float gz in gapZ)
+            {
+                Box("LavaWarn_W", group, new Vector3(c.xMin - .22f, Lift, gz), new Vector3(.25f, .01f, 2.4f), art.Safety, false);
+                Box("LavaWarn_E", group, new Vector3(c.xMax + .22f, Lift, gz), new Vector3(.25f, .01f, 2.4f), art.Safety, false);
+                count += 2;
+            }
+
+            // Crane runway clearance aisle lines on the dispatch floor
+            Box("CraneAisle_L", group, new Vector3(L.DockX - 5.2f, Lift, 10f), new Vector3(.12f, .01f, 18f), art.Safety, false);
+            Box("CraneAisle_R", group, new Vector3(L.DockX + 5.2f, Lift, 10f), new Vector3(.12f, .01f, 18f), art.Safety, false);
+            count += 2;
+
             // Soot on the inside of the outer walls: from 5 m up to the roof, darkest at the top. A quad shows its
             // front toward -Z, so each is turned to face into the hall.
             float w = L.Width * L.Tile, d = L.Depth * L.Tile, inset = L.WallThickness * .5f + .02f, from = 5f;

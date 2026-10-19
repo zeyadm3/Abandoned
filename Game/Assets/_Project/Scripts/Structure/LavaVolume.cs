@@ -18,8 +18,14 @@ namespace Abandoned.Structure
         private static readonly List<LavaVolume> Volumes = new();
         private static readonly Collider[] Hits = new Collider[64];
 
+        /// <summary>The island prison's sea: the same rules as the lava, its own death line.</summary>
+        public static readonly string SeaDeathLine = Loc.Mark("Lost to the sea.");
+
         [Tooltip("World-space box: anything whose position is inside is in the lava.")]
         [SerializeField] private Bounds volume = new(Vector3.zero, new Vector3(20f, 2.4f, 60f));
+
+        [Tooltip("Death line for this volume (English, worded where shown). Empty: LavaConfig's (the molten iron).")]
+        [SerializeField] private string deathLine = "";
 
         private float nextCheck;
         private int kills, burned;
@@ -55,7 +61,7 @@ namespace Abandoned.Structure
                 if (p == null || !p.IsSpawned || p.IsDead || p.InVent) continue;
                 Vector3 at = p.Ragdoll.IsRagdolled ? p.Ragdoll.BodyPosition : p.transform.position;
                 if (!volume.Contains(at)) continue;
-                p.ServerKill(config.DeathLine);
+                p.ServerKill(string.IsNullOrEmpty(deathLine) ? config.DeathLine : deathLine);
                 kills++;
                 Debug.Log($"[Lava] {p.DisplayName} fell in.");
             }
@@ -78,6 +84,12 @@ namespace Abandoned.Structure
 
 #if UNITY_EDITOR
         public void EditorSetup(Bounds worldBox) => volume = worldBox;
+
+        public void EditorSetup(Bounds worldBox, string line)
+        {
+            volume = worldBox;
+            deathLine = line;
+        }
 #endif
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

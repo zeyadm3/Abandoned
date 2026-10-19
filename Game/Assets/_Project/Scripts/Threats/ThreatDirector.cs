@@ -188,7 +188,7 @@ namespace Abandoned.Threats
         }
         public Threat Relocate(Threat threat)
         {
-            if (!IsHost || threat == null || !threat.IsSpawned) return null;
+            if (ExploreWithoutMonsters || !IsHost || threat == null || !threat.IsSpawned) return null;
             NetworkObject prefab = PrefabOf(threat);
             if (prefab == null || !TryPlacement(prefab, out Vector3 at, out Quaternion facing, out string marker)) return null;
             string name = threat.DisplayName;
@@ -226,8 +226,13 @@ namespace Abandoned.Threats
             if (!found) PlacementRetries++;
             return found;
         }
+        // TEMPORARY (2026-10-19): monsters off so the user can explore the island prison. Set back to false (or delete)
+        // when they say so: every monster spawn, opening, arrival, relocation and the Last Hunter comes through here.
+        private static readonly bool ExploreWithoutMonsters = true;
+
         private Threat Spawn(NetworkObject prefab)
         {
+            if (ExploreWithoutMonsters) return null;
             if (!IsHost || prefab == null || !TryPlacement(prefab, out Vector3 at, out Quaternion facing, out string marker)) return null;
             NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(prefab, position: at, rotation: facing);
             if (spawned == null) return null;
