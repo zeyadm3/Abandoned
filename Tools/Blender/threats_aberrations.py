@@ -1,14 +1,21 @@
-"""Late-job aberrations: ceiling mass, false human, skittering swarm and the final executioner."""
+"""Late-job aberrations completely redesigned with psychological horror, grotesque body parts,
+screaming faces, matted hair, and visceral depth.
+"""
 import math
 from mathutils import Vector
 
 
 def weight(a):
-    a.loft('CeilingCarapace', [(0, .16, 3.05, .54, .53), (0, .14, 3.35, 1.18, 1.01),
+    """The Weight: a colossal, crushing ceiling horror. Heavy vaulted rib arches, hanging weeping corpse limbs,
+    thick tension cables, and an agonized giant mask weeping dark bile and tangled in coarse wire-hair."""
+    a.loft('CeilingCarapace', [
+        (0, .16, 3.05, .54, .53), (0, .14, 3.35, 1.18, 1.01),
         (0, .15, 3.81, 1.63, 1.28), (0, .15, 4.17, 1.60, 1.22),
-        (0, .16, 4.49, 1.22, .91), (0, .19, 4.64, .53, .49)], 'Charcoal', sides=22)
-    a.anatomy('Iron', .32, .28, fingers=3, cuffs=True)
-    # Heavy overlapping vault segments carry the ceiling silhouette, rather than an oversized round torso.
+        (0, .16, 4.49, 1.22, .91), (0, .19, 4.64, .53, .49)
+    ], 'Charcoal', sides=22)
+    a.anatomy('Iron', .32, .28, fingers=0, cuffs=True)
+
+    # Massive load-bearing vault ribs with protruding bone spurs
     for row in range(7):
         y = -.90 + row * .34
         radius = 1.61 - .10 * abs(row - 3)
@@ -16,139 +23,217 @@ def weight(a):
         for j in range(13):
             u = j / 12 * math.pi
             points.append((-math.cos(u) * radius, y, 3.78 + math.sin(u) * .88, .075))
-        a.tube('VaultedLoadRib', points, 'Ash', sides=10)
+        a.tube(f'VaultedLoadRib_{row}', points, 'Ash', sides=10)
+        # Jagged bone spurs pointing downwards from the ribs
         for sign in [-1, 1]:
-            a.plate('CarapaceEdgeFastening', (sign * radius * .92, y, 3.85), .20, .17, .20, 'Iron', tilt=sign * .32)
+            a.tube(f'CeilingSpur_{row}_{sign}', [
+                (sign * radius * 0.75, y, 3.82, 0.035),
+                (sign * radius * 0.70, y, 3.45, 0.008)
+            ], 'Bone', sides=5)
+
+    # Heavy tension cables and wet sinewy load tendons
     for sign in [-1, 1]:
         for j in range(3):
             y = -.62 + j * .64
-            a.tube('LoadTendon', [(sign * 1.25, y, 3.91, .12), (sign * 1.52, y + .10, 3.36, .14),
-                (sign * 1.66, y + .13, 2.93, .09), (sign * 1.70, y + .11, 2.59, .055)], 'Canvas', sides=12)
-            a.tube('CarapaceTensionCable', [(sign * 1.32, y, 4.03, .023),
-                (sign * 1.60, y, 3.64, .025), (sign * 1.70, y + .10, 3.02, .018)], 'Iron')
-        for i in range(4):
-            a.ellipsoid('SuspendedUndersideFold', (sign * (.31 + i * .14), -.12 + (i % 2) * .31, 3.18),
-                        (.34, .52, .49), 'Canvas')
-    a.loft('CeilingMaskHead', [(0, -.81, 4.04, .19, .23), (0, -.87, 4.23, .32, .34),
-        (0, -.83, 4.51, .33, .31), (0, -.75, 4.68, .19, .20)], 'Iron', 'head')
-    a.plate('TrappedPaleFace', (0, -1.178, 4.35), .44, .29, .045, 'Bone', 'head')
-    a.ring('FaceYoke', (0, -1.16, 4.35), .31, .245, .042, 'Rust')
-    a.plate('BlankVisorIndent', (0, -1.214, 4.39), .26, .019, .012, 'Charcoal', 'head')
-    for sign in [-1, 1]:
-        a.line('FaceBracket', (sign * .26, -1.10, 4.20), (sign * .28, -.99, 4.54), .028, 'Iron', 'head')
-    for i in range(5):
-        a.plate('UndersideBreather', ((i - 2) * .06, -1.217, 4.28), .025, .045, .012, 'Charcoal', 'head')
-    a.tube('CarapaceCrownSeam', [(0, -.80, 4.56, .045), (.03, -.30, 4.72, .055),
-        (0, .19, 4.84, .06), (-.025, .69, 4.68, .045), (0, 1.10, 4.49, .035)], 'Iron')
+            a.tube(f'LoadTendon_{sign}_{j}', [
+                (sign * 1.25, y, 3.91, .12), (sign * 1.52, y + .10, 3.36, .14),
+                (sign * 1.66, y + .13, 2.93, .09), (sign * 1.70, y + .11, 2.59, .055)
+            ], 'Gore', sides=12)
+            a.tube(f'TensionCable_{sign}_{j}', [
+                (sign * 1.32, y, 4.03, .023),
+                (sign * 1.60, y, 3.64, .025), (sign * 1.70, y + .10, 3.02, .018)
+            ], 'Iron')
+
+    # Head: Trapped colossal agonized face embedded in the ceiling mass
+    a.loft('CeilingMaskHead', [
+        (0, -.81, 4.04, .22, .24), (0, -.87, 4.23, .36, .36),
+        (0, -.83, 4.51, .36, .34), (0, -.75, 4.68, .22, .22)
+    ], 'Iron', 'head')
+    
+    # Trapped pale screaming face
+    a.ellipsoid('ColossalTrappedFace', (0, -1.18, 4.35), (0.46, 0.28, 0.44), 'Bone', 'head')
+    # Horror maw with needle teeth weeping from the ceiling
+    a.horror_maw('CeilingFaceMaw', (0, -1.22, 4.24), width=0.28, height=0.12, depth=0.18,
+                 teeth_count=18, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.12)
+    # Burning retroreflective eyes looking down on the salvage crew
+    a.horror_eyes('CeilingFaceEyes', (0, -1.21, 4.40), eye_dist=0.16, radius=0.038, bone='head',
+                  eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Coarse tangled hair hanging down from the ceiling around the titan mask
+    a.hair_curtain('CeilingHairDrape', (0, -0.92, 4.65), count=22, length=1.20, material='Hair',
+                   bone='head', spread_x=0.45, spread_y=0.28, z_drop=0.15, forward_bias=-0.14, wave_amp=0.045)
 
 
 def thing(a):
-    a.loft('HumanShell', [(0, .02, .90, .19, .16), (0, .015, 1.13, .23, .20),
-        (.025, .015, 1.51, .31, .26), (-.015, .03, 1.76, .32, .23),
-        (0, .02, 1.87, .17, .14)], 'Canvas')
-    a.anatomy('Ash', .13, .16, fingers=5)
-    # Several offset porcelain faces share one skull, each surrounded by a separate black recess.
-    a.loft('MisalignedCranialShell', [(0, -.02, 1.77, .12, .13), (.025, -.04, 1.96, .26, .22),
-        (-.02, -.03, 2.18, .28, .23), (.015, .01, 2.32, .15, .15), (0, .03, 2.35, .04, .07)], 'Bone', 'head')
-    for layer in range(3):
-        x = (layer - 1) * .018
-        y = -.273 - layer * .048
-        z = 2.07 + layer * .017
-        w, h = .45 - layer * .092, .43 - layer * .063
-        a.plate('FaceRecess', (x, y, z), w, h, .032, 'Charcoal', 'head', tilt=(layer - 1) * .10)
-        a.ring('PorcelainFaceEdge', (x, y - .018, z), w * .46, h * .48, .024 - layer * .003, 'Bone')
-        a.plate('OffsetNosePlane', (x + .007, y - .035, z), .055, h * .37, .037, 'Bone', 'head', tilt=(layer - 1) * .14)
-        a.plate('OffsetChin', (x, y - .033, z - h * .30), w * .47, .07, .035, 'Bone', 'head', tilt=-layer * .06)
-    for sign in [-1, 1]:
-        a.plate('LostEyeHollow', (sign * .054 + .018, -.423, 2.143), .052, .025, .012, 'Charcoal', 'head', tilt=sign * .12)
-        a.cloth('UnbuttonedHumanLapel', [(1.79, sign * .13, -.20, .18), (1.48, sign * .14, -.257, .21),
-            (1.12, sign * .15, -.22, .19), (.97, sign * .15, -.18, .16)], 'Charcoal', folds=.016)
-        a.stitches('TailoredShellRepair', (sign * .22, -.18, 1.13), (sign * .25, -.19, 1.65), 'Bone', count=11, width=.042)
-        for j in range(3):
-            a.tube('ImpossibleNeckFold', [(sign * .08, -.10, 1.79 + j * .045, .013),
-                (sign * .15, -.12, 1.82 + j * .045, .016), (sign * .13, .05, 1.84 + j * .045, .009)], 'Ash', 'neck')
-    # An offset back closure implies a body assembled inside the wrong coat, without explicit gore.
-    a.line('OffsetBackClosure', (.07, .264, 1.10), (.12, .253, 1.71), .011, 'Iron')
-    for i in range(10):
-        z = 1.13 + i * .055
-        a.line('BackClosureStaple', (.035, .266, z), (.15, .266, z + .025), .006, 'Rust', sides=6)
-    for side, sign in [('L', -1), ('R', 1)]:
-        elbow = a.bones['forearm' + side][0]
-        a.ellipsoid('MismatchedElbowCuff', elbow + Vector((0, -.02, -.015)), (.17, .19, .13), 'Charcoal', 'forearm' + side)
-    for i in range(3):
-        a.plate('UnfamiliarButton', (.04, -.267, 1.22 + i * .18), .037, .037, .014, 'Iron')
+    """The Thing: an uncanny, grotesque cluster of human forms trying to mimic humanity.
+    Multiple contorted human faces weeping and screaming across one cranial mass, long stringy hair,
+    misaligned jaws with needle teeth, split chest with exposed viscera, and extra clawed finger joints."""
+    # Stitched false-human torso
+    a.loft('MutatedHumanTorso', [
+        (0, .02, .90, .20, .17), (0, .015, 1.13, .25, .21),
+        (.025, .015, 1.51, .33, .28), (-.015, .03, 1.76, .34, .25),
+        (0, .02, 1.87, .19, .15)
+    ], 'Canvas')
+    
+    # Chest split wide open down the sternum with jagged rib teeth and exposed viscera
+    a.tube('SplitChestChasm', [(0, -0.16, 1.05, 0.024), (0, -0.22, 1.45, 0.042), (0, -0.18, 1.80, 0.030)], 'Gore', 'spine')
+    for r in range(6):
+        z = 1.15 + r * 0.11
+        for sign in [-1, 1]:
+            a.tube(f'MawRibTooth_{r}_{sign}', [
+                (sign * 0.08, -0.19, z, 0.014),
+                (sign * 0.01, -0.25, z - 0.02, 0.005)
+            ], 'Bone', 'spine', sides=5)
+    
+    # Multi-headed / misaligned cranial horror mass
+    a.loft('ClusterCranium', [
+        (0, -.02, 1.77, .13, .14), (.025, -.04, 1.96, .28, .24),
+        (-.02, -.03, 2.18, .30, .25), (.015, .01, 2.32, .18, .17), (0, .03, 2.38, .06, .08)
+    ], 'Bone', 'head')
+
+    # Primary weeping face with gaping maw
+    a.horror_maw('ThingPrimaryMaw', (0, -0.22, 2.06), width=0.19, height=0.08, depth=0.12,
+                 teeth_count=16, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.10)
+    a.horror_eyes('ThingPrimaryEyes', (0, -0.23, 2.18), eye_dist=0.11, radius=0.032, bone='head',
+                  eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Secondary distorted face grafted onto the right temple
+    a.ellipsoid('SecondaryFaceGraft', (0.16, -0.14, 2.22), (0.16, 0.14, 0.18), 'Bone', 'head')
+    a.horror_maw('ThingSecondaryMaw', (0.17, -0.18, 2.14), width=0.12, height=0.06, depth=0.08,
+                 teeth_count=10, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.07)
+    a.horror_eyes('ThingSecondaryEyes', (0.18, -0.18, 2.24), eye_dist=0.06, radius=0.022, bone='head',
+                  eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Long greasy black human hair hanging in ragged stringy clumps across both faces
+    a.hair_curtain('ThingCrownHair', (0, 0.04, 2.36), count=20, length=0.65, material='Hair',
+                   bone='head', spread_x=0.25, spread_y=0.18, z_drop=0.08, forward_bias=-0.14, wave_amp=0.04)
+    a.hair_curtain('ThingFaceStrands', (0.05, -0.12, 2.28), count=12, length=0.48, material='Hair',
+                   bone='head', spread_x=0.18, spread_y=0.08, z_drop=0.04, forward_bias=-0.08, wave_amp=0.03)
+
+    # Limbs with horror hands and elongated multi-jointed fingers
+    a.anatomy('Ash', .13, .16, fingers=0)
+    for sign, side in [(-1, 'L'), (1, 'R')]:
+        hand_pos = a.bones['forearm' + side][1]
+        a.horror_hand('forearm' + side, hand_pos, arm_width=0.13, fingers=5, finger_len=0.30,
+                      claw_len=0.10, material='Bone', claw_mat='Charcoal', sign=sign)
 
 
 def crawlers(a):
-    # The five original swarm centres and bone assignments stay intact for replication and animation.
+    """The Crawlers: skittering human-spider chimeras. Each entity features an inverted, screaming pale human face,
+    dark weeping hollows, long black hair dragging across the floor like spider silk, and barbed scythe legs."""
     for n, (x, y) in enumerate([(0, 0), (-.55, .22), (.58, .28), (-.34, .82), (.42, .9)]):
         bone = 'spine' if n == 0 else 'armL' if n % 2 else 'armR'
-        a.ellipsoid('CrawlerLowBody', (x, y + .035, .29), (.48, .66, .31), 'Charcoal', bone)
-        a.ellipsoid('CrawlerThorax', (x, y - .23, .29), (.36, .26, .27), 'Iron', bone)
+        
+        # Abdomen and thorax
+        a.ellipsoid(f'CrawlerBody_{n}', (x, y + .035, .29), (.48, .66, .31), 'Charcoal', bone)
+        a.ellipsoid(f'CrawlerThorax_{n}', (x, y - .23, .29), (.36, .26, .27), 'Gore', bone)
+
+        # Segmented dorsal bone plates with spinal spikes
         for plate in range(4):
             py = y - .08 + plate * .14
-            a.loft('SegmentedCarapace', [(x, py, .27, .19 - plate * .015, .12),
+            a.loft(f'CarapacePlate_{n}_{plate}', [
+                (x, py, .27, .19 - plate * .015, .12),
                 (x, py, .40 + math.sin(plate * .8) * .025, .19 - plate * .018, .115),
-                (x, py, .46 - plate * .012, .09, .055)], 'Ash' if plate % 2 else 'Iron', bone, sides=12)
-        a.plate('CrackedCrawlerMask', (x, y - .383, .27), .265, .19, .06, 'Bone', bone)
+                (x, py, .46 - plate * .012, .09, .055)
+            ], 'Bone' if plate % 2 == 0 else 'Charcoal', bone, sides=12)
+            # Upward bone spur
+            a.tube(f'CarapaceSpur_{n}_{plate}', [
+                (x, py, .44, .018),
+                (x, py, .56, .004)
+            ], 'Bone', bone, sides=5)
+
+        # INVERTED HUMAN FACE ON HEAD: Upside-down pale human face screaming in agony
+        head_y = y - 0.38
+        a.ellipsoid(f'InvertedHumanFace_{n}', (x, head_y, 0.28), (0.24, 0.18, 0.22), 'Bone', bone)
+        
+        # Screaming horror maw with needle teeth
+        a.horror_maw(f'CrawlerMaw_{n}', (x, head_y - 0.08, 0.23), width=0.14, height=0.06, depth=0.08,
+                     teeth_count=12, bone=bone, gum_mat='Gore', tooth_mat='Bone', gaping=0.07)
+        # Cluster of weeping eyes that flash in flashlights
+        a.horror_eyes(f'CrawlerEyes_{n}', (x, head_y - 0.06, 0.32), eye_dist=0.07, radius=0.024, bone=bone,
+                      eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+        # Long, stringy black hair draping from the face down onto the floor like spider webbing
+        a.hair_curtain(f'CrawlerHairWeb_{n}', (x, head_y + 0.05, 0.35), count=12, length=0.45, material='Hair',
+                       bone=bone, spread_x=0.18, spread_y=0.12, z_drop=0.04, forward_bias=-0.08, wave_amp=0.035)
+
+        # Multi-jointed barbed skeletal spider limbs with sharp chitinous talons
         for sign in [-1, 1]:
-            a.ellipsoid('RecessedCrawlerSensor', (x + sign * .065, y - .423, .295), (.047, .015, .036), 'Charcoal', bone)
-            a.tube('FoldingMandible', [(x + sign * .095, y - .36, .22, .024),
-                (x + sign * .15, y - .43, .16, .020), (x + sign * .06, y - .47, .15, .005)], 'Iron', bone, sides=7)
+            # Segmented mandibles flanking the screaming maw
+            a.tube(f'Mandible_{n}_{sign}', [
+                (x + sign * .07, head_y - .02, .22, .022),
+                (x + sign * .14, head_y - .10, .18, .018),
+                (x + sign * .04, head_y - .14, .16, .005)
+            ], 'Iron', bone, sides=6)
             for j in range(3):
                 at = (x + sign * .18, y - .17 + j * .19, .29)
-                knee = (x + sign * (.42 + .025 * (j % 2)), y - .28 + j * .19, .20)
-                foot = (x + sign * .52, y - .36 + j * .20, .045)
-                a.tube('TaperedCrawlerFemur', [(*at, .035),
-                    (x + sign * .31, y - .20 + j * .19, .30, .041), (*knee, .027)], 'Ash', bone, sides=8)
-                a.ellipsoid('CrawlerKnee', knee, (.071, .075, .069), 'Iron', bone)
-                a.tube('HookedCrawlerFoot', [(*knee, .023),
-                    (x + sign * .49, y - .32 + j * .20, .09, .018), (*foot, .007)], 'Charcoal', bone, sides=7)
-        a.line('CarapaceSpine', (x, y - .11, .456), (x, y + .41, .414), .014, 'Bone', bone, sides=6)
-        for j in range(3):
-            a.plate('MaskBreathingSlot', (x + (j - 1) * .045, y - .421, .23), .016, .044, .012, 'Charcoal', bone)
+                knee = (x + sign * (.46 + .03 * (j % 2)), y - .28 + j * .19, .38)
+                foot = (x + sign * .58, y - .36 + j * .20, .03)
+                # Upper leg with barbed bone spines
+                a.tube(f'BarbedFemur_{n}_{sign}_{j}', [
+                    (*at, .036),
+                    (x + sign * .33, y - .22 + j * .19, .36, .044),
+                    (*knee, .028)
+                ], 'Bone', bone, sides=7)
+                a.ellipsoid(f'LimbKnee_{n}_{sign}_{j}', knee, (.075, .08, .075), 'Gore', bone)
+                # Lower scythe leg ending in needle claw
+                a.tube(f'ScytheTibia_{n}_{sign}_{j}', [
+                    (*knee, .026),
+                    (x + sign * .54, y - .32 + j * .20, .14, .018),
+                    (*foot, .004)
+                ], 'Iron', bone, sides=6)
 
 
 def last(a):
-    a.loft('ExecutionerTorso', [(0, 0, .96, .28, .24), (0, 0, 1.40, .36, .30),
-        (0, .02, 2.04, .49, .35), (0, .05, 2.65, .54, .38),
-        (0, .02, 2.96, .37, .26), (0, 0, 3.10, .20, .16)], 'Charcoal')
-    a.anatomy('Iron', .23, .28, fingers=4, cuffs=True)
+    """The Last Hunter: the supreme executioner horror. Towering titan crowned with massive rusted spikes
+    driven through its cracked skull, long tangled death shrouds and tresses of decayed black hair,
+    an iron-jawed screaming visage with burning deathly eyes, and colossal barbed gauntlets."""
+    # Towering monolithic torso
+    a.loft('ExecutionerTorso', [
+        (0, 0, .96, .30, .26), (0, 0, 1.40, .38, .32),
+        (0, .02, 2.04, .52, .38), (0, .05, 2.65, .58, .42),
+        (0, .02, 2.96, .40, .28), (0, 0, 3.10, .22, .18)
+    ], 'Charcoal')
+    
+    # Protruding dorsal spinal spikes and executioner chains
+    a.spinal_spikes(1.05, 2.95, 0.28, count=10, spike_len=0.18, material='Bone', bone='spine', gore_mat='Gore')
+
+    # Shroud drapery and torn funeral banners
     for sign, side in [(-1, 'L'), (1, 'R')]:
-        a.plate('BrokenMantleYoke', (sign * .54, .10, 2.73), .53, .42, .54, 'Iron', tilt=sign * .18)
-        a.cloth('HeavyTornMantle', [(2.92, sign * .47, .27, .46), (2.45, sign * .56, .36, .51),
-            (1.92, sign * .59, .39, .43), (1.29 if sign < 0 else 1.55, sign * .57, .35, .34)],
-            'Canvas', 'arm' + side, folds=.045)
-        a.cloth('ApronSide', [(2.52, sign * .29, -.29, .34), (1.91, sign * .32, -.34, .35),
-            (1.18, sign * .30, -.31, .31), (.74 if sign < 0 else .90, sign * .31, -.27, .27)], 'Charcoal', folds=.032)
-        for i in range(3):
-            # Only three purposeful, curved crown prongs per side, inside the original crown envelope.
-            a.tube('BentRebarCrown', [(sign * .16, .02, 3.67, .040),
-                (sign * (.31 + i * .12), .08 + i * .08, 3.80 - i * .045, .039),
-                (sign * (.40 + i * .24), .20 + i * .12, 3.93 - i * .14, .025)], 'Iron', 'head', sides=9)
-        a.tube('CollarTensionRod', [(sign * .19, .10, 3.09, .043), (sign * .42, .19, 2.90, .048),
-            (sign * .66, .16, 2.72, .035)], 'Rust', 'neck')
-        wrist = a.bones['forearm' + side][1]
-        a.plate('ExecutionerWristSplint', (wrist.x, wrist.y - .105, wrist.z + .22), .22, .35, .075, 'Charcoal', 'forearm' + side)
-    # The shutter armour is a joined, worn garment of slats, with actual rolled returns and recessed fasteners.
-    for i in range(7):
-        z = 1.14 + i * .215
-        width = .88 - i * .047
-        a.plate('OverlappingShutterScale', (0, -.36 - i * .008, z), width, .245, .065, 'Iron')
-        a.line('RolledSlatEdge', (-width * .43, -.408 - i * .008, z - .085),
-               (width * .43, -.408 - i * .008, z - .085), .013, 'Rust')
-        for sign in [-1, 1]:
-            a.ellipsoid('SlatRivet', (sign * width * .34, -.406 - i * .008, z + .045), (.027, .017, .027), 'Bone')
-    a.loft('LongExecutionerSkull', [(0, -.02, 3.10, .13, .15), (0, -.03, 3.36, .20, .23),
-        (0, -.015, 3.64, .23, .23), (0, .02, 3.86, .14, .15), (0, .04, 3.90, .055, .07)], 'Bone', 'head')
-    a.plate('RecessedFaceWell', (0, -.255, 3.49), .35, .49, .045, 'Charcoal', 'head')
-    a.plate('LeftMaskBlade', (-.112, -.293, 3.51), .14, .47, .048, 'Iron', 'head', tilt=-.08)
-    a.plate('RightMaskBlade', (.112, -.293, 3.51), .14, .47, .048, 'Iron', 'head', tilt=.08)
-    a.plate('PaleVerticalFaceSeam', (0, -.283, 3.46), .054, .28, .019, 'Bone', 'head')
-    a.plate('NarrowFinalEyeLine', (0, -.313, 3.565), .178, .018, .015, 'Eyes', 'head')
-    a.plate('MaskJawClamp', (0, -.294, 3.29), .24, .10, .055, 'Rust', 'head')
-    for i in range(8):
-        z = 1.26 + i * .20
-        a.plate('RearSpinalScale', (0, .34, z), .15, .17, .08, 'Iron')
-        if i % 2 == 0:
-            a.ring('RearHarnessLink', (0, .40, z), .063, .10, .018, 'Rust', 'spine', segments=12)
+        a.cloth(f'HeavyFuneralMantle_{side}', [
+            (2.92, sign * .47, .27, .48), (2.45, sign * .56, .36, .54),
+            (1.92, sign * .59, .39, .46), (1.25 if sign < 0 else 1.50, sign * .57, .35, .36)
+        ], 'Canvas', 'arm' + side, folds=.055)
+
+    # Colossal skull crowned with brutal rusted rebar spikes
+    a.loft('TitanExecutionerSkull', [
+        (0, -.02, 3.10, .14, .16), (0, -.03, 3.36, .22, .25),
+        (0, -.015, 3.64, .25, .25), (0, .02, 3.86, .15, .16), (0, .04, 3.92, .06, .08)
+    ], 'Bone', 'head')
+
+    # Brutal rebar spike crown driven through the skull
+    for sign in [-1, 1]:
+        for i in range(4):
+            a.tube(f'CrownSpike_{sign}_{i}', [
+                (sign * (.14 + i * 0.07), .01, 3.70, .042),
+                (sign * (.26 + i * 0.12), .06 + i * .06, 3.95 - i * .04, .036),
+                (sign * (.38 + i * 0.18), .15 + i * .10, 4.22 - i * .10, .010)
+            ], 'Iron', 'head', sides=7)
+
+    # Terrifying iron-jawed screaming visage
+    a.horror_maw('LastExecutionerMaw', (0, -0.28, 3.32), width=0.26, height=0.12, depth=0.16,
+                 teeth_count=18, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.14)
+    # Burning death eyes that reflect flashlights with terrifying intensity
+    a.horror_eyes('LastExecutionerEyes', (0, -0.29, 3.55), eye_dist=0.14, radius=0.038, bone='head',
+                  eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Long billowing tresses of rotten, matted black hair cascading down the executioner's back and shoulders
+    a.hair_curtain('ExecutionerHairCrown', (0, 0.08, 3.82), count=24, length=0.95, material='Hair',
+                   bone='head', spread_x=0.34, spread_y=0.22, z_drop=0.14, forward_bias=-0.08, wave_amp=0.048)
+
+    # Colossal arms with barbed crushing gauntlets
+    a.anatomy('Iron', .25, .29, fingers=0, cuffs=True)
+    for sign, side in [(-1, 'L'), (1, 'R')]:
+        hand_pos = a.bones['forearm' + side][1]
+        a.horror_hand('forearm' + side, hand_pos, arm_width=0.25, fingers=4, finger_len=0.38,
+                      claw_len=0.15, material='Bone', claw_mat='Iron', sign=sign)

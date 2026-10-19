@@ -74,6 +74,16 @@ namespace Abandoned.EditorTools
                 "Lava pit safety railing repairs remain deferred to Q4.",
                 paperMat, clipboardMat);
 
+            // 7. Cargo Train Station (West platform scale at x=44m, z=-3.2m)
+            PlaceNote(loreGroup, new Vector3(44f, 1.25f, -2.5f),
+                "TERMINAL NOTICE: DISCONTINUATION OF FREIGHT RAIL SERVICE",
+                "NOTICE TO FOUNDRY CREWS & OUTBOUND EXPEDITION:\n" +
+                "All freight locomotive movements on Spur Line 9 are suspended indefinitely pending facility condemnation.\n" +
+                "Locomotive #402 evacuated the final train of finished steel coils on Thursday night.\n" +
+                "No further rail cars will be routed to the loading platforms. Ingot staging is closed.\n" +
+                "Leave all pending billets on the dunnage. Salvage contractors will begin plant demolition.",
+                paperMat, clipboardMat);
+
             MarkStatic(loreGroup);
         }
 

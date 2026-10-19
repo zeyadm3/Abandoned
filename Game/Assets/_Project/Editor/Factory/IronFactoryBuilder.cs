@@ -49,7 +49,8 @@ namespace Abandoned.EditorTools
             IronFactoryShell.Build(root, art);
             IronFactoryChannel.Build(root, art);
             IronFactoryExterior.Build(root, art);
-            IronFactoryDock.Build(root, art);
+            IronFactoryCargoStation.Build(root, art);
+            IronFactorySwitchTower.Build(root, art);
             IronFactorySurroundings.Build(root, art);
             int highBays = IronFactoryLighting.Build(root, art);
             // L3 set pieces: moonlight through the roof holes, the crane over the lava, the cold blast furnace.
@@ -99,7 +100,7 @@ namespace Abandoned.EditorTools
             // Crews must come in through the dock before a monster can reach them; the roof, truck and the dock's
             // canopy and boxcars are not floors, and nothing walks on the light rigs.
             LocationPlumbing.BakeNavMesh(root, L.SceneName,
-                new[] { "Exterior", "Truck", "Shell/Roof", "MeridianCollectionBay", "RailDock", "Lights", "Ladders",
+                new[] { "Exterior", "Truck", "Shell/Roof", "MeridianCollectionBay", "RailDock", "CargoTrainStation", "SwitchTower", "Lights", "Ladders",
                     IronFactorySurroundings.GroupName, MeridianMountainHorizon.GroupName, "Trusses", "YardLights", "CowperStoves",
                     "ElectricalSubstation", "SecurityGatehouse", "YardClutter" });
             LocationPlumbing.ConfigureHorrorScenes();

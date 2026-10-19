@@ -18,7 +18,8 @@ namespace Abandoned.Loot
         private LootItem item;
         private Grabbable grab;
         private Vector3 last;
-        private float nextRattle, nextDrip, leakCarry, nextRingSound;
+        private float nextRattle, nextDrip, leakCarry, nextRingSound, nextSizzle, nextSlosh;
+        private Vector3 lastBodyVel;
         // The current ring window's roll: worked out once per window, not every frame.
         private long ringPeriod = -1;
         private bool ringsThisPeriod;
@@ -69,7 +70,54 @@ namespace Abandoned.Loot
                     }
                 }
             }
+            if (Has(LootQuirk.Hot) && carried)
+            {
+                if (Time.time >= nextSizzle)
+                {
+                    nextSizzle = Time.time + 0.9f;
+                    GameAudio.Play(SoundId.LootSizzle, transform.position, 0.7f);
+                }
+                if (grab.Holder != null && grab.Holder.IsLocal && grab.Holder.Motor != null && grab.Holder.Motor.Stamina != null)
+                {
+                    grab.Holder.Motor.Stamina.Drain(9f * Time.deltaTime);
+                }
+                else if (grab.Shared != null)
+                {
+                    for (int i = 0; i < grab.Shared.PointCount; i++)
+                    {
+                        var carrier = grab.Shared.CarrierAt(i);
+                        if (carrier != null && carrier.IsLocal && carrier.Motor != null && carrier.Motor.Stamina != null)
+                            carrier.Motor.Stamina.Drain(6f * Time.deltaTime);
+                    }
+                }
+            }
+            if (Has(LootQuirk.Sloshes) && (carried || speed > 0.4f))
+            {
+                if (speed > 0.5f && Time.time >= nextSlosh)
+                {
+                    nextSlosh = Time.time + 0.65f;
+                    GameAudio.Play(SoundId.LootSlosh, transform.position, Mathf.Clamp01(speed / 2.5f));
+                    if (host) NoiseSystem.Emit(transform.position, 0.25f, NoiseSource.LootImpact);
+                }
+            }
             if (Has(LootQuirk.Rings)) Ring(host);
+        }
+
+        private void FixedUpdate()
+        {
+            if (item == null || item.IsShattered || !Has(LootQuirk.Sloshes)) return;
+            if (TryGetComponent(out Rigidbody body) && !body.isKinematic)
+            {
+                float dt = Mathf.Max(Time.fixedDeltaTime, 0.001f);
+                Vector3 accel = (body.linearVelocity - lastBodyVel) / dt;
+                lastBodyVel = body.linearVelocity;
+                if (accel.sqrMagnitude > 0.5f)
+                {
+                    Vector3 sloshForce = Vector3.ClampMagnitude(-accel * (body.mass * 0.12f), 25f);
+                    sloshForce.y = 0f;
+                    body.AddForce(sloshForce, ForceMode.Force);
+                }
+            }
         }
 
         // Same answer on every machine: whether it rings now comes from its seed and the server clock.

@@ -1,140 +1,296 @@
-"""The four original pursuit silhouettes, redesigned around material, anatomy and readable negative space."""
+"""The four original pursuit silhouettes, completely redesigned with terrifying depth, grotesque emotion,
+expressive horror faces, matted wet hair, clear readable anatomical body parts, and horrifying flashlight-reactive features.
+"""
 import math
 from mathutils import Vector
 
 
 def blind(a):
-    a.loft('StarvedRibcage', [(0, 0, 1.0, .14, .13), (0, .01, 1.22, .19, .15),
-        (0, .015, 1.55, .30, .19), (0, .02, 1.83, .27, .16), (0, 0, 1.96, .13, .10)], 'Bone')
-    a.loft('WaxCranium', [(0, -.025, 2.03, .08, .095), (0, -.03, 2.16, .17, .17),
-        (0, -.035, 2.40, .205, .19), (0, 0, 2.57, .15, .14), (0, .025, 2.65, .04, .055)], 'Bone', 'head')
-    a.anatomy('Bone', .145, .155)
-    # Listening organs are folded membranes instead of cartoon ears; their dark interiors keep the face eyeless.
+    """The Blind One: an emaciated, agonizing nightmare with a gaping rictus maw of needle teeth,
+    sunken weeping sockets, protruding spinal spikes, matted stringy hair, and elongated talon claws."""
+    # Emaciated, starved torso with visible skeletal framework
+    a.loft('StarvedTorso', [
+        (0, 0, 1.0, .14, .13), (0, .01, 1.22, .18, .14),
+        (0, .015, 1.55, .28, .17), (0, .02, 1.83, .25, .15), (0, 0, 1.96, .13, .10)
+    ], 'Bone')
+    
+    # Protruding dorsal spinal spikes and split flesh along the back
+    a.spinal_spikes(1.05, 1.95, 0.16, count=10, spike_len=0.12, material='Bone', bone='spine', gore_mat='Gore')
+
+    # Individual curved exposed ribs bursting through torn chest flesh
+    for i in range(7):
+        z = 1.20 + i * 0.09
+        w = 0.19 + math.sin((i + 1) / 8 * math.pi) * 0.12
+        for sign in [-1, 1]:
+            a.tube(f'ExposedRib_{i}_{sign}', [
+                (sign * 0.02, 0.14, z + 0.02, 0.015),
+                (sign * w * 0.95, 0.02, z + 0.01, 0.018),
+                (sign * w * 0.75, -0.18, z - 0.02, 0.016),
+                (sign * 0.025, -0.17, z - 0.035, 0.012)
+            ], 'Bone', 'spine', sides=6)
+            # Raw gory connective tissue between split ribs
+            a.tube(f'IntercostalGore_{i}_{sign}', [
+                (sign * w * 0.85, -0.05, z, 0.012),
+                (sign * w * 0.65, -0.15, z - 0.015, 0.010)
+            ], 'Gore', 'spine', sides=5)
+
+    # Torn sternum split down the chest
+    a.tube('SternumSplitGore', [(0, -0.165, 1.30, 0.018), (0, -0.175, 1.55, 0.022), (0, -0.16, 1.78, 0.016)], 'Gore', 'spine')
+    a.stitches('ChestStaples', (0, -0.17, 1.32), (0, -0.17, 1.76), 'Iron', count=9, width=0.05)
+
+    # Elongated gaunt cranial skull
+    a.loft('ContortedSkull', [
+        (0, -.03, 1.98, .10, .11), (0, -.035, 2.12, .18, .17),
+        (0, -.04, 2.36, .21, .20), (0, -.01, 2.56, .17, .16), (0, .02, 2.66, .06, .08)
+    ], 'Bone', 'head')
+
+    # Gaping unhinged rictus maw with needle-sharp bone teeth and weeping jaw tendons
+    a.horror_maw('BlindMaw', (0, -0.19, 2.14), width=0.20, height=0.10, depth=0.16, teeth_count=18,
+                 bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.13)
+
+    # Weeping empty orbital hollows (eyeless, bleeding dark bile)
     for sign in [-1, 1]:
-        a.ellipsoid('ListeningFoldShadow', (sign * .242, -.005, 2.38), (.16, .15, .43), 'Charcoal', 'head')
-        a.tube('CartilageFold', [(sign * .21, -.015, 2.17, .026), (sign * .31, -.025, 2.27, .027),
-            (sign * .33, .01, 2.48, .035), (sign * .25, .03, 2.59, .019), (sign * .22, -.02, 2.46, .016)], 'Ash', 'head')
+        a.ellipsoid(f'SunkenEyeChasm_{sign}', (sign * 0.065, -0.21, 2.32), (0.055, 0.035, 0.06), 'Charcoal', 'head')
+        a.tube(f'EyeChasmTear_{sign}', [
+            (sign * 0.065, -0.215, 2.29, 0.008),
+            (sign * 0.075, -0.21, 2.22, 0.006),
+            (sign * 0.07, -0.20, 2.15, 0.004)
+        ], 'Gore', 'head', sides=5)
+
+    # Large raw acoustic listening chasms (fleshy vibrating ear membranes)
+    for sign in [-1, 1]:
+        a.ellipsoid(f'AuditoryChasm_{sign}', (sign * 0.23, -0.01, 2.36), (0.16, 0.16, 0.44), 'Charcoal', 'head')
+        a.tube(f'TornAuditoryRim_{sign}', [
+            (sign * 0.19, -0.02, 2.14, 0.028), (sign * 0.32, -0.03, 2.26, 0.032),
+            (sign * 0.34, 0.01, 2.48, 0.038), (sign * 0.26, 0.03, 2.60, 0.024),
+            (sign * 0.21, -0.02, 2.46, 0.018)
+        ], 'Ash', 'head', sides=7)
+        # Twitching acoustic tendrils inside the ear chasm
         for j in range(4):
-            z = 2.28 + j * .06
-            a.tube('InnerListeningMembrane', [(sign * .23, -.08, z, .012),
-                (sign * .29, -.085, z + .018, .014), (sign * .27, -.035, z + .052, .009)], 'Bone', 'head', sides=6)
-        a.tube('NeckTendon', [(sign * .14, -.08, 1.84, .026), (sign * .09, -.09, 2.02, .021),
-            (sign * .105, -.12, 2.17, .013)], 'Ash', 'neck')
-        a.line('Collarbone', (sign * .035, -.15, 1.83), (sign * .29, -.075, 1.80), .026, 'Ash')
-        for i in range(7):
-            z = 1.23 + i * .085
-            width = .17 + math.sin((i + 1) / 8 * math.pi) * .11
-            a.tube('SubdermalRib', [(sign * .025, -.17, z + .025, .013),
-                (sign * width * .75, -.195, z, .021), (sign * width, -.105, z - .04, .015)], 'Ash', sides=8)
-    a.tube('SealedMouthCrease', [(-.105, -.181, 2.14, .009), (-.03, -.20, 2.12, .012),
-        (.035, -.20, 2.13, .010), (.10, -.17, 2.15, .006)], 'Charcoal', 'head', sides=6)
-    a.tube('VerticalFacialFold', [(0, -.19, 2.17, .012), (.013, -.223, 2.31, .014),
-        (-.009, -.21, 2.48, .008)], 'Ash', 'head', sides=7)
-    for i in range(8):
-        a.ellipsoid('Vertebra', (0, .17, 1.10 + i * .105), (.08, .10, .06), 'Ash')
-    a.plate('OldSternumRestraint', (0, -.184, 1.42), .085, .26, .026, 'Iron')
+            z = 2.26 + j * 0.07
+            a.tube(f'AcousticTendril_{sign}_{j}', [
+                (sign * 0.22, -0.07, z, 0.014),
+                (sign * 0.30, -0.08, z + 0.02, 0.016),
+                (sign * 0.26, -0.03, z + 0.05, 0.008)
+            ], 'Gore', 'head', sides=5)
+
+    # Wet, stringy, matted horror hair hanging in tangled clumps over the skull, temples, and neck
+    a.hair_curtain('BlindHairCrown', (0, 0.03, 2.64), count=16, length=0.48, material='Hair',
+                   bone='head', spread_x=0.20, spread_y=0.18, z_drop=0.08, forward_bias=-0.04, wave_amp=0.035)
+    a.hair_curtain('BlindHairTemples', (0, -0.06, 2.48), count=10, length=0.36, material='Hair',
+                   bone='head', spread_x=0.22, spread_y=0.12, z_drop=0.06, forward_bias=-0.08, wave_amp=0.025)
+
+    # Elongated neck tendons
+    for sign in [-1, 1]:
+        a.tube(f'StretchedNeckTendon_{sign}', [
+            (sign * 0.13, -0.07, 1.83, 0.028),
+            (sign * 0.09, -0.09, 2.01, 0.024),
+            (sign * 0.10, -0.12, 2.16, 0.016)
+        ], 'Gore', 'neck')
+
+    # Spindly, emaciated limbs with defined joints and terrifying talon claws
+    a.anatomy('Bone', .13, .145, fingers=0)
+    for sign, side in [(-1, 'L'), (1, 'R')]:
+        hand_pos = a.bones['forearm' + side][1]
+        a.horror_hand('forearm' + side, hand_pos, arm_width=0.12, fingers=5, finger_len=0.32,
+                      claw_len=0.11, material='Bone', claw_mat='Charcoal', sign=sign)
+        # Twisted digitigrade heel and clawed skeletal feet
+        foot_pos = a.bones['shin' + side][1]
+        a.tube(f'AchillesTendon_{side}', [
+            (foot_pos.x, foot_pos.y + 0.08, foot_pos.z + 0.22, 0.022),
+            (foot_pos.x, foot_pos.y + 0.09, foot_pos.z + 0.04, 0.026),
+            (foot_pos.x, foot_pos.y + 0.02, foot_pos.z, 0.018)
+        ], 'Gore', 'shin' + side)
+        for toe in range(4):
+            tx = foot_pos.x + (toe - 1.5) * 0.045
+            a.tube(f'ToeClaw_{side}_{toe}', [
+                (tx, foot_pos.y - 0.08, foot_pos.z + 0.05, 0.022),
+                (tx, foot_pos.y - 0.22, foot_pos.z + 0.02, 0.016),
+                (tx, foot_pos.y - 0.30, foot_pos.z - 0.02, 0.005)
+            ], 'Charcoal', 'shin' + side, sides=5)
 
 
 def stalker(a):
-    a.loft('NarrowTailoredCoat', [(0, .015, .60, .28, .20), (0, 0, .88, .25, .18),
-        (0, 0, 1.40, .205, .15), (0, 0, 1.93, .22, .16), (0, .025, 2.20, .26, .18),
-        (0, 0, 2.35, .14, .115)], 'Charcoal')
-    a.anatomy('Charcoal', .092, .105)
+    """The Stalker: a towering, gaunt phantom wraith. Deep within its tattered shroud rests an
+    emaciated corpse face with piercing glowing amber eyes that flash in flashlights, long wet black hair,
+    a twisted grinning maw, and razor-sharp spider talons."""
+    # Towering emaciated frame under a shredded funeral coat
+    a.loft('NarrowDecayedCoat', [
+        (0, .015, .60, .28, .20), (0, 0, .88, .25, .18),
+        (0, 0, 1.40, .20, .15), (0, 0, 1.93, .22, .16), (0, .025, 2.20, .26, .18),
+        (0, 0, 2.35, .14, .115)
+    ], 'Charcoal')
+    
+    # Shredded, tattered coat tails fluttering in the darkness
     for sign, side in [(-1, 'L'), (1, 'R')]:
-        a.cloth('SplitCoatTail', [(1.50, sign * .15, .16, .25), (1.08, sign * .18, .19, .28),
-            (.69, sign * .21, .23, .28), (.39 if sign < 0 else .55, sign * .23, .23, .23)], 'Charcoal', folds=.027)
-        a.cloth('FrayedFrontPlacket', [(2.20, sign * .09, -.16, .18), (1.68, sign * .11, -.17, .20),
-            (1.10, sign * .13, -.19, .19), (.73, sign * .16, -.20, .16)], 'Canvas', folds=.012)
-        a.plate('HighCoatLapel', (sign * .16, -.12, 2.15), .20, .43, .045, 'Iron', tilt=sign * .22)
-        a.tube('RaisedCollar', [(sign * .27, 0, 2.23, .045), (sign * .23, .11, 2.39, .055),
-            (sign * .12, .11, 2.44, .03)], 'Charcoal', 'neck')
-        a.stitches('TailSeam', (sign * .21, -.165, 1.05), (sign * .19, -.14, 1.92), 'Iron', count=13, width=.021)
-        shoulder = a.bones['arm' + side][0]
-        a.ellipsoid('WeatheredShoulderCape', shoulder + Vector((0, .025, -.035)), (.24, .32, .34), 'Canvas', 'arm' + side)
-        wrist = a.bones['forearm' + side][1]
-        a.plate('SleeveCuffClasp', (wrist.x, wrist.y - .056, wrist.z + .10), .11, .12, .035, 'Iron', 'forearm' + side)
-    # A real hood cavity around a nearly lost face; the surrounding folded rim carries the silhouette.
-    a.loft('HoodCrown', [(0, .04, 2.43, .15, .13), (0, .06, 2.66, .185, .17),
-        (.015, .075, 2.92, .155, .14), (.025, .08, 3.10, .035, .05)], 'Charcoal', 'head')
-    a.ellipsoid('UnlitHoodInterior', (0, -.10, 2.73), (.27, .15, .40), 'Charcoal', 'head')
-    a.tube('FoldedHoodEdge', [(-.105, -.13, 2.47, .022), (-.19, -.145, 2.66, .034),
-        (-.155, -.15, 2.90, .030), (0, -.13, 3.02, .035), (.15, -.15, 2.90, .030),
-        (.175, -.145, 2.68, .028), (.105, -.14, 2.48, .018)], 'Canvas', 'head')
-    for sign in [-1, 1]:
-        a.plate('RecessedEye', (sign * .048, -.185, 2.75), .040, .012, .008, 'Eyes', 'head', tilt=sign * .08)
-    for i in range(6):
-        z = 1.14 + i * .16
-        a.plate('OldCoatToggle', (0, -.205, z), .042, .026, .025, 'Iron')
-    a.line('LowBelt', (-.18, -.16, 1.28), (.18, -.16, 1.28), .025, 'Iron')
+        a.cloth(f'TatteredCoatTail_{side}', [
+            (1.50, sign * .15, .16, .25), (1.08, sign * .18, .19, .28),
+            (.69, sign * .21, .23, .28), (.35 if sign < 0 else .52, sign * .24, .24, .25)
+        ], 'Charcoal', folds=.038)
+        a.cloth(f'DecayedPlacket_{side}', [
+            (2.20, sign * .09, -.16, .18), (1.68, sign * .11, -.17, .20),
+            (1.10, sign * .13, -.19, .19), (.73, sign * .16, -.20, .16)
+        ], 'Canvas', folds=.018)
+        # Jagged protruding spinal vertebrae bulging through torn coat seams
+        a.spinal_spikes(1.10, 2.15, 0.17, count=7, spike_len=0.08, material='Bone', bone='spine', gore_mat='Charcoal')
+
+    # Deep frayed funeral hood structure
+    a.loft('DecayedHoodCrown', [
+        (0, .04, 2.43, .16, .14), (0, .06, 2.68, .20, .18),
+        (.015, .08, 2.94, .17, .15), (.025, .09, 3.14, .04, .05)
+    ], 'Charcoal', 'head')
+    a.tube('RaggedHoodRim', [
+        (-.11, -.13, 2.45, .026), (-.20, -.15, 2.66, .036),
+        (-.17, -.16, 2.92, .032), (0, -.14, 3.06, .038), (.17, -.16, 2.92, .032),
+        (.19, -.15, 2.68, .030), (.11, -.14, 2.46, .022)
+    ], 'Canvas', 'head')
+
+    # INSIDE THE HOOD: A terrifying, emaciated corpse face (no longer a dark empty box!)
+    a.ellipsoid('CorpseHeadBase', (0, -0.06, 2.72), (0.24, 0.20, 0.32), 'Ash', 'head')
+    a.loft('GauntCorpseFace', [
+        (0, -0.08, 2.54, 0.10, 0.11),
+        (0, -0.12, 2.66, 0.16, 0.13),
+        (0, -0.13, 2.76, 0.17, 0.14),
+        (0, -0.09, 2.88, 0.13, 0.12)
+    ], 'Bone', 'head')
+
+    # Piercing, glowing retroreflective predator eyes that flash brightly when hit by flashlights!
+    a.horror_eyes('StalkerEyes', (0, -0.155, 2.76), eye_dist=0.10, radius=0.030, bone='head',
+                 eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Uncanny, horrifying stitched rictus grin
+    a.horror_maw('StalkerMaw', (0, -0.14, 2.60), width=0.15, height=0.06, depth=0.10,
+                 teeth_count=12, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.06)
+
+    # Long, wet, stringy black horror hair spilling out of the hood and clinging to the face and shoulders
+    a.hair_curtain('StalkerHoodHair', (0, 0.02, 3.02), count=18, length=0.62, material='Hair',
+                   bone='head', spread_x=0.22, spread_y=0.18, z_drop=0.10, forward_bias=-0.12, wave_amp=0.038)
+    a.hair_curtain('StalkerFaceTendrils', (0, -0.10, 2.84), count=10, length=0.45, material='Hair',
+                   bone='head', spread_x=0.16, spread_y=0.08, z_drop=0.04, forward_bias=-0.06, wave_amp=0.028)
+
+    # Spidery, elongated multi-jointed arms and fingers
+    a.anatomy('Charcoal', .09, .105, fingers=0)
+    for sign, side in [(-1, 'L'), (1, 'R')]:
+        hand_pos = a.bones['forearm' + side][1]
+        a.horror_hand('forearm' + side, hand_pos, arm_width=0.09, fingers=5, finger_len=0.34,
+                      claw_len=0.12, material='Bone', claw_mat='Iron', sign=sign)
 
 
 def collector(a):
-    a.loft('HunchedPorterBody', [(0, .03, .39, .25, .23), (0, .10, .60, .34, .30),
-        (0, .15, .90, .37, .34), (0, .10, 1.13, .25, .22), (0, -.07, 1.21, .14, .12)], 'Canvas')
-    a.anatomy('Canvas', .145, .17, fingers=4)
-    a.loft('OversizedStitchedPack', [(0, .45, .47, .26, .20), (.025, .49, .64, .43, .32),
-        (0, .48, .99, .45, .34), (-.035, .42, 1.25, .30, .25), (0, .40, 1.34, .12, .13)], 'Canvas')
+    """The Collector: a wretched, mutated carrion hunchback. A bulging hump fused with grotesque grafted faces,
+    a hammered iron executioner mask bolted into rotting flesh, broken teeth, matted hair tufts, and butcher claws."""
+    # Grotesque hunched torso
+    a.loft('TwistedHunchbackTorso', [
+        (0, .03, .39, .26, .24), (0, .10, .60, .36, .32),
+        (0, .15, .90, .40, .36), (0, .10, 1.13, .28, .24), (0, -.07, 1.21, .15, .13)
+    ], 'Canvas')
+
+    # Bulging pulsating hump fused with grafted horror flesh and necrotic growth
+    a.loft('MutatedFleshHump', [
+        (0, .44, .47, .28, .22), (.025, .49, .64, .46, .34),
+        (0, .50, .99, .48, .36), (-.035, .43, 1.25, .32, .26), (0, .40, 1.35, .14, .14)
+    ], 'Gore')
+
+    # Grafted faces and agonizing human masks trapped inside the pulsating flesh hump
+    for f in range(3):
+        fy = 0.72 + (f % 2) * 0.12
+        fz = 0.65 + f * 0.22
+        fx = (f - 1) * 0.22
+        a.ellipsoid(f'GraftedSkull_{f}', (fx, fy, fz), (0.17, 0.14, 0.20), 'Bone')
+        a.ellipsoid(f'GraftedMouth_{f}', (fx, fy + 0.05, fz - 0.05), (0.10, 0.04, 0.06), 'Charcoal')
+        a.hair_curtain(f'HumpHair_{f}', (fx, fy - 0.02, fz + 0.10), count=6, length=0.32, material='Hair',
+                       bone='spine', spread_x=0.08, spread_y=0.06, forward_bias=0.08)
+
+    # Rusted barbed wire and butcher ropes strapping the horror mass down
     for sign in [-1, 1]:
-        a.tube('PackWebbing', [(sign * .24, .59, 1.20, .032), (sign * .28, .06, 1.11, .034),
-            (sign * .25, -.26, .92, .028), (sign * .22, -.28, .57, .028), (sign * .30, .45, .51, .025)], 'Charcoal')
-        a.plate('PackStrapAdjuster', (sign * .25, -.30, .76), .10, .12, .025, 'Iron')
-        for i in range(3):
-            z = .65 + i * .20
-            a.tube('RopePackLacing', [(sign * .38, .45, z, .012), (sign * .43, .68, z + .08, .013),
-                (sign * .32, .74, z + .15, .010)], 'Bone')
-    a.stitches('SackSpineSeam', (0, .814, .59), (0, .774, 1.21), 'Bone', count=18, width=.065)
-    for i in range(4):
-        a.plate('PackRepairPatch', ((i % 2 - .5) * .36, .765, .71 + (i // 2) * .29), .18, .17, .018, 'Charcoal', tilt=(i - 1.5) * .13)
-    a.ellipsoid('LowCowledSkull', (0, -.29, 1.26), (.46, .43, .42), 'Charcoal', 'head')
-    a.plate('HammeredMask', (0, -.507, 1.26), .36, .31, .065, 'Iron', 'head')
-    a.plate('MaskCheekL', (-.12, -.55, 1.20), .12, .16, .027, 'Rust', 'head', tilt=-.17)
-    a.plate('MaskCheekR', (.12, -.55, 1.20), .12, .16, .027, 'Rust', 'head', tilt=.17)
-    a.plate('BlindVisorSlit', (0, -.548, 1.30), .24, .028, .015, 'Charcoal', 'head')
-    for i in range(6):
-        a.box('MaskVent', ((i - 2.5) * .031, -.556, 1.19), (.014, .014, .063), 'Charcoal', 'head', bevel=.002)
+        a.tube(f'BarbedWireHarness_{sign}', [
+            (sign * .25, .60, 1.22, .026), (sign * .30, .08, 1.12, .028),
+            (sign * .26, -.26, .92, .024), (sign * .23, -.28, .57, .024), (sign * .31, .46, .51, .022)
+        ], 'Iron')
+        for i in range(4):
+            z = 0.58 + i * 0.19
+            a.line(f'WireSpur_{sign}_{i}', (sign * 0.32, 0.50, z), (sign * 0.42, 0.65, z + 0.04), 0.008, 'Rust')
+
+    # Head and Face: Rusted hammered executioner plate bolted into decaying skin
+    a.ellipsoid('NecroticSkull', (0, -.29, 1.26), (.44, .42, .40), 'Gore', 'head')
+    a.plate('HammeredIronMask', (0, -.51, 1.28), .38, .34, .07, 'Iron', 'head')
+    
+    # Horrific snarling mouth with broken human teeth protruding under the mask
+    a.horror_maw('CollectorMaw', (0, -0.49, 1.18), width=0.18, height=0.08, depth=0.12,
+                 teeth_count=14, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.09)
+
+    # Bulging bloodshot cataract eye peering through a jagged cracked visor
+    a.horror_eyes('CollectorVisorEye', (0.05, -0.525, 1.30), eye_dist=0.01, radius=0.034, bone='head',
+                  eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Heavy iron rivets and rusted surgical staples pinning the mask to the face
     for sign in [-1, 1]:
-        for z in [1.16, 1.36]:
-            a.ellipsoid('MaskRivet', (sign * .145, -.547, z), (.017, .012, .017), 'Bone', 'head')
-    # The pack suggests hidden salvage through sewn bulk, without copying any actual pickable model.
-    for i in range(5):
-        a.tube('BentCopperTagLoop', [((i - 2) * .115, -.285, .82, .010),
-            ((i - 2) * .12, -.33, .70, .009), ((i - 2) * .11, -.30, .65, .006)], 'Rust')
-    a.cloth('FrayedPorterApron', [(.92, 0, -.295, .47), (.67, .02, -.33, .46),
-        (.43, -.02, -.31, .42)], 'Charcoal', folds=.025)
+        for z in [1.17, 1.38]:
+            a.ellipsoid(f'MaskBoneBolt_{sign}_{z}', (sign * .16, -.52, z), (.025, .018, .025), 'Iron', 'head')
+            a.line(f'Staple_{sign}_{z}', (sign * 0.16, -0.52, z), (sign * 0.22, -0.42, z), 0.009, 'Rust', 'head')
+
+    # Greasy coarse clumps of hair sprouting around the scalp and rusted mask rim
+    a.hair_curtain('CollectorScalpHair', (0, -0.22, 1.44), count=14, length=0.42, material='Hair',
+                   bone='head', spread_x=0.24, spread_y=0.18, z_drop=0.08, forward_bias=-0.06, wave_amp=0.03)
+
+    # Heavy scarred butcher arms with clawed hands
+    a.anatomy('Gore', .15, .17, fingers=0)
+    for sign, side in [(-1, 'L'), (1, 'R')]:
+        hand_pos = a.bones['forearm' + side][1]
+        a.horror_hand('forearm' + side, hand_pos, arm_width=0.14, fingers=4, finger_len=0.28,
+                      claw_len=0.09, material='Bone', claw_mat='Rust', sign=sign)
 
 
 def hunter(a):
-    a.loft('BrutalLoadBearingTorso', [(0, .015, .94, .35, .28), (0, .01, 1.23, .48, .37),
-        (0, .02, 1.69, .64, .44), (0, .02, 2.02, .67, .40), (0, .02, 2.18, .42, .29)], 'Ash')
-    a.anatomy('Ash', .37, .36, fingers=3, cuffs=True)
+    """The Hunter: a terrifying monolithic juggernaut of stitched muscle and hammered iron.
+    Asymmetrical mutated musculature, iron rebar driven through bone, cracked skull with bolted trauma plates,
+    coarse bloody hair, and a gnashing maw of blunt iron and bone teeth."""
+    # Massive load-bearing mutated torso
+    a.loft('BrutalMutatedTorso', [
+        (0, .015, .94, .38, .30), (0, .01, 1.23, .52, .40),
+        (0, .02, 1.69, .68, .46), (0, .02, 2.02, .70, .42), (0, .02, 2.18, .44, .30)
+    ], 'Ash')
+
+    # Massive protruding dorsal bone spikes down the back
+    a.spinal_spikes(1.02, 2.18, 0.26, count=8, spike_len=0.16, material='Bone', bone='spine', gore_mat='Gore')
+
+    # Heavy industrial iron reinforcement brackets and chains bolted into the ribcage
+    for j in range(3):
+        z = 1.24 + j * 0.22
+        a.plate(f'HeavyChestPlating_{j}', (0, -0.44 - j * 0.01, z), 0.72, 0.18, 0.08, 'Iron')
+        a.stitches(f'IronPlateBolts_{j}', (-0.32, -0.45, z), (0.32, -0.45, z), 'Rust', count=7, width=0.03)
+        # Raw torn flesh bulging between the armor plates
+        a.tube(f'BulgingMuscleTear_{j}', [(-0.35, -0.40, z - 0.08, 0.026), (0, -0.46, z - 0.08, 0.034), (0.35, -0.40, z - 0.08, 0.026)], 'Gore')
+
+    # Battering skull with iron trauma plates hammered directly into bone
+    a.loft('ShatteredBatteringHead', [
+        (0, -.14, 2.16, .18, .19), (0, -.17, 2.37, .25, .24),
+        (0, -.13, 2.62, .24, .22), (0, -.08, 2.75, .12, .13)
+    ], 'Bone', 'head')
+
+    # Iron facial trauma mask with exposed torn cheek and screaming maw
+    a.plate('IronTraumaMask', (-0.08, -0.38, 2.45), 0.26, 0.36, 0.08, 'Iron', 'head', tilt=-0.12)
+    # The right cheek is torn open, revealing raw jaw muscle and needle-sharp teeth
+    a.horror_maw('HunterGoreMaw', (0.02, -0.39, 2.32), width=0.22, height=0.09, depth=0.14,
+                 teeth_count=16, bone='head', gum_mat='Gore', tooth_mat='Bone', gaping=0.11)
+
+    # Glaring bloodshot retroreflective predator eye flashing in the flashlight beam
+    a.horror_eyes('HunterPredatorEye', (0.07, -0.41, 2.50), eye_dist=0.01, radius=0.038, bone='head',
+                  eye_mat='Eyes', socket_mat='Charcoal', gore_mat='Gore')
+
+    # Coarse, bloody hair tufts sprouting between fractured iron plates and scalp
+    a.hair_curtain('HunterScalpHair', (0, -0.06, 2.78), count=14, length=0.38, material='Hair',
+                   bone='head', spread_x=0.24, spread_y=0.18, z_drop=0.06, forward_bias=-0.05, wave_amp=0.022)
+
+    # Massive asymmetrical arms: left arm swollen with mutated muscle, right arm armored
+    a.anatomy('Ash', .38, .36, fingers=0)
     for sign, side in [(-1, 'L'), (1, 'R')]:
-        a.plate('ForgedShoulderYoke', (sign * .58, -.06, 2.13), .59, .29, .69, 'Iron', tilt=sign * .10)
-        a.plate('ShoulderCurb', (sign * .67, -.435, 2.11), .34, .13, .07, 'Rust')
-        for j in range(3):
-            z = 1.23 + j * .21
-            a.plate('LayeredChestSlab', (sign * .28, -.421 - j * .008, z), .50, .24, .075, 'Iron', tilt=sign * (.05 + j * .018))
-            for xoff in [-.16, .16]:
-                a.ellipsoid('RecessedPlateRivet', (sign * .28 + xoff, -.477 - j * .008, z), (.033, .02, .033), 'Rust')
-        elbow = a.bones['forearm' + side][0]
-        hand = a.bones['forearm' + side][1]
-        a.plate('SplintedForearm', (hand.x, hand.y - .18, (hand.z + elbow.z) * .5), .35, .45, .085, 'Iron', 'forearm' + side, tilt=-sign * .09)
-        a.ellipsoid('HammerKnuckle', hand + Vector((0, -.075, -.035)), (.39, .30, .29), 'Iron', 'forearm' + side)
-        for j in range(3):
-            a.plate('KnuckleTooth', (hand.x + (j - 1) * .10, hand.y - .23, hand.z - .09), .07, .13, .06, 'Bone', 'forearm' + side)
-        hip, knee = a.bones['leg' + side]
-        a.plate('ThighRestraint', (hip.x, hip.y - .18, (hip.z + knee.z) * .5), .31, .34, .06, 'Charcoal', 'leg' + side)
-        a.plate('KneeGuard', (knee.x, knee.y - .17, knee.z), .30, .25, .085, 'Iron', 'leg' + side)
-    a.loft('BuriedBatteringHead', [(0, -.14, 2.16, .17, .18), (0, -.17, 2.37, .23, .22),
-        (0, -.13, 2.62, .22, .20), (0, -.08, 2.75, .10, .12)], 'Charcoal', 'head')
-    a.plate('ArmouredDeathMask', (0, -.375, 2.43), .39, .37, .065, 'Iron', 'head')
-    a.plate('RecessedVisor', (0, -.416, 2.48), .265, .043, .018, 'Charcoal', 'head')
-    for sign in [-1, 1]:
-        a.plate('BuriedEye', (sign * .071, -.428, 2.484), .045, .014, .01, 'Eyes', 'head')
-        a.tube('MaskCheekWeld', [(sign * .17, -.415, 2.47, .015), (sign * .14, -.431, 2.35, .018),
-            (sign * .055, -.425, 2.28, .012)], 'Rust', 'head')
-    for i in range(5):
-        a.box('MouthBaffle', ((i - 2) * .045, -.428, 2.35), (.018, .02, .08), 'Charcoal', 'head', bevel=.003)
-    for i in range(4):
-        a.plate('SternumBridge', (0, -.474, 1.14 + i * .23), .14, .15, .07, 'Rust')
-    a.tube('BrokenBackBrace', [(0, .30, 1.02, .09), (0, .45, 1.39, .11),
-        (0, .44, 1.85, .10), (0, .22, 2.12, .07)], 'Iron')
+        hand_pos = a.bones['forearm' + side][1]
+        a.horror_hand('forearm' + side, hand_pos, arm_width=0.36, fingers=4, finger_len=0.32,
+                      claw_len=0.14, material='Bone', claw_mat='Iron', sign=sign)
+        # Sledgehammer iron fist plating and knuckle spikes
+        for k in range(3):
+            a.tube(f'KnuckleSpike_{side}_{k}', [
+                (hand_pos.x + (k - 1) * 0.12, hand_pos.y - 0.18, hand_pos.z - 0.06, 0.035),
+                (hand_pos.x + (k - 1) * 0.13, hand_pos.y - 0.32, hand_pos.z - 0.16, 0.008)
+            ], 'Iron', 'forearm' + side, sides=6)

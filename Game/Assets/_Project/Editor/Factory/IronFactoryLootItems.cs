@@ -29,13 +29,18 @@ namespace Abandoned.EditorTools
             public readonly Color Color;
             public readonly string[] Tags;
             public readonly bool Jackpot;
+            public readonly LootQuirk Quirks;
+
+            public Item(string id, string name, int min, int max, float kg, CarryClass carry, Vector3 size, Fragility fragility,
+                SurfaceMaterial material, float noise, float rarity, PlaceholderShape shape, Color color, bool jackpot, LootQuirk quirks, params string[] tags)
+            {
+                Id = id; Name = name; Min = min; Max = max; Kg = kg; Class = carry; Size = size; Fragility = fragility;
+                Material = material; Noise = noise; Rarity = rarity; Shape = shape; Color = color; Jackpot = jackpot; Quirks = quirks; Tags = tags;
+            }
 
             public Item(string id, string name, int min, int max, float kg, CarryClass carry, Vector3 size, Fragility fragility,
                 SurfaceMaterial material, float noise, float rarity, PlaceholderShape shape, Color color, bool jackpot, params string[] tags)
-            {
-                Id = id; Name = name; Min = min; Max = max; Kg = kg; Class = carry; Size = size; Fragility = fragility;
-                Material = material; Noise = noise; Rarity = rarity; Shape = shape; Color = color; Jackpot = jackpot; Tags = tags;
-            }
+                : this(id, name, min, max, kg, carry, size, fragility, material, noise, rarity, shape, color, jackpot, LootQuirk.None, tags) { }
         }
 
         private const PlaceholderShape Box = PlaceholderShape.Cube, Drum = PlaceholderShape.Cylinder;
@@ -43,10 +48,10 @@ namespace Abandoned.EditorTools
         public static readonly Item[] Items =
         {
             // ---- Iron and steel goods: heavy for their worth ------------------------------------------
-            new("iron_ingot", "Iron Ingot", 150, 300, 12f, CarryClass.OneHand, new(.3f, .09f, .12f), Fragility.None, SurfaceMaterial.Metal, .3f, 2f, Box, new(.32f, .3f, .29f), false, Foundry),
-            new("steel_billet", "Steel Billet", 300, 600, 35f, CarryClass.TwoHand, new(.16f, .16f, .9f), Fragility.None, SurfaceMaterial.Metal, .5f, 1.2f, Box, new(.45f, .47f, .5f), false, Foundry),
+            new("iron_ingot", "Iron Ingot", 150, 300, 12f, CarryClass.OneHand, new(.3f, .09f, .12f), Fragility.None, SurfaceMaterial.Metal, .3f, 2f, Box, new(.32f, .3f, .29f), false, LootQuirk.Hot, Foundry),
+            new("steel_billet", "Steel Billet", 300, 600, 35f, CarryClass.TwoHand, new(.16f, .16f, .9f), Fragility.None, SurfaceMaterial.Metal, .5f, 1.2f, Box, new(.45f, .47f, .5f), false, LootQuirk.Hot, Foundry),
             new("cast_gear", "Cast Gear", 400, 900, 25f, CarryClass.TwoHand, new(.6f, .12f, .6f), Fragility.Low, SurfaceMaterial.Metal, .5f, 1f, Drum, new(.36f, .3f, .26f), false, Foundry, Machinery),
-            new("chain_coil", "Chain Coil", 300, 700, 30f, CarryClass.TwoHand, new(.5f, .28f, .5f), Fragility.None, SurfaceMaterial.Metal, .6f, 1f, Drum, new(.3f, .28f, .27f), false, Foundry),
+            new("chain_coil", "Chain Coil", 300, 700, 30f, CarryClass.TwoHand, new(.5f, .28f, .5f), Fragility.None, SurfaceMaterial.Metal, .6f, 1f, Drum, new(.3f, .28f, .27f), false, LootQuirk.Rattles, Foundry),
             new("anvil", "Anvil", 1200, 2500, 110f, CarryClass.Heavy, new(.75f, .45f, .3f), Fragility.None, SurfaceMaterial.Metal, .8f, .5f, Box, new(.2f, .2f, .22f), false, Foundry, Workshop),
             new("founders_bell", "Founder's Bronze Bell", 30000, 45000, 700f, CarryClass.Huge, new(1.2f, 1.3f, 1.2f), Fragility.Low, SurfaceMaterial.Metal, 1f, .1f, Drum, new(.62f, .45f, .2f), true, Foundry),
 
@@ -62,8 +67,8 @@ namespace Abandoned.EditorTools
             // ---- Huge machine parts: crew jobs ----------------------------------------------------
             new("steam_governor", "Steam Governor", 6000, 12000, 45f, CarryClass.TwoHand, new(.5f, .9f, .5f), Fragility.Medium, SurfaceMaterial.Metal, .5f, .3f, Drum, new(.72f, .56f, .22f), false, Machinery),
             new("electric_motor", "Electric Motor", 2500, 5000, 180f, CarryClass.Heavy, new(.7f, .6f, 1f), Fragility.Low, SurfaceMaterial.Metal, .8f, .5f, Drum, new(.25f, .35f, .42f), false, Machinery),
-            new("flywheel", "Flywheel", 4000, 8000, 600f, CarryClass.Huge, new(1.6f, .35f, 1.6f), Fragility.None, SurfaceMaterial.Metal, 1f, .25f, Drum, new(.28f, .27f, .26f), false, Machinery),
-            new("crucible", "Crucible", 30000, 50000, 900f, CarryClass.Huge, new(1.3f, 1.4f, 1.3f), Fragility.Low, SurfaceMaterial.Metal, 1f, .1f, Drum, new(.35f, .22f, .15f), true, Machinery),
+            new("flywheel", "Flywheel", 4000, 8000, 600f, CarryClass.Huge, new(1.6f, .35f, 1.6f), Fragility.None, SurfaceMaterial.Metal, 1f, .25f, Drum, new(.28f, .27f, .26f), false, LootQuirk.TopHeavy, Machinery),
+            new("crucible", "Crucible", 30000, 50000, 900f, CarryClass.Huge, new(1.3f, 1.4f, 1.3f), Fragility.Low, SurfaceMaterial.Metal, 1f, .1f, Drum, new(.35f, .22f, .15f), true, LootQuirk.Hot | LootQuirk.Sloshes, Machinery),
 
             // ---- Office records ------------------------------------------------------------------
             new("production_ledgers", "Production Ledgers", 200, 900, 5f, CarryClass.OneHand, new(.35f, .25f, .25f), Fragility.Low, SurfaceMaterial.Paper, .1f, 1.3f, Box, new(.3f, .22f, .15f), false, Records),
@@ -85,8 +90,14 @@ namespace Abandoned.EditorTools
                     definition = ScriptableObject.CreateInstance<LootDefinition>();
                     definition.EditorSetup(item.Id, item.Name, item.Min, item.Max, item.Kg, item.Class, item.Size, item.Fragility,
                         item.Material, item.Noise, item.Rarity, item.Shape, item.Color);
+                    definition.EditorSetQuirks(item.Quirks);
                     AssetDatabase.CreateAsset(definition, path);
                     made++;
+                }
+                else if (definition.Quirks != item.Quirks)
+                {
+                    definition.EditorSetQuirks(item.Quirks);
+                    EditorUtility.SetDirty(definition);
                 }
                 if (definition.SpawnTags == null || definition.SpawnTags.Length == 0)
                 {

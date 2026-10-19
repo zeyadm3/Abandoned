@@ -23,6 +23,9 @@ namespace Abandoned.Player
         private Equipment.EquipmentDefinition shownTool;
         private Equipment.PlayerEquipment gear;
 
+        /// <summary>When true, this local player's body and held gear are rendered for third-person camera.</summary>
+        public bool ThirdPerson { get; set; }
+
         private void Awake()
         {
             lastPosition = transform.position;
@@ -39,13 +42,16 @@ namespace Abandoned.Player
                 foreach (TextMesh number in crewNumbers)
                     if (number.name == "CrewNumber") number.text = (shownSeat + 1).ToString();
             }
-            // Camera-inside-body relied on backface culling with the old capsule. A shaped face/sleeve needs explicit hiding.
-            bool hide = player != null && player.IsSpawned && player.IsOwner && !ragdoll.IsRagdolled;
+            // Camera-inside-body relied on backface culling with the old capsule. A shaped face/sleeve needs explicit hiding in first person.
+            bool hide = player != null && player.IsSpawned && player.IsOwner && !ragdoll.IsRagdolled && !ThirdPerson;
             if (hide != ownerHidden)
             {
                 ownerHidden = hide;
                 foreach (Renderer renderer in rig.GetComponentsInChildren<Renderer>(true))
                     renderer.shadowCastingMode = hide ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.On;
+                if (heldTool != null)
+                    foreach (Renderer r in heldTool.GetComponentsInChildren<Renderer>())
+                        r.shadowCastingMode = hide ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.On;
             }
 
             Vector3 motion = transform.position - lastPosition;

@@ -14,17 +14,27 @@ from threats_aberrations import weight, thing, crawlers, last
 REPO = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 OUT = os.path.join(REPO, 'Game/Assets/_Project/Art/Custom/Threats')
 os.makedirs(OUT, exist_ok=True)
-PALETTE = {'Ash':(0.43,0.47,0.43,1), 'Charcoal':(0.105,0.135,0.14,1), 'Canvas':(0.31,0.29,0.23,1), 'Bone':(0.56,0.58,0.49,1), 'Iron':(0.21,0.24,0.25,1), 'Eyes':(0.39,0.50,0.41,1), 'Rust':(0.30,0.18,0.13,1)}
+PALETTE = {
+    'Ash': (0.43, 0.47, 0.43, 1),
+    'Charcoal': (0.105, 0.135, 0.14, 1),
+    'Canvas': (0.31, 0.29, 0.23, 1),
+    'Bone': (0.58, 0.60, 0.52, 1),
+    'Iron': (0.21, 0.24, 0.25, 1),
+    'Eyes': (0.92, 0.85, 0.48, 1), # Luminous amber predator eyes
+    'Rust': (0.30, 0.18, 0.13, 1),
+    'Hair': (0.025, 0.025, 0.03, 1), # Wet, greasy matted black hair
+    'Gore': (0.34, 0.07, 0.06, 1)  # Visceral raw decayed tissue
+}
 
-# The same low-contrast grime map keeps all creatures inside one restrained material language.
+# The grime map with organic distress and decay textures
 rng = random.Random(8671)
 image = bpy.data.images.new('ThreatGrime', width=256, height=256)
 pixels=[]
 for y in range(256):
     for x in range(256):
-        n = rng.random() * 0.16 + math.sin(x*.043)*math.sin(y*.065)*.07
-        v = .63 + n
-        pixels.extend((v*.91,v,v*.92,1))
+        n = rng.random() * 0.22 + math.sin(x*.053)*math.sin(y*.071)*.09
+        v = .60 + n
+        pixels.extend((v*.92, v*.88, v*.86, 1))
 image.pixels = pixels
 image.filepath_raw = os.path.join(OUT, 'ThreatGrime.png')
 image.file_format = 'PNG'; image.save()
@@ -33,9 +43,13 @@ materials={}
 for name,color in PALETTE.items():
     m=bpy.data.materials.new('THREAT_'+name);m.diffuse_color=color;m.use_nodes=True
     bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=color
-    bs.inputs['Roughness'].default_value=.88
-    noise=m.node_tree.nodes.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=23
-    bump=m.node_tree.nodes.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.18
+    bs.inputs['Roughness'].default_value=.45 if name=='Hair' else .25 if name=='Gore' else .15 if name=='Eyes' else .88
+    if name == 'Eyes':
+        if 'Emission Color' in bs.inputs: bs.inputs['Emission Color'].default_value = color
+        elif 'Emission' in bs.inputs: bs.inputs['Emission'].default_value = color
+        if 'Emission Strength' in bs.inputs: bs.inputs['Emission Strength'].default_value = 1.4
+    noise=m.node_tree.nodes.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=28 if name in ['Hair','Gore'] else 23
+    bump=m.node_tree.nodes.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.26 if name in ['Hair','Gore'] else .18
     m.node_tree.links.new(noise.outputs['Fac'],bump.inputs['Height']);m.node_tree.links.new(bump.outputs['Normal'],bs.inputs['Normal'])
     materials[name]=m
 

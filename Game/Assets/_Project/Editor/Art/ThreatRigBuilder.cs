@@ -11,7 +11,7 @@ namespace Abandoned.EditorTools
     public static class ThreatRigBuilder
     {
         public const string ArtFolder = "Assets/_Project/Art/Custom/Threats";
-        private static readonly string[] Names = { "Ash", "Charcoal", "Canvas", "Bone", "Iron", "Eyes", "Rust" };
+        private static readonly string[] Names = { "Ash", "Charcoal", "Canvas", "Bone", "Iron", "Eyes", "Rust", "Hair", "Gore" };
         public static void Install(GameObject root, string modelName)
         {
             CharacterMaterialBuilder.Prepare();

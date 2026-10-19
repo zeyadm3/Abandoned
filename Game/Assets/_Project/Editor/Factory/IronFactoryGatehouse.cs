@@ -71,9 +71,9 @@ namespace Abandoned.EditorTools
             Box("Counterweight", boom, new Vector3(0f, .95f, -.4f), new Vector3(.35f, .35f, .5f), art.Bed, false);
 
             // Striped arm tilted upwards in open/damaged position
-            GameObject arm = Group("BarrierArm", boom);
-            arm.transform.localPosition = new Vector3(0f, .95f, 0f);
-            arm.transform.localRotation = Quaternion.Euler(-32f, 0f, 0f);
+            Transform arm = Group("BarrierArm", boom);
+            arm.localPosition = new Vector3(0f, .95f, 0f);
+            arm.localRotation = Quaternion.Euler(-32f, 0f, 0f);
             for (int seg = 0; seg < 6; seg++)
             {
                 Material m = (seg % 2 == 0) ? stripeRed : art.Concrete;

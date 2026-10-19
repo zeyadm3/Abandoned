@@ -40,8 +40,10 @@ namespace Abandoned.EditorTools
                 Add("ThreatCanvas", P.Canvas, new Color(.27f, .23f, .17f), legacy: "Canvas");
                 Add("ThreatBone", P.Bone, new Color(.7f, .66f, .54f), legacy: "Bone");
                 Add("ThreatIron", P.Metal, new Color(.22f, .25f, .26f), legacy: "Iron");
-                Add("ThreatEyes", P.Glass, new Color(.44f, .62f, .55f), legacy: "Eyes", emission: .32f);
+                Add("ThreatEyes", P.Glass, new Color(.92f, .82f, .42f), legacy: "Eyes", emission: .68f);
                 Add("ThreatRust", P.Rust, new Color(.35f, .17f, .075f), legacy: "Rust");
+                Add("ThreatHair", P.Rubber, new Color(.025f, .025f, .03f), legacy: "Hair");
+                Add("ThreatGore", P.Skin, new Color(.36f, .07f, .06f), legacy: "Gore", emission: .05f);
                 var keys = new List<string>(surfaces.Keys);
                 var materials = new Material[keys.Count];
                 for (int i = 0; i < keys.Count; i++) materials[i] = surfaces[keys[i]];
