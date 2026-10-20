@@ -98,6 +98,7 @@ namespace Abandoned.EditorTools
             ColorAdjustments color = Get<ColorAdjustments>(profile);
             color.saturation.Override(mood.Saturation);
             color.contrast.Override(mood.Contrast);
+            AvLook.Apply(profile, levelName);
             EditorUtility.SetDirty(profile);
             return profile;
         }

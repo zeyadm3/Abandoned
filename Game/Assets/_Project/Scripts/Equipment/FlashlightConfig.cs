@@ -20,6 +20,8 @@ namespace Abandoned.Equipment
         [field: SerializeField, Min(1f)] public float ThreatFlickerRange { get; private set; } = 15f;
         [field: SerializeField, Range(0f, 1f)] public float MinimumFlickerIntensity { get; private set; } = 0.18f;
         [field: SerializeField, Min(0.1f)] public float FlickerFrequency { get; private set; } = 19f;
+        [field: Tooltip("0.24.12: the reflector-pattern cookie (Core.LightCookies).")]
+        [field: SerializeField] public bool UseCookie { get; private set; } = true;
 
         private static FlashlightConfig fallback;
         public static FlashlightConfig Default => fallback != null ? fallback : fallback = CreateInstance<FlashlightConfig>();

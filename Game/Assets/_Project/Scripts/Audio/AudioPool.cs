@@ -84,13 +84,22 @@ namespace Abandoned.Audio
         private void Update()
         {
             int playing = 0;
+            float pressure = 0f;
+            AudioListener ear = Voice.VoiceListener.Current;
             foreach (AudioVoice v in voices)
             {
                 if (!v.Source.isPlaying) continue;
                 v.Refresh();
                 playing++;
+                // 0.24.12 sidechain: how loud the building's warnings and the monsters are at the ear right now.
+                if ((v.Bus == AudioBus.Structure || v.Bus == AudioBus.Threats) && ear != null)
+                {
+                    float near = 1f - Mathf.Clamp01(Vector3.Distance(v.Source.transform.position, ear.transform.position) / v.Source.maxDistance);
+                    pressure += v.Level * (v.Source.spatialBlend > 0.5f ? near : 1f);
+                }
             }
             Playing = playing;
+            AudioMix.SidechainInput = pressure;
             SynthLibrary.Adopt();
             // A loop whose object went with its scene drops out here.
             for (int i = loops.Count - 1; i >= 0; i--)
@@ -104,6 +113,8 @@ namespace Abandoned.Audio
             GUI.Label(new Rect(Screen.width - 360f, 118f, 350f, 22f),
                 $"AUDIO voices {Playing}/{voices.Length}  loops {loops.Count}  synth {SynthLibrary.Rendered}/{SynthLibrary.Total}  last {GameAudio.LastSound}");
             GUI.Label(new Rect(Screen.width - 360f, 140f, 350f, 22f), ListenerSpace.Describe());
+            GUI.Label(new Rect(Screen.width - 360f, 162f, 350f, 22f),
+                $"MIX {ListenerSpace.State}  master {MasterBus.ReductionDb:0.0} dB  ambience duck {AudioMix.Sidechain:0.00}  spatial {SpatialAudio.Mode}");
         }
 
         // Where the last sounds were played, coloured by bus (Scene view, with F1 on).

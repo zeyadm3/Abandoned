@@ -29,6 +29,8 @@ namespace Abandoned.Equipment
             flashlight.spotAngle = FlashlightConfig.SpotAngle;
             flashlight.innerSpotAngle = FlashlightConfig.InnerSpotAngle;
             flashlight.color = FlashlightConfig.Color;
+            // 0.24.12: a reflector pattern, so the spot on a wall and the beam in the fog read as a torch.
+            if (FlashlightConfig.UseCookie) flashlight.cookie = LightCookies.Flashlight;
             // QA P-07: four shadowed beams plus the ceiling lights is the atrium's worst case. Your own beam
             // keeps its shadows (that's what makes a dark store read); crewmates' beams light without them.
             if (!IsOwner) flashlight.shadows = LightShadows.None;

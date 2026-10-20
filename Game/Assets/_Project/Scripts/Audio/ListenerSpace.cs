@@ -100,6 +100,8 @@ namespace Abandoned.Audio
             reverb.diffusion = 100f;
             reverb.density = 100f;
             reverb.enabled = false;
+            // 0.24.12: the master bus comes last, so it sees the room's tail and the muffle's result.
+            if (!listener.TryGetComponent(out MasterBus _)) listener.AddComponent<MasterBus>();
         }
 
         private void Probe(Vector3 at)
@@ -141,9 +143,17 @@ namespace Abandoned.Audio
             reverb.reflectionsLevel = Mathf.Lerp(-900f, -1500f, room);
         }
 
+        /// <summary>The state the mix is in (0.24.12); for the F1 overlay.</summary>
+        public static string State { get; private set; } = "normal";
+
         private void ApplyMuffle()
         {
-            cutoff = Mathf.Lerp(cutoff, muffleTarget, 1f - Mathf.Exp(-4f * Time.unscaledDeltaTime));
+            // States: hiding closes the world down to what comes through a locker; low health is the caller's muffle.
+            float target = muffleTarget;
+            bool hiding = Networking.NetworkPlayer.Local != null && Networking.NetworkPlayer.Local.IsHiding;
+            if (hiding) target = Mathf.Min(target, AudioConfig.Current.HidingCutoff);
+            State = hiding ? "hiding" : target < OpenCutoff - 250f ? "hurt" : "normal";
+            cutoff = Mathf.Lerp(cutoff, target, 1f - Mathf.Exp(-4f * Time.unscaledDeltaTime));
             if (muffle == null) return;
             bool on = cutoff < OpenCutoff - 250f;
             muffle.enabled = on;

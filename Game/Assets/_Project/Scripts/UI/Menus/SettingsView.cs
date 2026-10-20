@@ -196,7 +196,11 @@ namespace Abandoned.UI
                     MenuKit.Choice(body, Loc.T("Preset"), Words(quality), VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
                 MenuKit.Choice(body, Loc.T("Shadows"), Words(VideoSettings.ShadowNames, "quality"), VideoSettings.Shadows, i => VideoSettings.Shadows = i);
                 MenuKit.Choice(body, Loc.T("Textures"), Words(VideoSettings.TextureNames), VideoSettings.TextureQuality, i => VideoSettings.TextureQuality = i);
+                MenuKit.Choice(body, Loc.T("Volumetric light"), Words(VideoSettings.VolumetricNames, "quality"), VideoSettings.Volumetrics, i => VideoSettings.Volumetrics = i);
+                NoteLast(Loc.T("Beams through the dust from torches, lamps and windows. The heaviest effect; lower it first."));
                 Section(Loc.T("EFFECTS"));
+                Note(Toggle(Loc.T("Eye adaptation"), VideoSettings.EyeAdaptation, v => VideoSettings.EyeAdaptation = v), Loc.T("Your eyes adjust slowly between daylight and dark rooms."));
+                Note(Toggle(Loc.T("Motion blur"), VideoSettings.MotionBlur, v => VideoSettings.MotionBlur = v), Loc.T("Blurs the view when you turn quickly."));
                 Note(Toggle(Loc.T("Fog"), VideoSettings.Fog, v => VideoSettings.Fog = v), Loc.T("Off: see further. The building is meant to be murky."));
                 Note(Toggle(Loc.T("Bloom"), VideoSettings.Bloom, v => VideoSettings.Bloom = v), Loc.T("The glow round bright lights."));
                 Note(Toggle(Loc.T("Film grain"), VideoSettings.Grain, v => VideoSettings.Grain = v), Loc.T("Off also calms night vision's noise."));
@@ -204,6 +208,8 @@ namespace Abandoned.UI
                 NoteLast(Loc.T("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6)."));
                 Note(MenuKit.Percent(body, Loc.T("Render scale"), Mathf.InverseLerp(VideoSettings.MinRenderScale, 1f, VideoSettings.RenderScale),
                     v => VideoSettings.RenderScale = Mathf.Lerp(VideoSettings.MinRenderScale, 1f, v)), Loc.T("Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp."));
+                MenuKit.Choice(body, Loc.T("Upscaler"), Words(VideoSettings.UpscalerNames), VideoSettings.Upscaler, i => VideoSettings.Upscaler = i);
+                NoteLast(Loc.T("How the smaller view is stretched back up. STP is sharpest; FSR suits older graphics cards."));
                 MenuKit.Choice(body, Loc.T("Anti-aliasing"), Words(VideoSettings.AntiAliasingNames, "quality"), VideoSettings.AntiAliasing, i => VideoSettings.AntiAliasing = i);
                 NoteLast(Loc.T("Smooths jagged edges. 4x costs the most."));
             }, () =>
@@ -212,6 +218,10 @@ namespace Abandoned.UI
                 VideoSettings.Shadows = VideoSettings.ShadowNames.Length - 1;
                 VideoSettings.RenderScale = 1f;
                 VideoSettings.AntiAliasing = 1;
+                VideoSettings.Volumetrics = 2;
+                VideoSettings.Upscaler = 0;
+                VideoSettings.EyeAdaptation = true;
+                VideoSettings.MotionBlur = false;
             });
 
             Add(Loc.T("Audio"), Loc.T("Volume of everything except voice chat."), () =>

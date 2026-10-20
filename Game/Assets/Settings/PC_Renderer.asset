@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2585036919067693566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d562d483b48847c3aa1600156593149, type: 3}
+  m_Name: AutoExposureFeature
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Core.AutoExposureFeature
+  m_Active: 1
+  shader: {fileID: 4800000, guid: 6fab8abd4213144399bd57aaf38b826c, type: 3}
+--- !u!114 &-840758524066996870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afba009e7747343c6bff31fc93342f1d, type: 3}
+  m_Name: VolumetricFogFeature
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Core.VolumetricFogFeature
+  m_Active: 1
+  shader: {fileID: 4800000, guid: b64f959dc033a41b38753e23b41f7318, type: 3}
+--- !u!114 &-2957449861939937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1614fc811f8f184697d9bee70ab9fe5, type: 3}
+  m_Name: DecalRendererFeature
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalRendererFeature
+  m_Active: 1
+  m_Settings:
+    technique: 0
+    maxDrawDistance: 40
+    decalLayers: 0
+    dBufferSettings:
+      surfaceData: 2
+    screenSpaceSettings:
+      normalBlend: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26,7 +75,10 @@ MonoBehaviour:
     probeVolumeBlendStatesCS: {fileID: 7200000, guid: b9a23f869c4fd45f19c5ada54dd82176, type: 3}
   m_RendererFeatures:
   - {fileID: 7833122117494664109}
-  m_RendererFeatureMap: ad6b866f10d7b46c
+  - {fileID: -2957449861939937}
+  - {fileID: -840758524066996870}
+  - {fileID: -2585036919067693566}
+  m_RendererFeatureMap: ad6b866f10d7b46c1fbd890b377ef5ff7add1aaf930655f4022eb3439e1a20dc
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -74,9 +126,9 @@ MonoBehaviour:
     AfterOpaque: 0
     Source: 1
     NormalSamples: 1
-    Intensity: 0.55
-    DirectLightingStrength: 0.5
-    Radius: 0.4
+    Intensity: 0.7
+    DirectLightingStrength: 0.45
+    Radius: 0.45
     Samples: 1
     BlurQuality: 0
     Falloff: 100

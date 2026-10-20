@@ -133,7 +133,7 @@ Tools > Abandoned
       ──
       Author Salvage Asset Library (0.15.5), Author Additional Pickable Stock (0.15.7)  2220-2221
     Audio                                            [2300-2399]
-      Build Sound Bank                               2300
+      Build Sound Bank, Build Recorded Library (0.24.12)   2300, 2302
     Characters                                       [2400-2499]
       Build Cosmetics                                2400
       ──
@@ -145,6 +145,8 @@ Tools > Abandoned
     Apply Render Budget, Bake Occlusion (open scene)                    3000-3001
     ──  Generate Fractured Tile                                          3020
     ──  Loot Lineup (unsaved scene)                                      3040
+    ──  0.24.12: Apply 0.24.12 Look to Saved Maps, Upgrade Surfaces (Scanned Textures), Make Decal Set,
+        Scatter Wear Decals (Open Scene), 0.24.12 Look, Surfaces, Sound and Decals   3060-3063, 3065
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,

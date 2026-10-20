@@ -101,6 +101,12 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.12 sound and picture overhaul (2026-10-21, branch `av-overhaul`).** Forward+, HDR grading, volumetric light,
+eye adaptation, per-map looks, light cookies, CC0 scanned surfaces, wear and floor-crack decals; a mastering bus, hiding muffle and sidechain ducking, Steam Audio head-related panning and
+a CC0 recorded library replacing most synth and Kenney sounds. Maps, gameplay and UI unchanged; music unchanged.
+Everything, the menus and what to check first: Docs/AV_OVERHAUL_0.24.12.md. After any map rebuild the upgrade must
+follow (Rebuild All Maps does it; batch: `Tools/unity.sh exec Abandoned.EditorTools.AvOverhaul.AuthorAll`).
+
 **Training job / tutorial (2026-10-20, written, never compiled or run).** 14 Larch Court: a one-storey Michigan
 ranch at 3 PM in December, from the user's floor plan at 1.4x (two bathrooms as drawn), with a basement, the
 neighbourhood, and 48 data-driven lessons in 9 chapters (`Scripts/Tutorial`, `Editor/Tutorial`, `Data/Tutorial`).
@@ -267,6 +273,22 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-21 (user: "a total sound and graphical overhaul ... the graphics to take three steps forward and the sound to
+  be proper sound"; approved the plan, its assumptions and "build build build, don't stop"): **0.24.12.**
+  - Approved new third-party material: CC0 ambientCG textures, CC0 Freesound recordings (previews; only CC0, the search
+    filters on it) and the Steam Audio plugin (Apache-2.0; macOS + Win64 binaries only). All in Docs/ASSET_CREDITS.md.
+  - Renderer is Forward+ with HDR grading. Volumetric fog and eye adaptation are our own renderer features (no package);
+    a map gets them from its volume profile (`AvLook`). Lights without shadows scatter at 25 % in the fog.
+  - The upgrade follows the builders: `MaterialUpgrade` (in place, same GUIDs) only touches environment materials with
+    no normal map of their own and keeps their hue and brightness. Rebuild All Maps ends with `AvOverhaul.AfterMaps`.
+  - Baked bounce light (probe volumes) was tried and removed: it replaced the maps' tuned flat ambient and blacked out
+    interiors. Realtime only (M7.2) stands. Scenes must keep Unity's default lighting data (a cleared bake zeroes the
+    ambient); never run Lightmapping.Clear on a map.
+  - Unity 6 volume stacks only hold component types listed in Assets/Settings/DefaultVolumeProfile; a new VolumeComponent
+    must be added there (RenderPipelineSetup does it for ours) or no map's profile can switch it on.
+  - The master bus is a code filter (`MasterBus`), not a .mixer asset (Unity can't author those from code).
+  - Steam Audio only pans. Occlusion stays ours (its rules). Recorded sounds never replace the heartbeat, breathing,
+    monster signatures or songs.
 - 2026-10-20 (user: plan an interactive tutorial "that serves as a prologue", its own map: "a one-story house in a
   random neighborhood, Michigan, 3 PM, December", then supplied a floor plan, then "build it all, don't stop to commit
   or check your work"): **the training job.** Two bathrooms as drawn (user's choice over the brief's three), the plan

@@ -34,6 +34,7 @@ namespace Abandoned.Audio
             source.dopplerLevel = 0f;
             source.priority = info.Priority;
             source.spatialBlend = spatial ? 1f : 0f;
+            SpatialAudio.Apply(source, spatial);
             source.bypassListenerEffects = !spatial;
             source.bypassReverbZones = !spatial;
             source.rolloffMode = AudioRolloffMode.Linear;

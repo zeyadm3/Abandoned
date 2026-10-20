@@ -60,6 +60,40 @@ namespace Abandoned.Audio
         [Tooltip("Seconds for the room to change as the listener moves.")]
         [SerializeField, Min(0.05f)] private float roomBlend = 1.2f;
 
+        [Header("Mastering (0.24.12, MasterBus on the listener)")]
+        [SerializeField] private bool mastering = true;
+        [SerializeField, Range(-40f, 0f)] private float compressorThresholdDb = -16f;
+        [SerializeField, Range(1f, 10f)] private float compressorRatio = 3f;
+        [SerializeField, Range(0.0005f, 0.1f)] private float attackSeconds = 0.008f;
+        [SerializeField, Range(0.01f, 2f)] private float releaseSeconds = 0.18f;
+        [SerializeField, Range(0f, 12f)] private float makeupDb = 3f;
+        [SerializeField, Range(-6f, 0f)] private float ceilingDb = -1f;
+
+        [Header("States and ducking (0.24.12)")]
+        [Tooltip("Low-pass (Hz) on the world while you hide: you hear the room through the locker's steel.")]
+        [SerializeField] private float hidingCutoff = 1500f;
+        [Tooltip("How low the ambience sinks under a loud structural warning or monster nearby (1 = never).")]
+        [SerializeField, Range(0.2f, 1f)] private float sidechainFloor = 0.55f;
+        [SerializeField, Min(0.01f)] private float sidechainAttack = 0.06f;
+        [SerializeField, Min(0.05f)] private float sidechainRelease = 1.4f;
+
+        [Header("Spatial audio (0.24.12)")]
+        [Tooltip("Steam Audio's head-related panning, occlusion and transmission when the plugin is present; else the built-in path.")]
+        [SerializeField] private bool steamAudio = true;
+
+        public bool Mastering => mastering;
+        public float CompressorThresholdDb => compressorThresholdDb;
+        public float CompressorRatio => compressorRatio;
+        public float AttackSeconds => attackSeconds;
+        public float ReleaseSeconds => releaseSeconds;
+        public float MakeupDb => makeupDb;
+        public float CeilingDb => ceilingDb;
+        public float HidingCutoff => hidingCutoff;
+        public float SidechainFloor => sidechainFloor;
+        public float SidechainAttack => sidechainAttack;
+        public float SidechainRelease => sidechainRelease;
+        public bool SteamAudio => steamAudio;
+
         public int Voices => voices;
         public float BaseLevel => baseLevel;
         public float SpeechDuck => speechDuck;
