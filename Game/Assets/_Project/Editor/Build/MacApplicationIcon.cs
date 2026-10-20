@@ -31,8 +31,15 @@ namespace Abandoned.EditorTools
                 Run("/usr/bin/plutil", "-replace", "CFBundleIconFile", "-string", ApplicationBranding.MacIconName, infoPlist);
                 Run("/usr/bin/plutil", "-replace", "CFBundleIconName", "-string", ApplicationBranding.MacIconName, infoPlist);
 
-                // Unity signs before we add these resources. Re-seal only the outer bundle; nested binaries
-                // are unchanged. Preserve the microphone and any other existing signing entitlements.
+                // Third-party plugin bundles (Steam Audio's phonon) arrive with seals Unity's copy no longer
+                // matches; re-seal each one ad hoc first, or the outer signature can never verify (0.24.12).
+                string plugins = Path.Combine(appPath, "Contents", "PlugIns");
+                if (Directory.Exists(plugins))
+                    foreach (string bundle in Directory.GetDirectories(plugins, "*.bundle"))
+                        Run("/usr/bin/codesign", "--force", "--sign", "-", "--timestamp=none", bundle);
+
+                // Unity signs before we add these resources. Re-seal the outer bundle. Preserve the microphone
+                // and any other existing signing entitlements.
                 Run("/usr/bin/codesign", "--force", "--sign", "-", "--timestamp=none",
                     "--preserve-metadata=entitlements,requirements,flags,runtime", appPath);
                 if (MacSignature.Problem(appPath) is string problem)
