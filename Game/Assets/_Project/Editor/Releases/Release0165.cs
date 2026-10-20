@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
         private static readonly Vector3 Size = new(0.32f, 0.32f, 0.12f);
         private const float Lift = 1.9f;
 
-        [MenuItem("Tools/Abandoned/Mall/Add Store Alarms (0.16.5)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.5 Add Store Alarms", priority = ToolMenu.MallP + 32)]
         public static void Author()
         {
             ReleaseKit.Config<AlarmConfig>(ReleaseKit.ExtractionResources, AlarmConfig.ResourcePath);

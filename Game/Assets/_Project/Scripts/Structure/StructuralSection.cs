@@ -27,6 +27,9 @@ namespace Abandoned.Structure
         [SerializeField] private Transform visual;
         [Tooltip("What it is made of (0.17.2): glass and timber hold less, and each kind warns in its own voice.")]
         [SerializeField] private FloorKind floorKind = FloorKind.Concrete;
+        [Tooltip("A teaching floor (the training house's hallway): it creaks, cracks and can be braced like any collapsible section, " +
+                 "but its health never falls below this share, so it never gives way. 0 = an ordinary section.")]
+        [SerializeField, Range(0f, 0.45f)] private float neverBelow;
 
         private Collider[] colliders;
         private Bounds surfaceAtBreak;
@@ -227,8 +230,8 @@ namespace Abandoned.Structure
         internal void Damage(float amount)
         {
             if (IsCollapsed || IsMirror || Stage == StructuralStage.Failing || amount <= 0f) return;
-            // Non-collapsible sections can crack but always keep a sliver of health.
-            float floor = canCollapse ? 0f : MaxHealth * 0.01f;
+            // Non-collapsible sections can crack but always keep a sliver of health; a teaching floor keeps more.
+            float floor = canCollapse ? MaxHealth * neverBelow : MaxHealth * 0.01f;
             Health = Mathf.Max(floor, Health - amount);
             Damaged?.Invoke(this, amount);
             UpdateStage();
@@ -305,6 +308,9 @@ namespace Abandoned.Structure
 #if UNITY_EDITOR
         /// <summary>0.17.2: set what an existing section is made of.</summary>
         public void EditorSetFloorKind(FloorKind kind) => floorKind = kind;
+
+        /// <summary>The training house: a floor that teaches the warnings and the jack without ever falling.</summary>
+        public void EditorSetNeverBelow(float healthShare) => neverBelow = Mathf.Clamp(healthShare, 0f, 0.45f);
 #endif
     }
 }

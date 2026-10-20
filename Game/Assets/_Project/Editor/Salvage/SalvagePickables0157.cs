@@ -35,7 +35,7 @@ namespace Abandoned.EditorTools
 
         public static SalvageAssetSpec Find(string id) => Specs.FirstOrDefault(spec => spec.Id == id || spec.DefinitionId == id);
 
-        [MenuItem("Tools/Abandoned/0.15.7/Author Additional Pickable Stock")]
+        [MenuItem(ToolMenu.Loot + "Author Additional Pickable Stock (0.15.7)", priority = ToolMenu.LootP + 21)]
         public static void Author()
         {
             PolishAssets.EnsureFolder(LootCatalogBuilder.Folder);

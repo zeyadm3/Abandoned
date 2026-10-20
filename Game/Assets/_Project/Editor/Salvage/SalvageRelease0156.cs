@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
     /// <summary>Authors the stronger-threat release over the saved mall without replacing its approved layout.</summary>
     public static class SalvageRelease0156
     {
-        [MenuItem("Tools/Abandoned/Mall/Finish Threat and Content Update (0.15.6)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.6 Finish Threat and Content Update", priority = ToolMenu.MallP + 22)]
         public static void AuthorContent()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

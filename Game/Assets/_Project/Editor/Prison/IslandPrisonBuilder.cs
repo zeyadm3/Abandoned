@@ -28,7 +28,7 @@ namespace Abandoned.EditorTools
             fog: NoonHaze, fogDensity: .0018f, bloom: .16f, vignette: .12f, grain: .035f,
             saturation: -9f, contrast: 10f, sunColor: new Color(1f, .96f, .88f), sunIntensity: 1.7f, sunEuler: new Vector3(68f, 150f, 0f));
 
-        [MenuItem("Tools/Abandoned/Prison/Rebuild Island Prison")]
+        [MenuItem(ToolMenu.Prison + "Rebuild Island Prison", priority = ToolMenu.PrisonP)]
         public static void Rebuild() => Build();
 
         public static void Build()

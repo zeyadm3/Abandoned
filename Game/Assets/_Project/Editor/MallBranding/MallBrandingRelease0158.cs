@@ -9,10 +9,10 @@ namespace Abandoned.EditorTools
     /// <summary>Installs generated store campaigns over the saved mall without rebuilding gameplay.</summary>
     public static class MallBrandingRelease0158
     {
-        [MenuItem("Tools/Abandoned/Mall/Store Branding and Sale Artwork (0.15.8)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.8 Store Branding and Sale Artwork", priority = ToolMenu.MallP + 25)]
         public static void AuthorContent() => Author(true);
 
-        [MenuItem("Tools/Abandoned/Mall/Remove Decorative Text (0.15.8b)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.8b Remove Decorative Text", priority = ToolMenu.MallP + 26)]
         public static void AuthorTextCleanup() => Author(false);
 
         private static void Author(bool installArtwork)

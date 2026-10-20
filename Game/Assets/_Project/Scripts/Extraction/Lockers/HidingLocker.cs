@@ -45,7 +45,7 @@ namespace Abandoned.Extraction
         public static IReadOnlyList<HidingLocker> All => Live;
         public int Index => index;
         // A barred cell hides nobody from view: the bars only keep the monster out until it knows you are there.
-        public bool ConcealsOccupant => kind is HideSpotKind.Locker or HideSpotKind.Cabinet or HideSpotKind.Cart or HideSpotKind.Solitary;
+        public bool ConcealsOccupant => kind is HideSpotKind.Locker or HideSpotKind.Cabinet or HideSpotKind.Cart or HideSpotKind.Solitary or HideSpotKind.Closet;
         public Vector3 InsidePoint => inside != null ? inside.position : transform.position;
         public Quaternion Facing => Quaternion.Euler(0f, (inside != null ? inside : transform).eulerAngles.y, 0f);
         public Vector3 ExitPoint => exit != null ? exit.position : transform.position + transform.forward * 1.1f;
@@ -89,9 +89,9 @@ namespace Abandoned.Extraction
             float target = Time.time < doorOpenUntil ? 1f : occupant != null ? occupant.Peek01 * .35f : 0f;
             if (Mathf.Approximately(doorShown, target)) return;
             doorShown = Mathf.MoveTowards(doorShown, target, Time.deltaTime / DoorSwingSeconds);
-            if (door != null && kind == HideSpotKind.Cell)
+            if (door != null && (kind == HideSpotKind.Cell || kind == HideSpotKind.Closet))
             {
-                // A cell's barred door slides along the front, behind the bars beside it.
+                // A cell's barred door (a closet's panel) slides along the front, behind the one beside it.
                 if (!doorShutKnown) { doorShut = door.localPosition; doorShutKnown = true; }
                 door.localPosition = doorShut + Vector3.left * (CellDoorSlide * doorShown);
             }
@@ -120,6 +120,7 @@ namespace Abandoned.Extraction
                 HideSpotKind.Cell => Loc.Mark("Hide in the cell"),
                 HideSpotKind.Cart => Loc.Mark("Hide in the laundry cart"),
                 HideSpotKind.Solitary => Loc.Mark("Hide in the solitary cell"),
+                HideSpotKind.Closet => Loc.Mark("Hide in the closet"),
                 _ => Loc.Mark("Hide in the locker"),
             });
         }

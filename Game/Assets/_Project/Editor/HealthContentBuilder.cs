@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
         public const string HealthPath = "Assets/_Project/Data/Player/PlayerHealthConfig.asset";
         public const string FlashlightPath = "Assets/_Project/Data/Equipment/FlashlightConfig.asset";
 
-        [MenuItem("Tools/Abandoned/Create Health and Flashlight Content")]
+        [MenuItem(ToolMenu.Data + "Create Health and Flashlight Content", priority = ToolMenu.DataP + 2)]
         public static void Create()
         {
             SerializedWiring.LoadOrCreateAsset<PlayerHealthConfig>(HealthPath);

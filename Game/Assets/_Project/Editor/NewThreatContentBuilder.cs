@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
         public const string ThingPrefabPath = ThreatContentBuilder.Folder + "/Thing.prefab";
         public const string CrawlersPrefabPath = ThreatContentBuilder.Folder + "/Crawlers.prefab";
         public const string LastHunterPrefabPath = ThreatContentBuilder.Folder + "/LastHunter.prefab";
-        [MenuItem("Tools/Abandoned/Create New Horror Threats")]
+        [MenuItem(ToolMenu.Prefabs + "Create New Horror Threats", priority = ToolMenu.PrefabsP + 4)]
         public static void Create()
         {
             ThreatContentBuilder.Build(WeightPrefabPath, "Weight", 4.9f, 0.7f, ThreatKind.Weight, 0f, 0f, 0.85f, 1.3f,

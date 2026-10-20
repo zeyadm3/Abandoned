@@ -68,6 +68,8 @@ namespace Abandoned.UI
         {
             NetworkPlayer me = NetworkPlayer.Local;
             if (me == null || !me.IsSpawned) return null;
+            // The training job is all lessons already; its tips stay unseen for the first real job.
+            if (Tutorial.TutorialMode.Active) return null;
             if (me.IsDead) return Unseen(HintId.Ghost);
 
             RunState run = RunState.Current;

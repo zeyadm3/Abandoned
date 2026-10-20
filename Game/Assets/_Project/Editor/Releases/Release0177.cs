@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
     /// <summary>0.17.7 glow sticks and flares: two consumables and their thrown network prefabs.</summary>
     public static class Release0177
     {
-        [MenuItem("Tools/Abandoned/Content/Glow Sticks and Flares (0.17.7)")]
+        [MenuItem(ToolMenu.Features + "0.17.7 Glow Sticks and Flares", priority = ToolMenu.FeaturesP + 5)]
         public static void Author()
         {
             ReleaseKit.RegisterGear(EquipmentKind.GlowSticks, Prefab("GlowStick", new Color(0.35f, 1f, 0.45f), 2.2f, 6f, 600f, false, new Vector3(0.03f, 0.18f, 0.03f)));

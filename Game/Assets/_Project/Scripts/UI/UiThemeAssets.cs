@@ -16,7 +16,9 @@ namespace Abandoned.UI
 
         private static readonly string[] Layers =
         {
-            "Revamp", "AbandonedTheme", "AbandonedMenus", "HorrorHud", "AbandonedPanels", "FieldHud"
+            "Revamp", "AbandonedTheme", "AbandonedMenus", "HorrorHud", "AbandonedPanels", "FieldHud",
+            // The training job's guidance (lesson card, checklist, markers); inert outside the training house.
+            "TrainingHud"
         };
 
         /// <summary>One theme stack for the menu document and independent in-world displays.</summary>

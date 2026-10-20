@@ -44,6 +44,11 @@ namespace Abandoned.EditorTools
         private void OnPreprocessTexture()
         {
             if (!IsEnvironment) return;
+            if (assetPath.StartsWith(TutorialHouseMaterials.Folder + "/"))
+            {
+                TutorialHouseMaterials.ConfigureImporter((TextureImporter)assetImporter, assetPath);
+                return;
+            }
             var texture = (TextureImporter)assetImporter;
             texture.textureType = TextureImporterType.Default;
             texture.sRGBTexture = true;

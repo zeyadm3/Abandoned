@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
     {
         public const string PrefabPath = ReleaseKit.GearPrefabFolder + "/CrashMat.prefab";
 
-        [MenuItem("Tools/Abandoned/Content/Crash Mat (0.17.1)")]
+        [MenuItem(ToolMenu.Features + "0.17.1 Crash Mat", priority = ToolMenu.FeaturesP + 2)]
         public static void Author()
         {
             ReleaseKit.RegisterGear(EquipmentKind.CrashMat, Prefab());

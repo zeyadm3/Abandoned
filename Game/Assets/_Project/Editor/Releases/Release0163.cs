@@ -22,7 +22,7 @@ namespace Abandoned.EditorTools
         private const float Rise = 4f, Gate = 1.15f;
         private static readonly Vector2 Deck = new(3.6f, 3.4f);
 
-        [MenuItem("Tools/Abandoned/Mall/Add Freight Lift (0.16.3)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.3 Add Freight Lift", priority = ToolMenu.MallP + 30)]
         public static void Author()
         {
             ReleaseKit.Config<LiftConfig>(ReleaseKit.ExtractionResources, LiftConfig.ResourcePath);

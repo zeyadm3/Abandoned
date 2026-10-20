@@ -24,7 +24,7 @@ namespace Abandoned.EditorTools
 
         public static string PrefabPathFor(LootDefinition definition) => $"{Folder}/Loot_{definition.Id}.prefab";
 
-        [MenuItem("Tools/Abandoned/Generate Loot Prefabs")]
+        [MenuItem(ToolMenu.Loot + "Generate Loot Prefabs", priority = ToolMenu.LootP + 1)]
         public static void GenerateAll()
         {
             foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))

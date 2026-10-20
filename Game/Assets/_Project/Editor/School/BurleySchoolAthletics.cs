@@ -1,321 +1,250 @@
-using UnityEditor;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
+using A = Abandoned.EditorTools.BurleySchoolArchitecture;
+using G = Abandoned.EditorTools.BurleySchoolAthleticsGeometry;
 using L = Abandoned.EditorTools.BurleySchoolLayout;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>
-    /// Builds the complete outdoor athletics complex of Jackson P. Burley Middle School
-    /// as seen in the aerial campus photo: 6-lane oval running track with football/soccer field
-    /// (end zones, yard lines, collegiate yellow goalposts, spectator bleachers, terraced hillside),
-    /// outdoor paved basketball courts, baseball diamond with backstop fence, and the staff parking lot.
-    /// </summary>
+    /// <summary>Winter athletics with a true oval track, framed grandstand and open diamond wire fences.</summary>
     public static class BurleySchoolAthletics
     {
         public static void Build(Transform root, BurleySchoolArt art)
         {
             Transform athletics = Group("AthleticsComplex", root);
-
-            // 1. Oval Running Track & Football / Soccer Field (parallel to Madison Ave)
             BuildTrackAndFootballField(Group("TrackAndFootballField", athletics), art);
-
-            // 2. Terraced Hillside Steps (between school plaza and track)
             BuildTerracedHillside(Group("TerracedHillside", athletics), art);
-
-            // 3. Outdoor Basketball Courts
             BuildOutdoorBasketballCourt(Group("OutdoorBasketballCourt", athletics), art);
-
-            // 4. Baseball Diamond & Backstop
             BuildBaseballDiamond(Group("BaseballDiamond", athletics), art);
-
-            // 5. Staff & Visitor Northeast Parking Lot
             BuildParkingLot(Group("NortheastParkingLot", athletics), art);
-
             MarkStatic(athletics);
         }
 
-        // =========================================================================
-        // 1. RUNNING TRACK & FOOTBALL / SOCCER FIELD
-        // =========================================================================
         private static void BuildTrackAndFootballField(Transform parent, BurleySchoolArt art)
         {
-            Vector3 center = new(176f, -0.2f, 14f);
-            float trackL = 104f, trackW = 76f;
-            float fieldL = 72f, fieldW = 44f;
-
-            // Red rubber oval track base slab
-            Box("TrackOvalBase", parent, center, new Vector3(trackW, 0.22f, trackL), art.TrackRubber);
-
-            // Track Oval Curves & Straightaway Lane Stripes (6 lanes)
+            Vector3 centre = new(176f, 0.025f, 14f);
+            const float inner = 31f;
+            const float laneWidth = 1.15f;
+            const float straight = 28f;
+            G.StadiumBand(parent, "RubberOval", centre, inner, inner + 6f * laneWidth, straight, art.TrackRubber);
             for (int lane = 0; lane <= 6; lane++)
             {
-                float lw = fieldW + lane * 4.8f;
-                float ll = fieldL + lane * 4.8f;
-                // Straightaways
-                Box($"Lane_W_{lane}", parent, center - Vector3.right * (lw * 0.5f), new Vector3(0.12f, 0.23f, fieldL), art.WhiteStripe, false);
-                Box($"Lane_E_{lane}", parent, center + Vector3.right * (lw * 0.5f), new Vector3(0.12f, 0.23f, fieldL), art.WhiteStripe, false);
-                // End turn curve arcs (approximated with angled segments)
-                for (int arc = -2; arc <= 2; arc++)
-                {
-                    float angle = arc * 28f;
-                    Vector3 nPos = center + Vector3.forward * (fieldL * 0.5f + (6 - lane) * 0.6f + Mathf.Cos(angle * Mathf.Deg2Rad) * (trackW * 0.24f));
-                    nPos.x = center.x + Mathf.Sin(angle * Mathf.Deg2Rad) * (lw * 0.48f);
-                    Box($"Lane_N_Arc_{lane}_{arc + 2}", parent, nPos, new Vector3(3.2f, 0.23f, 0.12f), art.WhiteStripe, false);
+                float radius = inner + lane * laneWidth;
+                G.StadiumBand(parent, $"LaneStripe_{lane}", centre + Vector3.up * 0.012f, radius - 0.045f, radius + 0.045f, straight, art.WhiteStripe);
+            }
+            G.StadiumBand(parent, "OuterSnowRidge", centre + Vector3.up * 0.016f, 38.15f, 38.8f, straight, art.Snow);
+            A.PaintLine(parent, "FinishLine", centre + new Vector3(-37.9f, 0.022f, -4f), centre + new Vector3(-31f, 0.022f, -4f), 0.25f, art.WhiteStripe);
+            for (int lane = 0; lane < 6; lane++)
+                Label(parent, $"LaneNumber_{lane}", (lane + 1).ToString(), centre + new Vector3(-31.58f - lane * laneWidth, 0.032f, -6f),
+                    Quaternion.Euler(90f, 0f, 0f), 0.18f, Color.white);
 
-                    Vector3 sPos = center - Vector3.forward * (fieldL * 0.5f + (6 - lane) * 0.6f + Mathf.Cos(angle * Mathf.Deg2Rad) * (trackW * 0.24f));
-                    sPos.x = center.x + Mathf.Sin(angle * Mathf.Deg2Rad) * (lw * 0.48f);
-                    Box($"Lane_S_Arc_{lane}_{arc + 2}", parent, sPos, new Vector3(3.2f, 0.23f, 0.12f), art.WhiteStripe, false);
+            Transform field = Group("FootballPitch", parent);
+            field.localPosition = new Vector3(176f, 0f, 14f);
+            const float width = 42f;
+            const float length = 70f;
+            Box("TurfBase", field, new Vector3(0f, -0.08f, 0f), new Vector3(width, 0.16f, length), art.TurfGrass);
+            for (int i = 0; i < 9; i++)
+            {
+                float x = -14f + i % 3 * 13f;
+                float z = -26f + i / 3 * 24f;
+                Primitive(PrimitiveType.Sphere, $"WindblownSnow_{i}", field, new Vector3(x, 0.012f, z),
+                    new Vector3(14f + i % 2 * 3f, 0.035f, 15f), art.Snow, false);
+            }
+            foreach (float side in new[] { -1f, 1f })
+            {
+                A.PaintLine(field, side < 0f ? "WestSideline" : "EastSideline", new Vector3(side * width * 0.5f, 0.045f, -length * 0.5f),
+                    new Vector3(side * width * 0.5f, 0.045f, length * 0.5f), 0.12f, art.WhiteStripe);
+                BuildGoalpost(field, side < 0f ? "SouthGoalpost" : "NorthGoalpost", new Vector3(0f, 0f, side * (length * 0.5f + 0.8f)), side > 0f, art);
+            }
+            for (int line = -4; line <= 4; line++)
+            {
+                float z = line * 6.5f;
+                A.PaintLine(field, $"YardLine_{line}", new Vector3(-width * 0.5f, 0.045f, z), new Vector3(width * 0.5f, 0.045f, z), 0.1f, art.WhiteStripe);
+                if (line == 0) continue;
+                for (int hash = -1; hash <= 1; hash += 2)
+                    A.PaintLine(field, $"Hash_{line}_{hash}", new Vector3(hash * 6f, 0.048f, z - 0.7f), new Vector3(hash * 6f, 0.048f, z + 0.7f), 0.1f, art.WhiteStripe);
+            }
+            Box("NorthEndZone", field, new Vector3(0f, 0.04f, 31.5f), new Vector3(width, 0.015f, 7f), art.LockerGreen, false);
+            Box("SouthEndZone", field, new Vector3(0f, 0.04f, -31.5f), new Vector3(width, 0.015f, 7f), art.LockerGreen, false);
+            Label(field, "NorthEndZoneName", "BURLEY BEARS", new Vector3(0f, 0.055f, 31.5f), Quaternion.Euler(90f, 0f, 0f), 0.28f, art.GoldAccent.GetColor("_BaseColor"));
+            Label(field, "SouthEndZoneName", "BURLEY", new Vector3(0f, 0.055f, -31.5f), Quaternion.Euler(90f, 180f, 0f), 0.32f, art.GoldAccent.GetColor("_BaseColor"));
+            BuildGrandstand(Group("StadiumBleachers", parent), art);
+        }
+
+        private static void BuildGrandstand(Transform parent, BurleySchoolArt art)
+        {
+            // East-side seating keeps the courts and the school's service drive clear.
+            parent.localPosition = new Vector3(220f, 0f, 14f);
+            for (int tier = 0; tier < 7; tier++)
+            {
+                float x = tier * 0.72f;
+                float y = 0.42f + tier * 0.4f;
+                Box($"Seat_{tier}", parent, new Vector3(x, y, 0f), new Vector3(0.46f, 0.1f, 38f), art.MetalSteel);
+                Box($"Tread_{tier}", parent, new Vector3(x - 0.3f, y - 0.23f, 0f), new Vector3(0.56f, 0.06f, 38f), art.MetalSteel);
+                Box($"SeatSnow_{tier}", parent, new Vector3(x, y + 0.07f, 0f), new Vector3(0.42f, 0.055f, 37.6f), art.Snow, false);
+                for (int frame = -3; frame <= 3; frame++)
+                {
+                    float z = frame * 6f;
+                    Box($"Support_{tier}_{frame}", parent, new Vector3(x, y * 0.5f, z), new Vector3(0.085f, y, 0.085f), art.MetalSteel);
+                    Box($"Footing_{tier}_{frame}", parent, new Vector3(x, 0.025f, z), new Vector3(0.34f, 0.05f, 0.34f), art.Concrete);
                 }
             }
-
-            // Finish Line across track straightaway
-            Box("TrackFinishLine", parent, center + new Vector3(-fieldW * 0.5f - 7.0f, 0.02f, 0f), new Vector3(14.5f, 0.24f, 0.35f), art.WhiteStripe, false);
-
-            // Interior Football & Soccer Grass Pitch
-            Transform field = Group("FootballPitch", parent);
-            field.position = center + Vector3.up * 0.02f;
-            Box("TurfInfield", field, Vector3.zero, new Vector3(fieldW, 0.22f, fieldL), art.TurfGrass);
-
-            // White Perimeter Boundary
-            Box("FieldBoundary_W", field, new Vector3(-fieldW * 0.5f, 0.12f, 0f), new Vector3(0.15f, 0.03f, fieldL), art.WhiteStripe, false);
-            Box("FieldBoundary_E", field, new Vector3(fieldW * 0.5f, 0.12f, 0f), new Vector3(0.15f, 0.03f, fieldL), art.WhiteStripe, false);
-            Box("FieldBoundary_N", field, new Vector3(0f, 0.12f, fieldL * 0.5f), new Vector3(fieldW, 0.03f, 0.15f), art.WhiteStripe, false);
-            Box("FieldBoundary_S", field, new Vector3(0f, 0.12f, -fieldL * 0.5f), new Vector3(fieldW, 0.03f, 0.15f), art.WhiteStripe, false);
-
-            // Midfield 50-Yard Line & Center Circle
-            Box("YardLine_50", field, new Vector3(0f, 0.12f, 0f), new Vector3(fieldW, 0.03f, 0.15f), art.WhiteStripe, false);
-            Box("CenterCircle", field, new Vector3(0f, 0.12f, 0f), new Vector3(7.5f, 0.03f, 7.5f), art.WhiteStripe, false);
-
-            // Football Yard Lines (every 6 metres ~ 10 yards)
-            for (int y = 1; y <= 4; y++)
+            for (int frame = -3; frame <= 3; frame++)
+                A.Rod(parent, $"DiagonalFrame_{frame}", new Vector3(-0.25f, 0.1f, frame * 6f), new Vector3(4.65f, 2.55f, frame * 6f), 0.045f, art.MetalSteel);
+            A.Rod(parent, "RearGuardrail", new Vector3(4.75f, 3.8f, -19f), new Vector3(4.75f, 3.8f, 19f), 0.045f, art.MetalSteel, true);
+            for (int post = -5; post <= 5; post++)
+                A.Rod(parent, $"RearPost_{post}", new Vector3(4.75f, 2.55f, post * 3.8f), new Vector3(4.75f, 3.85f, post * 3.8f), 0.04f, art.MetalSteel, true);
+            for (int step = 0; step < 14; step++)
             {
-                float zOffset = y * 6.5f;
-                Box($"YardLine_N_{y * 10}", field, new Vector3(0f, 0.12f, zOffset), new Vector3(fieldW - 0.4f, 0.03f, 0.12f), art.WhiteStripe, false);
-                Box($"YardLine_S_{y * 10}", field, new Vector3(0f, 0.12f, -zOffset), new Vector3(fieldW - 0.4f, 0.03f, 0.12f), art.WhiteStripe, false);
+                float x = -0.25f + step * 0.36f;
+                float y = 0.14f + step * 0.2f;
+                Box($"EndAccessStep_{step}", parent, new Vector3(x, y, -20.2f), new Vector3(0.36f, 0.2f, 1.8f), art.MetalSteel);
             }
-
-            // North and South End Zones ("BURLEY BEARS")
-            Transform endZoneN = Group("NorthEndZone", field);
-            endZoneN.localPosition = new Vector3(0f, 0.12f, fieldL * 0.5f - 3.8f);
-            Box("ZoneFillN", endZoneN, Vector3.zero, new Vector3(fieldW - 0.4f, 0.02f, 7.4f), art.LockerGreen, false);
-            Label(endZoneN, "TextN", "BURLEY BEARS", Vector3.up * 0.02f,
-                Quaternion.Euler(90f, 0f, 0f), 0.18f, art.GoldAccent.GetColor("_BaseColor"));
-
-            Transform endZoneS = Group("SouthEndZone", field);
-            endZoneS.localPosition = new Vector3(0f, 0.12f, -fieldL * 0.5f + 3.8f);
-            Box("ZoneFillS", endZoneS, Vector3.zero, new Vector3(fieldW - 0.4f, 0.02f, 7.4f), art.LockerGreen, false);
-            Label(endZoneS, "TextS", "BURLEY BEARS", Vector3.up * 0.02f,
-                Quaternion.Euler(90f, 180f, 0f), 0.18f, art.GoldAccent.GetColor("_BaseColor"));
-
-            // Yellow Collegiate Football Goalposts
-            BuildGoalpost(parent, "NorthGoalpost", center + new Vector3(0f, 0f, fieldL * 0.5f), false, art);
-            BuildGoalpost(parent, "SouthGoalpost", center - new Vector3(0f, 0f, fieldL * 0.5f), true, art);
-
-            // Sideline Spectator Bleachers (West sideline facing east)
-            Transform bleachers = Group("TrackSidelineBleachers", parent);
-            bleachers.position = center + new Vector3(-fieldW * 0.5f - 11.5f, 0f, 0f);
-            for (int tier = 0; tier < 6; tier++)
-            {
-                float bx = -tier * 0.65f;
-                float by = 0.3f + tier * 0.35f;
-                Box($"TrackBleacher_{tier}", bleachers, new Vector3(bx, by, 0f), new Vector3(0.6f, 0.15f, 36f), art.Limestone);
-                Box($"TrackBleacherFrame_{tier}", bleachers, new Vector3(bx, by * 0.5f, 0f), new Vector3(0.55f, by, 35.8f), art.MetalSteel);
-            }
+            Box("GroundSnowbank", parent, new Vector3(4.2f, 0.2f, 20f), new Vector3(6f, 0.4f, 1.5f), art.SnowDrift, false);
         }
 
-        private static void BuildGoalpost(Transform parent, string name, Vector3 pos, bool south, BurleySchoolArt art)
+        private static void BuildGoalpost(Transform parent, string name, Vector3 at, bool north, BurleySchoolArt art)
         {
             Transform goal = Group(name, parent);
-            goal.position = pos;
-            float rotY = south ? 0f : 180f;
-            goal.rotation = Quaternion.Euler(0f, rotY, 0f);
-
-            // Goose-neck post base
-            Box("BaseGooseneck", goal, new Vector3(0f, 1.5f, 1.2f), new Vector3(0.18f, 3.0f, 0.18f), art.YellowStripe);
-            Box("ArmHorizontal", goal, new Vector3(0f, 3.05f, 0.6f), new Vector3(0.18f, 0.18f, 1.2f), art.YellowStripe);
-            // Crossbar (Regulation 5.64m wide, 3.05m high)
-            Box("Crossbar", goal, new Vector3(0f, 3.05f, 0f), new Vector3(5.64f, 0.15f, 0.15f), art.YellowStripe);
-            // Uprights rising 6.1m
-            Box("UprightLeft", goal, new Vector3(-2.82f, 6.1f, 0f), new Vector3(0.12f, 6.1f, 0.12f), art.YellowStripe);
-            Box("UprightRight", goal, new Vector3(2.82f, 6.1f, 0f), new Vector3(0.12f, 6.1f, 0.12f), art.YellowStripe);
+            goal.localPosition = at;
+            goal.localRotation = Quaternion.Euler(0f, north ? 180f : 0f, 0f);
+            A.Cylinder(goal, "BasePad", new Vector3(0f, 0.6f, -0.8f), 0.25f, 1.2f, art.LockerGreen, true);
+            A.Cylinder(goal, "Mast", new Vector3(0f, 1.55f, -0.8f), 0.12f, 3.1f, art.YellowStripe, true);
+            A.Rod(goal, "Gooseneck", new Vector3(0f, 3.05f, -0.8f), new Vector3(0f, 3.05f, 0f), 0.11f, art.YellowStripe);
+            A.Rod(goal, "Crossbar", new Vector3(-2.82f, 3.05f, 0f), new Vector3(2.82f, 3.05f, 0f), 0.09f, art.YellowStripe);
+            A.Rod(goal, "UprightL", new Vector3(-2.82f, 3.05f, 0f), new Vector3(-2.82f, 9.05f, 0f), 0.075f, art.YellowStripe);
+            A.Rod(goal, "UprightR", new Vector3(2.82f, 3.05f, 0f), new Vector3(2.82f, 9.05f, 0f), 0.075f, art.YellowStripe);
         }
 
-        // =========================================================================
-        // 2. TERRACED HILLSIDE STEPS
-        // =========================================================================
         private static void BuildTerracedHillside(Transform parent, BurleySchoolArt art)
         {
-            // Distinctive parallel retaining terraces between school plaza and track (visible in aerial photo)
-            for (int t = 0; t < 5; t++)
+            // Thin edge terraces replace the broad concrete slabs that used to run through the gym and courts.
+            for (int tier = 0; tier < 3; tier++)
             {
-                float x = 126f + t * 4.5f;
-                float y = 0.4f - t * 0.15f;
-                // Grass terrace strip
-                Box($"TerraceLawn_{t}", parent, new Vector3(x, y, 14f), new Vector3(4.2f, 0.25f, 84f), art.TurfGrass);
-                // Concrete/stone retaining curb
-                Box($"RetainingCurb_{t}", parent, new Vector3(x + 2.1f, y + 0.1f, 14f), new Vector3(0.25f, 0.35f, 84f), art.Limestone);
+                float x = 134f + tier * 0.85f;
+                Box($"RetainingEdge_{tier}", parent, new Vector3(x, -0.03f - tier * 0.025f, 16f), new Vector3(0.24f, 0.25f, 96f), art.Limestone);
+                Box($"SnowEdge_{tier}", parent, new Vector3(x, 0.13f - tier * 0.025f, 16f), new Vector3(0.38f, 0.06f, 95.8f), art.Snow, false);
             }
         }
 
-        // =========================================================================
-        // 3. OUTDOOR BASKETBALL COURTS
-        // =========================================================================
         private static void BuildOutdoorBasketballCourt(Transform parent, BurleySchoolArt art)
         {
-            Vector3 center = new(112f, -0.05f, 28f);
-            float courtL = 26f, courtW = 16f;
-
-            // Dark paved asphalt court slab
-            Box("CourtAsphalt", parent, center, new Vector3(courtW, 0.2f, courtL), art.Asphalt);
-
-            // Painted Boundary Lines
-            Box("LineN", parent, center + Vector3.forward * (courtL * 0.5f), new Vector3(courtW, 0.22f, 0.12f), art.WhiteStripe, false);
-            Box("LineS", parent, center - Vector3.forward * (courtL * 0.5f), new Vector3(courtW, 0.22f, 0.12f), art.WhiteStripe, false);
-            Box("LineW", parent, center - Vector3.right * (courtW * 0.5f), new Vector3(0.12f, 0.22f, courtL), art.WhiteStripe, false);
-            Box("LineE", parent, center + Vector3.right * (courtW * 0.5f), new Vector3(0.12f, 0.22f, courtL), art.WhiteStripe, false);
-            Box("MidCourt", parent, center, new Vector3(courtW, 0.22f, 0.12f), art.WhiteStripe, false);
-            Box("CenterCircle", parent, center, new Vector3(3.6f, 0.22f, 3.6f), art.WhiteStripe, false);
-
-            // Keys & Free Throw Lines
-            Box("KeyN", parent, center + new Vector3(0f, 0.01f, courtL * 0.5f - 3.2f), new Vector3(4.2f, 0.22f, 5.8f), art.LockerGreen, false);
-            Box("KeyS", parent, center - new Vector3(0f, -0.01f, courtL * 0.5f - 3.2f), new Vector3(4.2f, 0.22f, 5.8f), art.LockerGreen, false);
-
-            // Outdoor Steel Gooseneck Basketball Hoops
-            BuildOutdoorHoop(parent, "OutdoorHoop_N", center + new Vector3(0f, 0f, courtL * 0.5f), false, art);
-            BuildOutdoorHoop(parent, "OutdoorHoop_S", center - new Vector3(0f, 0f, courtL * 0.5f), true, art);
-
-            // Perimeter Chain-Link Fence
-            BuildFence(parent, "CourtFence", center, courtW + 2.5f, courtL + 2.5f, 3.2f, art);
+            Rect rect = L.OutdoorBasketballCourt;
+            Vector3 centre = new(rect.center.x, 0f, rect.center.y);
+            parent.localPosition = centre;
+            float w = rect.width;
+            float l = rect.height;
+            Box("CourtAsphalt", parent, new Vector3(0f, -0.07f, 0f), new Vector3(w, 0.14f, l), art.SnowyAsphalt);
+            Primitive(PrimitiveType.Sphere, "IcePuddleW", parent, new Vector3(-5.5f, 0.013f, 4.5f), new Vector3(6.2f, 0.02f, 3.1f), art.FrostIce, false);
+            Primitive(PrimitiveType.Sphere, "IcePuddleE", parent, new Vector3(7f, 0.013f, -3.5f), new Vector3(4.4f, 0.02f, 3.4f), art.FrostIce, false);
+            float end = w * 0.5f - 1f;
+            float side = l * 0.5f - 1f;
+            foreach (float sign in new[] { -1f, 1f })
+            {
+                A.PaintLine(parent, $"EndLine_{sign}", new Vector3(sign * end, 0.032f, -side), new Vector3(sign * end, 0.032f, side), 0.08f, art.WhiteStripe);
+                A.PaintLine(parent, $"SideLine_{sign}", new Vector3(-end, 0.032f, sign * side), new Vector3(end, 0.032f, sign * side), 0.08f, art.WhiteStripe);
+                BuildOutdoorHoop(parent, sign < 0f ? "WestHoop" : "EastHoop", new Vector3(sign * (end - 0.6f), 0f, 0f), sign < 0f, art);
+                float freeThrow = sign * (end - 4.8f);
+                A.Arc(parent, $"FreeThrowCircle_{sign}", new Vector3(freeThrow, 0.034f, 0f), 1.8f, 0f, 360f, 0.075f, art.WhiteStripe, 32);
+                A.Arc(parent, $"ThreePointArc_{sign}", new Vector3(sign * (end - 1.2f), 0.034f, 0f), 6.25f, sign < 0f ? 0f : 180f, 180f, 0.075f, art.WhiteStripe, 32);
+                foreach (float keySide in new[] { -1f, 1f })
+                    A.PaintLine(parent, $"KeySide_{sign}_{keySide}", new Vector3(sign * end, 0.034f, keySide * 2.4f), new Vector3(freeThrow, 0.034f, keySide * 2.4f), 0.075f, art.WhiteStripe);
+                A.PaintLine(parent, $"FreeThrowLine_{sign}", new Vector3(freeThrow, 0.034f, -2.4f), new Vector3(freeThrow, 0.034f, 2.4f), 0.075f, art.WhiteStripe);
+            }
+            A.PaintLine(parent, "HalfCourtLine", new Vector3(0f, 0.034f, -side), new Vector3(0f, 0.034f, side), 0.08f, art.WhiteStripe);
+            A.Arc(parent, "CentreCircle", new Vector3(0f, 0.034f, 0f), 1.8f, 0f, 360f, 0.08f, art.WhiteStripe, 36);
+            float fx = w * 0.5f + 1f;
+            float fz = l * 0.5f + 1f;
+            G.FenceRun(parent, "FenceNorth", new Vector3(-fx, 0f, fz), new Vector3(fx, 0f, fz), 3.2f, art);
+            G.FenceRun(parent, "FenceWest", new Vector3(-fx, 0f, -fz), new Vector3(-fx, 0f, fz), 3.2f, art);
+            G.FenceRun(parent, "FenceEast", new Vector3(fx, 0f, fz), new Vector3(fx, 0f, -fz), 3.2f, art);
+            G.FenceRun(parent, "FenceSouthL", new Vector3(-fx, 0f, -fz), new Vector3(-1.3f, 0f, -fz), 3.2f, art);
+            G.FenceRun(parent, "FenceSouthR", new Vector3(1.3f, 0f, -fz), new Vector3(fx, 0f, -fz), 3.2f, art);
+            Box("DriftAtNorthFence", parent, new Vector3(0f, 0.18f, fz), new Vector3(w * 0.7f, 0.36f, 0.65f), art.SnowDrift, false);
         }
 
-        private static void BuildOutdoorHoop(Transform parent, string name, Vector3 pos, bool south, BurleySchoolArt art)
+        private static void BuildOutdoorHoop(Transform parent, string name, Vector3 at, bool east, BurleySchoolArt art)
         {
             Transform hoop = Group(name, parent);
-            hoop.position = pos;
-            float rotY = south ? 0f : 180f;
-            hoop.rotation = Quaternion.Euler(0f, rotY, 0f);
-
-            // Heavy duty steel pipe standard
-            Box("Pole", hoop, new Vector3(0f, 1.8f, 1.1f), new Vector3(0.14f, 3.6f, 0.14f), art.MetalSteel);
-            Box("GooseneckArm", hoop, new Vector3(0f, 3.2f, 0.55f), new Vector3(0.12f, 0.12f, 1.1f), art.MetalSteel);
-            // Steel fan backboard
-            Box("Backboard", hoop, new Vector3(0f, 3.35f, 0f), new Vector3(1.5f, 1.0f, 0.04f), art.FloorTile, false);
-            Box("TargetBox", hoop, new Vector3(0f, 3.15f, -0.03f), new Vector3(0.5f, 0.4f, 0.02f), art.GoldAccent, false);
-            // Orange Rim & Chain Net
-            Box("Rim", hoop, new Vector3(0f, 3.05f, -0.3f), new Vector3(0.48f, 0.05f, 0.48f), art.GoldAccent, false);
+            hoop.localPosition = at;
+            hoop.localRotation = Quaternion.Euler(0f, east ? 90f : -90f, 0f);
+            A.Cylinder(hoop, "SteelPole", new Vector3(0f, 1.95f, -0.65f), 0.09f, 3.9f, art.MetalSteel, true);
+            A.Rod(hoop, "SupportArm", new Vector3(0f, 3.3f, -0.65f), new Vector3(0f, 3.3f, 0f), 0.07f, art.MetalSteel);
+            Box("Backboard", hoop, new Vector3(0f, 3.3f, 0f), new Vector3(1.8f, 1.05f, 0.07f), art.Concrete, false);
+            foreach (float sign in new[] { -1f, 1f })
+            {
+                Box($"TargetSide_{sign}", hoop, new Vector3(sign * 0.3f, 3.23f, 0.045f), new Vector3(0.04f, 0.42f, 0.02f), art.WhiteStripe, false);
+                Box($"TargetHorizontal_{sign}", hoop, new Vector3(0f, 3.23f + sign * 0.21f, 0.045f), new Vector3(0.64f, 0.04f, 0.02f), art.WhiteStripe, false);
+            }
+            A.Arc(hoop, "RoundRim", new Vector3(0f, 3.05f, 0.33f), 0.23f, 0f, 360f, 0.045f, art.YellowStripe, 24);
+            for (int i = 0; i < 10; i++)
+            {
+                float angle = i * Mathf.PI / 5f;
+                Vector3 radial = new(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                A.Rod(hoop, $"ChainNet_{i}", new Vector3(0f, 3.03f, 0.33f) + radial * 0.22f,
+                    new Vector3(0f, 2.7f, 0.33f) + radial * 0.15f, 0.008f, art.MetalSteel);
+            }
         }
 
-        // =========================================================================
-        // 4. BASEBALL DIAMOND
-        // =========================================================================
         private static void BuildBaseballDiamond(Transform parent, BurleySchoolArt art)
         {
-            Vector3 home = L.BaseballHomePlate;
-            float baseDist = 22f; // Scaled high school diamond base path
-
-            // Red clay dirt infield area
-            Box("InfieldClayDirt", parent, home + new Vector3(0f, -0.1f, baseDist * 0.7f), new Vector3(32f, 0.2f, 32f), art.InfieldClay);
-
-            // Home Plate (Five-sided rubber slab)
-            Box("HomePlate", parent, home + Vector3.up * 0.02f, new Vector3(0.45f, 0.03f, 0.45f), art.FloorTile, false);
-
-            // 1st Base, 2nd Base, 3rd Base canvas bags
-            Vector3 firstBase = home + new Vector3(baseDist * 0.7f, 0.02f, baseDist * 0.7f);
-            Vector3 secondBase = home + new Vector3(0f, 0.02f, baseDist * 1.4f);
-            Vector3 thirdBase = home + new Vector3(-baseDist * 0.7f, 0.02f, baseDist * 0.7f);
-
-            Box("Base_1st", parent, firstBase, new Vector3(0.4f, 0.06f, 0.4f), art.FloorTile);
-            Box("Base_2nd", parent, secondBase, new Vector3(0.4f, 0.06f, 0.4f), art.FloorTile);
-            Box("Base_3rd", parent, thirdBase, new Vector3(0.4f, 0.06f, 0.4f), art.FloorTile);
-
-            // Pitcher's Mound & Pitching Rubber
-            Vector3 mound = home + new Vector3(0f, 0.15f, baseDist * 0.7f);
-            Box("PitchersMound", parent, mound, new Vector3(4.2f, 0.3f, 4.2f), art.InfieldClay);
-            Box("PitchingRubber", parent, mound + Vector3.up * 0.16f, new Vector3(0.6f, 0.04f, 0.15f), art.FloorTile, false);
-
-            // Outfield Turf Grass expanding towards Booker T. Washington Park
-            Box("OutfieldGrass", parent, home + new Vector3(0f, -0.1f, baseDist * 1.8f), new Vector3(56f, 0.2f, 44f), art.TurfGrass);
-
-            // Backstop Chain-Link Fence behind Home Plate
-            Transform backstop = Group("BackstopFence", parent);
-            backstop.position = home - new Vector3(0f, 0f, 5.0f);
-            Box("BackstopCenter", backstop, new Vector3(0f, 2.5f, 0f), new Vector3(12.0f, 5.0f, 0.08f), art.FenceChainlink);
-            Box("BackstopWingL", backstop, new Vector3(-6.8f, 2.5f, 2.5f), new Vector3(6.0f, 5.0f, 0.08f), art.FenceChainlink);
-            Box("BackstopWingR", backstop, new Vector3(6.8f, 2.5f, 2.5f), new Vector3(6.0f, 5.0f, 0.08f), art.FenceChainlink);
+            parent.localPosition = L.BaseballHomePlate;
+            float b = L.BaseballBaseDistance;
+            Vector3[] bases = { new(0f, 0.04f, 0f), new(b, 0.04f, 0f), new(b, 0.04f, b), new(0f, 0.04f, b) };
+            for (int i = 0; i < bases.Length; i++)
+            {
+                A.PaintLine(parent, $"ClayBasePath_{i}", bases[i], bases[(i + 1) % bases.Length], 1.15f, art.InfieldClay);
+                GameObject bag = Box(i == 0 ? "HomePlate" : $"BaseBag_{i}", parent, bases[i] + Vector3.up * 0.02f, new Vector3(0.48f, 0.06f, 0.48f), art.WhiteStripe, false);
+                bag.transform.localRotation = Quaternion.Euler(0f, 45f, 0f);
+            }
+            Primitive(PrimitiveType.Sphere, "PitchersMound", parent, new Vector3(b * 0.5f, 0.1f, b * 0.5f), new Vector3(4f, 0.3f, 4f), art.InfieldClay, false);
+            Box("PitchersRubber", parent, new Vector3(b * 0.5f, 0.28f, b * 0.5f), new Vector3(0.6f, 0.025f, 0.14f), art.WhiteStripe, false);
+            G.FenceRun(parent, "BackstopMain", new Vector3(-5.5f, 0f, -3f), new Vector3(4.5f, 0f, -3f), 5.5f, art);
+            G.FenceRun(parent, "BackstopWestWing", new Vector3(-5.5f, 0f, -3f), new Vector3(-5.5f, 0f, 3f), 5.5f, art);
+            G.FenceRun(parent, "BackstopEastWing", new Vector3(4.5f, 0f, -3f), new Vector3(7f, 0f, 1.5f), 5.5f, art);
+            Transform dugout = Group("HomeDugout", parent);
+            dugout.localPosition = new Vector3(-8.5f, 0f, 10f);
+            Box("Floor", dugout, new Vector3(0f, -0.03f, 0f), new Vector3(3.2f, 0.1f, 8.5f), art.Concrete);
+            Box("Roof", dugout, new Vector3(0f, 2.4f, 0f), new Vector3(3.6f, 0.15f, 8.9f), art.MetalSteel);
+            Box("RoofSnow", dugout, new Vector3(0f, 2.53f, 0f), new Vector3(3.5f, 0.12f, 8.8f), art.Snow, false);
+            foreach (float x in new[] { -1.4f, 1.4f })
+            foreach (float z in new[] { -4f, 4f })
+                A.Cylinder(dugout, $"RoofPost_{x}_{z}", new Vector3(x, 1.2f, z), 0.06f, 2.4f, art.MetalSteel, true);
+            Box("BenchSeat", dugout, new Vector3(-0.85f, 0.48f, 0f), new Vector3(0.48f, 0.08f, 7.5f), art.OakWood);
+            for (int leg = -2; leg <= 2; leg++)
+                Box($"BenchSupport_{leg}", dugout, new Vector3(-0.85f, 0.24f, leg * 1.6f), new Vector3(0.08f, 0.48f, 0.08f), art.MetalSteel);
+            G.FenceRun(dugout, "RearWireWall", new Vector3(-1.4f, 0f, -4f), new Vector3(-1.4f, 0f, 4f), 2.3f, art);
         }
 
-        // =========================================================================
-        // 5. NORTHEAST PARKING LOT
-        // =========================================================================
         private static void BuildParkingLot(Transform parent, BurleySchoolArt art)
         {
-            Vector3 center = new(110f, -0.1f, 70f);
-            float lotW = 44f, lotL = 40f;
-
-            // Paved Asphalt Parking Surface
-            Box("ParkingLotAsphalt", parent, center, new Vector3(lotW, 0.22f, lotL), art.Asphalt);
-
-            // White Painted Parking Stalls
-            Transform stalls = Group("ParkingStalls", parent);
-            stalls.position = center + Vector3.up * 0.12f;
-
-            // Row 1 (North stalls)
-            for (int s = 0; s < 12; s++)
+            Rect r = L.ParkingLot;
+            Vector3 centre = new(r.center.x, 0f, r.center.y);
+            Box("ParkingLotAsphalt", parent, centre + Vector3.down * 0.07f, new Vector3(r.width, 0.14f, r.height), art.SnowyAsphalt);
+            int stalls = Mathf.FloorToInt((r.height - 8f) / 3.1f);
+            for (int bank = -1; bank <= 1; bank += 2)
+            for (int stall = 0; stall <= stalls; stall++)
             {
-                float sx = -lotW * 0.5f + 3.0f + s * 3.2f;
-                Box($"StallLine_N_{s}", stalls, new Vector3(sx, 0f, 14f), new Vector3(0.12f, 0.02f, 5.5f), art.WhiteStripe, false);
+                float z = r.yMin + 4f + stall * 3.1f;
+                float edge = bank < 0 ? r.xMin + 1.6f : r.xMax - 1.6f;
+                float aisle = edge - bank * 5.2f;
+                A.PaintLine(parent, $"StallDivider_{bank}_{stall}", new Vector3(edge, 0.028f, z), new Vector3(aisle, 0.028f, z), 0.09f, art.YellowStripe);
+                if (stall < stalls)
+                    Box($"WheelStop_{bank}_{stall}", parent, new Vector3(edge - bank * 0.4f, 0.09f, z + 1.55f), new Vector3(0.18f, 0.18f, 1.8f), art.Concrete);
             }
-            // Row 2 & 3 (Central double stalls)
-            for (int s = 0; s < 12; s++)
+            Box("NorthSnowbank", parent, new Vector3(centre.x, 0.35f, r.yMax), new Vector3(r.width - 2f, 0.7f, 1.5f), art.SnowDrift, false);
+            Box("EastSnowbank", parent, new Vector3(r.xMax, 0.25f, centre.z), new Vector3(0.85f, 0.5f, r.height - 2f), art.SnowDrift, false);
+            foreach (float x in new[] { r.xMin + 0.5f, r.xMax - 0.5f })
+            foreach (float z in new[] { r.yMin + 1f, r.yMax - 1f })
             {
-                float sx = -lotW * 0.5f + 3.0f + s * 3.2f;
-                Box($"StallLine_C1_{s}", stalls, new Vector3(sx, 0f, 0f), new Vector3(0.12f, 0.02f, 5.2f), art.WhiteStripe, false);
-                Box($"StallLine_C2_{s}", stalls, new Vector3(sx, 0f, -5.2f), new Vector3(0.12f, 0.02f, 5.2f), art.WhiteStripe, false);
+                Transform pole = Group($"LotLight_{x}_{z}", parent);
+                pole.localPosition = new Vector3(x, 0f, z);
+                A.Cylinder(pole, "Footing", new Vector3(0f, 0.25f, 0f), 0.28f, 0.5f, art.Concrete, true);
+                A.Cylinder(pole, "Mast", new Vector3(0f, 4f, 0f), 0.095f, 8f, art.MetalSteel, true);
+                Box("LampHousing", pole, new Vector3(0f, 8.05f, 0f), new Vector3(0.8f, 0.22f, 0.65f), art.MetalSteel, false);
+                Box("LampLens", pole, new Vector3(0f, 7.93f, 0f), new Vector3(0.65f, 0.025f, 0.5f), art.LampSodium, false);
+                Box("SnowCap", pole, new Vector3(0f, 8.21f, 0f), new Vector3(0.78f, 0.1f, 0.63f), art.Snow, false);
             }
-
-            // High-Mast Parking Lot Light Poles
-            Vector3[] poleLocs = { new(94f, 0f, 54f), new(126f, 0f, 54f), new(94f, 0f, 84f), new(126f, 0f, 84f) };
-            for (int p = 0; p < poleLocs.Length; p++)
-            {
-                Transform pole = Group($"ParkingLightPole_{p}", parent);
-                pole.position = poleLocs[p];
-                Box("SteelPole", pole, new Vector3(0f, 4.5f, 0f), new Vector3(0.24f, 9.0f, 0.24f), art.MetalSteel);
-                Box("LampArm", pole, new Vector3(0f, 8.8f, 0.6f), new Vector3(0.12f, 0.12f, 1.2f), art.MetalSteel);
-                Box("LampHead", pole, new Vector3(0f, 8.7f, 1.2f), new Vector3(0.6f, 0.25f, 0.8f), art.LampSodium, false);
-            }
-
-            // Green Industrial Dumpster Enclosure
-            Transform dumpster = Group("DumpsterEnclosure", parent);
-            dumpster.position = new Vector3(88f, 0f, 86f);
-            Box("EnclosureWallBack", dumpster, new Vector3(0f, 1.1f, 2.5f), new Vector3(6.5f, 2.2f, 0.25f), art.BrickDark);
-            Box("EnclosureWallLeft", dumpster, new Vector3(-3.2f, 1.1f, 0f), new Vector3(0.25f, 2.2f, 5.0f), art.BrickDark);
-            Box("DumpsterBin", dumpster, new Vector3(0f, 0.75f, 0f), new Vector3(3.2f, 1.5f, 1.8f), art.LockerGreen);
-        }
-
-        private static void BuildFence(Transform parent, string name, Vector3 center, float width, float length, float height, BurleySchoolArt art)
-        {
-            Transform fence = Group(name, parent);
-            // Four perimeter chain-link fence sides
-            Box("FenceN", fence, center + Vector3.forward * (length * 0.5f) + Vector3.up * (height * 0.5f), new Vector3(width, height, 0.06f), art.FenceChainlink);
-            Box("FenceS", fence, center - Vector3.forward * (length * 0.5f) + Vector3.up * (height * 0.5f), new Vector3(width, height, 0.06f), art.FenceChainlink);
-            Box("FenceW", fence, center - Vector3.right * (width * 0.5f) + Vector3.up * (height * 0.5f), new Vector3(0.06f, height, length), art.FenceChainlink);
-            Box("FenceE", fence, center + Vector3.right * (width * 0.5f) + Vector3.up * (height * 0.5f), new Vector3(0.06f, height, length), art.FenceChainlink);
-        }
-
-        private static void Label(Transform parent, string name, string text, Vector3 at, Quaternion rotation, float size, Color color)
-        {
-            var label = new GameObject(name).AddComponent<TextMesh>();
-            label.transform.SetParent(parent, false);
-            label.transform.localPosition = at;
-            label.transform.localRotation = rotation;
-            label.text = text;
-            label.anchor = TextAnchor.MiddleCenter;
-            label.alignment = TextAlignment.Center;
-            label.characterSize = size;
-            label.fontSize = 48;
-            label.color = color;
-            WorldTextMaterial.Apply(label, AssetDatabase.LoadAssetAtPath<Font>(BurleySchoolArt.FontPath));
         }
     }
 }

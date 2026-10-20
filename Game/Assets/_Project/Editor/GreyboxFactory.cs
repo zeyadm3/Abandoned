@@ -69,6 +69,23 @@ namespace Abandoned.EditorTools
             return go;
         }
 
+        public const string FontPath = "Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf";
+
+        public static void Label(Transform parent, string name, string text, Vector3 at, Quaternion rotation, float characterSize, Color color)
+        {
+            var label = new GameObject(name).AddComponent<TextMesh>();
+            label.transform.SetParent(parent, false);
+            label.transform.localPosition = at;
+            label.transform.localRotation = rotation;
+            label.text = text;
+            label.anchor = TextAnchor.MiddleCenter;
+            label.alignment = TextAlignment.Center;
+            label.characterSize = characterSize;
+            label.fontSize = 48;
+            label.color = color;
+            WorldTextMaterial.Apply(label, AssetDatabase.LoadAssetAtPath<Font>(FontPath));
+        }
+
         public static void MarkStatic(Transform root)
         {
             foreach (Transform t in root.GetComponentsInChildren<Transform>(true))

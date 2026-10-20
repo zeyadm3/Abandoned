@@ -59,7 +59,7 @@ are removed by the 0.15.8b follow-up; the generated logos and sale advertisement
 
 ## Authoring and delivery
 
-Menu: **Tools > Abandoned > Mall > Store Branding and Sale Artwork (0.15.8)**.
+Menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.8 Store Branding and Sale Artwork**.
 Batch entry: `Abandoned.EditorTools.MallBrandingRelease0158.AuthorAndBuildPlayersAndExit`.
 The full mall builder also installs the cleanup and campaign artwork on regeneration.
 

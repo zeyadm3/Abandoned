@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
         public const string GroupName = "_CART_BAYS_0184";
         private static readonly Vector3 Size = new(0.62f, 1.0f, 0.95f);
 
-        [MenuItem("Tools/Abandoned/Mall/Add Shopping Carts (0.18.4)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.18.4 Add Shopping Carts", priority = ToolMenu.MallP + 38)]
         public static void Author()
         {
             LootDefinition cart = Definition();

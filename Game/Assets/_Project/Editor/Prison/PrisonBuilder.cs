@@ -7,7 +7,6 @@ namespace Abandoned.EditorTools
     {
         public const string ScenePath = "Assets/_Project/Scenes/Prison.unity";
 
-        [MenuItem("Tools/Abandoned/Create Prison")]
         public static void Create() => IslandPrisonBuilder.Build();
 
         public static void Build() => IslandPrisonBuilder.Build();

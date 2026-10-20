@@ -21,6 +21,9 @@ namespace Abandoned.EditorTools
         /// <summary>Burley Middle School: wind down empty school halls, distant locker rattles, flickering light hum.</summary>
         public static void School(Transform root) => Add(root, wind: 0.22f, hum: 0.12f, plainHum: 0.04f, settleEvery: new Vector2(16f, 44f));
 
+        /// <summary>The training house: winter wind at the windows, no hum (the power is off), the old frame settling now and then.</summary>
+        public static void House(Transform root) => Add(root, wind: 0.18f, hum: 0f, plainHum: 0f, settleEvery: new Vector2(25f, 60f));
+
         private static void Add(Transform root, float wind, float hum, float plainHum, Vector2 settleEvery)
         {
             var go = new GameObject("Ambience");

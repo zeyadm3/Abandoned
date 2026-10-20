@@ -50,6 +50,8 @@ namespace Abandoned.Extraction
             Cues(run);
             if (!run.IsServer || structure == null || !structure.HasAuthority) return;
             if (run.State.Phase != RunPhase.Running && run.State.Phase != RunPhase.Honking) return;
+            // Training: the practice house never decays and never comes down on the crew.
+            if (Tutorial.TutorialMode.Active) return;
 
             BuildingDecayConfig config = BuildingDecayConfig.Current;
             TickPending();

@@ -26,7 +26,7 @@ namespace Abandoned.EditorTools
         // Ambient occlusion: reach, darkness, and how much it bites into direct light (it was 0.3 / 0.4 / 0.25).
         private const float AoRadius = 0.4f, AoIntensity = 0.55f, AoDirect = 0.5f;
 
-        [MenuItem("Tools/Abandoned/Art/Apply Render Budget")]
+        [MenuItem(ToolMenu.Art + "Apply Render Budget", priority = ToolMenu.ArtP)]
         public static void Apply()
         {
             // The PC quality level's asset (quality levels override the default pipeline).

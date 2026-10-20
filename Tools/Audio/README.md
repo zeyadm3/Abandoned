@@ -7,12 +7,14 @@ in the Unity project. Nothing in this folder ships with the game.
 |---|---|---|
 | `generate_hq_dispatch.py` | `Game/Assets/_Project/Art/Audio/HQDispatch/dispatch_*.wav` (telephone line) | `af_heart`, `af_bella`, `bf_emma` |
 | `generate_boss_voicemails.py` | `Game/Assets/_Project/Art/Audio/Voicemail/Resources/Voicemail/vm_*.wav` (answering-machine tape) | `am_michael`, `am_fenrir`, `am_onyx`, `bm_george` |
+| `generate_tutorial_dispatch.py` | `Game/Assets/_Project/Art/Audio/TutorialDispatch/Resources/TutorialDispatch/td_*.wav` (handheld radio, the training job's dispatcher) | `af_heart`, `af_bella`, `bf_emma` |
+| `generate_tutorial_narration.py` | `Game/Assets/_Project/Art/Audio/TutorialNarration/Resources/TutorialNarration/tn_*.wav` (light radio, the training job's trainer reading every lesson) | `am_michael` |
 
 The voices are mixed on purpose (user, 2026-10-12: "keep it random, sometimes it's that person, sometimes
 it's another one"):
 - **Dispatch:** every briefing is recorded by all three operators (`dispatch_routine.wav`, `_2.wav`, `_3.wav`)
   and the game plays one at random each time the phone is used. All of a briefing's clips are listed in the
-  sound bank; a fourth operator needs **Tools > Abandoned > HQ > Author Dispatch Audio** in Unity once.
+  sound bank; a fourth operator needs **Tools > Abandoned > Maps > HQ > Author Dispatch Audio** in Unity once.
 - **Voicemails:** the lines take turns through the four voices, so messages come from different people. One
   message keeps one voice, so playing it again sounds the same.
 
@@ -27,7 +29,13 @@ non-commercial use only (macOS licence, "Voices"). They were replaced on 2026-10
 ```bash
 python3 Tools/Audio/generate_hq_dispatch.py
 python3 Tools/Audio/generate_boss_voicemails.py
+python3 Tools/Audio/generate_tutorial_dispatch.py
+python3 Tools/Audio/generate_tutorial_narration.py
 ```
+
+The training dispatcher's clips are named by a hash of each lesson's RadioLine (like the voicemails): after
+editing a line in a lesson asset, run the script again and delete any `td_*.wav` whose line no longer exists. A
+line without a clip still shows on the radio caption.
 
 File names do not change (a voicemail is named by a hash of its text), so Unity keeps its references and
 simply re-imports the sound. After editing a voicemail line in CompanyMessages, run the second script again

@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
         public const string GroupName = "_BREAKROOM_TOYS_0196";
         private static readonly Vector3 HoopSize = new(1.2f, 1.0f, 0.6f), BoardSize = new(0.55f, 0.55f, 0.08f);
 
-        [MenuItem("Tools/Abandoned/HQ/Add Break-Room Toys (0.19.6)")]
+        [MenuItem(ToolMenu.HqUpdates + "0.19.6 Add Break-Room Toys", priority = ToolMenu.HqP + 62)]
         public static void Author()
         {
             GameObject ball = Toy("basketball", "Basketball", 0.6f, new Vector3(0.24f, 0.24f, 0.24f), PlaceholderShape.Sphere, new Color(0.9f, 0.45f, 0.15f));

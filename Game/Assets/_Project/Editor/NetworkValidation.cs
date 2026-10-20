@@ -58,7 +58,7 @@ namespace Abandoned.EditorTools
         public static void ValidateStructureNetPrefab(GameObject root, string path, List<string> errors)
         {
             var networkObject = root.GetComponent<NetworkObject>();
-            if (networkObject == null) { errors.Add($"{path}: missing NetworkObject (Tools/Abandoned/Create Structure Net Prefab)."); return; }
+            if (networkObject == null) { errors.Add($"{path}: missing NetworkObject (Tools/Abandoned/Content/Prefabs/Create Structure Net Prefab)."); return; }
             if (!networkObject.DontDestroyWithOwner) errors.Add($"{path}: DontDestroyWithOwner must be on (the building outlives any player).");
             if (root.GetComponent<StructureNetSync>() == null) errors.Add($"{path}: missing StructureNetSync.");
             var list = AssetDatabase.LoadAssetAtPath<NetworkPrefabsList>(NetworkContentBuilder.PrefabListPath);

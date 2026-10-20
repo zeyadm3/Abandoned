@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
         private static readonly Vector3 Size = new(1.8f, 0.3f, 1.8f);
         private const int Patches = 24;
 
-        [MenuItem("Tools/Abandoned/Mall/Add Noisy Ground (0.17.3)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.17.3 Add Noisy Ground", priority = ToolMenu.MallP + 36)]
         public static void Author()
         {
             ReleaseKit.Config<GroundConfig>(ReleaseKit.ExtractionResources, GroundConfig.ResourcePath);

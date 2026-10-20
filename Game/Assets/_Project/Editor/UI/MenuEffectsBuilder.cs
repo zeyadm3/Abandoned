@@ -16,7 +16,7 @@ namespace Abandoned.EditorTools
         public const string ConfigPath = UiContentBuilder.Folder + "/Resources/MenuEffectsConfig.asset";
         private const string FigureMaterialPath = PolishAssets.Folder + "/Menu_Silhouette.mat";
 
-        [MenuItem("Tools/Abandoned/UI/Create Menu Effects")]
+        [MenuItem(ToolMenu.UI + "Create Menu Effects", priority = ToolMenu.UiP + 1)]
         public static void Create()
         {
             Texture2D grain = Write("MenuGrain", 256, 256, true, (x, y, r) =>

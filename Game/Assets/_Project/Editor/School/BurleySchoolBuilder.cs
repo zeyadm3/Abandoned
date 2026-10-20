@@ -16,34 +16,12 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Master world builder for Jackson P. Burley Middle School (Charlottesville, VA),
-    /// recreating the complete campus structure from the aerial photo:
-    /// 1951 Stripped Classical brick building, U-shaped academic wings, double-height Gymnasium,
-    /// Auditorium with stage, Cafeteria & Kitchen, Library & Media Center, Science Labs,
-    /// outdoor 6-lane Running Track and Football/Soccer Field with end zones and collegiate goalposts,
-    /// outdoor paved Basketball Courts, Baseball Diamond, terraced hillside, northeast parking lot,
-    /// surrounding Charlottesville residential neighborhood streets, Booker T. Washington Park,
-    /// and the front entrance drop-off loop with extraction truck.
+    /// with a winter campus, distinct salvage rooms, two academic return routes and a service basement.
+    /// Rebuild is an explicit authoring action: compilation, navigation and occlusion are left to the user.
     /// </summary>
     public static class BurleySchoolBuilder
     {
-        /// <summary>Late twilight over Charlottesville: atmospheric blue haze, warm interior sodium and fluorescent pools.</summary>
-        public static readonly LevelAtmosphere.Mood Mood = new(
-            sky: new Color(0.10f, 0.14f, 0.20f),
-            equator: new Color(0.07f, 0.09f, 0.12f),
-            ground: new Color(0.03f, 0.04f, 0.05f),
-            fog: new Color(0.12f, 0.16f, 0.22f),
-            fogDensity: 0.016f,
-            bloom: 0.22f,
-            vignette: 0.22f,
-            grain: 0.12f,
-            saturation: -16f,
-            contrast: 14f,
-            sunColor: new Color(1.0f, 0.82f, 0.62f),
-            sunIntensity: 0.35f,
-            sunEuler: new Vector3(50f, -40f, 0f)
-        );
-
-        [MenuItem("Tools/Abandoned/School/Rebuild Jackson P Burley Middle School")]
+        [MenuItem(ToolMenu.School + "Rebuild Jackson P Burley Middle School", priority = ToolMenu.SchoolP)]
         public static void Rebuild() => Build();
 
         public static void BuildAndExit()
@@ -69,33 +47,39 @@ namespace Abandoned.EditorTools
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             Transform root = new GameObject(L.SceneName).transform;
 
-            // Inside atmosphere: authentic school hall ambient haze
+            // Inside atmosphere: authentic school hall ambient haze transitioning from winter exterior
             root.gameObject.AddComponent<BuildingInteriorAtmosphere>().EditorSetup(
-                L.Building, new Color(0.06f, 0.075f, 0.085f), 0.035f);
+                L.Building, new Color(0.055f, 0.065f, 0.075f), 0.016f);
             root.gameObject.AddComponent<LevelBuildingBounds>().EditorSetup(L.Building);
 
             var art = new BurleySchoolArt();
+            BurleySchoolSurfaces.Reset();
 
             // 1. Structural Floor Systems & Stairs
             BurleySchoolStructure.Result structResult = BurleySchoolStructure.Build(root, art);
 
-            // 2. Exterior Architecture Envelope & Smokestack
+            // 2. Exterior Architecture Envelope, Portico, Snow Blankets & Smokestack
             BurleySchoolBuilding.Build(root, art);
 
-            // 3. Hallways & Corridors (Green/Gold Lockers, Trophies, Signs)
+            // 3. Hallways & Corridors (Lockers, Trophies, Signs, Amenities)
             BurleySchoolCorridors.Build(root, art);
 
-            // 4. Detailed Interior Facilities (Gym, Auditorium, Cafeteria, Library, Labs, Admin)
+            // 4. Detailed Interior Facilities (Gym, Auditorium, Cafeteria, Library, Labs, Admin, Boiler)
             BurleySchoolInteriors.Build(root, art);
+            BurleySchoolInteriorSupport.Bind(root, structResult);
+            BurleySchoolWear.Build(root, art, structResult);
 
-            // 5. Outdoor Athletics (Track, Football Field, Basketball Court, Baseball Diamond)
+            // 5. Outdoor Athletics in Snow (Track, Football Field, Basketball Court, Baseball Diamond)
             BurleySchoolAthletics.Build(root, art);
 
-            // 6. Surrounding Neighborhood (Rose Hill Dr, Madison Ave, Houses, Booker T Park)
+            // 6. Surrounding Winter Neighborhood & Mountain Panorama (Houses, Park, Frozen Pond, Pines)
             BurleySchoolSurroundings.Build(root, art);
 
-            // 7. Dynamic Lighting & Fluorescents
+            // 7. Dynamic Lighting at 3:00 PM Winter & Falling Snow Particles
             BurleySchoolLighting.Build(root, art);
+            BurleySchoolInteriorSupport.BindHangingFixtures(root, structResult);
+
+            BurleySchoolSurfaces.Apply(root, art.Tiling);
 
             // 8. Custom School Audio Ambience
             AmbienceBuilder.School(root);
@@ -111,7 +95,7 @@ namespace Abandoned.EditorTools
             TruckCargo cargo = TruckBuilder.Build(truckRoot, L.TruckPosition, Vector3.back);
             MeridianCollectionBayBuilder.Build(root, cargo);
 
-            // 10. Gameplay Spawns, Loot & Threats
+            // 10. Gameplay spawns use clear floor routes and authored salvage surfaces.
             var crewSpawns = new List<Vector3>
             {
                 new(43f, 0.05f, -2.5f),
@@ -123,7 +107,7 @@ namespace Abandoned.EditorTools
             var threats = BurleySchoolLootAndThreats.GetThreatSpawns();
             LocationPlumbing.Populate(root, crewSpawns, loot, threats, structResult.Simulation);
 
-            // 11. NavMesh Baking (Keep exterior roofs, smokestack and neighborhood boundaries out of monster pathfinding)
+            // 11. NavMesh Baking (Ensure exterior staging, roofs, and surroundings are excluded)
             string[] navExclusions =
             {
                 "BuildingShell/Roofs", "BuildingShell/RooftopHVAC", "BuildingShell/HistoricSmokestack",
@@ -131,13 +115,12 @@ namespace Abandoned.EditorTools
             };
             LocationPlumbing.BakeNavMesh(root, L.SceneName, navExclusions);
 
-            // 12. Solid Props & Final NavMesh Pass
-            LevelSolidity.Apply(root, L.SceneName);
-            LocationPlumbing.BakeNavMesh(root, L.SceneName, navExclusions);
-
-            // 13. Horror Configuration & Atmosphere
+            // 12. Horror Configuration & 3:00 PM Winter Atmosphere
             LocationPlumbing.ConfigureHorrorScenes();
-            LevelAtmosphere.Apply(L.SceneName, Mood, root);
+            LevelAtmosphere.Apply(L.SceneName, BurleySchoolLighting.Winter3PMMood, root);
+
+            // 13. Render Reach (LevelCameraRange 5000m) & Occlusion Culling Static Tagging
+            BurleySchoolRendering.Apply(root, art);
 
             // 14. Establish Cinematic Camera Angle
             PlaceCamera();
@@ -156,9 +139,9 @@ namespace Abandoned.EditorTools
             if (!EditorSceneManager.SaveScene(scene, L.ScenePath))
                 throw new InvalidOperationException("Unity could not save Jackson P. Burley Middle School after occlusion bake.");
 
-            Debug.Log($"[BurleySchool] Successfully built Jackson P. Burley Middle School! " +
+            Debug.Log($"[BurleySchool] Successfully rebuilt Jackson P. Burley Middle School in winter at 3:00 PM! " +
                       $"{structResult.Pieces.Count} floor tiles, {loot.Count} loot locations, {threats.Count} threat spawns. " +
-                      $"Athletics complex and neighborhood complete.");
+                      $"Two academic stairs, service basement, winter campus and original room furnishings authored.");
         }
 
         private static void PlaceCamera()
@@ -167,6 +150,7 @@ namespace Abandoned.EditorTools
             if (camera == null) return;
             camera.transform.position = new Vector3(46f, 18f, -26f);
             camera.transform.LookAt(new Vector3(46f, 4.5f, 35f));
+            camera.farClipPlane = BurleySchoolRendering.FarClip;
         }
     }
 }

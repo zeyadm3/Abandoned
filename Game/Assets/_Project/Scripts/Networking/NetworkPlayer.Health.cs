@@ -33,6 +33,8 @@ namespace Abandoned.Networking
         public void DealDamage(float amount, string cause)
         {
             if (!IsServer || dead.Value || !float.IsFinite(amount) || amount <= 0f) return;
+            // The training job hurts (the low-health effects are a lesson too) but never kills.
+            if (Tutorial.TutorialMode.Active && (amount = Tutorial.TutorialMode.Clamp(health.Value, amount)) <= 0f) return;
             health.Value = Mathf.Clamp(health.Value - amount, 0f, MaxHealth);
             if (health.Value <= 0f) Die(cause);
         }

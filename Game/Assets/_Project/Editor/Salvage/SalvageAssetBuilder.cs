@@ -25,7 +25,7 @@ namespace Abandoned.EditorTools
         public static string ModelPath(string id) => $"{ModelFolder}/{id}.prefab";
         public static string DressingPath(string id) => $"{DressingFolder}/{id}.prefab";
 
-        [MenuItem("Tools/Abandoned/0.15.5/Author Salvage Asset Library")]
+        [MenuItem(ToolMenu.Loot + "Author Salvage Asset Library (0.15.5)", priority = ToolMenu.LootP + 20)]
         public static void AuthorAll()
         {
             PolishAssets.EnsureFolder(ModelFolder);

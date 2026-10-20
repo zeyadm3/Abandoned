@@ -25,7 +25,7 @@ namespace Abandoned.EditorTools
         public const string TitleFontPath = ThirdPartyModelImport.Root + "Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf";
         public const string IconsPath = Folder + "/Resources/UiIcons.asset";
 
-        [MenuItem("Tools/Abandoned/UI/Build Menu Assets")]
+        [MenuItem(ToolMenu.UI + "Build Menu Assets", priority = ToolMenu.UiP)]
         public static void CreateMissing()
         {
             UiHorrorTextureBuilder.Create();

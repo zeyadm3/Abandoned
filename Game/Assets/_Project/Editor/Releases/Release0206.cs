@@ -6,7 +6,7 @@ namespace Abandoned.EditorTools
     /// <summary>0.20.6 threat forecast: the company upgrade (truck catalog, append only) and the forecast asset pointing at the threat catalog.</summary>
     public static class Release0206
     {
-        [MenuItem("Tools/Abandoned/Content/Threat Forecast (0.20.6)")]
+        [MenuItem(ToolMenu.Features + "0.20.6 Threat Forecast", priority = ToolMenu.FeaturesP + 19)]
         public static void Author()
         {
             CompanyContentBuilder.CreateTruckUpgrades();

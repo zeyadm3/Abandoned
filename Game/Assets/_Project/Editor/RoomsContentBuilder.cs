@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
     {
         public const string ConfigPath = "Assets/_Project/Data/Extraction/Resources/DoorConfig.asset";
 
-        [MenuItem("Tools/Abandoned/Content/Create Door And Locker Config")]
+        [MenuItem(ToolMenu.Data + "Create Door and Locker Config", priority = ToolMenu.DataP + 4)]
         public static void CreateMissing()
         {
             PolishAssets.EnsureFolder("Assets/_Project/Data/Extraction/Resources");

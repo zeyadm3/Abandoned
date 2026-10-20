@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class IronFactoryLoot
     {
-        [MenuItem("Tools/Abandoned/Factory/Add Iron Factory Loot")]
+        [MenuItem(ToolMenu.Factory + "Add Iron Factory Loot", priority = ToolMenu.FactoryP + 20)]
         public static void Menu() => EnsureContent();
 
         public static void EnsureContent()

@@ -43,7 +43,8 @@ namespace Abandoned.Threats
 
         private void Update()
         {
-            if (!GameAuthority.IsHost || Time.time < nextTick) return;
+            // Training: the one visitor is steered by its lesson (RunTraining), never drifted or relocated.
+            if (!GameAuthority.IsHost || Time.time < nextTick || Tutorial.TutorialMode.Active) return;
             nextTick = Time.time + TickInterval;
             RunState run = RunState.Current;
             if (run == null || !run.IsSpawned || run.State.Phase != RunPhase.Running) return;

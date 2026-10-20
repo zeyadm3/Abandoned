@@ -50,7 +50,7 @@ namespace Abandoned.Tests
                 Assert.AreEqual(recorded, cue.HasClips, $"{id}: library clips expected exactly when the catalog marks it recorded or layered");
                 Assert.Greater(cue.MaxDistance, cue.MinDistance, $"{id}: distances");
             }
-            Assert.AreEqual(SoundCatalog.Revision, bank.Revision, "the bank was built for this catalog: run Tools/Abandoned/Audio/Build Sound Bank");
+            Assert.AreEqual(SoundCatalog.Revision, bank.Revision, "the bank was built for this catalog: run Tools/Abandoned/Content/Audio/Build Sound Bank");
         }
     }
 }

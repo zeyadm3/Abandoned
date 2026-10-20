@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
     /// <summary>Authors only the salvage release; testing and play review remain a separate user step.</summary>
     public static class SalvageMallAuthoring
     {
-        [MenuItem("Tools/Abandoned/Mall/Build Salvage Content (0.15.5)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.5 Build Salvage Content", priority = ToolMenu.MallP + 20)]
         public static void AuthorContent()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

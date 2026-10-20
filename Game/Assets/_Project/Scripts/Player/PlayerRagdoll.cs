@@ -290,7 +290,7 @@ namespace Abandoned.Player
                     continue;
                 Vector3 feet = new(probe.x, hit.point.y + 0.05f, probe.z);
                 Vector3 bottom = feet + Vector3.up * (radius + 0.05f), top = feet + Vector3.up * (height - radius);
-                if (!Physics.CheckCapsule(bottom, top, radius * 0.95f, ~(1 << Mathf.Max(0, GameLayers.PlayerLayer)),
+                if (!Physics.CheckCapsule(bottom, top, radius * 0.95f, floorMask,
                         QueryTriggerInteraction.Ignore))
                     return feet;
             }

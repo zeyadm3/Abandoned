@@ -17,6 +17,8 @@ namespace Abandoned.Extraction
         [Tooltip("Night jobs (M9.2): ambient and sun as a share of daylight, on top of the power.")]
         [SerializeField, Range(0f, 1f)] private float nightAmbientScale = 0.35f;
         [SerializeField, Range(0f, 1f)] private float nightSunScale = 0.06f;
+        [Tooltip("Power sectors for a level the horror pacing doesn't run in (the training house), so its breaker still relights its sector.")]
+        [OptionalReference, SerializeField] private HorrorConfig sectorsWithoutHorror;
 
         private readonly List<Light> lights = new();
         private readonly List<LightFixture> fixtures = new();
@@ -80,7 +82,7 @@ namespace Abandoned.Extraction
 
         private void ApplyBreakers(bool on, int breakers)
         {
-            HorrorConfig sectors = RunHorrorDirector.Current != null ? RunHorrorDirector.Current.Config : null;
+            HorrorConfig sectors = RunHorrorDirector.Current != null ? RunHorrorDirector.Current.Config : sectorsWithoutHorror;
             foreach (LightFixture f in fixtures)
                 if (f != null) f.SetPowered(on || (sectors != null && (breakers & (1 << sectors.SectorOf(f.transform.position))) != 0));
         }

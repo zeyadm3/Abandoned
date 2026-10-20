@@ -71,7 +71,7 @@ hinges close over the final two departure seconds and reopen when departure is c
 spots originate at the visible cab-front lenses and point forward. Original greybox fallback doors
 remain available for older truck scenes without authored hinges.
 
-**Tools > Abandoned > Mall > More Pickups and Collection Truck (0.15.7)** writes the content over the
+**Tools > Abandoned > Maps > Mall > Updates > 0.15.7 More Pickups and Collection Truck** writes the content over the
 saved scene, preserving its current mall density and stronger 0.15.6 threats. Batch entry:
 `Abandoned.EditorTools.SalvageRelease0157.AuthorAndBuildPlayersAndExit`. The full mall builder retains
 the new pickup pass and commercial truck art on future regeneration. Added markers do not alter

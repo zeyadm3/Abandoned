@@ -32,7 +32,7 @@ User requested: "keep building and improving the iron factory map and make it fe
   - Ambient cosmetic audio triggers for distant forged chain rattles in roof steel and low thermal expansion groans near the molten channel.
 - **Safety Decals (`IronFactoryDecals`):**
   - Yellow chevron warning borders along channel gaps, crane runway clearance aisle lines on dispatch floor, and runner scorch.
-No Unity rebuild, tests or verification run per user instruction. Rebuild with **Tools > Abandoned > Factory > Rebuild Iron Factory**.
+No Unity rebuild, tests or verification run per user instruction. Rebuild with **Tools > Abandoned > Maps > Iron Factory > Rebuild Iron Factory**.
 
 ## Island prison visual overhaul (2026-10-19; implementation only, untested)
 
@@ -47,7 +47,7 @@ repairs, prison-specific occlusion/camera handling, clearer noon/basement atmosp
 reflections and lit dust. Fixed tiled doorway skins, stair downstand beam, cart lids, shower headroom and several
 basement fittings. Details and application: `Docs/PRISON_VISUAL_POLISH.md`.
 **User explicitly requested no tests or verification.** No Unity rebuild, compile, audit, tests or review renders
-were run. Apply with **Tools > Abandoned > Prison > Rebuild Island Prison**; the saved scene has not been updated.
+were run. Apply with **Tools > Abandoned > Maps > Island Prison > Rebuild Island Prison**; the saved scene has not been updated.
 
 ## Island prison outside pass (2026-10-19; compiled outside Unity, not rebuilt or seen)
 
@@ -62,7 +62,7 @@ outdoor fog and the overcast sky. Details: Docs/ISLAND_PRISON_PLAN.md "Outside p
 The user's "build everything, don't test or verify" for the Alcatraz-style map with mall-level detail. It replaces
 the old greybox Prison (same scene, same location asset, contracts unchanged). Plan, answers and layout:
 `Docs/ISLAND_PRISON_PLAN.md`. Code: `Editor/Prison/` (24 files, one per area), menu
-**Tools > Abandoned > Prison > Rebuild Island Prison** (also `PrisonBuilder.Build()` / Create Prison).
+**Tools > Abandoned > Maps > Island Prison > Rebuild Island Prison** (also `PrisonBuilder.Build()` / Create Prison).
 - The island: a 12 m plateau with sheer cliffs, a quay and slip below its south face, the sea as a kill volume
   (`LavaVolume` gained its own death line: "Lost to the sea."), a switchback road that never falls, and a rusted cliff
   stair (three flights, collapsible) as the shortcut.
@@ -124,7 +124,7 @@ From the user's "look for bugs, dead code etc, keep going". Each fix was checked
   (68 on stairs) on the four levels: no new box stops anyone.
 
 **Audits back:** the 0.15.0 rebuild had dropped the mall's flight, invisible-collider, walk-through and
-reachability audits, so they hadn't run since. `Tools > Abandoned > Mall > Audit Saved Mall` and `Audit All Levels`
+reachability audits, so they hadn't run since. `Tools > Abandoned > Checks > Audit Saved Mall` and `Audit All Levels`
 (`Editor/Mall/MallAudit`, batch `MallAudit.RunAndExit`) run them, plus a stair-headroom sweep, without changing
 anything. All levels read 0, except the HQ gear rack: a thin panel collider over a rack with gaps. That is harmless,
 and the HQ is the user's hand-edited scene.
@@ -409,7 +409,7 @@ Door state is two host-written masks on `RunDoors` (RunState prefab, beside `Run
 host-written value on the player (`NetworkPlayer.Hiding.cs`), with the owner's machine moving its own
 player. Tunables: `Data/Extraction/Resources/DoorConfig`. Six synthesised sounds, none of them a creak.
 
-**To do in Unity:** let it compile, then **Tools > Abandoned > Mall > Add Doors and Lockers (0.16.0)**
+**To do in Unity:** let it compile, then **Tools > Abandoned > Maps > Mall > Updates > 0.16.0 Add Doors and Lockers**
 (batch: `Abandoned.EditorTools.MallRooms0160.AuthorAndExit`). It creates the config asset, adds `RunDoors`
 to the RunState prefab, adds the sound rows, places and saves; no bakes, no builds. Check the Console for
 lockers left out. `rebuild-horror` places them too. Written but not run: `Tests/EditMode/DoorTests` and
@@ -437,8 +437,8 @@ STAIRS and COLLECTION directions are fitted to their plaque bounds. Functional t
 display, pickup HUD, prompts, menus, pickups, threats and scene layout remain. Unity saved the scene
 and occlusion data after removing 115 decorative text objects (including old disabled captions),
 cleaning six library labels and fitting the remaining mounted exit sign. Mac (441 MB) and Windows
-(420 MB) players were built as 0.15.8b.EEA with one stamp. Menu: **Tools > Abandoned > Mall >
-Remove Decorative Text (0.15.8b)**. Batch: `MallBrandingRelease0158.DeclutterAndBuildPlayersAndExit`.
+(420 MB) players were built as 0.15.8b.EEA with one stamp. Menu: **Tools > Abandoned > Maps > Mall > Updates >
+0.15.8b Remove Decorative Text**. Batch: `MallBrandingRelease0158.DeclutterAndBuildPlayersAndExit`.
 No tests, verification or QA are run; the user reviews afterward. Details:
 `Docs/TEXT_DECLUTTER_0.15.8b.md`. The previous physical operational/truck-text retention policy
 is superseded; the generated advertisements are retained.
@@ -472,7 +472,7 @@ monitor uses a camera above the box. Existing pickup additions, mall density, st
 authoritative cargo and payout remain. The scene and its occlusion data were saved through Unity.
 Mac (421 MB) and Windows (400 MB) players were built as 0.15.7b.EEA with one shared stamp. No tests,
 gameplay runs, QA renders, optional signature inspection or verification were performed; the user
-reviews afterward. Menu: **Tools > Abandoned > Mall > Replace Collection Truck (0.15.7b)**.
+reviews afterward. Menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.7b Replace Collection Truck**.
 Details: `Docs/TRUCK_REDO_0.15.7b.md`. The truck portion of the 0.15.7 notes is superseded.
 
 ## 0.15.7.EEA: more pickable salvage and realistic collection truck (2026-10-10; user tests)
@@ -486,8 +486,8 @@ appropriate. Additional fitted stock pockets extend the saved mall and ordinary 
 The functional saved truck receives detailed original commercial art around its existing cargo,
 ramp, screen, ignition, ride zone and floodlight setup. Authored rear hinges close during departure
 and reopen on cancellation; headlights align with the front lenses. Both systems are retained by
-the full mall builder on regeneration. Menu: **Tools > Abandoned > Mall > More Pickups and Collection
-Truck (0.15.7)**. Batch: `Abandoned.EditorTools.SalvageRelease0157.AuthorAndBuildPlayersAndExit`.
+the full mall builder on regeneration. Menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.7 More Pickups and
+Collection Truck**. Batch: `Abandoned.EditorTools.SalvageRelease0157.AuthorAndBuildPlayersAndExit`.
 Details: `Docs/PICKUPS_AND_TRUCK_0.15.7.md`. User tests and verification remain pending.
 
 Saved through Unity: all 16 additional pickup definitions/prefabs and network registration,
@@ -507,7 +507,7 @@ and hearing queries. Host-authoritative contact damage and creature escape rules
 spawn warnings delay attacks while new monsters approach. Additive original prop families and more
 surrounding buildings extend the saved mall without replacing the approved layout or earlier density.
 
-Authoring menu: **Tools > Abandoned > Mall > Finish Threat and Content Update (0.15.6)**. Batch entry:
+Authoring menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.6 Finish Threat and Content Update**. Batch entry:
 `Abandoned.EditorTools.SalvageRelease0156.AuthorAndBuildPlayersAndExit`. The full mall builder retains
 the additions on regeneration. Content bakes and shareable Mac/Windows players are construction;
 tests and verification remain the user's responsibility. The running game is left intact and the
@@ -532,7 +532,7 @@ simple collision; surface stock and thin packing/drywall remnants avoid minor-de
 
 Additional art is combined into saved material/LOD meshes per supporting structural section. This keeps
 collapse behavior and avoids separate mesh draws for every packing fragment. The new authoring menu
-**Tools > Abandoned > Mall > Fill Salvage Mall (0.15.5b)** replaces only the additive layer in the saved
+**Tools > Abandoned > Maps > Mall > Updates > 0.15.5b Fill Salvage Mall** replaces only the additive layer in the saved
 scene, then authors navigation/culling. The full mall builder retains this density pass on regeneration.
 Batch entry: `Abandoned.EditorTools.SalvageMallDensity.AuthorAndBuildPlayersAndExit`. Saved through Unity:
 366 additional stock props and 1,165 packing/demolition details in 132 section render batches, updated
@@ -569,7 +569,7 @@ orange netting, ground-floor forklift tracks and routed cables. Remaining retail
 steady clearance lamps share the existing shadow-map budget. Amber battery guides, URP fog, bounded
 local dust and translucent beams provide atmosphere. Tune `SalvagePresentationConfig.asset`.
 
-Authoring menu: **Tools > Abandoned > Mall > Build Salvage Content (0.15.5)**. Batch entry point:
+Authoring menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.5 Build Salvage Content**. Batch entry point:
 `Abandoned.EditorTools.SalvageMallAuthoring.AuthorAndBuildPlayersAndExit`. This builds content plus Mac
 and Windows players without invoking the testing/audit wrappers or optional signature inspection.
 Saved through Unity: the 45-family asset library and generated prefabs/definitions, Mall scene with
@@ -605,7 +605,7 @@ The approved `MeridianWorldSurroundings` hierarchy is moved intact into the new 
 wooded foothills and mountain ranges are added outside the district, covering the ground edge and
 keeping a permanent horizon silhouette. The HQ and shared material tuning are retained.
 
-Authoring menu: **Tools > Abandoned > Mall > Rebuild Mall and Parking (0.15.0)**. This generates the
+Authoring menu: **Tools > Abandoned > Maps > Mall > Rebuild Mall and Parking**. This generates the
 new scene, navigation and culling data without tests, audits, screenshots or gameplay verification.
 Version remains 0.15.0.EEA. Scene, navigation, culling and dependent gameplay/generated assets were saved through an isolated Unity authoring copy and transferred back into the project; the existing Unity session stayed open. No tests or gameplay verification were run.
 
@@ -613,7 +613,7 @@ Version remains 0.15.0.EEA. Scene, navigation, culling and dependent gameplay/ge
 
 Each player spawn logged the warning for the Player prefab's `Voice` and `Radio` AudioSources: they were saved
 with Play On Awake on and no clip (the clip is made when someone first speaks). `PlayerVoiceBuilder` now builds
-them with it off, and **Tools > Abandoned > Fix > Silence Player Voice Sources** applies the same to the saved
+them with it off, and **Tools > Abandoned > Project > Fixes > Silence Player Voice Sources** applies the same to the saved
 prefab without regenerating it. No other prefab or scene has such a source. The fix also applies itself once,
 when the editor next reloads scripts outside Play mode (`PlayerVoiceBuilder.FixOnLoad`; it logs
 `[Voice] Player prefab: play on awake switched off on 2 voice source(s).` and then finds nothing to do).
@@ -635,7 +635,7 @@ The rename compiled in the user's editor and the two errors have not been logged
 
 ## Content validation: 19 light fixture failures (2026-10-09; user tests)
 
-**Tools > Abandoned > Validate Content** reported `LightFixture.panel is not assigned` on the HQ's 18 tubes and
+**Tools > Abandoned > Checks > Validate Content** reported `LightFixture.panel is not assigned` on the HQ's 18 tubes and
 hanging bulbs and `LightFixture.lamp is not assigned` on the mall's cinema marquee. Both are how the builders
 make them (the HQ fixtures glow through their own emissive parts; the marquee is glow only) and `LightFixture`
 handles either being empty, so the two fields are now `[OptionalReference]`. No scene was changed.
@@ -670,7 +670,7 @@ roof equipment and layered distant buildings. Estate streets, sidewalks, utility
 streetlights and tree belts connect the lots; broad ground and distant wooded berms cover the horizon.
 
 The authoring tool adds the door and surroundings to the existing HQ scene without regenerating the
-interior or rewriting existing materials. Menu: **Tools > Abandoned > HQ > Add Staff Door and Exterior**.
+interior or rewriting existing materials. Menu: **Tools > Abandoned > Maps > HQ > Add Staff Door and Exterior**.
 The dedicated authoring save completed on the existing HQ scene after correcting malformed metadata
 for the new editor assets. The interior was retained. No tests, audits, gameplay checks, screenshots
 or verification commands were run; the user will review the result.
@@ -693,7 +693,7 @@ papers, diagrams, pins and arrows remain. The industrial layout, equipment, clut
 The scale still opens its receipt/quota menu. Contract selection, field guide, gear menus and proximity
 interaction prompts keep their functional text. `HqWorldText.Remove` runs after dressing so subsequent
 rebuilds also omit physical lettering. Version is 0.14.5b.EEA. Authoring menu:
-**Tools > Abandoned > HQ > Rebuild Salvage Hub (0.14.5b)**. The dedicated HQ authoring save completed.
+**Tools > Abandoned > Maps > HQ > Rebuild Salvage Hub**. The dedicated HQ authoring save completed.
 No tests, audits, gameplay checks or verification commands were run; the user will assess the result.
 
 ## 0.14.5.EEA: company floor-plan replacement (2026-10-09; user tests)
@@ -735,7 +735,7 @@ HQ lighting uses dim cool tubes (two faulty) and steady warm hanging bulbs, with
 existing reduced-flashing and shadow budget behavior remains. The first-day guide and tips point at
 the new stations. Version: 0.14.5.EEA. Details: `Docs/HQ_HUB_0.14.5.md`.
 
-Authoring menu: **Tools > Abandoned > HQ > Rebuild Salvage Hub (0.14.5)**. Its generation path skips
+Authoring menu: **Tools > Abandoned > Maps > HQ > Rebuild Salvage Hub**. Its generation path skips
 collider audits. The dedicated HQ authoring command completed and saved the redesigned scene/assets.
 No tests, gameplay, network tests, screenshots or verification commands were run,
 as the user explicitly requested. User validation remains pending.
@@ -752,7 +752,7 @@ Three whole-game passes the user asked for in one go. It compiled clean in the u
 - The SoundBank is at catalog revision 2; AudioConfig and ShadowBudgetConfig assets exist.
 After the user's first listen ("everything sounds so loud"): `AudioConfig.BaseLevel` 0.5 under every bus.
 One loot spawn tile (ground floor, 4/2) is reserved so nothing spawns against the now-solid mall directory.
-Still to run by hand: Tools > Abandoned > Generate Loot Prefabs (Heavy/Huge loot collision mode).
+Still to run by hand: Tools > Abandoned > Content > Loot > Generate Loot Prefabs (Heavy/Huge loot collision mode).
 
 **Sound** (script-only until the rebuild; works on the old SoundBank asset too)
 - One catalog (`SoundId` 30 -> 90 entries, `SoundCatalog`), one player (`GameAudio` -> `AudioPool` voices and `SoundLoop`s),
@@ -772,7 +772,7 @@ Still to run by hand: Tools > Abandoned > Generate Loot Prefabs (Heavy/Huge loot
   carry-route lanes; a reachability check on the baked NavMesh. See the rebuild log for `[MallValidation]` lines:
   `solid objects: N made solid`, `left walk-through, it would ...` (each one listed), `walk-through objects: N problem(s)`,
   `reachability: N points checked, M cut off`.
-- Heavy/Huge loot: speculative continuous collision (needs Tools/Abandoned/Generate Loot Prefabs).
+- Heavy/Huge loot: speculative continuous collision (needs Tools/Abandoned/Content/Loot/Generate Loot Prefabs).
 
 **Shadows** (the director works at once; light layers and caster pass on rebuild)
 - `ShadowDirector`: nearest lit lights cast, 2 / 4 / 6 by the Shadows setting. `LevelStoreys`: no more ceiling light

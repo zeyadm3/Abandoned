@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         private static readonly Vector3 Size = new(0.9f, 0.6f, 0.1f);
         private const float Lift = 0.12f;
 
-        [MenuItem("Tools/Abandoned/Mall/Add Vents (0.16.4)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.4 Add Vents", priority = ToolMenu.MallP + 31)]
         public static void Author()
         {
             ReleaseKit.Config<VentConfig>(ReleaseKit.ExtractionResources, VentConfig.ResourcePath);

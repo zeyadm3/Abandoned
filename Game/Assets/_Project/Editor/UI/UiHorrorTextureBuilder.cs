@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
     {
         private const string Folder = "Assets/_Project/Art/UI";
 
-        [MenuItem("Tools/Abandoned/UI/Create Horror Textures")]
+        [MenuItem(ToolMenu.UI + "Create Horror Textures", priority = ToolMenu.UiP + 2)]
         public static void Create()
         {
             Write("HorrorPaper", 256, false);

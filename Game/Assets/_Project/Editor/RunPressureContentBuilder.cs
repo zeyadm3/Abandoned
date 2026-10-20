@@ -16,7 +16,7 @@ namespace Abandoned.EditorTools
         public const string DirectorPath = "Assets/_Project/Data/Threats/Resources/CrewDirectorConfig.asset";
         public const string DecayPath = "Assets/_Project/Data/Extraction/Resources/BuildingDecayConfig.asset";
 
-        [MenuItem("Tools/Abandoned/Content/Create Pacing And Decay Configs")]
+        [MenuItem(ToolMenu.Data + "Create Pacing and Decay Configs", priority = ToolMenu.DataP + 5)]
         public static void CreateMissing()
         {
             PolishAssets.EnsureFolder("Assets/_Project/Data/Threats/Resources");

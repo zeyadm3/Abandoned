@@ -23,7 +23,7 @@ namespace Abandoned.EditorTools
             config = AssetDatabase.LoadAssetAtPath<StructureConfig>(StructureContentBuilder.ConfigPath);
             visuals = AssetDatabase.LoadAssetAtPath<StructureVisualConfig>(StructureContentBuilder.VisualConfigPath);
             fracturedTile = AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath);
-            if (!IsValid) Debug.LogError("Structure content missing; run Tools/Abandoned/Create Structure Content.");
+            if (!IsValid) Debug.LogError("Structure content missing; run Tools/Abandoned/Content/Data/Create Structure Content.");
         }
 
         /// <param name="fractured">Tiles break into the pre-fractured tile; stairs pass false (no fracture prefab yet).</param>
@@ -56,7 +56,7 @@ namespace Abandoned.EditorTools
             SerializedWiring.Set(simulationObject.AddComponent<StructureDebugView>(), "simulation", simulation);
             SerializedWiring.Set(simulationObject.AddComponent<StructureDebugControls>(), "simulation", simulation);
             var syncPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(NetworkContentBuilder.StructureNetPrefabPath);
-            if (syncPrefab == null) Debug.LogError("StructureNet prefab missing; run Tools/Abandoned/Create Structure Net Prefab.");
+            if (syncPrefab == null) Debug.LogError("StructureNet prefab missing; run Tools/Abandoned/Content/Prefabs/Create Structure Net Prefab.");
             else simulationObject.AddComponent<StructureNetSpawner>().EditorSetup(syncPrefab.GetComponent<Unity.Netcode.NetworkObject>());
             return simulation;
         }

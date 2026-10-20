@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class IslandLoot
     {
-        [MenuItem("Tools/Abandoned/Prison/Add Island Prison Loot")]
+        [MenuItem(ToolMenu.Prison + "Add Island Prison Loot", priority = ToolMenu.PrisonP + 20)]
         public static void Menu() => EnsureContent();
 
         public static void EnsureContent()

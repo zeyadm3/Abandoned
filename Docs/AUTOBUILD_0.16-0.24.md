@@ -19,7 +19,7 @@ One breaker cabinet per horror power sector (6), on a bare wall inside the secto
 E throws it (host-checked, `RunBreakers` on RunState): that sector's ceiling lights come back for 120 s
 through danger blackouts and power-off contracts alike; the throw is heard 40 m away and the panel hums
 (noise 0.4 every 6 s) while lit, then 45 s cool-down. Tunables: Data/Extraction/Resources/BreakerConfig.
-Menu: Tools/Abandoned/Mall/Add Breaker Rooms (0.16.1).
+Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.1 Add Breaker Rooms.
 
 ## 0.16.2 seeded route changes
 Locked stores (RunShutters) and doors shut at the start (RunDoors) already differed per job. New: `RunRoutes`
@@ -41,7 +41,7 @@ NavMesh) unless the platform is parked there; a cage closes the ground level's o
 Switched off (not deleted) to make room: the planter, bin and bench in that tile, one industrial dumpster
 prop, and balustrade `Rail_1_4_7_(1, 0)`. Watch on the test: riding jitter for remote players (they follow
 their owner's NetworkTransform), and whether the upper landing step (0.15 m gap) feels right.
-Tunables: Data/Extraction/Resources/LiftConfig. Menu: Tools/Abandoned/Mall/Add Freight Lift (0.16.3).
+Tunables: Data/Extraction/Resources/LiftConfig. Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.3 Add Freight Lift.
 
 ## 0.16.4 vents
 Six ducts, each a pair of floor-level grilles (found by MallSites): Basement↔Titan Tools, Cinema↔Apex
@@ -51,7 +51,7 @@ Archive↔atrium. Crouch + E with nothing in your hands (pockets are fine) crawl
 follows them in (`Threat.HiddenFromMe`), whatever it saw. The duct is not modelled: the owner's player is
 parked 60 m under the exit for the crawl (black screen with a countdown), then stands at the far grille.
 Crawl time = grille distance / 1.4 m/s (at least 4 s). The duct rattles (noise 0.3 every 2 s at its middle).
-Tunables: Data/Extraction/Resources/VentConfig. Menu: Tools/Abandoned/Mall/Add Vents (0.16.4).
+Tunables: Data/Extraction/Resources/VentConfig. Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.4 Add Vents.
 
 ## 0.16.5 store alarms
 An alarm box on a wall inside each of the 8 stores, nearest its shopfront. `RunAlarms` (RunState) wires
@@ -59,7 +59,7 @@ each store with 35 % chance per job (by shutter index, seeded), arming 5 s into 
 player inside a wired store trips it once: an electric bell rings for 30 s (noise 1.0 every 2.5 s), the lamp
 flashes. Bolt cutters in a hand slot + E at the box disarm it, before or while it rings. Armed boxes blink
 red every 2 s; a disarmed or unwired box is dark. Tunables: Data/Extraction/Resources/AlarmConfig.
-Menu: Tools/Abandoned/Mall/Add Store Alarms (0.16.5).
+Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.5 Add Store Alarms.
 
 ## 0.16.6 vault drill
 The mall has no jewellery store (zone "Jewelry" is Nordic Habitat's furniture floor) and its ground-floor
@@ -68,7 +68,7 @@ z 14): a box-office safe. E sets a core drill on it: 90 s of drilling, noise 1.0
 40 % chance it jams until someone presses E again (`RunVault` on RunState). Through, the door swings open on
 4–6 of the most valuable one-hand items in the catalogue at 1.6× value, spawned by the host through the new
 `NetworkLootSpawner.SpawnExtra` (cleared with the rest at the next re-roll). Tunables:
-Data/Extraction/Resources/VaultConfig. Menu: Tools/Abandoned/Mall/Add Vault Safe (0.16.6).
+Data/Extraction/Resources/VaultConfig. Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.6 Add Vault Safe.
 
 ## 0.16.7 security office
 A monitor desk in the upper floor's closed offices and eight wall cameras (one per space where possible,
@@ -76,7 +76,7 @@ A monitor desk in the upper floor's closed offices and eight wall cameras (one p
 clock; A/D or click switches, E/jump/pause gets up. The viewer stands at the desk with controls off.
 Only the watched camera renders, only on the watcher's machine (640×360, no shadows or post); nothing is
 networked. Needs power in the desk's sector or its breaker. Labels are screen UI, not world text.
-Menu: Tools/Abandoned/Mall/Add Security Office (0.16.7).
+Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.7 Add Security Office.
 
 ## 0.17.0 sledgehammer
 New gear (catalog index after the battery; $3,000, company level 2; tool, never used up). Use swings at
@@ -84,14 +84,14 @@ what you aim at: 5,200 kg·m/s into a collapsible floor section (the crowbar is 
 0.9. A sound floor breaks in a few blows through its normal Cracking warning; protected routes and stairs
 can't collapse and say so. Gear added from here on: `EquipmentKind` appends, `PlayerEquipment.Tools.cs`
 (host uses), `ToolConfig` (Data/Equipment/Resources), `GearPrefabs` (prefabs gear spawns, registered with
-NGO by `RegisterNetworkPrefabs`), icons drawn by UiGearIconBuilder. Menu: Tools/Abandoned/Content/Sledgehammer (0.17.0).
+NGO by `RegisterNetworkPrefabs`), icons drawn by UiGearIconBuilder. Menu: Tools/Abandoned/Content/Features/0.17.0 Sledgehammer.
 
 ## 0.17.1 crash mat
 New gear ($1,800, level 3, single use): use lays a 2.2 × 2.2 m pad flat on the floor 1.6 m ahead (a host-
 spawned static network object that lasts the job). A soft zone 0.9 m deep above it (`Core.ImpactCushion`)
 keeps 12 % of the speed of any loot impact in it, so dropped loot survives, and cuts a player's fall height
 to 1.4 % (height goes with speed squared). Applied in `LootItem.ApplyImpact` and the host's landing damage.
-Prefab: Prefabs/Equipment/CrashMat (GearPrefabs). Menu: Tools/Abandoned/Content/Crash Mat (0.17.1).
+Prefab: Prefabs/Equipment/CrashMat (GearPrefabs). Menu: Tools/Abandoned/Content/Features/0.17.1 Crash Mat.
 
 ## 0.17.2 floor types
 `StructuralSection.FloorKind` (Concrete, Glass, Timber, Tile) scales its capacity and health
@@ -100,22 +100,22 @@ saved mall: the upper gallery's bridge is glass (drawn with the salvage glass ma
 is tile, the cinema and toy archive upstairs are timber; the rest stays concrete. Non-concrete floors give
 one warning of their own when they start Cracking (glass ticks and spiders, tiles pop, boards split) and
 fail with their own sound in place of the concrete snap. All are Structure-bus floor sounds that walls never
-hide; none is a creak. Menu: Tools/Abandoned/Mall/Set Floor Types (0.17.2).
+hide; none is a creak. Menu: Tools/Abandoned/Maps/Mall/Updates/0.17.2 Set Floor Types.
 
 ## 0.17.3 noisy ground
 24 patches (seeded, 6 m apart, on free floor found by MallSites): broken glass mostly in stores, puddles mostly
 in the food court and basement, loose tiles anywhere. Every machine plays a crunch / clack / splash per 0.9 m
 walked through a patch for any player (from synced positions); the host turns each step into monster noise
 (glass 0.55, tiles 0.4, puddle 0.3; crouching 15 % of that). Art is flat and walk-through, merged per patch,
-bound to its floor section. Tunables: Data/Extraction/Resources/GroundConfig. Menu: Tools/Abandoned/Mall/Add
-Noisy Ground (0.17.3).
+bound to its floor section. Tunables: Data/Extraction/Resources/GroundConfig. Menu: Tools/Abandoned/Maps/Mall/Updates/
+0.17.3 Add Noisy Ground.
 
 ## 0.17.4 aftershocks
 `RunAftershocks` (RunState): from 4 min into a job, every 4–7 min (seeded), an 8 s warning (a deep rumble
 twice, light flicker, the radio line "TREMOR / brace yourselves"), then the shock: a heavy thud and big camera
 shake for everyone, and 4–8 random collapsible sections lose 35 % health (never below 15 %) through
 `StructureSimulation.AgeRandomSections`, so they crack and warn but only weight brings them down.
-Tunables: Data/Extraction/Resources/AftershockConfig. Menu: Tools/Abandoned/Content/Aftershocks (0.17.4).
+Tunables: Data/Extraction/Resources/AftershockConfig. Menu: Tools/Abandoned/Content/Features/0.17.4 Aftershocks.
 
 ## 0.17.5 live water
 Three 3.4 m flooded areas in the basement (the low ground). Every flood and every 0.17.3 puddle is water,
@@ -123,7 +123,7 @@ and water is live while its power sector has power (`Extraction.SectorPower.Live
 the mains are on and the danger hasn't cut the sector; the lift and the security desk now use the same
 check). Live water buzzes and spits (heard by everyone nearby); standing in it zaps each 0.5 s and the
 host deals 22 HP/s ("Electrocuted in live water"). So a thrown breaker lights a sector and arms its water.
-Tunables: GroundConfig. Menu: Tools/Abandoned/Mall/Add Flooded Areas (0.17.5).
+Tunables: GroundConfig. Menu: Tools/Abandoned/Maps/Mall/Updates/0.17.5 Add Flooded Areas.
 (Changed in the 0.17.6 commit: only the flooded areas are live, not the small 0.17.3 puddles; with the mains
 on most jobs, live puddles everywhere would have made the whole building a hazard from the first second.)
 
@@ -133,14 +133,14 @@ raycasts it (3.5 m) and adds a dot to `RunChalk` (RunState; a NetworkList, newes
 Every machine draws all dots as one mesh of 11 cm quads in the sprayer's crew-seat colour (orange, green,
 blue, pink) with an unlit Particles material (Art/Greybox/ChalkMarks.mat), so marks read in the dark. A
 hiss plays as dots appear. Marks on a section that falls stay where they were (known gap).
-Menu: Tools/Abandoned/Content/Spray Chalk (0.17.6).
+Menu: Tools/Abandoned/Content/Features/0.17.6 Spray Chalk.
 
 ## 0.17.7 glow sticks and flares
 Two consumables: glow stick ($150, level 1: dim green point light, range 6 m, 10 min, silent) and flare ($350,
 level 2: red, range 14 m, 90 s, flickers, hisses, noise 0.2 every 3 s). Use throws one like the noise maker
 (host-simulated, NetworkTransform). No shadows, so the 0.14.0 shadow atlas is untouched; the light reaches
 every storey layer (`LevelStoreys.LightEverything`). Prefabs: Prefabs/Equipment/GlowStick, Flare (GearPrefabs).
-Menu: Tools/Abandoned/Content/Glow Sticks and Flares (0.17.7).
+Menu: Tools/Abandoned/Content/Features/0.17.7 Glow Sticks and Flares.
 
 ## 0.18.0 boss requests
 New money plumbing for all of 0.18: `RunState.Settling` (host, as the truck leaves, not for a wiped crew) lets
@@ -164,13 +164,13 @@ moving faster than 0.6 m/s (noise 0.25), leaks while carried (drips; the host dr
 second via `LootItem.Drain`), rings for 4 s at a seeded moment in most 75 s windows (computed from the item
 seed and server clock, so every machine agrees; noise 0.6), top-heavy (centre of mass raised to 35 % of its
 height, so it tips). 27 existing items given quirks (clocks/phones/radios ring, fridges/washers/bathtubs leak,
-tool chests/cartons rattle, lamps/statues/racks top-heavy). Menu: Tools/Abandoned/Content/Loot Quirks (0.18.2).
+tool chests/cartons rattle, lamps/statues/racks top-heavy). Menu: Tools/Abandoned/Content/Features/0.18.2 Loot Quirks.
 
 ## 0.18.3 loot sets
 `Loot.LootSet` assets (Data/Loot/Sets) listed in `LootSetCatalog` (Data/Loot/Resources): Home Office, Kitchen
 Counter, Gallery Wall, Jewellery Box, Living Room, Checkout Lane, $1,400–3,000 each. `RunSets` (RunState) pays
 each set with one whole item of every member aboard at departure, and the scan HUD shows the set closest to
-done in the bay ("SET: Kitchen Counter 2/4"). A new set is a new asset. Menu: Tools/Abandoned/Content/Loot Sets (0.18.3).
+done in the bay ("SET: Kitchen Counter 2/4"). A new set is a new asset. Menu: Tools/Abandoned/Content/Features/0.18.3 Loot Sets.
 
 ## 0.18.4 shopping carts
 The cart is loot data: `shopping_cart` (Utility: worth nothing, never planned; Heavy, 18 kg; `Wheeled`; Rattles
@@ -179,14 +179,14 @@ SharedCarryable). Its prefab (generated, then the box collider swapped for a bas
 stand) is host-simulated while dragged, as is anything resting in its basket, so small loot rides along and
 rattles; in the bay, what's in the basket counts like anything else there. `RunCarts` (RunState) stands one
 cart at each of 5 `CartBay` markers on the ground floor's concourse and food court 2 s into each job (through
-`NetworkLootSpawner.SpawnExtra`, so a re-roll clears them). Menu: Tools/Abandoned/Mall/Add Shopping Carts (0.18.4).
+`NetworkLootSpawner.SpawnExtra`, so a re-roll clears them). Menu: Tools/Abandoned/Maps/Mall/Updates/0.18.4 Add Shopping Carts.
 Watch on the test: whether loot stays in the basket at drag speed, and how the drag hold point feels.
 
 ## 0.18.5 moving blanket
 New consumable ($600, level 2): look at a loot item (2.6 m) and use. The host sets a new `NetworkLoot.Wrapped`
 flag (NetworkLoot.Blanket.cs); every machine drapes a quilt box over it and sets `LootItem.Cushion` to 0.4, so
 its impacts keep 40 % of their speed for the rest of the job (with a crash mat too, the two multiply).
-Menu: Tools/Abandoned/Content/Moving Blanket (0.18.5).
+Menu: Tools/Abandoned/Content/Features/0.18.5 Moving Blanket.
 
 ## 0.18.6 overtime
 `RunOvertime` (RunState): the server time the haul first meets quota is kept (toast "QUOTA MET... overtime");
@@ -201,7 +201,7 @@ At the HQ (added to the saved scene by `HqSites`, never regenerated): a lectern 
 `UI/LootCatalogueScreen`, in the field guide's style: found kinds with picture and price range, jackpots
 starred, the rest blank) and a three-board trophy shelf with 12 places that shows a small copy of every
 jackpot sold, best first (`Company.TrophyShelf`). New screens from here on live on `UI/ExtraScreens`, created
-at start-up (no session-prefab change). Menu: Tools/Abandoned/HQ/Add Loot Catalogue and Trophy Shelf (0.18.7).
+at start-up (no session-prefab change). Menu: Tools/Abandoned/Maps/HQ/Updates/0.18.7 Add Loot Catalogue and Trophy Shelf.
 
 ## 0.19.0 ping marker
 New Gameplay action `Ping` (middle mouse, rebindable) in AbandonedInput.inputactions, read by name in
@@ -215,7 +215,7 @@ An agency radio beside the truck's ignition (`HireRadio`). With a crewmate dead,
 `RunHires` (RunState) respawns the crewmate who has been dead longest in the truck bay (`ServerRespawn`), up
 to 3 hires a job, and adds a fee of max($1,200, 12 % of the haul at that moment). Fees come off the payout at
 departure as negative lines through `RunState.Settling` (CompanyLedger now takes a negative extra). Respawn,
-not join. Tunables: BonusConfig. Menu: Tools/Abandoned/Mall/Add Agency Radio (0.19.1).
+not join. Tunables: BonusConfig. Menu: Tools/Abandoned/Maps/Mall/Updates/0.19.1 Add Agency Radio.
 
 ## 0.19.2 ghost knock, flicker and nudge
 While spectating, a dead player's E knocks (a soft triple rap on wood, deliberately unlike the Stalker's
@@ -239,7 +239,7 @@ damage ×0.7/1/1.3 and the gap between arrivals ×1.4/1/0.75 (ThreatDirector). (
 scale now lives in `CompanyService.QuotaFor`, from the synced preset, so the board, the van, the depot, the
 job and a quit job's penalty all use the same number; RunDirector only scales decay. The preset survives a
 bankruptcy.)
-Menu: Tools/Abandoned/HQ/Add Difficulty Switch (0.19.4).
+Menu: Tools/Abandoned/Maps/HQ/Updates/0.19.4 Add Difficulty Switch.
 
 ## 0.19.5 emotes
 Three new rebindable Gameplay actions, EmotePoint / EmoteWave / EmotePanic on 3 / 4 / 5. The owner writes the
@@ -254,7 +254,7 @@ anything else. In the saved HQ's crew wing: a wall hoop (rim 3.05 m) whose net t
 through it, and a dartboard (bull 50, rings 25/15/10/5; a scoring dart sticks for 3 s) over a crate holding
 three darts. `Company.HqToys` (host) stands the toys at their places, puts back any that are gone every 5 s,
 and remembers who last held each; scores go to everyone as a toast with a jingle (`CompanyService.Toys`).
-Menu: Tools/Abandoned/HQ/Add Break-Room Toys (0.19.6).
+Menu: Tools/Abandoned/Maps/HQ/Updates/0.19.6 Add Break-Room Toys.
 
 ## 0.19.7 arachnophobia and streamer modes
 Settings > Accessibility: "Arachnophobia mode" (the Crawlers' renderers are hidden on this machine and six
@@ -332,7 +332,7 @@ at the cargo bay's open end; with the upgrade owned, E there hooks the nearest H
 30 m of the ramp's foot (not held, not already aboard). `RunWinch` (RunState) then reels it on the host at
 1.3 m/s, gravity off, first to the ramp's foot and then up into the bay; it lets go once aboard, if anyone grabs
 it, or after 5 s without progress. Everyone sees the cable (LineRenderer); the motor grinds (noise 0.5 a second).
-Menu: Tools/Abandoned/Mall/Add Truck Winch (0.20.3). Watch on the test: the reel's path round obstacles.
+Menu: Tools/Abandoned/Maps/Mall/Updates/0.20.3 Add Truck Winch. Watch on the test: the reel's path round obstacles.
 
 ## 0.20.4 thermal camera
 New tool ($12,000, level 5). Owner-local like night vision (`Equipment.ThermalCamera`, on ExtraScreens, so no
@@ -551,7 +551,7 @@ after editing the lines. Credited in Docs/ASSET_CREDITS.md (no third-party audio
 request sheet, clock, new hire, ping diamond...) in a stamped frame, hazard yellow on slate with a striped foot
 when achieved, grey when not. Files for Steam's partner site: Tools/Steam/AchievementIcons/<ACH_ID>.png and
 <ACH_ID>_locked.png. In game: Art/Generated/AchievementIcons as "achievement/<id>" icons, shown (greyed until
-earned) beside each achievement. Menu: Tools/Abandoned/Content/Achievement Icons (0.24.3).
+earned) beside each achievement. Menu: Tools/Abandoned/Content/Features/0.24.3 Achievement Icons.
 
 ## 0.24.4 store art and screenshots
 `Editor/Releases/Release0244` renders, from the saved mall in the editor (nothing saved back), into

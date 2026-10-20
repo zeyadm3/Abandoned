@@ -23,7 +23,7 @@ REPO = Path(__file__).resolve().parents[2]
 DESTINATION = REPO / "Game/Assets/_Project/Art/Audio/HQDispatch"
 RATE = 24000
 # The operators. The first keeps the original file names (dispatch_routine.wav); the others add _2, _3...
-# Adding one here also needs its clips in the sound bank: Tools > Abandoned > HQ > Author Dispatch Audio.
+# Adding one here also needs its clips in the sound bank: Tools > Abandoned > Maps > HQ > Author Dispatch Audio.
 VOICES, SPEED = ["af_heart", "af_bella", "bf_emma"], 0.92
 LINES = {
     "dispatch_routine": (

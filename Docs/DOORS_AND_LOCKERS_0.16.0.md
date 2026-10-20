@@ -6,7 +6,7 @@ scene has not been re-saved yet.** Run the menu item below once, then play.
 ## What to do in Unity
 
 1. Open the project and let it compile.
-2. **Tools > Abandoned > Mall > Add Doors and Lockers (0.16.0)**. It opens the Mall scene, creates
+2. **Tools > Abandoned > Maps > Mall > Updates > 0.16.0 Add Doors and Lockers**. It opens the Mall scene, creates
    `Data/Extraction/Resources/DoorConfig.asset`, adds `RunDoors` to the RunState prefab, adds the six new
    sound rows to the sound bank, places 10 doors and up to 27 lockers under `Mall/_ROOMS_0160`, and saves.
    It does not bake the NavMesh or occlusion (neither needs it) and makes no builds.

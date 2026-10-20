@@ -123,7 +123,7 @@ namespace Abandoned.Networking
                 GameObject prefab = catalog.PrefabFor(p.Definition);
                 if (prefab == null)
                 {
-                    Debug.LogError($"[Loot] No prefab for {p.Definition.Id} in the catalog (Tools/Abandoned/Generate Loot Prefabs).");
+                    Debug.LogError($"[Loot] No prefab for {p.Definition.Id} in the catalog (Tools/Abandoned/Content/Loot/Generate Loot Prefabs).");
                     continue;
                 }
                 Transform point = points[p.Point].transform;

@@ -6,7 +6,7 @@ namespace Abandoned.EditorTools
     /// <summary>0.16.2 seeded route changes: the tunables asset and RunRoutes on the RunState prefab. No scene changes.</summary>
     public static class Release0162
     {
-        [MenuItem("Tools/Abandoned/Content/Seeded Route Changes (0.16.2)")]
+        [MenuItem(ToolMenu.Features + "0.16.2 Seeded Route Changes", priority = ToolMenu.FeaturesP)]
         public static void Author()
         {
             ReleaseKit.Config<RouteConfig>(ReleaseKit.ExtractionResources, RouteConfig.ResourcePath);

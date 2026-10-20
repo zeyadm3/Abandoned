@@ -38,9 +38,10 @@ namespace Abandoned.Company
 
         /// <summary>
         /// Company rules (gear stock, the trolley for solo drags, radios, gear only at the HQ) apply to a game
-        /// that started at the HQ; a level hosted directly (dev, tests) plays without them.
+        /// that started at the HQ; a level hosted directly (dev, tests) plays without them, and so does the
+        /// training job (its kit crates hand out gear the company may not own).
         /// </summary>
-        public static bool RulesApply => Current != null && Current.IsSpawned && Current.companyGame.Value;
+        public static bool RulesApply => Current != null && Current.IsSpawned && Current.companyGame.Value && !Tutorial.TutorialMode.Active;
 
         private void Awake() => owned = new NetworkList<OwnedGear>();
 
@@ -152,6 +153,7 @@ namespace Abandoned.Company
             if (!IsServer || !IsSpawned) return;
             SyncCatalogue(); // 0.18.7: cheap when nothing changed
             SyncDifficulty(); // 0.19.4
+            TrainingHousekeeping();
             // The Steam lobby takes joiners only while everyone is at the HQ.
             bool home = SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel;
             if (lobby == null && Time.unscaledTime >= nextLobbyLookup)

@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
         // Tried in order until one fits: the stores are densely dressed.
         private static readonly Vector3[] Sizes = { new(1.3f, 1.7f, 1.0f), new(1.0f, 1.4f, 0.8f), new(0.85f, 1.2f, 0.7f) };
 
-        [MenuItem("Tools/Abandoned/Mall/Add Vault Safe (0.16.6)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.6 Add Vault Safe", priority = ToolMenu.MallP + 33)]
         public static void Author()
         {
             ReleaseKit.Config<VaultConfig>(ReleaseKit.ExtractionResources, VaultConfig.ResourcePath);

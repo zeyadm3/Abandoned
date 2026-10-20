@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
         private static Process exporter;
         private static bool refreshHeld;
 
-        [MenuItem("Tools/Abandoned/Characters/Generate and Apply Full Redesign")]
+        [MenuItem(ToolMenu.Characters + "Generate and Apply Full Redesign", priority = ToolMenu.CharactersP + 20)]
         public static void GenerateAndApply()
         {
             RequireEditMode();
@@ -65,7 +65,7 @@ namespace Abandoned.EditorTools
             }
         }
 
-        [MenuItem("Tools/Abandoned/Characters/Apply Redesign from Exported Models")]
+        [MenuItem(ToolMenu.Characters + "Apply Redesign from Exported Models", priority = ToolMenu.CharactersP + 21)]
         public static void ApplyExported()
         {
             RequireEditMode();

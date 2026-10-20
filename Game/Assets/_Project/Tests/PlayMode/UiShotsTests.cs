@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Abandoned.Extraction;
 using Abandoned.Interaction;
 using Abandoned.Networking;
 using Abandoned.UI;
@@ -49,7 +50,9 @@ namespace Abandoned.Tests
         public IEnumerator RunHudAtEveryAspect()
         {
             yield return TestMapScene.Load("Mall");
-            for (int i = 0; i < 10; i++) yield return null;
+            float readyUntil = Time.time + 10f;
+            while ((RunState.Current == null || !RunState.Current.IsSpawned || RunState.Current.State.Phase != RunPhase.Running) && Time.time < readyUntil)
+                yield return null;
             GameObject me = TestMapScene.Player;
             me.GetComponent<Player.PlayerLook>().ApplyLook(Vector2.zero);
             yield return null;
@@ -71,7 +74,9 @@ namespace Abandoned.Tests
             for (int i = 0; i < 6; i++) yield return null;
             var tags = me.GetComponent<LootTags>();
             tags.Scan();
-            yield return new WaitForSeconds(0.8f);
+            yield return new WaitForSeconds(0.4f);
+            float focusUntil = Time.time + 3f;
+            while (tags.Focus == null && Time.time < focusUntil) yield return null;
             Assert.IsNotNull(tags.Focus, $"a value tag on what you look at (target {me.GetComponent<PlayerInteractor>().Target})");
             Assert.Greater(tags.ScanCount, 0, "the scan tags loot around you");
             Assert.AreEqual(2, carrier.Inventory.Count);

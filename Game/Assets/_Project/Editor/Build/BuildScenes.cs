@@ -8,7 +8,8 @@ namespace Abandoned.EditorTools
     /// File > Build Profiles (the editor and tests load the TestMap from there); a player gets
     /// <see cref="ForPlayer"/>: the TestMap is a feature-testing map, not a level, so only dev builds
     /// (nettest) carry it. <see cref="SalvageScenes"/> is the set of contract destinations: keep it
-    /// separate from the HQ and test fixture so new locations cannot accidentally be omitted from a player.
+    /// separate from the HQ, the training house and the test fixture so new locations cannot accidentally be
+    /// omitted from a player.
     /// </summary>
     public static class BuildScenes
     {
@@ -29,6 +30,8 @@ namespace Abandoned.EditorTools
             SchoolBuilder.ScenePath,
             FactoryBuilder.ScenePath,
             PrisonBuilder.ScenePath,
+            // The training job (14 Larch Court): ships in every build, but is never a contract destination.
+            TutorialHouseLayout.ScenePath,
             TestMapBuilder.ScenePath,
         };
 

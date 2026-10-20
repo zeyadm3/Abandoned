@@ -53,7 +53,7 @@ namespace Abandoned.EditorTools
             ("corner_sofa", "loungeSofaCorner", 0f),
         };
 
-        [MenuItem("Tools/Abandoned/Art/Assign Loot Models")]
+        [MenuItem(ToolMenu.Loot + "Assign Loot Models", priority = ToolMenu.LootP + 2)]
         public static void AssignMissing()
         {
             foreach ((string id, string modelName, float yaw) in Models)

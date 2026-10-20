@@ -39,7 +39,7 @@ namespace Abandoned.EditorTools
                 Players = new[] { BuildTarget.StandaloneLinux64 } },
         };
 
-        [MenuItem("Tools/Abandoned/Fix/Apply Steam Plugin Settings")]
+        [MenuItem(ToolMenu.Fixes + "Apply Steam Plugin Settings", priority = ToolMenu.ProjectP + 20)]
         public static void Apply()
         {
             foreach (Rule rule in Rules)

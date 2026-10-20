@@ -44,9 +44,12 @@ namespace Abandoned.Core
 
         public static bool IsUnlocked(AchievementDefinition a) => a != null && Prefs.GetInt(UnlockPrefix + a.Id, 0) == 1;
 
+        /// <summary>While set, nothing counts toward stats or unlocks (the training job: a practice house is not a career).</summary>
+        public static bool Suspended { get; set; }
+
         public static void Increment(string stat, long by = 1)
         {
-            if (by <= 0) return;
+            if (by <= 0 || Suspended) return;
             Prefs.SetString(StatPrefix + stat, (Stat(stat) + by).ToString());
             Check(stat);
             Prefs.Save();

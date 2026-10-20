@@ -24,7 +24,7 @@ Project-level decisions live in CLAUDE.md's decisions log; these are the smaller
 - HUD is OnGUI placeholder (`InteractionHud`) until the UI milestone.
 
 - Loot: 13 GDD examples as `Data/Loot/Loot_<id>.asset` (catalog builder never overwrites tuning);
-  prefabs generated into `Prefabs/Loot/` (Tools/Abandoned/Generate Loot Prefabs or right-click a
+  prefabs generated into `Prefabs/Loot/` (Tools/Abandoned/Content/Loot/Generate Loot Prefabs or right-click a
   definition > Generate Prefab). Value = seeded roll (`LootMath`), damage = speed along the contact
   normal vs `LootDamageConfig` profile per fragility. Host-only damage via `GameAuthority.IsHost`;
   `LootItem.ApplyImpact` is public so M3 can apply client-reported impacts for carrier-owned physics.

@@ -50,6 +50,7 @@ namespace Abandoned.EditorTools
             SchoolBuilder.Build();
             FactoryBuilder.Build();
             PrisonBuilder.Build();
+            TutorialHouseBuilder.Build();
             HqBuilder.Build();
             GeneratedMaterialRepair.Rebuild();
             // Last: it opens its own empty scene to render in. Then the icon registry picks the new ones up.
@@ -83,7 +84,7 @@ namespace Abandoned.EditorTools
             UiHorrorTextureBuilder.Create(); UiContentBuilder.CreateMissing(); MenuEffectsBuilder.Create();
             MaterialAudit.RemapThirdPartyMaterials(); // before the scenes so their models already use URP copies
             GarageDoorBuilder.Create();
-            MallBuilder.Build(); SchoolBuilder.Build(); FactoryBuilder.Build(); PrisonBuilder.Build(); HqBuilder.Build();
+            MallBuilder.Build(); SchoolBuilder.Build(); FactoryBuilder.Build(); PrisonBuilder.Build(); TutorialHouseBuilder.Build(); HqBuilder.Build();
             GeneratedMaterialRepair.Rebuild(); BuildScenes.ApplyToEditorSettings();
             int materialProblems=MaterialAudit.Run(); // reads both saved scenes and all prefab materials
             AssetDatabase.SaveAssets(); return materialProblems==0;
@@ -98,6 +99,22 @@ namespace Abandoned.EditorTools
         public static void BuildSoundBank() => RunAndExit(() =>
         {
             SoundBankBuilder.CreateMissing();
+            return true;
+        });
+
+        /// <summary>The training house and its lessons only (Tools/unity.sh exec Abandoned.EditorTools.BatchCommands.RebuildTutorial).</summary>
+        public static void RebuildTutorial() => RunAndExit(() =>
+        {
+            NetworkContentBuilder.CreateRunStatePrefab();
+            TutorialHouseBuilder.Build();
+            TutorialHqClipboard.AddToSavedHq();
+            BuildScenes.ApplyToEditorSettings();
+            return true;
+        });
+
+        public static void RebuildSchool() => RunAndExit(() =>
+        {
+            BurleySchoolBuilder.Build();
             return true;
         });
 

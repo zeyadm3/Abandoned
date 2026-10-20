@@ -69,7 +69,7 @@ namespace Abandoned.EditorTools
                 SceneRequirements[path] = SalvageSceneRequirements;
         }
 
-        [MenuItem("Tools/Abandoned/Validate Content")]
+        [MenuItem(ToolMenu.Checks + "Validate Content", priority = ToolMenu.ChecksP + 1)]
         public static void RunFromMenu()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -174,11 +174,11 @@ namespace Abandoned.EditorTools
         private static void ValidateCatalog(List<string> errors)
         {
             var catalog = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootCatalog>(LootCatalogBuilder.CatalogPath);
-            if (catalog == null) { errors.Add($"{LootCatalogBuilder.CatalogPath} missing (Tools/Abandoned/Generate Loot Prefabs)."); return; }
+            if (catalog == null) { errors.Add($"{LootCatalogBuilder.CatalogPath} missing (Tools/Abandoned/Content/Loot/Generate Loot Prefabs)."); return; }
             foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
             {
                 var d = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
-                if (d != null && catalog.PrefabFor(d) == null) errors.Add($"{d.name}: not in the loot catalog (Tools/Abandoned/Generate Loot Prefabs).");
+                if (d != null && catalog.PrefabFor(d) == null) errors.Add($"{d.name}: not in the loot catalog (Tools/Abandoned/Content/Loot/Generate Loot Prefabs).");
             }
         }
 

@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     public static class MeridianMallOverhaul
     {
-        [MenuItem("Tools/Abandoned/Mall/Rebuild Mall and Parking (0.15.0)")]
+        [MenuItem(ToolMenu.Mall + "Rebuild Mall and Parking", priority = ToolMenu.MallP)]
         public static void Author()
         {
             // Shared asset tuning belongs to the HQ and approved neighbourhood too. Rebuild scene content.

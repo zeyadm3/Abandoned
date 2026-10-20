@@ -6,7 +6,7 @@ The saved Prison scene therefore still needs the rebuild below before these chan
 
 ## Apply in Unity
 
-In Edit mode, choose **Tools > Abandoned > Prison > Rebuild Island Prison**. The existing builder generates the
+In Edit mode, choose **Tools > Abandoned > Maps > Island Prison > Rebuild Island Prison**. The existing builder generates the
 scene, material/mesh assets, structural sections, navigation and occlusion data. Save the scene when finished.
 The audit/render menu is separate and was not invoked.
 

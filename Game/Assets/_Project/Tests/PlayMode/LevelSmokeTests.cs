@@ -50,6 +50,7 @@ namespace Abandoned.Tests
         [UnityTest, Timeout(600000)] public IEnumerator School() => Level("School");
         [UnityTest, Timeout(600000)] public IEnumerator Factory() => Level("Factory");
         [UnityTest, Timeout(600000)] public IEnumerator Prison() => Level("Prison");
+        [UnityTest, Timeout(600000)] public IEnumerator Tutorial() => Level("Tutorial");
 
         [UnityTest, Timeout(600000)]
         public IEnumerator HQ()

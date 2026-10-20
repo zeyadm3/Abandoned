@@ -21,7 +21,7 @@ namespace Abandoned.EditorTools
             return baked;
         }
 
-        [MenuItem("Tools/Abandoned/Art/Bake Occlusion (open scene)")]
+        [MenuItem(ToolMenu.Art + "Bake Occlusion (open scene)", priority = ToolMenu.ArtP + 1)]
         private static void BakeOpenScene() => Debug.Log($"[Occlusion] {(Bake() ? "baked" : "failed")}.");
     }
 }

@@ -23,7 +23,7 @@ namespace Abandoned.EditorTools
         private const int Width = 1600, Height = 900;
         private static string Folder => System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../Docs/renders/island"));
 
-        [MenuItem("Tools/Abandoned/Prison/Audit and Render Island Prison")]
+        [MenuItem(ToolMenu.Checks + "Audit and Render Island Prison", priority = ToolMenu.ChecksP + 22)]
         public static void Menu() => Report(false);
 
         public static void BuildAndReport()

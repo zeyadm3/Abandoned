@@ -49,7 +49,7 @@ namespace Abandoned.EditorTools
                 new Release0244.Shot("e", default, default, false, 0, (Crew, new Vector3(35.2f, 0f, -6.5f), 180f), (Crew, new Vector3(36.6f, 0f, -6.7f), 180f)))),
         };
 
-        [MenuItem("Tools/Abandoned/Store/Render Draft Trailer (0.24.5)")]
+        [MenuItem(ToolMenu.Store + "Render Draft Trailer", priority = ToolMenu.StoreP + 21)]
         public static void Author()
         {
             string root = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Docs/StoreArt"));

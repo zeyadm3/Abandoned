@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
     /// <summary>Replaces only the saved collection truck and ships the revised commercial vehicle.</summary>
     public static class CollectionTruckRedoRelease
     {
-        [MenuItem("Tools/Abandoned/Mall/Replace Collection Truck (0.15.7b)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.7b Replace Collection Truck", priority = ToolMenu.MallP + 24)]
         public static void AuthorContent()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

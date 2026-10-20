@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
     {
         public const string PrefabPath = ReleaseKit.GearPrefabFolder + "/Floodlight.prefab";
 
-        [MenuItem("Tools/Abandoned/Content/Portable Floodlight (0.20.0)")]
+        [MenuItem(ToolMenu.Features + "0.20.0 Portable Floodlight", priority = ToolMenu.FeaturesP + 15)]
         public static void Author()
         {
             ReleaseKit.RegisterGear(EquipmentKind.Floodlight, Prefab());

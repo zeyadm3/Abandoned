@@ -35,7 +35,8 @@ namespace Abandoned.Extraction
 
         private void Update()
         {
-            if (!IsServer || rolled || rollAt < 0f || Time.time < rollAt) return;
+            // Training: the house's floors only fall when a lesson says so.
+            if (!IsServer || rolled || rollAt < 0f || Time.time < rollAt || Tutorial.TutorialMode.Active) return;
             RunState run = GetComponent<RunState>();
             StructureSimulation structure = BuildingDecay.Current != null ? BuildingDecay.Current.Structure : null;
             if (run == null || structure == null || run.State.Phase != RunPhase.Running) return;

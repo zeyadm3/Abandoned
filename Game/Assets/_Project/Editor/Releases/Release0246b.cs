@@ -6,7 +6,7 @@ namespace Abandoned.EditorTools
     /// <summary>Application logo release: Apple's native appearances and Windows' light artwork.</summary>
     public static class Release0246b
     {
-        [MenuItem("Tools/Abandoned/Branding/Install Application Logo (0.24.6b)")]
+        [MenuItem(ToolMenu.Store + "Install Application Logo", priority = ToolMenu.StoreP)]
         public static void Author()
         {
             AssetDatabase.Refresh();

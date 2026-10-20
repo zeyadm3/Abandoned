@@ -48,7 +48,7 @@ breakdown remains applicable. Both shareable players are saved as **0.15.7b.EEA*
 Mac **421 MB** and Windows **400 MB** before compression. This document records authored changes
 and is not a gameplay or QA report.
 
-Reauthoring menu: **Tools > Abandoned > Mall > Replace Collection Truck (0.15.7b)**.
+Reauthoring menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.7b Replace Collection Truck**.
 Batch entry: `Abandoned.EditorTools.CollectionTruckRedoRelease.AuthorAndBuildPlayersAndExit`.
 The scene's occlusion data was authored again; interior navigation was retained because the truck
 is excluded from the mall's navigation geometry.

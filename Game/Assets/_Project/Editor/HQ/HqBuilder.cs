@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
     {
         public const string ScenePath = "Assets/_Project/Scenes/HQ.unity";
 
-        [MenuItem("Tools/Abandoned/Create HQ")]
+        [MenuItem(ToolMenu.Hq + "Rebuild Salvage Hub and Run Audits", priority = ToolMenu.HqP + 1)]
         public static void Create()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
         public static void Build()
             => BuildScene(runAudits: true);
 
-        [MenuItem("Tools/Abandoned/HQ/Rebuild Salvage Hub (0.14.5b)")]
+        [MenuItem(ToolMenu.Hq + "Rebuild Salvage Hub", priority = ToolMenu.HqP)]
         public static void RebuildSalvageHub()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;

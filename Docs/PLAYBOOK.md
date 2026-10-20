@@ -94,6 +94,9 @@ crack under weight and impacts, and collapse. Full design: Docs/GDD.md.
 - For new systems, explain the plan first (files, classes, data, networking).
 - After changes, give me numbered Unity Editor steps. If it's more than ~5 clicks,
   write an Editor script with a menu item under Tools/Abandoned/... instead.
+- **Before adding, moving or renaming anything in the Tools menu, read Docs/TOOL_MENU.md** and put the item
+  where it says, using the path and priority constants in Editor/ToolMenu.cs (never a raw "Tools/Abandoned/..."
+  string). Update Docs/TOOL_MENU.md in the same change. A new map also gets a line in Editor/RebuildAllMaps.cs.
 - Never edit Library/, Temp/, Logs/, obj/, or Packages/ (except manifest.json when I ask).
 - Never hand-edit .unity or .prefab YAML unless I ask; use Editor scripts.
 - Don't delete or rename files outside the current task without asking.

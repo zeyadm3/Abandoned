@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     public static class MallArtworkOrientation0158c
     {
-        [MenuItem("Tools/Abandoned/Mall/Fix Artwork Orientation (0.15.8c)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.8c Fix Artwork Orientation", priority = ToolMenu.MallP + 27)]
         public static void Author()
         {
             var scene = EditorSceneManager.OpenScene(MallBuilder.ScenePath, OpenSceneMode.Single);

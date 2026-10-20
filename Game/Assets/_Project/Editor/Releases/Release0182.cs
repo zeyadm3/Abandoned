@@ -39,7 +39,7 @@ namespace Abandoned.EditorTools
             ["vending_machine"] = LootQuirk.TopHeavy,
         };
 
-        [MenuItem("Tools/Abandoned/Content/Loot Quirks (0.18.2)")]
+        [MenuItem(ToolMenu.Features + "0.18.2 Loot Quirks", priority = ToolMenu.FeaturesP + 8)]
         public static void Author()
         {
             int n = 0;

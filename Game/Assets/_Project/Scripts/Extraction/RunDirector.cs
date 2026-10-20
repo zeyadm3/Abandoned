@@ -122,8 +122,15 @@ namespace Abandoned.Extraction
                         m != null && m.Night, m != null && m.Storm, m != null ? m.ExtraThreats : 0, m != null ? m.HearingMultiplier : 1f,
                         (m != null ? m.DecayMultiplier : 1f) * difficulty.Decay, cargo, honk, armored, m != null && m.Sealed, contract.ThreatLevel, company.State.Runs == 0);
                 }
+                else if (Tutorial.TutorialMode.Active)
+                {
+                    // The training job: its own small quota (nothing is owed), the power off, the lowest threat level.
+                    Tutorial.TutorialConfig training = Tutorial.TutorialConfig.Current;
+                    RunState.TermsSource = () => new RunState.RunTerms(training.Quota, training.WindowSeconds, 0f, training.PowerOff, threatLevel: 0);
+                }
                 else RunState.TermsSource = null;
-                BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
+                int trainingSeed = Tutorial.TutorialMode.Active ? Tutorial.TutorialConfig.Current.Seed : 0;
+                BeginRun(ForcedSeed != 0 ? ForcedSeed : contract.IsValid ? contract.Seed : trainingSeed != 0 ? trainingSeed : firstRunSeed != 0 ? firstRunSeed : NewSeed(), respawnPlayers: false);
             }
             RunState.SeedSource = () => lootSpawner != null ? lootSpawner.Seed : 0;
             RunState.RunStatsSource = stats.Lines;

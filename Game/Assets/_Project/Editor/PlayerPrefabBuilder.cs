@@ -26,7 +26,7 @@ namespace Abandoned.EditorTools
         private const float FieldOfView = Abandoned.Core.GameSettings.DefaultFov; // the player's setting replaces it at runtime
         private const float NearClip = 0.05f;
 
-        [MenuItem("Tools/Abandoned/Create Player Prefab")]
+        [MenuItem(ToolMenu.Prefabs + "Create Player Prefab", priority = ToolMenu.PrefabsP + 2)]
         public static void Create()
         {
             HealthContentBuilder.Create();

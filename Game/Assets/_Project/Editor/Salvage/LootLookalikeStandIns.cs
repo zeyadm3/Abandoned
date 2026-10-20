@@ -87,7 +87,7 @@ namespace Abandoned.EditorTools
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(SalvageAssetBuilder.DressingPath(fixture));
             if (prefab == null)
-                throw new InvalidOperationException($"Fixture '{fixture}' is not authored yet; run Tools > Abandoned > Mall > Replace Loot Look-alikes (0.24.9).");
+                throw new InvalidOperationException($"Fixture '{fixture}' is not authored yet; run Tools > Abandoned > Maps > Mall > Updates > 0.24.9 Replace Loot Look-alikes.");
             var item = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
             // Unpacked like the density layer's own props: a prefab instance's colliders can't be swapped out.
             PrefabUtility.UnpackPrefabInstance(item, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);

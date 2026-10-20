@@ -33,7 +33,7 @@ namespace Abandoned.Networking
             HidingLocker locker = HidingLocker.All.OrderBy(l => l.Index).FirstOrDefault();
             if (door == null || locker == null)
             {
-                ctx.Abort($"the mall has {SlidingDoor.All.Count} doors and {HidingLocker.All.Count} lockers: run Tools/Abandoned/Mall/Add Doors and Lockers (0.16.0)");
+                ctx.Abort($"the mall has {SlidingDoor.All.Count} doors and {HidingLocker.All.Count} lockers: run Tools/Abandoned/Maps/Mall/Updates/0.16.0 Add Doors and Lockers");
                 yield break;
             }
             ctx.Note($"{SlidingDoor.All.Count} doors, {HidingLocker.All.Count} lockers; shut at the start: {doors.ShutMask}");

@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
     {
         public const string Folder = "Assets/_Project/Art/Audio/HQDispatch";
 
-        [MenuItem("Tools/Abandoned/HQ/Author Dispatch Audio (0.14.5)")]
+        [MenuItem(ToolMenu.Hq + "Author Dispatch Audio", priority = ToolMenu.HqP + 21)]
         public static void Build()
         {
             SoundBank bank = AssetDatabase.LoadAssetAtPath<SoundBank>(SoundBankBuilder.BankPath);

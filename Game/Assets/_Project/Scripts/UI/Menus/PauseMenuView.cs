@@ -24,6 +24,7 @@ namespace Abandoned.UI
         private readonly Button invite, leave;
         private readonly Dictionary<ulong, Row> rows = new();
         private readonly VisualElement hostRules;
+        private readonly Tutorial.TutorialPauseControls training;
         private Company.CompanyService rulesFor;
         private string shownCrew;
 
@@ -44,6 +45,7 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--dim");
             Root.AddToClassList("pause");
             ScrollView content = MenuKit.Scroll(Root, "pause__scroll");
+            content.contentContainer.AddToClassList("pause__content");
             content.style.width = Length.Percent(100f);
             content.style.height = Length.Percent(100f);
             var columns = new VisualElement();
@@ -57,6 +59,7 @@ namespace Abandoned.UI
             MenuKit.Text(left, Loc.T("PAUSED"), "title");
             MenuKit.Text(left, Loc.T("The game keeps running. The building does not wait."), "subtitle").AddToClassList("pause__warning");
             MenuKit.Button(left, Loc.T("Resume"), menu.Resume, SoundId.UiConfirm).AddToClassList("pause__resume");
+            training = new Tutorial.TutorialPauseControls(left, menu);
             MenuKit.Button(left, Loc.T("Settings"), () => menu.Push(MenuScreen.Settings));
             MenuKit.Button(left, Loc.T("How to play"), () => menu.Push(MenuScreen.HowToPlay));
             MenuKit.Button(left, Loc.T("Achievements"), () => menu.Push(MenuScreen.Achievements));
@@ -144,6 +147,7 @@ namespace Abandoned.UI
                     if (p != null && p.IsSpawned) rows[p.OwnerClientId] = Build(p, isHost);
             }
             BuildHostRules(isHost);
+            training.Refresh();
             int count = 0;
             foreach (NetworkPlayer p in NetworkPlayer.All)
             {

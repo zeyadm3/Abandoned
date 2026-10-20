@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         private static readonly Vector3 Size = new(0.7f, 0.9f, 0.28f);
         private const float Lift = 1.0f;
 
-        [MenuItem("Tools/Abandoned/Mall/Add Breaker Rooms (0.16.1)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.1 Add Breaker Rooms", priority = ToolMenu.MallP + 29)]
         public static void Author()
         {
             ReleaseKit.Config<BreakerConfig>(ReleaseKit.ExtractionResources, BreakerConfig.ResourcePath);

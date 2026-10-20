@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class ArtPreview
     {
-        [MenuItem("Tools/Abandoned/Art/Loot Lineup (unsaved scene)")]
+        [MenuItem(ToolMenu.Art + "Loot Lineup (unsaved scene)", priority = ToolMenu.ArtP + 40)]
         public static void OpenLootLineup() => BuildLootLineup();
 
         /// <summary>Every hat on a player-sized capsule in a row (unsaved scene); returns the row's width.</summary>

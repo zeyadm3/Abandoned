@@ -17,7 +17,8 @@ SHEETS = os.path.join(PROJECT, "Data", "Text", "Resources", "Text")
 LANGUAGES = ["zh-CN", "ja", "ko", "es", "pt-BR", "de", "fr", "ru", "pl"]
 PLURAL_FORMS = {"en": 2, "zh-CN": 1, "ja": 1, "ko": 1, "es": 2, "pt-BR": 2, "de": 2, "fr": 2, "ru": 3, "pl": 3}
 # Text fields of content assets (ScriptableObjects under Data/) that screens show through Loc.
-ASSET_FIELDS = ["DisplayName", "Description", "CrushedLine"]
+# The training lessons (Data/Tutorial/Steps) add their chapter heading, crew wording and dispatcher line.
+ASSET_FIELDS = ["DisplayName", "Description", "CrushedLine", "ChapterName", "CrewDescription", "RadioLine"]
 # ...and lists of lines (the boss's voicemails and board quips in CompanyMessages).
 ASSET_LIST_FIELDS = ["Welcome", "QuotaMet", "BigHaul", "QuotaMissed", "LastWarning", "Bankrupt", "LevelUp", "BoardQuips"]
 SKIP_DIRS = ("/NetTest/",)

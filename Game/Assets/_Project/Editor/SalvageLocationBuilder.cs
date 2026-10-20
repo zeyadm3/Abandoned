@@ -684,7 +684,6 @@ namespace Abandoned.EditorTools
     public static class SchoolBuilder
     {
         public const string ScenePath = "Assets/_Project/Scenes/School.unity";
-        [MenuItem("Tools/Abandoned/Create School")]
         public static void Create() => BurleySchoolBuilder.Build();
         public static void Build() => BurleySchoolBuilder.Build();
     }

@@ -32,7 +32,7 @@ namespace Abandoned.EditorTools
         /// </summary>
         public const string SteamAppIdFile = "steam_appid.txt";
 
-        [MenuItem("Tools/Abandoned/Create Network Content")]
+        [MenuItem(ToolMenu.Prefabs + "Create Network Content", priority = ToolMenu.PrefabsP)]
         public static void CreateMissing()
         {
             var config = LoadOrCreateAsset<NetworkConfig>(ConfigPath);
@@ -45,7 +45,7 @@ namespace Abandoned.EditorTools
         /// The level's one structure sync object (host-spawned by StructureNetSpawner). Only created when
         /// missing or incomplete, so rebuilds don't churn its file (and its GUID/NGO hash never change).
         /// </summary>
-        [MenuItem("Tools/Abandoned/Create Structure Net Prefab")]
+        [MenuItem(ToolMenu.Prefabs + "Create Structure Net Prefab", priority = ToolMenu.PrefabsP + 1)]
         public static GameObject CreateStructureNetPrefab()
         {
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(StructureNetPrefabPath);
@@ -105,6 +105,7 @@ namespace Abandoned.EditorTools
             typeof(Abandoned.Extraction.RunGhosts),     // 0.19.2
             typeof(Abandoned.Extraction.RunWinch),      // 0.20.3
             typeof(Abandoned.Extraction.RunCab),        // 0.21.4
+            typeof(Abandoned.Tutorial.RunTraining),     // the training job (inert in every other level)
             // @@runstate
         };
 

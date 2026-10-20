@@ -23,7 +23,7 @@ namespace Abandoned.EditorTools
         private static readonly string[] Added = { "NotoSansSC-Medium", "NotoSansJP-Medium", "NotoSansKR-Medium" };
         private static readonly string[] Retired = { "NotoSansSC", "NotoSansKR" };
 
-        [MenuItem("Tools/Abandoned/UI/Language Fonts (0.24.8)")]
+        [MenuItem(ToolMenu.UI + "Language Fonts (0.24.8)", priority = ToolMenu.UiP + 21)]
         public static void Author()
         {
             PolishAssets.EnsureFolder(AssetFolder);

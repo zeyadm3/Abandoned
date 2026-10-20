@@ -5,7 +5,7 @@ namespace Abandoned.Extraction
     /// <summary>
     /// Sliding doors and hiding lockers (0.16.0): how doors move and sound, how many start a job shut, how
     /// long the Hunter needs to break one down, and the rules for climbing into a locker.
-    /// Lives at Data/Extraction/Resources/DoorConfig (Tools/Abandoned/Content/Create Door And Locker Config
+    /// Lives at Data/Extraction/Resources/DoorConfig (Tools/Abandoned/Content/Data/Create Door and Locker Config
     /// makes it); the defaults below apply until that asset exists.
     /// </summary>
     [CreateAssetMenu(menuName = "Abandoned/Extraction/Door And Locker Config", fileName = "DoorConfig")]

@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
     {
         public const string PrefabPath = ReleaseKit.GearPrefabFolder + "/Drone.prefab";
 
-        [MenuItem("Tools/Abandoned/Content/Scout Drone (0.20.5)")]
+        [MenuItem(ToolMenu.Features + "0.20.5 Scout Drone", priority = ToolMenu.FeaturesP + 18)]
         public static void Author()
         {
             ReleaseKit.RegisterGear(EquipmentKind.Drone, Prefab());

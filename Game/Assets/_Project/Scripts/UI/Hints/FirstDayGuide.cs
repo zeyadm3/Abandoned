@@ -41,7 +41,8 @@ namespace Abandoned.UI
             if (Time.time < nextCheck) return;
             nextCheck = Time.time + CheckEvery;
             NetworkPlayer me = NetworkPlayer.Local;
-            if (FirstDay.Done || !Hints.Enabled || me == null || !me.IsSpawned || HudLayer.Root == null)
+            // The training job teaches all of this itself (TutorialHud), step by step, in its own house.
+            if (FirstDay.Done || !Hints.Enabled || me == null || !me.IsSpawned || HudLayer.Root == null || Tutorial.TutorialMode.Active)
             {
                 Show(false);
                 return;

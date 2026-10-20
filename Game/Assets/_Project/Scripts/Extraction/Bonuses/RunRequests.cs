@@ -56,7 +56,8 @@ namespace Abandoned.Extraction
                 toasted = WantName;
                 ToastFeed.Show(Loc.T("BOSS REQUEST"), Loc.T("\"Bring me the {0}.\" +${1:N0} on top of quota.", Loc.T(WantName), bonus.Value), null, ToastFeed.Kind.Info);
             }
-            if (!IsServer || callAt < 0f || Time.time < callAt) return;
+            // Training: no boss on the line asking for things.
+            if (!IsServer || callAt < 0f || Time.time < callAt || Tutorial.TutorialMode.Active) return;
             callAt = -1f;
             Pick();
         }

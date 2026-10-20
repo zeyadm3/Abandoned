@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
         public const string GroupName = "_DIFFICULTY_0194";
         private static readonly Vector3 Size = new(0.4f, 0.5f, 0.15f);
 
-        [MenuItem("Tools/Abandoned/HQ/Add Difficulty Switch (0.19.4)")]
+        [MenuItem(ToolMenu.HqUpdates + "0.19.4 Add Difficulty Switch", priority = ToolMenu.HqP + 61)]
         public static void Author()
         {
             ReleaseKit.Config<DifficultyConfig>("Assets/_Project/Data/Core/Resources", DifficultyConfig.ResourcePath);

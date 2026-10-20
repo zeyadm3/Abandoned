@@ -43,10 +43,10 @@ namespace Abandoned.EditorTools
 
             // 1. Ground Floor (y = 0)
             // Academic center, Auditorium, Cafeteria, Gymnasium
-            for (float x = 0f; x < 96f; x += L.Tile)
+            for (float x = 0f; x < 100f; x += L.Tile)
             for (float z = 20f; z < 80f; z += L.Tile)
             {
-                // Verify within building wings
+                // Only the actual wing footprint receives a slab.
                 bool inWest = L.WestWing.Contains(new Vector2(x + 2f, z + 2f));
                 bool inCenter = L.CenterWing.Contains(new Vector2(x + 2f, z + 2f));
                 bool inNorth = L.NorthWing.Contains(new Vector2(x + 2f, z + 2f));
@@ -54,11 +54,9 @@ namespace Abandoned.EditorTools
                 if (!inWest && !inCenter && !inNorth && !inEast) continue;
 
                 Vector2Int cell = new(Mathf.RoundToInt(x / L.Tile), Mathf.RoundToInt(z / L.Tile));
-                // Skip stairwell cutouts
-                if (cell == new Vector2Int(11, 9) || cell == new Vector2Int(11, 10)) continue; // Central stair
-                if (cell == new Vector2Int(13, 19) || cell == new Vector2Int(13, 20)) continue; // Basement stair
+                // Ground stays continuous under the stair; openings belong to the floor above it.
 
-                Material floorMat = inEast ? art.GymWood : inWest ? (z >= 48f ? art.StageWood : art.Terrazzo) : art.Terrazzo;
+                Material floorMat = inEast ? art.GymWood : inWest ? (z >= 48f ? art.StageWood : art.Terrazzo) : (z >= 52f ? art.FloorTile : art.Terrazzo);
                 SurfaceMaterial surfaceMat = inEast ? SurfaceMaterial.Wood : inWest && z >= 48f ? SurfaceMaterial.Wood : SurfaceMaterial.Concrete;
 
                 Transform tile = CreateTile(groundGroup, $"Tile_0_{cell.x}_{cell.y}", new Vector3(x + L.Tile * 0.5f, 0f, z + L.Tile * 0.5f), floorMat, surfaceMat);
@@ -73,12 +71,14 @@ namespace Abandoned.EditorTools
                 Vector2Int cell = new(Mathf.RoundToInt(x / L.Tile), Mathf.RoundToInt(z / L.Tile));
                 // Central stairwell hole
                 if (cell == new Vector2Int(11, 9) || cell == new Vector2Int(11, 10)) continue;
+                if (cell.x == 16 && (cell.y == 11 || cell.y == 12)) continue;
 
                 // Hallways are protected; classrooms and science labs have some weak sections that can collapse
-                bool isHallway = (z >= 32f && z < 40f) || (x >= 40f && x < 48f);
+                bool isHallway = (z >= 32f && z < 40f) || (x >= 40f && x < 52f) ||
+                                 (x >= 60f && z >= 40f && z < 56f);
                 bool isWeak = !isHallway && ((cell.x + cell.y) % 4 == 0);
 
-                Material floorMat = (z >= 52f) ? art.FloorTile : art.FloorTile;
+                Material floorMat = art.FloorTile;
                 Transform tile = CreateTile(upperGroup, $"Tile_1_{cell.x}_{cell.y}", new Vector3(x + L.Tile * 0.5f, L.StoryHeight, z + L.Tile * 0.5f), floorMat, SurfaceMaterial.Concrete);
 
                 result.Pieces.Add(new TilePiece
@@ -92,27 +92,45 @@ namespace Abandoned.EditorTools
                 });
             }
 
-            // 3. Basement / Boiler Room (y = -3.5m)
-            for (float x = 48f; x < 68f; x += L.Tile)
-            for (float z = 76f; z < 92f; z += L.Tile)
+            // 3. Basement / Boiler Room (y = -3.5m, Z: 80 to 92)
+            for (float x = 44f; x < 68f; x += L.Tile)
+            for (float z = 80f; z < 92f; z += L.Tile)
             {
                 Vector2Int cell = new(Mathf.RoundToInt(x / L.Tile), Mathf.RoundToInt(z / L.Tile));
                 Transform tile = CreateTile(basementGroup, $"Tile_B_{cell.x}_{cell.y}", new Vector3(x + L.Tile * 0.5f, -3.5f, z + L.Tile * 0.5f), art.Concrete, SurfaceMaterial.Concrete);
                 result.Pieces.Add(new TilePiece { Transform = tile, Floor = -1, Cell = cell, Collapsible = false });
             }
 
+            // A real utility lobby/ceiling, with the service stair cut out of the upper slab.
+            for (float x = 44f; x < 68f; x += L.Tile)
+            for (float z = 80f; z < 92f; z += L.Tile)
+            {
+                if (x == 48f && z < 88f) continue;
+                Vector2Int cell = new(Mathf.RoundToInt(x / L.Tile), Mathf.RoundToInt(z / L.Tile));
+                Transform tile = CreateTile(groundGroup, $"Tile_0_{cell.x}_{cell.y}", new Vector3(x + 2f, 0f, z + 2f), art.Concrete, SurfaceMaterial.Concrete);
+                result.Pieces.Add(new TilePiece { Transform = tile, Floor = 0, Cell = cell });
+            }
+
+            // The second flight ends halfway through a grid cell; a half-depth landing meets its ramp.
+            Transform eastLanding = CreateTile(upperGroup, "EastStairLanding", new Vector3(66f, 4f, 51f), art.FloorTile,
+                SurfaceMaterial.Concrete, new Vector2(4f, 2f));
+            result.Pieces.Add(new TilePiece { Transform = eastLanding, Floor = 1, Cell = new Vector2Int(16, 12) });
+
             // 4. Stairs
-            // Central Stairwell (Ground to Upper Hall)
-            Transform mainStair = BuildStair(flights, "CentralAcademicStair", new Vector3(46f, 0f, 36f), Vector3.forward, L.StoryHeight, 3.2f, art.MetalSteel);
+            // Central Stairwell (Ground to Upper Hall, X: 46, Z: 36 to 44)
+            Transform mainStair = BuildStair(flights, "CentralAcademicStair", new Vector3(46f, 0f, 36f), Vector3.forward, L.StoryHeight, 3.0f, art.MetalSteel);
             result.Stairs.Add(mainStair);
 
-            // West Wing Secondary Stair
-            Transform westStair = BuildStair(flights, "WestWingStair", new Vector3(26f, 0f, 22f), Vector3.forward, L.StoryHeight, 2.8f, art.MetalSteel);
-            result.Stairs.Add(westStair);
+            Transform eastStair = BuildStair(flights, "EastReturnStair", new Vector3(66f, 0f, 42f), Vector3.forward, L.StoryHeight, 2.6f, art.MetalSteel);
+            result.Stairs.Add(eastStair);
 
-            // Boiler Room Basement Stair
-            Transform boilerStair = BuildStair(flights, "BoilerServiceStair", new Vector3(54f, -3.5f, 76f), Vector3.back, 3.5f, 2.5f, art.MetalSteel);
+            // Boiler Room Basement Stair (Basement to Ground, X: 50, Z: 88 to 80)
+            Transform boilerStair = BuildStair(flights, "BoilerServiceStair", new Vector3(50f, -3.5f, 88f), Vector3.back, 3.5f, 2.6f, art.MetalSteel);
             result.Stairs.Add(boilerStair);
+
+            BuildOpeningGuard(flights, art, "AcademicVoidGuard", new Vector3(46f, 4f, 40f), 4f, 8f, openNorth: true);
+            BuildOpeningGuard(flights, art, "EastVoidGuard", new Vector3(66f, 4f, 47f), 4f, 6f, openNorth: true);
+            BuildOpeningGuard(flights, art, "ServiceVoidGuard", new Vector3(50f, 0f, 84f), 4f, 8f, openNorth: false);
 
             // Bind to Structural Gameplay
             var setup = new StructureSceneSetup();
@@ -132,16 +150,39 @@ namespace Abandoned.EditorTools
             return result;
         }
 
-        private static Transform CreateTile(Transform parent, string name, Vector3 position, Material material, SurfaceMaterial surface)
+        private static Transform CreateTile(Transform parent, string name, Vector3 position, Material material, SurfaceMaterial surface, Vector2? footprint = null)
         {
             Transform tile = Group(name, parent);
             tile.position = position;
             BoxCollider collider = tile.gameObject.AddComponent<BoxCollider>();
             collider.center = Vector3.down * (L.SlabThickness * 0.5f);
-            collider.size = new Vector3(L.Tile, L.SlabThickness, L.Tile);
+            Vector2 span = footprint ?? new Vector2(L.Tile, L.Tile);
+            collider.size = new Vector3(span.x, L.SlabThickness, span.y);
             Box("Visual", tile, collider.center, collider.size, material, withCollider: false);
             tile.gameObject.AddComponent<SurfaceTag>().EditorSet(surface);
             return tile;
+        }
+
+        private static void BuildOpeningGuard(Transform parent, BurleySchoolArt art, string name, Vector3 center,
+            float width, float length, bool openNorth)
+        {
+            Transform guard = Group(name, parent);
+            guard.position = center;
+            foreach (float side in new[] { -1f, 1f })
+            {
+                float x = side * (width * .5f - .08f);
+                Box($"TopRail_{side}", guard, new Vector3(x, 1.05f, 0f), new Vector3(.08f, .08f, length), art.LockerGreen, false);
+                Box($"MidRail_{side}", guard, new Vector3(x, .55f, 0f), new Vector3(.05f, .05f, length), art.MetalSteel, false);
+                // One invisible, continuous barrier keeps carried salvage from clipping through the balusters.
+                var barrier = Group($"Barrier_{side}", guard).gameObject.AddComponent<BoxCollider>();
+                barrier.center = new Vector3(x, .55f, 0f);
+                barrier.size = new Vector3(.1f, 1.1f, length);
+                for (int p = 0; p <= Mathf.CeilToInt(length); p++)
+                    Box($"Post_{side}_{p}", guard, new Vector3(x, .5f, -length * .5f + length * p / Mathf.CeilToInt(length)),
+                        new Vector3(.055f, 1f, .055f), art.MetalSteel, false);
+            }
+            float closedEnd = (openNorth ? -1f : 1f) * length * .5f;
+            Box("EndGuard", guard, new Vector3(0f, .55f, closedEnd), new Vector3(width, 1.1f, .08f), art.LockerGreen);
         }
 
         public static Transform BuildStair(Transform parent, string name, Vector3 foot, Vector3 direction, float rise, float width, Material material)
@@ -172,14 +213,14 @@ namespace Abandoned.EditorTools
             {
                 GameObject rail = Box(side < 0 ? "Rail_L" : "Rail_R", visual,
                     new Vector3(side * (width * 0.5f + 0.08f), rise * 0.5f + 0.55f, length * 0.5f),
-                    new Vector3(0.12f, 1.1f, slope), material, withCollider: true);
+                    new Vector3(0.15f, 1.2f, slope), material, withCollider: true);
                 rail.transform.localRotation = Quaternion.Euler(-angle, 0f, 0f);
             }
 
             var link = root.gameObject.AddComponent<NavMeshLink>();
-            link.startPoint = Vector3.back * 0.8f;
-            link.endPoint = Vector3.forward * (length + 0.8f) + Vector3.up * rise;
-            link.width = width - 0.35f;
+            link.startPoint = Vector3.back * 0.75f;
+            link.endPoint = Vector3.forward * (length + 0.75f) + Vector3.up * rise;
+            link.width = width - 0.5f;
             link.bidirectional = true;
             root.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             return root;

@@ -56,7 +56,8 @@ namespace Abandoned.Threats
                 random = new System.Random(run.State.Seed);
                 RestoreLights();
             }
-            if (run.IsServer && run.State.Phase == RunPhase.Running) Escalate(run);
+            // Training: the danger never rises (no aging floors, no sharper monsters, no blackouts).
+            if (run.IsServer && run.State.Phase == RunPhase.Running && !Tutorial.TutorialMode.Active) Escalate(run);
             if (run.State.Danger > shownLevel) LevelUpCues();
             shownLevel = run.State.Danger;
             Flicker();

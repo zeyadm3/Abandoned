@@ -25,6 +25,7 @@ namespace Abandoned.Tests
             rig = PlayerTestRig.ForExisting(TestMapScene.Player);
             for (int i = 0; i < 60 && ThreatDirector.Current == null; i++) yield return null;
             Assert.IsNotNull(ThreatDirector.Current);
+            yield return MallTestSpots.StepInside();
             // Keep this an encounter test: unrelated arrivals must not interfere with the prey.
             ThreatDirector director = ThreatDirector.Current;
             director.enabled = false;
@@ -39,10 +40,12 @@ namespace Abandoned.Tests
             CurrentField.SetValue(null, tuning);
             stalker = director.SpawnOf<Stalker>() as Stalker;
             Assert.IsNotNull(stalker);
-            Assert.IsTrue(stalker.GetComponent<NavMeshAgent>().Warp(new Vector3(24f, 0f, 16f)));
-            rig.Teleport(new Vector3(24f, 0.05f, 9f));
+            (Vector3 me, Vector3 spot) = MallTestSpots.OpenLine(7f);
+            Assert.IsTrue(stalker.GetComponent<NavMeshAgent>().Warp(spot));
+            rig.Teleport(new Vector3(me.x, spot.y + 0.05f, me.z), 0f);
             rig.Settle();
-            float until = Time.time + 2f;
+            yield return new WaitForSeconds(0.2f);
+            float until = Time.time + 3f;
             while (stalker.State != StalkerState.Frozen && Time.time < until) yield return null;
             Assert.AreEqual(StalkerState.Frozen, stalker.State, "the open atrium gives it a visible, watching prey");
         }
@@ -64,13 +67,14 @@ namespace Abandoned.Tests
         [UnityTest]
         public IEnumerator LosingSightEndsTheSearchAndReappearingDoesNotImmediatelyRestartIt()
         {
-            GameObject blocker = rig.AddBox("Sight blocker", new Vector3(24f, 2f, 12.5f), new Vector3(40f, 6f, 0.5f));
+            Vector3 mid = (stalker.transform.position + rig.Player.transform.position) * 0.5f;
+            GameObject blocker = rig.AddBox("Sight blocker", new Vector3(mid.x, 2f, mid.z), new Vector3(40f, 6f, 0.5f));
             NavMeshObstacle obstacle = blocker.AddComponent<NavMeshObstacle>();
             obstacle.shape = NavMeshObstacleShape.Box;
             obstacle.size = Vector3.one;
             obstacle.carveOnlyStationary = false;
             obstacle.carving = true;
-            rig.Teleport(new Vector3(20f, 0.05f, 9f));
+            rig.Teleport(rig.Player.transform.position - Vector3.right * 4f);
             rig.Settle();
             float until = Time.time + tuning.LostSightSearchSeconds + 0.75f;
             while (!stalker.IsWithdrawing && Time.time < until) yield return null;

@@ -38,7 +38,7 @@ The loot items themselves, their values, spawns and prefabs are unchanged.
 
 ## How the saved mall was changed (in place)
 
-`Tools > Abandoned > Mall > Replace Loot Look-alikes (0.24.9)` (batch: `Tools/unity.sh exec
+`Tools > Abandoned > Maps > Mall > Updates > 0.24.9 Replace Loot Look-alikes` (batch: `Tools/unity.sh exec
 Abandoned.EditorTools.Release0249.AuthorAndExit`):
 
 1. Authors the five fixtures (`SalvageAssetBuilder.AuthorScenery`, recipes in `SalvageFixtureModels`); loot

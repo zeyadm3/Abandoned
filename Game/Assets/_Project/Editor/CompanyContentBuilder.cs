@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
         public const string ContractConfigPath = ContractFolder + "/ContractConfig.asset";
         public const string CompanyServicePrefabPath = NetworkContentBuilder.NetworkPrefabFolder + "/CompanyService.prefab";
 
-        [MenuItem("Tools/Abandoned/Create Company Content")]
+        [MenuItem(ToolMenu.Data + "Create Company Content", priority = ToolMenu.DataP)]
         public static GameObject CreateMissing()
         {
             var company = LoadOrCreateAsset<CompanyConfig>(CompanyConfigPath);

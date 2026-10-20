@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class MallAudit
     {
-        [MenuItem("Tools/Abandoned/Mall/Audit Saved Mall")]
+        [MenuItem(ToolMenu.Checks + "Audit Saved Mall", priority = ToolMenu.ChecksP + 21)]
         public static int Run()
         {
             Scene scene = SceneManager.GetSceneByPath(MallBuilder.ScenePath);
@@ -32,7 +32,7 @@ namespace Abandoned.EditorTools
             return flights + invisible + cut + lookalikes + stairs;
         }
 
-        [MenuItem("Tools/Abandoned/Mall/Audit All Levels")]
+        [MenuItem(ToolMenu.Checks + "Audit All Levels", priority = ToolMenu.ChecksP + 20)]
         public static int Levels()
         {
             int problems = 0;

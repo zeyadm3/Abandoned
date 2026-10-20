@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release0246
     {
-        [MenuItem("Tools/Abandoned/Store/Prepare Steam Release (0.24.6)")]
+        [MenuItem(ToolMenu.Store + "Prepare Steam Release", priority = ToolMenu.StoreP + 40)]
         public static void Author()
         {
             UiContentBuilder.CreateMissing(); // regenerates the credits screen (Noto fonts, voices)

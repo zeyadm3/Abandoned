@@ -26,7 +26,12 @@ namespace Abandoned.Tests
 
         // Where a crew walks in. The island prison's crew comes off the boat onto the quay, which monsters can reach
         // too (the whole island is the level), so it has no "staging" check.
-        private static Vector3 Entry(string scene) => scene == "Prison" ? new Vector3(82f, 0f, 8f) : new Vector3(24f, 0f, 4f);
+        private static Vector3 Entry(string scene) => scene switch
+        {
+            "Prison" => new Vector3(82f, 0f, 8f),
+            "School" => new Vector3(46f, 0f, 22f),
+            _ => new Vector3(24f, 0f, 4f)
+        };
 
         // Loot a crew can reach but monsters can't (only by a ladder): the island's guard-tower cabin.
         private static bool LadderOnly(string pointName) => pointName.StartsWith("Tower_Cabin");
@@ -69,8 +74,11 @@ namespace Abandoned.Tests
 
                 Vector3 entry = Entry(scene);
                 if (scene != "Prison")
-                    Assert.IsFalse(NavMesh.SamplePosition(new Vector3(24f, 0f, -6.5f), out _, 1f, NavMesh.AllAreas),
+                {
+                    Vector3 staging = scene == "School" ? new Vector3(46f, 0f, -4f) : new Vector3(24f, 0f, -6.5f);
+                    Assert.IsFalse(NavMesh.SamplePosition(staging, out _, 1f, NavMesh.AllAreas),
                         $"{scene}: exterior staging should not be a threat-navigation island");
+                }
                 foreach (LootSpawnPoint point in lootPoints)
                     if (!LadderOnly(point.name))
                         Assert.IsTrue(Reachable(entry, point.transform.position, out string route),

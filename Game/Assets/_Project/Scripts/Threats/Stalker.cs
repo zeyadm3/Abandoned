@@ -144,7 +144,7 @@ namespace Abandoned.Threats
                     Steer(agent, at);
                     // Prey it can't reach (at the truck, off the NavMesh): give up rather than camp the doorway.
                     if (!agent.pathPending && agent.pathStatus != NavMeshPathStatus.PathComplete) LeaveEncounter();
-                    else if (DamageWithinReach(config.AttackRange, 85f) != null) LeaveEncounter();
+                    else if (KillWithinReach(config.AttackRange) != null) LeaveEncounter();
                     break;
             }
             // Frozen, it keeps staring at its target (moving, the agent turns it).

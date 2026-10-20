@@ -28,7 +28,7 @@ labels and truck company markings. The generated advertising artwork remains par
 
 ## Authoring and delivery status
 
-Menu: **Tools > Abandoned > Mall > Remove Decorative Text (0.15.8b)**.
+Menu: **Tools > Abandoned > Maps > Mall > Updates > 0.15.8b Remove Decorative Text**.
 Batch entry: `Abandoned.EditorTools.MallBrandingRelease0158.DeclutterAndBuildPlayersAndExit`.
 
 The scene and updated occlusion data are saved through Unity. The cleanup removed 115 decorative

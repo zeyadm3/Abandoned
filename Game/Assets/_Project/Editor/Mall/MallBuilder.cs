@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
         public const string ScenePath = "Assets/_Project/Scenes/Mall.unity", TilesGroup = "Tiles", FlightsGroup = "Flights";
         public const string NavMeshPath = "Assets/_Project/Scenes/Mall_NavMesh.asset";
 
-        [MenuItem("Tools/Abandoned/Create Mall")]
+        [MenuItem(ToolMenu.Mall + "Rebuild Mall Only (no material restore)", priority = ToolMenu.MallP + 80)]
         public static void Create()
         {
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) Build();

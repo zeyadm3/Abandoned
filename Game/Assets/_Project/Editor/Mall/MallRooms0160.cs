@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
     {
         public const string GroupName = "_ROOMS_0160";
 
-        [MenuItem("Tools/Abandoned/Mall/Add Doors and Lockers (0.16.0)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.0 Add Doors and Lockers", priority = ToolMenu.MallP + 28)]
         public static void AuthorContent()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

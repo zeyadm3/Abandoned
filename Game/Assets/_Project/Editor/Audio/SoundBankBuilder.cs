@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
 
         private static readonly Vector2 Normal = new(0.94f, 1.06f), Low = new(0.55f, 0.7f), VeryLow = new(0.35f, 0.45f);
 
-        [MenuItem("Tools/Abandoned/Audio/Build Sound Bank")]
+        [MenuItem(ToolMenu.Audio + "Build Sound Bank", priority = ToolMenu.AudioP)]
         public static void CreateMissing()
         {
             if (!AssetDatabase.IsValidFolder("Assets/_Project/Data/Audio")) AssetDatabase.CreateFolder("Assets/_Project/Data", "Audio");

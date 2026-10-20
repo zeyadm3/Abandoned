@@ -11,6 +11,8 @@ How we work: Docs/PLAYBOOK.md.
 - This folder (repo root): CLAUDE.md, Docs/, Tools/ (batch-mode scripts), .gitignore, .gitattributes
 - Game/ is the Unity project (Assets/, Packages/, ProjectSettings/ live inside Game/)
 - All paths below are relative to Game/ unless they start with Docs/
+- Tools > Abandoned menu: laid out in Docs/TOOL_MENU.md (Rebuild All Maps at the top, then Maps, Content, Art,
+  UI, Checks, Project, Build, Store)
 
 ## Locked tech stack — do not substitute
 - Unity 6.3 LTS, URP, C#
@@ -75,6 +77,9 @@ How we work: Docs/PLAYBOOK.md.
 - For new systems, explain the plan first (files, classes, data, networking).
 - After changes, give me numbered Unity Editor steps. If it's more than ~5 clicks,
   write an Editor script with a menu item under Tools/Abandoned/... instead.
+- **Before adding, moving or renaming anything in the Tools menu, read Docs/TOOL_MENU.md** and put the item
+  where it says, using the path and priority constants in Editor/ToolMenu.cs (never a raw "Tools/Abandoned/..."
+  string). Update Docs/TOOL_MENU.md in the same change. A new map also gets a line in Editor/RebuildAllMaps.cs.
 - Never edit Game/Library/, Game/Temp/, Game/Logs/, obj/, or Game/Packages/
   (except Game/Packages/manifest.json when I ask).
 - Never hand-edit .unity or .prefab YAML unless I ask; use Editor scripts.
@@ -96,6 +101,41 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**Training job / tutorial (2026-10-20, written, never compiled or run).** 14 Larch Court: a one-storey Michigan
+ranch at 3 PM in December, from the user's floor plan at 1.4x (two bathrooms as drawn), with a basement, the
+neighbourhood, and 48 data-driven lessons in 9 chapters (`Scripts/Tutorial`, `Editor/Tutorial`, `Data/Tutorial`).
+Reached from the main menu's Training card and the HQ's training clipboard; never pays, never saves, nobody dies.
+Everything about it, what changed in existing systems and what to check first: Docs/TUTORIAL.md. The scene does not
+exist until **Tools > Abandoned > Maps > Tutorial House > Rebuild Tutorial House** (then **Add Training Clipboard to HQ**); it is
+already in `BuildScenes.All`. Not committed (the user said no commits or checks during the build).
+2026-10-21 (user built and played it: "just letters in the top corner"; asked for interactive arrows, audio and a
+progress bar per step): **guidance**, written, not compiled or run. The host writes one `RunTraining.Guide` (target +
+progress); each machine draws a lesson card with its own progress bar and live key caps, a chapter checklist, a marker
+with an edge arrow, NavMesh chevrons on the floor, HUD frames, and plays the dispatcher then the trainer's voice (48
+`tn_*` + 9 `td_*` clips generated with Kokoro). Lessons gained Guide / Highlight / VoiceLine (data). In the saved house,
+run **Build Tutorial Content** once to fill them in. Docs/TUTORIAL.md "Guidance".
+Same day (user: the map is too small and you can walk off it, "build more homes and roads, don't put any detail in
+them", the house is "so tight, you get stuck everywhere", the floor arrows are inaccurate, the patio door should open on
+its other side): **the house redone at about 1.6x** (1.8 m doorways, a 2.4 m hallway, 3 m ceilings, no hinged leaves in
+rooms, sparse furniture; the 1 m doors had closed the 0.5 m-radius NavMesh, so the arrows drew through walls; furniture
+now bakes "Not Walkable"), the slider moved off the cellar stairs and opening on its east half, and **`TutorialTown`**:
+a grid of plain houses and streets out into the fog, a fenced walkable area of about 260 x 215 m. Written, not compiled
+or run; needs **Rebuild Tutorial House**. Docs/TUTORIAL.md "The house".
+Same day (user: "copy paste the house and make the surrounding houses the same as the tutorial house with some
+variations", locked, no basement or cellar stairs): **the street's houses are copies of the training house**
+(`TutorialStreetHouseKit` builds its outside from the same wall/roof code, doors and slider shut, patio whole, dark
+inside, merged into saved near/far meshes; `TutorialStreetHouse` rolls each lot's look: mirror, paint, garage, porch
+hood, chimney); solid blocks only near the fence; never static-batched. The house gained corner boards. Written, not
+compiled or run; needs **Rebuild Tutorial House**.
+
+**School major revamp (2026-10-20, implementation only).** Burley school authoring now includes an open entrance,
+completed shell, a second academic stair, repaired service basement/terrain openings, distinct furnished rooms,
+doorway-safe halls with hiding lockers, accessible salvage, collapse-linked ceiling/furniture wear, metre-scale
+material UVs, varied lighting and winter weather, original ridgelines/conifers and corrected campus facilities.
+See `Docs/SCHOOL_REVAMP.md`. **The user explicitly requested no testing, running or verification.** No compilation,
+scene rebuild, navigation/occlusion bake, audit, render, gameplay or player build was performed. The user must apply
+**Tools > Abandoned > Maps > School > Rebuild Jackson P Burley Middle School** before the saved School scene contains this pass.
+
 **Prison visual overhaul (2026-10-19, implementation only).** New architectural detailing, basement repairs,
 precision world UVs including merged fittings, prison PBR material recovery, occlusion/camera-range handling,
 clearer noon atmosphere, stronger fixtures and local reflections/dust. `Docs/PRISON_VISUAL_POLISH.md` lists changes
@@ -105,13 +145,13 @@ Follow-up adds shared cell furnishing variants/hardware, corridor services/galle
 room detail and `IslandInteriorSupport` for floor-mounted dining/kitchen props; the same no-verification rule applies.
 
 **Island prison (2026-10-19): Gallows Rock Penitentiary replaces the Prison.** An Alcatraz-style island built to the
-mall's level of detail (Docs/ISLAND_PRISON_PLAN.md, code in `Editor/Prison/`, menu **Tools > Abandoned > Prison >
+mall's level of detail (Docs/ISLAND_PRISON_PLAN.md, code in `Editor/Prison/`, menu **Tools > Abandoned > Maps > Island Prison >
 Rebuild Island Prison**): cliffs and the sea (kill volume), a boat instead of the truck, three-tier cell galleries,
 four hiding kinds, the lighthouse beam, 24 loot items. Compiled outside Unity (dotnet, 0 errors) and `check.py` 0
 missing; never rebuilt, baked or played. Not committed (the user decides).
 
 **Iron Factory (2026-10-18, in progress): the Factory location is replaced** by a 120 x 100 m iron works built
-the way the mall is (Editor/Factory, menu **Tools > Abandoned > Factory > Rebuild Iron Factory**): a 20 x 60 m
+the way the mall is (Editor/Factory, menu **Tools > Abandoned > Maps > Iron Factory > Rebuild Iron Factory**): a 20 x 60 m
 molten channel that kills players and destroys loot (host-side `LavaVolume`), three catwalk tiers (5/10/15 m)
 with protected spines, stairs and ladders (`Core/Ladder`, owner-side climbing in `PlayerMotor.Ladders`).
 The user's answers and the 8-step build order: Docs/IRON_FACTORY_PLAN.md. Steps 1-4 (shell, lava, catwalks,
@@ -131,7 +171,7 @@ and L6 distant chain rattles and thermal structural groans (`FactorySoundscape`)
 district ground collider ran through its flights), the Prison tunnel and gallery stairs and the School archive stair
 were blocked (location builder fixed, School and Prison rebuilt), about 260 props could be walked through (now solid),
 plus "E | " prompts, the Stalker freezing on contact and utility gear in validation. The 0.15.0 rebuild had dropped the
-mall's audits: `Tools > Abandoned > Mall > Audit Saved Mall / Audit All Levels` (`Editor/Mall/MallAudit`) runs them on
+mall's audits: `Tools > Abandoned > Checks > Audit Saved Mall / Audit All Levels` (`Editor/Mall/MallAudit`) runs them on
 every level with a stair-headroom sweep; keep them at 0. Test suite repaired: mall tests find their spots from the live
 NavMesh (`Tests/PlayMode/MallTestSpots`), never the pre-0.15 coordinates. EditMode 290/290, PlayMode 0 failures,
 verify OK, all 12 nettests, `LevelSmokeTests` and `LevelWalkTests` pass. Never played. Open for the user: the render
@@ -220,13 +260,23 @@ anything unasked). Not play-tested beyond the user's first listen, after which t
 
 0.16.0 (2026-10-10): closable doors and hiding lockers are written (Docs/DOORS_AND_LOCKERS_0.16.0.md) but
 have not been compiled, run or tested, and the Mall scene does not hold them until the user runs
-**Tools > Abandoned > Mall > Add Doors and Lockers (0.16.0)**. Next on the roadmap: 0.16.1 breaker rooms.
+**Tools > Abandoned > Maps > Mall > Updates > 0.16.0 Add Doors and Lockers**. Next on the roadmap: 0.16.1 breaker rooms.
 
 Milestones 0–10 are built (autonomous build merged into main on 2026-10-07; the separate
 autobuild-2 worktree is gone, everything lives in this one folder). Next: the user's full test pass.
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-20 (user: plan an interactive tutorial "that serves as a prologue", its own map: "a one-story house in a
+  random neighborhood, Michigan, 3 PM, December", then supplied a floor plan, then "build it all, don't stop to commit
+  or check your work"): **the training job.** Two bathrooms as drawn (user's choice over the brief's three), the plan
+  scaled 1.4x (user's choice). Not a board location: `BuildScenes.All` only, never `SalvageScenes`. `TutorialMode.Active`
+  (the scene name) holds still everything that would interfere (decay, reroutes, danger, waves, Crew Director, bonuses,
+  tips, achievements) and `CompanyService.RulesApply` is false there; no contract, so nothing is paid, owed or saved.
+  Nobody dies (health floor). Lessons are ScriptableObject data (`TutorialStepDefinition` + `TutorialCatalog`): a new
+  lesson needs no code unless it needs a new check or beat. New shared pieces: `StructuralSection.neverBelow` (a
+  teaching floor), `HideSpotKind.Closet` (appended), `ThreatDirector.SpawnScripted`, `PowerController.sectorsWithoutHorror`,
+  `PlayerEquipment.ServerGive/ServerTrainingKit/ServerHint`, `Achievements.Suspended`. Details: Docs/TUTORIAL.md.
 - 2026-10-19 (user: "now it's an Alcatraz prison", "build everything, don't test or verify", "like the mall map in terms
   of detail and level design"; answers in Docs/ISLAND_PRISON_PLAN.md): **the island prison replaces the Prison.**
   Fictional name (Gallows Rock Penitentiary), ~3x the mall, the boat replaces the truck (the truck's components on a
@@ -314,7 +364,7 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
     and left out (with a Console warning) rather than forced in. They carve the NavMesh themselves.
   - Door and locker sounds are synthesised rolls, thuds and sheet metal. Never a creak.
   - Tunables: Data/Extraction/Resources/DoorConfig (code defaults until the menu creates the asset).
-  - Menu: Tools/Abandoned/Mall/Add Doors and Lockers (0.16.0); the full mall builder calls the same code.
+  - Menu: Tools/Abandoned/Maps/Mall/Updates/0.16.0 Add Doors and Lockers; the full mall builder calls the same code.
     Version 0.16.0.EEA. No builds were made.
 - 2026-10-10 (user, **0.15.8c artwork orientation**, efficient immediate commit): fix mirrored or
   wrong-facing generated store artwork by correcting shared print UV direction and front/back
@@ -328,7 +378,7 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   cleanup. Retain all ten generated logo/campaign PNGs and 39 placements. Keep only fitted EXIT,
   SERVICE, SERVICE STAIRS and COLLECTION directions; functional UI, truck haul/cargo display,
   pickup HUD and gameplay remain. Author scene/assets and Mac/Windows players as 0.15.8b.EEA.
-  Menu: Tools/Abandoned/Mall/Remove Decorative Text (0.15.8b). No tests, verification or QA;
+  Menu: Tools/Abandoned/Maps/Mall/Updates/0.15.8b Remove Decorative Text. No tests, verification or QA;
   user review afterward. Details: Docs/TEXT_DECLUTTER_0.15.8b.md. This supersedes the prior
   operational/truck physical-text retention policy while preserving the generated advertising.
 - 2026-10-10 (user, **0.15.8 generated store branding and sale campaigns**, user tests): generate
@@ -358,7 +408,7 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   tyres, worn materials and company markings. Preserve cargo, hauling ramp, ignition, haul display,
   floodlights, extraction and 0.15.6 threat pressure. Rear hinges close on departure and reopen on
   cancellation. Save scene/data and Mac/Windows players as 0.15.7.EEA. No tests or verification;
-  the user reviews afterward. Menu: Tools/Abandoned/Mall/More Pickups and Collection Truck (0.15.7).
+  the user reviews afterward. Menu: Tools/Abandoned/Maps/Mall/Updates/0.15.7 More Pickups and Collection Truck.
 - 2026-10-10 (user, **0.15.6 threat pressure and continued construction**, user tests): monsters feel
   absent and ineffective during salvage runs. Increase early and sustained population, fix inactive
   patrol/pursuit and use fair, reachable spawn positions with short retries. Keep host authority,
@@ -366,14 +416,14 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   saved mall with new original prop families and surrounding buildings while retaining its approved
   layout, both furniture floors, HQ and extraction. Save scene/data and Mac/Windows players as
   0.15.6.EEA. Do not interrupt the user's running game. No tests, verification or QA runs: the user
-  reviews after construction. Menu: Tools/Abandoned/Mall/Finish Threat and Content Update (0.15.6).
+  reviews after construction. Menu: Tools/Abandoned/Maps/Mall/Updates/0.15.6 Finish Threat and Content Update.
 - 2026-10-10 (user, **0.15.5b mall density**, user tests): 0.15.5 feels too empty. Fill the existing
   five-zone salvage mall with denser shelf stock, dismantled displays, packing remnants and staged
   recovery clusters; keep both Nordic Habitat floors and protected hauling/spawn routes. Apply an
   additive `_SALVAGE_DENSITY` layer to the saved mall, retaining the approved structure, district, HQ,
   lighting and loot economy. Reuse original assets/materials; batch added art per supporting slab,
   material and LOD, bind collapse and author collision/nav/culling. Build Mac/Windows as 0.15.5b.EEA.
-  Menu: Tools/Abandoned/Mall/Fill Salvage Mall (0.15.5b). The previous no-tests/no-verification direction
+  Menu: Tools/Abandoned/Maps/Mall/Updates/0.15.5b Fill Salvage Mall. The previous no-tests/no-verification direction
   persists; the user will review afterward.
 - 2026-10-10 (user, **0.15.5 salvage asset construction**, user tests): build the complete five-zone
   mall asset set now, with a structured breakdown and concept prompt for each item. Use original
@@ -383,7 +433,7 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   existing-system networked loot variants, author salvage operations/demolition cues, lights, dust,
   colliders, spawns, navigation/culling and Mac/Windows players as 0.15.5.EEA. Preserve HQ, approved
   district, structure, single front exit and payout. No tests or verification: the user performs them
-  after construction. Menu: Tools/Abandoned/Mall/Build Salvage Content (0.15.5). The separately planned
+  after construction. Menu: Tools/Abandoned/Maps/Mall/Updates/0.15.5 Build Salvage Content. The separately planned
   freelancer UI rework remains unimplemented and is outside this asset construction task.
 - 2026-10-10 (user, plan only): **Early Access is 0.25.0**, not 0.20.0, to allow more time and features.
   0.20, 0.21, 0.23 and 0.24 are numbered in Docs/ROADMAP_0.16-0.25.md and approved by the user. 0.25.0 stays fixes only.
@@ -399,8 +449,8 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   other exterior opening. The functional payout/cargo truck sits beside the arrival van in the front
   court, ramp toward the mall. Add an enclosing wooded mountain horizon beyond the district. Retain
   HQ/shared asset tuning, structural gameplay and the existing payout system; reauthor loot/spawns,
-  network IDs, navigation and culling for the new plan. Menu: Tools/Abandoned/Mall/Rebuild Mall and
-  Parking (0.15.0). No tests/audits/QA; the user will review after saving. Version 0.15.0.EEA.
+  network IDs, navigation and culling for the new plan. Menu: Tools/Abandoned/Maps/Mall/Rebuild Mall and
+  Parking. No tests/audits/QA; the user will review after saving. Version 0.15.0.EEA.
 - 2026-10-09 (user: fix the console's "Reduced additional punctual light shadows resolution ... 17/18 shadow maps";
   compiles, the user's walk-through check is still open): the shadow atlas is budgeted in shadow MAPS, not lights. Every light asks for a
   1024 px map (URP's High tier), the 4096 atlas holds 16, a spot is one map and a point light six, so the old
@@ -444,7 +494,7 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   Crates, retired electronics, copper pipe, rusted shelving, oil drums and labeled bins dress the perimeter.
   Dim tubes, exposed bulbs and localized dust/shafts use existing reduced-flashing/shadow behavior.
   Recovered truck haul remains settled once at extraction; the HQ receipt/unloading cannot pay it twice.
-  Author via Tools/Abandoned/HQ/Rebuild Salvage Hub (0.14.5), which skips audits. No tests or verification
+  Author via Tools/Abandoned/Maps/HQ/Rebuild Salvage Hub, which skips audits. No tests or verification
   authorized for this task; the user will do those after the redesign. Original dispatch speech was
   requested as part of this feature, authored locally without a new package or purchased asset.
 - 2026-10-09 (user, **0.14.0**: sound rebuild, solid objects, shadow rework; compiled and rebuilt clean, barely played):

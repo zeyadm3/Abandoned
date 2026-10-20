@@ -31,7 +31,7 @@ namespace Abandoned.Loot
 
         public void Validate(List<string> errors)
         {
-            if (entries.Count == 0) errors.Add($"{name}: empty (run Tools/Abandoned/Generate Loot Prefabs).");
+            if (entries.Count == 0) errors.Add($"{name}: empty (run Tools/Abandoned/Content/Loot/Generate Loot Prefabs).");
             foreach (Entry e in entries)
                 if (e.definition == null || e.prefab == null) errors.Add($"{name}: an entry is missing its definition or prefab.");
         }

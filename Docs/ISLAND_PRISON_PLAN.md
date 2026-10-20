@@ -5,7 +5,7 @@ in terms of detail and level design"). Compiled outside Unity (dotnet, 0 errors)
 **not** been rebuilt in Unity, baked or played. Working name **Gallows Rock Penitentiary** (fictional, inspired by
 Alcatraz; the user can rename it: `IslandPrisonLayout.DisplayName`, Location_Prison and the company.txt blocks).
 Scene stays `Scenes/Prison.unity` and `Data/Contracts/Locations/Location_Prison.asset`, so contracts don't change.
-Rebuild (once written): **Tools > Abandoned > Prison > Rebuild Island Prison**.
+Rebuild (once written): **Tools > Abandoned > Maps > Island Prison > Rebuild Island Prison**.
 
 Built the same way as the Iron Factory (Docs/IRON_FACTORY_PLAN.md): layout as data in `Editor/Prison/`, one builder
 menu makes the whole scene, shared run plumbing via `Editor/LocationPlumbing.cs`, clearance checks keep routes open,
@@ -149,7 +149,7 @@ cellhouse keeps its dim interior haze. The job's Night modifier still darkens it
 4. Throw the lamp switch at the top of the lighthouse; watch the beam sweep and a monster flinch.
 5. Carry the piano out of the warden's house and the lens from the lighthouse store to the boat; depart.
 6. Collapse a gallery and a dining-hall tile; fall into the sea once.
-7. `Tools > Abandoned > Mall > Audit All Levels` (includes the Prison).
+7. `Tools > Abandoned > Checks > Audit All Levels` (includes the Prison).
 
 ## Decisions taken without asking (reversible)
 

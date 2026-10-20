@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
     /// <summary>More usable salvage and a commercial collection truck over the saved 0.15.6 mall.</summary>
     public static class SalvageRelease0157
     {
-        [MenuItem("Tools/Abandoned/Mall/More Pickups and Collection Truck (0.15.7)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.7 More Pickups and Collection Truck", priority = ToolMenu.MallP + 23)]
         public static void AuthorContent()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

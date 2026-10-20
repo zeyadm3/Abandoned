@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
     /// <summary>Add the entrance and estate to the saved HQ without regenerating its interior.</summary>
     public static class HqExteriorAuthoring
     {
-        [MenuItem("Tools/Abandoned/HQ/Add Staff Door and Exterior")]
+        [MenuItem(ToolMenu.Hq + "Add Staff Door and Exterior", priority = ToolMenu.HqP + 20)]
         public static void AuthorExterior()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

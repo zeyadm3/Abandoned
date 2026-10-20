@@ -26,21 +26,20 @@ namespace Abandoned.EditorTools
         public const string MicrophoneUsage = "Abandoned uses your microphone for proximity voice chat with your crew.";
         public const string BuildsFolder = "Builds";
         public const string InfoFileName = "BUILD.txt";
-        private const string Menu = "Tools/Abandoned/Build/";
 
-        [MenuItem(Menu + "Mac")]
+        [MenuItem(ToolMenu.Build + "Mac", priority = ToolMenu.BuildP)]
         public static void BuildMacMenu() => Report(Build(BuildPlatform.Mac, BuildFlavor.Shareable));
 
-        [MenuItem(Menu + "Windows")]
+        [MenuItem(ToolMenu.Build + "Windows", priority = ToolMenu.BuildP + 1)]
         public static void BuildWindowsMenu() => Report(Build(BuildPlatform.Windows, BuildFlavor.Shareable));
 
-        [MenuItem(Menu + "Both (Mac + Windows)")]
+        [MenuItem(ToolMenu.Build + "Both (Mac + Windows)", priority = ToolMenu.BuildP + 2)]
         public static void BuildBothMenu() => Report(BuildBoth());
 
-        [MenuItem(Menu + "Dev Mac (for tests)")]
+        [MenuItem(ToolMenu.Build + "Dev Mac (for tests)", priority = ToolMenu.BuildP + 20)]
         public static void BuildDevMacMenu() => Report(Build(BuildPlatform.Mac, BuildFlavor.Dev));
 
-        [MenuItem(Menu + "Release (Mac + Windows, real App ID)")]
+        [MenuItem(ToolMenu.Build + "Release (Mac + Windows, real App ID)", priority = ToolMenu.BuildP + 41)]
         public static void BuildReleaseMenu() => Report(BuildRelease());
 
         /// <summary>
@@ -61,7 +60,7 @@ namespace Abandoned.EditorTools
                    Build(BuildPlatform.Windows, BuildFlavor.Release, builtAtUtc);
         }
 
-        [MenuItem(Menu + "Demo (Mac + Windows)")]
+        [MenuItem(ToolMenu.Build + "Demo (Mac + Windows)", priority = ToolMenu.BuildP + 40)]
         public static void BuildDemoMenu() => Report(BuildDemo());
 
         /// <summary>The demo (M8.3) for both platforms: Game/Builds/MacDemo and WindowsDemo.</summary>

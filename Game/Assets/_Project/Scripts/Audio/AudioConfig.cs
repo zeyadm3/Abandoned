@@ -4,7 +4,7 @@ namespace Abandoned.Audio
 {
     /// <summary>
     /// The sound system's tunables (0.14.0): bus trims, ducking, what walls do to sound, and the
-    /// listener's room. Lives at Data/Audio/Resources/AudioConfig (Tools/Abandoned/Audio/Build Sound Bank
+    /// listener's room. Lives at Data/Audio/Resources/AudioConfig (Tools/Abandoned/Content/Audio/Build Sound Bank
     /// makes it); the defaults below apply until that asset exists.
     /// </summary>
     [CreateAssetMenu(menuName = "Abandoned/Audio/Audio Config", fileName = "AudioConfig")]

@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
             Debug.Log($"[Salvage0155b] Added {fit.Props} stock props and {fit.Details} packing/demolition details in {batches} section batches to the existing mall.");
         }
 
-        [MenuItem("Tools/Abandoned/Mall/Fill Salvage Mall (0.15.5b)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.15.5b Fill Salvage Mall", priority = ToolMenu.MallP + 21)]
         public static void AuthorCurrentMall()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)

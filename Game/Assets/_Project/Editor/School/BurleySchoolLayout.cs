@@ -4,7 +4,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Master spatial coordinates, room boundaries, athletic fields, and road networks for
-    /// Jackson P. Burley Middle School (Charlottesville, VA), matching the aerial campus photo.
+    /// Jackson P. Burley Middle School (Charlottesville, VA), matching the campus footprint in winter.
     /// </summary>
     public static class BurleySchoolLayout
     {
@@ -18,10 +18,10 @@ namespace Abandoned.EditorTools
         public const float WallThickness = 0.24f;
 
         // Overall Building Bounds (for interior atmosphere & horror volume)
-        public static readonly Bounds Building = new(new Vector3(48f, 4.5f, 52f), new Vector3(104f, 15f, 72f));
+        public static readonly Bounds Building = new(new Vector3(50f, 2.25f, 56f), new Vector3(101f, 12.5f, 73f));
 
         // ---- Wings Footprints (in World Coordinates) ----
-        // West Wing: Auditorium, Stage, Music Room, Backstage
+        // West Wing: Auditorium, Stage, Backstage, Dressing Rooms
         public static readonly Rect WestWing = new(0f, 20f, 24f, 36f);
 
         // Center Academic Wing: 2 Stories (Ground & Upper)
@@ -49,10 +49,10 @@ namespace Abandoned.EditorTools
         public static readonly Vector3 TruckForward = Vector3.forward;
 
         // Northeast Parking Lot (Staff & Visitors)
-        public static readonly Rect ParkingLot = new(84f, 48f, 44f, 40f);
+        public static readonly Rect ParkingLot = new(102f, 46f, 28f, 42f);
 
         // Outdoor Basketball Courts (East of School)
-        public static readonly Rect OutdoorBasketballCourt = new(92f, 16f, 32f, 24f);
+        public static readonly Rect OutdoorBasketballCourt = new(104f, 12f, 28f, 24f);
 
         // Oval Running Track & Football / Soccer Field (oriented North-South parallel to Madison Ave)
         public static readonly Rect AthleticTrackBounds = new(136f, -36f, 80f, 104f);
@@ -62,7 +62,7 @@ namespace Abandoned.EditorTools
         public static readonly Vector3 BaseballHomePlate = new(118f, 0f, 108f);
         public const float BaseballBaseDistance = 27.4f; // 90 feet in metres
 
-        // Booker T. Washington Park (Rolling green parkland to the north/northeast)
+        // Booker T. Washington Park (Rolling snowy parkland to the north/northeast)
         public static readonly Rect BookerTParkBounds = new(80f, 136f, 150f, 80f);
 
         // ---- Surrounding Streets ----

@@ -59,7 +59,7 @@ namespace Abandoned.EditorTools
             ("library_logo", 1280, 720, -1, true, true), ("page_background", 1438, 810, 4, false, false),
         };
 
-        [MenuItem("Tools/Abandoned/Store/Render Store Art and Screenshots (0.24.4)")]
+        [MenuItem(ToolMenu.Store + "Render Store Art and Screenshots", priority = ToolMenu.StoreP + 20)]
         public static void Author()
         {
             string root = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Docs/StoreArt"));

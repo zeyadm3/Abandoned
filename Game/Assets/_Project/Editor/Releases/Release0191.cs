@@ -8,7 +8,7 @@ namespace Abandoned.EditorTools
     /// <summary>0.19.1 replacement worker: RunHires on the RunState prefab, tunables, and the agency radio beside the truck's ignition.</summary>
     public static class Release0191
     {
-        [MenuItem("Tools/Abandoned/Mall/Add Agency Radio (0.19.1)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.19.1 Add Agency Radio", priority = ToolMenu.MallP + 39)]
         public static void Author()
         {
             ReleaseKit.Config<BonusConfig>(ReleaseKit.ExtractionResources, BonusConfig.ResourcePath);

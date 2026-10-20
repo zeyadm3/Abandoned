@@ -33,7 +33,7 @@ namespace Abandoned.EditorTools
         private static readonly string[] InputMaps = { "Gameplay", "UI", "Debug" };
         private const string ProjectWideActionsKey = "com.unity.input.settings.actions";
 
-        [MenuItem("Tools/Abandoned/Verify Project Setup")]
+        [MenuItem(ToolMenu.Checks + "Verify Project Setup", priority = ToolMenu.ChecksP)]
         public static void Verify()
         {
             int failures = Run(out string report);
@@ -97,7 +97,7 @@ namespace Abandoned.EditorTools
             Check(!HasProjectWideActionsEntry(), ProjectWideActionsLabel());
 
             string scene = TestMapBuilder.ScenePath;
-            Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Create Test Map)");
+            Check(File.Exists(scene), $"Scene {scene} (Tools/Abandoned/Maps/Test Map/Rebuild Test Map)");
             Check(Array.Exists(EditorBuildSettings.scenes, s => s.path == scene), $"Scene {scene} in Build Settings");
             Check(EditorBuildSettings.scenes.Select(s => s.path).SequenceEqual(BuildScenes.All) &&
                   BuildScenes.All.All(File.Exists), "Build Settings scenes = BuildScenes.All, all exist (Tools/unity.sh rebuild)");
@@ -113,32 +113,32 @@ namespace Abandoned.EditorTools
                   $"Company '{BuildScript.CompanyName}', bundle id {BuildScript.BundleId} (BuildScript.ApplyPlayerSettings)");
 
             var player = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabBuilder.PrefabPath);
-            Check(player != null, $"Player prefab {PlayerPrefabBuilder.PrefabPath} (Tools/Abandoned/Create Player Prefab)");
+            Check(player != null, $"Player prefab {PlayerPrefabBuilder.PrefabPath} (Tools/Abandoned/Content/Prefabs/Create Player Prefab)");
             Check(AssetDatabase.LoadAssetAtPath<Abandoned.Player.PlayerMovementConfig>(PlayerPrefabBuilder.ConfigPath) != null,
                 $"Movement config {PlayerPrefabBuilder.ConfigPath}");
 
             Check(AssetDatabase.LoadAssetAtPath<Abandoned.Structure.StructureConfig>(StructureContentBuilder.ConfigPath) != null,
-                $"Structure config {StructureContentBuilder.ConfigPath} (Tools/Abandoned/Create Structure Content)");
+                $"Structure config {StructureContentBuilder.ConfigPath} (Tools/Abandoned/Content/Data/Create Structure Content)");
             Check(AssetDatabase.LoadAssetAtPath<Abandoned.Structure.StructureVisualConfig>(StructureContentBuilder.VisualConfigPath) != null,
                 $"Structure visual config {StructureContentBuilder.VisualConfigPath}");
             Check(AssetDatabase.LoadAssetAtPath<GameObject>(FracturedTileGenerator.PrefabPath) != null,
-                $"Fractured tile {FracturedTileGenerator.PrefabPath} (Tools/Abandoned/Generate Fractured Tile)");
-            Check(ProjectLayersSetup.AllPresent(), "Physics layers Player/Loot/Debris/Structure (Tools/Abandoned/Setup Physics Layers)");
+                $"Fractured tile {FracturedTileGenerator.PrefabPath} (Tools/Abandoned/Art/Generate Fractured Tile)");
+            Check(ProjectLayersSetup.AllPresent(), "Physics layers Player/Loot/Debris/Structure (Tools/Abandoned/Project/Setup Physics Layers)");
 
             var network = AssetDatabase.LoadAssetAtPath<Abandoned.Networking.NetworkConfig>(NetworkContentBuilder.ConfigPath);
-            Check(network != null, $"Network config {NetworkContentBuilder.ConfigPath} (Tools/Abandoned/Create Network Content)");
+            Check(network != null, $"Network config {NetworkContentBuilder.ConfigPath} (Tools/Abandoned/Content/Prefabs/Create Network Content)");
             Check(NetworkContentBuilder.SteamAppIdFileMatches(network),
-                $"Game/{NetworkContentBuilder.SteamAppIdFile} matches NetworkConfig.SteamAppId (Tools/Abandoned/Create Network Content)");
+                $"Game/{NetworkContentBuilder.SteamAppIdFile} matches NetworkConfig.SteamAppId (Tools/Abandoned/Content/Prefabs/Create Network Content)");
             var steamProblems = SteamPluginSettings.Problems();
             Check(steamProblems.Count == 0, steamProblems.Count == 0
                 ? "Steam plugin platform settings (Posix: mac editor/mac/Linux, Win64: win editor/Win64, native libs)"
-                : "Steam plugin platform settings (Tools/Abandoned/Fix/Apply Steam Plugin Settings): " + string.Join("; ", steamProblems));
+                : "Steam plugin platform settings (Tools/Abandoned/Project/Fixes/Apply Steam Plugin Settings): " + string.Join("; ", steamProblems));
 
             foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition", new[] { LootCatalogBuilder.Folder }))
             {
                 var definition = AssetDatabase.LoadAssetAtPath<Abandoned.Loot.LootDefinition>(AssetDatabase.GUIDToAssetPath(guid));
                 Check(AssetDatabase.LoadAssetAtPath<GameObject>(LootPrefabGenerator.PrefabPathFor(definition)) != null,
-                    $"Loot prefab for {definition.Id} (Tools/Abandoned/Generate Loot Prefabs)");
+                    $"Loot prefab for {definition.Id} (Tools/Abandoned/Content/Loot/Generate Loot Prefabs)");
             }
 
             report.Insert(0, failures == 0 ? "[ALL PASS] " : $"[{failures} FAILED] ");
@@ -146,7 +146,7 @@ namespace Abandoned.EditorTools
             return failures;
         }
 
-        [MenuItem("Tools/Abandoned/Fix/Clear Project-wide Input Actions")]
+        [MenuItem(ToolMenu.Fixes + "Clear Project-wide Input Actions", priority = ToolMenu.ProjectP + 21)]
         public static void ClearProjectWideActions()
         {
             if (!HasProjectWideActionsEntry())
@@ -170,7 +170,7 @@ namespace Abandoned.EditorTools
             EditorBuildSettings.TryGetConfigObject(ProjectWideActionsKey, out UnityEngine.Object asset);
             return asset != null
                 ? $"Project-wide Actions = None (currently {AssetDatabase.GetAssetPath(asset)}; set it to None)"
-                : "Project-wide Actions = None (dangling entry to a deleted asset; run Tools/Abandoned/Fix/Clear Project-wide Input Actions)";
+                : "Project-wide Actions = None (dangling entry to a deleted asset; run Tools/Abandoned/Project/Fixes/Clear Project-wide Input Actions)";
         }
 
         private static bool AsmdefExists(string assemblyName, string expectedFolder)

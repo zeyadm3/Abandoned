@@ -25,7 +25,7 @@ own License.txt beside them.
 | Saira Stencil One | Omnibus-Type (The Saira Stencil Project Authors) | SIL OFL 1.1 | https://github.com/Omnibus-Type/Saira (via Google Fonts) | Big titles and stamps only | Art/ThirdParty/Fonts/SairaStencilOne/ (1 TTF + OFL.txt) |
 | IBM Plex Mono | IBM Corp. | SIL OFL 1.1 | https://github.com/IBM/plex (via Google Fonts) | The appraisal receipt | Art/ThirdParty/Fonts/IBMPlexMono/ (2 TTFs + OFL.txt) |
 | VT323 | Peter Hull (The VT323 Project Authors) | SIL OFL 1.1 | https://github.com/phoikoi/VT323 (via Google Fonts) | The HQ terminal | Art/ThirdParty/Fonts/VT323/ (1 TTF + OFL.txt) |
-| Kokoro-82M speech model | hexgrad | Apache-2.0 | https://huggingface.co/hexgrad/Kokoro-82M (run locally through kokoro-onnx, MIT) | The voices of the boss's voicemails and the dispatch telephone | Art/Audio/Voicemail/ and Art/Audio/HQDispatch/ (25 WAVs made by Tools/Audio/*.py; the model itself is not in the project) |
+| Kokoro-82M speech model | hexgrad | Apache-2.0 | https://huggingface.co/hexgrad/Kokoro-82M (run locally through kokoro-onnx, MIT) | The voices of the boss's voicemails, the dispatch telephone and the training job's dispatcher and trainer | Art/Audio/Voicemail/, Art/Audio/HQDispatch/, Art/Audio/TutorialDispatch/ and Art/Audio/TutorialNarration/ (WAVs made by Tools/Audio/*.py; the model itself is not in the project) |
 
 Synthesised in our own code (no third party): the Blind One's click, the truck horn, the noise maker's shriek, radio static,
 the collapse rumble, the ambience (wind, light hum), and all the music (HQ, travel and departure loops,
@@ -90,7 +90,9 @@ or paid assets were added; the existing PBR textures and vehicle/font credits co
 Voice lines (0.14.5 dispatch, 0.24.2 boss voicemails; voice replaced 2026-10-12) are original text spoken by the
 Kokoro-82M speech model (row above; Apache-2.0 weights) on the developer's machine through Tools/Audio/*.py and
 processed into telephone/tape sound. Voices `af_heart`, `af_bella` and `bf_emma` answer the dispatch telephone (one at
-random per call); the voicemails take turns through `am_michael`, `am_fenrir`, `am_onyx` and `bm_george`. No paid
+random per call); the voicemails take turns through `am_michael`, `am_fenrir`, `am_onyx` and `bm_george`. The training
+job (2026-10-21) uses the same three operators for its dispatcher's radio lines and `am_michael` for the trainer who
+reads every lesson (Tools/Audio/generate_tutorial_dispatch.py, generate_tutorial_narration.py). No paid
 service and no recording of a real person. The first clips used macOS system voices, which Apple licenses for personal,
 non-commercial use only; they are gone from the project and `say` must not be used for shipped audio.
 
@@ -99,3 +101,10 @@ with the built-in `image_gen` tool: fractured architectural A with light and dar
 tiles. Final Unity PNGs are under `Art/Branding/`; masters, Windows light-only ICO and exact
 prompts are under `Tools/Branding/0.24.6b/`. No third-party logo, font, pack or Unity package
 is used by this emblem. Details: `Docs/APP_LOGO_0.24.6b.md`.
+
+### Tutorial house — Larch Court refinement (2026-10-21)
+
+- **Source:** original procedural geometry and PBR textures authored for ABANDONED; no third-party downloads.
+- **Files:** `Game/Assets/_Project/Art/Custom/Environment/LarchCourt/` — 19 FBX models with three LODs each and 16 seamless texture sets (48 PNGs).
+- **Generators:** `Tools/Blender/tutorial/build.py`, `Tools/Blender/tutorial/textures.py`, using the project's original `meridian_core.py` helpers.
+- **Integration and verification:** `Docs/TUTORIAL_HOUSE_REFINEMENT.md`.

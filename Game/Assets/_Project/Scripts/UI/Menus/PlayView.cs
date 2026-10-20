@@ -59,6 +59,17 @@ namespace Abandoned.UI
             VisualElement solo = Card(cards, Loc.T("SOLO"), "icon/singleplayer", Loc.T("One worker. An unstable building. Use the trolley for heavy salvage. Friends can still join you at the HQ."));
             MenuKit.Button(Actions(solo), Loc.T("Start"), () => b.StartHost(), SoundId.UiConfirm, important: true);
 
+            // The practice house: hosts like Solo, then the crew is driven straight there (friends may still join at the HQ first).
+            if (Company.CompanyService.TrainingAvailable)
+            {
+                VisualElement training = Card(cards, Loc.T("TRAINING"), "icon/home", Loc.T("A practice job in an empty house: carrying, floors, the dark, something listening, the truck. No pay, no risk."));
+                MenuKit.Button(Actions(training), Loc.T("Start training"), () =>
+                {
+                    Tutorial.TutorialLaunch.Request();
+                    b.StartHost();
+                }, SoundId.UiConfirm, important: true);
+            }
+
             VisualElement host = Card(cards, Loc.T("HOST A CREW"), "icon/multiplayer", Loc.T("Lead a crew of up to four for the company. Friends join you at the HQ between jobs."));
             hostHow = MenuKit.Text(host, "", "text");
             hostHow.AddToClassList("text--small");

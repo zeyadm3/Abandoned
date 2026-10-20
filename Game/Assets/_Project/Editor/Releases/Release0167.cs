@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
         private const float CamLift = 2.8f;
         private const int Cameras = 8;
 
-        [MenuItem("Tools/Abandoned/Mall/Add Security Office (0.16.7)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.16.7 Add Security Office", priority = ToolMenu.MallP + 34)]
         public static void Author()
         {
             Transform mall = MallSites.OpenMall(out var scene);

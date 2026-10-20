@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
         public const string CatalogPath = Folder + "/LootCatalog.asset";
         public const string SpawnConfigPath = Folder + "/LootSpawnConfig.asset";
 
-        [MenuItem("Tools/Abandoned/Create Example Loot Definitions")]
+        [MenuItem(ToolMenu.Loot + "Create Example Loot Definitions", priority = ToolMenu.LootP)]
         public static void CreateMissing()
         {
             SerializedWiring.LoadOrCreateAsset<LootDamageConfig>(DamageConfigPath);

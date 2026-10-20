@@ -79,7 +79,8 @@ namespace Abandoned.Threats
         private bool IsHost => Manager != null && Manager.IsServer && Manager.IsListening;
         private void Update()
         {
-            if (!IsHost) return;
+            // Training: no waves, no arrivals. The one monster comes when its lesson calls it (RunTraining).
+            if (!IsHost || Tutorial.TutorialMode.Active) return;
             RunState run = RunState.Current;
             if (spawnAt < 0f && run != null && run.IsSpawned) Schedule(run.State.Seed);
             if (run == null || run.State.Phase != RunPhase.Running) return;
@@ -210,6 +211,23 @@ namespace Abandoned.Threats
             if (result != null) finalSpawned = true;
             return result;
         }
+        /// <summary>
+        /// Host, the training job: one creature of this kind exactly here, outside pacing and the hidden-placement
+        /// rules (the lesson wants it seen coming in).
+        /// </summary>
+        public Threat SpawnScripted(ThreatKind kind, Vector3 at, Quaternion facing)
+        {
+            if (!IsHost) return null;
+            for (int i = 0; i < roster.Length; i++)
+            {
+                if (roster[i] == null || DefinitionAt(i) is not ThreatDefinition d || d.Kind != kind) continue;
+                NetworkObject spawned = Manager.SpawnManager.InstantiateAndSpawn(roster[i], position: at, rotation: facing);
+                if (spawned == null) return null;
+                Debug.Log($"[Threat] Training: {Named(spawned.GetComponent<Threat>().DisplayName)} comes in at {at}.");
+                return spawned.GetComponent<Threat>();
+            }
+            return null;
+        }
         public BlindOne Spawn() => Spawn(blindOnePrefab) as BlindOne;
         public Threat Spawn(int index) => index >= 0 && index < roster.Length ? Spawn(roster[index]) : null;
         public Threat SpawnOf<T>() where T : Threat
@@ -228,7 +246,7 @@ namespace Abandoned.Threats
         }
         // TEMPORARY (2026-10-19): monsters off so the user can explore the island prison. Set back to false (or delete)
         // when they say so: every monster spawn, opening, arrival, relocation and the Last Hunter comes through here.
-        private static readonly bool ExploreWithoutMonsters = true;
+        private static readonly bool ExploreWithoutMonsters = false;
 
         private Threat Spawn(NetworkObject prefab)
         {

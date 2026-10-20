@@ -7,7 +7,7 @@ of the 178 loot points has at least one item that fits it. Every new English lin
 scene has not been rebuilt in Unity or played. Step 8 (the Unity compile and rebuild) waits for the user.
 The old factory's dressing pass, `Editor/FactoryAtmosphereBuilder.cs`, is no longer called by anything; it is
 kept until the user says it can go.
-Rebuild: **Tools > Abandoned > Factory > Rebuild Iron Factory** (the Console prints each tier as a map).
+Rebuild: **Tools > Abandoned > Maps > Iron Factory > Rebuild Iron Factory** (the Console prints each tier as a map).
 
 ## What is built (steps 1-2)
 
@@ -68,7 +68,7 @@ Rebuild: **Tools > Abandoned > Factory > Rebuild Iron Factory** (the Console pri
   - **machinery** (huge machine parts): Steam Governor, Electric Motor, Flywheel (600 kg, Huge); jackpot Crucible (900 kg).
   - **records** (office): Production Ledgers, Typewriter, Company Seal Press, Foreman's Safe.
 - Original low-poly models (`IronFactoryLootModels`, Art/Factory/Loot), built inside each item's Size box.
-- `IronFactoryLoot.EnsureContent` (also **Tools > Abandoned > Factory > Add Iron Factory Loot**) makes the
+- `IronFactoryLoot.EnsureContent` (also **Tools > Abandoned > Maps > Iron Factory > Add Iron Factory Loot**) makes the
   definitions, models, network loot prefabs, catalog, network prefab list and icons; the rebuild runs it first.
 - 178 spawn points (`IronFactoryLootPlan`), replacing step 1's placeholders: beside each machine (what it makes),
   a 6 m grid in every room (records in the offices), one catwalk cell in four (light items only; tier 1 up to
@@ -162,7 +162,7 @@ Rebuild: **Tools > Abandoned > Factory > Rebuild Iron Factory** (the Console pri
 
 Code goes in `Editor/Factory/` (layout data, shell, floor, catwalks, channel, hiding, dressing,
 surroundings, atmosphere), one class per file, under ~300 lines each, menu
-**Tools > Abandoned > Factory > Rebuild Iron Factory**. All new text through `Loc` and `check.py`.
+**Tools > Abandoned > Maps > Iron Factory > Rebuild Iron Factory**. All new text through `Loc` and `check.py`.
 F1 debug: lava volume, hazard cycles, catwalk capacities, hiding spots.
 
 ## Build order (each step is a commit)

@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
         private const int Sections = 4;
         private const float Thickness = 0.06f, TrackDepth = 3.6f;
 
-        [MenuItem("Tools/Abandoned/HQ/Create Garage Door Prefab")]
+        [MenuItem(ToolMenu.Hq + "Create Garage Door Prefab", priority = ToolMenu.HqP + 22)]
         public static GameObject Create()
         {
             Material steel = CustomMallArt.Material("Metal"), rust = CustomMallArt.Material("Rust"), trim = CustomMallArt.Material("Trim");

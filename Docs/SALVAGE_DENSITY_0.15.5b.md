@@ -46,7 +46,7 @@ provides F1 construction counters and editor bounds for the section batches.
 ## Authoring and review
 
 1. Open `Assets/_Project/Scenes/Mall.unity` in Unity.
-2. To reproduce the layer, use **Tools > Abandoned > Mall > Fill Salvage Mall (0.15.5b)**.
+2. To reproduce the layer, use **Tools > Abandoned > Maps > Mall > Updates > 0.15.5b Fill Salvage Mall**.
 3. Review the denser stores and staging bays in your own playtest.
 
 The authoring command saves the scene, navigation and culling data. The batch entry

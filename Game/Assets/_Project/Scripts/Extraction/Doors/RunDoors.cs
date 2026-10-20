@@ -59,7 +59,8 @@ namespace Abandoned.Extraction
             {
                 double roll = random.NextDouble();
                 SlidingDoor door = SlidingDoor.ByIndex(i);
-                if (door == null) continue;
+                // Training: every door starts open; the doors lesson shuts them itself.
+                if (door == null || Tutorial.TutorialMode.Active) continue;
                 float chance = door.Kind == DoorKind.Service ? config.ServiceShutChance : config.StoreShutChance;
                 if (roll < chance) mask |= Bit(i);
             }

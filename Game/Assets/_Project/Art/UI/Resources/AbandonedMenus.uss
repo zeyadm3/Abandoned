@@ -212,7 +212,9 @@
 
 /* Pause: a recovery file beside the still-live building. */
 .menu-screen--pause.backdrop--dim { background-color: rgba(5, 6, 6, 0.64); }
-.pause__scroll .unity-scroll-view__content-container { justify-content: center; min-height: 100%; padding: 4% 0; }
+/* Only the outer scroll body centers its columns. Descendant selectors also center the
+   nested crew body, shrinking its identity rows down to a single character. */
+.pause__content { justify-content: center; min-height: 100%; padding: 4% 0; }
 .pause__columns { width: 88%; max-width: 1340px; }
 .pause__left { width: 390px; margin-right: 64px; padding-top: 8px; }
 .pause__left .title { font-size: 76px; letter-spacing: 6px; }

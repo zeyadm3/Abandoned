@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release0172
     {
-        [MenuItem("Tools/Abandoned/Mall/Set Floor Types (0.17.2)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.17.2 Set Floor Types", priority = ToolMenu.MallP + 35)]
         public static void Author()
         {
             ReleaseKit.Config<FloorKindConfig>("Assets/_Project/Data/Structure/Resources", FloorKindConfig.ResourcePath);

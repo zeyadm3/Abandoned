@@ -11,7 +11,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release0203
     {
-        [MenuItem("Tools/Abandoned/Mall/Add Truck Winch (0.20.3)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.20.3 Add Truck Winch", priority = ToolMenu.MallP + 40)]
         public static void Author()
         {
             CompanyContentBuilder.CreateTruckUpgrades();

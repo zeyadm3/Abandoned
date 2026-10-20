@@ -141,7 +141,7 @@ namespace Abandoned.EditorTools
         }
 
         /// <summary>The same setting on the Player prefab already saved, without regenerating it.</summary>
-        [MenuItem("Tools/Abandoned/Fix/Silence Player Voice Sources")]
+        [MenuItem(ToolMenu.Fixes + "Silence Player Voice Sources", priority = ToolMenu.ProjectP + 22)]
         public static void FixSavedPrefab()
         {
             GameObject root = PrefabUtility.LoadPrefabContents(PlayerPrefabBuilder.PrefabPath);

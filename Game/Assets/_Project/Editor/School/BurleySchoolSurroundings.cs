@@ -6,54 +6,314 @@ using L = Abandoned.EditorTools.BurleySchoolLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Builds the surrounding Charlottesville neighborhood, road networks (Rose Hill Dr,
-    /// Henry Ave, Concord Ave, Madison Ave), residential homes, Booker T. Washington Park,
-    /// and the front entrance driveway drop-off loop with flagpoles and bus stop.
+    /// Builds the scenic surroundings of Jackson P. Burley Middle School in winter at 3:00 PM:
+    /// Distant snow-capped Blue Ridge mountain backdrop, Booker T. Washington Park with a frozen ice pond
+    /// and wooden footbridge, Charlottesville residential neighborhood houses with smoking brick chimneys
+    /// and snow-laden roofs, snow-covered pine trees, winter roads with plow banks, and parked snow-dusted vehicles.
     /// </summary>
     public static class BurleySchoolSurroundings
     {
+        public const string GroupName = "CampusSurroundings";
+
         public static void Build(Transform root, BurleySchoolArt art)
         {
-            Transform surroundings = Group("CampusSurroundings", root);
+            Transform surroundings = Group(GroupName, root);
 
-            // 1. Front Semicircular Driveway Drop-off Loop & Campus Lawn
-            BuildFrontDrivewayLoop(Group("FrontDrivewayLoop", surroundings), art);
+            BurleySchoolLandscape.Ground(surroundings, art);
 
-            // 2. Road Network (Rose Hill Dr, Madison Ave, Henry Ave, Concord Ave)
-            BuildRoadNetworks(Group("RoadNetworks", surroundings), art);
+            // 1. Distant Snow-Capped Blue Ridge Mountain Backdrop
+            BuildMountainBackdrop(Group("BlueRidgeMountainPanorama", surroundings), art);
+
+            // 2. Booker T. Washington Park with Frozen Pond & Footbridge
+            BuildBookerTPark(Group("BookerTWashingtonPark", surroundings), art);
 
             // 3. Charlottesville Residential Neighborhood Houses
             BuildResidentialNeighborhood(Group("ResidentialNeighborhood", surroundings), art);
 
-            // 4. Booker T. Washington Park & Landscape
-            BuildBookerTPark(Group("BookerTWashingtonPark", surroundings), art);
+            // 4. Snowy Road Networks & Utility Infrastructure
+            BuildRoadNetworks(Group("RoadNetworks", surroundings), art);
 
-            // 5. Mature Trees & Campus Foliage
-            BuildCampusTrees(Group("CampusTrees", surroundings), art);
+            // 5. Winter Pine Trees & Campus Foliage
+            BuildWinterFoliage(Group("WinterFoliage", surroundings), art);
+
+            // 6. Front Semicircular Driveway Drop-off Loop & Flagpoles
+            BuildFrontDrivewayLoop(Group("FrontDrivewayLoop", surroundings), art);
+
+            // 7. Abandoned Snow-Covered Vehicles (School Buses & Cars)
+            BuildWinterVehicles(Group("WinterVehicles", surroundings), art);
 
             MarkStatic(surroundings);
         }
 
         // =========================================================================
-        // 1. FRONT DRIVEWAY LOOP & CAMPUS LAWN
+        // 1. DISTANT BLUE RIDGE MOUNTAIN BACKDROP
+        // =========================================================================
+        private static void BuildMountainBackdrop(Transform parent, BurleySchoolArt art)
+        {
+            // Monumental snow-capped mountain ridges encircling Charlottesville
+            (Vector3 pos, Vector3 size, float rotY)[] ridges =
+            {
+                // North Ridge (visible behind Booker T. Park)
+                (new Vector3(120f, 65f, 420f), new Vector3(550f, 130f, 120f), -8f),
+                (new Vector3(-180f, 85f, 460f), new Vector3(480f, 170f, 140f), 15f),
+                // West Ridge (visible past Henry Ave)
+                (new Vector3(-380f, 75f, 60f), new Vector3(140f, 150f, 520f), 4f),
+                (new Vector3(-420f, 95f, -220f), new Vector3(160f, 190f, 460f), -12f),
+                // East Ridge (visible past Madison Ave & athletic track)
+                (new Vector3(480f, 80f, 40f), new Vector3(140f, 160f, 560f), -5f),
+                (new Vector3(520f, 110f, 280f), new Vector3(160f, 220f, 480f), 18f),
+                // South Foothills (visible down Concord & Rose Hill)
+                (new Vector3(60f, 55f, -380f), new Vector3(580f, 110f, 130f), 6f)
+            };
+
+            for (int i = 0; i < ridges.Length; i++)
+            {
+                var (pos, size, rotY) = ridges[i];
+                BurleySchoolLandscape.Ridge(parent, $"MountainRidge_{i}", pos, size, rotY, 31 + i * 19, art);
+            }
+        }
+
+        // =========================================================================
+        // 2. BOOKER T. WASHINGTON PARK WITH FROZEN POND & FOOTBRIDGE
+        // =========================================================================
+        private static void BuildBookerTPark(Transform parent, BurleySchoolArt art)
+        {
+            Rect r = L.BookerTParkBounds;
+            Vector3 center = new(r.center.x, -0.1f, r.center.y);
+            Vector3 pond = center + new Vector3(15f, 0.05f, 10f);
+            const float pondWidth = 42f;
+            const float pondLength = 28f;
+            float west = pond.x - pondWidth * 0.5f - 1f;
+            float east = pond.x + pondWidth * 0.5f + 1f;
+            float south = pond.z - pondLength * 0.5f - 1f;
+            float north = pond.z + pondLength * 0.5f + 1f;
+            // Leave a real opening in the snow mantle so it cannot hide the ice.
+            Box("ParkSnowWest", parent, new Vector3((r.xMin + west) * 0.5f, -0.1f, r.center.y),
+                new Vector3(west - r.xMin, 0.25f, r.height), art.Snow);
+            Box("ParkSnowEast", parent, new Vector3((east + r.xMax) * 0.5f, -0.1f, r.center.y),
+                new Vector3(r.xMax - east, 0.25f, r.height), art.Snow);
+            Box("ParkSnowSouth", parent, new Vector3(pond.x, -0.1f, (r.yMin + south) * 0.5f),
+                new Vector3(east - west, 0.25f, south - r.yMin), art.Snow);
+            Box("ParkSnowNorth", parent, new Vector3(pond.x, -0.1f, (north + r.yMax) * 0.5f),
+                new Vector3(east - west, 0.25f, r.yMax - north), art.Snow);
+            Box("PondBasin", parent, pond - Vector3.up * 0.15f, new Vector3(pondWidth + 2f, 0.2f, pondLength + 2f), art.SnowDrift);
+            Box("FrozenPondIce", parent, pond, new Vector3(pondWidth, 0.04f, pondLength), art.FrostIce);
+            foreach (float sign in new[] { -1f, 1f })
+            {
+                Box($"SnowShoreEW_{sign}", parent, pond + new Vector3(sign * (pondWidth * 0.5f + 0.5f), 0.025f, 0f),
+                    new Vector3(1f, 0.14f, pondLength + 2f), art.SnowDrift, false);
+                Box($"SnowShoreNS_{sign}", parent, pond + new Vector3(0f, 0.025f, sign * (pondLength * 0.5f + 0.5f)),
+                    new Vector3(pondWidth, 0.14f, 1f), art.SnowDrift, false);
+            }
+            BurleySchoolCampusProps.Bridge(parent, pond, pondLength + 4f, art);
+            Box("NorthParkWalk", parent, new Vector3(center.x + 5f, -0.015f, pond.z + 20f), new Vector3(115f, 0.08f, 2.4f), art.Sidewalk);
+            for (int i = 0; i < 4; i++)
+            {
+                Transform bench = Group($"ParkBench_{i}", parent);
+                bench.localPosition = new Vector3(pond.x - 22f + i * 14f, 0f, pond.z - 18f);
+                for (int slat = 0; slat < 4; slat++)
+                    Box($"SeatSlat_{slat}", bench, new Vector3(0f, 0.45f, -0.2f + slat * 0.13f), new Vector3(2.2f, 0.065f, 0.1f), art.OakWood);
+                for (int slat = 0; slat < 3; slat++)
+                    Box($"BackSlat_{slat}", bench, new Vector3(0f, 0.69f + slat * 0.15f, -0.27f), new Vector3(2.2f, 0.11f, 0.07f), art.OakWood);
+                foreach (float sign in new[] { -1f, 1f })
+                {
+                    BurleySchoolArchitecture.Rod(bench, $"LegF_{sign}", new Vector3(sign * 0.85f, -0.08f, 0.2f), new Vector3(sign * 0.85f, 0.48f, 0.15f), 0.04f, art.MetalSteel, true);
+                    BurleySchoolArchitecture.Rod(bench, $"LegB_{sign}", new Vector3(sign * 0.85f, -0.08f, -0.22f), new Vector3(sign * 0.85f, 1.02f, -0.3f), 0.04f, art.MetalSteel, true);
+                }
+                Box("SeatSnow", bench, new Vector3(-0.3f, 0.52f, 0.01f), new Vector3(1.5f, 0.055f, 0.5f), art.Snow, false);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                Transform lamp = Group($"ParkLamp_{i}", parent);
+                lamp.localPosition = new Vector3(center.x - 45f + i * 25f, 0f, pond.z + 20f);
+                BurleySchoolArchitecture.Cylinder(lamp, "IronBase", new Vector3(0f, 0.2f, 0f), 0.19f, 0.5f, art.MetalSteel, true);
+                BurleySchoolArchitecture.Cylinder(lamp, "IronPost", new Vector3(0f, 2.2f, 0f), 0.065f, 4.4f, art.MetalSteel, true);
+                Box("LanternGlow", lamp, new Vector3(0f, 4.5f, 0f), new Vector3(0.45f, 0.55f, 0.45f), art.LampSodium, false);
+                Box("LanternCap", lamp, new Vector3(0f, 4.82f, 0f), new Vector3(0.62f, 0.12f, 0.62f), art.MetalSteel, false);
+                Box("CapSnow", lamp, new Vector3(0f, 4.91f, 0f), new Vector3(0.58f, 0.07f, 0.58f), art.Snow, false);
+            }
+        }
+
+        // =========================================================================
+        // 3. CHARLOTTESVILLE RESIDENTIAL NEIGHBORHOOD HOUSES
+        // =========================================================================
+        private static void BuildResidentialNeighborhood(Transform parent, BurleySchoolArt art)
+        {
+            // Homes along south side of Rose Hill Drive (Z: -32f to -44f)
+            for (int i = 0; i < 5; i++)
+            {
+                float hx = 10f + i * 22f;
+                BuildCraftsmanHouse(parent, $"House_RoseHill_{i}", new Vector3(hx, 0f, -38f), 0f, art);
+            }
+
+            // Homes along east side of Madison Avenue (X: 254f)
+            for (int i = 0; i < 4; i++)
+            {
+                float hz = -15f + i * 24f;
+                BuildCraftsmanHouse(parent, $"House_Madison_{i}", new Vector3(258f, 0f, hz), -90f, art);
+            }
+
+            // Homes along west side of Henry Avenue (X: -36f)
+            for (int i = 0; i < 3; i++)
+            {
+                float hz = 20f + i * 24f;
+                BuildCraftsmanHouse(parent, $"House_Henry_{i}", new Vector3(-38f, 0f, hz), 90f, art);
+            }
+        }
+
+        private static void BuildCraftsmanHouse(Transform parent, string name, Vector3 pos, float rotY, BurleySchoolArt art)
+        {
+            Transform house = Group(name, parent);
+            house.position = pos;
+            house.rotation = Quaternion.Euler(0f, rotY, 0f);
+
+            // House Main Body (2 stories, clapboard/brick)
+            Box("MainBody", house, new Vector3(0f, 3.2f, 0f), new Vector3(10.5f, 6.4f, 8.5f), art.PlasterWall);
+
+            BurleySchoolLandscape.Roof(house, art);
+
+            // Brick Chimney with cold-weather smoke
+            Transform chimney = Group("BrickChimney", house);
+            chimney.localPosition = new Vector3(3.2f, 7.8f, 1.8f);
+            Box("ChimneyShaft", chimney, Vector3.zero, new Vector3(1.1f, 3.2f, 1.1f), art.Brick);
+            Box("ChimneyCapSnow", chimney, new Vector3(0f, 1.7f, 0f), new Vector3(1.2f, 0.2f, 1.2f), art.Snow, false);
+
+            // Front Covered Porch
+            Transform porch = Group("FrontPorch", house);
+            porch.localPosition = new Vector3(0f, 0f, 4.8f);
+            Box("PorchDeck", porch, new Vector3(0f, 0.25f, 0f), new Vector3(7.5f, 0.5f, 2.2f), art.Concrete);
+            Box("PorchRoof", porch, new Vector3(0f, 3.2f, 0f), new Vector3(7.8f, 0.4f, 2.4f), art.PlasterWall);
+            Box("PorchRoofSnow", porch, new Vector3(0f, 3.5f, 0f), new Vector3(7.9f, 0.25f, 2.5f), art.Snow, false);
+            // Porch Columns
+            Box("PorchCol_L", porch, new Vector3(-3.4f, 1.7f, 0.8f), new Vector3(0.35f, 2.6f, 0.35f), art.Limestone);
+            Box("PorchCol_R", porch, new Vector3(3.4f, 1.7f, 0.8f), new Vector3(0.35f, 2.6f, 0.35f), art.Limestone);
+
+            // Frosted Windows with warm interior light
+            Box("Window_1", house, new Vector3(-2.8f, 2.2f, 4.28f), new Vector3(1.4f, 1.6f, 0.04f), art.WindowGlass, false);
+            Box("Window_2", house, new Vector3(2.8f, 2.2f, 4.28f), new Vector3(1.4f, 1.6f, 0.04f), art.WindowGlass, false);
+            Box("UpperWindow_1", house, new Vector3(-2.8f, 4.8f, 4.28f), new Vector3(1.4f, 1.4f, 0.04f), art.WindowGlass, false);
+            Box("UpperWindow_2", house, new Vector3(2.8f, 4.8f, 4.28f), new Vector3(1.4f, 1.4f, 0.04f), art.WindowGlass, false);
+
+            // White Picket Fence along front yard with snow caps
+            Transform fence = Group("FrontYardPicketFence", house);
+            fence.localPosition = new Vector3(0f, 0f, 7.5f);
+            Box("FenceRail", fence, new Vector3(0f, 0.55f, 0f), new Vector3(12.0f, 0.08f, 0.04f), art.WhiteStripe);
+            Box("FenceSnowCap", fence, new Vector3(0f, 0.65f, 0f), new Vector3(12.1f, 0.12f, 0.12f), art.Snow, false);
+            for (float px = -5.8f; px <= 5.8f; px += 0.45f)
+                Box($"Picket_{px:0.0}", fence, new Vector3(px, 0.5f, 0f), new Vector3(0.08f, 1.0f, 0.02f), art.WhiteStripe, false);
+
+            // Mailbox with snow pile
+            Transform mailbox = Group("Mailbox", house);
+            mailbox.localPosition = new Vector3(5.5f, 0f, 8.2f);
+            Box("Post", mailbox, new Vector3(0f, 0.55f, 0f), new Vector3(0.1f, 1.1f, 0.1f), art.OakWood);
+            Box("Box", mailbox, new Vector3(0f, 1.15f, 0f), new Vector3(0.35f, 0.35f, 0.55f), art.MetalSteel, false);
+            Box("MailboxSnow", mailbox, new Vector3(0f, 1.38f, 0f), new Vector3(0.38f, 0.14f, 0.58f), art.Snow, false);
+        }
+
+        // =========================================================================
+        // 4. ROAD NETWORKS & UTILITY INFRASTRUCTURE
+        // =========================================================================
+        private static void BuildRoadNetworks(Transform parent, BurleySchoolArt art)
+        {
+            const float roadW = L.RoadWidth;
+
+            // 1. Rose Hill Drive (Across front of school: Z: -14f, X: -50 to 260)
+            Transform roseHill = Group("RoseHillDrive", parent);
+            roseHill.position = new Vector3(105f, -0.06f, L.RoseHillZ);
+            Box("AsphaltSlab", roseHill, Vector3.zero, new Vector3(310f, 0.2f, roadW), art.SnowyAsphalt);
+            // Plowed snow ridges on North and South curbs
+            Box("PlowRidge_N", roseHill, new Vector3(0f, 0.25f, roadW * 0.5f), new Vector3(310f, 0.5f, 1.2f), art.SnowDrift);
+            Box("PlowRidge_S", roseHill, new Vector3(0f, 0.25f, -roadW * 0.5f), new Vector3(310f, 0.5f, 1.2f), art.SnowDrift);
+
+            // 2. Madison Avenue (Running along eastern edge past track: X: 240f, Z: -60 to 180)
+            Transform madison = Group("MadisonAvenue", parent);
+            madison.position = new Vector3(L.MadisonAveX, -0.06f, 60f);
+            Box("AsphaltSlab", madison, Vector3.zero, new Vector3(roadW, 0.2f, 240f), art.SnowyAsphalt);
+            Box("PlowRidge_W", madison, new Vector3(-roadW * 0.5f, 0.25f, 0f), new Vector3(1.2f, 0.5f, 240f), art.SnowDrift);
+            Box("PlowRidge_E", madison, new Vector3(roadW * 0.5f, 0.25f, 0f), new Vector3(1.2f, 0.5f, 240f), art.SnowDrift);
+
+            // 3. Henry Avenue (Northwest side: X: -18f, Z: -20 to 90)
+            Transform henry = Group("HenryAvenue", parent);
+            henry.position = new Vector3(L.HenryAveX, -0.06f, 35f);
+            Box("AsphaltSlab", henry, Vector3.zero, new Vector3(roadW, 0.2f, 110f), art.SnowyAsphalt);
+
+            // 4. Concord Avenue (Intersecting Rose Hill Dr: X: 26f, Z: -60 to -14)
+            Transform concord = Group("ConcordAvenue", parent);
+            concord.position = new Vector3(L.ConcordAveX, -0.06f, -37f);
+            Box("AsphaltSlab", concord, Vector3.zero, new Vector3(roadW, 0.2f, 46f), art.SnowyAsphalt);
+
+            // Utility Telephone Poles with crossbars and transformers along Rose Hill Dr
+            for (int p = 0; p < 7; p++)
+            {
+                float px = -30f + p * 45f;
+                Transform pole = Group($"UtilityPole_{p}", parent);
+                pole.position = new Vector3(px, 0f, L.RoseHillZ - roadW * 0.5f - 1.2f);
+                Box("WoodMast", pole, new Vector3(0f, 5.0f, 0f), new Vector3(0.25f, 10.0f, 0.25f), art.OakWood);
+                Box("Crossbar", pole, new Vector3(0f, 9.4f, 0f), new Vector3(2.4f, 0.15f, 0.15f), art.OakWood, false);
+                Box("SnowCap", pole, new Vector3(0f, 9.55f, 0f), new Vector3(2.45f, 0.15f, 0.2f), art.Snow, false);
+                // Heavy cylindrical transformer on every second pole
+                if (p % 2 == 1)
+                    Box("Transformer", pole, new Vector3(0.45f, 8.2f, 0f), new Vector3(0.55f, 0.85f, 0.55f), art.MetalSteel, false);
+            }
+        }
+
+        // =========================================================================
+        // 5. WINTER PINE TREES & MATURE CAMPUS FOLIAGE
+        // =========================================================================
+        private static void BuildWinterFoliage(Transform parent, BurleySchoolArt art)
+        {
+            // Clustered Stands of Winter Pine Trees with tiered snow-laden needle boughs
+            Vector3[] pineLocations =
+            {
+                // Front lawn & Entrance perimeter
+                new(12f, 0f, 8f), new(16f, 0f, 12f), new(76f, 0f, 8f), new(82f, 0f, 12f),
+                // West Wing light court
+                new(-8f, 0f, 32f), new(-8f, 0f, 48f),
+                // North Wing garden court
+                new(16f, 0f, 68f), new(18f, 0f, 76f),
+                // Parking Lot border
+                new(102f, 0f, 94f), new(132f, 0f, 88f),
+                // Booker T. Washington Park Grove
+                new(95f, 0f, 142f), new(110f, 0f, 155f), new(135f, 0f, 148f), new(150f, 0f, 160f),
+                new(85f, 0f, 165f), new(125f, 0f, 175f), new(165f, 0f, 150f),
+                // Athletics perimeter & track banks
+                new(132f, 0f, 65f), new(132f, 0f, -25f), new(225f, 0f, 25f), new(225f, 0f, -15f)
+            };
+
+            for (int i = 0; i < pineLocations.Length; i++)
+            {
+                float scale = 0.85f + (i % 5) * 0.12f;
+                BuildWinterPineTree(parent, $"PineTree_{i}", pineLocations[i], scale, art);
+            }
+        }
+
+        private static void BuildWinterPineTree(Transform parent, string name, Vector3 pos, float scale, BurleySchoolArt art)
+        {
+            BurleySchoolLandscape.Pine(parent, name, pos, scale, art);
+        }
+
+        // =========================================================================
+        // 6. FRONT DRIVEWAY LOOP & CAMPUS LAWN
         // =========================================================================
         private static void BuildFrontDrivewayLoop(Transform parent, BurleySchoolArt art)
         {
-            // Semicircular asphalt driveway sweeping off Rose Hill Drive past front portico
             Vector3 loopCenter = new(46f, -0.05f, 4f);
 
-            // Driveway asphalt loop surface (spans from Z: -8 to Z: 18, X: 22 to X: 70)
-            Box("DrivewayLoopAsphalt", parent, loopCenter, new Vector3(48f, 0.2f, 22f), art.RoadAsphalt);
+            // Semicircular driveway asphalt loop surface
+            Box("DrivewayLoopAsphalt", parent, loopCenter, new Vector3(48f, 0.2f, 22f), art.SnowyAsphalt);
 
-            // Inside front island grass lawn
+            // Front Campus Lawn under deep snow blanket
             Transform lawn = Group("FrontCampusLawn", parent);
-            lawn.position = loopCenter + new Vector3(0f, 0.02f, -2.5f);
-            Box("LawnTurf", lawn, Vector3.zero, new Vector3(32f, 0.22f, 13f), art.TurfGrass);
+            lawn.position = new Vector3(31f, -.03f, 3f);
+            Box("LawnSnow", lawn, Vector3.zero, new Vector3(14f, 0.22f, 10f), art.Snow);
             // Concrete curbing around lawn
-            Box("LawnCurb_N", lawn, new Vector3(0f, 0.15f, 6.5f), new Vector3(32.4f, 0.25f, 0.35f), art.Limestone);
-            Box("LawnCurb_S", lawn, new Vector3(0f, 0.15f, -6.5f), new Vector3(32.4f, 0.25f, 0.35f), art.Limestone);
-            Box("LawnCurb_W", lawn, new Vector3(-16f, 0.15f, 0f), new Vector3(0.35f, 0.25f, 13.4f), art.Limestone);
-            Box("LawnCurb_E", lawn, new Vector3(16f, 0.15f, 0f), new Vector3(0.35f, 0.25f, 13.4f), art.Limestone);
+            Box("LawnCurb_N", lawn, new Vector3(0f, 0.15f, 5f), new Vector3(14.4f, 0.25f, 0.35f), art.Limestone);
+            Box("LawnCurb_S", lawn, new Vector3(0f, 0.15f, -5f), new Vector3(14.4f, 0.25f, 0.35f), art.Limestone);
+            Box("LawnCurb_W", lawn, new Vector3(-7f, 0.15f, 0f), new Vector3(0.35f, 0.25f, 10.4f), art.Limestone);
+            Box("LawnCurb_E", lawn, new Vector3(7f, 0.15f, 0f), new Vector3(0.35f, 0.25f, 10.4f), art.Limestone);
+
+            Box("ClearedEntranceWalk", parent, new Vector3(46f, -.035f, 13.5f), new Vector3(7f, .12f, 13f), art.Sidewalk);
+            Box("ServiceWalkEast", parent, new Vector3(101.4f, -.035f, 46f), new Vector3(2.4f, .12f, 52f), art.Sidewalk);
 
             // Flagpole Plaza on Front Lawn
             Transform flagPlaza = Group("FlagpolePlaza", lawn);
@@ -65,7 +325,7 @@ namespace Abandoned.EditorTools
             // Burley Bears School Flag (Kelly Green and Old Gold)
             BuildFlagpole(flagPlaza, "SchoolFlagpole", new Vector3(-2.2f, 0f, 0f), 8.5f, art.Limestone, art.GoldAccent, art.LockerGreen);
 
-            // Front Covered Bus Stop Shelter along curb
+            // Covered Bus Stop Shelter along curb with frosted glass & snow roof
             Transform busStop = Group("BusStopShelter", parent);
             busStop.position = new Vector3(25f, 0f, -7.5f);
             Box("ShelterPad", busStop, new Vector3(0f, 0.05f, 0f), new Vector3(4.5f, 0.1f, 2.5f), art.Concrete);
@@ -73,12 +333,8 @@ namespace Abandoned.EditorTools
             Box("Post_R", busStop, new Vector3(2.0f, 1.3f, 1.0f), new Vector3(0.1f, 2.6f, 0.1f), art.MetalSteel);
             Box("GlassBack", busStop, new Vector3(0f, 1.3f, 1.0f), new Vector3(3.9f, 2.2f, 0.04f), art.WindowGlass, false);
             Box("RoofCanopy", busStop, new Vector3(0f, 2.65f, 0f), new Vector3(4.8f, 0.15f, 2.8f), art.MetalSteel);
+            Box("RoofSnowMantle", busStop, new Vector3(0f, 2.85f, 0f), new Vector3(4.9f, 0.25f, 2.9f), art.Snow, false);
             Box("Bench", busStop, new Vector3(0f, 0.45f, 0.6f), new Vector3(3.2f, 0.08f, 0.4f), art.OakWood);
-            // Bus Stop Sign
-            Box("BusSignPole", busStop, new Vector3(-2.4f, 1.1f, -1.0f), new Vector3(0.06f, 2.2f, 0.06f), art.MetalSteel);
-            Box("BusSignFace", busStop, new Vector3(-2.4f, 1.95f, -1.0f), new Vector3(0.45f, 0.6f, 0.03f), art.GoldAccent, false);
-            Label(busStop, "BusSignText", "BUS\nSTOP", new Vector3(-2.4f, 1.95f, -1.03f),
-                Quaternion.Euler(0f, 180f, 0f), 0.08f, art.LockerGreen.GetColor("_BaseColor"));
         }
 
         private static void BuildFlagpole(Transform parent, string name, Vector3 pos, float height, Material poleMat, Material ballMat, Material flagMat)
@@ -87,227 +343,32 @@ namespace Abandoned.EditorTools
             pole.localPosition = pos;
             Box("SteelPole", pole, new Vector3(0f, height * 0.5f, 0f), new Vector3(0.12f, height, 0.12f), poleMat);
             Box("GoldBallFinial", pole, new Vector3(0f, height + 0.15f, 0f), new Vector3(0.35f, 0.35f, 0.35f), ballMat, false);
-            // Flag banner waving in wind
             Box("FlagBanner", pole, new Vector3(1.1f, height - 1.1f, 0f), new Vector3(2.1f, 1.35f, 0.03f), flagMat, false);
         }
 
         // =========================================================================
-        // 2. ROAD NETWORKS
+        // 7. ABANDONED SNOW-COVERED VEHICLES (SCHOOL BUSES & CARS)
         // =========================================================================
-        private static void BuildRoadNetworks(Transform parent, BurleySchoolArt art)
+        private static void BuildWinterVehicles(Transform parent, BurleySchoolArt art)
         {
-            const float roadW = L.RoadWidth;
+            // Abandoned Yellow School Buses parked in turnaround & parking lot
+            BuildSchoolBus(parent, "SchoolBus_FrontTurnaround", new Vector3(18f, 0f, 4f), 0f, art);
+            BuildSchoolBus(parent, "SchoolBus_ParkingLot", new Vector3(118f, 0f, 65f), 0f, art);
 
-            // --- 1. Rose Hill Drive (Runs East-West along front, Z: -14) ---
-            Transform roseHill = Group("RoseHillDrive", parent);
-            roseHill.position = new Vector3(100f, -0.15f, L.RoseHillZ);
-            // 2-lane asphalt roadway (spanning 320 metres across entire front)
-            Box("AsphaltPavement", roseHill, Vector3.zero, new Vector3(320f, 0.2f, roadW), art.RoadAsphalt);
-            // Double yellow centerlines
-            Box("YellowCenter_1", roseHill, new Vector3(0f, 0.12f, 0.1f), new Vector3(320f, 0.02f, 0.12f), art.YellowStripe, false);
-            Box("YellowCenter_2", roseHill, new Vector3(0f, 0.12f, -0.1f), new Vector3(320f, 0.02f, 0.12f), art.YellowStripe, false);
-            // White edge lines
-            Box("WhiteEdge_N", roseHill, new Vector3(0f, 0.12f, roadW * 0.5f - 0.2f), new Vector3(320f, 0.02f, 0.12f), art.WhiteStripe, false);
-            Box("WhiteEdge_S", roseHill, new Vector3(0f, 0.12f, -roadW * 0.5f + 0.2f), new Vector3(320f, 0.02f, 0.12f), art.WhiteStripe, false);
-            // Concrete Sidewalks & Curbs on both sides
-            Box("Sidewalk_N", roseHill, new Vector3(0f, 0.1f, roadW * 0.5f + 1.25f), new Vector3(320f, 0.25f, 2.5f), art.Sidewalk);
-            Box("Sidewalk_S", roseHill, new Vector3(0f, 0.1f, -roadW * 0.5f - 1.25f), new Vector3(320f, 0.25f, 2.5f), art.Sidewalk);
-
-            // Striped Crosswalk at front entrance
-            for (int stripe = -4; stripe <= 4; stripe++)
-            {
-                Box($"CrosswalkStripe_{stripe}", roseHill, new Vector3(stripe * 1.5f - 54f, 0.12f, 0f), new Vector3(0.65f, 0.025f, roadW - 0.8f), art.WhiteStripe, false);
-            }
-
-            // --- 2. Madison Avenue (Runs North-South along east boundary, X: 240) ---
-            Transform madison = Group("MadisonAvenue", parent);
-            madison.position = new Vector3(L.MadisonAveX, -0.15f, 50f);
-            Box("MadisonAsphalt", madison, Vector3.zero, new Vector3(roadW, 0.2f, 240f), art.RoadAsphalt);
-            Box("MadisonYellow_1", madison, new Vector3(0.1f, 0.12f, 0f), new Vector3(0.12f, 0.02f, 240f), art.YellowStripe, false);
-            Box("MadisonYellow_2", madison, new Vector3(-0.1f, 0.12f, 0f), new Vector3(0.12f, 0.02f, 240f), art.YellowStripe, false);
-            Box("MadisonSidewalk_W", madison, new Vector3(-roadW * 0.5f - 1.25f, 0.1f, 0f), new Vector3(2.5f, 0.25f, 240f), art.Sidewalk);
-            Box("MadisonSidewalk_E", madison, new Vector3(roadW * 0.5f + 1.25f, 0.1f, 0f), new Vector3(2.5f, 0.25f, 240f), art.Sidewalk);
-
-            // --- 3. Henry Avenue (Runs North-South along northwest boundary, X: -18) ---
-            Transform henry = Group("HenryAvenue", parent);
-            henry.position = new Vector3(L.HenryAveX, -0.15f, 60f);
-            Box("HenryAsphalt", henry, Vector3.zero, new Vector3(roadW, 0.2f, 180f), art.RoadAsphalt);
-            Box("HenrySidewalk_E", henry, new Vector3(roadW * 0.5f + 1.25f, 0.1f, 0f), new Vector3(2.5f, 0.25f, 180f), art.Sidewalk);
-
-            // --- 4. Concord Avenue (Intersecting Rose Hill Dr heading south, X: 26) ---
-            Transform concord = Group("ConcordAvenue", parent);
-            concord.position = new Vector3(L.ConcordAveX, -0.15f, -48f);
-            Box("ConcordAsphalt", concord, Vector3.zero, new Vector3(roadW, 0.2f, 60f), art.RoadAsphalt);
-            Box("ConcordSidewalk_W", concord, new Vector3(-roadW * 0.5f - 1.25f, 0.1f, 0f), new Vector3(2.5f, 0.25f, 60f), art.Sidewalk);
-            Box("ConcordSidewalk_E", concord, new Vector3(roadW * 0.5f + 1.25f, 0.1f, 0f), new Vector3(2.5f, 0.25f, 60f), art.Sidewalk);
+            // Abandoned snow-dusted sedans along roads
+            BuildWinterSedan(parent, "Sedan_RoseHill_1", new Vector3(58f, 0f, L.RoseHillZ + 2.5f), 5f, art);
+            BuildWinterSedan(parent, "Sedan_RoseHill_2", new Vector3(-8f, 0f, L.RoseHillZ - 2.5f), 180f, art);
+            BuildWinterSedan(parent, "Sedan_Madison", new Vector3(L.MadisonAveX - 2.5f, 0f, 25f), 90f, art);
         }
 
-        // =========================================================================
-        // 3. RESIDENTIAL NEIGHBORHOOD HOUSES
-        // =========================================================================
-        private static void BuildResidentialNeighborhood(Transform parent, BurleySchoolArt art)
+        private static void BuildSchoolBus(Transform parent, string name, Vector3 pos, float rotY, BurleySchoolArt art)
         {
-            // Array of authentic mid-century residential homes lining the streets (Charlottesville architecture)
-            // Houses along South side of Rose Hill Drive
-            for (int h = 0; h < 6; h++)
-            {
-                float hx = -30f + h * 42f;
-                BuildResidentialHouse(parent, $"House_RoseHill_S_{h}", new Vector3(hx, 0f, -34f), 0f, (h % 2 == 0) ? art.Brick : art.PlasterWall, art);
-            }
-
-            // Houses along Madison Avenue (East side, facing west towards the athletic track)
-            for (int h = 0; h < 4; h++)
-            {
-                float hz = -20f + h * 38f;
-                BuildResidentialHouse(parent, $"House_Madison_E_{h}", new Vector3(258f, 0f, hz), -90f, (h % 2 == 0) ? art.PlasterWall : art.Brick, art);
-            }
-
-            // Houses along Henry Avenue (West side, facing east towards the school)
-            for (int h = 0; h < 3; h++)
-            {
-                float hz = 30f + h * 38f;
-                BuildResidentialHouse(parent, $"House_Henry_W_{h}", new Vector3(-36f, 0f, hz), 90f, art.PlasterWall, art);
-            }
+            BurleySchoolCampusProps.Bus(parent, name, pos, rotY, art);
         }
 
-        private static void BuildResidentialHouse(Transform parent, string name, Vector3 pos, float rotY, Material wallMat, BurleySchoolArt art)
+        private static void BuildWinterSedan(Transform parent, string name, Vector3 pos, float rotY, BurleySchoolArt art)
         {
-            Transform house = Group(name, parent);
-            house.position = pos;
-            house.rotation = Quaternion.Euler(0f, rotY, 0f);
-
-            // House yard lawn
-            Box("YardLawn", house, new Vector3(0f, -0.05f, 0f), new Vector3(28f, 0.2f, 26f), art.TurfGrass);
-
-            // Main House Structure (Two-story / Split-level Charlottesville home)
-            Box("HouseBody", house, new Vector3(0f, 2.8f, 0f), new Vector3(14.0f, 5.6f, 10.5f), wallMat);
-
-            // Pitched Gabled Roof (Dark shingles)
-            Transform roof = Group("PitchedRoof", house);
-            roof.localPosition = new Vector3(0f, 5.6f, 0f);
-            Box("RoofRidge", roof, new Vector3(0f, 1.6f, 0f), new Vector3(14.8f, 0.2f, 0.4f), art.RoofGravel, false);
-            // Roof Slopes
-            Box("RoofSlopeFront", roof, new Vector3(0f, 0.8f, 2.7f), new Vector3(14.8f, 0.15f, 5.8f), art.RoofGravel, false);
-            Box("RoofSlopeBack", roof, new Vector3(0f, 0.8f, -2.7f), new Vector3(14.8f, 0.15f, 5.8f), art.RoofGravel, false);
-
-            // Brick Chimney
-            Box("HouseChimney", house, new Vector3(4.5f, 6.2f, 1.5f), new Vector3(1.2f, 3.2f, 1.2f), art.BrickDark);
-
-            // Front Porch with wooden railing and steps
-            Transform porch = Group("FrontPorch", house);
-            porch.localPosition = new Vector3(0f, 0f, 6.0f);
-            Box("PorchDeck", porch, new Vector3(0f, 0.35f, 0f), new Vector3(5.2f, 0.3f, 2.2f), art.Limestone);
-            Box("PorchRoof", porch, new Vector3(0f, 2.8f, 0f), new Vector3(5.4f, 0.2f, 2.4f), art.RoofGravel, false);
-            Box("Pillar_L", porch, new Vector3(-2.3f, 1.5f, 0.9f), new Vector3(0.18f, 2.4f, 0.18f), art.Limestone);
-            Box("Pillar_R", porch, new Vector3(2.3f, 1.5f, 0.9f), new Vector3(0.18f, 2.4f, 0.18f), art.Limestone);
-            Box("Steps", porch, new Vector3(0f, 0.15f, 1.5f), new Vector3(2.4f, 0.3f, 0.8f), art.Limestone);
-
-            // Windows and Front Door
-            Box("FrontDoor", house, new Vector3(0f, 1.3f, 5.3f), new Vector3(1.1f, 2.2f, 0.08f), art.OakWood, false);
-            Box("Window_L", house, new Vector3(-3.5f, 1.6f, 5.3f), new Vector3(1.6f, 1.5f, 0.08f), art.WindowGlass, false);
-            Box("Window_R", house, new Vector3(3.5f, 1.6f, 5.3f), new Vector3(1.6f, 1.5f, 0.08f), art.WindowGlass, false);
-
-            // Driveway with Mailbox
-            Box("HouseDriveway", house, new Vector3(8.5f, -0.02f, 3.5f), new Vector3(3.5f, 0.15f, 16f), art.Asphalt);
-            Box("MailboxPost", house, new Vector3(6.2f, 0.55f, 11.5f), new Vector3(0.08f, 1.1f, 0.08f), art.OakWood);
-            Box("MailboxBox", house, new Vector3(6.2f, 1.15f, 11.5f), new Vector3(0.22f, 0.25f, 0.45f), art.MetalSteel, false);
-        }
-
-        // =========================================================================
-        // 4. BOOKER T. WASHINGTON PARK
-        // =========================================================================
-        private static void BuildBookerTPark(Transform parent, BurleySchoolArt art)
-        {
-            Rect bounds = L.BookerTParkBounds;
-            Vector3 parkCenter = new(bounds.center.x, -0.1f, bounds.center.y);
-
-            // Rolling green park terrain slab
-            Box("ParkGroundTurf", parent, parkCenter, new Vector3(bounds.width, 0.2f, bounds.height), art.TurfGrass);
-
-            // Paved pedestrian walking trail meandering through the park
-            for (int t = 0; t < 12; t++)
-            {
-                float tx = bounds.xMin + 15f + t * 10f;
-                float tz = bounds.yMin + 20f + Mathf.Sin(t * 0.6f) * 12f;
-                Box($"ParkTrail_{t}", parent, new Vector3(tx, 0.02f, tz), new Vector3(10.5f, 0.15f, 2.8f), art.Sidewalk);
-            }
-
-            // Park Amenities: Wooden Picnic Tables & Benches
-            Vector3[] picnicSpots =
-            {
-                new(bounds.xMin + 30f, 0f, bounds.yMin + 35f),
-                new(bounds.xMin + 70f, 0f, bounds.yMin + 45f),
-                new(bounds.xMin + 110f, 0f, bounds.yMin + 30f)
-            };
-
-            for (int p = 0; p < picnicSpots.Length; p++)
-            {
-                Transform table = Group($"PicnicTable_{p}", parent);
-                table.position = picnicSpots[p];
-                Box("TableTop", table, new Vector3(0f, 0.75f, 0f), new Vector3(2.4f, 0.08f, 1.1f), art.OakWood);
-                Box("TableLegs", table, new Vector3(0f, 0.38f, 0f), new Vector3(2.1f, 0.72f, 0.9f), art.OakWood);
-                Box("Bench_N", table, new Vector3(0f, 0.45f, 0.85f), new Vector3(2.4f, 0.08f, 0.35f), art.OakWood);
-                Box("Bench_S", table, new Vector3(0f, 0.45f, -0.85f), new Vector3(2.4f, 0.08f, 0.35f), art.OakWood);
-            }
-        }
-
-        // =========================================================================
-        // 5. CAMPUS & NEIGHBORHOOD TREES
-        // =========================================================================
-        private static void BuildCampusTrees(Transform parent, BurleySchoolArt art)
-        {
-            // Trees lining Rose Hill Drive sidewalk
-            for (int i = 0; i < 9; i++)
-            {
-                float tx = -20f + i * 26f;
-                BuildDeciduousTree(parent, $"StreetTree_RoseHill_{i}", new Vector3(tx, 0f, -7.5f), 6.5f + (i % 3) * 0.8f, art);
-            }
-
-            // Trees lining Madison Avenue
-            for (int i = 0; i < 7; i++)
-            {
-                float tz = -30f + i * 25f;
-                BuildDeciduousTree(parent, $"StreetTree_Madison_{i}", new Vector3(232f, 0f, tz), 7.0f + (i % 2) * 1.0f, art);
-            }
-
-            // Trees in Booker T. Washington Park
-            for (int i = 0; i < 10; i++)
-            {
-                float tx = 95f + (i % 5) * 28f;
-                float tz = 150f + (i / 5) * 32f + (i % 2) * 8f;
-                BuildDeciduousTree(parent, $"ParkTree_{i}", new Vector3(tx, 0f, tz), 8.5f + (i % 3) * 1.2f, art);
-            }
-        }
-
-        private static void BuildDeciduousTree(Transform parent, string name, Vector3 pos, float height, BurleySchoolArt art)
-        {
-            Transform tree = Group(name, parent);
-            tree.position = pos;
-            float trunkH = height * 0.38f;
-            float crownH = height * 0.62f;
-            float crownW = height * 0.55f;
-
-            // Wooden Tree Trunk (Solid collider)
-            Box("Trunk", tree, new Vector3(0f, trunkH * 0.5f, 0f), new Vector3(0.55f, trunkH, 0.55f), art.StageWood);
-
-            // Lush Foliage Canopy (Multi-tier leafy crown)
-            Box("CanopyTier_1", tree, new Vector3(0f, trunkH + crownH * 0.35f, 0f), new Vector3(crownW, crownH * 0.6f, crownW), art.TurfGrass, false);
-            Box("CanopyTier_2", tree, new Vector3(0f, trunkH + crownH * 0.75f, 0f), new Vector3(crownW * 0.72f, crownH * 0.55f, crownW * 0.72f), art.TurfGrass, false);
-        }
-
-        private static void Label(Transform parent, string name, string text, Vector3 at, Quaternion rotation, float size, Color color)
-        {
-            var label = new GameObject(name).AddComponent<TextMesh>();
-            label.transform.SetParent(parent, false);
-            label.transform.localPosition = at;
-            label.transform.localRotation = rotation;
-            label.text = text;
-            label.anchor = TextAnchor.MiddleCenter;
-            label.alignment = TextAlignment.Center;
-            label.characterSize = size;
-            label.fontSize = 48;
-            label.color = color;
-            WorldTextMaterial.Apply(label, AssetDatabase.LoadAssetAtPath<Font>(BurleySchoolArt.FontPath));
+            BurleySchoolCampusProps.Sedan(parent, name, pos, rotY, art);
         }
     }
 }

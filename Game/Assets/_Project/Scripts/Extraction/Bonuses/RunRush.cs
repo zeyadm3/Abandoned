@@ -62,7 +62,7 @@ namespace Abandoned.Extraction
                     : Loc.T("Any {0} in the truck in the next {1:0.#} minutes pays x{2:0.#}.", Loc.T(rushName.Value.ToString()), BonusConfig.Current.RushSeconds / 60f, BonusConfig.Current.RushMultiplier), null, ToastFeed.Kind.Info);
                 RunHorrorDirector.Say(Loc.Wire("RUSH ORDER / {0}", Loc.Word(rushName.Value.ToString())), 6f);
             }
-            if (!IsServer || run.State.Phase != RunPhase.Running) return;
+            if (!IsServer || run.State.Phase != RunPhase.Running || Tutorial.TutorialMode.Active) return;
             random ??= new System.Random(run.State.Seed ^ 0x0b0181);
             if (nextRush >= 0f && Time.time >= nextRush) Call();
             if (Left > 0f && Time.time >= nextCheck && TruckCargo.Current != null)

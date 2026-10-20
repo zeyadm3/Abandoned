@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
     {
         private const int FirstLayerIndex = 8;
 
-        [MenuItem("Tools/Abandoned/Setup Physics Layers")]
+        [MenuItem(ToolMenu.Project + "Setup Physics Layers", priority = ToolMenu.ProjectP)]
         public static void Apply()
         {
             Object tagManager = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset").FirstOrDefault();

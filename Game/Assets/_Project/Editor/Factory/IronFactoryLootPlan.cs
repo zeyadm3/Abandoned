@@ -95,9 +95,11 @@ namespace Abandoned.EditorTools
                 foreach (KeyValuePair<Vector2Int, Kind> cell in cells[level])
                 {
                     if (cell.Value == Kind.Narrow || (cell.Key.x * 7 + cell.Key.y * 3 + level) % 4 != 0) continue;
+                    Vector3 at = L.CellCentre(cell.Key, Walks.Height(level));
+                    if (InPulpit(at)) continue;
                     CarryClass max = level == 1 ? CarryClass.TwoHand : CarryClass.OneHand;
                     string tag = level == 3 || (cell.Key.x + cell.Key.y) % 2 == 0 ? Items.Workshop : Items.Foundry;
-                    Add(L.CellCentre(cell.Key, Walks.Height(level)), new Rule(tag, CarryClass.Pocket, max), false);
+                    Add(at, new Rule(tag, CarryClass.Pocket, max), false);
                 }
             rejected = left;
             return points;
@@ -148,5 +150,7 @@ namespace Abandoned.EditorTools
             foreach (L.Room room in L.Rooms) if (room.Meters.Contains(new Vector2(at.x, at.z))) return true;
             return false;
         }
+
+        private static bool InPulpit(Vector3 at) => at.y > 8f && at.x >= 95f && at.x <= 103f && at.z >= 71f && at.z <= 77f;
     }
 }

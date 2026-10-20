@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
 
         private const string ParticleShader = "Universal Render Pipeline/Particles/Unlit";
 
-        [MenuItem("Tools/Abandoned/Create Structure Content")]
+        [MenuItem(ToolMenu.Data + "Create Structure Content", priority = ToolMenu.DataP + 3)]
         public static void CreateMissing()
         {
             LoadOrCreateAsset<StructureConfig>(ConfigPath);

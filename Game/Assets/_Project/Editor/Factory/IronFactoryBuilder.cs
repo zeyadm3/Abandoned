@@ -27,7 +27,7 @@ namespace Abandoned.EditorTools
             fog: new Color(.17f, .13f, .10f), fogDensity: .024f, bloom: .3f, vignette: .27f, grain: .2f,
             saturation: -36f, contrast: 15f, sunColor: new Color(1f, .68f, .42f), sunIntensity: .10f, sunEuler: new Vector3(62f, -35f, 0f));
 
-        [MenuItem("Tools/Abandoned/Factory/Rebuild Iron Factory")]
+        [MenuItem(ToolMenu.Factory + "Rebuild Iron Factory", priority = ToolMenu.FactoryP)]
         public static void Rebuild() => Build();
 
         public static void Build()

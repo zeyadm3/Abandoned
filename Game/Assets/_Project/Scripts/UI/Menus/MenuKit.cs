@@ -90,6 +90,8 @@ namespace Abandoned.UI
             scroll.contentContainer.style.flexDirection = FlexDirection.Column;
             scroll.contentContainer.style.flexShrink = 0;
             scroll.contentContainer.style.minWidth = 0;
+            // Vertical scrolling needs a definite wrapping width, including nested panels.
+            scroll.contentContainer.style.width = Length.Percent(100f);
             scroll.AddToClassList("scroll");
             foreach (string cls in classes) scroll.AddToClassList(cls);
             parent?.Add(scroll);

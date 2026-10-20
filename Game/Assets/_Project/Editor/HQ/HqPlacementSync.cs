@@ -26,7 +26,7 @@ namespace Abandoned.EditorTools
             Capture(scene);
         }
 
-        [MenuItem("Tools/Abandoned/HQ/Save Garage Door Placement")]
+        [MenuItem(ToolMenu.Hq + "Save Garage Door Placement", priority = ToolMenu.HqP + 40)]
         public static void SaveFromOpenScene()
         {
             Scene scene = SceneManager.GetSceneByPath(HqBuilder.ScenePath);
@@ -34,7 +34,7 @@ namespace Abandoned.EditorTools
             Capture(scene);
         }
 
-        [MenuItem("Tools/Abandoned/HQ/Reset Garage Door Placement")]
+        [MenuItem(ToolMenu.Hq + "Reset Garage Door Placement", priority = ToolMenu.HqP + 41)]
         public static void ResetPlacement()
         {
             HqPlacements placements = Load();

@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
             "sledgehammer", "crash_mat", "spray_chalk", "glow_sticks", "flares", "moving_blanket", "floodlight", "lockpick", "thermal_camera", "drone", // @@icons
         };
 
-        [MenuItem("Tools/Abandoned/UI/Create Gear Icons")]
+        [MenuItem(ToolMenu.UI + "Create Gear Icons", priority = ToolMenu.UiP + 3)]
         public static void Create()
         {
             if (!AssetDatabase.IsValidFolder("Assets/_Project/Art/Generated")) AssetDatabase.CreateFolder("Assets/_Project/Art", "Generated");

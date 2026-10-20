@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
     {
         public const string MaterialPath = "Assets/_Project/Art/Greybox/ChalkMarks.mat";
 
-        [MenuItem("Tools/Abandoned/Content/Spray Chalk (0.17.6)")]
+        [MenuItem(ToolMenu.Features + "0.17.6 Spray Chalk", priority = ToolMenu.FeaturesP + 4)]
         public static void Author()
         {
             var config = ReleaseKit.Config<ToolConfig>(ReleaseKit.EquipmentResources, ToolConfig.ResourcePath);

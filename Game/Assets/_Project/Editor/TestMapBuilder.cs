@@ -47,7 +47,7 @@ namespace Abandoned.EditorTools
 
         private static Material tileA, tileB, balcony, stairs, wall, column, railing, frame, ground, asphalt, line, truck;
 
-        [MenuItem("Tools/Abandoned/Create Test Map")]
+        [MenuItem(ToolMenu.TestMap + "Rebuild Test Map", priority = ToolMenu.TestMapP)]
         public static void Create()
         {
             if (File.Exists(ScenePath) &&

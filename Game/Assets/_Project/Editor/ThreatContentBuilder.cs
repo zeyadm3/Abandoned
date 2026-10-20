@@ -68,7 +68,7 @@ namespace Abandoned.EditorTools
             EditorUtility.SetDirty(definition);
             return prefab;
         }
-        [MenuItem("Tools/Abandoned/Create Threat Prefabs")]
+        [MenuItem(ToolMenu.Prefabs + "Create Threat Prefabs", priority = ToolMenu.PrefabsP + 3)]
         public static GameObject CreateBlindOne()
         {
             PolishAssets.EnsureFolder(DataFolder);

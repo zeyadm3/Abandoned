@@ -43,10 +43,11 @@ namespace Abandoned.Extraction
             screen?.Show(false);
         }
 
-        // This player's own progress (cosmetic unlocks): never from tests or headless nettests.
+        // This player's own progress (cosmetic unlocks): never from tests or headless nettests, nor from training
+        // (a practice house replayed for stats and achievements would be farming).
         private static void RecordProfile(RunResults r)
         {
-            if (Application.isBatchMode || r == null || Unity.Netcode.NetworkManager.Singleton == null) return;
+            if (Application.isBatchMode || r == null || Unity.Netcode.NetworkManager.Singleton == null || Tutorial.TutorialMode.Active) return;
             ulong me = Unity.Netcode.NetworkManager.Singleton.LocalClientId;
             bool escaped = false;
             foreach (RunResults.Player p in r.Players) if (p.ClientId == me) escaped = p.Extracted;
@@ -85,8 +86,14 @@ namespace Abandoned.Extraction
             paydayKey = key;
             bool contract = company != null && company.Active.IsValid;
             paydayBox.Clear();
-            if (contract) Payday(paydayBox, company);
             buttonsBox.Clear();
+            if (Tutorial.TutorialMode.Active)
+            {
+                Tutorial.TutorialAppraisal.Payday(paydayBox, run.Results);
+                Tutorial.TutorialAppraisal.Buttons(buttonsBox, director, run.IsServer);
+                return;
+            }
+            if (contract) Payday(paydayBox, company);
             if (run.IsServer && contract) MenuKit.Button(buttonsBox, Loc.T("Back to HQ"), company.ReturnToHq, Audio.SoundId.UiConfirm);
             else if (director != null && run.IsServer) MenuKit.Button(buttonsBox, Loc.T("Next run"), director.StartNextRun, Audio.SoundId.UiConfirm);
             else MenuKit.Text(buttonsBox, contract ? Loc.T("Waiting for the host to drive back to HQ...") : Loc.T("Waiting for the host to start the next run..."));

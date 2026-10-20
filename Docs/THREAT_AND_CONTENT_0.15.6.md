@@ -58,7 +58,7 @@ and all 14 outer buildings/compounds. The earlier 366 props and 1,165 packing de
 
 ## Authoring and delivery
 
-**Tools > Abandoned > Mall > Finish Threat and Content Update (0.15.6)** authors the update over the
+**Tools > Abandoned > Maps > Mall > Updates > 0.15.6 Finish Threat and Content Update** authors the update over the
 saved scene. It writes threat tuning and coverage, adds the new content layer, authors navigation and
 culling, and saves the scene. It replaces only its own additions on another invocation. The full
 mall builder also retains the 0.15.6 additions on future regeneration.

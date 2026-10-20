@@ -85,7 +85,7 @@ namespace Abandoned.EditorTools
             new("shades", "Aviator Shades", "Ten floors gave way. You didn't blink.", reward: "gravity_wins"),
         };
 
-        [MenuItem("Tools/Abandoned/Cosmetics/Build Cosmetics")]
+        [MenuItem(ToolMenu.Characters + "Build Cosmetics", priority = ToolMenu.CharactersP)]
         public static void CreateMissing()
         {
             PolishAssets.EnsureFolder(DataFolder);

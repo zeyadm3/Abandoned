@@ -41,7 +41,7 @@ namespace Abandoned.EditorTools
             ("workaholic", "Workaholic", "Get paid overtime.", Achievements.StatOvertime, 1),
         };
 
-        [MenuItem("Tools/Abandoned/Build Achievements")]
+        [MenuItem(ToolMenu.Data + "Build Achievements", priority = ToolMenu.DataP + 7)]
         public static void CreateMissing()
         {
             if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/_Project/Data/Core", "Achievements");

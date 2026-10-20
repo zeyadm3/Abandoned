@@ -13,7 +13,7 @@ namespace Abandoned.EditorTools
     {
         public const string GroupName = "_CAB_0214";
 
-        [MenuItem("Tools/Abandoned/Mall/Truck Cab Instruments (0.21.4)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.21.4 Truck Cab Instruments", priority = ToolMenu.MallP + 41)]
         public static void Author()
         {
             NetworkContentBuilder.CreateRunStatePrefab();

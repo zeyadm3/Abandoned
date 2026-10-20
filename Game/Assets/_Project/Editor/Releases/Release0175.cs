@@ -16,7 +16,7 @@ namespace Abandoned.EditorTools
         public const string GroupName = "_FLOODS_0175";
         private const float Half = 1.7f;
 
-        [MenuItem("Tools/Abandoned/Mall/Add Flooded Areas (0.17.5)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.17.5 Add Flooded Areas", priority = ToolMenu.MallP + 37)]
         public static void Author()
         {
             ReleaseKit.Config<GroundConfig>(ReleaseKit.ExtractionResources, GroundConfig.ResourcePath);

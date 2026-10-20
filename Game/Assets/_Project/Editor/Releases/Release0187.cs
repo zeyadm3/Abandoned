@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         public const string GroupName = "_CATALOGUE_0187";
         private static readonly Vector3 ShelfSize = new(2.4f, 2.0f, 0.45f), LecternSize = new(0.7f, 1.15f, 0.6f);
 
-        [MenuItem("Tools/Abandoned/HQ/Add Loot Catalogue and Trophy Shelf (0.18.7)")]
+        [MenuItem(ToolMenu.HqUpdates + "0.18.7 Add Loot Catalogue and Trophy Shelf", priority = ToolMenu.HqP + 60)]
         public static void Author()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<LootCatalog>(LootCatalogBuilder.CatalogPath);

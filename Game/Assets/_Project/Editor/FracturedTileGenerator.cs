@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         private const float Jitter = 0.35f;
         private const int Seed = 7;
 
-        [MenuItem("Tools/Abandoned/Generate Fractured Tile")]
+        [MenuItem(ToolMenu.Art + "Generate Fractured Tile", priority = ToolMenu.ArtP + 20)]
         public static GameObject Generate() => Generate(TileSize, Cells, Cells, Jitter, Seed, PrefabPath);
 
         public static GameObject Generate(Vector3 size, int cellsX, int cellsZ, float jitter, int seed, string path)

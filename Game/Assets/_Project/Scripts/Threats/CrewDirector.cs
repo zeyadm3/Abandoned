@@ -66,7 +66,7 @@ namespace Abandoned.Threats
 
         private void Update()
         {
-            if (!GameAuthority.IsHost || Time.time < nextTick) return;
+            if (!GameAuthority.IsHost || Time.time < nextTick || Tutorial.TutorialMode.Active) return;
             nextTick = Time.time + TickInterval;
             RunState current = RunState.Current;
             if (current == null || !current.IsSpawned) return;

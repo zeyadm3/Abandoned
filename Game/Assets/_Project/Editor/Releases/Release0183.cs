@@ -21,7 +21,7 @@ namespace Abandoned.EditorTools
             ("checkout", "Checkout Lane", new[] { "salvage_cash_register", "salvage_card_terminal", "salvage_receipt_printer" }, 1400),
         };
 
-        [MenuItem("Tools/Abandoned/Content/Loot Sets (0.18.3)")]
+        [MenuItem(ToolMenu.Features + "0.18.3 Loot Sets", priority = ToolMenu.FeaturesP + 9)]
         public static void Author()
         {
             PolishAssets.EnsureFolder(Folder);

@@ -1,0 +1,2123 @@
+# The training job (Tutorial/*.cs and the lessons in Data/Tutorial/Steps). Lesson text is written by
+# Editor/Tutorial/TutorialLessons.cs into the step assets; edit both together. {key:Interact} is the player's own key.
+
+# ---- Screens and prompts ----
+
+en: TRAINING
+zh-CN: 训练
+ja: 訓練
+ko: 훈련
+es: ENTRENAMIENTO
+pt-BR: TREINAMENTO
+de: TRAINING
+fr: FORMATION
+ru: ОБУЧЕНИЕ
+pl: SZKOLENIE
+
+en: TRAINING  {0:00}/{1:00}  /  {2}
+zh-CN: 训练  {0:00}/{1:00}  /  {2}
+ja: 訓練  {0:00}/{1:00}  /  {2}
+ko: 훈련  {0:00}/{1:00}  /  {2}
+es: ENTRENAMIENTO  {0:00}/{1:00}  /  {2}
+pt-BR: TREINAMENTO  {0:00}/{1:00}  /  {2}
+de: TRAINING  {0:00}/{1:00}  /  {2}
+fr: FORMATION  {0:00}/{1:00}  /  {2}
+ru: ОБУЧЕНИЕ  {0:00}/{1:00}  /  {2}
+pl: SZKOLENIE  {0:00}/{1:00}  /  {2}
+
+en: TRAINING COMPLETE
+zh-CN: 训练完成
+ja: 訓練終了
+ko: 훈련 완료
+es: ENTRENAMIENTO COMPLETADO
+pt-BR: TREINAMENTO CONCLUÍDO
+de: TRAINING ABGESCHLOSSEN
+fr: FORMATION TERMINÉE
+ru: ОБУЧЕНИЕ ПРОЙДЕНО
+pl: SZKOLENIE UKOŃCZONE
+
+en: That's the job. The real ones pay, and the buildings fight back.
+zh-CN: 这就是这份活儿。真正的任务有钱拿，那些建筑也会反击。
+ja: これが仕事だ。本番は金になる。そして建物は牙をむく。
+ko: 이게 이 일입니다. 진짜 작업은 돈이 되고, 건물은 반격합니다.
+es: Así es el trabajo. Los de verdad pagan, y los edificios se defienden.
+pt-BR: Esse é o trabalho. Os de verdade pagam, e os prédios reagem.
+de: So läuft der Auftrag. Die echten zahlen, und die Gebäude wehren sich.
+fr: Voilà le métier. Les vraies missions paient, et les bâtiments se défendent.
+ru: Вот и вся работа. Настоящие заказы платят, а здания сопротивляются.
+pl: Tak wygląda robota. Prawdziwe zlecenia płacą, a budynki się bronią.
+
+en: Stuck? {0} > Training: skip this lesson or restart the chapter.
+zh-CN: 卡住了？{0} > 训练：跳过这一课或重新开始本章。
+ja: 詰まった？ {0} > 訓練：このレッスンを飛ばすか、章をやり直そう。
+ko: 막혔나요? {0} > 훈련: 이 과정을 건너뛰거나 장을 다시 시작하세요.
+es: ¿Atascado? {0} > Entrenamiento: sáltate esta lección o reinicia el capítulo.
+pt-BR: Travou? {0} > Treinamento: pule esta lição ou reinicie o capítulo.
+de: Hängst du fest? {0} > Training: diese Lektion überspringen oder das Kapitel neu starten.
+fr: Bloqué ? {0} > Formation : passez cette leçon ou recommencez le chapitre.
+ru: Застряли? {0} > Обучение: пропустите урок или начните главу заново.
+pl: Utknąłeś? {0} > Szkolenie: pomiń tę lekcję albo zacznij rozdział od nowa.
+
+en: The host can skip a lesson or restart the chapter.
+zh-CN: 房主可以跳过一课或重新开始本章。
+ja: ホストはレッスンを飛ばしたり、章をやり直したりできる。
+ko: 호스트는 과정을 건너뛰거나 장을 다시 시작할 수 있습니다.
+es: El anfitrión puede saltarse una lección o reiniciar el capítulo.
+pt-BR: O anfitrião pode pular uma lição ou reiniciar o capítulo.
+de: Der Host kann eine Lektion überspringen oder das Kapitel neu starten.
+fr: L'hôte peut passer une leçon ou recommencer le chapitre.
+ru: Хост может пропустить урок или начать главу заново.
+pl: Host może pominąć lekcję albo zacząć rozdział od nowa.
+
+en: Already carried: {0}
+zh-CN: 已携带：{0}
+ja: 所持済み：{0}
+ko: 이미 가짐: {0}
+es: Ya lo llevas: {0}
+pt-BR: Já está com você: {0}
+de: Schon dabei: {0}
+fr: Déjà sur vous : {0}
+ru: Уже при вас: {0}
+pl: Już masz: {0}
+
+en: Take: {0}
+zh-CN: 拿取：{0}
+ja: 取る：{0}
+ko: 가져가기: {0}
+es: Coger: {0}
+pt-BR: Pegar: {0}
+de: Nehmen: {0}
+fr: Prendre : {0}
+ru: Взять: {0}
+pl: Weź: {0}
+
+en: Your hand slots are full. Drop something (hold the inventory key and press drop) to make room.
+zh-CN: 你的手持栏位满了。丢下点东西（按住物品栏键再按放下）腾出位置。
+ja: 手のスロットがいっぱいだ。何か手放して（インベントリキーを押しながら置くキー）空きを作ろう。
+ko: 손 슬롯이 가득 찼습니다. 무언가를 버려(인벤토리 키를 누른 채 내려놓기) 자리를 만드세요.
+es: Tus ranuras de mano están llenas. Suelta algo (mantén la tecla del inventario y pulsa soltar) para hacer sitio.
+pt-BR: Seus espaços de mão estão cheios. Solte algo (segure a tecla do inventário e aperte soltar) para abrir espaço.
+de: Deine Handplätze sind voll. Wirf etwas weg (Inventartaste halten und Ablegen drücken), um Platz zu schaffen.
+fr: Vos emplacements de main sont pleins. Lâchez quelque chose (maintenez la touche d'inventaire et appuyez sur lâcher) pour faire de la place.
+ru: Слоты рук заполнены. Бросьте что-нибудь (удерживайте клавишу инвентаря и нажмите «бросить»), чтобы освободить место.
+pl: Twoje sloty rąk są pełne. Upuść coś (przytrzymaj klawisz ekwipunku i naciśnij upuść), żeby zrobić miejsce.
+
+en: NEW TO THE JOB?
+zh-CN: 新来的？
+ja: 新入り？
+ko: 처음이세요?
+es: ¿NUEVO EN ESTO?
+pt-BR: NOVO NO SERVIÇO?
+de: NEU IM JOB?
+fr: NOUVEAU ?
+ru: ВПЕРВЫЕ?
+pl: NOWY W ROBOCIE?
+
+en: The training clipboard by the dispatch telephone takes the crew to a practice house. No pay, no risk.
+zh-CN: 调度电话旁的训练写字板会把队伍带到一栋练习用的房子。没有报酬，也没有风险。
+ja: 配車電話の横にある訓練用クリップボードで、クルーを練習用の家へ連れて行ける。報酬なし、リスクなし。
+ko: 배차 전화 옆의 훈련용 클립보드로 팀을 연습용 집에 데려갈 수 있습니다. 보수도 위험도 없습니다.
+es: La tablilla de entrenamiento junto al teléfono de despacho lleva al equipo a una casa de prácticas. Sin paga, sin riesgo.
+pt-BR: A prancheta de treinamento ao lado do telefone de despacho leva a equipe a uma casa de treino. Sem pagamento, sem risco.
+de: Das Trainings-Klemmbrett neben dem Einsatztelefon bringt das Team zu einem Übungshaus. Kein Lohn, kein Risiko.
+fr: Le porte-bloc de formation près du téléphone du dispatch emmène l'équipe dans une maison d'entraînement. Pas de paie, pas de risque.
+ru: Учебный планшет у диспетчерского телефона отвезёт бригаду в тренировочный дом. Без оплаты и без риска.
+pl: Podkładka szkoleniowa przy telefonie dyspozytora zabiera ekipę do domu ćwiczeniowego. Bez zapłaty, bez ryzyka.
+
+en: Training job: a practice house, no pay, no risk
+zh-CN: 训练任务：一栋练习用的房子，没有报酬，没有风险
+ja: 訓練の仕事：練習用の家、報酬なし、リスクなし
+ko: 훈련 작업: 연습용 집, 보수 없음, 위험 없음
+es: Trabajo de entrenamiento: una casa de prácticas, sin paga, sin riesgo
+pt-BR: Trabalho de treinamento: uma casa de treino, sem pagamento, sem risco
+de: Trainingsauftrag: ein Übungshaus, kein Lohn, kein Risiko
+fr: Mission de formation : une maison d'entraînement, sans paie, sans risque
+ru: Учебный заказ: тренировочный дом, без оплаты, без риска
+pl: Zlecenie szkoleniowe: dom ćwiczeniowy, bez zapłaty, bez ryzyka
+
+en: Training job (the host takes the crew)
+zh-CN: 训练任务（由房主带队前往）
+ja: 訓練の仕事（ホストがクルーを連れて行く）
+ko: 훈련 작업 (호스트가 팀을 데려갑니다)
+es: Trabajo de entrenamiento (el anfitrión lleva al equipo)
+pt-BR: Trabalho de treinamento (o anfitrião leva a equipe)
+de: Trainingsauftrag (der Host bringt das Team hin)
+fr: Mission de formation (l'hôte emmène l'équipe)
+ru: Учебный заказ (бригаду везёт хост)
+pl: Zlecenie szkoleniowe (host zabiera ekipę)
+
+en: Ask the host to start the training job.
+zh-CN: 请房主开始训练任务。
+ja: ホストに訓練の仕事を始めてもらおう。
+ko: 호스트에게 훈련 작업을 시작해 달라고 하세요.
+es: Pídele al anfitrión que empiece el trabajo de entrenamiento.
+pt-BR: Peça ao anfitrião para começar o trabalho de treinamento.
+de: Bitte den Host, den Trainingsauftrag zu starten.
+fr: Demandez à l'hôte de lancer la mission de formation.
+ru: Попросите хоста начать учебный заказ.
+pl: Poproś hosta, żeby zaczął zlecenie szkoleniowe.
+
+en: Skip this lesson
+zh-CN: 跳过这一课
+ja: このレッスンを飛ばす
+ko: 이 과정 건너뛰기
+es: Saltar esta lección
+pt-BR: Pular esta lição
+de: Diese Lektion überspringen
+fr: Passer cette leçon
+ru: Пропустить урок
+pl: Pomiń tę lekcję
+
+en: Restart this chapter
+zh-CN: 重新开始本章
+ja: この章をやり直す
+ko: 이 장 다시 시작
+es: Reiniciar este capítulo
+pt-BR: Reiniciar este capítulo
+de: Dieses Kapitel neu starten
+fr: Recommencer ce chapitre
+ru: Начать главу заново
+pl: Zacznij rozdział od nowa
+
+en: Leave training (back to the HQ)
+zh-CN: 结束训练（返回总部）
+ja: 訓練をやめる（本部に戻る）
+ko: 훈련 종료 (본부로 돌아가기)
+es: Dejar el entrenamiento (volver a la central)
+pt-BR: Sair do treinamento (voltar ao QG)
+de: Training verlassen (zurück zur Zentrale)
+fr: Quitter la formation (retour au QG)
+ru: Закончить обучение (на базу)
+pl: Opuść szkolenie (powrót do bazy)
+
+en: Training never pays and nothing here is saved.
+zh-CN: 训练不会有报酬，这里的一切都不会保存。
+ja: 訓練は金にならず、ここでのことは何も保存されない。
+ko: 훈련은 보수가 없고, 여기서 한 일은 저장되지 않습니다.
+es: El entrenamiento nunca paga y aquí no se guarda nada.
+pt-BR: O treinamento nunca paga e nada aqui é salvo.
+de: Training bringt nie Geld, und hier wird nichts gespeichert.
+fr: La formation ne paie jamais et rien n'est sauvegardé ici.
+ru: Обучение не оплачивается, и ничего здесь не сохраняется.
+pl: Szkolenie nigdy nie płaci i nic tu nie jest zapisywane.
+
+en: The host can skip lessons, restart a chapter or end the training.
+zh-CN: 房主可以跳过课程、重新开始一章或结束训练。
+ja: ホストはレッスンを飛ばしたり、章をやり直したり、訓練を終えたりできる。
+ko: 호스트는 과정을 건너뛰거나, 장을 다시 시작하거나, 훈련을 끝낼 수 있습니다.
+es: El anfitrión puede saltarse lecciones, reiniciar un capítulo o terminar el entrenamiento.
+pt-BR: O anfitrião pode pular lições, reiniciar um capítulo ou encerrar o treinamento.
+de: Der Host kann Lektionen überspringen, ein Kapitel neu starten oder das Training beenden.
+fr: L'hôte peut passer des leçons, recommencer un chapitre ou mettre fin à la formation.
+ru: Хост может пропускать уроки, начинать главу заново или закончить обучение.
+pl: Host może pomijać lekcje, zaczynać rozdział od nowa albo zakończyć szkolenie.
+
+en: TRAINING / NOTHING BANKED
+zh-CN: 训练 / 没有入账
+ja: 訓練 / 入金なし
+ko: 훈련 / 입금 없음
+es: ENTRENAMIENTO / NADA COBRADO
+pt-BR: TREINAMENTO / NADA DEPOSITADO
+de: TRAINING / NICHTS VERBUCHT
+fr: FORMATION / RIEN ENCAISSÉ
+ru: ОБУЧЕНИЕ / НИЧЕГО НЕ ЗАЧИСЛЕНО
+pl: SZKOLENIE / NIC NIE WPŁYNĘŁO
+
+en: On a real job this haul is paid to the company when the truck gets back.
+zh-CN: 真正的任务里，卡车回来后这份收获会付给公司。
+ja: 本番なら、トラックが戻った時にこの回収額が会社に支払われる。
+ko: 진짜 작업이라면 트럭이 돌아올 때 이 수확이 회사에 지급됩니다.
+es: En un trabajo de verdad, esta carga se le paga a la empresa cuando vuelve el camión.
+pt-BR: Num trabalho de verdade, esta carga é paga à empresa quando o caminhão volta.
+de: Bei einem echten Auftrag wird diese Ausbeute der Firma ausgezahlt, wenn der Laster zurück ist.
+fr: Sur une vraie mission, ce chargement est payé à l'entreprise au retour du camion.
+ru: На настоящем заказе этот улов выплачивается компании, когда грузовик вернётся.
+pl: Przy prawdziwym zleceniu ten urobek trafia do firmy, gdy ciężarówka wróci.
+
+en: You met the quota. On a real job, missing it means the shortfall comes off the company's money as a penalty.
+zh-CN: 你达到了定额。真正的任务里，如果没达到，差额会作为罚款从公司的钱里扣除。
+ja: ノルマ達成。本番でノルマに届かないと、不足分が罰金として会社の金から引かれる。
+ko: 할당량을 채웠습니다. 진짜 작업에서 못 채우면 부족분이 벌금으로 회사 돈에서 빠집니다.
+es: Has cumplido la cuota. En un trabajo de verdad, si no llegas, lo que falta se descuenta del dinero de la empresa como multa.
+pt-BR: Você bateu a cota. Num trabalho de verdade, se não bater, o que faltar sai do dinheiro da empresa como multa.
+de: Du hast das Soll erfüllt. Verfehlst du es bei einem echten Auftrag, geht der Fehlbetrag als Strafe vom Geld der Firma ab.
+fr: Vous avez atteint le quota. Sur une vraie mission, si vous le ratez, le manque est retiré à l'entreprise en pénalité.
+ru: Норма выполнена. На настоящем заказе недостача вычитается из денег компании как штраф.
+pl: Norma wyrobiona. Przy prawdziwym zleceniu brakująca kwota schodzi z pieniędzy firmy jako kara.
+
+en: You missed the quota. On a real job, the shortfall comes off the company's money as a penalty.
+zh-CN: 你没达到定额。真正的任务里，差额会作为罚款从公司的钱里扣除。
+ja: ノルマ未達。本番なら、不足分が罰金として会社の金から引かれる。
+ko: 할당량을 못 채웠습니다. 진짜 작업이라면 부족분이 벌금으로 회사 돈에서 빠집니다.
+es: No has cumplido la cuota. En un trabajo de verdad, lo que falta se descuenta del dinero de la empresa como multa.
+pt-BR: Você não bateu a cota. Num trabalho de verdade, o que faltar sai do dinheiro da empresa como multa.
+de: Du hast das Soll verfehlt. Bei einem echten Auftrag geht der Fehlbetrag als Strafe vom Geld der Firma ab.
+fr: Vous avez raté le quota. Sur une vraie mission, le manque est retiré à l'entreprise en pénalité.
+ru: Норма не выполнена. На настоящем заказе недостача вычитается из денег компании как штраф.
+pl: Norma niewyrobiona. Przy prawdziwym zleceniu brakująca kwota schodzi z pieniędzy firmy jako kara.
+
+en: Miss three quotas in a row and the company folds: a new one starts with the basic kit.
+zh-CN: 连续三次没达到定额，公司就会倒闭：新公司只有基本装备。
+ja: 3回続けてノルマに届かないと会社は潰れる。新しい会社は基本装備からやり直しだ。
+ko: 할당량을 세 번 연속 못 채우면 회사가 망합니다. 새 회사는 기본 장비로 시작합니다.
+es: Falla tres cuotas seguidas y la empresa quiebra: una nueva empieza con el equipo básico.
+pt-BR: Erre três cotas seguidas e a empresa quebra: uma nova começa com o equipamento básico.
+de: Verfehle dreimal hintereinander das Soll, und die Firma geht pleite: Eine neue beginnt mit der Grundausrüstung.
+fr: Ratez trois quotas de suite et l'entreprise fait faillite : une nouvelle repart avec le matériel de base.
+ru: Не выполните норму трижды подряд, и компания разорится: новая начнёт с базовым снаряжением.
+pl: Trzy niewyrobione normy z rzędu i firma upada: nowa zaczyna z podstawowym sprzętem.
+
+en: Pick jobs at the dispatch telephone; buy gear at the maintenance bench; read the field guide when something new finds you.
+zh-CN: 在调度电话上接任务；在维修台买装备；遇到新东西时翻翻现场手册。
+ja: 仕事は配車電話で選び、装備は整備台で買う。何か新しいものに出くわしたらフィールドガイドを読もう。
+ko: 작업은 배차 전화로 고르고, 장비는 정비대에서 사고, 새로운 것을 만나면 현장 안내서를 읽으세요.
+es: Elige trabajos en el teléfono de despacho, compra equipo en el banco de mantenimiento y lee la guía de campo cuando algo nuevo te encuentre.
+pt-BR: Escolha trabalhos no telefone de despacho, compre equipamento na bancada de manutenção e leia o guia de campo quando algo novo encontrar você.
+de: Aufträge gibt's am Einsatztelefon, Ausrüstung an der Werkbank, und lies das Feldhandbuch, wenn dich etwas Neues findet.
+fr: Choisissez les missions au téléphone du dispatch, achetez du matériel à l'établi, et lisez le guide de terrain quand quelque chose de nouveau vous trouve.
+ru: Заказы берите у диспетчерского телефона, снаряжение покупайте у верстака, а когда вас найдёт что-то новое, читайте полевой справочник.
+pl: Zlecenia bierz przy telefonie dyspozytora, sprzęt kupuj przy stole warsztatowym, a gdy znajdzie cię coś nowego, czytaj przewodnik terenowy.
+
+en: Waiting for the host...
+zh-CN: 等待房主……
+ja: ホストを待っている……
+ko: 호스트를 기다리는 중...
+es: Esperando al anfitrión...
+pt-BR: Esperando o anfitrião...
+de: Warte auf den Host...
+fr: En attente de l'hôte...
+ru: Ожидание хоста...
+pl: Czekam na hosta...
+
+en: Run the training again
+zh-CN: 再进行一次训练
+ja: 訓練をもう一度
+ko: 훈련 다시 하기
+es: Repetir el entrenamiento
+pt-BR: Repetir o treinamento
+de: Training wiederholen
+fr: Refaire la formation
+ru: Пройти обучение снова
+pl: Powtórz szkolenie
+
+en: A practice job in an empty house: carrying, floors, the dark, something listening, the truck. No pay, no risk.
+zh-CN: 在一栋空房子里练习干活：搬运、地板、黑暗、在聆听的东西、卡车。没有报酬，没有风险。
+ja: 空き家での練習の仕事：運搬、床、暗闇、聞き耳を立てる何か、トラック。報酬なし、リスクなし。
+ko: 빈집에서 하는 연습 작업: 운반, 바닥, 어둠, 귀 기울이는 무언가, 트럭. 보수도 위험도 없습니다.
+es: Un trabajo de práctica en una casa vacía: cargar, suelos, la oscuridad, algo que escucha, el camión. Sin paga, sin riesgo.
+pt-BR: Um trabalho de treino numa casa vazia: carregar, pisos, o escuro, algo escutando, o caminhão. Sem pagamento, sem risco.
+de: Ein Übungsauftrag in einem leeren Haus: Tragen, Böden, die Dunkelheit, etwas, das lauscht, der Laster. Kein Lohn, kein Risiko.
+fr: Une mission d'entraînement dans une maison vide : porter, les planchers, le noir, quelque chose qui écoute, le camion. Pas de paie, pas de risque.
+ru: Учебный заказ в пустом доме: переноска, полы, темнота, что-то, что слушает, грузовик. Без оплаты и без риска.
+pl: Ćwiczeniowe zlecenie w pustym domu: noszenie, podłogi, ciemność, coś, co nasłuchuje, ciężarówka. Bez zapłaty, bez ryzyka.
+
+en: Start training
+zh-CN: 开始训练
+ja: 訓練を始める
+ko: 훈련 시작
+es: Empezar entrenamiento
+pt-BR: Começar treinamento
+de: Training starten
+fr: Commencer la formation
+ru: Начать обучение
+pl: Zacznij szkolenie
+
+en: Hide in the closet
+zh-CN: 躲进衣柜
+ja: クローゼットに隠れる
+ko: 옷장에 숨기
+es: Esconderse en el armario
+pt-BR: Esconder-se no closet
+de: Im Schrank verstecken
+fr: Se cacher dans le placard
+ru: Спрятаться в шкафу
+pl: Schowaj się w szafie
+
+# ---- Chapters ----
+
+en: THE DRIVEWAY
+zh-CN: 车道
+ja: 私道
+ko: 진입로
+es: LA ENTRADA
+pt-BR: A ENTRADA DA GARAGEM
+de: DIE EINFAHRT
+fr: L'ALLÉE
+ru: ПОДЪЕЗДНАЯ ДОРОЖКА
+pl: PODJAZD
+
+en: THE LIVING ROOM
+zh-CN: 客厅
+ja: リビング
+ko: 거실
+es: LA SALA
+pt-BR: A SALA
+de: DAS WOHNZIMMER
+fr: LE SALON
+ru: ГОСТИНАЯ
+pl: SALON
+
+en: THE KITCHEN
+zh-CN: 厨房
+ja: キッチン
+ko: 부엌
+es: LA COCINA
+pt-BR: A COZINHA
+de: DIE KÜCHE
+fr: LA CUISINE
+ru: КУХНЯ
+pl: KUCHNIA
+
+en: THE LAUNDRY
+zh-CN: 洗衣间
+ja: 洗濯室
+ko: 세탁실
+es: EL LAVADERO
+pt-BR: A LAVANDERIA
+de: DIE WASCHKÜCHE
+fr: LA BUANDERIE
+ru: ПРАЧЕЧНАЯ
+pl: PRALNIA
+
+en: THE HALLWAY
+zh-CN: 走廊
+ja: 廊下
+ko: 복도
+es: EL PASILLO
+pt-BR: O CORREDOR
+de: DER FLUR
+fr: LE COULOIR
+ru: КОРИДОР
+pl: KORYTARZ
+
+en: THE BASEMENT
+zh-CN: 地下室
+ja: 地下室
+ko: 지하실
+es: EL SÓTANO
+pt-BR: O PORÃO
+de: DER KELLER
+fr: LE SOUS-SOL
+ru: ПОДВАЛ
+pl: PIWNICA
+
+en: THE VISITOR
+zh-CN: 访客
+ja: 訪問者
+ko: 방문자
+es: EL VISITANTE
+pt-BR: O VISITANTE
+de: DER BESUCHER
+fr: LE VISITEUR
+ru: ГОСТЬ
+pl: GOŚĆ
+
+en: THE ENSUITE
+zh-CN: 主卧浴室
+ja: 主寝室のバスルーム
+ko: 안방 욕실
+es: EL BAÑO DE LA SUITE
+pt-BR: O BANHEIRO DA SUÍTE
+de: DAS EN-SUITE-BAD
+fr: LA SALLE DE BAINS ATTENANTE
+ru: ВАННАЯ ПРИ СПАЛЬНЕ
+pl: ŁAZIENKA PRZY SYPIALNI
+
+en: THE TRUCK
+zh-CN: 卡车
+ja: トラック
+ko: 트럭
+es: EL CAMIÓN
+pt-BR: O CAMINHÃO
+de: DER LASTER
+fr: LE CAMION
+ru: ГРУЗОВИК
+pl: CIĘŻARÓWKA
+
+# ---- Lessons: titles ("Sprint", "Crouch", "Jump", "Flashlight" and "Scan" are already in the control sheets) ----
+
+en: Look around
+zh-CN: 环顾四周
+ja: 周りを見る
+ko: 둘러보기
+es: Mira a tu alrededor
+pt-BR: Olhe em volta
+de: Schau dich um
+fr: Regardez autour de vous
+ru: Осмотритесь
+pl: Rozejrzyj się
+
+en: Walk
+zh-CN: 行走
+ja: 歩く
+ko: 걷기
+es: Camina
+pt-BR: Ande
+de: Geh
+fr: Marchez
+ru: Идите
+pl: Idź
+
+en: Your readouts
+zh-CN: 你的读数
+ja: 表示の見方
+ko: 표시 정보
+es: Tus indicadores
+pt-BR: Seus indicadores
+de: Deine Anzeigen
+fr: Vos indicateurs
+ru: Ваши показатели
+pl: Twoje wskaźniki
+
+en: The front door
+zh-CN: 前门
+ja: 玄関
+ko: 현관문
+es: La puerta principal
+pt-BR: A porta da frente
+de: Die Haustür
+fr: La porte d'entrée
+ru: Входная дверь
+pl: Drzwi wejściowe
+
+en: Inside
+zh-CN: 进屋
+ja: 中へ
+ko: 안으로
+es: Dentro
+pt-BR: Lá dentro
+de: Hinein
+fr: À l'intérieur
+ru: Внутрь
+pl: Do środka
+
+en: Pick it up
+zh-CN: 拿起来
+ja: 拾う
+ko: 집어 들기
+es: Cógelo
+pt-BR: Pegue
+de: Heb es auf
+fr: Ramassez-la
+ru: Поднимите
+pl: Podnieś
+
+en: Set it down
+zh-CN: 放下
+ja: 置く
+ko: 내려놓기
+es: Déjalo
+pt-BR: Solte com cuidado
+de: Stell es ab
+fr: Posez-la
+ru: Поставьте
+pl: Odłóż
+
+en: Throw
+zh-CN: 投掷
+ja: 投げる
+ko: 던지기
+es: Lanza
+pt-BR: Arremesse
+de: Wirf
+fr: Lancez
+ru: Бросьте
+pl: Rzuć
+
+en: Pockets
+zh-CN: 口袋
+ja: ポケット
+ko: 주머니
+es: Bolsillos
+pt-BR: Bolsos
+de: Taschen
+fr: Poches
+ru: Карманы
+pl: Kieszenie
+
+en: Your four places
+zh-CN: 你的四个位置
+ja: 4つの枠
+ko: 네 칸
+es: Tus cuatro huecos
+pt-BR: Seus quatro espaços
+de: Deine vier Plätze
+fr: Vos quatre emplacements
+ru: Ваши четыре места
+pl: Twoje cztery miejsca
+
+en: Switch
+zh-CN: 切换
+ja: 持ち替え
+ko: 바꾸기
+es: Cambia
+pt-BR: Troque
+de: Wechseln
+fr: Changez
+ru: Переключитесь
+pl: Zmień
+
+en: Fragile
+zh-CN: 易碎
+ja: 壊れ物
+ko: 깨지기 쉬움
+es: Frágil
+pt-BR: Frágil
+de: Zerbrechlich
+fr: Fragile
+ru: Хрупкое
+pl: Kruche
+
+en: To the truck
+zh-CN: 搬上卡车
+ja: トラックへ
+ko: 트럭으로
+es: Al camión
+pt-BR: Para o caminhão
+de: Zum Laster
+fr: Au camion
+ru: К грузовику
+pl: Do ciężarówki
+
+en: Empty your pockets
+zh-CN: 清空口袋
+ja: ポケットを空にする
+ko: 주머니 비우기
+es: Vacía los bolsillos
+pt-BR: Esvazie os bolsos
+de: Taschen leeren
+fr: Videz vos poches
+ru: Освободите карманы
+pl: Opróżnij kieszenie
+
+en: Noise
+zh-CN: 噪音
+ja: 音
+ko: 소음
+es: Ruido
+pt-BR: Barulho
+de: Lärm
+fr: Le bruit
+ru: Шум
+pl: Hałas
+
+en: Heavy things
+zh-CN: 重物
+ja: 重い物
+ko: 무거운 물건
+es: Cosas pesadas
+pt-BR: Coisas pesadas
+de: Schweres
+fr: Les objets lourds
+ru: Тяжёлые вещи
+pl: Ciężkie rzeczy
+
+en: Move the fridge
+zh-CN: 搬冰箱
+ja: 冷蔵庫を動かす
+ko: 냉장고 옮기기
+es: Mueve la nevera
+pt-BR: Mova a geladeira
+de: Den Kühlschrank bewegen
+fr: Déplacez le frigo
+ru: Сдвиньте холодильник
+pl: Przesuń lodówkę
+
+en: Haul it
+zh-CN: 运走
+ja: 運び出す
+ko: 실어 나르기
+es: Llévatela
+pt-BR: Leve embora
+de: Abtransportieren
+fr: Embarquez-le
+ru: Вывезите
+pl: Wywieź
+
+en: Doors
+zh-CN: 门
+ja: ドア
+ko: 문
+es: Puertas
+pt-BR: Portas
+de: Türen
+fr: Les portes
+ru: Двери
+pl: Drzwi
+
+en: And open
+zh-CN: 再打开
+ja: そして開ける
+ko: 다시 열기
+es: Y abre
+pt-BR: E abra
+de: Und auf
+fr: Et ouvrez
+ru: И откройте
+pl: I otwórz
+
+en: Look up
+zh-CN: 往上看
+ja: 上を見る
+ko: 위를 보기
+es: Mira arriba
+pt-BR: Olhe para cima
+de: Schau nach oben
+fr: Levez les yeux
+ru: Посмотрите наверх
+pl: Spójrz w górę
+
+en: Floors
+zh-CN: 地板
+ja: 床
+ko: 바닥
+es: Suelos
+pt-BR: Pisos
+de: Böden
+fr: Les planchers
+ru: Полы
+pl: Podłogi
+
+en: The clock
+zh-CN: 落地钟
+ja: 柱時計
+ko: 시계
+es: El reloj
+pt-BR: O relógio
+de: Die Standuhr
+fr: L'horloge
+ru: Часы
+pl: Zegar
+
+en: Listen
+zh-CN: 听
+ja: 聞け
+ko: 들어 보기
+es: Escucha
+pt-BR: Escute
+de: Hör hin
+fr: Écoutez
+ru: Слушайте
+pl: Słuchaj
+
+en: Get off it
+zh-CN: 快离开
+ja: そこから離れろ
+ko: 거기서 나오기
+es: Sal de ahí
+pt-BR: Saia daí
+de: Runter da
+fr: Dégagez
+ru: Сойдите с него
+pl: Zejdź z niej
+
+en: Make room
+zh-CN: 腾出位置
+ja: 空きを作る
+ko: 자리 만들기
+es: Haz sitio
+pt-BR: Abra espaço
+de: Platz schaffen
+fr: Faites de la place
+ru: Освободите место
+pl: Zrób miejsce
+
+en: Brace it
+zh-CN: 撑住它
+ja: 支える
+ko: 받치기
+es: Apuntálalo
+pt-BR: Escore
+de: Abstützen
+fr: Étayez-le
+ru: Подоприте
+pl: Podeprzyj
+
+en: Across
+zh-CN: 过去
+ja: 渡る
+ko: 건너기
+es: Al otro lado
+pt-BR: Atravesse
+de: Hinüber
+fr: De l'autre côté
+ru: На ту сторону
+pl: Na drugą stronę
+
+en: The necklace
+zh-CN: 项链
+ja: ネックレス
+ko: 목걸이
+es: El collar
+pt-BR: O colar
+de: Die Halskette
+fr: Le collier
+ru: Ожерелье
+pl: Naszyjnik
+
+en: Floors fail
+zh-CN: 地板会塌
+ja: 床は抜ける
+ko: 바닥은 무너진다
+es: Los suelos ceden
+pt-BR: Pisos cedem
+de: Böden brechen ein
+fr: Les planchers cèdent
+ru: Полы проваливаются
+pl: Podłogi się zapadają
+
+en: The basement
+zh-CN: 下到地下室
+ja: 地下へ
+ko: 지하실로
+es: El sótano
+pt-BR: O porão
+de: Der Keller
+fr: Le sous-sol
+ru: Подвал
+pl: Piwnica
+
+en: Breaker
+zh-CN: 配电箱
+ja: 分電盤
+ko: 분전반
+es: Cuadro eléctrico
+pt-BR: Quadro de disjuntores
+de: Sicherungskasten
+fr: Tableau électrique
+ru: Щиток
+pl: Skrzynka bezpieczników
+
+en: Out
+zh-CN: 出去
+ja: 外へ
+ko: 밖으로
+es: Fuera
+pt-BR: Para fora
+de: Raus
+fr: Dehors
+ru: Наружу
+pl: Na zewnątrz
+
+en: Company
+zh-CN: 有东西来了
+ja: 来客
+ko: 손님
+es: Compañía
+pt-BR: Companhia
+de: Besuch
+fr: De la compagnie
+ru: Гости
+pl: Towarzystwo
+
+en: Hide
+zh-CN: 躲起来
+ja: 隠れろ
+ko: 숨기
+es: Escóndete
+pt-BR: Esconda-se
+de: Versteck dich
+fr: Cachez-vous
+ru: Спрячьтесь
+pl: Schowaj się
+
+en: Wait it out
+zh-CN: 等它离开
+ja: やり過ごす
+ko: 기다리기
+es: Espera
+pt-BR: Espere passar
+de: Abwarten
+fr: Attendez
+ru: Переждите
+pl: Przeczekaj
+
+en: The crew
+zh-CN: 队伍
+ja: クルー
+ko: 팀
+es: El equipo
+pt-BR: A equipe
+de: Das Team
+fr: L'équipe
+ru: Бригада
+pl: Ekipa
+
+en: Small fortunes
+zh-CN: 小小的财富
+ja: 小さな大金
+ko: 작은 큰돈
+es: Pequeñas fortunas
+pt-BR: Pequenas fortunas
+de: Kleine Vermögen
+fr: Petites fortunes
+ru: Маленькие сокровища
+pl: Małe fortuny
+
+en: Pockets ride with you
+zh-CN: 口袋跟着你走
+ja: ポケットは一緒に動く
+ko: 주머니는 함께 간다
+es: Los bolsillos van contigo
+pt-BR: Os bolsos vão com você
+de: Taschen fahren mit
+fr: Les poches vous suivent
+ru: Карманы всегда с вами
+pl: Kieszenie jadą z tobą
+
+en: Load the clock
+zh-CN: 装上落地钟
+ja: 時計を積む
+ko: 시계 싣기
+es: Carga el reloj
+pt-BR: Carregue o relógio
+de: Lade die Uhr ein
+fr: Chargez l'horloge
+ru: Погрузите часы
+pl: Załaduj zegar
+
+en: The quota
+zh-CN: 定额
+ja: ノルマ
+ko: 할당량
+es: La cuota
+pt-BR: A cota
+de: Das Soll
+fr: Le quota
+ru: Норма
+pl: Norma
+
+en: Go home
+zh-CN: 回家
+ja: 帰ろう
+ko: 귀환
+es: Vuelve a casa
+pt-BR: Volte para casa
+de: Heimfahren
+fr: Rentrez
+ru: Домой
+pl: Wracaj do domu
+
+# ---- Lessons: what to do ----
+
+en: Move the mouse to look around. That's the job: 14 Larch Court. The bank wants it emptied before it sells.
+zh-CN: 移动鼠标环顾四周。那就是这次的活儿：落叶松巷14号。银行想在卖房前把它清空。
+ja: マウスを動かして周りを見よう。あれが仕事場、ラーチ・コート14番地だ。銀行は売る前に空にしたがっている。
+ko: 마우스를 움직여 둘러보세요. 저게 이번 일입니다: 라치 코트 14번지. 은행은 팔기 전에 집을 비우길 원합니다.
+es: Mueve el ratón para mirar a tu alrededor. Ese es el trabajo: el número 14 de Larch Court. El banco quiere vaciarla antes de venderla.
+pt-BR: Mova o mouse para olhar em volta. Esse é o trabalho: Larch Court, 14. O banco quer a casa vazia antes de vender.
+de: Beweg die Maus, um dich umzusehen. Das ist der Auftrag: Larch Court 14. Die Bank will das Haus vor dem Verkauf leer haben.
+fr: Bougez la souris pour regarder autour de vous. Voilà la mission : 14 Larch Court. La banque veut la vider avant de la vendre.
+ru: Двигайте мышью, чтобы осмотреться. Вот заказ: Ларч-Корт, 14. Банк хочет опустошить дом перед продажей.
+pl: Poruszaj myszą, żeby się rozejrzeć. Oto zlecenie: Larch Court 14. Bank chce ją opróżnić przed sprzedażą.
+
+en: Walk up the driveway toward the house.
+zh-CN: 沿着车道走向房子。
+ja: 私道を歩いて家へ向かおう。
+ko: 진입로를 따라 집 쪽으로 걸어가세요.
+es: Sube por la entrada hacia la casa.
+pt-BR: Suba pela entrada até a casa.
+de: Geh die Einfahrt hinauf zum Haus.
+fr: Remontez l'allée vers la maison.
+ru: Идите по подъездной дорожке к дому.
+pl: Idź podjazdem w stronę domu.
+
+en: Hold {key:Sprint} to sprint. It burns stamina, and running is loud.
+zh-CN: 按住 {key:Sprint} 冲刺。冲刺消耗体力，而且跑步很吵。
+ja: {key:Sprint} を押し続けてダッシュ。スタミナを使うし、走るとうるさい。
+ko: {key:Sprint}를 누르고 있으면 질주합니다. 체력을 쓰고, 달리면 시끄럽습니다.
+es: Mantén {key:Sprint} para correr. Gasta aguante, y correr hace ruido.
+pt-BR: Segure {key:Sprint} para correr. Isso gasta fôlego, e correr faz barulho.
+de: Halte {key:Sprint} zum Sprinten. Das kostet Ausdauer, und Rennen ist laut.
+fr: Maintenez {key:Sprint} pour sprinter. Ça use l'endurance, et courir fait du bruit.
+ru: Удерживайте {key:Sprint}, чтобы бежать. Это тратит выносливость, а бег шумный.
+pl: Przytrzymaj {key:Sprint}, żeby biec. To zużywa kondycję, a bieganie jest głośne.
+
+en: Press {key:Crouch} to crouch. Slow, but the quietest way to move.
+zh-CN: 按 {key:Crouch} 蹲下。很慢，但这是最安静的移动方式。
+ja: {key:Crouch} でしゃがむ。遅いが、一番静かな動き方だ。
+ko: {key:Crouch}를 눌러 웅크리세요. 느리지만 가장 조용히 움직이는 방법입니다.
+es: Pulsa {key:Crouch} para agacharte. Es lento, pero es la forma más silenciosa de moverse.
+pt-BR: Aperte {key:Crouch} para agachar. É lento, mas é o jeito mais silencioso de se mover.
+de: Drück {key:Crouch} zum Ducken. Langsam, aber die leiseste Art, dich zu bewegen.
+fr: Appuyez sur {key:Crouch} pour vous accroupir. C'est lent, mais c'est la façon la plus discrète de bouger.
+ru: Нажмите {key:Crouch}, чтобы пригнуться. Медленно, но это самый тихий способ двигаться.
+pl: Naciśnij {key:Crouch}, żeby kucnąć. Wolno, ale to najcichszy sposób poruszania się.
+
+en: Press {key:Jump} to jump.
+zh-CN: 按 {key:Jump} 跳跃。
+ja: {key:Jump} でジャンプ。
+ko: {key:Jump}를 눌러 점프하세요.
+es: Pulsa {key:Jump} para saltar.
+pt-BR: Aperte {key:Jump} para pular.
+de: Drück {key:Jump} zum Springen.
+fr: Appuyez sur {key:Jump} pour sauter.
+ru: Нажмите {key:Jump}, чтобы прыгнуть.
+pl: Naciśnij {key:Jump}, żeby skoczyć.
+
+en: Bottom left: your health and breath. Top: the compass. The rest you read from the world: listen to it.
+zh-CN: 左下角：生命和气息。上方：指南针。其他的要从周围读出来：仔细听。
+ja: 左下は体力と息。上はコンパス。あとは世界から読み取れ。耳を澄ませろ。
+ko: 왼쪽 아래: 생명력과 호흡. 위쪽: 나침반. 나머지는 주변에서 읽어내세요. 귀를 기울이세요.
+es: Abajo a la izquierda: tu salud y tu aliento. Arriba: la brújula. Lo demás lo lees en el mundo: escúchalo.
+pt-BR: Embaixo à esquerda: sua vida e seu fôlego. Em cima: a bússola. O resto você lê no mundo: escute.
+de: Unten links: dein Leben und dein Atem. Oben: der Kompass. Den Rest liest du aus der Welt: hör hin.
+fr: En bas à gauche : votre santé et votre souffle. En haut : la boussole. Le reste se lit dans le monde : écoutez-le.
+ru: Слева внизу: здоровье и дыхание. Сверху: компас. Остальное читайте по миру: прислушивайтесь.
+pl: Na dole po lewej: zdrowie i oddech. Na górze: kompas. Resztę odczytasz ze świata: nasłuchuj.
+
+en: Go up to the front door. The porch has a ramp: loaded trolleys roll up it.
+zh-CN: 走到前门。门廊有坡道：装满货的手推车能推上去。
+ja: 玄関まで行こう。ポーチにはスロープがある。荷物を積んだ台車も上がれる。
+ko: 현관문까지 가세요. 현관에는 경사로가 있어서 짐을 실은 손수레도 올라갈 수 있습니다.
+es: Sube hasta la puerta principal. El porche tiene una rampa: las carretillas cargadas suben por ella.
+pt-BR: Vá até a porta da frente. A varanda tem uma rampa: carrinhos carregados sobem por ela.
+de: Geh zur Haustür. Die Veranda hat eine Rampe: Beladene Sackkarren rollen hinauf.
+fr: Allez jusqu'à la porte d'entrée. Le perron a une rampe : les diables chargés y montent.
+ru: Подойдите к входной двери. У крыльца есть пандус: гружёные тележки закатываются по нему.
+pl: Podejdź do drzwi wejściowych. Ganek ma podjazd: załadowane wózki wjadą po nim.
+
+en: Go inside.
+zh-CN: 进去。
+ja: 中に入ろう。
+ko: 안으로 들어가세요.
+es: Entra.
+pt-BR: Entre.
+de: Geh hinein.
+fr: Entrez.
+ru: Зайдите внутрь.
+pl: Wejdź do środka.
+
+en: Turn your flashlight on with {key:Flashlight}. The battery recharges while it's off.
+zh-CN: 按 {key:Flashlight} 打开手电筒。关着的时候电池会充电。
+ja: {key:Flashlight} で懐中電灯をつけよう。消している間にバッテリーは充電される。
+ko: {key:Flashlight}로 손전등을 켜세요. 꺼져 있는 동안 배터리가 충전됩니다.
+es: Enciende la linterna con {key:Flashlight}. La batería se recarga mientras está apagada.
+pt-BR: Ligue a lanterna com {key:Flashlight}. A bateria recarrega enquanto ela está desligada.
+de: Schalte die Taschenlampe mit {key:Flashlight} ein. Der Akku lädt, solange sie aus ist.
+fr: Allumez votre lampe torche avec {key:Flashlight}. La batterie se recharge quand elle est éteinte.
+ru: Включите фонарик клавишей {key:Flashlight}. Батарея заряжается, пока он выключен.
+pl: Włącz latarkę klawiszem {key:Flashlight}. Bateria ładuje się, gdy latarka jest wyłączona.
+
+en: Press {key:Scan} to scan: everything worth taking shows its value, and you see what the truck holds.
+zh-CN: 按 {key:Scan} 扫描：值得拿的东西都会显示价值，还能看到卡车里装了多少。
+ja: {key:Scan} でスキャン。持ち帰る価値のある物に値段が出て、トラックの中身もわかる。
+ko: {key:Scan}를 눌러 스캔하세요. 가져갈 만한 물건의 가치가 보이고, 트럭에 실린 것도 보입니다.
+es: Pulsa {key:Scan} para escanear: todo lo que vale la pena muestra su valor, y ves lo que lleva el camión.
+pt-BR: Aperte {key:Scan} para escanear: tudo o que vale a pena mostra o valor, e você vê o que o caminhão leva.
+de: Drück {key:Scan} zum Scannen: Alles, was sich lohnt, zeigt seinen Wert, und du siehst, was der Laster geladen hat.
+fr: Appuyez sur {key:Scan} pour scanner : tout ce qui vaut la peine affiche sa valeur, et vous voyez ce que contient le camion.
+ru: Нажмите {key:Scan} для сканирования: всё ценное покажет свою стоимость, и вы увидите, что в грузовике.
+pl: Naciśnij {key:Scan}, żeby skanować: wszystko, co warto wziąć, pokaże swoją wartość, a ty zobaczysz, co jest w ciężarówce.
+
+en: Look at the lamp on the side table and press {key:Interact} to pick it up.
+zh-CN: 看向边桌上的台灯，按 {key:Interact} 拿起来。
+ja: サイドテーブルのランプを見て、{key:Interact} で拾おう。
+ko: 사이드 테이블의 램프를 보고 {key:Interact}를 눌러 집으세요.
+es: Mira la lámpara de la mesita y pulsa {key:Interact} para cogerla.
+pt-BR: Olhe para o abajur na mesinha e aperte {key:Interact} para pegar.
+de: Schau auf die Lampe auf dem Beistelltisch und drück {key:Interact}, um sie aufzuheben.
+fr: Regardez la lampe sur la table d'appoint et appuyez sur {key:Interact} pour la ramasser.
+ru: Посмотрите на лампу на приставном столике и нажмите {key:Interact}, чтобы взять её.
+pl: Spójrz na lampę na stoliku i naciśnij {key:Interact}, żeby ją podnieść.
+
+en: Press {key:Drop} to set it down. Every knock costs value; fragile things lose the most.
+zh-CN: 按 {key:Drop} 放下。每一次磕碰都会损失价值，易碎的东西损失最多。
+ja: {key:Drop} で置こう。ぶつけるたびに価値が下がる。壊れやすい物ほど大きく下がる。
+ko: {key:Drop}를 눌러 내려놓으세요. 부딪칠 때마다 가치가 떨어지고, 깨지기 쉬운 물건은 가장 많이 떨어집니다.
+es: Pulsa {key:Drop} para dejarlo. Cada golpe le quita valor; lo frágil pierde más.
+pt-BR: Aperte {key:Drop} para soltar. Cada batida custa valor; coisas frágeis perdem mais.
+de: Drück {key:Drop}, um sie abzustellen. Jeder Stoß kostet Wert; Zerbrechliches verliert am meisten.
+fr: Appuyez sur {key:Drop} pour la poser. Chaque choc coûte de la valeur ; les objets fragiles en perdent le plus.
+ru: Нажмите {key:Drop}, чтобы поставить. Каждый удар снижает стоимость; хрупкие вещи теряют больше всего.
+pl: Naciśnij {key:Drop}, żeby odłożyć. Każde uderzenie kosztuje wartość; kruche rzeczy tracą najwięcej.
+
+en: Pick up the cushion on the sofa and throw it with {key:Use}. Throwing is fast and loud, and breaks fragile things.
+zh-CN: 拿起沙发上的靠垫，按 {key:Use} 扔出去。投掷又快又吵，还会摔坏易碎品。
+ja: ソファのクッションを拾って {key:Use} で投げよう。投げるのは速いがうるさく、壊れ物は割れる。
+ko: 소파의 쿠션을 집어 {key:Use}로 던지세요. 던지기는 빠르지만 시끄럽고, 깨지기 쉬운 물건은 부서집니다.
+es: Coge el cojín del sofá y lánzalo con {key:Use}. Lanzar es rápido y ruidoso, y rompe lo frágil.
+pt-BR: Pegue a almofada do sofá e arremesse com {key:Use}. Arremessar é rápido e barulhento, e quebra coisas frágeis.
+de: Nimm das Kissen vom Sofa und wirf es mit {key:Use}. Werfen ist schnell und laut und zerbricht Zerbrechliches.
+fr: Ramassez le coussin du canapé et lancez-le avec {key:Use}. Lancer est rapide et bruyant, et casse ce qui est fragile.
+ru: Возьмите подушку с дивана и бросьте её клавишей {key:Use}. Бросать быстро и шумно, а хрупкое бьётся.
+pl: Podnieś poduszkę z kanapy i rzuć ją klawiszem {key:Use}. Rzucanie jest szybkie i głośne, a kruche rzeczy się tłuką.
+
+en: Small things go straight into your pockets. Pick up the cash on the coffee table.
+zh-CN: 小东西会直接放进口袋。拿起茶几上的现金。
+ja: 小さな物はそのままポケットに入る。コーヒーテーブルの現金を拾おう。
+ko: 작은 물건은 바로 주머니에 들어갑니다. 커피 테이블 위의 현금을 집으세요.
+es: Las cosas pequeñas van directas a tus bolsillos. Coge el dinero de la mesa de centro.
+pt-BR: Coisas pequenas vão direto para os bolsos. Pegue o dinheiro na mesa de centro.
+de: Kleines wandert direkt in deine Taschen. Nimm das Bargeld vom Couchtisch.
+fr: Les petites choses vont directement dans vos poches. Ramassez l'argent sur la table basse.
+ru: Мелочи сразу идут в карманы. Возьмите наличные с журнального столика.
+pl: Małe rzeczy trafiają prosto do kieszeni. Weź gotówkę ze stolika.
+
+en: Hold {key:Inventory} to see them: your gear and your pockets share four places.
+zh-CN: 按住 {key:Inventory} 查看：你的装备和口袋共用四个位置。
+ja: {key:Inventory} を押し続けると見える。装備とポケットは4つの枠を共有している。
+ko: {key:Inventory}를 누르고 있으면 보입니다. 장비와 주머니는 네 칸을 함께 씁니다.
+es: Mantén {key:Inventory} para verlos: tu equipo y tus bolsillos comparten cuatro huecos.
+pt-BR: Segure {key:Inventory} para ver: seu equipamento e seus bolsos dividem quatro espaços.
+de: Halte {key:Inventory}, um sie zu sehen: Ausrüstung und Taschen teilen sich vier Plätze.
+fr: Maintenez {key:Inventory} pour les voir : votre matériel et vos poches se partagent quatre emplacements.
+ru: Удерживайте {key:Inventory}, чтобы увидеть их: снаряжение и карманы делят четыре места.
+pl: Przytrzymaj {key:Inventory}, żeby je zobaczyć: sprzęt i kieszenie dzielą cztery miejsca.
+
+en: Press {key:HandSlot1} or {key:HandSlot2} (or scroll) to choose what's in your hand.
+zh-CN: 按 {key:HandSlot1} 或 {key:HandSlot2}（或滚动滚轮）选择手里拿什么。
+ja: {key:HandSlot1} か {key:HandSlot2}（またはホイール）で手に持つ物を選ぼう。
+ko: {key:HandSlot1} 또는 {key:HandSlot2}(또는 휠)로 손에 들 것을 고르세요.
+es: Pulsa {key:HandSlot1} o {key:HandSlot2} (o la rueda) para elegir qué llevas en la mano.
+pt-BR: Aperte {key:HandSlot1} ou {key:HandSlot2} (ou role a rodinha) para escolher o que fica na mão.
+de: Drück {key:HandSlot1} oder {key:HandSlot2} (oder scroll), um zu wählen, was du in der Hand hast.
+fr: Appuyez sur {key:HandSlot1} ou {key:HandSlot2} (ou la molette) pour choisir ce que vous tenez.
+ru: Нажмите {key:HandSlot1} или {key:HandSlot2} (или прокрутите колесо), чтобы выбрать, что в руке.
+pl: Naciśnij {key:HandSlot1} lub {key:HandSlot2} (albo przewiń kółkiem), żeby wybrać, co trzymasz w ręce.
+
+en: The vase on the dining table is worth a fortune while it's whole. Pick it up. Scan it as you go: every knock takes value off.
+zh-CN: 餐桌上的花瓶完好时价值连城。把它拿起来。边走边扫描：每次磕碰都会让它掉价。
+ja: ダイニングテーブルの花瓶は、無傷なら大金になる。持ち上げよう。運びながらスキャンしろ。ぶつけるたびに価値が下がる。
+ko: 식탁 위의 꽃병은 멀쩡하면 큰돈이 됩니다. 집어 드세요. 가면서 스캔해 보세요. 부딪칠 때마다 가치가 깎입니다.
+es: El jarrón de la mesa del comedor vale una fortuna mientras esté entero. Cógelo. Escanéalo mientras andas: cada golpe le quita valor.
+pt-BR: O vaso na mesa de jantar vale uma fortuna enquanto estiver inteiro. Pegue. Escaneie enquanto anda: cada batida tira valor.
+de: Die Vase auf dem Esstisch ist ein Vermögen wert, solange sie heil ist. Heb sie auf. Scanne unterwegs: Jeder Stoß kostet Wert.
+fr: Le vase sur la table de la salle à manger vaut une fortune tant qu'il est intact. Ramassez-le. Scannez en chemin : chaque choc lui fait perdre de la valeur.
+ru: Ваза на обеденном столе стоит целое состояние, пока она цела. Возьмите её. Сканируйте на ходу: каждый удар отнимает стоимость.
+pl: Wazon na stole w jadalni jest wart fortunę, dopóki jest cały. Podnieś go. Skanuj po drodze: każde uderzenie odbiera wartość.
+
+en: Carry it out to the truck: up the ramp into the cargo bay, and set it down. Walk, don't run.
+zh-CN: 把它搬到卡车那里：沿坡道进入货厢，然后放下。走，别跑。
+ja: トラックまで運ぼう。スロープを上って荷台に入り、そこで置く。歩け、走るな。
+ko: 트럭까지 옮기세요. 경사로를 올라 짐칸에 넣고 내려놓으세요. 걷고, 뛰지 마세요.
+es: Llévalo al camión: sube la rampa hasta la caja y déjalo ahí. Camina, no corras.
+pt-BR: Leve até o caminhão: suba a rampa até o baú e solte lá. Ande, não corra.
+de: Trag sie zum Laster: die Rampe hinauf in den Laderaum, und stell sie ab. Geh, renn nicht.
+fr: Portez-le jusqu'au camion : montez la rampe jusque dans la benne et posez-le. Marchez, ne courez pas.
+ru: Отнесите её к грузовику: по пандусу в кузов, и поставьте. Идите, не бегите.
+pl: Zanieś go do ciężarówki: po rampie na pakę i tam odłóż. Idź, nie biegnij.
+
+en: Pockets count in the truck, but they fill up. In the cargo bay, hold {key:Inventory}, choose the cash's place and press {key:Drop}.
+zh-CN: 口袋里的东西在卡车上也算数，但口袋会满。在货厢里按住 {key:Inventory}，选中现金所在的位置，按 {key:Drop}。
+ja: ポケットの中身もトラックでは数に入るが、すぐ一杯になる。荷台で {key:Inventory} を押し続け、現金の枠を選んで {key:Drop} を押そう。
+ko: 주머니 속 물건도 트럭에서는 계산되지만, 금방 찹니다. 짐칸에서 {key:Inventory}를 누른 채 현금 칸을 고르고 {key:Drop}를 누르세요.
+es: Los bolsillos cuentan en el camión, pero se llenan. En la caja, mantén {key:Inventory}, elige el hueco del dinero y pulsa {key:Drop}.
+pt-BR: Os bolsos contam no caminhão, mas enchem. No baú, segure {key:Inventory}, escolha o espaço do dinheiro e aperte {key:Drop}.
+de: Taschen zählen im Laster mit, aber sie werden voll. Halte im Laderaum {key:Inventory}, wähl den Platz des Bargelds und drück {key:Drop}.
+fr: Les poches comptent dans le camion, mais elles se remplissent. Dans la benne, maintenez {key:Inventory}, choisissez l'emplacement de l'argent et appuyez sur {key:Drop}.
+ru: Карманы засчитываются в грузовике, но они быстро заполняются. В кузове удерживайте {key:Inventory}, выберите место с наличными и нажмите {key:Drop}.
+pl: Kieszenie liczą się w ciężarówce, ale się zapełniają. Na pace przytrzymaj {key:Inventory}, wybierz miejsce z gotówką i naciśnij {key:Drop}.
+
+en: Running, dropping and breaking things all make noise. Something in houses like this hunts by sound.
+zh-CN: 奔跑、丢东西、打碎东西都会发出噪音。这种房子里有东西靠声音狩猎。
+ja: 走る、物を落とす、壊す。どれも音を立てる。こういう家には、音で獲物を探す何かがいる。
+ko: 달리기, 물건 떨어뜨리기, 부수기는 모두 소리를 냅니다. 이런 집에는 소리로 사냥하는 무언가가 있습니다.
+es: Correr, soltar y romper cosas hace ruido. En casas como esta hay algo que caza por el sonido.
+pt-BR: Correr, soltar e quebrar coisas faz barulho. Em casas como esta, algo caça pelo som.
+de: Rennen, Fallenlassen und Zerbrechen machen Lärm. In Häusern wie diesem jagt etwas nach Gehör.
+fr: Courir, lâcher et casser des choses fait du bruit. Dans les maisons comme celle-ci, quelque chose chasse au son.
+ru: Бег, падающие и бьющиеся вещи шумят. В таких домах есть что-то, что охотится на звук.
+pl: Bieganie, upuszczanie i tłuczenie rzeczy robi hałas. W takich domach coś poluje na dźwięk.
+
+en: The fridge is too heavy to lift alone. Take the hand trolley from the kit crates beside the truck ({key:Interact}).
+zh-CN: 冰箱太重，一个人抬不动。从卡车旁的装备箱里拿上手推车（{key:Interact}）。
+ja: 冷蔵庫は一人では重すぎる。トラック横の装備箱から台車を取ろう（{key:Interact}）。
+ko: 냉장고는 혼자 들기에 너무 무겁습니다. 트럭 옆 장비 상자에서 손수레를 가져가세요({key:Interact}).
+es: La nevera pesa demasiado para levantarla solo. Coge la carretilla de las cajas de equipo junto al camión ({key:Interact}).
+pt-BR: A geladeira é pesada demais para levantar sozinho. Pegue o carrinho nas caixas de equipamento ao lado do caminhão ({key:Interact}).
+de: Der Kühlschrank ist zu schwer für eine Person. Nimm die Sackkarre aus den Ausrüstungskisten neben dem Laster ({key:Interact}).
+fr: Le frigo est trop lourd pour le soulever seul. Prenez le diable dans les caisses de matériel près du camion ({key:Interact}).
+ru: Холодильник слишком тяжёл для одного. Возьмите тележку из ящиков со снаряжением у грузовика ({key:Interact}).
+pl: Lodówka jest za ciężka dla jednej osoby. Weź wózek ze skrzyń ze sprzętem obok ciężarówki ({key:Interact}).
+
+en: The fridge needs two of you, or a hand trolley from the kit crates beside the truck ({key:Interact}). Take one anyway.
+zh-CN: 冰箱需要两个人抬，或者用卡车旁装备箱里的手推车（{key:Interact}）。总之先拿一辆。
+ja: 冷蔵庫は二人がかりか、トラック横の装備箱の台車が要る（{key:Interact}）。とにかく一台取っておこう。
+ko: 냉장고는 두 명이 들거나, 트럭 옆 장비 상자의 손수레가 필요합니다({key:Interact}). 어쨌든 하나 챙기세요.
+es: La nevera necesita a dos personas, o una carretilla de las cajas de equipo junto al camión ({key:Interact}). Coge una de todas formas.
+pt-BR: A geladeira precisa de duas pessoas, ou de um carrinho das caixas de equipamento ao lado do caminhão ({key:Interact}). Pegue um mesmo assim.
+de: Für den Kühlschrank braucht es zwei von euch oder eine Sackkarre aus den Ausrüstungskisten neben dem Laster ({key:Interact}). Nimm trotzdem eine.
+fr: Le frigo demande deux personnes, ou un diable des caisses de matériel près du camion ({key:Interact}). Prenez-en un quand même.
+ru: Холодильник нужно нести вдвоём или везти на тележке из ящиков со снаряжением у грузовика ({key:Interact}). Возьмите её всё равно.
+pl: Do lodówki potrzeba dwóch osób albo wózka ze skrzyń ze sprzętem obok ciężarówki ({key:Interact}). I tak weź jeden.
+
+en: With the trolley in a hand slot, take hold of the fridge ({key:Interact}) and drag it out of its corner. Heavy loads are slow.
+zh-CN: 手持栏位里有手推车时，抓住冰箱（{key:Interact}），把它从角落里拖出来。重物会让你变慢。
+ja: 台車を手のスロットに入れた状態で冷蔵庫をつかみ（{key:Interact}）、隅から引き出そう。重い荷物は遅い。
+ko: 손수레가 손 슬롯에 있는 상태로 냉장고를 잡고({key:Interact}) 구석에서 끌어내세요. 무거운 짐은 느립니다.
+es: Con la carretilla en una ranura de mano, agarra la nevera ({key:Interact}) y sácala de su rincón arrastrándola. Las cargas pesadas van despacio.
+pt-BR: Com o carrinho num espaço de mão, segure a geladeira ({key:Interact}) e arraste para fora do canto. Cargas pesadas são lentas.
+de: Mit der Sackkarre auf einem Handplatz packst du den Kühlschrank ({key:Interact}) und ziehst ihn aus seiner Ecke. Schwere Lasten sind langsam.
+fr: Avec le diable dans un emplacement de main, saisissez le frigo ({key:Interact}) et sortez-le de son coin en le traînant. Les charges lourdes sont lentes.
+ru: С тележкой в слоте рук возьмитесь за холодильник ({key:Interact}) и вытащите его из угла. С тяжёлым грузом вы медленнее.
+pl: Z wózkiem w slocie rąk chwyć lodówkę ({key:Interact}) i wyciągnij ją z kąta. Ciężkie ładunki są powolne.
+
+en: Take a handle each ({key:Interact}) and lift the fridge together. You all move at the slowest carrier's pace.
+zh-CN: 每人抓住一个把手（{key:Interact}），一起抬起冰箱。大家的速度会和最慢的那个人一样。
+ja: 一人ずつ取っ手を持ち（{key:Interact}）、一緒に冷蔵庫を持ち上げよう。全員、一番遅い者の速さで動く。
+ko: 각자 손잡이를 잡고({key:Interact}) 함께 냉장고를 드세요. 모두 가장 느린 사람의 속도로 움직입니다.
+es: Agarrad un asa cada uno ({key:Interact}) y levantad la nevera juntos. Todos vais al ritmo del más lento.
+pt-BR: Cada um pega uma alça ({key:Interact}) e vocês levantam a geladeira juntos. Todos andam no ritmo de quem carrega mais devagar.
+de: Jeder nimmt einen Griff ({key:Interact}), und ihr hebt den Kühlschrank gemeinsam. Ihr bewegt euch alle im Tempo des Langsamsten.
+fr: Prenez chacun une poignée ({key:Interact}) et soulevez le frigo ensemble. Vous avancez tous au rythme du plus lent.
+ru: Возьмитесь каждый за ручку ({key:Interact}) и поднимите холодильник вместе. Все двигаются со скоростью самого медленного.
+pl: Chwyćcie każdy za uchwyt ({key:Interact}) i podnieście lodówkę razem. Wszyscy idziecie w tempie najwolniejszego.
+
+en: Out through the front door and up into the truck. Everything aboard counts toward the quota.
+zh-CN: 从前门出去，搬上卡车。车上的所有东西都算进定额。
+ja: 玄関から出してトラックに積もう。積んだ物はすべてノルマに数えられる。
+ko: 현관문으로 나가 트럭에 실으세요. 실린 것은 모두 할당량에 들어갑니다.
+es: Sácala por la puerta principal y súbela al camión. Todo lo que va a bordo cuenta para la cuota.
+pt-BR: Saia pela porta da frente e suba no caminhão. Tudo a bordo conta para a cota.
+de: Raus durch die Haustür und hinauf in den Laster. Alles an Bord zählt fürs Soll.
+fr: Sortez par la porte d'entrée et montez-le dans le camion. Tout ce qui est à bord compte pour le quota.
+ru: Через входную дверь и в грузовик. Всё, что на борту, идёт в норму.
+pl: Przez drzwi wejściowe i na ciężarówkę. Wszystko na pokładzie liczy się do normy.
+
+en: Slide the laundry doors shut ({key:Interact}). A shut door blocks sight, and most things that hunt you can't open one.
+zh-CN: 拉上洗衣间的门（{key:Interact}）。关上的门能挡住视线，大多数猎杀你的东西都打不开门。
+ja: 洗濯室の引き戸を閉めよう（{key:Interact}）。閉じたドアは視線を遮る。お前を狩る物のほとんどはドアを開けられない。
+ko: 세탁실 미닫이문을 닫으세요({key:Interact}). 닫힌 문은 시야를 막고, 당신을 사냥하는 것들 대부분은 문을 열지 못합니다.
+es: Cierra las puertas correderas del lavadero ({key:Interact}). Una puerta cerrada tapa la vista, y casi nada de lo que te caza puede abrirla.
+pt-BR: Feche as portas de correr da lavanderia ({key:Interact}). Uma porta fechada bloqueia a visão, e quase nada que caça você consegue abri-la.
+de: Schieb die Türen der Waschküche zu ({key:Interact}). Eine geschlossene Tür versperrt die Sicht, und das meiste, was dich jagt, kann keine öffnen.
+fr: Fermez les portes coulissantes de la buanderie ({key:Interact}). Une porte fermée bloque la vue, et la plupart des choses qui vous chassent ne savent pas l'ouvrir.
+ru: Задвиньте двери прачечной ({key:Interact}). Закрытая дверь закрывает обзор, и почти всё, что на вас охотится, не умеет её открыть.
+pl: Zasuń drzwi pralni ({key:Interact}). Zamknięte drzwi zasłaniają widok, a większość tego, co na ciebie poluje, nie umie ich otworzyć.
+
+en: Open them again.
+zh-CN: 再把它们打开。
+ja: もう一度開けよう。
+ko: 다시 여세요.
+es: Ábrelas otra vez.
+pt-BR: Abra de novo.
+de: Mach sie wieder auf.
+fr: Rouvrez-les.
+ru: Откройте их снова.
+pl: Otwórz je znowu.
+
+en: There's a watch on the shelf above the machines. Pocket it.
+zh-CN: 洗衣机上方的架子上有一块手表。放进口袋。
+ja: 洗濯機の上の棚に腕時計がある。ポケットに入れよう。
+ko: 세탁기 위 선반에 시계가 있습니다. 주머니에 넣으세요.
+es: Hay un reloj en la balda sobre las máquinas. Guárdatelo en el bolsillo.
+pt-BR: Tem um relógio na prateleira acima das máquinas. Ponha no bolso.
+de: Auf dem Regal über den Maschinen liegt eine Uhr. Steck sie ein.
+fr: Il y a une montre sur l'étagère au-dessus des machines. Empochez-la.
+ru: На полке над машинами лежат часы. Положите их в карман.
+pl: Na półce nad pralkami leży zegarek. Schowaj go do kieszeni.
+
+en: Every floor has a load limit: you, what you carry, what you drag. Creaks mean near the limit, cracks mean it's weakening, and a sag means you have two seconds.
+zh-CN: 每块地板都有承重上限：你自己、你拿的、你拖的都算。吱嘎声表示快到上限，裂纹表示它在变弱，下陷表示你只剩两秒。
+ja: 床には耐荷重がある。お前自身、持っている物、引きずっている物。きしみは限界が近い印、ひびは弱っている印、たわみは残り2秒の印だ。
+ko: 모든 바닥에는 하중 한계가 있습니다. 당신, 들고 있는 것, 끌고 있는 것까지. 삐걱거림은 한계에 가깝다는 뜻이고, 균열은 약해지고 있다는 뜻이며, 처짐은 2초가 남았다는 뜻입니다.
+es: Todo suelo tiene un límite de carga: tú, lo que llevas y lo que arrastras. Los crujidos avisan de que está cerca del límite, las grietas de que se debilita, y si se hunde tienes dos segundos.
+pt-BR: Todo piso tem um limite de carga: você, o que carrega, o que arrasta. Rangidos querem dizer perto do limite, rachaduras querem dizer que está enfraquecendo, e se ceder você tem dois segundos.
+de: Jeder Boden hat eine Traglast: du, was du trägst, was du ziehst. Knarzen heißt nahe am Limit, Risse heißen, er wird schwächer, und Durchhängen heißt, du hast zwei Sekunden.
+fr: Chaque plancher a une limite de charge : vous, ce que vous portez, ce que vous traînez. Les craquements signalent la limite proche, les fissures qu'il faiblit, et un affaissement vous laisse deux secondes.
+ru: У каждого пола есть предел нагрузки: вы, то, что несёте, и то, что тащите. Скрип значит предел близко, трещины значат, что пол слабеет, а прогиб значит, что у вас две секунды.
+pl: Każda podłoga ma limit obciążenia: ty, to, co niesiesz, i to, co ciągniesz. Skrzypienie znaczy, że limit blisko, pęknięcia, że słabnie, a ugięcie, że masz dwie sekundy.
+
+en: There's a grandfather clock in the north bedroom. Take hold of it with the trolley in a hand slot.
+zh-CN: 北边卧室里有一座落地钟。手持栏位里放着手推车，抓住它。
+ja: 北の寝室に大きな柱時計がある。台車を手のスロットに入れた状態でつかもう。
+ko: 북쪽 침실에 괘종시계가 있습니다. 손수레를 손 슬롯에 둔 채 잡으세요.
+es: Hay un reloj de pie en el dormitorio norte. Agárralo con la carretilla en una ranura de mano.
+pt-BR: Tem um relógio de pêndulo no quarto norte. Segure-o com o carrinho num espaço de mão.
+de: Im Nordschlafzimmer steht eine Standuhr. Pack sie mit der Sackkarre auf einem Handplatz.
+fr: Il y a une horloge comtoise dans la chambre nord. Saisissez-la avec le diable dans un emplacement de main.
+ru: В северной спальне стоят напольные часы. Возьмитесь за них, держа тележку в слоте рук.
+pl: W północnej sypialni stoi zegar stojący. Chwyć go z wózkiem w slocie rąk.
+
+en: There's a grandfather clock in the north bedroom. Lift it together, or drag it on the trolley.
+zh-CN: 北边卧室里有一座落地钟。一起抬起来，或者用手推车拖。
+ja: 北の寝室に大きな柱時計がある。一緒に持ち上げるか、台車で引きずろう。
+ko: 북쪽 침실에 괘종시계가 있습니다. 함께 들거나 손수레로 끄세요.
+es: Hay un reloj de pie en el dormitorio norte. Levantadlo entre todos o arrastradlo con la carretilla.
+pt-BR: Tem um relógio de pêndulo no quarto norte. Levantem juntos ou arrastem no carrinho.
+de: Im Nordschlafzimmer steht eine Standuhr. Hebt sie gemeinsam an oder zieht sie auf der Sackkarre.
+fr: Il y a une horloge comtoise dans la chambre nord. Soulevez-la ensemble, ou traînez-la sur le diable.
+ru: В северной спальне стоят напольные часы. Поднимите их вместе или тащите на тележке.
+pl: W północnej sypialni stoi zegar stojący. Podnieście go razem albo ciągnijcie na wózku.
+
+en: Bring it through the hallway toward the kitchen. Listen to the floor.
+zh-CN: 把它从走廊搬向厨房。听听地板的声音。
+ja: 廊下を通ってキッチンへ運ぼう。床の音を聞け。
+ko: 복도를 지나 부엌 쪽으로 옮기세요. 바닥 소리에 귀 기울이세요.
+es: Llévalo por el pasillo hacia la cocina. Escucha el suelo.
+pt-BR: Leve pelo corredor em direção à cozinha. Escute o piso.
+de: Bring sie durch den Flur Richtung Küche. Hör auf den Boden.
+fr: Amenez-la par le couloir vers la cuisine. Écoutez le plancher.
+ru: Несите их по коридору к кухне. Слушайте пол.
+pl: Przenieś go korytarzem w stronę kuchni. Słuchaj podłogi.
+
+en: Too much weight: it's cracking. Get everyone off the hallway.
+zh-CN: 太重了：地板在开裂。让所有人离开走廊。
+ja: 重すぎる。ひびが入っている。全員、廊下から出ろ。
+ko: 너무 무겁습니다. 금이 가고 있어요. 모두 복도에서 나오세요.
+es: Demasiado peso: se está agrietando. Que todos salgan del pasillo.
+pt-BR: Peso demais: está rachando. Tire todo mundo do corredor.
+de: Zu viel Gewicht: Er reißt. Alle runter vom Flur.
+fr: Trop de poids : il se fissure. Faites sortir tout le monde du couloir.
+ru: Слишком тяжело: пол трескается. Все с коридора.
+pl: Za duży ciężar: pęka. Wszyscy z korytarza.
+
+en: You need a free place for a support jack. Drop something: hold {key:Inventory}, choose it, press {key:Drop}.
+zh-CN: 你需要一个空位置来放支撑千斤顶。丢下点东西：按住 {key:Inventory}，选中它，按 {key:Drop}。
+ja: 支持ジャッキを入れる空きが要る。何か手放そう。{key:Inventory} を押し続け、選んで {key:Drop}。
+ko: 지지 잭을 넣을 빈칸이 필요합니다. 무언가를 버리세요: {key:Inventory}를 누른 채 고르고 {key:Drop}를 누르세요.
+es: Necesitas un hueco libre para un puntal. Suelta algo: mantén {key:Inventory}, elígelo y pulsa {key:Drop}.
+pt-BR: Você precisa de um espaço livre para uma escora. Solte algo: segure {key:Inventory}, escolha e aperte {key:Drop}.
+de: Du brauchst einen freien Platz für einen Stützheber. Wirf etwas weg: Halte {key:Inventory}, wähl es aus, drück {key:Drop}.
+fr: Il vous faut un emplacement libre pour un étai. Lâchez quelque chose : maintenez {key:Inventory}, choisissez-le, appuyez sur {key:Drop}.
+ru: Нужно свободное место для подпорки. Бросьте что-нибудь: удерживайте {key:Inventory}, выберите и нажмите {key:Drop}.
+pl: Potrzebujesz wolnego miejsca na podporę. Upuść coś: przytrzymaj {key:Inventory}, wybierz i naciśnij {key:Drop}.
+
+en: Take a support jack from the crate in the dining room. Stand on the hallway, hands empty, and use it ({key:Use}): it props the floor up from the basement.
+zh-CN: 从餐厅的箱子里拿一个支撑千斤顶。空着手站在走廊上使用它（{key:Use}）：它会从地下室把地板撑起来。
+ja: ダイニングの箱から支持ジャッキを取ろう。手を空にして廊下に立ち、使え（{key:Use}）。地下室から床を支える。
+ko: 식당의 상자에서 지지 잭을 가져가세요. 빈손으로 복도에 서서 사용하세요({key:Use}). 지하실에서 바닥을 받쳐 줍니다.
+es: Coge un puntal de la caja del comedor. Ponte en el pasillo con las manos vacías y úsalo ({key:Use}): apuntala el suelo desde el sótano.
+pt-BR: Pegue uma escora na caixa da sala de jantar. Fique no corredor de mãos vazias e use ({key:Use}): ela sustenta o piso a partir do porão.
+de: Nimm einen Stützheber aus der Kiste im Esszimmer. Stell dich mit leeren Händen auf den Flur und benutz ihn ({key:Use}): Er stützt den Boden vom Keller aus.
+fr: Prenez un étai dans la caisse de la salle à manger. Placez-vous dans le couloir, mains vides, et utilisez-le ({key:Use}) : il soutient le plancher depuis le sous-sol.
+ru: Возьмите подпорку из ящика в столовой. Встаньте в коридоре с пустыми руками и используйте её ({key:Use}): она подопрёт пол из подвала.
+pl: Weź podporę ze skrzyni w jadalni. Stań na korytarzu z pustymi rękami i użyj jej ({key:Use}): podeprze podłogę od strony piwnicy.
+
+en: Now take the clock across into the kitchen. A braced floor holds more.
+zh-CN: 现在把落地钟搬过去，搬进厨房。撑住的地板能承受更多。
+ja: 今度は時計を渡してキッチンへ運ぼう。支えた床はもっと耐える。
+ko: 이제 시계를 건너 부엌으로 옮기세요. 받친 바닥은 더 많이 버팁니다.
+es: Ahora lleva el reloj al otro lado, hasta la cocina. Un suelo apuntalado aguanta más.
+pt-BR: Agora atravesse com o relógio até a cozinha. Um piso escorado aguenta mais.
+de: Jetzt bring die Uhr hinüber in die Küche. Ein abgestützter Boden hält mehr aus.
+fr: Maintenant, faites passer l'horloge jusqu'à la cuisine. Un plancher étayé tient davantage.
+ru: Теперь перенесите часы на кухню. Подпёртый пол выдерживает больше.
+pl: Teraz przenieś zegar do kuchni. Podparta podłoga wytrzyma więcej.
+
+en: There's a pearl necklace on the nightstand in the south bedroom. Go and get it.
+zh-CN: 南边卧室的床头柜上有一条珍珠项链。去拿过来。
+ja: 南の寝室のナイトテーブルに真珠のネックレスがある。取ってこい。
+ko: 남쪽 침실의 협탁 위에 진주 목걸이가 있습니다. 가서 가져오세요.
+es: Hay un collar de perlas en la mesita de noche del dormitorio sur. Ve a por él.
+pt-BR: Tem um colar de pérolas na mesa de cabeceira do quarto sul. Vá buscar.
+de: Auf dem Nachttisch im Südschlafzimmer liegt eine Perlenkette. Hol sie.
+fr: Il y a un collier de perles sur la table de chevet de la chambre sud. Allez le chercher.
+ru: На тумбочке в южной спальне лежит жемчужное ожерелье. Сходите за ним.
+pl: Na szafce nocnej w południowej sypialni leży naszyjnik z pereł. Idź po niego.
+
+en: When a floor sags, get off it: you have about two seconds. Falls hurt, more so with weight in your hands.
+zh-CN: 地板下陷时赶紧离开：你大约只有两秒。摔下去会受伤，手里拿着重物伤得更重。
+ja: 床がたわんだら降りろ。猶予はおよそ2秒。落ちれば痛い。重い物を持っていればなおさらだ。
+ko: 바닥이 처지면 피하세요. 약 2초가 있습니다. 떨어지면 다치고, 무거운 것을 들고 있으면 더 다칩니다.
+es: Cuando un suelo se hunda, sal de ahí: tienes unos dos segundos. Las caídas duelen, y más con peso en las manos.
+pt-BR: Quando um piso ceder, saia: você tem uns dois segundos. Quedas machucam, ainda mais com peso nas mãos.
+de: Wenn ein Boden durchhängt, runter da: Du hast etwa zwei Sekunden. Stürze tun weh, mit Gewicht in den Händen noch mehr.
+fr: Quand un plancher s'affaisse, descendez-en : vous avez environ deux secondes. Les chutes font mal, plus encore avec du poids dans les mains.
+ru: Когда пол прогибается, уходите с него: у вас около двух секунд. Падения ранят, а с грузом в руках ещё сильнее.
+pl: Gdy podłoga się ugina, zejdź z niej: masz około dwóch sekund. Upadki bolą, a z ciężarem w rękach jeszcze bardziej.
+
+en: Get to the basement: down through the hole, or by the cellar stairs off the patio.
+zh-CN: 去地下室：从洞里下去，或者走露台旁的地窖楼梯。
+ja: 地下室へ行こう。穴から降りるか、パティオの地下階段を使え。
+ko: 지하실로 가세요. 구멍으로 내려가거나, 테라스 옆 지하 계단을 쓰세요.
+es: Baja al sótano: por el agujero, o por la escalera del sótano junto al patio.
+pt-BR: Desça ao porão: pelo buraco ou pela escada do porão perto do pátio.
+de: Geh in den Keller: durch das Loch hinunter oder über die Kellertreppe an der Terrasse.
+fr: Allez au sous-sol : par le trou, ou par l'escalier de cave près du patio.
+ru: Спуститесь в подвал: через дыру или по подвальной лестнице у патио.
+pl: Zejdź do piwnicy: przez dziurę albo schodami piwnicznymi przy patio.
+
+en: Throw the breaker on the furnace wall ({key:Interact}). Part of the house gets its lights back for a while, and the panel hums: things hear it.
+zh-CN: 拉下锅炉墙上的配电箱开关（{key:Interact}）。房子的一部分会暂时恢复照明，配电箱会嗡嗡作响：有东西会听到。
+ja: 炉の壁の分電盤のブレーカーを上げろ（{key:Interact}）。家の一部にしばらく明かりが戻るが、分電盤は唸る。何かがその音を聞く。
+ko: 보일러 벽의 분전반 차단기를 올리세요({key:Interact}). 집의 일부에 잠시 불이 들어오지만, 분전반이 웅웅거립니다. 무언가가 듣습니다.
+es: Activa el cuadro eléctrico de la pared de la caldera ({key:Interact}). Parte de la casa recupera la luz un rato, y el cuadro zumba: hay cosas que lo oyen.
+pt-BR: Ligue o disjuntor do quadro na parede da fornalha ({key:Interact}). Parte da casa recupera a luz por um tempo, e o quadro zumbe: algo escuta.
+de: Leg den Schalter am Sicherungskasten an der Heizungswand um ({key:Interact}). Ein Teil des Hauses hat eine Weile wieder Licht, und der Kasten summt: Dinge hören das.
+fr: Réenclenchez le tableau électrique sur le mur de la chaudière ({key:Interact}). Une partie de la maison retrouve la lumière un moment, et le tableau bourdonne : des choses l'entendent.
+ru: Включите рубильник на щитке у стены с котлом ({key:Interact}). В части дома на время загорится свет, а щиток будет гудеть: кто-то это услышит.
+pl: Przełącz skrzynkę bezpieczników na ścianie przy piecu ({key:Interact}). Część domu na chwilę odzyska światło, a skrzynka buczy: coś to słyszy.
+
+en: Climb out by the cellar stairs onto the patio.
+zh-CN: 走地窖楼梯爬到露台上。
+ja: 地下階段を上ってパティオに出よう。
+ko: 지하 계단으로 올라가 테라스로 나가세요.
+es: Sube por la escalera del sótano hasta el patio.
+pt-BR: Suba pela escada do porão até o pátio.
+de: Steig über die Kellertreppe hinauf auf die Terrasse.
+fr: Remontez par l'escalier de cave jusqu'au patio.
+ru: Поднимитесь по подвальной лестнице на патио.
+pl: Wyjdź schodami piwnicznymi na patio.
+
+en: Something just came in through the patio door. It hunts by sound. Don't run.
+zh-CN: 有东西刚从露台门进来了。它靠声音狩猎。别跑。
+ja: 何かがパティオのドアから入ってきた。音で狩る。走るな。
+ko: 방금 테라스 문으로 무언가가 들어왔습니다. 소리로 사냥합니다. 뛰지 마세요.
+es: Algo acaba de entrar por la puerta del patio. Caza por el sonido. No corras.
+pt-BR: Algo acabou de entrar pela porta do pátio. Caça pelo som. Não corra.
+de: Gerade ist etwas durch die Terrassentür hereingekommen. Es jagt nach Gehör. Renn nicht.
+fr: Quelque chose vient d'entrer par la porte du patio. Ça chasse au son. Ne courez pas.
+ru: Что-то только что вошло через дверь патио. Оно охотится на звук. Не бегите.
+pl: Coś właśnie weszło przez drzwi od patio. Poluje na dźwięk. Nie biegnij.
+
+en: Get to the master bedroom and hide in the closet ({key:Interact}, nothing big in your hands). It can't find you in there unless it watched you go in.
+zh-CN: 去主卧，躲进衣柜（{key:Interact}，手里不能拿大东西）。除非它看见你进去，否则找不到你。
+ja: 主寝室に行ってクローゼットに隠れろ（{key:Interact}、大きな物は手放す）。入るところを見られていなければ、見つからない。
+ko: 안방으로 가서 옷장에 숨으세요({key:Interact}, 손에 큰 물건이 없어야 합니다). 들어가는 걸 보지 않았다면 찾지 못합니다.
+es: Ve al dormitorio principal y escóndete en el armario ({key:Interact}, sin nada grande en las manos). No puede encontrarte ahí dentro a menos que te viera entrar.
+pt-BR: Vá até o quarto principal e esconda-se no closet ({key:Interact}, sem nada grande nas mãos). Não pode encontrar você lá dentro, a menos que tenha visto você entrar.
+de: Geh ins Elternschlafzimmer und versteck dich im Schrank ({key:Interact}, nichts Großes in den Händen). Dort findet es dich nur, wenn es dich hineingehen sah.
+fr: Allez dans la chambre principale et cachez-vous dans le placard ({key:Interact}, rien de gros dans les mains). Il ne peut pas vous y trouver, sauf s'il vous a vu entrer.
+ru: Идите в главную спальню и спрячьтесь в шкафу ({key:Interact}, без крупных вещей в руках). Там вас не найдут, если не видели, как вы вошли.
+pl: Idź do głównej sypialni i schowaj się w szafie ({key:Interact}, bez niczego dużego w rękach). Tam cię nie znajdzie, chyba że widział, jak wchodzisz.
+
+en: Stay hidden. Look around to peek. Wait until it leaves.
+zh-CN: 保持隐藏。转动视角偷看。等它离开。
+ja: 隠れていろ。視点を動かせば覗ける。去るまで待て。
+ko: 숨어 있으세요. 시선을 돌리면 엿볼 수 있습니다. 떠날 때까지 기다리세요.
+es: Sigue escondido. Mira a tu alrededor para asomarte. Espera a que se vaya.
+pt-BR: Fique escondido. Olhe em volta para espiar. Espere até ele ir embora.
+de: Bleib versteckt. Schau dich um, um hinauszuspähen. Warte, bis es geht.
+fr: Restez caché. Regardez autour de vous pour jeter un œil. Attendez qu'il parte.
+ru: Не выходите. Двигайте взглядом, чтобы выглянуть. Ждите, пока оно уйдёт.
+pl: Zostań w ukryciu. Rozglądaj się, żeby podglądać. Poczekaj, aż odejdzie.
+
+en: Hold {key:PushToTalk} to talk to people near you, {key:Radio} for the radio. {key:Ping} marks a spot for everyone. If you die, you watch as a ghost until the job ends.
+zh-CN: 按住 {key:PushToTalk} 和身边的人说话，按住 {key:Radio} 用对讲机。{key:Ping} 给所有人标记一个位置。如果你死了，就会作为幽灵观战到任务结束。
+ja: {key:PushToTalk} を押し続ければ近くの者と話せる。無線は {key:Radio}。{key:Ping} で全員に場所を示せる。死んだら仕事が終わるまで幽霊として見守ることになる。
+ko: {key:PushToTalk}를 누르고 있으면 가까운 사람과, {key:Radio}로는 무전으로 말합니다. {key:Ping}은 모두에게 위치를 표시합니다. 죽으면 작업이 끝날 때까지 유령으로 지켜봅니다.
+es: Mantén {key:PushToTalk} para hablar con quien tengas cerca, {key:Radio} para la radio. {key:Ping} marca un punto para todos. Si mueres, miras como fantasma hasta que acabe el trabajo.
+pt-BR: Segure {key:PushToTalk} para falar com quem está perto, {key:Radio} para o rádio. {key:Ping} marca um ponto para todos. Se você morrer, assiste como fantasma até o trabalho acabar.
+de: Halte {key:PushToTalk}, um mit Leuten in der Nähe zu reden, {key:Radio} für das Funkgerät. {key:Ping} markiert eine Stelle für alle. Stirbst du, schaust du als Geist zu, bis der Auftrag endet.
+fr: Maintenez {key:PushToTalk} pour parler aux gens proches, {key:Radio} pour la radio. {key:Ping} signale un endroit à tous. Si vous mourez, vous regardez en fantôme jusqu'à la fin de la mission.
+ru: Удерживайте {key:PushToTalk}, чтобы говорить с теми, кто рядом, {key:Radio} — для рации. {key:Ping} отмечает точку для всех. Если вы погибнете, будете наблюдать призраком до конца заказа.
+pl: Przytrzymaj {key:PushToTalk}, żeby mówić do osób w pobliżu, {key:Radio} do radia. {key:Ping} zaznacza miejsce dla wszystkich. Jeśli zginiesz, będziesz patrzeć jako duch do końca zlecenia.
+
+en: Your four places are full. Drop something you're done with: hold {key:Inventory}, choose it, press {key:Drop}.
+zh-CN: 你的四个位置都满了。丢下用不着的东西：按住 {key:Inventory}，选中它，按 {key:Drop}。
+ja: 4つの枠がいっぱいだ。もう要らない物を手放そう。{key:Inventory} を押し続け、選んで {key:Drop}。
+ko: 네 칸이 가득 찼습니다. 다 쓴 것을 버리세요: {key:Inventory}를 누른 채 고르고 {key:Drop}를 누르세요.
+es: Tus cuatro huecos están llenos. Suelta algo que ya no necesites: mantén {key:Inventory}, elígelo y pulsa {key:Drop}.
+pt-BR: Seus quatro espaços estão cheios. Solte algo de que não precisa mais: segure {key:Inventory}, escolha e aperte {key:Drop}.
+de: Deine vier Plätze sind voll. Wirf weg, was du nicht mehr brauchst: Halte {key:Inventory}, wähl es aus, drück {key:Drop}.
+fr: Vos quatre emplacements sont pleins. Lâchez ce dont vous n'avez plus besoin : maintenez {key:Inventory}, choisissez-le, appuyez sur {key:Drop}.
+ru: Все четыре места заняты. Бросьте то, что больше не нужно: удерживайте {key:Inventory}, выберите и нажмите {key:Drop}.
+pl: Twoje cztery miejsca są pełne. Upuść to, czego już nie potrzebujesz: przytrzymaj {key:Inventory}, wybierz i naciśnij {key:Drop}.
+
+en: The ensuite is through the master bedroom. The ring on the vanity is the best thing in the house. Pocket it.
+zh-CN: 主卧浴室要从主卧进去。洗手台上的戒指是这栋房子里最值钱的东西。放进口袋。
+ja: 主寝室のバスルームは主寝室を通った先だ。洗面台の指輪がこの家で一番の品だ。ポケットに入れよう。
+ko: 안방 욕실은 안방을 지나야 갈 수 있습니다. 세면대 위의 반지가 이 집에서 가장 값진 물건입니다. 주머니에 넣으세요.
+es: Al baño de la suite se llega por el dormitorio principal. El anillo del tocador es lo mejor de la casa. Guárdatelo.
+pt-BR: O banheiro da suíte fica depois do quarto principal. O anel na pia é a melhor coisa da casa. Ponha no bolso.
+de: Ins En-suite-Bad kommst du durch das Elternschlafzimmer. Der Ring auf dem Waschtisch ist das Beste im Haus. Steck ihn ein.
+fr: On accède à la salle de bains attenante par la chambre principale. La bague sur le meuble-lavabo est ce qu'il y a de mieux dans la maison. Empochez-la.
+ru: В ванную при спальне можно пройти только через главную спальню. Кольцо на умывальнике — лучшее в этом доме. Положите его в карман.
+pl: Do łazienki przy sypialni wchodzi się przez główną sypialnię. Pierścionek na umywalce to najcenniejsza rzecz w domu. Schowaj go do kieszeni.
+
+en: Whatever's in your pockets counts when you're aboard the truck. If you go down, it falls where you lie.
+zh-CN: 只要你在卡车上，口袋里的东西都算数。如果你倒下了，它们就掉在你倒下的地方。
+ja: トラックに乗っていれば、ポケットの中身も数に入る。倒れたら、中身はその場に落ちる。
+ko: 트럭에 타고 있으면 주머니 속 물건도 계산됩니다. 쓰러지면 쓰러진 자리에 떨어집니다.
+es: Lo que llevas en los bolsillos cuenta cuando estás a bordo del camión. Si caes, se queda donde caigas.
+pt-BR: O que estiver nos seus bolsos conta quando você está a bordo do caminhão. Se você cair, fica onde você cair.
+de: Was in deinen Taschen ist, zählt, wenn du im Laster bist. Gehst du zu Boden, fällt es dort hin, wo du liegst.
+fr: Ce qui est dans vos poches compte quand vous êtes à bord du camion. Si vous tombez, ça reste là où vous gisez.
+ru: Всё в карманах засчитывается, когда вы в грузовике. Если вы упадёте, вещи останутся там, где вы лежите.
+pl: To, co masz w kieszeniach, liczy się, gdy jesteś na ciężarówce. Jeśli padniesz, zostanie tam, gdzie leżysz.
+
+en: Take the grandfather clock out to the truck and load it.
+zh-CN: 把落地钟搬到卡车那里装上去。
+ja: 柱時計をトラックまで運んで積もう。
+ko: 괘종시계를 트럭까지 옮겨 실으세요.
+es: Lleva el reloj de pie al camión y cárgalo.
+pt-BR: Leve o relógio de pêndulo até o caminhão e carregue.
+de: Bring die Standuhr zum Laster und lade sie ein.
+fr: Portez l'horloge comtoise jusqu'au camion et chargez-la.
+ru: Отнесите напольные часы к грузовику и погрузите их.
+pl: Zanieś zegar stojący do ciężarówki i załaduj go.
+
+en: Scan ({key:Scan}) or read the truck's board. Keep loading until the haul meets the quota.
+zh-CN: 扫描（{key:Scan}）或看卡车上的显示板。继续装货，直到收获达到定额。
+ja: スキャン（{key:Scan}）するか、トラックのボードを見ろ。回収額がノルマに届くまで積み続けろ。
+ko: 스캔({key:Scan})하거나 트럭 전광판을 보세요. 수확이 할당량에 닿을 때까지 계속 실으세요.
+es: Escanea ({key:Scan}) o mira el panel del camión. Sigue cargando hasta que la carga cubra la cuota.
+pt-BR: Escaneie ({key:Scan}) ou leia o painel do caminhão. Continue carregando até a carga bater a cota.
+de: Scanne ({key:Scan}) oder lies die Anzeige des Lasters. Lade weiter, bis die Ausbeute das Soll erreicht.
+fr: Scannez ({key:Scan}) ou lisez le panneau du camion. Continuez à charger jusqu'à ce que le chargement atteigne le quota.
+ru: Сканируйте ({key:Scan}) или смотрите на табло грузовика. Грузите, пока улов не достигнет нормы.
+pl: Skanuj ({key:Scan}) albo patrz na tablicę ciężarówki. Ładuj dalej, aż urobek wyrobi normę.
+
+en: Everyone into the cargo bay, then pull the yellow lever ({key:Interact}). It honks, then leaves with whoever is aboard.
+zh-CN: 所有人进入货厢，然后拉下黄色拉杆（{key:Interact}）。它会鸣笛，然后带着车上的人离开。
+ja: 全員荷台に乗ったら黄色いレバーを引け（{key:Interact}）。クラクションを鳴らし、乗っている者だけを乗せて出発する。
+ko: 모두 짐칸에 탄 다음 노란 레버를 당기세요({key:Interact}). 경적을 울린 뒤 타고 있는 사람만 태우고 떠납니다.
+es: Todos a la caja, y luego tira de la palanca amarilla ({key:Interact}). Pita y después se va con quien esté a bordo.
+pt-BR: Todo mundo no baú, depois puxe a alavanca amarela ({key:Interact}). Ele buzina e depois vai embora com quem estiver a bordo.
+de: Alle in den Laderaum, dann zieh den gelben Hebel ({key:Interact}). Er hupt und fährt dann mit allen los, die an Bord sind.
+fr: Tout le monde dans la benne, puis tirez le levier jaune ({key:Interact}). Il klaxonne, puis part avec ceux qui sont à bord.
+ru: Все в кузов, затем потяните жёлтый рычаг ({key:Interact}). Грузовик посигналит и уедет с теми, кто на борту.
+pl: Wszyscy na pakę, potem pociągnij żółtą dźwignię ({key:Interact}). Zatrąbi i odjedzie z tymi, którzy są na pokładzie.
+
+# ---- The dispatcher on the radio ----
+
+en: DISPATCH: Training job, Larch Court. Nobody pays for this one. Take your time.
+zh-CN: 调度：训练任务，落叶松巷。这次没人付钱。慢慢来。
+ja: 配車係：訓練の仕事、ラーチ・コートだ。これは誰も金を払わない。ゆっくりやれ。
+ko: 배차: 훈련 작업, 라치 코트입니다. 이번 건은 아무도 돈을 안 줍니다. 천천히 하세요.
+es: CENTRAL: Trabajo de entrenamiento, Larch Court. Este no lo paga nadie. Tómatelo con calma.
+pt-BR: DESPACHO: Trabalho de treinamento, Larch Court. Ninguém paga por este. Vá com calma.
+de: ZENTRALE: Trainingsauftrag, Larch Court. Den bezahlt keiner. Lass dir Zeit.
+fr: DISPATCH : Mission de formation, Larch Court. Personne ne paie pour celle-là. Prenez votre temps.
+ru: ДИСПЕТЧЕР: Учебный заказ, Ларч-Корт. За этот никто не платит. Не торопитесь.
+pl: DYSPOZYTOR: Zlecenie szkoleniowe, Larch Court. Za to nikt nie płaci. Nie spiesz się.
+
+en: DISPATCH: The power's been off since the bank took it. Use your light.
+zh-CN: 调度：银行收走房子以后就断电了。用你的手电筒。
+ja: 配車係：銀行に差し押さえられてから電気は止まっている。明かりを使え。
+ko: 배차: 은행이 압류한 뒤로 전기가 끊겼습니다. 손전등을 쓰세요.
+es: CENTRAL: No hay luz desde que se la quedó el banco. Usa la linterna.
+pt-BR: DESPACHO: A energia está cortada desde que o banco tomou a casa. Use a lanterna.
+de: ZENTRALE: Der Strom ist weg, seit die Bank das Haus hat. Nimm deine Lampe.
+fr: DISPATCH : Le courant est coupé depuis que la banque l'a saisie. Servez-vous de votre lampe.
+ru: ДИСПЕТЧЕР: Электричество отключено с тех пор, как дом забрал банк. Пользуйтесь фонариком.
+pl: DYSPOZYTOR: Prądu nie ma, odkąd bank przejął dom. Użyj latarki.
+
+en: DISPATCH: That vase is worth more than the truck. Don't run with it.
+zh-CN: 调度：那个花瓶比卡车还值钱。拿着它别跑。
+ja: 配車係：その花瓶はトラックより高い。持って走るな。
+ko: 배차: 그 꽃병은 트럭보다 비쌉니다. 들고 뛰지 마세요.
+es: CENTRAL: Ese jarrón vale más que el camión. No corras con él.
+pt-BR: DESPACHO: Esse vaso vale mais que o caminhão. Não corra com ele.
+de: ZENTRALE: Die Vase ist mehr wert als der Laster. Renn nicht damit.
+fr: DISPATCH : Ce vase vaut plus que le camion. Ne courez pas avec.
+ru: ДИСПЕТЧЕР: Эта ваза дороже грузовика. Не бегайте с ней.
+pl: DYSPOZYTOR: Ten wazon jest wart więcej niż ciężarówka. Nie biegaj z nim.
+
+en: DISPATCH: That hallway's old timber over the basement. Listen to it.
+zh-CN: 调度：那条走廊是地下室上方的老木头。仔细听。
+ja: 配車係：あの廊下は地下室の上の古い木材だ。音を聞け。
+ko: 배차: 그 복도는 지하실 위의 낡은 목재입니다. 소리를 들으세요.
+es: CENTRAL: Ese pasillo es madera vieja sobre el sótano. Escúchalo.
+pt-BR: DESPACHO: Esse corredor é madeira velha em cima do porão. Escute.
+de: ZENTRALE: Der Flur ist altes Holz über dem Keller. Hör hin.
+fr: DISPATCH : Ce couloir, c'est du vieux bois au-dessus du sous-sol. Écoutez-le.
+ru: ДИСПЕТЧЕР: Коридор — старые доски над подвалом. Прислушивайтесь.
+pl: DYSPOZYTOR: Ten korytarz to stare drewno nad piwnicą. Słuchaj go.
+
+en: DISPATCH: South bedroom's had a leak for years. Careful.
+zh-CN: 调度：南边卧室漏水好多年了。小心。
+ja: 配車係：南の寝室は何年も雨漏りしていた。気をつけろ。
+ko: 배차: 남쪽 침실은 몇 년째 물이 샜습니다. 조심하세요.
+es: CENTRAL: El dormitorio sur lleva años con una gotera. Cuidado.
+pt-BR: DESPACHO: O quarto sul tem uma goteira há anos. Cuidado.
+de: ZENTRALE: Im Südschlafzimmer leckt es seit Jahren. Vorsicht.
+fr: DISPATCH : La chambre sud a une fuite depuis des années. Prudence.
+ru: ДИСПЕТЧЕР: В южной спальне годами текла крыша. Осторожно.
+pl: DYSPOZYTOR: W południowej sypialni od lat cieknie. Ostrożnie.
+
+en: DISPATCH: There's a breaker panel on the furnace wall.
+zh-CN: 调度：锅炉那面墙上有个配电箱。
+ja: 配車係：炉の壁に分電盤がある。
+ko: 배차: 보일러 벽에 분전반이 있습니다.
+es: CENTRAL: Hay un cuadro eléctrico en la pared de la caldera.
+pt-BR: DESPACHO: Tem um quadro de disjuntores na parede da fornalha.
+de: ZENTRALE: An der Heizungswand ist ein Sicherungskasten.
+fr: DISPATCH : Il y a un tableau électrique sur le mur de la chaudière.
+ru: ДИСПЕТЧЕР: На стене с котлом есть щиток.
+pl: DYSPOZYTOR: Na ścianie przy piecu jest skrzynka bezpieczników.
+
+en: DISPATCH: Movement at the back of the house. Get out of sight.
+zh-CN: 调度：房子后面有动静。躲起来。
+ja: 配車係：家の裏で動きがある。姿を隠せ。
+ko: 배차: 집 뒤쪽에서 움직임이 있습니다. 눈에 띄지 않게 숨으세요.
+es: CENTRAL: Hay movimiento en la parte de atrás de la casa. Que no te vean.
+pt-BR: DESPACHO: Movimento nos fundos da casa. Saia de vista.
+de: ZENTRALE: Bewegung hinten am Haus. Geh in Deckung.
+fr: DISPATCH : Du mouvement à l'arrière de la maison. Mettez-vous à l'abri des regards.
+ru: ДИСПЕТЧЕР: Движение в задней части дома. Скройтесь из виду.
+pl: DYSPOZYTOR: Ruch na tyłach domu. Zejdź z widoku.
+
+en: DISPATCH: Always check the bathrooms. People hide the good stuff.
+zh-CN: 调度：一定要查看浴室。人们会把好东西藏在那里。
+ja: 配車係：バスルームは必ず調べろ。いい物はそこに隠すもんだ。
+ko: 배차: 욕실은 꼭 확인하세요. 사람들은 좋은 물건을 숨겨 둡니다.
+es: CENTRAL: Revisa siempre los baños. La gente esconde ahí lo bueno.
+pt-BR: DESPACHO: Sempre confira os banheiros. As pessoas escondem as coisas boas.
+de: ZENTRALE: Sieh immer in den Bädern nach. Die Leute verstecken da das Gute.
+fr: DISPATCH : Vérifiez toujours les salles de bains. Les gens y cachent le meilleur.
+ru: ДИСПЕТЧЕР: Всегда проверяйте ванные. Люди прячут там самое ценное.
+pl: DYSPOZYTOR: Zawsze sprawdzaj łazienki. Ludzie chowają tam najlepsze rzeczy.
+
+en: DISPATCH: That'll do. Bring it home.
+zh-CN: 调度：够了。带回来吧。
+ja: 配車係：それで十分だ。持って帰ってこい。
+ko: 배차: 그 정도면 됐습니다. 가지고 돌아오세요.
+es: CENTRAL: Con eso basta. Tráelo a casa.
+pt-BR: DESPACHO: Já basta. Traga para casa.
+de: ZENTRALE: Das reicht. Bring es heim.
+fr: DISPATCH : Ça suffira. Ramenez tout ça.
+ru: ДИСПЕТЧЕР: Достаточно. Везите домой.
+pl: DYSPOZYTOR: Wystarczy. Przywieź to do domu.
+
+# ---- Guidance: the lesson card, the checklist, markers over the world, HUD frames (TutorialHud and its parts) ----
+
+en: CHAPTER {0}  /  {1}
+zh-CN: 第 {0} 章  /  {1}
+ja: 第{0}章  /  {1}
+ko: {0}장  /  {1}
+es: CAPÍTULO {0}  /  {1}
+pt-BR: CAPÍTULO {0}  /  {1}
+de: KAPITEL {0}  /  {1}
+fr: CHAPITRE {0}  /  {1}
+ru: ГЛАВА {0}  /  {1}
+pl: ROZDZIAŁ {0}  /  {1}
+
+en: LESSON {0:00} / {1:00}
+zh-CN: 课程 {0:00} / {1:00}
+ja: レッスン {0:00} / {1:00}
+ko: 과정 {0:00} / {1:00}
+es: LECCIÓN {0:00} / {1:00}
+pt-BR: LIÇÃO {0:00} / {1:00}
+de: LEKTION {0:00} / {1:00}
+fr: LEÇON {0:00} / {1:00}
+ru: УРОК {0:00} / {1:00}
+pl: LEKCJA {0:00} / {1:00}
+
+en: DONE
+zh-CN: 完成
+ja: 完了
+ko: 완료
+es: HECHO
+pt-BR: FEITO
+de: ERLEDIGT
+fr: FAIT
+ru: ГОТОВО
+pl: ZROBIONE
+
+en: +{0} more in this chapter
+zh-CN: 本章还有 {0} 项
+ja: この章にあと{0}つ
+ko: 이 장에 {0}개 더
+es: +{0} más en este capítulo
+pt-BR: +{0} neste capítulo
+de: +{0} weitere in diesem Kapitel
+fr: +{0} autres dans ce chapitre
+ru: ещё {0} в этой главе
+pl: +{0} w tym rozdziale
+
+en: Trainer's voice
+zh-CN: 教官语音
+ja: 教官の声
+ko: 교관 음성
+es: Voz del instructor
+pt-BR: Voz do instrutor
+de: Stimme des Ausbilders
+fr: Voix de l'instructeur
+ru: Голос инструктора
+pl: Głos instruktora
+
+en: Guide arrows
+zh-CN: 引导箭头
+ja: 案内矢印
+ko: 안내 화살표
+es: Flechas guía
+pt-BR: Setas de orientação
+de: Wegpfeile
+fr: Flèches de guidage
+ru: Стрелки-подсказки
+pl: Strzałki prowadzące
+
+en: Look
+zh-CN: 视角
+ja: 視点
+ko: 시점
+es: Mirar
+pt-BR: Olhar
+de: Umsehen
+fr: Regarder
+ru: Обзор
+pl: Rozglądanie się
+
+en: Mouse
+zh-CN: 鼠标
+ja: マウス
+ko: 마우스
+es: Ratón
+pt-BR: Mouse
+de: Maus
+fr: Souris
+ru: Мышь
+pl: Mysz
+
+# What the marker over the target says.
+
+en: PICK UP: {0}
+zh-CN: 拾取：{0}
+ja: 拾う：{0}
+ko: 줍기: {0}
+es: RECOGER: {0}
+pt-BR: PEGAR: {0}
+de: AUFHEBEN: {0}
+fr: RAMASSER : {0}
+ru: ПОДОБРАТЬ: {0}
+pl: PODNIEŚ: {0}
+
+en: PICK UP
+zh-CN: 拾取
+ja: 拾う
+ko: 줍기
+es: RECOGER
+pt-BR: PEGAR
+de: AUFHEBEN
+fr: RAMASSER
+ru: ПОДОБРАТЬ
+pl: PODNIEŚ
+
+en: TAKE: {0}
+zh-CN: 拿取：{0}
+ja: 取る：{0}
+ko: 가져가기: {0}
+es: TOMAR: {0}
+pt-BR: RETIRAR: {0}
+de: NEHMEN: {0}
+fr: PRENDRE : {0}
+ru: ВЗЯТЬ: {0}
+pl: WEŹ: {0}
+
+en: KIT CRATE
+zh-CN: 装备箱
+ja: 装備ケース
+ko: 장비 상자
+es: CAJA DE EQUIPO
+pt-BR: CAIXA DE EQUIPAMENTO
+de: AUSRÜSTUNGSKISTE
+fr: CAISSE D'ÉQUIPEMENT
+ru: ЯЩИК СНАРЯЖЕНИЯ
+pl: SKRZYNIA ZE SPRZĘTEM
+
+en: DOOR
+zh-CN: 门
+ja: ドア
+ko: 문
+es: PUERTA
+pt-BR: PORTA
+de: TÜR
+fr: PORTE
+ru: ДВЕРЬ
+pl: DRZWI
+
+en: BREAKER
+zh-CN: 断路器
+ja: ブレーカー
+ko: 차단기
+es: DISYUNTOR
+pt-BR: DISJUNTOR
+de: SICHERUNG
+fr: DISJONCTEUR
+ru: ЩИТОК
+pl: BEZPIECZNIK
+
+en: LEVER
+zh-CN: 拉杆
+ja: レバー
+ko: 레버
+es: PALANCA
+pt-BR: ALAVANCA
+de: HEBEL
+fr: LEVIER
+ru: РЫЧАГ
+pl: DŹWIGNIA
+
+en: USE
+zh-CN: 使用
+ja: 使う
+ko: 사용
+es: USAR
+pt-BR: USAR
+de: BENUTZEN
+fr: UTILISER
+ru: ИСПОЛЬЗОВАТЬ
+pl: UŻYJ
+
+en: HIDE HERE
+zh-CN: 躲在这里
+ja: ここに隠れる
+ko: 여기 숨기
+es: ESCÓNDETE AQUÍ
+pt-BR: ESCONDA-SE AQUI
+de: HIER VERSTECKEN
+fr: CACHEZ-VOUS ICI
+ru: СПРЯЧЬТЕСЬ ЗДЕСЬ
+pl: SCHOWAJ SIĘ TUTAJ
+
+en: GET OFF
+zh-CN: 离开这块地板
+ja: 床から離れろ
+ko: 바닥에서 벗어나기
+es: SAL DEL SUELO
+pt-BR: SAIA DO PISO
+de: RUNTER VOM BODEN
+fr: QUITTEZ CE PLANCHER
+ru: УЙДИТЕ С ПОЛА
+pl: ZEJDŹ Z PODŁOGI
+
+en: BRACE HERE
+zh-CN: 在这里加固
+ja: ここを補強
+ko: 여기를 보강
+es: APUNTALA AQUÍ
+pt-BR: ESCORE AQUI
+de: HIER ABSTÜTZEN
+fr: ÉTAYEZ ICI
+ru: ПОДОПРИТЕ ЗДЕСЬ
+pl: PODEPRZYJ TUTAJ
+
+en: GO HERE
+zh-CN: 到这里
+ja: ここへ
+ko: 여기로
+es: VE AQUÍ
+pt-BR: VÁ ATÉ AQUI
+de: HIERHER
+fr: ALLEZ ICI
+ru: ИДИТЕ СЮДА
+pl: IDŹ TUTAJ
+
+en: IT CAN HEAR YOU
+zh-CN: 它听得见你
+ja: 聞かれているぞ
+ko: 소리를 듣고 있다
+es: TE OYE
+pt-BR: ELE TE OUVE
+de: ES HÖRT DICH
+fr: IL VOUS ENTEND
+ru: ОНО ТЕБЯ СЛЫШИТ
+pl: TO CIĘ SŁYSZY
+
+# The rooms of the training house, as the marker names them.
+
+en: DRIVEWAY
+zh-CN: 车道
+ja: 私道
+ko: 진입로
+es: ENTRADA
+pt-BR: ENTRADA DA GARAGEM
+de: AUFFAHRT
+fr: ALLÉE
+ru: ПОДЪЕЗДНАЯ ДОРОЖКА
+pl: PODJAZD
+
+en: FRONT DOOR
+zh-CN: 前门
+ja: 玄関
+ko: 현관문
+es: PUERTA PRINCIPAL
+pt-BR: PORTA DA FRENTE
+de: HAUSTÜR
+fr: PORTE D'ENTRÉE
+ru: ВХОДНАЯ ДВЕРЬ
+pl: DRZWI WEJŚCIOWE
+
+en: LIVING ROOM
+zh-CN: 客厅
+ja: リビング
+ko: 거실
+es: SALA DE ESTAR
+pt-BR: SALA DE ESTAR
+de: WOHNZIMMER
+fr: SALON
+ru: ГОСТИНАЯ
+pl: SALON
+
+en: DINING ROOM
+zh-CN: 餐厅
+ja: ダイニング
+ko: 식당
+es: COMEDOR
+pt-BR: SALA DE JANTAR
+de: ESSZIMMER
+fr: SALLE À MANGER
+ru: СТОЛОВАЯ
+pl: JADALNIA
+
+en: KITCHEN
+zh-CN: 厨房
+ja: キッチン
+ko: 주방
+es: COCINA
+pt-BR: COZINHA
+de: KÜCHE
+fr: CUISINE
+ru: КУХНЯ
+pl: KUCHNIA
+
+en: LAUNDRY
+zh-CN: 洗衣间
+ja: 洗濯室
+ko: 세탁실
+es: LAVADERO
+pt-BR: LAVANDERIA
+de: WASCHKÜCHE
+fr: BUANDERIE
+ru: ПРАЧЕЧНАЯ
+pl: PRALNIA
+
+en: HALLWAY
+zh-CN: 走廊
+ja: 廊下
+ko: 복도
+es: PASILLO
+pt-BR: CORREDOR
+de: FLUR
+fr: COULOIR
+ru: КОРИДОР
+pl: KORYTARZ
+
+en: BATHROOM
+zh-CN: 浴室
+ja: 浴室
+ko: 욕실
+es: BAÑO
+pt-BR: BANHEIRO
+de: BADEZIMMER
+fr: SALLE DE BAINS
+ru: ВАННАЯ
+pl: ŁAZIENKA
+
+en: NORTH BEDROOM
+zh-CN: 北卧室
+ja: 北側の寝室
+ko: 북쪽 침실
+es: DORMITORIO NORTE
+pt-BR: QUARTO NORTE
+de: NORDSCHLAFZIMMER
+fr: CHAMBRE NORD
+ru: СЕВЕРНАЯ СПАЛЬНЯ
+pl: PÓŁNOCNA SYPIALNIA
+
+en: SOUTH BEDROOM
+zh-CN: 南卧室
+ja: 南側の寝室
+ko: 남쪽 침실
+es: DORMITORIO SUR
+pt-BR: QUARTO SUL
+de: SÜDSCHLAFZIMMER
+fr: CHAMBRE SUD
+ru: ЮЖНАЯ СПАЛЬНЯ
+pl: POŁUDNIOWA SYPIALNIA
+
+en: MASTER BEDROOM
+zh-CN: 主卧室
+ja: 主寝室
+ko: 안방
+es: DORMITORIO PRINCIPAL
+pt-BR: QUARTO PRINCIPAL
+de: ELTERNSCHLAFZIMMER
+fr: CHAMBRE PARENTALE
+ru: ГЛАВНАЯ СПАЛЬНЯ
+pl: GŁÓWNA SYPIALNIA
+
+en: ENSUITE
+zh-CN: 主卧卫生间
+ja: 専用バスルーム
+ko: 딸린 욕실
+es: BAÑO EN SUITE
+pt-BR: BANHEIRO DA SUÍTE
+de: EIGENES BAD
+fr: SALLE D'EAU PRIVÉE
+ru: ВАННАЯ ПРИ СПАЛЬНЕ
+pl: ŁAZIENKA PRZY SYPIALNI
+
+en: BASEMENT
+zh-CN: 地下室
+ja: 地下室
+ko: 지하실
+es: SÓTANO
+pt-BR: PORÃO
+de: KELLER
+fr: SOUS-SOL
+ru: ПОДВАЛ
+pl: PIWNICA
+
+en: PATIO
+zh-CN: 露台
+ja: パティオ
+ko: 테라스
+es: PATIO
+pt-BR: PÁTIO
+de: TERRASSE
+fr: TERRASSE
+ru: ТЕРРАСА
+pl: PATIO
+
+# The lesson's progress bar.
+
+en: Here
+zh-CN: 到了
+ja: 到着
+ko: 도착
+es: Aquí
+pt-BR: Aqui
+de: Hier
+fr: Ici
+ru: Здесь
+pl: Tutaj
+
+en: {0:0} m to go
+zh-CN: 还有 {0:0} 米
+ja: あと {0:0} m
+ko: {0:0}m 남음
+es: Faltan {0:0} m
+pt-BR: Faltam {0:0} m
+de: Noch {0:0} m
+fr: Encore {0:0} m
+ru: Ещё {0:0} м
+pl: Jeszcze {0:0} m
+
+en: {0:0.0} / {1:0.#} m
+zh-CN: {0:0.0} / {1:0.#} 米
+ja: {0:0.0} / {1:0.#} m
+ko: {0:0.0} / {1:0.#}m
+es: {0:0.0} / {1:0.#} m
+pt-BR: {0:0.0} / {1:0.#} m
+de: {0:0.0} / {1:0.#} m
+fr: {0:0.0} / {1:0.#} m
+ru: {0:0.0} / {1:0.#} м
+pl: {0:0.0} / {1:0.#} m
+
+en: {0:0.0} / {1:0.#} s
+zh-CN: {0:0.0} / {1:0.#} 秒
+ja: {0:0.0} / {1:0.#} 秒
+ko: {0:0.0} / {1:0.#}초
+es: {0:0.0} / {1:0.#} s
+pt-BR: {0:0.0} / {1:0.#} s
+de: {0:0.0} / {1:0.#} s
+fr: {0:0.0} / {1:0.#} s
+ru: {0:0.0} / {1:0.#} с
+pl: {0:0.0} / {1:0.#} s
+
+en: {0:0}° / {1:0}°
+zh-CN: {0:0}° / {1:0}°
+ja: {0:0}° / {1:0}°
+ko: {0:0}° / {1:0}°
+es: {0:0}° / {1:0}°
+pt-BR: {0:0}° / {1:0}°
+de: {0:0}° / {1:0}°
+fr: {0:0}° / {1:0}°
+ru: {0:0}° / {1:0}°
+pl: {0:0}° / {1:0}°
+
+en: ${0:N0} / ${1:N0}
+zh-CN: ${0:N0} / ${1:N0}
+ja: ${0:N0} / ${1:N0}
+ko: ${0:N0} / ${1:N0}
+es: ${0:N0} / ${1:N0}
+pt-BR: ${0:N0} / ${1:N0}
+de: ${0:N0} / ${1:N0}
+fr: ${0:N0} / ${1:N0}
+ru: ${0:N0} / ${1:N0}
+pl: ${0:N0} / ${1:N0}
+
+en: Floor load {0:0}%
+zh-CN: 地板负荷 {0:0}%
+ja: 床の荷重 {0:0}%
+ko: 바닥 하중 {0:0}%
+es: Carga del suelo {0:0}%
+pt-BR: Carga do piso {0:0}%
+de: Bodenlast {0:0} %
+fr: Charge du plancher {0:0} %
+ru: Нагрузка на пол {0:0}%
+pl: Obciążenie podłogi {0:0}%
+
+en: {0:0} / {1:0} aboard
+zh-CN: 已上车 {0:0} / {1:0}
+ja: 乗車 {0:0} / {1:0}
+ko: 탑승 {0:0} / {1:0}
+es: {0:0} / {1:0} a bordo
+pt-BR: {0:0} / {1:0} a bordo
+de: {0:0} / {1:0} an Bord
+fr: {0:0} / {1:0} à bord
+ru: В кузове {0:0} / {1:0}
+pl: {0:0} / {1:0} w ciężarówce
+
+en: {0:0} m
+zh-CN: {0:0} 米
+ja: {0:0} m
+ko: {0:0}m
+es: {0:0} m
+pt-BR: {0:0} m
+de: {0:0} m
+fr: {0:0} m
+ru: {0:0} м
+pl: {0:0} m
+
+# Frames around the HUD instruments a lesson points out.
+
+en: HEALTH AND BREATH
+zh-CN: 生命与呼吸
+ja: 体力と息
+ko: 체력과 호흡
+es: SALUD Y ALIENTO
+pt-BR: SAÚDE E FÔLEGO
+de: GESUNDHEIT UND ATEM
+fr: SANTÉ ET SOUFFLE
+ru: ЗДОРОВЬЕ И ДЫХАНИЕ
+pl: ZDROWIE I ODDECH
+
+en: COMPASS
+zh-CN: 指南针
+ja: コンパス
+ko: 나침반
+es: BRÚJULA
+pt-BR: BÚSSOLA
+de: KOMPASS
+fr: BOUSSOLE
+ru: КОМПАС
+pl: KOMPAS
+
+en: HAUL AND QUOTA
+zh-CN: 收获与定额
+ja: 回収額とノルマ
+ko: 수확과 할당량
+es: CARGA Y CUOTA
+pt-BR: CARGA E COTA
+de: AUSBEUTE UND SOLL
+fr: CHARGEMENT ET QUOTA
+ru: УЛОВ И НОРМА
+pl: UROBEK I NORMA
+
+en: YOUR FOUR PLACES
+zh-CN: 你的四个位置
+ja: 4つの枠
+ko: 네 칸
+es: TUS CUATRO HUECOS
+pt-BR: SEUS QUATRO ESPAÇOS
+de: DEINE VIER PLÄTZE
+fr: VOS QUATRE EMPLACEMENTS
+ru: ВАШИ ЧЕТЫРЕ МЕСТА
+pl: TWOJE CZTERY MIEJSCA
+
+en: FLASHLIGHT BATTERY
+zh-CN: 手电筒电量
+ja: ライトのバッテリー
+ko: 손전등 배터리
+es: BATERÍA DE LA LINTERNA
+pt-BR: BATERIA DA LANTERNA
+de: TASCHENLAMPENAKKU
+fr: BATTERIE DE LA LAMPE
+ru: ЗАРЯД ФОНАРИКА
+pl: BATERIA LATARKI
+
+en: WHAT THE TRUCK HOLDS
+zh-CN: 卡车里的货
+ja: トラックの積み荷
+ko: 트럭 적재물
+es: LO QUE LLEVA EL CAMIÓN
+pt-BR: O QUE ESTÁ NO CAMINHÃO
+de: IM LASTWAGEN
+fr: CE QUE CONTIENT LE CAMION
+ru: ЧТО В ГРУЗОВИКЕ
+pl: CO JEST W CIĘŻARÓWCE

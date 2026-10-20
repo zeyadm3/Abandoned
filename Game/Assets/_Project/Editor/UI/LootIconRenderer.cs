@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         public const string Folder = "Assets/_Project/Art/Generated/LootIcons";
         private const int Size = 128;
 
-        [MenuItem("Tools/Abandoned/UI/Render Loot Icons (all)")]
+        [MenuItem(ToolMenu.UI + "Render Loot Icons (all)", priority = ToolMenu.UiP + 4)]
         public static void RenderAllMenu() => Render(force: true);
 
         /// <summary>Renders the missing icons (all with <paramref name="force"/>); returns how many were made.</summary>

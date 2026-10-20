@@ -15,7 +15,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release02411
     {
-        [MenuItem("Tools/Abandoned/Mall/Apply 0.24.11 (basement ground, solid props)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.24.11 Basement Ground and Solid Props", priority = ToolMenu.MallP + 43)]
         public static void Author()
         {
             BuildScript.ApplyPlayerSettings();
@@ -49,7 +49,6 @@ namespace Abandoned.EditorTools
         /// The School and Prison rebuilt from the fixed location builder (stairs lined up with their shafts and doorways,
         /// no wall or dressing across a stairwell, solid props). Nothing had changed either scene since it was built.
         /// </summary>
-        [MenuItem("Tools/Abandoned/Locations/Rebuild School and Prison (0.24.11)")]
         public static void RebuildLevels()
         {
             SchoolBuilder.Build();

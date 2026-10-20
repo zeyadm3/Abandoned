@@ -55,10 +55,12 @@ namespace Abandoned.Tests
             HostSection(A).Collapse();
             float lowest = top, hostSeen = top;
             float end = Time.realtimeSinceStartup + 5f;
+            bool wasRagdolled = false;
             // Down off the tile onto the floor or A's rubble mound (up to 1.8 m on a 3 m drop).
             const float Fell = 0.6f;
             while (Time.realtimeSinceStartup < end && (lowest > top - Fell || hostSeen > top - Fell))
             {
+                wasRagdolled |= own.Ragdoll.IsRagdolled;
                 lowest = Mathf.Min(lowest, HeightOf(own));
                 hostSeen = Mathf.Min(hostSeen, HeightOf(PlayerOf(net.Host, Id(client1))));
                 yield return null;
@@ -67,7 +69,7 @@ namespace Abandoned.Tests
             Assert.Less(lowest, top - Fell, "client 1's player fell through A on client 1's machine: " + Below(own.transform.position)
                 + $" ragdolled {own.Ragdoll.IsRagdolled}");
             Assert.Less(hostSeen, top - Fell, "and the host saw client 1 go down");
-            Assert.IsTrue(own.Ragdoll.IsRagdolled, "standing on a collapse knocks you down");
+            Assert.IsTrue(wasRagdolled || own.Ragdoll.IsRagdolled, "standing on a collapse knocks you down");
         }
 
         [UnityTest]

@@ -122,6 +122,8 @@ namespace Abandoned.UI
             if (GetComponent<CompassHud>() == null) gameObject.AddComponent<CompassHud>();
             if (GetComponent<ThreatFilesScreen>() == null) gameObject.AddComponent<ThreatFilesScreen>();
             if (GetComponent<FirstDayGuide>() == null) gameObject.AddComponent<FirstDayGuide>();
+            if (GetComponent<Tutorial.TutorialHud>() == null) gameObject.AddComponent<Tutorial.TutorialHud>();
+            if (GetComponent<Tutorial.TutorialLaunch>() == null) gameObject.AddComponent<Tutorial.TutorialLaunch>();
             if (GetComponent<Threats.ThreatFilesTracker>() == null) gameObject.AddComponent<Threats.ThreatFilesTracker>();
             if (GetComponent<TextDebugOverlay>() == null) gameObject.AddComponent<TextDebugOverlay>();
         }

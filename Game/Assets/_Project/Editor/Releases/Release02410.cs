@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release02410
     {
-        [MenuItem("Tools/Abandoned/Threats/Create Crew Director Config (0.24.10)")]
+        [MenuItem(ToolMenu.Data + "Create Crew Director Config", priority = ToolMenu.DataP + 6)]
         public static void Author()
         {
             PolishAssets.EnsureFolder("Assets/_Project/Data/Threats/Resources");

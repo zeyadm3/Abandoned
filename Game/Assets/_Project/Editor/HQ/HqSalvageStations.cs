@@ -20,6 +20,7 @@ namespace Abandoned.EditorTools
             Box("CompanyNameplate", desk, new Vector3(0f, .82f, -.877f), new Vector3(2.78f, .26f, .022f), CustomMallArt.Material("Brass"), false);
             RotaryPhone(desk);
             FieldGuide(desk);
+            TutorialHqClipboard.Place(desk);
             Box("DispatchTray", desk, new Vector3(-1.4f, 1.13f, .32f), new Vector3(.56f, .065f, .34f), Steel, false);
             for (int i = 0; i < 4; i++)
                 Box("CarbonJobSheet", desk, new Vector3(-1.41f + i * .012f, 1.17f + i * .002f, .32f),

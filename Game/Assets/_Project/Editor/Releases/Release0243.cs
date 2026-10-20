@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         private const int Size = 256;
         public const string Folder = "Assets/_Project/Art/Generated/AchievementIcons";
 
-        [MenuItem("Tools/Abandoned/Content/Achievement Icons (0.24.3)")]
+        [MenuItem(ToolMenu.Features + "0.24.3 Achievement Icons", priority = ToolMenu.FeaturesP + 20)]
         public static void Author()
         {
             PolishAssets.EnsureFolder(Folder);

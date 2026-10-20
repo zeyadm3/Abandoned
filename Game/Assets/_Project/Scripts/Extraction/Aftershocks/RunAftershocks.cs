@@ -28,7 +28,7 @@ namespace Abandoned.Extraction
 
         private void Update()
         {
-            if (!IsServer || !IsSpawned || run == null || run.State.Phase != RunPhase.Running) return;
+            if (!IsServer || !IsSpawned || run == null || run.State.Phase != RunPhase.Running || Tutorial.TutorialMode.Active) return;
             AftershockConfig config = AftershockConfig.Current;
             random ??= new System.Random(run.State.Seed ^ 0x0a0174);
             if (shockAt < 0f && Time.time >= nextShockAt - config.Warning)

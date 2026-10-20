@@ -12,7 +12,7 @@ namespace Abandoned.EditorTools
         public const string CatalogPath = Folder + "/EquipmentCatalog.asset";
         public const string NoiseMakerPrefabPath = "Assets/_Project/Prefabs/Equipment/NoiseMaker.prefab";
 
-        [MenuItem("Tools/Abandoned/Create Equipment Content")]
+        [MenuItem(ToolMenu.Data + "Create Equipment Content", priority = ToolMenu.DataP + 1)]
         public static EquipmentCatalog CreateMissing()
         {
             var items = new List<EquipmentDefinition>

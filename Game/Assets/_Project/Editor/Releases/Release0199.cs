@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         private const string TextSettingsPath = AssetFolder + "/PanelText.asset";
         private static readonly string[] Fonts = { "NotoSans", "NotoSansArabic", "NotoSansSC", "NotoSansKR" };
 
-        [MenuItem("Tools/Abandoned/UI/Font Fallbacks (0.19.9)")]
+        [MenuItem(ToolMenu.UI + "Font Fallbacks (0.19.9)", priority = ToolMenu.UiP + 20)]
         public static void Author()
         {
             PolishAssets.EnsureFolder(AssetFolder);

@@ -6,7 +6,7 @@ namespace Abandoned.EditorTools
     /// <summary>0.17.4 aftershocks: the tunables, RunAftershocks on the RunState prefab, the shock's sound row. No scene changes.</summary>
     public static class Release0174
     {
-        [MenuItem("Tools/Abandoned/Content/Aftershocks (0.17.4)")]
+        [MenuItem(ToolMenu.Features + "0.17.4 Aftershocks", priority = ToolMenu.FeaturesP + 3)]
         public static void Author()
         {
             ReleaseKit.Config<AftershockConfig>(ReleaseKit.ExtractionResources, AftershockConfig.ResourcePath);

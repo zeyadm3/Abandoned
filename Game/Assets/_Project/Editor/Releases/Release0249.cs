@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class Release0249
     {
-        [MenuItem("Tools/Abandoned/Mall/Replace Loot Look-alikes (0.24.9)")]
+        [MenuItem(ToolMenu.MallUpdates + "0.24.9 Replace Loot Look-alikes", priority = ToolMenu.MallP + 42)]
         public static void Author()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
