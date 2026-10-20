@@ -48,6 +48,7 @@ namespace Abandoned.EditorTools
             AmbientOcclusion();
             Features(renderer);
             DefaultVolume();
+            SpatialAudioSetup.Apply();
             if (AssetDatabase.LoadAssetAtPath<ShadowBudgetConfig>(BudgetPath) == null)
             {
                 PolishAssets.EnsureFolder("Assets/_Project/Data/Core/Resources");

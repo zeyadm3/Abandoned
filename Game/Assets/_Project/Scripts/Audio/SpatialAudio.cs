@@ -22,15 +22,13 @@ namespace Abandoned.Audio
         {
             active = false;
             if (Application.isBatchMode || !AudioConfig.Current.SteamAudio) return;
-            string found = null;
-            foreach (string name in AudioSettings.GetSpatializerPluginNames())
-                if (name.IndexOf("Steam Audio", StringComparison.OrdinalIgnoreCase) >= 0) found = name;
-            if (found == null)
+            // The spatializer is chosen in Project Settings > Audio (EditorTools.SpatialAudioSetup); a player can only read it.
+            string current = AudioSettings.GetSpatializerPluginName();
+            if (string.IsNullOrEmpty(current) || current.IndexOf("Steam Audio", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                Debug.LogWarning($"[Audio] {PluginName} not found; using Unity's 3D panning.");
+                Debug.LogWarning($"[Audio] {PluginName} is not the project's spatializer; using Unity's 3D panning.");
                 return;
             }
-            if (AudioSettings.GetSpatializerPluginName() != found) AudioSettings.SetSpatializerPluginName(found);
             active = true;
         }
 
