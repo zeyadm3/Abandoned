@@ -39,7 +39,8 @@ namespace Abandoned.Tests
                 foreach (var renderer in group.GetLODs()[0].renderers)
                 {
                     bounds.Encapsulate(renderer.bounds);
-                    Assert.IsTrue(renderer.sharedMaterials.All(m => m != null && m.shader.name == "Universal Render Pipeline/Lit"), path);
+                    // URP Lit, or its 0.24.13 drop-in with weathering (MaterialUpgrade).
+                    Assert.IsTrue(renderer.sharedMaterials.All(m => m != null && (m.shader.name == "Universal Render Pipeline/Lit" || m.shader.name == MaterialUpgrade.SurfaceShader)), path);
                     Assert.IsTrue(renderer.sharedMaterials.All(m => !m.name.StartsWith("MALL_")), path);
                 }
                 Assert.Greater(bounds.size.magnitude, .4f, "FBX import must not shrink to centimetres: " + path);
@@ -56,7 +57,10 @@ namespace Abandoned.Tests
             {
                 var material = AssetDatabase.LoadAssetAtPath<Material>($"Assets/_Project/Art/Polish/House_{name}.mat");
                 Assert.IsNotNull(material, name);
-                foreach (string property in new[] { "_BaseMap", "_BumpMap", "_MetallicGlossMap", "_OcclusionMap" }) Assert.IsNotNull(material.GetTexture(property), name + property);
+                foreach (string property in new[] { "_BaseMap", "_BumpMap", "_MetallicGlossMap" }) Assert.IsNotNull(material.GetTexture(property), name + property);
+                // 0.24.13: a scanned set may come without an occlusion map (Tiles107 has none); a drawn one always has it.
+                bool scanned = AssetDatabase.GetAssetPath(material.GetTexture("_BaseMap")).StartsWith(MaterialUpgrade.ScannedRoot);
+                if (!scanned) Assert.IsNotNull(material.GetTexture("_OcclusionMap"), name + "_OcclusionMap");
                 var colour = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(material.GetTexture("_BaseMap")));
                 var normal = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(material.GetTexture("_BumpMap")));
                 var mask = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(material.GetTexture("_MetallicGlossMap")));

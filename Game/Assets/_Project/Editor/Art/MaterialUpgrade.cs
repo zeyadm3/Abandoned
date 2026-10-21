@@ -3,106 +3,54 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// 0.24.12 surfaces: every flat or procedurally textured environment material (no normal map of its own) whose
-    /// name says what it is gets a CC0 photo-scanned set from Art/Scanned (Tools/Art/fetch_textures.py): colour,
-    /// normal, ambient occlusion and a packed metal/smoothness map. Materials are changed in place (same GUIDs), so no
-    /// scene or prefab changes. The builders recreate their materials on a rebuild, so this runs after Rebuild All
-    /// Maps (and the menu runs it on its own). The colour keeps the material's own hue and its brightness (worked out
-    /// in linear space): the scan brings detail, not a new palette, so every map's tuned lighting still reads the same.
-    /// Each material's colour before its first upgrade is kept in <see cref="OriginalsPath"/>, so running this again
-    /// never compounds.
+    /// Environment surfaces (0.24.12, rebuilt in 0.24.13). Every environment material moves to the Abandoned/Surface
+    /// shader (URP Lit plus anti-tiling and weathering: Art/Shaders/AbandonedSurfaceInput.hlsl), and every one whose name
+    /// or old map says what it is, and whose maps are flat or drawn by our own builders, gets a CC0 photo-scanned set
+    /// from Art/Scanned (Tools/Art/fetch_textures.py). Authored maps (the Kenney packs, anything not ours) are kept.
+    /// The scan's size comes from how many UV units the material's meshes really give a metre, measured on every map
+    /// (0.24.12 assumed one per metre; most meshes don't, so scans came out tens of metres wide). Materials whose meshes
+    /// disagree get triplanar mapping in the object's own metres instead. The colour keeps the material's own hue and
+    /// brightness, including that of the drawn map it replaces, worked out in linear space, so each map's tuned lighting
+    /// reads the same. Materials change in place (same GUIDs); the builders recreate theirs, so this runs after every map
+    /// rebuild. Each material's colour before its first upgrade is kept in <see cref="OriginalsPath"/>, so running this
+    /// again never compounds. Threat, player and cosmetic materials are never touched; materials loot or gear share get
+    /// scans but no weathering (it is in world space and would slide over a carried crate).
     /// </summary>
-    public static class MaterialUpgrade
+    public static partial class MaterialUpgrade
     {
         public const string ScannedRoot = "Assets/_Project/Art/Scanned";
         public const string OriginalsPath = ScannedRoot + "/MaterialUpgradeOriginals.json";
-        private const int DetailMapSize = 2048, SupportMapSize = 1024; // colour and normal; AO and metal/smoothness
+        public const string SurfaceShader = "Abandoned/Surface";
         private const float MaxBase = 1.25f; // how far above white the base colour may go to keep a dark scan's brightness
+        private const float MaxSpread = 2.5f; // UV density 80th/20th percentile beyond this: no single tiling fits
 
         private static readonly int BaseMap = Shader.PropertyToID("_BaseMap"), BaseColor = Shader.PropertyToID("_BaseColor"),
             BumpMap = Shader.PropertyToID("_BumpMap"), MetalMap = Shader.PropertyToID("_MetallicGlossMap"),
             Occlusion = Shader.PropertyToID("_OcclusionMap"), Smoothness = Shader.PropertyToID("_Smoothness"),
             Metallic = Shader.PropertyToID("_Metallic"), Surface = Shader.PropertyToID("_Surface"),
-            BumpScale = Shader.PropertyToID("_BumpScale"), OcclusionStrength = Shader.PropertyToID("_OcclusionStrength");
+            BumpScale = Shader.PropertyToID("_BumpScale"), OcclusionStrength = Shader.PropertyToID("_OcclusionStrength"),
+            AlphaClip = Shader.PropertyToID("_AlphaClip"), WorkflowMode = Shader.PropertyToID("_WorkflowMode");
 
-        private readonly struct Rule
+        // Builders' own drawn maps: replaceable by a scan. Anything else with a normal map is authored PBR.
+        private static readonly string[] OurMaps =
         {
-            public readonly string[] Keys;
-            public readonly string Set;
-            public readonly float Metres, Tint;
-            public readonly bool Bare;
-
-            /// <param name="metres">How much surface one texture repeat covers (UVs are metres).</param>
-            /// <param name="tint">How much of the material's own hue the scan takes (paint 1, brick 0.3).</param>
-            /// <param name="bare">Keep the scan's metalness. Painted metal is not metallic: with no reflections to show,
-            /// a metallic locker in a dark room renders black.</param>
-            public Rule(string set, float metres, float tint, bool bare, params string[] keys)
-            { Set = set; Metres = metres; Tint = tint; Bare = bare; Keys = keys; }
-        }
-
-        // First match wins, so the specific words come before the general ones.
-        private static readonly Rule[] Rules =
-        {
-            new("Terrazzo018", 2f, 0.4f, false, "terrazzo", "mall_floor_concourse", "mall_floor_walkway", "mall_floor_food", "mall_floor_gallery", "mall_floor_jewelry"),
-            new("Carpet016", 1.5f, 0.85f, false, "mall_floor_cinema", "mall_floor_office"),
-            new("Concrete034", 2.5f, 0.45f, false, "mall_floor_stock"),
-            new("Tiles107", 1.2f, 0.6f, false, "mall_floor_"),
-            new("Tiles107", 1.2f, 0.6f, false, "tile", "lino", "epoxy"),
-            new("Carpet016", 1.5f, 0.85f, false, "carpet", "rug"),
-            new("WoodFloor051", 2f, 0.4f, false, "oakfloor", "gymwood", "stagewood", "woodfloor"),
-            new("MetalWalkway014", 1.2f, 0.4f, true, "grating", "walkway", "galleryplate"),
-            new("Metal063", 2f, 0.3f, true, "rust", "oxide", "oxidised", "corroded", "wetiron", "moldiron", "coolingiron"),
-            new("CorrugatedSteel009", 2.5f, 0.7f, true, "cladding", "corrugated"),
-            new("Planks037A", 2f, 0.85f, false, "fenceweathered", "boardedshop"),
-            new("Bricks106A", 1.6f, 0.35f, false, "brick", "block"),
-            new("Asphalt031", 1.6f, 0.3f, false, "asphalt", "road", "carpark", "streetrecess"),
-            new("Concrete034", 2.5f, 0.45f, false, "sidewalk", "pavement", "pavers", "curb", "footing", "forecourt"),
-            new("Concrete042A", 3f, 0.45f, false, "dampconcrete", "saltconcrete", "basement"),
-            new("Concrete031", 3f, 0.45f, false, "concrete", "cinder", "slag", "floor", "pier", "ironfactory_wall", "roomwall"),
-            new("PaintedPlaster017", 2.5f, 1f, false, "hallpaint", "institutionalpaint", "paintedplaster"),
-            new("Plaster001", 2.5f, 1f, false, "plaster", "wall", "dado", "facade", "ceiling", "limestone", "stone"),
-            new("Metal049A", 1.5f, 0.75f, false, "steel", "metal", "iron", "bars", "railing", "fence", "pole", "guard", "console", "locker"),
-            new("Gravel023", 2f, 0.4f, false, "gravel", "ballast", "shingle"),
-            new("Grass004", 3f, 0.6f, false, "grass", "turf"),
-            new("Ground037", 3f, 0.5f, false, "dirt", "earth", "ground", "soil", "clay", "infield", "dormant"),
-            new("Rock051", 4f, 0.4f, false, "rock", "cliff"),
-            new("Planks037A", 2f, 0.85f, false, "siding", "planks", "timber", "dunnage", "board", "deck"),
-            new("WoodFloor051", 2f, 0.5f, false, "oak", "wood"),
-            new("Leather037", 1f, 0.8f, false, "leather"),
+            ScannedRoot + "/", "Assets/_Project/Art/Custom/Environment/", "Assets/_Project/Art/Factory/Textures/",
+            "Assets/_Project/Art/School/Textures/", "Assets/_Project/Art/Generated/", "Assets/_Project/Art/Polish/",
         };
-
-        // Never touched: light, glass, liquids, effects, foliage cards, printed things, characters and kit colours, and
-        // roof shingles (no scanned roofing; gravel on a roof reads wrong). Matched against the start of whole words of
-        // the name ("Street" is not "tree"; "_" joins words), after the matching rule's own key is taken out (so
-        // "WetIron" is iron, not a wet overlay).
-        private static readonly string[] Skip =
-        {
-            "glow", "glass", "glazing", "lamp", "light", "led", "crt", "emiss", "flame", "spark", "lava", "steam", "dust", "shaft",
-            "sky", "sea", "water", "foam", "smoke", "veil", "particle", "outline", "ink", "stripe", "lane_paint", "road_paint",
-            "window", "mirror", "chrome", "gold", "brass", "copper", "bronze", "porcelain", "ornament", "tree", "leaves", "leaf",
-            "bark", "branch", "needle", "crown", "ivy", "moss", "scrub", "ice_plant", "guano", "grime", "stain", "mould", "chalk",
-            "label", "sign", "screen", "lens", "backdrop", "greybox", "hat_", "acc_", "env_", "mattress", "pillow", "bedding",
-            "curtain", "blanket", "canvas", "cloth", "wool", "denim", "felt", "tape", "paper", "card", "book", "blueprint",
-            "clipboard", "cork", "pegboard", "marker", "rubber", "warning", "hazard", "safety", "caution", "beacon", "signal",
-            "display", "mug", "drum", "bin_", "forklift", "pallet_jack", "toolbox", "loot", "threat", "crew", "skin", "cosmetic",
-            "trim", "decal", "puddle", "wet", "soot", "vacant_windows", "distant_mass", "mass", "silhouette", "icon", "ui_",
-            "shingles",
-        };
-
-        private static readonly System.Text.RegularExpressions.Regex WordBreak =
-            new(@"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|[_\s]+|(?<=\D)(?=\d)|(?<=\d)(?=\D)");
-
-        // "_word_word_" in lower case, so a skip entry matches only at the start of a word.
-        private static string Words(string name) =>
-            "_" + string.Join("_", WordBreak.Split(name).Where(w => w.Length > 0).Select(w => w.ToLowerInvariant())) + "_";
 
         private static readonly string[] Folders = { "Assets/_Project/Art", "Assets/_Project/Data" };
+        private static readonly string[] MovingPrefabs =
+        {
+            "Assets/_Project/Prefabs/Loot", "Assets/_Project/Prefabs/Threats", "Assets/_Project/Prefabs/Cosmetics",
+            "Assets/_Project/Prefabs/Equipment", "Assets/_Project/Prefabs/Player.prefab",
+        };
 
         [Serializable]
         private class Original
@@ -118,71 +66,111 @@ namespace Abandoned.EditorTools
         }
 
         [MenuItem(ToolMenu.Art + "Upgrade Surfaces (Scanned Textures)", priority = ToolMenu.ArtP + 61)]
+        public static void RunMenu()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            Run();
+        }
+
         public static void Run()
         {
             var sets = new Dictionary<string, ScannedSet>();
-            foreach (string set in Rules.Select(r => r.Set).Distinct())
+            foreach (string set in Rules.SelectMany(r => new[] { r.Set, r.DarkSet }).Where(s => s != null).Distinct())
             {
                 ScannedSet s = ScannedSet.Load(set);
                 if (s != null) sets[set] = s;
-                else Debug.LogWarning($"[Surfaces] {set} is not in {ScannedRoot}; run Tools/Art/fetch_textures.py. Its materials keep their old look.");
+                else Debug.LogWarning($"[Surfaces] {set} is not in {ScannedRoot}; run Tools/Art/fetch_textures.py. Its materials keep their maps.");
             }
+            Shader surface = Shader.Find(SurfaceShader);
+            if (surface == null) throw new InvalidOperationException($"[Surfaces] No {SurfaceShader} shader.");
+            Dictionary<string, GraphicsAudit.UvDensity> density = MeasureAcrossMaps();
+            HashSet<string> moving = MovingMaterials();
             Dictionary<string, Original> book = LoadOriginals();
-            int upgraded = 0, skipped = 0;
+            int scanned = 0, weathered = 0, triplanar = 0, skipped = 0;
             var perSet = new Dictionary<string, int>();
             foreach (string guid in AssetDatabase.FindAssets("t:Material", Folders))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                if (path.Contains("/ThirdParty/") || path.Contains("/Characters/") || path.Contains("/UI/")) continue;
+                // Materials inside imported models are read-only; only .mat files can change.
+                if (!path.EndsWith(".mat") || path.Contains("/Characters/") || path.Contains("/UI/") || path.Contains("/Threats/") || path.Contains("/Cosmetics/")) { skipped++; continue; }
+                // Shared with loot or gear: scanned like the rest, but no world-space weathering (it would slide).
+                bool moves = moving.Contains(path);
                 var m = AssetDatabase.LoadAssetAtPath<Material>(path);
-                if (m == null || !Eligible(m)) { skipped++; continue; }
-                string name = m.name.ToLowerInvariant();
-                Rule? rule = null;
-                string key = null;
-                foreach (Rule r in Rules)
-                {
-                    key = r.Keys.FirstOrDefault(name.Contains);
-                    if (key != null) { rule = r; break; }
-                }
-                if (rule == null || !sets.TryGetValue(rule.Value.Set, out ScannedSet scan)) { skipped++; continue; }
-                string rest = Words(m.name.Remove(name.IndexOf(key, StringComparison.Ordinal), key.Length));
+                if (m == null || !Candidate(m)) { skipped++; continue; }
+
+                string core = StripPrefix(m.name.ToLowerInvariant());
+                string oldMap = MapPath(m, BaseMap);
+                bool ours = Ours(oldMap) && Ours(MapPath(m, BumpMap)) && !path.Contains("/ThirdParty/");
+                // A drawn map's name says what the builder meant ("SootBrick" on a material called "Wall").
+                string hint = ours && oldMap.Length > 0 && !oldMap.StartsWith(ScannedRoot) ? Path.GetFileNameWithoutExtension(oldMap).ToLowerInvariant() : "";
+                Rule? rule = Match(core + " " + hint, out string key);
+                string rest = Words(rule != null && core.Contains(key) ? core.Remove(core.IndexOf(key, StringComparison.Ordinal), key.Length) : core);
                 if (Skip.Any(s => rest.Contains("_" + s))) { skipped++; continue; }
-                Apply(m, guid, scan, rule.Value, book);
-                perSet[rule.Value.Set] = perSet.TryGetValue(rule.Value.Set, out int n) ? n + 1 : 1;
-                upgraded++;
+
+                m.shader = surface;
+                Wear wear = rule?.Wear ?? Wear.Plain;
+                bool tri = false, antiTile = false;
+                if (rule != null && ours && sets.ContainsKey(rule.Value.Set))
+                {
+                    Rule r = rule.Value;
+                    density.TryGetValue(guid, out GraphicsAudit.UvDensity d);
+                    tri = d.P50 < 1e-4f || d.P20 <= 1e-5f || d.P80 / d.P20 > MaxSpread;
+                    float uvScale = tri ? 1f / r.Metres : Mathf.Clamp(1f / (r.Metres * d.P50), 1e-3f, 1e3f);
+                    string set = Apply(m, guid, sets, r, uvScale, book);
+                    antiTile = r.AntiTile && !tri;
+                    perSet[set] = perSet.TryGetValue(set, out int n) ? n + 1 : 1;
+                    scanned++;
+                    if (tri) triplanar++;
+                }
+                SyncKeywords(m);
+                SetWeathering(m, wear, antiTile, tri, !moves);
+                EditorUtility.SetDirty(m);
+                weathered++;
             }
             SaveOriginals(book);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[Surfaces] {upgraded} materials upgraded, {skipped} left as they were. " +
+            Debug.Log($"[Surfaces] {weathered} materials on {SurfaceShader}, {scanned} with scans ({triplanar} triplanar), {skipped} left as they were. " +
                       string.Join(", ", perSet.OrderByDescending(p => p.Value).Select(p => $"{p.Key} {p.Value}")));
         }
 
-        // URP Lit (or Complex Lit), opaque, not glowing, and without a normal map of its own: an authored PBR set is kept.
-        private static bool Eligible(Material m)
+        // URP Lit (or ours from a previous run), opaque, not cut out, not glowing.
+        private static bool Candidate(Material m)
         {
-            if (m.shader == null || !m.shader.name.StartsWith("Universal Render Pipeline/") || !m.shader.name.Contains("Lit")) return false;
-            if (m.shader.name.Contains("Unlit") || m.shader.name.Contains("Particles")) return false;
+            if (m.shader == null) return false;
+            string s = m.shader.name;
+            bool lit = s == SurfaceShader || (s.StartsWith("Universal Render Pipeline/") && s.Contains("Lit") && !s.Contains("Unlit") && !s.Contains("Particles") && !s.Contains("Baked") && !s.Contains("Terrain"));
+            if (!lit) return false;
             if (m.HasProperty(Surface) && m.GetFloat(Surface) > 0.5f) return false;
-            if (m.IsKeywordEnabled("_EMISSION")) return false;
-            if (m.HasProperty(BumpMap) && m.GetTexture(BumpMap) != null)
-            {
-                // Ours from a previous run is refreshed; anyone else's normal map means authored PBR.
-                string bump = AssetDatabase.GetAssetPath(m.GetTexture(BumpMap));
-                return bump.StartsWith(ScannedRoot);
-            }
-            return true;
+            if ((m.HasProperty(AlphaClip) && m.GetFloat(AlphaClip) > 0.5f) || m.IsKeywordEnabled("_ALPHATEST_ON")) return false;
+            return !m.IsKeywordEnabled("_EMISSION");
         }
 
-        private static void Apply(Material m, string guid, ScannedSet scan, Rule rule, Dictionary<string, Original> book)
+        private static string MapPath(Material m, int id) =>
+            m.HasProperty(id) && m.GetTexture(id) != null ? AssetDatabase.GetAssetPath(m.GetTexture(id)) : "";
+
+        // No map, an in-memory map, or one drawn by our builders.
+        private static bool Ours(string mapPath) => mapPath.Length == 0 || OurMaps.Any(mapPath.StartsWith) || !mapPath.StartsWith("Assets/");
+
+        private static string Apply(Material m, string guid, Dictionary<string, ScannedSet> sets, Rule rule, float uvScale, Dictionary<string, Original> book)
         {
             Color current = m.HasProperty(BaseColor) ? m.GetColor(BaseColor) : Color.white;
-            // The colour this material had before any upgrade: from the book while the material still carries the tint
-            // we wrote; a builder that set a new colour since has given it a new original.
-            Color original = book.TryGetValue(guid, out Original seen) && Close(current, seen.tint) ? seen.original : current;
+            // The colour this surface had before any upgrade: from the book while the material still carries the tint
+            // we wrote; otherwise the builder's colour times its drawn map's average (a green tile map on white is green).
+            Color original;
+            if (book.TryGetValue(guid, out Original seen) && Close(current, seen.tint)) original = seen.original;
+            else
+            {
+                Texture old = m.HasProperty(BaseMap) ? m.GetTexture(BaseMap) : null;
+                Color mean = old != null && !AssetDatabase.GetAssetPath(old).StartsWith(ScannedRoot) ? MeanOf(old) : Color.white;
+                original = (current.linear * mean).gamma;
+                original.a = current.a;
+            }
 
+            Color oLin = original.linear;
+            string id = rule.DarkSet != null && Luminance(oLin) < 0.12f && sets.ContainsKey(rule.DarkSet) ? rule.DarkSet : rule.Set;
+            ScannedSet scan = sets[id];
             // Keep the material's hue (as much as the rule asks) and its overall brightness, both in linear space,
             // where the shader multiplies the base colour into the scan.
-            Color oLin = original.linear;
             float top = Mathf.Max(1e-4f, oLin.maxColorComponent);
             Color hueLin = Color.Lerp(Color.white, new Color(oLin.r / top, oLin.g / top, oLin.b / top), rule.Tint);
             float wanted = Luminance(oLin), got = scan.MeanLuminance * Luminance(hueLin);
@@ -194,34 +182,124 @@ namespace Abandoned.EditorTools
             book[guid] = new Original { guid = guid, original = original, tint = tint };
 
             m.SetTexture(BaseMap, scan.Color);
-            m.SetTextureScale(BaseMap, Vector2.one / rule.Metres);
+            m.SetTextureScale(BaseMap, Vector2.one * uvScale);
             m.SetTextureOffset(BaseMap, Vector2.zero);
             m.SetColor(BaseColor, tint);
+            if (m.HasProperty("_Color")) m.SetColor("_Color", tint);
             m.SetTexture(BumpMap, scan.Normal);
             // Asphalt's scan has deep aggregate that reads as lumps at walking height.
-            m.SetFloat(BumpScale, rule.Set.StartsWith("Asphalt") ? 0.35f : 1f);
-            m.EnableKeyword("_NORMALMAP");
+            m.SetFloat(BumpScale, id.StartsWith("Asphalt") ? 0.35f : 1f);
+            m.SetFloat(WorkflowMode, 1f);
             Texture2D packed = scan.Packed(rule.Bare);
-            if (packed != null)
-            {
-                m.SetTexture(MetalMap, packed);
-                m.SetFloat(Smoothness, 0.9f); // multiplies the map's smoothness
-                m.SetFloat(Metallic, rule.Bare ? 1f : 0f);
-                m.EnableKeyword("_METALLICSPECGLOSSMAP");
-            }
-            if (scan.Occlusion != null)
-            {
-                m.SetTexture(Occlusion, scan.Occlusion);
-                m.SetFloat(OcclusionStrength, 1f);
-                m.EnableKeyword("_OCCLUSIONMAP");
-            }
-            EditorUtility.SetDirty(m);
+            m.SetTexture(MetalMap, packed);
+            m.SetFloat(Smoothness, packed != null ? 0.9f : 0.3f); // multiplies the map's smoothness
+            m.SetFloat(Metallic, rule.Bare && scan.HasMetal ? 1f : 0f);
+            m.SetTexture(Occlusion, scan.Occlusion);
+            m.SetFloat(OcclusionStrength, 1f);
+            return id;
         }
+
+        // URP's keywords follow the maps present, as its own inspector would set them.
+        private static void SyncKeywords(Material m)
+        {
+            Toggle(m, "_NORMALMAP", MapPath(m, BumpMap).Length > 0 || (m.HasProperty(BumpMap) && m.GetTexture(BumpMap) != null));
+            Toggle(m, "_METALLICSPECGLOSSMAP", m.HasProperty(MetalMap) && m.GetTexture(MetalMap) != null);
+            Toggle(m, "_OCCLUSIONMAP", m.HasProperty(Occlusion) && m.GetTexture(Occlusion) != null);
+            Toggle(m, "_SPECULAR_SETUP", m.HasProperty(WorkflowMode) && m.GetFloat(WorkflowMode) < 0.5f);
+        }
+
+        private static void SetWeathering(Material m, Wear wear, bool antiTile, bool triplanar, bool weather)
+        {
+            var (variation, grime, dust) = Weathering(wear);
+            m.SetFloat("_Variation", variation);
+            m.SetFloat("_Grime", grime);
+            m.SetFloat("_Dust", dust);
+            m.SetFloat("_Weathering", weather ? 1f : 0f);
+            m.SetFloat("_AntiTile", antiTile ? 1f : 0f);
+            m.SetFloat("_Triplanar", triplanar ? 1f : 0f);
+            Toggle(m, "_WEATHERING", weather);
+            Toggle(m, "_ANTITILE", antiTile);
+            Toggle(m, "_TRIPLANAR", triplanar);
+        }
+
+        private static void Toggle(Material m, string keyword, bool on)
+        {
+            if (on) m.EnableKeyword(keyword);
+            else m.DisableKeyword(keyword);
+        }
+
+        /// <summary>UV units per metre for every material drawn on any map, pooled over all of them (by GUID).</summary>
+        private static Dictionary<string, GraphicsAudit.UvDensity> MeasureAcrossMaps()
+        {
+            var pooled = new Dictionary<string, List<(double, double)>>();
+            foreach (string scenePath in AvOverhaul.MapScenes)
+            {
+                if (!File.Exists(scenePath)) continue;
+                EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+                foreach (var kv in GraphicsAudit.MeasureSamples())
+                {
+                    string guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(kv.Key));
+                    if (string.IsNullOrEmpty(guid)) continue;
+                    if (!pooled.TryGetValue(guid, out var list)) pooled[guid] = list = new List<(double, double)>();
+                    list.AddRange(kv.Value);
+                }
+            }
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            return pooled.ToDictionary(kv => kv.Key, kv => GraphicsAudit.Density(kv.Value));
+        }
+
+        // Materials on things that move (carried loot, monsters, players, gear): world-space weathering would slide.
+        private static HashSet<string> MovingMaterials()
+        {
+            var roots = new List<string>();
+            foreach (string folder in MovingPrefabs)
+            {
+                if (folder.EndsWith(".prefab")) roots.Add(folder);
+                else if (AssetDatabase.IsValidFolder(folder))
+                    roots.AddRange(AssetDatabase.FindAssets("t:Prefab", new[] { folder }).Select(AssetDatabase.GUIDToAssetPath));
+            }
+            foreach (string guid in AssetDatabase.FindAssets("t:LootDefinition"))
+                roots.Add(AssetDatabase.GUIDToAssetPath(guid));
+            return new HashSet<string>(AssetDatabase.GetDependencies(roots.ToArray(), true).Where(p => p.EndsWith(".mat")));
+        }
+
+        // Average linear colour of any texture, through a small linear render target (works for drawn .asset maps too).
+        private static Color MeanOf(Texture texture)
+        {
+            var rt = RenderTexture.GetTemporary(64, 64, 0, RenderTextureFormat.ARGBFloat, RenderTextureReadWrite.Linear);
+            var read = new Texture2D(64, 64, TextureFormat.RGBAFloat, false, true);
+            RenderTexture previous = RenderTexture.active;
+            try
+            {
+                Graphics.Blit(texture, rt);
+                RenderTexture.active = rt;
+                read.ReadPixels(new Rect(0, 0, 64, 64), 0, 0);
+                read.Apply();
+                Color sum = Color.black;
+                foreach (Color c in read.GetPixels()) sum += c;
+                sum /= 64 * 64;
+                return sum.maxColorComponent > 1e-4f ? sum : new Color(0.5f, 0.5f, 0.5f);
+            }
+            catch (Exception) { return new Color(0.5f, 0.5f, 0.5f); }
+            finally
+            {
+                RenderTexture.active = previous;
+                RenderTexture.ReleaseTemporary(rt);
+                Object.DestroyImmediate(read);
+            }
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex WordBreak =
+            new(@"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|[_\s]+|(?<=\D)(?=\d)|(?<=\d)(?=\D)");
+
+        // "_word_word_" in lower case, so a skip entry matches only at the start of a word.
+        private static string Words(string name) =>
+            "_" + string.Join("_", WordBreak.Split(name).Where(w => w.Length > 0).Select(w => w.ToLowerInvariant())) + "_";
 
         private static bool Close(Color a, Color b) =>
             Mathf.Abs(a.r - b.r) < 0.002f && Mathf.Abs(a.g - b.g) < 0.002f && Mathf.Abs(a.b - b.b) < 0.002f;
 
-        private static float Luminance(Color c) => 0.2126f * c.r + 0.7152f * c.g + 0.0722f * c.b;
+        public static float Luminance(Color c) => 0.2126f * c.r + 0.7152f * c.g + 0.0722f * c.b;
 
         private static Dictionary<string, Original> LoadOriginals()
         {
@@ -235,109 +313,6 @@ namespace Abandoned.EditorTools
             var data = new Originals { entries = book.Values.OrderBy(e => e.guid).ToList() };
             File.WriteAllText(OriginalsPath, JsonUtility.ToJson(data, true));
             AssetDatabase.ImportAsset(OriginalsPath);
-        }
-
-        /// <summary>One downloaded set, with its importers fixed and the metal/smoothness maps packed.</summary>
-        private sealed class ScannedSet
-        {
-            public Texture2D Color, Normal, Occlusion;
-            public float MeanLuminance = 0.5f;
-            private string folder, id, rough, metal;
-
-            public static ScannedSet Load(string id)
-            {
-                string folder = $"{ScannedRoot}/{id}";
-                string color = Find(folder, "_Color.jpg"), normal = Find(folder, "_NormalGL.jpg");
-                if (color == null || normal == null) return null;
-                string ao = Find(folder, "_AmbientOcclusion.jpg");
-                Import(color, srgb: true, normalMap: false, DetailMapSize);
-                Import(normal, srgb: false, normalMap: true, DetailMapSize);
-                if (ao != null) Import(ao, srgb: false, normalMap: false, SupportMapSize);
-                return new ScannedSet
-                {
-                    Color = AssetDatabase.LoadAssetAtPath<Texture2D>(color),
-                    Normal = AssetDatabase.LoadAssetAtPath<Texture2D>(normal),
-                    Occlusion = ao != null ? AssetDatabase.LoadAssetAtPath<Texture2D>(ao) : null,
-                    MeanLuminance = Mean(color),
-                    folder = folder,
-                    id = id,
-                    rough = Find(folder, "_Roughness.jpg"),
-                    metal = Find(folder, "_Metalness.jpg"),
-                };
-            }
-
-            /// <summary>The metal/smoothness map: with the scan's metalness, or (painted) with none.</summary>
-            public Texture2D Packed(bool bare)
-            {
-                if (rough == null) return null;
-                bool withMetal = bare && metal != null;
-                string outPath = $"{folder}/{id}_{(withMetal ? "MetalSmooth" : "Smooth")}.png";
-                if (!File.Exists(outPath)) Pack(outPath, rough, withMetal ? metal : null);
-                Import(outPath, srgb: false, normalMap: false, SupportMapSize);
-                return AssetDatabase.LoadAssetAtPath<Texture2D>(outPath);
-            }
-
-            private static string Find(string folder, string suffix)
-            {
-                if (!Directory.Exists(folder)) return null;
-                string hit = Directory.GetFiles(folder, "*" + suffix).FirstOrDefault();
-                return hit?.Replace('\\', '/');
-            }
-
-            private static void Import(string path, bool srgb, bool normalMap, int size)
-            {
-                if (AssetImporter.GetAtPath(path) is not TextureImporter ti) return;
-                TextureImporterType type = normalMap ? TextureImporterType.NormalMap : TextureImporterType.Default;
-                if (ti.textureType == type && ti.sRGBTexture == srgb && ti.maxTextureSize == size && ti.mipmapEnabled) return;
-                ti.textureType = type;
-                ti.sRGBTexture = srgb;
-                ti.maxTextureSize = size;
-                ti.mipmapEnabled = true;
-                ti.anisoLevel = 4;
-                ti.textureCompression = TextureImporterCompression.CompressedHQ;
-                ti.SaveAndReimport();
-            }
-
-            // Average linear brightness of the colour map, read straight from the file (the asset need not be readable).
-            private static float Mean(string path)
-            {
-                var tex = new Texture2D(2, 2);
-                if (!tex.LoadImage(File.ReadAllBytes(path))) return 0.5f;
-                Color32[] px = tex.GetPixels32();
-                double sum = 0;
-                int step = Mathf.Max(1, px.Length / 65536);
-                int n = 0;
-                for (int i = 0; i < px.Length; i += step, n++)
-                    sum += Luminance(new Color(px[i].r / 255f, px[i].g / 255f, px[i].b / 255f).linear);
-                Object.DestroyImmediate(tex);
-                return Mathf.Max(0.02f, (float)(sum / Mathf.Max(1, n)));
-            }
-
-            // URP Lit reads metallic from R and smoothness from A of one map.
-            private static void Pack(string outPath, string roughPath, string metalPath)
-            {
-                var rough = new Texture2D(2, 2);
-                rough.LoadImage(File.ReadAllBytes(roughPath));
-                Texture2D metal = null;
-                if (metalPath != null)
-                {
-                    metal = new Texture2D(2, 2);
-                    metal.LoadImage(File.ReadAllBytes(metalPath));
-                    if (metal.width != rough.width || metal.height != rough.height) { Object.DestroyImmediate(metal); metal = null; }
-                }
-                Color32[] r = rough.GetPixels32();
-                Color32[] mt = metal != null ? metal.GetPixels32() : null;
-                var packed = new Color32[r.Length];
-                for (int i = 0; i < r.Length; i++)
-                    packed[i] = new Color32(mt != null ? mt[i].r : (byte)0, 0, 0, (byte)(255 - r[i].r));
-                var tex = new Texture2D(rough.width, rough.height, TextureFormat.RGBA32, false, true);
-                tex.SetPixels32(packed);
-                File.WriteAllBytes(outPath, tex.EncodeToPNG());
-                Object.DestroyImmediate(tex);
-                Object.DestroyImmediate(rough);
-                if (metal != null) Object.DestroyImmediate(metal);
-                AssetDatabase.ImportAsset(outPath);
-            }
         }
     }
 }

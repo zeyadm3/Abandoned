@@ -29,8 +29,13 @@ namespace Abandoned.EditorTools
         public const string FogShaderPath = "Assets/_Project/Art/Shaders/VolumetricFog.shader";
         public const string ExposureShaderPath = "Assets/_Project/Art/Shaders/AutoExposure.shader";
 
-        // Ambient occlusion: reach, darkness, and how much it bites into direct light.
-        private const float AoRadius = 0.45f, AoIntensity = 0.7f, AoDirect = 0.45f;
+        // Ambient occlusion: reach, darkness, and how much it bites into direct light. 0.24.13: twelve samples at full
+        // resolution and a little more reach, so the foot of every wall, shelf and crate sits in its own contact shadow.
+        private const float AoRadius = 0.6f, AoIntensity = 0.8f, AoDirect = 0.35f;
+        private const int AoSamplesHigh = 0;
+        // 0.24.13: URP's own bias is 1/1; 0.1 drew shadow acne (fine stripes that crawl as the flashlight moves).
+        // Half keeps contact shadows tight without the acne.
+        private const float ShadowDepthBias = 0.5f, ShadowNormalBias = 0.5f;
         // Decals fade out beyond this; grime twenty metres away is never read and still costs.
         private const float DecalDistance = 40f;
 
@@ -72,6 +77,12 @@ namespace Abandoned.EditorTools
             urp.additionalLightsShadowmapResolution = LocalShadowAtlas;
             RendererFeatures.Set(urp, "m_SoftShadowsSupported", p => p.boolValue = true);
             RendererFeatures.Set(urp, "m_SoftShadowQuality", p => p.intValue = (int)SoftShadowQuality.High);
+            RendererFeatures.Set(urp, "m_ShadowDepthBias", p => p.floatValue = ShadowDepthBias);
+            RendererFeatures.Set(urp, "m_ShadowNormalBias", p => p.floatValue = ShadowNormalBias);
+            // Room reflections (RoomReflections): blended, box-projected, through Forward+'s probe atlas.
+            RendererFeatures.Set(urp, "m_ReflectionProbeBlending", p => p.boolValue = true);
+            RendererFeatures.Set(urp, "m_ReflectionProbeBoxProjection", p => p.boolValue = true);
+            RendererFeatures.Set(urp, "m_ReflectionProbeAtlas", p => p.boolValue = true);
             // 0.24.12 tried baked probe volumes for bounce light: they replaced each map's tuned flat ambient with the
             // little a dim fixture bounces, and every wall went black. Legacy probes (the scene's ambient) stay.
             RendererFeatures.Set(urp, "m_LightProbeSystem", p => p.intValue = (int)LightProbeSystem.LegacyLightProbes);
@@ -129,6 +140,9 @@ namespace Abandoned.EditorTools
                 RendererFeatures.Set(asset, "m_Settings.Radius", p => p.floatValue = AoRadius);
                 RendererFeatures.Set(asset, "m_Settings.Intensity", p => p.floatValue = AoIntensity);
                 RendererFeatures.Set(asset, "m_Settings.DirectLightingStrength", p => p.floatValue = AoDirect);
+                RendererFeatures.Set(asset, "m_Settings.Samples", p => p.enumValueIndex = AoSamplesHigh);
+                RendererFeatures.Set(asset, "m_Settings.Downsample", p => p.boolValue = false);
+                RendererFeatures.Set(asset, "m_Settings.BlurQuality", p => p.enumValueIndex = 0); // bilateral: keeps edges
                 return;
             }
             Debug.LogWarning($"[Render] No ambient occlusion feature on {PcRendererPath}; left as it was.");

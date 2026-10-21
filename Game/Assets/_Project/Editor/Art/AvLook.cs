@@ -43,6 +43,7 @@ namespace Abandoned.EditorTools
         private static readonly Preset Tutorial = new(0.007f, 0.035f, 60f, 0.9f, 1.2f, 0.4f, 0.35f, 0.1f, -5f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.96f, 1f, 1.04f));
 
         public const string LensDirtPath = "Assets/_Project/Art/Lighting/LensDirt.png";
+        private const float MinSaturation = -22f;
 
         [MenuItem(ToolMenu.Art + "Apply 0.24.12 Look to Saved Maps", priority = ToolMenu.ArtP + 60)]
         public static void ApplyToSaved()
@@ -80,6 +81,10 @@ namespace Abandoned.EditorTools
             eye.key.Override(p.Key);
             eye.strength.Override(0.35f);
             eye.maxEv.Override(1f);
+
+            // 0.24.13: the scanned surfaces carry their own colour now; past -22 the grade washed them back to grey.
+            ColorAdjustments adjust = Get<ColorAdjustments>(profile);
+            if (adjust.saturation.overrideState && adjust.saturation.value < MinSaturation) adjust.saturation.Override(MinSaturation);
 
             WhiteBalance balance = Get<WhiteBalance>(profile);
             balance.temperature.Override(p.Temperature);

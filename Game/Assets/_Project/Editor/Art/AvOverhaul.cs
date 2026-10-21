@@ -29,7 +29,8 @@ namespace Abandoned.EditorTools
             AfterMaps();
         }
 
-        /// <summary>Render settings, each map's look, surfaces, sound and wear decals.</summary>
+        /// <summary>Render settings, each map's look, surfaces, sound and wear decals; since 0.24.13 also each map's
+        /// weathering and the coplanar-face fix (Docs/GRAPHICS_0.24.13.md).</summary>
         public static void AfterMaps()
         {
             Step("Render pipeline", RenderPipelineSetup.Apply);
@@ -39,13 +40,19 @@ namespace Abandoned.EditorTools
             Step("Sound bank", SoundBankBuilder.CreateMissing);
             Step("Recorded library", SoundLibrary.Build);
             foreach (string path in MapScenes)
-                Step($"Wear decals: {System.IO.Path.GetFileNameWithoutExtension(path)}", () =>
+                Step($"Weathering, wear decals and coplanar faces: {System.IO.Path.GetFileNameWithoutExtension(path)}", () =>
                 {
                     var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    float weather = SurfaceAging.Place(scene);
+                    AmbientBalance.Apply(scene);
+                    int probes = RoomReflectionProbes.Place(scene);
                     int n = DecalScatter.Scatter(scene.name);
                     EditorSceneManager.MarkSceneDirty(scene);
                     EditorSceneManager.SaveScene(scene);
-                    Debug.Log($"[AvOverhaul] {scene.name}: {n} wear decals.");
+                    // 0.24.13: last, so it sees everything the map now draws; saves the scene itself.
+                    var (moved, faces, left) = CoplanarFix.FixOpenScene();
+                    Debug.Log($"[AvOverhaul] {scene.name}: weathering {weather:0.00}, {probes} room reflections, {n} wear decals, " +
+                              $"coplanar faces: {moved} moved, {faces} lifted, {left} left.");
                 });
             AssetDatabase.SaveAssets();
         }

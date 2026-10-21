@@ -8,20 +8,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mall_Floor_furniture_1
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: 4800000, guid: fdd24bf29827c4515a85bf9caf32e38f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _OCCLUSIONMAP
+  - _TRIPLANAR
+  - _WEATHERING
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -29,11 +30,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: e6193ebd2944d43098cf530990fbe3a4, type: 3}
-        m_Scale: {x: 0.8333333, y: 0.8333333}
+        m_Texture: {fileID: 2800000, guid: 89b0a12de85ae4347a7a43d48d6eb717, type: 3}
+        m_Scale: {x: 0.33333334, y: 0.33333334}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 623ca92b1e06a430889ee3fcd8079169, type: 3}
+        m_Texture: {fileID: 2800000, guid: f4c2d513962f74386a88dcf97091fe29, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -57,11 +58,11 @@ Material:
         m_Scale: {x: 0.8333333, y: 0.8333333}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: c42f91a1c71da481b8b8630e10a99d24, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7bfbd2e4810fc406db14ec43112d8402, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 2800000, guid: 4205008b9d28549b592d6cac8c6137fb, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0ab42c7e2ecd94b5f90eb7aec3d2d8f1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -89,6 +90,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AntiTile: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -100,10 +102,12 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _Dust: 0.65
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Grime: 0.45
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -115,12 +119,15 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _Triplanar: 1
+    - _Variation: 0.12
+    - _Weathering: 1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.5504221, g: 0.53049064, b: 0.49076307, a: 1}
-    - _Color: {r: 0.550422, g: 0.53049064, b: 0.49076307, a: 1}
+    - _BaseColor: {r: 1.1067512, g: 1.0771497, b: 1.0194865, a: 1}
+    - _Color: {r: 1.1067512, g: 1.0771497, b: 1.0194865, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

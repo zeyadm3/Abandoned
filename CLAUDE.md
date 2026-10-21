@@ -101,6 +101,16 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**0.24.13 texture flicker fixed, surfaces and lighting rebuilt (2026-10-21, branch `worktree-graphics-overhaul`).**
+Coplanar faces (the "two textures swapping" flicker) separated on every map by `Editor/Art/CoplanarFix` (pairs close
+enough to flicker, before -> after: mall 19,787 -> ~100, prison 6,525 -> 5, tutorial 4,887 -> 9, school 2,648 -> 26,
+HQ 1,739 -> 0, factory 1,320 -> 3). Every environment material on the new `Abandoned/Surface` shader (URP Lit +
+anti-tiling, triplanar, world-space grime/dust/variation; per-map `SurfaceWeathering`), 24 more CC0 scans (45 in all),
+code-drawn maps replaced, tiling from each material's measured UV density. Realtime room reflection probes
+(`RoomReflections`), shadow bias 0.5/0.5, SSAO 12 samples, mall/factory ambient +30 %, grade saturation floor -22.
+Everything, numbers and what to check first: Docs/GRAPHICS_0.24.13.md. Applied to the saved maps; compiled, EditMode
+tests and review renders (Game/Logs/renders/gfx4). Never played.
+
 **0.24.12 sound and picture overhaul (2026-10-21, branch `av-overhaul`).** Forward+, HDR grading, volumetric light,
 eye adaptation, per-map looks, light cookies, CC0 scanned surfaces, wear and floor-crack decals; a mastering bus, hiding muffle and sidechain ducking, Steam Audio head-related panning and
 a CC0 recorded library replacing most synth and Kenney sounds. The menus were laid out again on the same theme (a left
@@ -275,6 +285,21 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-21 (user: graphics "a 3 out of 10 ... at least an eight", "textures are overlapping and switching between
+  them ... fix that in all the maps", better textures, "improve all the shadows and the lighting"): **0.24.13.**
+  - No two drawn faces may share a plane and overlap. `CoplanarFix` runs last in AvOverhaul.AfterMaps (so after every
+    map rebuild); a new builder that lays one piece flush on another is fixed there, but keep `GraphicsAudit`'s
+    "within 0.1 mm (can flicker)" near 0. Objects step 2.5 mm, faces inside a mesh odd multiples of 1.25 mm, never
+    toward a neighbour closer than 1.1 mm. The Blender kit is in centimetres scaled x100, so a kit mesh is never edited
+    in place (no import postprocessor): fixed copies per (mesh, scale) live in Art/Generated/CoplanarMeshes with a
+    registry, and each run points renderers back at the model first.
+  - Environment materials are on `Abandoned/Surface` (same properties as URP Lit). New environment materials get it from
+    MaterialUpgrade after the maps are built; a builder may keep making URP Lit materials. Materials loot or gear share
+    get scans but no weathering (world-space grime would slide on a carried item). Scan tiling comes from the UV density
+    measured on the maps, never "one UV per metre".
+  - Room reflections are realtime probes drawn after load and after `LightingEvents` (the power changing), not baked
+    (M7.2 stands). The mall and factory ambient were lifted ~30 % and grade saturation floored at -22: undo in
+    `AmbientBalance` / `AvLook.MinSaturation` if the user finds them too bright.
 - 2026-10-21 (user: "a total sound and graphical overhaul ... the graphics to take three steps forward and the sound to
   be proper sound"; approved the plan, its assumptions and "build build build, don't stop"): **0.24.12.**
   - Approved new third-party material: CC0 ambientCG textures, CC0 Freesound recordings (previews; only CC0, the search

@@ -18,7 +18,10 @@ namespace Abandoned.EditorTools
     public static class AvRenders
     {
         private const int Width = 1600, Height = 900;
-        private static readonly string Folder = Path.Combine(Application.dataPath, "..", "Logs", "renders", "av");
+        private const string ProbeTemp = "Assets/_RenderTemp";
+        // RENDER_OUT=<folder name> keeps one set of renders apart from another (before/after a change).
+        private static readonly string Folder = Path.Combine(Application.dataPath, "..", "Logs", "renders",
+            string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("RENDER_OUT")) ? "av" : System.Environment.GetEnvironmentVariable("RENDER_OUT"));
 
         public static void RenderAndExit()
         {
@@ -28,7 +31,27 @@ namespace Abandoned.EditorTools
                 try { RenderScene(path); }
                 catch (System.Exception e) { Debug.LogException(e); }
             }
+            AssetDatabase.DeleteAsset(ProbeTemp);
             EditorApplication.Exit(0);
+        }
+
+        // A batch session never draws realtime probes; bake each once into a scratch folder so the renders show the
+        // room reflections the game draws (the scene is never saved).
+        private static void BakeProbes()
+        {
+            AssetDatabase.DeleteAsset(ProbeTemp);
+            AssetDatabase.CreateFolder("Assets", "_RenderTemp");
+            int i = 0;
+            foreach (ReflectionProbe probe in Object.FindObjectsByType<ReflectionProbe>(FindObjectsSortMode.None))
+            {
+                if (probe.mode != UnityEngine.Rendering.ReflectionProbeMode.Realtime) continue;
+                string file = $"{ProbeTemp}/probe_{i++}.exr";
+                if (!Lightmapping.BakeReflectionProbe(probe, file)) continue;
+                AssetDatabase.ImportAsset(file);
+                probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Custom;
+                probe.customBakedTexture = AssetDatabase.LoadAssetAtPath<Texture>(file);
+            }
+            Debug.Log($"[AvRenders] {i} probes baked for the renders.");
         }
 
         private static void RenderScene(string path)
@@ -36,6 +59,7 @@ namespace Abandoned.EditorTools
             var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             // In play Unity derives the ambient from the scene's colours itself; a batch session has to be told to.
             DynamicGI.UpdateEnvironment();
+            BakeProbes();
             var go = new GameObject("AvRenderCamera") { hideFlags = HideFlags.HideAndDontSave };
             var cam = go.AddComponent<Camera>();
             cam.fieldOfView = 70f;
@@ -96,6 +120,34 @@ namespace Abandoned.EditorTools
                         VolumetricFogFeature.DebugFogOnly = false;
                     }
                     if (torch != null) Object.DestroyImmediate(torch);
+                }
+                // 0.24.13: two close views of whatever wall is nearest, to judge surface detail and any flicker.
+                for (int i = 4; i <= 5 && nav.indices.Length >= 3; i++)
+                {
+                    int tri = rng.Next(nav.indices.Length / 3) * 3;
+                    Vector3 p = (nav.vertices[nav.indices[tri]] + nav.vertices[nav.indices[tri + 1]] + nav.vertices[nav.indices[tri + 2]]) / 3f + Vector3.up * 1.65f;
+                    Vector3 nearest = Vector3.forward;
+                    float close = 80f;
+                    for (int a = 0; a < 16; a++)
+                    {
+                        Vector3 d = Quaternion.Euler(0f, a * 22.5f, 0f) * Vector3.forward;
+                        if (Physics.Raycast(p, d, out RaycastHit hit, 80f, mask, QueryTriggerInteraction.Ignore) && hit.distance > 1f && hit.distance < close)
+                        {
+                            close = hit.distance;
+                            nearest = d;
+                        }
+                    }
+                    Vector3 at = close < 80f ? p + nearest * Mathf.Max(0f, close - 1.8f) : p;
+                    go.transform.SetPositionAndRotation(at, Quaternion.LookRotation(nearest) * Quaternion.Euler(12f, 25f, 0f));
+                    Render(cam, target, $"{scene.name}_{i}_close");
+                }
+                // 0.24.13: two ceiling fixtures from below, where overlapping fittings showed worst.
+                var fixtures = Object.FindObjectsByType<Abandoned.Structure.LightFixture>(FindObjectsSortMode.InstanceID);
+                for (int i = 0; i < 2 && fixtures.Length > 0; i++)
+                {
+                    Transform f = fixtures[rng.Next(fixtures.Length)].transform;
+                    go.transform.SetPositionAndRotation(f.position + new Vector3(0.6f, -2.2f, 0.4f), Quaternion.Euler(-62f, 200f, 0f));
+                    Render(cam, target, $"{scene.name}_{6 + i}_fixture");
                 }
             }
             finally

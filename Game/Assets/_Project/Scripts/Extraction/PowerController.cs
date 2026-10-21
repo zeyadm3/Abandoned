@@ -85,6 +85,7 @@ namespace Abandoned.Extraction
             HorrorConfig sectors = RunHorrorDirector.Current != null ? RunHorrorDirector.Current.Config : sectorsWithoutHorror;
             foreach (LightFixture f in fixtures)
                 if (f != null) f.SetPowered(on || (sectors != null && (breakers & (1 << sectors.SectorOf(f.transform.position))) != 0));
+            LightingEvents.Raise();
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
