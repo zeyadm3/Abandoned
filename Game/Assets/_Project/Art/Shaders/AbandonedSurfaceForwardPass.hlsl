@@ -259,6 +259,9 @@ void LitPassFragment(
 
     InputData inputData;
     InitializeInputData(input, surfaceData.normalTS, inputData);
+    // Filter specular highlights with the final shaded normal. High-frequency scan normals otherwise sparkle
+    // across floors and metal as the camera moves, even with colour-edge antialiasing enabled.
+    surfaceData.smoothness = GeometricNormalFiltering(surfaceData.smoothness, inputData.normalWS, 0.15, 0.2);
     SETUP_DEBUG_TEXTURE_DATA(inputData, UNDO_TRANSFORM_TEX(input.uv, _BaseMap));
 
 #if defined(_DBUFFER)

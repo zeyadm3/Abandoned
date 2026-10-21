@@ -18,9 +18,9 @@ namespace Abandoned.Core
 
         [Header("Per Shadows setting: Off, Low, Medium, High")]
         [Tooltip("Ceiling and street lights nearest the camera that cast shadows, at most: fewer when the atlas is full.")]
-        [SerializeField] private int[] lights = { 0, 2, 4, 6 };
+        [SerializeField] private int[] lights = { 0, 2, 6, 10 };
         [Tooltip("Of those, how many may be point lights (each one costs six shadow maps, including while fading out).")]
-        [SerializeField] private int[] pointLights = { 0, 1, 2, 2 };
+        [SerializeField] private int[] pointLights = { 0, 1, 1, 1 };
         [Tooltip("Size (pixels) of the shadow atlas the flashlight and these lights share.")]
         [SerializeField] private int[] atlas = { 1024, 4096, 4096, 4096 };
         [Tooltip("Shadow maps always kept free in the atlas for lights outside this budget (the player's own flashlight is one).")]

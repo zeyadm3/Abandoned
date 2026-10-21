@@ -16,13 +16,15 @@ namespace Abandoned.Core
         private static readonly HashSet<string> Painted = new() { "LightShaft", "ClerestoryLightShaft", "ShopLightShaft", "IronFactory_LightShaft" };
         private static readonly List<Renderer> shafts = new();
         private static bool scanned, shown = true;
+        private static int sceneHandle;
 
         public static void Apply(bool volumetricsOn)
         {
-            if (!scanned) Scan();
-            var fog = VolumeManager.instance.stack.GetComponent<VolumetricFogOverride>();
+            bool rescan = !scanned || sceneHandle != SceneManager.GetActiveScene().handle;
+            if (rescan) Scan();
+            var fog = VolumeManager.instance.stack?.GetComponent<VolumetricFogOverride>();
             bool show = !(volumetricsOn && fog != null && fog.IsActive);
-            if (show == shown) return;
+            if (!rescan && show == shown) return;
             shown = show;
             foreach (Renderer r in shafts)
                 if (r != null) r.enabled = show;
@@ -31,6 +33,7 @@ namespace Abandoned.Core
         private static void Scan()
         {
             scanned = true;
+            sceneHandle = SceneManager.GetActiveScene().handle;
             shafts.Clear();
             foreach (Renderer r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {

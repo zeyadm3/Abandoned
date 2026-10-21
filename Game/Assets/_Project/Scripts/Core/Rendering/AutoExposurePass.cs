@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
@@ -17,9 +18,18 @@ namespace Abandoned.Core
             Reset = Shader.PropertyToID("_ExposureReset"), Texel = Shader.PropertyToID("_ExposureTexel");
 
         private readonly MaterialPropertyBlock luminance = new(), reduce = new(), adapt = new(), apply = new();
-        private RTHandle[] exposure = new RTHandle[2];
-        private int current;
-        private float lastTime = -100f;
+        private sealed class History
+        {
+            public readonly RTHandle[] Exposure = new RTHandle[2];
+            public int Current;
+            public float LastTime = -100f;
+            public Vector3 Position;
+            public Quaternion Rotation;
+            public void Release() { foreach (RTHandle handle in Exposure) handle?.Release(); }
+        }
+        private readonly Dictionary<Camera, History> histories = new();
+        private readonly List<Camera> expired = new();
+        private History shown;
         private Material material;
         private AutoExposureOverride settings;
 
@@ -43,24 +53,41 @@ namespace Abandoned.Core
 
         public void Dispose()
         {
-            foreach (RTHandle h in exposure) h?.Release();
-            exposure = new RTHandle[2];
+            foreach (History history in histories.Values) history.Release();
+            histories.Clear();
+            shown = null;
         }
 
         public override void RecordRenderGraph(RenderGraph graph, ContextContainer frameData)
         {
             var resources = frameData.Get<UniversalResourceData>();
             if (resources.isActiveTargetBackBuffer) return;
+            Camera camera = frameData.Get<UniversalCameraData>().camera;
+            // CCTV, spectator and review cameras must never borrow the player's previous exposure.
+            if (!histories.TryGetValue(camera, out History history))
+            {
+                history = new History();
+                histories.Add(camera, history);
+            }
             for (int i = 0; i < 2; i++)
-                if (exposure[i] == null)
-                    exposure[i] = RTHandles.Alloc(1, 1, colorFormat: GraphicsFormat.R16_SFloat, name: "_AutoExposure" + i);
+                if (history.Exposure[i] == null)
+                    history.Exposure[i] = RTHandles.Alloc(1, 1, colorFormat: GraphicsFormat.R16_SFloat, name: "_AutoExposure" + i);
 
             // A long gap (a level load, the game paused in the editor) starts from the target instead of easing to it.
-            bool reset = Time.unscaledTime - lastTime > 0.5f;
-            lastTime = Time.unscaledTime;
-            TextureHandle previous = graph.ImportTexture(exposure[current]);
-            current = 1 - current;
-            TextureHandle next = graph.ImportTexture(exposure[current]);
+            bool reset = Time.unscaledTime - history.LastTime > 0.5f ||
+                Vector3.Distance(camera.transform.position, history.Position) > 6f ||
+                Quaternion.Angle(camera.transform.rotation, history.Rotation) > 70f;
+            history.LastTime = Time.unscaledTime;
+            history.Position = camera.transform.position;
+            history.Rotation = camera.transform.rotation;
+            TextureHandle previous = graph.ImportTexture(history.Exposure[history.Current]);
+            history.Current = 1 - history.Current;
+            TextureHandle next = graph.ImportTexture(history.Exposure[history.Current]);
+            shown = history;
+            expired.Clear();
+            foreach (var pair in histories)
+                if (pair.Key == null || Time.unscaledTime - pair.Value.LastTime > 10f) expired.Add(pair.Key);
+            foreach (Camera key in expired) { histories[key].Release(); histories.Remove(key); }
 
             // The frame at 1/8 (each pixel a box of it), then at 1/32 (an exact 4 x 4 box of that), then one average.
             RenderTextureDescriptor frame = frameData.Get<UniversalCameraData>().cameraTargetDescriptor;
@@ -102,7 +129,7 @@ namespace Abandoned.Core
             data.Block = block;
             if (source.IsValid()) builder.UseTexture(source);
             if (prev.IsValid()) builder.UseTexture(prev);
-            builder.SetRenderAttachment(target, 0);
+            builder.SetRenderAttachment(target, 0, pass == 3 ? AccessFlags.ReadWrite : AccessFlags.Write);
             builder.AllowPassCulling(false);
             builder.SetRenderFunc(static (PassData d, RasterGraphContext ctx) =>
             {
@@ -115,7 +142,7 @@ namespace Abandoned.Core
         /// <summary>For the F1 overlay: reads the GPU value back asynchronously, never blocking a frame.</summary>
         public void RequestShownStops()
         {
-            RTHandle h = exposure[current];
+            RTHandle h = shown?.Exposure[shown.Current];
             if (h?.rt == null) return;
             AsyncGPUReadback.Request(h.rt, 0, r =>
             {

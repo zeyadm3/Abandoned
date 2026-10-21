@@ -55,6 +55,7 @@ namespace Abandoned.EditorTools
                               $"coplanar faces: {moved} moved, {faces} lifted, {left} left.");
                 });
             AssetDatabase.SaveAssets();
+            Step("Map art, object geometry, materials and effects", VisualRemaster.ApplySaved);
         }
 
         /// <summary>For Rebuild All Maps: <see cref="AfterMaps"/>, throwing if any of its steps failed so the rebuild

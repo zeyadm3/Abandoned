@@ -112,3 +112,9 @@ is used by this emblem. Details: `Docs/APP_LOGO_0.24.6b.md`.
 - **Files:** `Game/Assets/_Project/Art/Custom/Environment/LarchCourt/` — 19 FBX models with three LODs each and 16 seamless texture sets (48 PNGs).
 - **Generators:** `Tools/Blender/tutorial/build.py`, `Tools/Blender/tutorial/textures.py`, using the project's original `meridian_core.py` helpers.
 - **Integration and verification:** `Docs/TUTORIAL_HOUSE_REFINEMENT.md`.
+
+### Map and object art remaster (2026-10-22)
+
+- **Paper001:** [ambientCG Paper 001](https://ambientcg.com/view?id=Paper001), CC0 1.0. 2K colour, normal and roughness maps for unprinted paper fibres and page backs.
+- **Cardboard001:** [ambientCG Cardboard 001](https://ambientcg.com/view?id=Cardboard001), CC0 1.0. 2K colour, normal and roughness maps for cartons and corrugated packing.
+- Downloaded with the existing `Tools/Art/fetch_textures.py` workflow into `Art/Scanned/`. Existing texture, model, font and audio credits remain in force. No new packages or paid assets.

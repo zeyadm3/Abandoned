@@ -25,15 +25,25 @@ namespace Abandoned.Core
         private float redrawAt = -1f;
         private int drawn;
         private GUIStyle style;
+        private Cubemap fallback;
 
         private void OnEnable()
         {
             probes.Clear();
-            GetComponentsInChildren(probes);
+            foreach (ReflectionProbe probe in FindObjectsByType<ReflectionProbe>(FindObjectsSortMode.None))
+                if (probe.gameObject.scene == gameObject.scene) probes.Add(probe);
             foreach (ReflectionProbe p in probes)
             {
-                p.mode = ReflectionProbeMode.Realtime;
                 p.refreshMode = ReflectionProbeRefreshMode.ViaScripting;
+                // URP 17.3 subtracts every texture-less visible probe from its capped probe count. Over 64 cold
+                // probes can produce a negative cluster allocation and a black frame. Waiting probes use a valid cube.
+                if (p.mode != ReflectionProbeMode.Realtime || p.texture == null)
+                {
+                    fallback ??= CreateFallback();
+                    p.mode = ReflectionProbeMode.Custom;
+                    p.customBakedTexture = fallback;
+                }
+                p.enabled = true;
             }
             LightingEvents.Changed += OnLightingChanged;
             // A batch session has nothing to draw into; tests and builds' first frame skip it.
@@ -47,10 +57,15 @@ namespace Abandoned.Core
         private void Redraw()
         {
             queue.Clear();
-            drawing.Clear();
             drawn = 0;
-            foreach (ReflectionProbe p in probes) if (p != null) queue.Enqueue(p);
+            Camera eye = Camera.main;
+            if (eye != null) probes.Sort((a, b) => Distance(a, eye).CompareTo(Distance(b, eye)));
+            foreach (ReflectionProbe p in probes)
+                if (p != null && !drawing.ContainsKey(p)) queue.Enqueue(p);
         }
+
+        private static float Distance(ReflectionProbe probe, Camera eye) =>
+            probe == null ? float.MaxValue : probe.bounds.SqrDistance(eye.transform.position);
 
         private void Update()
         {
@@ -70,9 +85,30 @@ namespace Abandoned.Core
             while (drawing.Count < perFrame * 2 && queue.Count > 0)
             {
                 ReflectionProbe p = queue.Dequeue();
-                if (p == null || !p.isActiveAndEnabled) { drawn++; continue; }
+                if (p == null || !p.gameObject.activeInHierarchy) { drawn++; continue; }
+                // Unity refuses RenderProbe on a disabled component. Only the bounded in-flight set goes cold;
+                // every waiting probe keeps a valid fallback cube, avoiding URP's negative cluster allocation.
+                p.mode = ReflectionProbeMode.Realtime;
+                p.enabled = true;
                 drawing[p] = p.RenderProbe();
             }
+        }
+
+        public static Cubemap CreateFallback()
+        {
+            var cube = new Cubemap(4, TextureFormat.RGBAHalf, false) { name = "Unlit room reflection", hideFlags = HideFlags.HideAndDontSave };
+            var pixels = new Color[16];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.black;
+            for (int face = 0; face < 6; face++) cube.SetPixels(pixels, (CubemapFace)face);
+            cube.Apply(false, true);
+            return cube;
+        }
+
+        private void OnDestroy()
+        {
+            if (fallback == null) return;
+            if (Application.isPlaying) Destroy(fallback);
+            else DestroyImmediate(fallback);
         }
 
         private void OnGUI()

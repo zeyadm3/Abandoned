@@ -19,6 +19,7 @@ namespace Abandoned.Core
 
         public override void Create()
         {
+            pass?.Dispose();
             pass = new AutoExposurePass { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing, requiresIntermediateTexture = true };
         }
 

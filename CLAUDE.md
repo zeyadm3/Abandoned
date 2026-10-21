@@ -101,6 +101,23 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**Map and object art remaster (2026-10-22, `codex/lighting-rebuild`).** Applied to all six saved maps and 110 prop,
+loot and equipment prefabs: 500+ shared PBR materials, 7,878 refined prop renderers, physical texture scales,
+preserved artwork/local portable mapping, 281 fitted wall junctions, architectural glazing and 49 refined emitters.
+Practical-light receiver targets and local bounce were lifted after render review. Vehicle finishes retain their
+authored maps. Full EditMode 401/401 and selected PlayMode 12/12 passed; mall render-budget checks remain below the
+unchanged 12,500 limit. All six maps have display-space review captures. Art > Remaster All Map
+Art and Objects reapplies the complete pass; Rebuild All Maps invokes it last. See Docs/ART_REMASTER.md and
+Docs/renders/art-remaster/README.md for commands, saved counts, validation and limits.
+
+**Lighting rebuild (2026-10-21, `codex/lighting-rebuild`).** Applied to all six saved maps: receiver-calibrated fixtures,
+bounded realtime diffuse bounce, visibility/influence-weighted shadow selection (2/6/10 lights), restrained fog/grade,
+specular antialiasing, per-camera exposure histories, correct RenderGraph blending access, and valid fallback reflection
+cubes to avoid URP 17.3's cold-probe cluster failure. Docs/LIGHTING_REBUILD.md has commands, limits and test evidence;
+Docs/renders/lighting-after has display-space review captures. EditMode 329/329; realtime lighting, mall fixtures,
+power/collapse and render-budget checks passed. Windows frame time and interactive probe refresh still need a playtest.
+Rebuild All Maps reapplies it; after a standalone individual-map rebuild use Art > Rebuild Lighting and Shadows.
+
 **0.24.13 texture flicker fixed, surfaces and lighting rebuilt (2026-10-21, branch `worktree-graphics-overhaul`).**
 Coplanar faces (the "two textures swapping" flicker) separated on every map by `Editor/Art/CoplanarFix` (pairs close
 enough to flicker, before -> after: mall 19,787 -> ~100, prison 6,525 -> 5, tutorial 4,887 -> 9, school 2,648 -> 26,

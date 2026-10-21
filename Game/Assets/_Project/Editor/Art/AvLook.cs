@@ -30,20 +30,20 @@ namespace Abandoned.EditorTools
         // Dusty mall under failing tubes: thick, slightly green, cold shadows.
         // Ambient is a share of the map's own fog colour; local lights are scaled well down (a 28-unit torch in dust is
         // blinding at 1:1).
-        private static readonly Preset Mall = new(0.016f, 0.04f, 45f, 0.8f, 1.2f, 0.45f, 0.5f, 0.07f, -6f, 4f, new Color(0.86f, 0.86f, 0.8f), new Color(0.94f, 1f, 1.08f));
+        private static readonly Preset Mall = new(0.0045f, 0.04f, 45f, 0.18f, 0.8f, 0.16f, 0.3f, 0.11f, -6f, 4f, new Color(0.86f, 0.86f, 0.8f), new Color(0.94f, 1f, 1.08f));
         // The company's own building: a light haze, warm.
-        private static readonly Preset Hq = new(0.006f, 0.05f, 40f, 0.7f, 1f, 0.35f, 0.35f, 0.1f, 5f, 0f, new Color(0.9f, 0.87f, 0.82f), new Color(1f, 0.99f, 1.02f));
+        private static readonly Preset Hq = new(0.0015f, 0.05f, 40f, 0.15f, 0.7f, 0.12f, 0.2f, 0.12f, 5f, 0f, new Color(0.9f, 0.87f, 0.82f), new Color(1f, 0.99f, 1.02f));
         // Iron works: smoke and heat, warm light against blue-black shadows.
-        private static readonly Preset Factory = new(0.022f, 0.02f, 55f, 0.8f, 1.3f, 0.55f, 0.65f, 0.08f, 12f, 0f, new Color(0.8f, 0.76f, 0.7f), new Color(0.92f, 0.98f, 1.1f));
+        private static readonly Preset Factory = new(0.007f, 0.02f, 55f, 0.2f, 0.8f, 0.2f, 0.5f, 0.1f, 12f, 0f, new Color(0.8f, 0.76f, 0.7f), new Color(0.92f, 0.98f, 1.1f));
         // Island prison: sea mist outside, damp cold inside.
-        private static readonly Preset Prison = new(0.011f, 0.03f, 70f, 0.9f, 1.4f, 0.45f, 0.55f, 0.09f, -10f, 0f, new Color(0.88f, 0.9f, 0.92f), new Color(0.93f, 1f, 1.07f));
+        private static readonly Preset Prison = new(0.0035f, 0.03f, 70f, 0.2f, 0.8f, 0.14f, 0.35f, 0.11f, -10f, 0f, new Color(0.88f, 0.9f, 0.92f), new Color(0.93f, 1f, 1.07f));
         // Winter afternoon school: clear air, low sun through tall windows.
-        private static readonly Preset School = new(0.009f, 0.04f, 60f, 0.8f, 1.6f, 0.4f, 0.4f, 0.09f, -8f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.95f, 1f, 1.05f));
+        private static readonly Preset School = new(0.002f, 0.04f, 60f, 0.15f, 0.9f, 0.12f, 0.25f, 0.12f, -8f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.95f, 1f, 1.05f));
         // December 3 PM house and neighbourhood.
-        private static readonly Preset Tutorial = new(0.007f, 0.035f, 60f, 0.9f, 1.2f, 0.4f, 0.35f, 0.1f, -5f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.96f, 1f, 1.04f));
+        private static readonly Preset Tutorial = new(0.0018f, 0.035f, 60f, 0.15f, 0.8f, 0.12f, 0.2f, 0.12f, -5f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.96f, 1f, 1.04f));
 
         public const string LensDirtPath = "Assets/_Project/Art/Lighting/LensDirt.png";
-        private const float MinSaturation = -22f;
+
 
         [MenuItem(ToolMenu.Art + "Apply 0.24.12 Look to Saved Maps", priority = ToolMenu.ArtP + 60)]
         public static void ApplyToSaved()
@@ -75,16 +75,28 @@ namespace Abandoned.EditorTools
             fog.localLights.Override(p.LocalLights);
             fog.noise.Override(p.Noise);
             fog.albedo.Override(p.Albedo);
+            fog.anisotropy.Override(0.35f);
+            fog.unshadowedLights.Override(0f);
 
             AutoExposureOverride eye = Get<AutoExposureOverride>(profile);
             eye.enabled.Override(true);
             eye.key.Override(p.Key);
-            eye.strength.Override(0.35f);
-            eye.maxEv.Override(1f);
+            eye.strength.Override(0.45f);
+            eye.minEv.Override(-0.8f);
+            eye.maxEv.Override(1.25f);
+            eye.speedDown.Override(2f);
+            eye.speedUp.Override(0.55f);
 
             // 0.24.13: the scanned surfaces carry their own colour now; past -22 the grade washed them back to grey.
             ColorAdjustments adjust = Get<ColorAdjustments>(profile);
-            if (adjust.saturation.overrideState && adjust.saturation.value < MinSaturation) adjust.saturation.Override(MinSaturation);
+            adjust.saturation.Override(levelName.ToLowerInvariant().Contains("factory") ? -10f : -6f);
+            adjust.contrast.Override(8f);
+            adjust.postExposure.Override(0f);
+            Get<Tonemapping>(profile).mode.Override(TonemappingMode.ACES);
+            Vignette vignette = Get<Vignette>(profile);
+            vignette.intensity.Override(0.12f);
+            vignette.smoothness.Override(0.65f);
+            Get<FilmGrain>(profile).intensity.Override(0.035f);
 
             WhiteBalance balance = Get<WhiteBalance>(profile);
             balance.temperature.Override(p.Temperature);
@@ -94,10 +106,15 @@ namespace Abandoned.EditorTools
 
             Bloom bloom = Get<Bloom>(profile);
             bloom.highQualityFiltering.Override(true);
+            bloom.threshold.Override(1.25f);
+            bloom.intensity.Override(0.12f);
+            bloom.scatter.Override(0.45f);
+            // Tiny HDR outliers on wet metal must not flood an entire room with a blurred white halo.
+            bloom.clamp.Override(8f);
             bloom.dirtTexture.Override(LensDirt());
-            bloom.dirtIntensity.Override(1.6f);
+            bloom.dirtIntensity.Override(0.12f);
             ChromaticAberration fringe = Get<ChromaticAberration>(profile);
-            fringe.intensity.Override(0.06f);
+            fringe.intensity.Override(0f);
             EditorUtility.SetDirty(profile);
         }
 

@@ -148,6 +148,8 @@ Tools > Abandoned
     ──  0.24.12: Apply 0.24.12 Look to Saved Maps, Upgrade Surfaces (Scanned Textures), Make Decal Set,
         Scatter Wear Decals (Open Scene), 0.24.12 Look, Surfaces, Sound and Decals   3060-3063, 3065
     ──  0.24.13: Separate Coplanar Faces (Open Scene)                    3080
+        Rebuild Lighting and Shadows                                   3081
+        Remaster All Map Art and Objects                               3082
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,

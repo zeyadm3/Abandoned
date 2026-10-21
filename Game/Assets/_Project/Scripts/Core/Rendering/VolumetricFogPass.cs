@@ -96,7 +96,8 @@ namespace Abandoned.Core
                 if (resources.mainShadowsTexture.IsValid()) builder.UseTexture(resources.mainShadowsTexture);
                 if (resources.additionalShadowsTexture.IsValid()) builder.UseTexture(resources.additionalShadowsTexture);
             }
-            builder.SetRenderAttachment(target, 0);
+            // The composite blends with the existing scene. Write-only attachments can discard it on tile GPUs.
+            builder.SetRenderAttachment(target, 0, pass == CompositePass ? AccessFlags.ReadWrite : AccessFlags.Write);
             builder.AllowPassCulling(false);
             builder.SetRenderFunc(static (PassData d, RasterGraphContext ctx) =>
             {

@@ -46,6 +46,7 @@ namespace Abandoned.Structure
         private readonly HashSet<Light> considered = new();
         private float nextChoose, nextSweep;
         private int budget, room, outside;
+        private int visibilityMask;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Boot()
@@ -91,11 +92,17 @@ namespace Abandoned.Structure
 
         private void Choose(Transform eye, ShadowBudgetConfig config)
         {
+            visibilityMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast", "UI");
             int setting = VideoSettings.Shadows;
             candidates.Clear();
             considered.Clear();
             foreach (LightFixture fixture in LightFixture.All)
                 if (fixture != null && fixture.Lit) Consider(fixture.Lamp, eye, config);
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                foreach (LightFixture fixture in FindObjectsByType<LightFixture>(FindObjectsSortMode.None))
+                    if (fixture.Lit) Consider(fixture.Lamp, eye, config);
+#endif
             foreach (ShadowBudgetLight extra in ShadowBudgetLight.All)
                 if (extra != null && extra.Lamp != null && extra.Lamp.enabled) Consider(extra.Lamp, eye, config);
             foreach (SalvageWorkLight work in SalvageWorkLight.All)
@@ -144,12 +151,20 @@ namespace Abandoned.Structure
             if (current == null && light.shadows != LightShadows.None) light.shadows = LightShadows.None;
             Vector3 to = light.transform.position - eye.position;
             float distance = to.magnitude;
-            if (distance > config.MaxDistance) return;
-            float score = distance;
+            if (distance > config.MaxDistance || distance > light.range + 8f) return;
+            // Prefer lights that actually reach the player or the surfaces ahead. Distance alone selected lamps
+            // behind walls and spotlights pointing away, while a visible corridor lost all of its shadows.
+            Vector3 ahead = eye.position + eye.forward * 4f;
+            float influence = Mathf.Max(LightingMath.Contribution(light, eye.position),
+                LightingMath.Contribution(light, ahead), LightingMath.Contribution(light, ahead + Vector3.down));
+            float score = distance / Mathf.Sqrt(.1f + Mathf.Min(influence, 4f));
             // Lights hang from the ceiling: the same storey is anything from just below the eye to a storey above it.
             if (to.y < -1f || to.y > config.StoreyHeight) score *= config.OtherStoreyPenalty;
             if (distance > 0.5f && Vector3.Dot(eye.forward, to / distance) < -0.2f) score *= config.BehindPenalty;
             if (current != null && current.Wanted) score *= config.KeepBonus;
+            if (distance > .5f && Physics.Raycast(eye.position, to / distance, out RaycastHit hit,
+                    distance - .3f, visibilityMask, QueryTriggerInteraction.Ignore) &&
+                hit.collider.GetComponentInParent<LightFixture>() == null) score *= 4f;
             candidates.Add(new Candidate { Light = light, Score = score });
         }
 
@@ -297,6 +312,25 @@ namespace Abandoned.Structure
                 Gizmos.color = c.Wanted ? new Color(1f, 0.9f, 0.3f, 0.8f) : new Color(1f, 0.4f, 0.2f, 0.4f);
                 Gizmos.DrawLine(eye.transform.position, c.Light.transform.position);
                 Gizmos.DrawWireSphere(c.Light.transform.position, 0.2f);
+            }
+        }
+#endif
+
+#if UNITY_EDITOR
+        /// <summary>Same selection and atlas rules for saved-map review renders, without entering a network run.</summary>
+        public void Preview(Camera eye)
+        {
+            ShadowBudgetConfig config = ShadowBudgetConfig.Current;
+            for (int i = casting.Count - 1; i >= 0; i--) Stop(i);
+            Sweep();
+            budget = config.Lights(VideoSettings.Shadows);
+            room = Room(config);
+            Trim(config.PointLights(VideoSettings.Shadows));
+            Choose(eye.transform, config);
+            foreach (Casting c in casting)
+            {
+                c.Strength = c.Wanted ? config.Strength : 0f;
+                c.Light.shadowStrength = c.Strength;
             }
         }
 #endif

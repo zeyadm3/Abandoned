@@ -530,6 +530,14 @@ void InitializeAbandonedSurfaceData(float2 uv, float3 positionWS, half3 normalWS
         outSurfaceData.metallic *= 1.0h - dust * 0.7h;
     }
 #endif
+
+#if defined(_DETAIL)
+    // Props often encode colour selection in palette UVs. Keep their base art and layer local microstructure on top.
+    half detailMask = SAMPLE_TEXTURE2D(_DetailMask, sampler_DetailMask, uv).a;
+    float2 detailUv = uv * _DetailAlbedoMap_ST.xy + _DetailAlbedoMap_ST.zw;
+    outSurfaceData.albedo = ApplyDetailAlbedo(detailUv, outSurfaceData.albedo, detailMask);
+    outSurfaceData.normalTS = ApplyDetailNormal(detailUv, outSurfaceData.normalTS, detailMask);
+#endif
 }
 
 #endif // ABANDONED_SURFACE_INPUT_INCLUDED

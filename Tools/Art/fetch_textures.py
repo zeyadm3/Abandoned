@@ -63,6 +63,8 @@ SETS = {
     "Snow010A": "fresh snow (the school grounds, the training street)",
     "Snow013": "trodden snow over paving and asphalt",
     "Rock035": "dark wet sea rock (the island)",
+    "Paper001": "paper fibres and unprinted page backs",
+    "Cardboard001": "cardboard cartons, corrugated packing and torn box edges",
 }
 
 

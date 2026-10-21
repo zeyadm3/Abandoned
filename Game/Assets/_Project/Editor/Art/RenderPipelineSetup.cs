@@ -20,8 +20,8 @@ namespace Abandoned.EditorTools
         // its draw budget (MallRenderBudgetTests) for sun shadows that only matter near windows.
         public const float ShadowDistance = 35f;
         public const int Cascades = 2;
-        // Sixteen 1024 px maps. A spot light is one and a point light six, so the flashlight, two point lights
-        // and three spots fill it: ShadowDirector counts maps, not lights, to stay inside.
+        // Sixteen 1024 px maps. A spot costs one and a point six. ShadowDirector counts maps, including its
+        // flashlight reservation, rather than letting a point light silently shrink every tile in the atlas.
         public const int LocalShadowAtlas = 4096;
         public const string PcAssetPath = "Assets/Settings/PC_RPAsset.asset";
         public const string PcRendererPath = "Assets/Settings/PC_Renderer.asset";
@@ -31,7 +31,7 @@ namespace Abandoned.EditorTools
 
         // Ambient occlusion: reach, darkness, and how much it bites into direct light. 0.24.13: twelve samples at full
         // resolution and a little more reach, so the foot of every wall, shelf and crate sits in its own contact shadow.
-        private const float AoRadius = 0.6f, AoIntensity = 0.8f, AoDirect = 0.35f;
+        private const float AoRadius = 0.35f, AoIntensity = 1.1f, AoDirect = 0.18f;
         private const int AoSamplesHigh = 0;
         // 0.24.13: URP's own bias is 1/1; 0.1 drew shadow acne (fine stripes that crawl as the flashlight moves).
         // Half keeps contact shadows tight without the acne.
@@ -79,6 +79,7 @@ namespace Abandoned.EditorTools
             RendererFeatures.Set(urp, "m_SoftShadowQuality", p => p.intValue = (int)SoftShadowQuality.High);
             RendererFeatures.Set(urp, "m_ShadowDepthBias", p => p.floatValue = ShadowDepthBias);
             RendererFeatures.Set(urp, "m_ShadowNormalBias", p => p.floatValue = ShadowNormalBias);
+            RendererFeatures.Set(urp, "m_CascadeBorder", p => p.floatValue = 0.18f);
             // Room reflections (RoomReflections): blended, box-projected, through Forward+'s probe atlas.
             RendererFeatures.Set(urp, "m_ReflectionProbeBlending", p => p.boolValue = true);
             RendererFeatures.Set(urp, "m_ReflectionProbeBoxProjection", p => p.boolValue = true);
