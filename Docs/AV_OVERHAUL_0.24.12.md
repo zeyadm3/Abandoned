@@ -48,6 +48,25 @@ moving them to samples touches the monster songs and their 15-second warning, so
 Top right: Forward+, the fog's level, density, resolution and steps (V shows the fog alone), the eye's exposure, the probe
 scenario; the audio lines gain the mix state, the master bus's gain reduction, the ambience duck and the spatial mode.
 
-## Status
+## Status (2026-10-21)
 
-See the end of this file (filled in after the run).
+- Compiled; every map rebuilt (HQ kept), 128 materials upgraded, 257 recordings processed (51 named cues and 25
+  surface rows play recordings), wear decals on five maps (the HQ has no NavMesh, so none there). Text check 0 missing.
+- Builds from d1fbf784: `~/Documents/Abandoned-builds/dev/Abandoned-0.24.11-d1fbf784-{Mac,Windows}.zip` (the version
+  stamp still says 0.24.11; BuildScript.Version wasn't bumped). Zips test clean, the Mac signature verifies, Steam Audio
+  is in both.
+- Review renders (Game/Logs/renders/av): the fog, cookies, scanned surfaces and grade render without errors. Interiors
+  look darker in these batch captures than the game should: a batch session doesn't derive the ambient from the scene's
+  colours the way play does. Check the brightness in play first.
+- Never played. Not heard: the recordings were chosen by Freesound rating and downloads, not by ear. Nine searches
+  found nothing (glass and puddle footsteps, heavy concrete and sandbag impacts, ceramic crack, shutters, sledgehammer,
+  crowbar); those keep their Kenney or synth sound.
+- Unchanged: the music. Not measured: frame time (volumetric light is the heaviest effect; Graphics > Volumetric light).
+
+## What to check first
+
+1. Brightness in the mall and factory with power on and off (eye adaptation is soft; Graphics > Brightness still works).
+2. The flashlight beam in dust, and a crewmate's beam (unshadowed lights scatter at 25 %).
+3. Footsteps, creaks and impacts on headphones (Steam Audio placement), and the hiding muffle in a locker.
+4. F1: the render line (V = fog only) and the MIX line (master gain reduction, ambience duck, spatial mode).
+5. Frame time on the friend's Windows PC at Medium.
