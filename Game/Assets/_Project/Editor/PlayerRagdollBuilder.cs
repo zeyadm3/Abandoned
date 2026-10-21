@@ -26,27 +26,28 @@ namespace Abandoned.EditorTools
         {
             Transform root = GreyboxFactory.Group("Ragdoll", player);
 
-            Rigidbody pelvis = BoxPart(root, "Pelvis", new(0f, 0.95f, 0f), new(0.34f, 0.22f, 0.22f), 0.20f, totalMass, material);
-            Rigidbody chest = BoxPart(root, "Chest", new(0f, 1.3f, 0f), new(0.4f, 0.45f, 0.24f), 0.25f, totalMass, material);
-            Rigidbody head = SpherePart(root, "Head", new(0f, 1.6f, 0f), 0.13f, 0.08f, totalMass, WorkerVisualBuilder.Skin);
-            Rigidbody armL = CapsulePart(root, "ArmL", new(-0.29f, 1.22f, 0f), 0.06f, 0.6f, 0.05f, totalMass, material);
-            Rigidbody armR = CapsulePart(root, "ArmR", new(0.29f, 1.22f, 0f), 0.06f, 0.6f, 0.05f, totalMass, material);
-            Rigidbody thighL = CapsulePart(root, "ThighL", new(-0.1f, 0.63f, 0f), 0.08f, 0.44f, 0.10f, totalMass, material);
-            Rigidbody thighR = CapsulePart(root, "ThighR", new(0.1f, 0.63f, 0f), 0.08f, 0.44f, 0.10f, totalMass, material);
-            Rigidbody shinL = CapsulePart(root, "ShinL", new(-0.1f, 0.21f, 0f), 0.07f, 0.42f, 0.06f, totalMass, material);
-            Rigidbody shinR = CapsulePart(root, "ShinR", new(0.1f, 0.21f, 0f), 0.07f, 0.42f, 0.06f, totalMass, material);
+            // Sized to the 2026-10-22 crew worker: eyes at 1.65, shoulders at +-0.19, hips at +-0.102.
+            Rigidbody pelvis = BoxPart(root, "Pelvis", new(0f, 0.93f, 0f), new(0.38f, 0.2f, 0.28f), 0.20f, totalMass, material);
+            Rigidbody chest = BoxPart(root, "Chest", new(0f, 1.27f, 0f), new(0.4f, 0.44f, 0.32f), 0.25f, totalMass, material);
+            Rigidbody head = SpherePart(root, "Head", new(0f, 1.65f, 0f), 0.11f, 0.08f, totalMass, WorkerVisualBuilder.Skin);
+            Rigidbody armL = CapsulePart(root, "ArmL", new(-0.2f, 1.07f, 0f), 0.065f, 0.7f, 0.05f, totalMass, material);
+            Rigidbody armR = CapsulePart(root, "ArmR", new(0.2f, 1.07f, 0f), 0.065f, 0.7f, 0.05f, totalMass, material);
+            Rigidbody thighL = CapsulePart(root, "ThighL", new(-0.102f, 0.7f, 0f), 0.09f, 0.42f, 0.10f, totalMass, material);
+            Rigidbody thighR = CapsulePart(root, "ThighR", new(0.102f, 0.7f, 0f), 0.09f, 0.42f, 0.10f, totalMass, material);
+            Rigidbody shinL = CapsulePart(root, "ShinL", new(-0.102f, 0.26f, 0f), 0.075f, 0.5f, 0.06f, totalMass, material);
+            Rigidbody shinR = CapsulePart(root, "ShinR", new(0.102f, 0.26f, 0f), 0.075f, 0.5f, 0.06f, totalMass, material);
 
             Dress(player, pelvis, chest, head, armL, armR, thighL, thighR, shinL, shinR);
 
             // Anchors sit at the top of each child part, where it hangs from its parent.
-            Joint(chest, pelvis, new(0f, -0.22f, 0f), 15f, 25f);
-            Joint(head, chest, new(0f, -0.12f, 0f), 30f, 40f);
-            Joint(armL, chest, new(0f, 0.28f, 0f), 40f, 80f);
-            Joint(armR, chest, new(0f, 0.28f, 0f), 40f, 80f);
-            Joint(thighL, pelvis, new(0f, 0.21f, 0f), 20f, 60f);
-            Joint(thighR, pelvis, new(0f, 0.21f, 0f), 20f, 60f);
-            Joint(shinL, thighL, new(0f, 0.2f, 0f), 5f, 70f);
-            Joint(shinR, thighR, new(0f, 0.2f, 0f), 5f, 70f);
+            Joint(chest, pelvis, new(0f, -0.2f, 0f), 15f, 25f);
+            Joint(head, chest, new(0f, -0.13f, 0f), 30f, 40f);
+            Joint(armL, chest, new(0f, 0.345f, 0f), 40f, 80f);
+            Joint(armR, chest, new(0f, 0.345f, 0f), 40f, 80f);
+            Joint(thighL, pelvis, new(0f, 0.2f, 0f), 20f, 60f);
+            Joint(thighR, pelvis, new(0f, 0.2f, 0f), 20f, 60f);
+            Joint(shinL, thighL, new(0f, 0.24f, 0f), 5f, 70f);
+            Joint(shinR, thighR, new(0f, 0.24f, 0f), 5f, 70f);
 
             return new Result(root, pelvis, head.transform);
         }
@@ -56,20 +57,23 @@ namespace Abandoned.EditorTools
             // The physics remains the same nine parts. Reuse the authored outfit so going down never changes
             // the worker into primitive capsules or loses the reinforced clothing, boots and equipment harness.
             GameObject source = WorkerVisualBuilder.Build(player);
-            string[] paths =
+            // Each arm body carries the upper arm and its forearm (the standing worker bends at the elbow).
+            string[][] paths =
             {
-                "HipsVisual", "Torso/TorsoVisual", "Torso/Head/HeadVisual", "Torso/ArmL/ArmVisual", "Torso/ArmR/ArmVisual",
-                "LegL/ThighVisual", "LegR/ThighVisual", "LegL/Knee/ShinVisual", "LegR/Knee/ShinVisual",
+                new[] { "HipsVisual" }, new[] { "Torso/TorsoVisual" }, new[] { "Torso/Head/HeadVisual" },
+                new[] { "Torso/ArmL/ArmVisual", "Torso/ArmL/Elbow/ForearmVisual" }, new[] { "Torso/ArmR/ArmVisual", "Torso/ArmR/Elbow/ForearmVisual" },
+                new[] { "LegL/ThighVisual" }, new[] { "LegR/ThighVisual" }, new[] { "LegL/Knee/ShinVisual" }, new[] { "LegR/Knee/ShinVisual" },
             };
             try
             {
                 for (int i = 0; i < bodies.Length; i++)
-                {
-                    Transform visual = source.transform.Find(paths[i]);
-                    if (visual == null) continue;
-                    GameObject copy = Object.Instantiate(visual.gameObject, bodies[i].transform, true);
-                    copy.name = "Visual";
-                }
+                    foreach (string path in paths[i])
+                    {
+                        Transform visual = source.transform.Find(path);
+                        if (visual == null) continue;
+                        GameObject copy = Object.Instantiate(visual.gameObject, bodies[i].transform, true);
+                        copy.name = "Visual";
+                    }
             }
             finally { Object.DestroyImmediate(source); }
         }

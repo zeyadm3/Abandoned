@@ -7,6 +7,8 @@ namespace Abandoned.Player
     {
         [SerializeField] private Transform leftArm, rightArm, leftLeg, rightLeg, leftKnee, rightKnee, torso, headAnchor;
         [SerializeField] private Renderer[] coverall;
+        // 2026-10-22 crew redesign: forearms bend at the elbow (older saved workers have none).
+        [Abandoned.Core.OptionalReference, SerializeField] private Transform leftElbow, rightElbow;
         private MaterialPropertyBlock block;
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
 
@@ -18,6 +20,8 @@ namespace Abandoned.Player
         public Transform RightKnee => rightKnee;
         public Transform Torso => torso;
         public Transform HeadAnchor => headAnchor;
+        public Transform LeftElbow => leftElbow;
+        public Transform RightElbow => rightElbow;
         public Renderer[] Coverall => coverall;
 
         public void Tint(Color color)
@@ -34,10 +38,11 @@ namespace Abandoned.Player
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(Transform armL, Transform armR, Transform legL, Transform legR, Transform kneeL, Transform kneeR, Transform chest, Transform crown, Renderer[] suit)
+        public void EditorSetup(Transform armL, Transform armR, Transform legL, Transform legR, Transform kneeL, Transform kneeR, Transform chest, Transform crown, Renderer[] suit,
+            Transform elbowL = null, Transform elbowR = null)
         {
             leftArm = armL; rightArm = armR; leftLeg = legL; rightLeg = legR; leftKnee = kneeL; rightKnee = kneeR;
-            torso = chest; headAnchor = crown; coverall = suit;
+            torso = chest; headAnchor = crown; coverall = suit; leftElbow = elbowL; rightElbow = elbowR;
         }
 #endif
     }

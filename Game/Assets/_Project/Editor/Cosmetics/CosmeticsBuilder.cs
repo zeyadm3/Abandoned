@@ -129,12 +129,34 @@ namespace Abandoned.EditorTools
             return d;
         }
 
+        /// <summary>
+        /// Where an old-kit wearable sits on the realistic worker (origin = HeadAnchor, 12 cm above the head's centre).
+        /// The new head is 15.5 cm wide and 20 cm deep against the old 27 x 25, with the eyes 3 cm apart, so head pieces
+        /// narrow and flatten; face pieces keep their height (eyes and mouth line up); body pieces move to the new belt,
+        /// vest and back.
+        /// </summary>
+        private static (Vector3 position, Vector3 scale) Fit(string prefix, string id) => (prefix, id) switch
+        {
+            ("Acc", "toolbelt") => (new Vector3(0f, -.113f, .0075f), new Vector3(1.13f, 1f, 1.145f)),
+            ("Acc", "rucksack") => (new Vector3(0f, -.12f, -.03f), new Vector3(1f, 1f, 1.5f)),
+            ("Acc", "dogtags") => (new Vector3(0f, -.04f, .01f), new Vector3(1f, 1f, 1.3f)),
+            ("Acc", "radio") => (new Vector3(0f, -.01f, .03f), Vector3.one),
+            ("Acc", "earmuffs") => (new Vector3(0f, -.006f, -.02f), new Vector3(.72f, 1f, .72f)),
+            ("Acc", "moustache") => (new Vector3(0f, -.006f, -.02f), new Vector3(.62f, 1f, .9f)),
+            ("Acc", _) => (new Vector3(0f, -.006f, -.02f), new Vector3(.62f, 1f, .85f)),
+            _ => (new Vector3(0f, -.012f, -.02f), new Vector3(.62f, .9f, .72f)),
+        };
+
         /// <summary>A wearable prefab: the kit model under a neutral holder whose origin is the worker's crown.</summary>
         private static GameObject Model(string prefix, string id, HashSet<string> keep)
         {
             var root = new GameObject($"{prefix}_{id}");
-            CustomMallArt.Place($"Cosmetics/{prefix}_{id}", root.transform, Vector3.zero, Quaternion.identity);
-            WardrobeArtDetails.Build(root.transform, prefix, id);
+            // The kit was modelled on the old 27 cm head; Fit refits it to the 2026-10-22 worker.
+            Transform fit = new GameObject("Fit").transform;
+            fit.SetParent(root.transform, false);
+            (fit.localPosition, fit.localScale) = Fit(prefix, id);
+            CustomMallArt.Place($"Cosmetics/{prefix}_{id}", fit, Vector3.zero, Quaternion.identity);
+            WardrobeArtDetails.Build(fit, prefix, id);
             foreach (Collider c in root.GetComponentsInChildren<Collider>()) Object.DestroyImmediate(c);
             string path = $"{PrefabFolder}/{prefix}_{id}.prefab";
             keep.Add(path);

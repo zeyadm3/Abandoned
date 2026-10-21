@@ -67,15 +67,18 @@ namespace Abandoned.Player
             bool holding = carrier != null && carrier.Held != null;
             carry = Mathf.Lerp(carry, holding ? 1f : 0f, 1f - Mathf.Exp(-9f * dt));
             float stride = Mathf.Sin(phase) * pace * (motor.IsCrouching ? 12f : 23f);
-            rig.transform.localPosition = bodyRest + Vector3.down * (crouch * 0.6f) + Vector3.up * (Mathf.Abs(Mathf.Sin(phase)) * pace * 0.018f);
+            rig.transform.localPosition = bodyRest + Vector3.down * (crouch * 0.63f) + Vector3.up * (Mathf.Abs(Mathf.Sin(phase)) * pace * 0.018f);
             rig.Torso.localRotation = Quaternion.Euler(crouch * 15f + carry * 3f, 0f, Mathf.Sin(phase) * pace * 1.3f);
             rig.LeftLeg.localRotation = Quaternion.Euler(stride * (1f - crouch * 0.7f) - crouch * 78f, 0f, -crouch * 5f);
             rig.RightLeg.localRotation = Quaternion.Euler(-stride * (1f - crouch * 0.7f) - crouch * 78f, 0f, crouch * 5f);
             // Bend at actual knee pivots, keeping coveralls/boots their authored proportions while the hips lower.
             rig.LeftKnee.localRotation = Quaternion.Euler(crouch * 146f + Mathf.Max(0f, -stride) * (1f - crouch) * 0.55f, 0f, 0f);
             rig.RightKnee.localRotation = Quaternion.Euler(crouch * 146f + Mathf.Max(0f, stride) * (1f - crouch) * 0.55f, 0f, 0f);
-            rig.LeftArm.localRotation = Quaternion.Euler(Mathf.Lerp(-stride * 0.55f, -52f, carry), 0f, -8f - carry * 6f);
-            rig.RightArm.localRotation = Quaternion.Euler(Mathf.Lerp(stride * 0.55f, -52f, carry), 0f, 8f + carry * 6f);
+            rig.LeftArm.localRotation = Quaternion.Euler(Mathf.Lerp(-stride * 0.55f, -40f, carry), 0f, -9f - carry * 4f);
+            rig.RightArm.localRotation = Quaternion.Euler(Mathf.Lerp(stride * 0.55f, -40f, carry), 0f, 9f + carry * 4f);
+            // A relaxed bend that swings a little with the stride; carrying brings both forearms up under the load.
+            Elbow(rig.LeftElbow, Mathf.Lerp(-10f - Mathf.Max(0f, stride) * 0.4f, -40f, carry));
+            Elbow(rig.RightElbow, Mathf.Lerp(-10f - Mathf.Max(0f, -stride) * 0.4f, -40f, carry));
             if (!holding && player != null) Emote(player.CurrentEmote(out float t), t);
             HeldTool(holding);
         }
@@ -91,15 +94,21 @@ namespace Abandoned.Player
                 if (heldTool != null) Destroy(heldTool);
                 if (inHand != null)
                 {
-                    heldTool = Equipment.ToolModels.Build(inHand, rig.RightArm);
-                    heldTool.transform.localPosition = new Vector3(0f, -0.55f, 0.06f);
+                    // The hand is on the forearm now (the old worker's arm was one piece).
+                    bool forearm = rig.RightElbow != null;
+                    heldTool = Equipment.ToolModels.Build(inHand, forearm ? rig.RightElbow : rig.RightArm);
+                    heldTool.transform.localPosition = forearm ? new Vector3(0f, -0.31f, 0.03f) : new Vector3(0f, -0.55f, 0.06f);
                     heldTool.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
                     if (ownerHidden)
                         foreach (Renderer r in heldTool.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
                 }
             }
             // Holding gear: the arm comes up to carry it in front, not swinging at the side.
-            if (heldTool != null) rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-55f, 0f, 6f), 0.8f);
+            if (heldTool != null)
+            {
+                rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-35f, 0f, 6f), 0.8f);
+                Elbow(rig.RightElbow, -45f, 0.8f);
+            }
         }
 
         // 0.19.5: point, wave or panic over the walking pose, eased in and out (hands must be free).
@@ -112,16 +121,26 @@ namespace Abandoned.Player
             {
                 case Networking.Emote.Point:
                     rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-90f, 0f, 4f), w);
+                    Elbow(rig.RightElbow, 0f, w);
                     break;
                 case Networking.Emote.Wave:
-                    rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-160f, 0f, 20f + Mathf.Sin(clock * 12f) * 22f), w);
+                    rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-160f, 0f, 20f), w);
+                    Elbow(rig.RightElbow, -35f + Mathf.Sin(clock * 12f) * 25f, w);
                     break;
                 default:
                     rig.LeftArm.localRotation = Quaternion.Slerp(rig.LeftArm.localRotation, Quaternion.Euler(-150f + Mathf.Sin(clock * 19f) * 25f, 0f, -25f), w);
                     rig.RightArm.localRotation = Quaternion.Slerp(rig.RightArm.localRotation, Quaternion.Euler(-150f + Mathf.Sin(clock * 21f + 1f) * 25f, 0f, 25f), w);
+                    Elbow(rig.LeftElbow, -30f, w);
+                    Elbow(rig.RightElbow, -30f, w);
                     rig.Torso.localRotation *= Quaternion.Euler(0f, Mathf.Sin(clock * 15f) * 8f * w, 0f);
                     break;
             }
+        }
+
+        private static void Elbow(Transform elbow, float bend, float weight = 1f)
+        {
+            if (elbow == null) return;
+            elbow.localRotation = Quaternion.Slerp(elbow.localRotation, Quaternion.Euler(bend, 0f, 0f), weight);
         }
 
 #if UNITY_EDITOR

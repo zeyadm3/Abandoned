@@ -6,7 +6,7 @@ using F = Abandoned.EditorTools.WorkerVisualMeshes;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>First-person sleeves/gloves use the same construction and surface assets as the visible worker.</summary>
+    /// <summary>First-person sleeves and gloves: the jacket fabric and tape, and the worker's own glove model.</summary>
     public static class WorkerViewModelBuilder
     {
         private const string Folder = "Assets/_Project/Prefabs/Resources/Characters";
@@ -29,14 +29,20 @@ namespace Abandoned.EditorTools
                     ring.transform.localRotation = Quaternion.Euler(0f, 0f, side * (fold % 2 == 0 ? 3f : -3f));
                 }
                 F.Form("ReflectiveWristBand", sleeve, new Vector3(0f, .395f, 0f), new Vector3(.099f, .055f, .106f), CharacterSurfaceLibrary.Get("Tape"), "Tube");
-                F.Form("KnittedCuff", sleeve, new Vector3(0f, .465f, 0f), new Vector3(.091f, .09f, .096f), CharacterSurfaceLibrary.Get("Rubber"), "Tube");
+                F.Form("KnittedCuff", sleeve, new Vector3(0f, .465f, 0f), new Vector3(.091f, .09f, .096f), CharacterSurfaceLibrary.Get("CrewTrim"), "Tube");
                 F.Merge(sleeve, "ViewSleeve" + suffix + "V3");
                 PrefabUtility.SaveAsPrefabAsset(sleeve.gameObject, Folder + "/CrewSleeve" + suffix + ".prefab");
                 Object.DestroyImmediate(sleeve.gameObject);
 
                 Transform glove = new GameObject("CrewGlove" + suffix).transform;
-                WorkerClothingDetails.Glove(glove, new Vector3(0f, 0f, -.035f), Quaternion.LookRotation(Vector3.down, Vector3.back), .74f, -side);
-                F.Merge(glove, "ViewGlove" + suffix + "V3");
+                // The worker's own glove (Crew_GloveL/R: origin at the wrist, fingers along -Y, palm toward +Z).
+                Transform fit = Group("Fit", glove);
+                fit.localPosition = new Vector3(0f, 0f, -.035f);
+                fit.localRotation = Quaternion.LookRotation(Vector3.down, Vector3.back);
+                var model = AssetDatabase.LoadAssetAtPath<GameObject>($"{WorkerVisualBuilder.ArtFolder}/Crew_Glove{suffix}.fbx");
+                if (model != null) WorkerVisualBuilder.Dress(Object.Instantiate(model, fit, false));
+                else Debug.LogError("Crew glove model missing (run Tools/Blender/crew/crew_export.py).");
+                F.Merge(glove, "ViewGlove" + suffix + "V4");
                 PrefabUtility.SaveAsPrefabAsset(glove.gameObject, Folder + "/CrewGlove" + suffix + ".prefab");
                 Object.DestroyImmediate(glove.gameObject);
             }
