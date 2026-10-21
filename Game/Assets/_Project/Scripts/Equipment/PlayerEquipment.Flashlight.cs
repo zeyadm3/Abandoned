@@ -25,10 +25,12 @@ namespace Abandoned.Equipment
             if (IsServer) ServerResetBattery();
             if (flashlight == null) return;
             flashlight.range = FlashlightConfig.Range;
-            flashlight.intensity = FlashlightConfig.Intensity;
+            flashlight.intensity = FlashlightConfig.BeamIntensity;
             flashlight.spotAngle = FlashlightConfig.SpotAngle;
             flashlight.innerSpotAngle = FlashlightConfig.InnerSpotAngle;
             flashlight.color = FlashlightConfig.Color;
+            // 0.24.12: a reflector pattern, so the spot on a wall and the beam in the fog read as a torch.
+            if (FlashlightConfig.UseCookie) flashlight.cookie = LightCookies.Flashlight;
             // QA P-07: four shadowed beams plus the ceiling lights is the atrium's worst case. Your own beam
             // keeps its shadows (that's what makes a dark store read); crewmates' beams light without them.
             if (!IsOwner) flashlight.shadows = LightShadows.None;
@@ -100,7 +102,7 @@ namespace Abandoned.Equipment
             // QA O-01: the warning is still there with flashing reduced, as a slow fade rather than a strobe.
             if (Core.GameSettings.ReduceFlashing)
                 dip = Mathf.Lerp(0.45f, 0.8f, Mathf.PerlinNoise(OwnerClientId * 1.7f, Time.time * 0.6f));
-            flashlight.intensity = FlashlightConfig.Intensity * Mathf.Lerp(1f, dip, flickerPressure);
+            flashlight.intensity = FlashlightConfig.BeamIntensity * Mathf.Lerp(1f, dip, flickerPressure);
         }
     }
 }

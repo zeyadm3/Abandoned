@@ -44,6 +44,7 @@ namespace Abandoned.Audio
             Source.clip = clip;
             Source.pitch = request.Pitch;
             Source.spatialBlend = request.Spatial ? 1f : 0f;
+            SpatialAudio.Apply(Source, request.Spatial);
             // 2D sounds are in the player's head or the UI: the listener's room and the low-health muffle are for the world.
             Source.bypassListenerEffects = !request.Spatial;
             Source.bypassReverbZones = !request.Spatial;

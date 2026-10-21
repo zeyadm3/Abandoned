@@ -18,7 +18,9 @@ namespace Abandoned.UI
         {
             "Revamp", "AbandonedTheme", "AbandonedMenus", "HorrorHud", "AbandonedPanels", "FieldHud",
             // The training job's guidance (lesson card, checklist, markers); inert outside the training house.
-            "TrainingHud"
+            "TrainingHud",
+            // 0.24.12 menus: layout over everything above, colours from the theme.
+            "ModernMenus"
         };
 
         /// <summary>One theme stack for the menu document and independent in-world displays.</summary>

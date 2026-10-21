@@ -72,7 +72,19 @@ namespace Abandoned.Core
             runtimeAsset.shadowDistance = VideoSettings.ShadowDistances[VideoSettings.Shadows];
             // Room in the atlas for the flashlight and the ceiling lights the setting allows (Structure.ShadowDirector).
             runtimeAsset.additionalLightsShadowmapResolution = ShadowBudgetConfig.Current.Atlas(VideoSettings.Shadows);
+            // 0.24.12: one cascade on Off/Low, two on Medium and High (M7.6 budget); the sun gets a 4096 map on High.
+            runtimeAsset.shadowCascadeCount = VideoSettings.ShadowCascades[VideoSettings.Shadows];
+            runtimeAsset.mainLightShadowmapResolution = VideoSettings.Shadows >= 3 ? 4096 : 2048;
             runtimeAsset.renderScale = VideoSettings.RenderScale;
+            // Only below 100 %: URP runs STP (and forces its temporal anti-aliasing over the player's choice) whenever
+            // it is selected, even with nothing to upscale.
+            bool upscaling = VideoSettings.RenderScale < 0.999f;
+            runtimeAsset.upscalingFilter = !upscaling ? UpscalingFilterSelection.Linear : VideoSettings.Upscaler switch
+            {
+                0 => SystemInfo.supportsComputeShaders ? UpscalingFilterSelection.STP : UpscalingFilterSelection.FSR,
+                1 => UpscalingFilterSelection.FSR,
+                _ => UpscalingFilterSelection.Linear
+            };
             runtimeAsset.msaaSampleCount = VideoSettings.AntiAliasingSamples[VideoSettings.AntiAliasing];
         }
 

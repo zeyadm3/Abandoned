@@ -1,5 +1,57 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8147566466606822928
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b91f03c199c7422fa3aa1aa32e44f8c, type: 3}
+  m_Name: VolumetricFogOverride
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Core.VolumetricFogOverride
+  active: 1
+  density:
+    m_OverrideState: 1
+    m_Value: 0.016
+  baseHeight:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloff:
+    m_OverrideState: 1
+    m_Value: 0.04
+  maxDistance:
+    m_OverrideState: 1
+    m_Value: 45
+  anisotropy:
+    m_OverrideState: 0
+    m_Value: 0.55
+  albedo:
+    m_OverrideState: 1
+    m_Value: {r: 0.86, g: 0.86, b: 0.8, a: 1}
+  ambient:
+    m_OverrideState: 1
+    m_Value: 0.8
+  mainLight:
+    m_OverrideState: 1
+    m_Value: 1.2
+  localLights:
+    m_OverrideState: 1
+    m_Value: 0.45
+  unshadowedLights:
+    m_OverrideState: 0
+    m_Value: 0.25
+  noise:
+    m_OverrideState: 1
+    m_Value: 0.5
+  noiseScale:
+    m_OverrideState: 0
+    m_Value: 0.18
+  wind:
+    m_OverrideState: 0
+    m_Value: {x: 0.12, y: 0.02, z: 0.08}
 --- !u!114 &-7292773539792648840
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -32,8 +84,8 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   highQualityFiltering:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   filter:
     m_OverrideState: 0
     m_Value: 0
@@ -44,12 +96,12 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 6
   dirtTexture:
-    m_OverrideState: 0
-    m_Value: {fileID: 0}
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 353a70f9078164e97b69ad0e1ceabb1a, type: 3}
     dimension: 1
   dirtIntensity:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1.6
 --- !u!114 &-4387441755982237345
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -136,6 +188,11 @@ MonoBehaviour:
   - {fileID: 84434806267389405}
   - {fileID: 8185481460640820229}
   - {fileID: -4387441755982237345}
+  - {fileID: -8147566466606822928}
+  - {fileID: 286111361660616896}
+  - {fileID: 3299737087796344869}
+  - {fileID: 3861646537976730851}
+  - {fileID: 3196159915140628037}
 --- !u!114 &84434806267389405
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -164,6 +221,109 @@ MonoBehaviour:
   rounded:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &286111361660616896
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3875fe346b0a4ec0a7187465bb11852, type: 3}
+  m_Name: AutoExposureOverride
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Core.AutoExposureOverride
+  active: 1
+  enabled:
+    m_OverrideState: 1
+    m_Value: 1
+  key:
+    m_OverrideState: 1
+    m_Value: 0.07
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.35
+  minEv:
+    m_OverrideState: 0
+    m_Value: -1.5
+  maxEv:
+    m_OverrideState: 1
+    m_Value: 1
+  speedDown:
+    m_OverrideState: 0
+    m_Value: 2.5
+  speedUp:
+    m_OverrideState: 0
+    m_Value: 0.7
+--- !u!114 &3196159915140628037
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
+  m_Name: ChromaticAberration
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.ChromaticAberration
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.06
+--- !u!114 &3299737087796344869
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
+  m_Name: WhiteBalance
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.WhiteBalance
+  active: 1
+  temperature:
+    m_OverrideState: 1
+    m_Value: -6
+  tint:
+    m_OverrideState: 1
+    m_Value: 4
+--- !u!114 &3861646537976730851
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
+  m_Name: ShadowsMidtonesHighlights
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.ShadowsMidtonesHighlights
+  active: 1
+  shadows:
+    m_OverrideState: 1
+    m_Value: {x: 0.94, y: 1, z: 1.08, w: 0}
+  midtones:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  highlights:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  shadowsStart:
+    m_OverrideState: 0
+    m_Value: 0
+  shadowsEnd:
+    m_OverrideState: 0
+    m_Value: 0.3
+  highlightsStart:
+    m_OverrideState: 0
+    m_Value: 0.55
+  highlightsEnd:
+    m_OverrideState: 0
+    m_Value: 1
 --- !u!114 &8185481460640820229
 MonoBehaviour:
   m_ObjectHideFlags: 3

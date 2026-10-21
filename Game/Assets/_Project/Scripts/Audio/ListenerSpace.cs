@@ -33,6 +33,7 @@ namespace Abandoned.Audio
         private GameObject host;
         private AudioLowPassFilter muffle;
         private AudioReverbFilter reverb;
+        private MasterBus master;
         private float size = 6f, openness = 1f, targetSize = 6f, targetOpen = 1f, cutoff = OpenCutoff, nextProbe;
         private int mask;
 
@@ -81,6 +82,10 @@ namespace Abandoned.Audio
         {
             if (muffle != null) Destroy(muffle);
             if (reverb != null) Destroy(reverb);
+            // The master bus must stay last; when the ear comes back to a camera that still has one (dead, then
+            // respawned), the new filters would land after it, so it is always made again after them.
+            if (master != null) Destroy(master);
+            foreach (MasterBus stray in listener.GetComponents<MasterBus>()) Destroy(stray);
             host = listener;
             // Added in this order: the room is heard through the muffle, not the other way round.
             muffle = listener.AddComponent<AudioLowPassFilter>();
@@ -100,6 +105,8 @@ namespace Abandoned.Audio
             reverb.diffusion = 100f;
             reverb.density = 100f;
             reverb.enabled = false;
+            // 0.24.12: the master bus comes last, so it sees the room's tail and the muffle's result.
+            master = listener.AddComponent<MasterBus>();
         }
 
         private void Probe(Vector3 at)
@@ -141,9 +148,17 @@ namespace Abandoned.Audio
             reverb.reflectionsLevel = Mathf.Lerp(-900f, -1500f, room);
         }
 
+        /// <summary>The state the mix is in (0.24.12); for the F1 overlay.</summary>
+        public static string State { get; private set; } = "normal";
+
         private void ApplyMuffle()
         {
-            cutoff = Mathf.Lerp(cutoff, muffleTarget, 1f - Mathf.Exp(-4f * Time.unscaledDeltaTime));
+            // States: hiding closes the world down to what comes through a locker; low health is the caller's muffle.
+            float target = muffleTarget;
+            bool hiding = Networking.NetworkPlayer.Local != null && Networking.NetworkPlayer.Local.IsHiding;
+            if (hiding) target = Mathf.Min(target, AudioConfig.Current.HidingCutoff);
+            State = hiding ? "hiding" : target < OpenCutoff - 250f ? "hurt" : "normal";
+            cutoff = Mathf.Lerp(cutoff, target, 1f - Mathf.Exp(-4f * Time.unscaledDeltaTime));
             if (muffle == null) return;
             bool on = cutoff < OpenCutoff - 250f;
             muffle.enabled = on;

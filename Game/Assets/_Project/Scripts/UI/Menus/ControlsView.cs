@@ -66,7 +66,7 @@ namespace Abandoned.UI
             Root = new VisualElement();
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
-            VisualElement panel = MenuKit.Panel(Root, wide: true);
+            VisualElement panel = MenuKit.Page(Root, wide: true);
             MenuKit.Text(panel, Loc.T("FIELD CONTROLS / PERSONAL BINDINGS"), "menu-record");
             MenuKit.Text(panel, Loc.T("CONTROLS"), "heading");
             MenuKit.Text(panel, Loc.T("Click a key, then press the new one. Esc cancels."), "subtitle");

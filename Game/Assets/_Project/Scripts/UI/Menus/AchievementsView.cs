@@ -16,7 +16,7 @@ namespace Abandoned.UI
             Root = new VisualElement();
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
-            VisualElement panel = MenuKit.Panel(Root, wide: true);
+            VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("achievements");
             MenuKit.Text(panel, Loc.T("RECOVERED RECORDS / WORKER HISTORY"), "menu-record");
             MenuKit.Text(panel, Loc.T("ACHIEVEMENTS"), "heading");

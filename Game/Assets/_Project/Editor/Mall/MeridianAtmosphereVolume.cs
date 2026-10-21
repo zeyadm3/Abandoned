@@ -54,6 +54,7 @@ namespace Abandoned.EditorTools
             color.saturation.Override(config.Saturation);
             color.contrast.Override(config.Contrast);
             color.postExposure.Override(config.PostExposure);
+            AvLook.Apply(profile, "Mall");
             EditorUtility.SetDirty(profile);
             var volume = new GameObject("PostProcessing").AddComponent<Volume>();
             volume.transform.SetParent(parent, false);

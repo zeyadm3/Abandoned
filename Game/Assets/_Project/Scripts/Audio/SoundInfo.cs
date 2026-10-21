@@ -41,5 +41,10 @@ namespace Abandoned.Audio
             Loop = loop;
             Caption = caption;
         }
+
+        /// <summary>The same sound, voiced another way (SoundCatalog's 0.24.12 recordings).</summary>
+        public SoundInfo WithMode(SoundMode mode) =>
+            new(Bus, Priority, Volume, MinDistance, MaxDistance, PitchLow, PitchHigh, Cooldown, mode, Occlusion, Variations,
+                Flat, Loop, Caption);
     }
 }

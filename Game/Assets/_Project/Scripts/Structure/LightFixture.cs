@@ -57,6 +57,8 @@ namespace Abandoned.Structure
         private void Awake()
         {
             if (lamp != null) originalColor = lamp.color;
+            // 0.24.12: spot fixtures throw a diffuser pattern instead of a flat disc (point lights take no 2D cookie).
+            if (lamp != null && lamp.type == LightType.Spot && lamp.cookie == null) lamp.cookie = LightCookies.Fixture;
             Apply(Lit ? 1f : 0f);
         }
 

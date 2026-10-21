@@ -1,0 +1,164 @@
+using Abandoned.Core;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+namespace Abandoned.EditorTools
+{
+    /// <summary>
+    /// The 0.24.12 look, added on top of each map's mood (LevelAtmosphere / MeridianAtmosphereVolume call it, and
+    /// the menu applies it to the saved volume assets without rebuilding a map): volumetric fog, eye adaptation, a
+    /// per-map HDR grade (white balance, split-toned shadows), lens dirt in the bloom and a trace of chromatic
+    /// aberration. Values are picked per map from its name.
+    /// </summary>
+    public static class AvLook
+    {
+        private readonly struct Preset
+        {
+            public readonly float Density, Falloff, MaxDistance, Ambient, MainLight, LocalLights, Noise, Key, Temperature, Tint;
+            public readonly Color Albedo, Shadows;
+
+            public Preset(float density, float falloff, float maxDistance, float ambient, float mainLight, float localLights, float noise,
+                float key, float temperature, float tint, Color albedo, Color shadows)
+            {
+                Density = density; Falloff = falloff; MaxDistance = maxDistance; Ambient = ambient; MainLight = mainLight;
+                LocalLights = localLights; Noise = noise; Key = key; Temperature = temperature; Tint = tint; Albedo = albedo; Shadows = shadows;
+            }
+        }
+
+        // Dusty mall under failing tubes: thick, slightly green, cold shadows.
+        // Ambient is a share of the map's own fog colour; local lights are scaled well down (a 28-unit torch in dust is
+        // blinding at 1:1).
+        private static readonly Preset Mall = new(0.016f, 0.04f, 45f, 0.8f, 1.2f, 0.45f, 0.5f, 0.07f, -6f, 4f, new Color(0.86f, 0.86f, 0.8f), new Color(0.94f, 1f, 1.08f));
+        // The company's own building: a light haze, warm.
+        private static readonly Preset Hq = new(0.006f, 0.05f, 40f, 0.7f, 1f, 0.35f, 0.35f, 0.1f, 5f, 0f, new Color(0.9f, 0.87f, 0.82f), new Color(1f, 0.99f, 1.02f));
+        // Iron works: smoke and heat, warm light against blue-black shadows.
+        private static readonly Preset Factory = new(0.022f, 0.02f, 55f, 0.8f, 1.3f, 0.55f, 0.65f, 0.08f, 12f, 0f, new Color(0.8f, 0.76f, 0.7f), new Color(0.92f, 0.98f, 1.1f));
+        // Island prison: sea mist outside, damp cold inside.
+        private static readonly Preset Prison = new(0.011f, 0.03f, 70f, 0.9f, 1.4f, 0.45f, 0.55f, 0.09f, -10f, 0f, new Color(0.88f, 0.9f, 0.92f), new Color(0.93f, 1f, 1.07f));
+        // Winter afternoon school: clear air, low sun through tall windows.
+        private static readonly Preset School = new(0.009f, 0.04f, 60f, 0.8f, 1.6f, 0.4f, 0.4f, 0.09f, -8f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.95f, 1f, 1.05f));
+        // December 3 PM house and neighbourhood.
+        private static readonly Preset Tutorial = new(0.007f, 0.035f, 60f, 0.9f, 1.2f, 0.4f, 0.35f, 0.1f, -5f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.96f, 1f, 1.04f));
+
+        public const string LensDirtPath = "Assets/_Project/Art/Lighting/LensDirt.png";
+
+        [MenuItem(ToolMenu.Art + "Apply 0.24.12 Look to Saved Maps", priority = ToolMenu.ArtP + 60)]
+        public static void ApplyToSaved()
+        {
+            int count = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:VolumeProfile", new[] { "Assets/_Project/Art" }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                string file = System.IO.Path.GetFileNameWithoutExtension(path);
+                if (!file.EndsWith("_Volume")) continue;
+                Apply(AssetDatabase.LoadAssetAtPath<VolumeProfile>(path), file.Substring(0, file.Length - "_Volume".Length));
+                count++;
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[AvLook] 0.24.12 look applied to {count} map volume profiles.");
+        }
+
+        public static void Apply(VolumeProfile profile, string levelName)
+        {
+            if (profile == null) return;
+            Preset p = For(levelName);
+
+            VolumetricFogOverride fog = Get<VolumetricFogOverride>(profile);
+            fog.density.Override(p.Density);
+            fog.heightFalloff.Override(p.Falloff);
+            fog.maxDistance.Override(p.MaxDistance);
+            fog.ambient.Override(p.Ambient);
+            fog.mainLight.Override(p.MainLight);
+            fog.localLights.Override(p.LocalLights);
+            fog.noise.Override(p.Noise);
+            fog.albedo.Override(p.Albedo);
+
+            AutoExposureOverride eye = Get<AutoExposureOverride>(profile);
+            eye.enabled.Override(true);
+            eye.key.Override(p.Key);
+            eye.strength.Override(0.35f);
+            eye.maxEv.Override(1f);
+
+            WhiteBalance balance = Get<WhiteBalance>(profile);
+            balance.temperature.Override(p.Temperature);
+            balance.tint.Override(p.Tint);
+            ShadowsMidtonesHighlights split = Get<ShadowsMidtonesHighlights>(profile);
+            split.shadows.Override(new Vector4(p.Shadows.r, p.Shadows.g, p.Shadows.b, 0f));
+
+            Bloom bloom = Get<Bloom>(profile);
+            bloom.highQualityFiltering.Override(true);
+            bloom.dirtTexture.Override(LensDirt());
+            bloom.dirtIntensity.Override(1.6f);
+            ChromaticAberration fringe = Get<ChromaticAberration>(profile);
+            fringe.intensity.Override(0.06f);
+            EditorUtility.SetDirty(profile);
+        }
+
+        private static Preset For(string level)
+        {
+            string n = level.ToLowerInvariant();
+            if (n.Contains("hq")) return Hq;
+            if (n.Contains("factory") || n.Contains("iron")) return Factory;
+            if (n.Contains("prison") || n.Contains("island") || n.Contains("gallows")) return Prison;
+            if (n.Contains("school") || n.Contains("burley")) return School;
+            if (n.Contains("tutorial") || n.Contains("larch")) return Tutorial;
+            return Mall;
+        }
+
+        private static T Get<T>(VolumeProfile profile) where T : VolumeComponent
+        {
+            if (profile.TryGet(out T existing)) return existing;
+            T component = profile.Add<T>();
+            component.name = typeof(T).Name;
+            AssetDatabase.AddObjectToAsset(component, profile);
+            return component;
+        }
+
+        /// <summary>A smudged-lens texture drawn once (soft blots and a few streaks); bloom lights it only around bright lights.</summary>
+        private static Texture2D LensDirt()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(LensDirtPath);
+            if (existing != null) return existing;
+            const int size = 512;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            var pixels = new Color[size * size];
+            var rng = new System.Random(2412);
+            for (int b = 0; b < 70; b++)
+            {
+                float cx = (float)rng.NextDouble() * size, cy = (float)rng.NextDouble() * size;
+                float radius = 6f + (float)rng.NextDouble() * (b < 10 ? 70f : 26f);
+                float strength = 0.08f + (float)rng.NextDouble() * 0.22f;
+                Stamp(pixels, size, cx, cy, radius, radius, strength);
+            }
+            for (int s = 0; s < 8; s++) // wipe streaks
+            {
+                float cx = (float)rng.NextDouble() * size, cy = (float)rng.NextDouble() * size;
+                Stamp(pixels, size, cx, cy, 90f + (float)rng.NextDouble() * 120f, 4f + (float)rng.NextDouble() * 6f, 0.12f);
+            }
+            for (int i = 0; i < pixels.Length; i++) pixels[i].a = 1f;
+            tex.SetPixels(pixels);
+            System.IO.File.WriteAllBytes(LensDirtPath, tex.EncodeToPNG());
+            Object.DestroyImmediate(tex);
+            AssetDatabase.ImportAsset(LensDirtPath);
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(LensDirtPath);
+        }
+
+        private static void Stamp(Color[] pixels, int size, float cx, float cy, float rx, float ry, float strength)
+        {
+            int x0 = Mathf.Max(0, (int)(cx - rx)), x1 = Mathf.Min(size - 1, (int)(cx + rx));
+            int y0 = Mathf.Max(0, (int)(cy - ry)), y1 = Mathf.Min(size - 1, (int)(cy + ry));
+            for (int y = y0; y <= y1; y++)
+            for (int x = x0; x <= x1; x++)
+            {
+                float dx = (x - cx) / rx, dy = (y - cy) / ry;
+                float d = dx * dx + dy * dy;
+                if (d >= 1f) continue;
+                float v = strength * (1f - d) * (1f - d);
+                Color c = pixels[y * size + x];
+                pixels[y * size + x] = new Color(c.r + v, c.g + v * 0.97f, c.b + v * 0.92f, 1f);
+            }
+        }
+    }
+}

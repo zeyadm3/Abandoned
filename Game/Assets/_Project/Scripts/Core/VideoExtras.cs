@@ -15,6 +15,7 @@ namespace Abandoned.Core
         private Volume overrides;
         private Bloom bloom;
         private FilmGrain grain;
+        private MotionBlur motionBlur;
         private int shownMonitor = -1, shownTextures = -1;
         private float fps, nextFpsText;
         private UnityEngine.UIElements.Label fpsLabel;
@@ -33,8 +34,22 @@ namespace Abandoned.Core
             if (!VideoSettings.Fog && RenderSettings.fog) RenderSettings.fog = false;
             Overrides();
             Camera cam = Camera.main;
-            if (cam != null && cam.TryGetComponent(out UniversalAdditionalCameraData data) && data.renderPostProcessing != VideoSettings.PostProcessing)
-                data.renderPostProcessing = VideoSettings.PostProcessing;
+            if (cam != null && cam.TryGetComponent(out UniversalAdditionalCameraData data))
+            {
+                if (data.renderPostProcessing != VideoSettings.PostProcessing) data.renderPostProcessing = VideoSettings.PostProcessing;
+                AntialiasingMode mode = VideoSettings.AntiAliasing switch
+                {
+                    3 => AntialiasingMode.SubpixelMorphologicalAntiAliasing,
+                    4 => AntialiasingMode.TemporalAntiAliasing,
+                    _ => AntialiasingMode.None
+                };
+                if (data.antialiasing != mode)
+                {
+                    data.antialiasing = mode;
+                    data.antialiasingQuality = AntialiasingQuality.High;
+                }
+            }
+            LightShaftSwitch.Apply(VideoSettings.Volumetrics > 0);
             if (shownTextures != VideoSettings.TextureQuality)
             {
                 shownTextures = VideoSettings.TextureQuality;
@@ -56,11 +71,16 @@ namespace Abandoned.Core
                 bloom.intensity.Override(0f);
                 grain = profile.Add<FilmGrain>();
                 grain.intensity.Override(0f);
+                motionBlur = profile.Add<MotionBlur>();
+                motionBlur.mode.Override(MotionBlurMode.CameraOnly);
+                motionBlur.quality.Override(MotionBlurQuality.Medium);
+                motionBlur.intensity.Override(0.3f);
                 overrides.sharedProfile = profile;
             }
             bloom.active = !VideoSettings.Bloom;
             grain.active = !VideoSettings.Grain;
-            overrides.weight = !VideoSettings.Bloom || !VideoSettings.Grain ? 1f : 0f;
+            motionBlur.active = VideoSettings.MotionBlur;
+            overrides.weight = !VideoSettings.Bloom || !VideoSettings.Grain || VideoSettings.MotionBlur ? 1f : 0f;
         }
 
         private void MoveToMonitor()

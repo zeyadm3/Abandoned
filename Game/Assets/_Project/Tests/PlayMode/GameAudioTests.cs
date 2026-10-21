@@ -23,7 +23,8 @@ namespace Abandoned.Tests
             AudioSource source = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None)
                 .FirstOrDefault(s => s.isPlaying && s.transform.position == new Vector3(1f, 1f, 1f));
             Assert.IsNotNull(source, "a pooled source plays at the impact");
-            StringAssert.StartsWith("impactGlass_heavy", source.clip.name, "the library's heavy glass, not the synthesised placeholder");
+            // 0.24.12: the recorded library (Art/Audio/Library, fs<Freesound id>) replaced the Kenney impacts.
+            StringAssert.StartsWith("fs", source.clip.name, "the library's recorded glass, not the synthesised placeholder");
             Assert.AreEqual(1f, source.spatialBlend, "positional");
         }
 

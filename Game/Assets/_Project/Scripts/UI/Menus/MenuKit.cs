@@ -26,6 +26,32 @@ namespace Abandoned.UI
             return panel;
         }
 
+        /// <summary>
+        /// A menu screen (0.24.12 menus): a full-height sheet down the left of the screen with the world left visible
+        /// beside it, the game's name above its heading and the way back in the corner. In-world screens and notices
+        /// keep <see cref="Panel"/>; its sizes live in ModernMenus.uss, not inline.
+        /// </summary>
+        public static VisualElement Page(VisualElement parent, bool wide = false)
+        {
+            parent.AddToClassList("mm-backdrop");
+            var sheet = new VisualElement();
+            sheet.style.flexDirection = FlexDirection.Column;
+            sheet.style.flexShrink = 1;
+            sheet.style.minWidth = 0;
+            sheet.style.minHeight = 0;
+            sheet.AddToClassList("panel");
+            sheet.AddToClassList("mm-page");
+            if (wide)
+            {
+                sheet.AddToClassList("panel--wide");
+                sheet.AddToClassList("mm-page--wide");
+            }
+            parent.Add(sheet);
+            Text(sheet, "ABANDONED", "mm-crumb").pickingMode = PickingMode.Ignore;
+            Text(parent, $"Esc   {Loc.T("Back")}", "mm-hint").pickingMode = PickingMode.Ignore;
+            return sheet;
+        }
+
         public static Label Text(VisualElement parent, string text, string cls = "text")
         {
             var label = new Label(text);
