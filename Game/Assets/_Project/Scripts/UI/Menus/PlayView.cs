@@ -27,11 +27,9 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             Root.AddToClassList("backdrop--center");
-            VisualElement panel = MenuKit.Panel(Root, wide: true);
+            VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("panel--xwide");
             panel.AddToClassList("play");
-            panel.style.width = 1240f;
-            panel.style.maxWidth = Length.Percent(96f);
             MenuKit.Text(panel, Loc.T("RECOVERY ASSIGNMENT / CREW ACCESS"), "menu-record");
             MenuKit.Text(panel, Loc.T("PLAY"), "heading");
             ScrollView body = MenuKit.Scroll(panel, "play__body");

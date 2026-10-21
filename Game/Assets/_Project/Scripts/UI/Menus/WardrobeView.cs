@@ -35,11 +35,8 @@ namespace Abandoned.UI
             Root = new VisualElement();
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
-            VisualElement panel = MenuKit.Panel(Root, wide: true);
+            VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("wardrobe");
-            // MenuKit.Panel sizes inline; the landscape wardrobe needs the room.
-            panel.style.width = 1500f;
-            panel.style.maxWidth = Length.Percent(96f);
 
             MenuKit.Text(panel, Loc.T("WORKER KIT / ISSUE AND IDENTIFICATION"), "menu-record");
             VisualElement header = MenuKit.Row(panel);

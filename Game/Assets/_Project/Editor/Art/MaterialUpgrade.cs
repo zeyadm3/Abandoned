@@ -78,20 +78,29 @@ namespace Abandoned.EditorTools
         };
 
         // Never touched: light, glass, liquids, effects, foliage cards, printed things, characters and kit colours, and
-        // roof shingles (no scanned roofing; gravel on a roof reads wrong).
+        // roof shingles (no scanned roofing; gravel on a roof reads wrong). Matched against the start of whole words of
+        // the name ("Street" is not "tree"; "_" joins words), after the matching rule's own key is taken out (so
+        // "WetIron" is iron, not a wet overlay).
         private static readonly string[] Skip =
         {
             "glow", "glass", "glazing", "lamp", "light", "led", "crt", "emiss", "flame", "spark", "lava", "steam", "dust", "shaft",
-            "sky", "sea", "water", "foam", "smoke", "veil", "particle", "outline", "ink", "stripe", "lanepaint", "roadpaint",
+            "sky", "sea", "water", "foam", "smoke", "veil", "particle", "outline", "ink", "stripe", "lane_paint", "road_paint",
             "window", "mirror", "chrome", "gold", "brass", "copper", "bronze", "porcelain", "ornament", "tree", "leaves", "leaf",
-            "bark", "branch", "needle", "crown", "ivy", "moss", "scrub", "iceplant", "guano", "grime", "stain", "mould", "chalk",
+            "bark", "branch", "needle", "crown", "ivy", "moss", "scrub", "ice_plant", "guano", "grime", "stain", "mould", "chalk",
             "label", "sign", "screen", "lens", "backdrop", "greybox", "hat_", "acc_", "env_", "mattress", "pillow", "bedding",
             "curtain", "blanket", "canvas", "cloth", "wool", "denim", "felt", "tape", "paper", "card", "book", "blueprint",
             "clipboard", "cork", "pegboard", "marker", "rubber", "warning", "hazard", "safety", "caution", "beacon", "signal",
-            "display", "mug", "drum", "bin_", "forklift", "palletjack", "toolbox", "loot", "threat", "crew", "skin", "cosmetic",
-            "trim", "decal", "puddle", "wet", "soot", "vacantwindows", "distantmass", "mass", "silhouette", "icon", "ui_",
+            "display", "mug", "drum", "bin_", "forklift", "pallet_jack", "toolbox", "loot", "threat", "crew", "skin", "cosmetic",
+            "trim", "decal", "puddle", "wet", "soot", "vacant_windows", "distant_mass", "mass", "silhouette", "icon", "ui_",
             "shingles",
         };
+
+        private static readonly System.Text.RegularExpressions.Regex WordBreak =
+            new(@"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|[_\s]+|(?<=\D)(?=\d)|(?<=\d)(?=\D)");
+
+        // "_word_word_" in lower case, so a skip entry matches only at the start of a word.
+        private static string Words(string name) =>
+            "_" + string.Join("_", WordBreak.Split(name).Where(w => w.Length > 0).Select(w => w.ToLowerInvariant())) + "_";
 
         private static readonly string[] Folders = { "Assets/_Project/Art", "Assets/_Project/Data" };
 
@@ -128,11 +137,16 @@ namespace Abandoned.EditorTools
                 var m = AssetDatabase.LoadAssetAtPath<Material>(path);
                 if (m == null || !Eligible(m)) { skipped++; continue; }
                 string name = m.name.ToLowerInvariant();
-                if (Skip.Any(name.Contains)) { skipped++; continue; }
                 Rule? rule = null;
+                string key = null;
                 foreach (Rule r in Rules)
-                    if (r.Keys.Any(name.Contains)) { rule = r; break; }
+                {
+                    key = r.Keys.FirstOrDefault(name.Contains);
+                    if (key != null) { rule = r; break; }
+                }
                 if (rule == null || !sets.TryGetValue(rule.Value.Set, out ScannedSet scan)) { skipped++; continue; }
+                string rest = Words(m.name.Remove(name.IndexOf(key, StringComparison.Ordinal), key.Length));
+                if (Skip.Any(s => rest.Contains("_" + s))) { skipped++; continue; }
                 Apply(m, guid, scan, rule.Value, book);
                 perSet[rule.Value.Set] = perSet.TryGetValue(rule.Value.Set, out int n) ? n + 1 : 1;
                 upgraded++;

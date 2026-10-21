@@ -50,6 +50,16 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets();
         }
 
+        /// <summary>For Rebuild All Maps: <see cref="AfterMaps"/>, throwing if any of its steps failed so the rebuild
+        /// reports it instead of "All steps finished".</summary>
+        public static void AfterMapsOrThrow()
+        {
+            int before = failures.Count;
+            AfterMaps();
+            if (failures.Count > before)
+                throw new InvalidOperationException("0.24.12 steps failed: " + string.Join(", ", failures.GetRange(before, failures.Count - before)));
+        }
+
         /// <summary>Batch: <see cref="AfterMaps"/> on the saved maps (no rebuild), then exit.</summary>
         public static void AfterMapsAndExit()
         {

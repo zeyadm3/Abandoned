@@ -12,12 +12,11 @@ namespace Abandoned.Core
     /// </summary>
     public class AutoExposurePass : ScriptableRenderPass
     {
-        private const int LuminanceSize = 64; // averaged in the adapt pass by 32 x 32 bilinear taps
         private static readonly int Source = Shader.PropertyToID("_ExposureSource"), Previous = Shader.PropertyToID("_ExposurePrevious"),
             Params0 = Shader.PropertyToID("_ExposureParams0"), Params1 = Shader.PropertyToID("_ExposureParams1"),
-            Reset = Shader.PropertyToID("_ExposureReset");
+            Reset = Shader.PropertyToID("_ExposureReset"), Texel = Shader.PropertyToID("_ExposureTexel");
 
-        private readonly MaterialPropertyBlock luminance = new(), adapt = new(), apply = new();
+        private readonly MaterialPropertyBlock luminance = new(), reduce = new(), adapt = new(), apply = new();
         private RTHandle[] exposure = new RTHandle[2];
         private int current;
         private float lastTime = -100f;
@@ -63,14 +62,14 @@ namespace Abandoned.Core
             current = 1 - current;
             TextureHandle next = graph.ImportTexture(exposure[current]);
 
-            var desc = new TextureDesc(LuminanceSize, LuminanceSize)
-            {
-                colorFormat = GraphicsFormat.R16G16_SFloat,
-                filterMode = FilterMode.Bilinear,
-                clearBuffer = false,
-                name = "_ExposureLuminance"
-            };
-            TextureHandle lum = graph.CreateTexture(desc);
+            // The frame at 1/8 (each pixel a box of it), then at 1/32 (an exact 4 x 4 box of that), then one average.
+            RenderTextureDescriptor frame = frameData.Get<UniversalCameraData>().cameraTargetDescriptor;
+            int w8 = Mathf.Max(1, frame.width / 8), h8 = Mathf.Max(1, frame.height / 8);
+            int w32 = Mathf.Max(1, w8 / 4), h32 = Mathf.Max(1, h8 / 4);
+            TextureHandle lum = Target(graph, w8, h8, "_ExposureLuminance");
+            TextureHandle small = Target(graph, w32, h32, "_ExposureReduced");
+            luminance.SetVector(Texel, new Vector4(1f / frame.width, 1f / frame.height));
+            reduce.SetVector(Texel, new Vector4(1f / w8, 1f / h8));
 
             var p0 = new Vector4(settings.key.value, settings.strength.value, settings.minEv.value, settings.maxEv.value);
             adapt.SetVector(Params0, p0);
@@ -78,9 +77,20 @@ namespace Abandoned.Core
             adapt.SetFloat(Reset, reset ? 1f : 0f);
 
             Draw(graph, "Exposure Luminance", 0, resources.activeColorTexture, TextureHandle.nullHandle, lum, luminance);
-            Draw(graph, "Exposure Adapt", 1, lum, previous, next, adapt);
-            Draw(graph, "Exposure Apply", 2, TextureHandle.nullHandle, next, resources.activeColorTexture, apply);
+            Draw(graph, "Exposure Reduce", 1, lum, TextureHandle.nullHandle, small, reduce);
+            Draw(graph, "Exposure Adapt", 2, small, previous, next, adapt);
+            Draw(graph, "Exposure Apply", 3, TextureHandle.nullHandle, next, resources.activeColorTexture, apply);
         }
+
+        private static TextureHandle Target(RenderGraph graph, int width, int height, string name) =>
+            graph.CreateTexture(new TextureDesc(width, height)
+            {
+                colorFormat = GraphicsFormat.R16G16_SFloat,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                clearBuffer = false,
+                name = name
+            });
 
         private void Draw(RenderGraph graph, string name, int pass, TextureHandle source, TextureHandle prev, TextureHandle target, MaterialPropertyBlock block)
         {

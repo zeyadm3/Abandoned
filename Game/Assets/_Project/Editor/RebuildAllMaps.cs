@@ -44,7 +44,7 @@ namespace Abandoned.EditorTools
             steps.Add(("Tutorial House", TutorialHouseBuilder.Build));
             steps.Add(("Training clipboard in the HQ", TutorialHqClipboard.AddToSavedHq));
             // 0.24.12: the builders recreate their materials, so the scanned surfaces, looks, sound and decals follow them.
-            steps.Add(("0.24.12 look, surfaces, sound and decals", AvOverhaul.AfterMaps));
+            steps.Add(("0.24.12 look, surfaces, sound and decals", AvOverhaul.AfterMapsOrThrow));
 
             var failed = new List<string>();
             try

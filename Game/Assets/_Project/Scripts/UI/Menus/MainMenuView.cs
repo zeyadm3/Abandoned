@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Abandoned.Audio;
 using Abandoned.Core;
 using Abandoned.Networking;
@@ -8,8 +9,9 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The abandoned entry screen: fractured structural framing, worn stencil lettering and an empty
-    /// world behind the recovery record. The actual navigation remains readable and easy to focus.
+    /// The entry screen (laid out again in 0.24.12): a rail down the left with the stencil title and the five ways
+    /// on, a card on the right that says what the highlighted one does (and carries the rotating recovery memo),
+    /// and a status bar along the bottom with the links, the keys and the version. The world stays visible behind.
     /// </summary>
     public class MainMenuView
     {
@@ -22,8 +24,9 @@ namespace Abandoned.UI
         };
 
         private readonly MenuUi menu;
-        private readonly Label notice, memo;
-        private readonly VisualElement noticeBox, column, links;
+        private readonly Label notice, memo, cardIndex, cardTitle, cardText;
+        private readonly VisualElement noticeBox, rail, links, nav;
+        private readonly List<Button> items = new();
         private readonly MenuTitle title;
         private readonly EarlyAccessNotice earlyAccess;
         private int memoShown = -1;
@@ -35,101 +38,89 @@ namespace Abandoned.UI
             this.menu = menu;
             Root = new VisualElement();
             Root.AddToClassList("main");
+            Root.AddToClassList("mm-main");
             var shade = new VisualElement { pickingMode = PickingMode.Ignore };
-            shade.AddToClassList("main__shade");
+            shade.AddToClassList("mm-main__shade");
             Root.Add(shade);
-            BuildRuin();
-            MenuKit.Text(Root, Loc.T("ABANDONED SALVAGING / RECOVERY DIVISION"), "main__eyebrow");
-            column = MenuKit.Scroll(Root, "main__column");
 
-            title = new MenuTitle(column, "ABANDONED", menu.TitleFont, MenuEffectsConfig.Current);
-            MenuKit.Text(column, Demo.IsDemo ? Loc.T("DEMO / {0} SALVAGE JOBS", Demo.MaxJobs) : Loc.T("TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN."), "subtitle");
-            var fracture = new VisualElement { pickingMode = PickingMode.Ignore };
-            fracture.AddToClassList("main__fracture");
-            column.Add(fracture);
+            rail = MenuKit.Scroll(Root, "mm-rail");
+            MenuKit.Text(rail, Loc.T("ABANDONED SALVAGING / RECOVERY DIVISION"), "mm-eyebrow");
+            title = new MenuTitle(rail, "ABANDONED", menu.TitleFont, MenuEffectsConfig.Current);
+            MenuKit.Text(rail, Demo.IsDemo ? Loc.T("DEMO / {0} SALVAGE JOBS", Demo.MaxJobs) : Loc.T("TAKE WHAT'S LEFT. LEAVE WHILE YOU CAN."), "subtitle");
+            var rule = new VisualElement { pickingMode = PickingMode.Ignore };
+            rule.AddToClassList("mm-rule");
+            rail.Add(rule);
 
             noticeBox = new VisualElement();
             noticeBox.AddToClassList("main__notice");
-            column.Add(noticeBox);
+            rail.Add(noticeBox);
             notice = MenuKit.Text(noticeBox, "", "text");
             notice.style.flexGrow = 1;
             notice.style.flexShrink = 1;
             notice.AddToClassList("text--error");
             MenuKit.Button(noticeBox, Loc.T("OK"), SessionEndNotice.Clear, SoundId.UiConfirm, small: true);
 
-            var actions = new VisualElement();
-            actions.AddToClassList("main__actions");
-            column.Add(actions);
-            Navigation(actions, "01", Loc.T("Play"), () => menu.Push(MenuScreen.Play), SoundId.UiConfirm);
-            Navigation(actions, "02", Loc.T("Settings"), () => menu.Push(MenuScreen.Settings));
-            Navigation(actions, "03", Loc.T("Achievements"), () => menu.Push(MenuScreen.Achievements));
-            Navigation(actions, "04", Loc.T("Credits"), () => menu.Push(MenuScreen.Credits));
-            Navigation(actions, "05", Loc.T("Quit"), menu.Quit, SoundId.UiBack, important: true);
+            nav = new VisualElement();
+            nav.AddToClassList("mm-nav");
+            rail.Add(nav);
 
-            var footer = new VisualElement();
-            footer.AddToClassList("main__footer");
-            Root.Add(footer);
-            links = MenuKit.Row(footer);
-            links.style.flexWrap = Wrap.Wrap;
-            links.AddToClassList("main__links");
+            var card = new VisualElement { pickingMode = PickingMode.Ignore };
+            card.AddToClassList("mm-card");
+            Root.Add(card);
+            cardIndex = MenuKit.Text(card, "", "mm-card__index");
+            cardTitle = MenuKit.Text(card, "", "mm-card__title");
+            cardText = MenuKit.Text(card, "", "mm-card__text");
+            memo = MenuKit.Text(card, "", "mm-card__memo");
+
+            Item(Loc.T("Play"), Loc.T("Host a crew, join your friends, or take the training job at 14 Larch Court."),
+                () => menu.Push(MenuScreen.Play), SoundId.UiConfirm);
+            Item(Loc.T("Settings"), Loc.T("Controls, picture, sound, voice and accessibility."), () => menu.Push(MenuScreen.Settings));
+            Item(Loc.T("Achievements"), Loc.T("What the company has on record about you."), () => menu.Push(MenuScreen.Achievements));
+            Item(Loc.T("Credits"), Loc.T("The people and the free assets behind the game."), () => menu.Push(MenuScreen.Credits));
+            Item(Loc.T("Quit"), Loc.T("Leave the building. The salvage will still be there."), menu.Quit, SoundId.UiBack, important: true);
+
+            var status = new VisualElement();
+            status.AddToClassList("mm-status");
+            Root.Add(status);
+            links = MenuKit.Row(status);
+            links.AddToClassList("mm-status__links");
             if (Launch.HasDiscord) MenuKit.Button(links, "Discord", Launch.OpenDiscord, small: true);
             if (Launch.HasFeedback) MenuKit.Button(links, Loc.T("Feedback"), Launch.OpenFeedback, small: true);
             MenuKit.Button(links, Loc.T("Open logs"), Launch.OpenLogFolder, small: true);
+            MenuKit.Text(status, $"Enter   {Loc.T("Select")}        Esc   {Loc.T("Back")}", "mm-status__keys").pickingMode = PickingMode.Ignore;
+            MenuKit.Text(status, $"v{VersionInfo.Display}  -  {Loc.T(EarlyAccessNotice.Tag)}", "mm-status__version").pickingMode = PickingMode.Ignore;
 
-            VisualElement record = MenuKit.Row(footer);
-            record.AddToClassList("main__record");
-            record.style.flexWrap = Wrap.Wrap;
-            memo = MenuKit.Text(record, "", "main__memo");
-            memo.style.flexShrink = 1;
-            Label version = MenuKit.Text(record, $"v{VersionInfo.Display}  -  {Loc.T(EarlyAccessNotice.Tag)}", "footer");
-            version.style.flexShrink = 1;
             // Last, so it sits over everything until Continue (friends-and-family build, 2026-10-08).
             earlyAccess = new EarlyAccessNotice(Root, menu.TitleFont, () =>
             {
-                column.SetEnabled(true);
+                rail.SetEnabled(true);
                 links.SetEnabled(true);
-                actions.Q<Button>()?.Focus();
+                items[0].Focus();
             });
-            column.SetEnabled(!earlyAccess.Visible);
+            rail.SetEnabled(!earlyAccess.Visible);
             links.SetEnabled(!earlyAccess.Visible);
+            Describe(0);
         }
 
-        private void Navigation(VisualElement parent, string number, string text, Action click,
-            SoundId sound = SoundId.UiClick, bool important = false)
+        private void Item(string text, string description, Action click, SoundId sound = SoundId.UiClick, bool important = false)
         {
-            VisualElement row = MenuKit.Row(parent);
-            row.AddToClassList("main__action");
-            Label index = MenuKit.Text(row, number, "main__index");
-            index.pickingMode = PickingMode.Ignore;
-            Button button = MenuKit.Button(row, text, click, sound, important: important);
-            button.AddToClassList("main__button");
-            bool hovered = false, focused = false;
-            void Mark() => row.EnableInClassList("main__action--active", hovered || focused);
-            button.RegisterCallback<PointerEnterEvent>(_ => { hovered = true; Mark(); });
-            button.RegisterCallback<PointerLeaveEvent>(_ => { hovered = false; Mark(); });
-            button.RegisterCallback<FocusInEvent>(_ => { focused = true; Mark(); });
-            button.RegisterCallback<FocusOutEvent>(_ => { focused = false; Mark(); });
+            int index = items.Count;
+            Button button = MenuKit.Button(nav, text, click, sound, important: important);
+            button.AddToClassList("mm-nav__item");
+            button.userData = description;
+            button.RegisterCallback<PointerEnterEvent>(_ => Describe(index));
+            button.RegisterCallback<FocusInEvent>(_ => Describe(index));
+            items.Add(button);
         }
 
-        private void BuildRuin()
+        // The card follows the pointer and the focus; the item it describes stays marked.
+        private void Describe(int index)
         {
-            // A broken structural A echoes the title's stencil cuts without covering the world backdrop.
-            var ruin = new VisualElement { pickingMode = PickingMode.Ignore };
-            ruin.AddToClassList("main__ruin");
-            Root.Add(ruin);
-            Part("main__ruin-leg", "main__ruin-leg--left");
-            Part("main__ruin-leg", "main__ruin-leg--right");
-            Part("main__ruin-beam", "main__ruin-beam--left");
-            Part("main__ruin-beam", "main__ruin-beam--right");
-            Part("main__ruin-fault");
-            MenuKit.Text(ruin, Loc.T("STRUCTURE\nCOMPROMISED"), "main__ruin-caption").pickingMode = PickingMode.Ignore;
-
-            void Part(params string[] classes)
-            {
-                var part = new VisualElement { pickingMode = PickingMode.Ignore };
-                foreach (string cls in classes) part.AddToClassList(cls);
-                ruin.Add(part);
-            }
+            if (index < 0 || index >= items.Count) return;
+            for (int i = 0; i < items.Count; i++) items[i].EnableInClassList("mm-nav__item--active", i == index);
+            cardIndex.text = $"{index + 1:00} / {items.Count:00}";
+            cardTitle.text = items[index].text;
+            cardText.text = items[index].userData as string ?? "";
         }
 
         /// <summary>Every frame while showing: the last game's notice, the memo, the logo's signal.</summary>
@@ -137,7 +128,7 @@ namespace Abandoned.UI
         {
             // Kept (and sent by the host) as English with its values, like the Play screen's errors; worded here.
             string message = Loc.FromWire(SessionEndNotice.Message);
-            column.SetEnabled(!earlyAccess.Visible);
+            rail.SetEnabled(!earlyAccess.Visible);
             links.SetEnabled(!earlyAccess.Visible);
             MenuKit.Show(noticeBox, message.Length > 0);
             if (notice.text != message) notice.text = message;

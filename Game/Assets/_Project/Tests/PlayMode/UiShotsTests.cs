@@ -7,6 +7,7 @@ using Abandoned.UI;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 
 namespace Abandoned.Tests
 {
@@ -20,6 +21,18 @@ namespace Abandoned.Tests
 
         internal static IEnumerator Shots(string name)
         {
+            // Past the screen-change static and with the first-launch notice out of the way, so the layout is what shows.
+            yield return new WaitForSecondsRealtime(1f);
+            Button notice = MenuUi.Current != null ? MenuUi.Current.Surface?.Q<Button>(className: "launch-notice__continue") : null;
+            if (notice != null && notice.resolvedStyle.display != DisplayStyle.None && notice.panel != null)
+            {
+                using (NavigationSubmitEvent submit = NavigationSubmitEvent.GetPooled())
+                {
+                    submit.target = notice;
+                    notice.SendEvent(submit);
+                }
+                yield return new WaitForSecondsRealtime(0.5f);
+            }
             foreach ((string tag, int w, int h) in Sizes) yield return MenuTests.Capture(MenuUi.Current, $"UI_{name}_{tag}", w, h);
         }
 
@@ -43,6 +56,15 @@ namespace Abandoned.Tests
             while (Time.time < until && (MenuUi.Current == null || MenuUi.Current.Showing != MenuScreen.Main)) yield return null;
             Assert.AreEqual(MenuScreen.Main, MenuUi.Current.Showing);
             yield return Shots("main");
+            // 0.24.12 menus: two of the page screens as well.
+            MenuUi.Current.Push(MenuScreen.Play);
+            yield return null;
+            yield return Shots("play");
+            MenuUi.Current.Back();
+            MenuUi.Current.Push(MenuScreen.Credits);
+            yield return null;
+            yield return Shots("credits");
+            MenuUi.Current.Back();
         }
 
         /// <summary>Step 2: the run HUD, pockets, hand slots, a value tag on what you look at, the loot scan, holding.</summary>

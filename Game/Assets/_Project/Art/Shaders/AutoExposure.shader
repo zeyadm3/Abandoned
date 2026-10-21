@@ -1,6 +1,7 @@
 // Eye adaptation (0.24.12), driven by Abandoned.Core.AutoExposurePass:
-// 0 writes centre-weighted log luminance into a 64 x 64 map, 1 averages it and eases last frame's exposure toward
-// the new target, 2 multiplies the scene by it (Blend DstColor Zero) before bloom and tonemapping.
+// 0 writes centre-weighted log luminance at 1/8 of the frame (each pixel a box of it), 1 reduces that by an exact 4 x 4
+// box, 2 averages the result and eases last frame's exposure toward the new target, 3 multiplies the scene by it
+// (Blend DstColor Zero) before bloom and tonemapping.
 Shader "Hidden/Abandoned/AutoExposure"
 {
     SubShader
@@ -16,6 +17,7 @@ Shader "Hidden/Abandoned/AutoExposure"
         float4 _ExposureParams0; // key, strength, min EV, max EV
         float4 _ExposureParams1; // speed down, speed up, delta time, mip of the 1x1 average
         float _ExposureReset;
+        float4 _ExposureTexel;   // xy: one texel of the pass's source, in uv
 
         struct V2F { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
         V2F Vert(uint id : SV_VertexID)
@@ -35,11 +37,35 @@ Shader "Hidden/Abandoned/AutoExposure"
             #pragma fragment Frag
             float4 Frag(V2F i) : SV_Target
             {
-                float3 c = SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv, 0).rgb;
+                // Four bilinear taps two source texels out: each output pixel is the mean of a block of the frame,
+                // so a small bright light counts for its share instead of being hit or missed by one tap.
+                float2 t = _ExposureTexel.xy * 2.0;
+                float3 c = (SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2(-t.x, -t.y), 0).rgb
+                          + SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2( t.x, -t.y), 0).rgb
+                          + SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2(-t.x,  t.y), 0).rgb
+                          + SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2( t.x,  t.y), 0).rgb) * 0.25;
                 float lum = max(Luminance(c), 1e-4);
                 float2 d = i.uv - 0.5;
                 float weight = exp(-dot(d, d) * 6.0); // the middle of the view counts most
                 return float4(log2(lum) * weight, weight, 0, 0);
+            }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Reduce"
+            HLSLPROGRAM
+            #pragma vertex Vert
+            #pragma fragment Frag
+            // A quarter of the size: four bilinear taps on texel corners are an exact 4 x 4 box.
+            float4 Frag(V2F i) : SV_Target
+            {
+                float2 t = _ExposureTexel.xy;
+                return (SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2(-t.x, -t.y), 0)
+                      + SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2( t.x, -t.y), 0)
+                      + SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2(-t.x,  t.y), 0)
+                      + SAMPLE_TEXTURE2D_LOD(_ExposureSource, sampler_ExposureSource, i.uv + float2( t.x,  t.y), 0)) * 0.25;
             }
             ENDHLSL
         }
@@ -52,7 +78,7 @@ Shader "Hidden/Abandoned/AutoExposure"
             #pragma fragment Frag
             float4 Frag(V2F i) : SV_Target
             {
-                // Average the 64 x 64 luminance map with 32 x 32 bilinear taps (each covers four texels); no mip chain.
+                // Average the reduced map (1/32 of the frame) with 32 x 32 bilinear taps: every texel is covered.
                 float2 sum = 0;
                 [loop] for (int y = 0; y < 32; y++)
                 [loop] for (int x = 0; x < 32; x++)

@@ -103,7 +103,9 @@ How we work: Docs/PLAYBOOK.md.
 
 **0.24.12 sound and picture overhaul (2026-10-21, branch `av-overhaul`).** Forward+, HDR grading, volumetric light,
 eye adaptation, per-map looks, light cookies, CC0 scanned surfaces, wear and floor-crack decals; a mastering bus, hiding muffle and sidechain ducking, Steam Audio head-related panning and
-a CC0 recorded library replacing most synth and Kenney sounds. Maps, gameplay and UI unchanged; music unchanged.
+a CC0 recorded library replacing most synth and Kenney sounds. The menus were laid out again on the same theme (a left
+rail and detail card on the main menu, full-height left sheets for every menu page via `MenuKit.Page`, a help column in
+Settings, a side-sheet pause; `Art/UI/Resources/ModernMenus.uss`). Maps and gameplay unchanged; music unchanged.
 Everything, the menus and what to check first: Docs/AV_OVERHAUL_0.24.12.md. After any map rebuild the upgrade must
 follow (Rebuild All Maps does it; batch: `Tools/unity.sh exec Abandoned.EditorTools.AvOverhaul.AuthorAll`).
 

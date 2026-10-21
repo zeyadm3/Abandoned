@@ -30,7 +30,7 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
             Root.AddToClassList("backdrop--center");
-            VisualElement panel = MenuKit.Panel(Root, wide: true);
+            VisualElement panel = MenuKit.Page(Root, wide: true);
             ScrollView body = MenuKit.Scroll(panel, "demo-end__body");
             MenuKit.Text(body, Loc.T("RECOVERY RECORD / DEMO COMPLETE"), "menu-record");
             Label title = MenuKit.Text(body, Loc.T("THANKS FOR PLAYING"), "title");

@@ -8,7 +8,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// The PC renderer, applied by the rebuild so it can't drift. Since 0.24.12: Forward+ (fixture-dense rooms are
-    /// no longer cut to four lights per object), HDR colour grading, four sun cascades out to 50 m on High
+    /// no longer cut to four lights per object), HDR colour grading, two sun cascades out to 35 m (M7.6)
     /// (VideoApplier lowers it per the Shadows setting), and three renderer features: URP decals, VolumetricFogFeature
     /// and AutoExposureFeature.
     /// Since 0.14.0 the shadowed local lights are the flashlight plus the ceiling lights nearest the camera
@@ -16,8 +16,10 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class RenderPipelineSetup
     {
-        public const float ShadowDistance = 50f;
-        public const int Cascades = 4;
+        // M7.6's budget stands: every cascade redraws every caster, and 4 cascades to 50 m put the mall's concourse over
+        // its draw budget (MallRenderBudgetTests) for sun shadows that only matter near windows.
+        public const float ShadowDistance = 35f;
+        public const int Cascades = 2;
         // Sixteen 1024 px maps. A spot light is one and a point light six, so the flashlight, two point lights
         // and three spots fill it: ShadowDirector counts maps, not lights, to stay inside.
         public const int LocalShadowAtlas = 4096;
@@ -55,7 +57,7 @@ namespace Abandoned.EditorTools
                 AssetDatabase.CreateAsset(ScriptableObject.CreateInstance<ShadowBudgetConfig>(), BudgetPath);
             }
             AssetDatabase.SaveAssets();
-            Debug.Log("[Render] PC pipeline: Forward+, HDR grading, 4 cascades / 50 m, decals, volumetric fog, eye adaptation.");
+            Debug.Log("[Render] PC pipeline: Forward+, HDR grading, 2 cascades / 35 m, decals, volumetric fog, eye adaptation.");
         }
 
         private static void Pipeline(UniversalRenderPipelineAsset urp)
@@ -65,7 +67,7 @@ namespace Abandoned.EditorTools
             urp.colorGradingLutSize = 32;
             urp.shadowDistance = ShadowDistance;
             urp.shadowCascadeCount = Cascades;
-            urp.cascade4Split = new Vector3(0.067f, 0.2f, 0.47f);
+            urp.cascade2Split = 0.3f;
             urp.mainLightShadowmapResolution = 4096;
             urp.additionalLightsShadowmapResolution = LocalShadowAtlas;
             RendererFeatures.Set(urp, "m_SoftShadowsSupported", p => p.boolValue = true);
@@ -82,6 +84,9 @@ namespace Abandoned.EditorTools
         {
             var decals = RendererFeatures.Ensure<DecalRendererFeature>(renderer);
             RendererFeatures.Set(decals, "m_Settings.maxDrawDistance", p => p.floatValue = DecalDistance);
+            // Screen space, not DBuffer: the wear and crack decals are colour only, and DBuffer's extra depth-normals
+            // pass put the mall's concourse over its draw budget (MallRenderBudgetTests).
+            RendererFeatures.Set(decals, "m_Settings.technique", p => p.enumValueIndex = 2);
 
             var fog = RendererFeatures.Ensure<VolumetricFogFeature>(renderer);
             RendererFeatures.Set(fog, "shader", p => p.objectReferenceValue = AssetDatabase.LoadAssetAtPath<Shader>(FogShaderPath));

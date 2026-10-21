@@ -8,7 +8,7 @@ stop until everything is done and built and rebuilt". Maps, models, gameplay and
 
 | What | Where | Notes |
 |------|-------|-------|
-| Forward+, HDR grading (32 LUT), 4 sun cascades to 50 m, 4096 sun map, high soft shadows | `Editor/Art/RenderPipelineSetup.cs` | Forward+ lifts the four-lights-per-object cap the fixture-dense rooms hit. The Shadows setting lowers cascades (1/1/2/4) and distance (0/18/30/50 m) at run time (`VideoApplier`). |
+| Forward+, HDR grading (32 LUT), 2 sun cascades to 35 m (the M7.6 budget; 4 to 50 m put the mall over its draw budget), 4096 sun map, high soft shadows | `Editor/Art/RenderPipelineSetup.cs` | Forward+ lifts the four-lights-per-object cap the fixture-dense rooms hit. The Shadows setting lowers cascades (1/1/2/2) and distance (0/15/25/35 m) at run time (`VideoApplier`). |
 | Volumetric light | `Scripts/Core/Rendering/VolumetricFog*.cs`, `Art/Shaders/VolumetricFog.shader` | Marched through the depth buffer (Low 1/4 resolution x 16 steps, Medium 1/3 x 24, High 1/2 x 32; samples bunched near the camera), lit by the sun (hard shadow taps, faded out past the shadow distance so daylight never pours through roofs) and every clustered local light with its shadows and cookie, faded in over the first 1.5 m from each bulb; depth-aware blur and upsample; blended over the opaque scene. Lights without shadows scatter at 25 % (they would leak through walls). Game and scene cameras only, never overlays or the small monitors. Settings: Graphics > Volumetric light Off/Low/Medium/High (Medium default). Per map: a `VolumetricFogOverride` on its volume profile; the type is registered in `Assets/Settings/DefaultVolumeProfile` (Unity 6 builds every volume stack from that list). |
 | Painted light shafts | `Scripts/Core/Rendering/LightShaftSwitch.cs` | The old shaft cards hide while volumetric light runs and come back when it is off. The lighthouse beam is never touched. |
 | Eye adaptation | `Scripts/Core/Rendering/AutoExposure*.cs`, `Art/Shaders/AutoExposure.shader` | Deliberately soft (strength 0.35, -1.5..+1 EV, centre-weighted): dark halls stay dark; walking in from daylight settles in a second or two. Settings: Graphics > Eye adaptation. |
@@ -33,6 +33,23 @@ stop until everything is done and built and rebuilt". Maps, models, gameplay and
 Not done in this pass: the plan's recorded-instrument music. The songs are rendered on a worker thread from synth voices;
 moving them to samples touches the monster songs and their 15-second warning, so the music is unchanged.
 
+## The game's menus (laid out again)
+
+The user (2026-10-21): "completely redo the menus in the game and modernize them, keep the colors and theme but change
+the structure and the way everything is presented". Colours, fonts and the horror wear are the theme's
+(`AbandonedTheme.uss` variables); only the structure changed. Layout lives in `Art/UI/Resources/ModernMenus.uss`,
+loaded last.
+
+| Screen | Before | Now |
+|--------|--------|-----|
+| Main menu (`MainMenuView`) | A centred stack of numbered buttons over a drawn ruin | A rail down the left (title, tagline, notices, five large items), a card on the right that says what the highlighted item does and carries the recovery memo, and a status bar (links, Enter/Esc keys, version) |
+| Every menu page (`MenuKit.Page`: Play, Settings, Controls, Wardrobe, How to play, Achievements, Credits, demo end) | A floating dialog in the middle | A full-height sheet on the left with an accent edge, the game's name above the heading and "Esc Back" in the corner; the world stays visible beside it |
+| Settings (`SettingsView`) | A note under every option | Categories, options (grouped under section bands), and a help column that explains the option under the pointer or the focus |
+| Pause (`PauseMenuView`, stylesheet only) | Two centred columns | A side sheet with the actions; the crew card beside it and the game behind |
+
+In-world screens (`ScreenPanel`, the HQ stations) and the notices keep `MenuKit.Panel`. On narrow windows the card and
+the help column fold away and the sheets take the full width.
+
 ## Menus (Tools > Abandoned)
 
 - Art: Apply Render Budget (now the whole renderer), and 3060-3065: Apply 0.24.12 Look to Saved Maps, Upgrade Surfaces
@@ -52,14 +69,22 @@ spatial mode.
 
 ## Status (2026-10-21)
 
-- Compiled; every map rebuilt (HQ kept), 128 materials upgraded, 257 recordings processed (51 named cues and 25
-  surface rows play recordings), wear decals on five maps (the HQ has no NavMesh, so none there). Text check 0 missing.
-- Builds from d1fbf784: `~/Documents/Abandoned-builds/dev/Abandoned-0.24.11-d1fbf784-{Mac,Windows}.zip` (the version
-  stamp still says 0.24.11; BuildScript.Version wasn't bumped). Zips test clean, the Mac signature verifies, Steam Audio
-  is in both.
-- Review renders (Game/Logs/renders/av): the fog, cookies, scanned surfaces and grade render without errors. Interiors
-  look darker in these batch captures than the game should: a batch session doesn't derive the ambient from the scene's
-  colours the way play does. Check the brightness in play first.
+- Compiled; every map rebuilt (HQ kept), 148 environment materials upgraded, 228 recordings in the library (42 named
+  cues and 25 surface rows play recordings; all 228 checked CC0 on their own Freesound pages, `fetch_library.py
+  --verify`), wear decals on five maps (the HQ has no NavMesh, so none there). Text check 0 missing.
+- Tests: EditMode 313/313; PlayMode 286 run, all pass after the fixes below (13 skipped as before). Menu screenshots
+  (Game/Screenshots/UI_*: main, settings, pause, play, credits at 16:9, 16:10 and ultrawide) checked by eye.
+- Review fixes (code review of the branch): linear-space surface tint kept idempotent (`MaterialUpgradeOriginals.json`),
+  painted metal not metallic, word-based skip list; crack decals' pivot; STP only below 100 % scale; master bus re-added
+  last on listener moves; Steam Audio readiness check and no start in batch mode (`SteamAudioManager.AutoInitialize`,
+  marked "Abandoned patch"); eye adaptation reduced through a 1/8 then 1/32 box chain; Rebuild All Maps reports a
+  failed overhaul step; doors, lockers, DistantSettle and PlayerHurt stay synthesised (catalog revision 3).
+- Budget: sun shadows stay 2 cascades / 35 m (4 / 50 m put the mall over `MallRenderBudgetTests`); decals are screen
+  space, not DBuffer.
+- Known limit: scanned tiling assumes metre UVs (true of the builders' geometry); a name-matched material on a 0..1
+  unwrapped kit model would show the scan too large.
+- Review renders (Game/Logs/renders/av): interiors look darker in batch captures than the game should, since a batch
+  session doesn't derive the ambient from the scene's colours the way play does. Check the brightness in play first.
 - Never played. Not heard: the recordings were chosen by Freesound rating and downloads, not by ear. Nine searches
   found nothing (glass and puddle footsteps, heavy concrete and sandbag impacts, ceramic crack, shutters, sledgehammer,
   crowbar); those keep their Kenney or synth sound.

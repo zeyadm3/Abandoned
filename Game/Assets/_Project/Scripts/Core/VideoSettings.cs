@@ -12,8 +12,8 @@ namespace Abandoned.Core
     {
         public static readonly int[] FrameCaps = { 0, 30, 60, 90, 120, 144, 240 };
         public static readonly string[] ShadowNames = { "Off", "Low", "Medium", "High" }; // @loc:quality
-        public static readonly float[] ShadowDistances = { 0f, 18f, 30f, 50f };
-        public static readonly int[] ShadowCascades = { 1, 1, 2, 4 };
+        public static readonly float[] ShadowDistances = { 0f, 15f, 25f, 35f };
+        public static readonly int[] ShadowCascades = { 1, 1, 2, 2 };
         // Appended in 0.24.12 so saved choices keep their meaning: SMAA and TAA are camera passes, not MSAA.
         public static readonly string[] AntiAliasingNames = { "Off", "MSAA 2x", "MSAA 4x", "SMAA", "TAA" }; // @loc:quality
         public static readonly int[] AntiAliasingSamples = { 1, 2, 4, 1, 1 };

@@ -75,7 +75,8 @@ namespace Abandoned.UI
                 UiKit.FillScreen(v);
                 v.style.flexDirection = FlexDirection.Column;
                 v.style.justifyContent = Justify.Center;
-                v.style.alignItems = v == main.Root ? Align.FlexStart : Align.Center;
+                // Menu pages (MenuKit.Page) and the main menu sit against the left edge; notices stay centred.
+                v.style.alignItems = v == main.Root || v.ClassListContains("mm-backdrop") ? Align.FlexStart : Align.Center;
                 v.style.display = DisplayStyle.None;
                 if (at < 0) root.Add(v);
                 else root.Insert(at++, v);

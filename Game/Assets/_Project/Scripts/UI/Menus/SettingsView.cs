@@ -11,10 +11,10 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// Settings (GDD 20; redone in 0.12.5): a landscape screen with the pages listed down the left
-    /// (Gameplay, Controls, Video, Graphics, Audio, Voice, Accessibility) and the open page on the right,
-    /// every option with a one-line explanation. Changes apply at once and are written to disk on Back;
-    /// each page can be put back to its defaults.
+    /// Settings (GDD 20; redone in 0.12.5, laid out again in 0.24.12): the pages listed down the left
+    /// (Gameplay, Controls, Video, Graphics, Audio, Voice, Accessibility), the open page's options in the
+    /// middle, and on the right the one-line explanation of the option under the pointer or the focus.
+    /// Changes apply at once and are written to disk on Back; each page can be put back to its defaults.
     /// </summary>
     public class SettingsView
     {
@@ -27,7 +27,7 @@ namespace Abandoned.UI
         private readonly MenuUi menu;
         private readonly List<Page> pages = new();
         private readonly List<Button> nav = new();
-        private readonly Label pageTitle, pageBlurb;
+        private readonly Label pageTitle, pageBlurb, helpTitle, helpText;
         private readonly ScrollView body;
         private VisualElement micBar;
         private int open;
@@ -40,11 +40,8 @@ namespace Abandoned.UI
             Root = new VisualElement();
             Root.AddToClassList("backdrop");
             Root.AddToClassList("backdrop--dim");
-            VisualElement panel = MenuKit.Panel(Root, wide: true);
+            VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("settings");
-            // MenuKit.Panel sizes inline; the landscape layout needs the room.
-            panel.style.width = 1360f;
-            panel.style.maxWidth = Length.Percent(96f);
 
             MenuKit.Text(panel, Loc.T("PERSONAL RECORD / FIELD CONFIGURATION"), "menu-record");
             MenuKit.Text(panel, Loc.T("SETTINGS"), "heading");
@@ -62,6 +59,13 @@ namespace Abandoned.UI
             pageTitle = MenuKit.Text(page, "", "settings__page-title");
             pageBlurb = MenuKit.Text(page, "", "settings__page-blurb");
             body = MenuKit.Scroll(page, "settings__body");
+            // 0.24.12 menus: the explanation of whatever the pointer or the focus is on, beside the list instead of
+            // under every row.
+            var help = new VisualElement();
+            help.AddToClassList("settings__help");
+            columns.Add(help);
+            helpTitle = MenuKit.Text(help, "", "settings__help-title");
+            helpText = MenuKit.Text(help, "", "settings__help-text");
 
             Define();
             for (int i = 0; i < pages.Count; i++)
@@ -195,6 +199,7 @@ namespace Abandoned.UI
                 if (quality.Length > 1)
                     MenuKit.Choice(body, Loc.T("Preset"), Words(quality), VideoSettings.Quality >= 0 ? VideoSettings.Quality : QualitySettings.GetQualityLevel(), i => VideoSettings.Quality = i);
                 MenuKit.Choice(body, Loc.T("Shadows"), Words(VideoSettings.ShadowNames, "quality"), VideoSettings.Shadows, i => VideoSettings.Shadows = i);
+                NoteLast(Loc.T("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6)."));
                 MenuKit.Choice(body, Loc.T("Textures"), Words(VideoSettings.TextureNames), VideoSettings.TextureQuality, i => VideoSettings.TextureQuality = i);
                 MenuKit.Choice(body, Loc.T("Volumetric light"), Words(VideoSettings.VolumetricNames, "quality"), VideoSettings.Volumetrics, i => VideoSettings.Volumetrics = i);
                 NoteLast(Loc.T("Beams through the dust from torches, lamps and windows. The heaviest effect; lower it first."));
@@ -205,7 +210,6 @@ namespace Abandoned.UI
                 Note(Toggle(Loc.T("Bloom"), VideoSettings.Bloom, v => VideoSettings.Bloom = v), Loc.T("The glow round bright lights."));
                 Note(Toggle(Loc.T("Film grain"), VideoSettings.Grain, v => VideoSettings.Grain = v), Loc.T("Off also calms night vision's noise."));
                 Note(Toggle(Loc.T("Post-processing"), VideoSettings.PostProcessing, v => VideoSettings.PostProcessing = v), Loc.T("Everything above, plus colour grading, brightness, and the low-health and night-vision looks. Off is fastest."));
-                NoteLast(Loc.T("How far shadows reach, and how many of the lights around you cast them (2, 4 or 6)."));
                 Note(MenuKit.Percent(body, Loc.T("Render scale"), Mathf.InverseLerp(VideoSettings.MinRenderScale, 1f, VideoSettings.RenderScale),
                     v => VideoSettings.RenderScale = Mathf.Lerp(VideoSettings.MinRenderScale, 1f, v)), Loc.T("Draws the 3D view smaller and stretches it (0% = half resolution). Menus stay sharp."));
                 MenuKit.Choice(body, Loc.T("Upscaler"), Words(VideoSettings.UpscalerNames), VideoSettings.Upscaler, i => VideoSettings.Upscaler = i);
@@ -340,6 +344,7 @@ namespace Abandoned.UI
             for (int i = 0; i < nav.Count; i++) nav[i].EnableInClassList("settings__nav-button--open", i == open);
             pageTitle.text = pages[open].Name;
             pageBlurb.text = pages[open].Blurb;
+            Explain(pages[open].Name, pages[open].Blurb);
             body.Clear();
             micBar = null;
             pages[open].Build();
@@ -367,9 +372,24 @@ namespace Abandoned.UI
             return row;
         }
 
-        // A short explanation under the option it belongs to.
+        // A short explanation of the option just added: shown in the help column while the pointer or the focus is on it.
         private void Note(VisualElement _, string text) => NoteLast(text);
 
-        private void NoteLast(string text) => MenuKit.Text(body, text, "settings__note");
+        private void NoteLast(string text)
+        {
+            int count = body.contentContainer.childCount;
+            if (count == 0) return;
+            VisualElement row = body.contentContainer[count - 1];
+            string name = row.Q<Label>(className: "setting__label")?.text ?? pages[open].Name;
+            row.AddToClassList("setting--explained");
+            row.RegisterCallback<PointerEnterEvent>(_ => Explain(name, text));
+            row.RegisterCallback<FocusInEvent>(_ => Explain(name, text));
+        }
+
+        private void Explain(string title, string text)
+        {
+            helpTitle.text = title;
+            helpText.text = text;
+        }
     }
 }

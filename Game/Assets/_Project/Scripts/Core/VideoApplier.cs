@@ -72,7 +72,7 @@ namespace Abandoned.Core
             runtimeAsset.shadowDistance = VideoSettings.ShadowDistances[VideoSettings.Shadows];
             // Room in the atlas for the flashlight and the ceiling lights the setting allows (Structure.ShadowDirector).
             runtimeAsset.additionalLightsShadowmapResolution = ShadowBudgetConfig.Current.Atlas(VideoSettings.Shadows);
-            // 0.24.12: one cascade on Low, two on Medium, the asset's four on High; the sun's map shrinks with them.
+            // 0.24.12: one cascade on Off/Low, two on Medium and High (M7.6 budget); the sun gets a 4096 map on High.
             runtimeAsset.shadowCascadeCount = VideoSettings.ShadowCascades[VideoSettings.Shadows];
             runtimeAsset.mainLightShadowmapResolution = VideoSettings.Shadows >= 3 ? 4096 : 2048;
             runtimeAsset.renderScale = VideoSettings.RenderScale;

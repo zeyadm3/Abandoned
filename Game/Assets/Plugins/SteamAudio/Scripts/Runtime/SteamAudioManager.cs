@@ -1557,6 +1557,9 @@ namespace SteamAudio
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void AutoInitialize()
         {
+            // Abandoned patch (0.24.12): batch runs (tests, headless network clients) have no audio device and never
+            // spatialize (Abandoned.Audio.SpatialAudio is off there), so the native plugin isn't started.
+            if (Application.isBatchMode) return;
             Initialize(ManagerInitReason.Playing);
         }
 
