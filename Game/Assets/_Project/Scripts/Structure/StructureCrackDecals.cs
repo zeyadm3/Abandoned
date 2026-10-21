@@ -14,7 +14,8 @@ namespace Abandoned.Structure
     public class StructureCrackDecals : MonoBehaviour
     {
         public const string MaterialResource = "AV_Cracks";
-        private const float Depth = 0.6f;
+        // Thin enough that the walking face's box doesn't reach the slab's underside (or a fixture hung under it).
+        private const float Depth = 0.2f;
         private static Material material;
 
         private readonly Dictionary<StructuralSection, (DecalProjector top, DecalProjector under)> projectors = new();
@@ -92,9 +93,9 @@ namespace Abandoned.Structure
             // One of four cracks in the 2 x 2 atlas, from where the slab is, so every machine picks the same one.
             int variant = Mathf.Abs(Mathf.RoundToInt(b.center.x * 7f) * 31 + Mathf.RoundToInt(b.center.z * 13f)) % 4;
             var bias = new Vector2(variant % 2 * 0.5f, variant / 2 * 0.5f);
-            // The boxes sit inside the slab with only 5 cm above (below) its face, so boots and loot on it stay clean.
-            DecalProjector top = Projector(s, "CracksTop", new Vector3(b.center.x, b.max.y - Depth * 0.5f + 0.05f, b.center.z), Quaternion.Euler(90f, 0f, 0f), b, bias);
-            DecalProjector under = Projector(s, "CracksUnder", new Vector3(b.center.x, b.min.y + Depth * 0.5f - 0.05f, b.center.z), Quaternion.Euler(-90f, 0f, 0f), b, bias);
+            // Each box reaches 15 cm into the slab and 5 cm out of its face, so boots and loot on it stay clean.
+            DecalProjector top = Projector(s, "CracksTop", new Vector3(b.center.x, b.max.y - 0.05f, b.center.z), Quaternion.Euler(90f, 0f, 0f), b, bias);
+            DecalProjector under = Projector(s, "CracksUnder", new Vector3(b.center.x, b.min.y + 0.05f, b.center.z), Quaternion.Euler(-90f, 0f, 0f), b, bias);
             return (top, under);
         }
 
@@ -106,6 +107,9 @@ namespace Abandoned.Structure
             var p = go.AddComponent<DecalProjector>();
             p.material = material;
             p.size = new Vector3(b.size.x * 0.96f, b.size.z * 0.96f, Depth);
+            // URP's default pivot (0, 0, 0.5) starts the box at the projector and runs it Depth forward; the placement
+            // above centres the box on the projector, so it needs a centred pivot.
+            p.pivot = Vector3.zero;
             p.uvScale = new Vector2(0.5f, 0.5f);
             p.uvBias = bias;
             p.drawDistance = 45f;

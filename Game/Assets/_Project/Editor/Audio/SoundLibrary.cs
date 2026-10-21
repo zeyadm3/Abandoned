@@ -34,6 +34,21 @@ namespace Abandoned.EditorTools
             { SurfaceMaterial.Terrazzo, SurfaceMaterial.Concrete }, { SurfaceMaterial.Tile, SurfaceMaterial.Concrete },
             { SurfaceMaterial.Carpet, SurfaceMaterial.Fabric },
         };
+        // Never recorded, whatever the library holds: the heartbeat, breathing, monster signatures and songs are part of
+        // the rules; DistantSettle as a recording is a creak, and a creak only ever means the floor; so is a recorded
+        // door or locker (0.16.0: they are synthesised rolls, thuds and sheet metal); PlayerHurt as a recording is one
+        // person's voice, and the crew are anyone.
+        private static readonly HashSet<SoundId> Never = new()
+        {
+            SoundId.Heartbeat, SoundId.Breath, SoundId.DistantSettle, SoundId.PlayerHurt,
+            SoundId.DoorSlide, SoundId.DoorShut, SoundId.DoorBash, SoundId.DoorBreak, SoundId.DoorSlam,
+            SoundId.LockerOpen, SoundId.LockerShut,
+            SoundId.StalkerSignature, SoundId.CollectorSignature, SoundId.WeightSignature, SoundId.ThingSignature,
+            SoundId.CrawlersSignature, SoundId.LastHunterSignature, SoundId.ThemeBlindOne, SoundId.ThemeStalker,
+            SoundId.ThemeCollector, SoundId.ThemeHunter, SoundId.ThemeWeight, SoundId.ThemeThing, SoundId.ThemeCrawlers,
+            SoundId.ThemeLastHunter,
+        };
+
         // Monster vocals are people and animals; slowed down they stop sounding like either.
         private static readonly Dictionary<SoundId, Vector2> Pitch = new()
         {
@@ -196,9 +211,17 @@ namespace Abandoned.EditorTools
 
             foreach (SoundId id in Enum.GetValues(typeof(SoundId)))
             {
+                SoundBank.Named row = named.FirstOrDefault(n => n.Id == id);
+                if (Never.Contains(id))
+                {
+                    // Back to the synthesised sound if an earlier library build gave it recordings (also when those
+                    // recordings were deleted since and the row only holds missing references).
+                    if (row != null && row.Cue.HasClips && SoundCatalog.Info(id).Mode == SoundMode.Synth)
+                        row.Cue.EditorSetClips(Array.Empty<AudioClip>());
+                    continue;
+                }
                 AudioClip[] clips = Clips($"Cues/{id}");
                 if (clips.Length == 0) continue;
-                SoundBank.Named row = named.FirstOrDefault(n => n.Id == id);
                 SoundInfo info = SoundCatalog.Info(id);
                 Vector2 pitch = Pitch.TryGetValue(id, out Vector2 p) ? p : new Vector2(0.95f, 1.05f);
                 var cue = new SoundCue(clips, row?.Cue.Volume ?? info.Volume, pitch, row?.Cue.MinDistance ?? info.MinDistance, row?.Cue.MaxDistance ?? info.MaxDistance);

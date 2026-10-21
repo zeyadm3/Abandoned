@@ -14,13 +14,29 @@ namespace Abandoned.Audio
         private const string PluginName = "Steam Audio Spatializer";
         private static bool active;
 
-        public static bool Active => active;
-        public static string Mode => active ? "Steam Audio HRTF" : "built-in";
+        private static bool? started;
+
+        public static bool Active => Ready();
+        public static string Mode => Ready() ? "Steam Audio HRTF" : "built-in";
+
+        // Steam Audio starts itself before the first scene. If its native plugin failed to load (a blocked bundle), its
+        // manager has no simulator and every SteamAudioSource would throw, so Unity's panning stays instead.
+        private static bool Ready()
+        {
+            if (!active) return false;
+            if (started == null)
+            {
+                started = SteamAudio.SteamAudioManager.Singleton != null && SteamAudio.SteamAudioManager.Simulator != null;
+                if (started == false) Debug.LogWarning("[Audio] Steam Audio did not start; using Unity's 3D panning.");
+            }
+            return started.Value;
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Boot()
         {
             active = false;
+            started = null;
             if (Application.isBatchMode || !AudioConfig.Current.SteamAudio) return;
             // The spatializer is chosen in Project Settings > Audio (EditorTools.SpatialAudioSetup); a player can only read it.
             string current = AudioSettings.GetSpatializerPluginName();
@@ -36,7 +52,7 @@ namespace Abandoned.Audio
         public static void Apply(AudioSource source, bool spatial)
         {
             if (source == null) return;
-            bool use = active && spatial;
+            bool use = spatial && Ready();
             if (source.spatialize != use) source.spatialize = use;
             if (!use || source.TryGetComponent(out SteamAudio.SteamAudioSource _)) return;
             SteamAudio.SteamAudioSource steam = source.gameObject.AddComponent<SteamAudio.SteamAudioSource>();

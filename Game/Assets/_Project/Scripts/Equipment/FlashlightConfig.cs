@@ -22,6 +22,11 @@ namespace Abandoned.Equipment
         [field: SerializeField, Min(0.1f)] public float FlickerFrequency { get; private set; } = 19f;
         [field: Tooltip("0.24.12: the reflector-pattern cookie (Core.LightCookies).")]
         [field: SerializeField] public bool UseCookie { get; private set; } = true;
+        [Tooltip("Makes up the light the cookie's pattern takes away, so the beam is as bright as before 0.24.12.")]
+        [SerializeField, Range(1f, 1.5f)] private float cookieGain = 1.2f;
+
+        /// <summary>The intensity the beam is given: <see cref="Intensity"/>, made up for the cookie when it has one.</summary>
+        public float BeamIntensity => Intensity * (UseCookie ? cookieGain : 1f);
 
         private static FlashlightConfig fallback;
         public static FlashlightConfig Default => fallback != null ? fallback : fallback = CreateInstance<FlashlightConfig>();

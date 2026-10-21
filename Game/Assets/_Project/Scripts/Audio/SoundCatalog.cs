@@ -13,8 +13,9 @@ namespace Abandoned.Audio
         /// <summary>
         /// Raised when sounds move from recordings to synthesis. A SoundBank asset older than this still
         /// holds the old recordings for those cues; they are ignored until the bank is rebuilt.
+        /// 3 (0.24.12): DistantSettle and PlayerHurt went back to synthesis after a pass with recordings.
         /// </summary>
-        public const int Revision = 2;
+        public const int Revision = 3;
 
         public static readonly int Count = Enum.GetValues(typeof(SoundId)).Length;
 
@@ -243,7 +244,35 @@ namespace Abandoned.Audio
             Set(SoundId.LootSizzle, Fx, 150, 1f, 12f, Syn, Wall, 3, Loc.Mark("hot metal hisses"), 0.6f);
             Set(SoundId.LootSlosh, Fx, 130, 1f, 15f, Syn, Wall, 3, null, 0.7f);
             // @@catalog
+
+            // 0.24.12: CC0 recordings (Editor/Audio/SoundLibrary) voice these now. Monster vocals and the power going
+            // keep their synthesised sound under the recording, so each creature and the breaker still sound like
+            // themselves. Rows that were already recorded or layered keep their mode. Doors and lockers stay synthesised
+            // (0.16.0: rolls, thuds and sheet metal; a recorded door can creak, and a creak only ever means the floor).
+            // (Local lists: Build runs from a static initialiser, before any later static field is set.)
+            SoundId[] recorded =
+            {
+                SoundId.Aftershock, SoundId.AlarmBell, SoundId.BodyFall, SoundId.BreakerThrow, SoundId.CrashDebris,
+                SoundId.Creak, SoundId.DeepRumble, SoundId.EngineIdle, SoundId.FactoryChainRattle, SoundId.FixtureFall,
+                SoundId.FlashlightClick, SoundId.Foghorn, SoundId.GlassCrunch, SoundId.GlassFloorCrack, SoundId.Groan,
+                SoundId.HumLoop, SoundId.Lever, SoundId.LightBuzz, SoundId.LootBreak,
+                SoundId.LootPickup, SoundId.LootRattle, SoundId.PlayerLand, SoundId.PuddleSplash, SoundId.RoomToneLoop,
+                SoundId.RubbleLand, SoundId.Shove, SoundId.Snap, SoundId.SteamBlast, SoundId.SurfLoop, SoundId.Thunder,
+                SoundId.TimberFloorCrack, SoundId.TravelEngineLoop, SoundId.WaterDrip, SoundId.WindLoop,
+            };
+            SoundId[] layered =
+            {
+                SoundId.CeilingScuttle, SoundId.Knock, SoundId.Roar, SoundId.Scream, SoundId.ThreatStrike, SoundId.Whisper,
+                SoundId.PowerDown, SoundId.PowerUp,
+            };
+            foreach (SoundId id in recorded) Record(t, id, Lib);
+            foreach (SoundId id in layered) Record(t, id, Both);
             return t;
+        }
+
+        private static void Record(SoundInfo[] t, SoundId id, SoundMode mode)
+        {
+            if (t[(int)id].Mode == SoundMode.Synth) t[(int)id] = t[(int)id].WithMode(mode);
         }
     }
 }

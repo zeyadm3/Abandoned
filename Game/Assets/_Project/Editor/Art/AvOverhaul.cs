@@ -50,6 +50,14 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets();
         }
 
+        /// <summary>Batch: <see cref="AfterMaps"/> on the saved maps (no rebuild), then exit.</summary>
+        public static void AfterMapsAndExit()
+        {
+            failures.Clear();
+            AfterMaps();
+            Exit();
+        }
+
         /// <summary>Batch: the render pipeline, the looks and the surfaces again (no scene changes), then exit.</summary>
         public static void RefreshAndExit()
         {
@@ -57,17 +65,6 @@ namespace Abandoned.EditorTools
             Step("Render pipeline", RenderPipelineSetup.Apply);
             Step("Map looks", AvLook.ApplyToSaved);
             Step("Scanned surfaces", MaterialUpgrade.Run);
-            Exit();
-        }
-
-        /// <summary>Batch, once: take the abandoned probe-volume bake out of every saved map, then exit.</summary>
-        public static void ClearBakesAndExit()
-        {
-            failures.Clear();
-            Step("Render pipeline", RenderPipelineSetup.Apply);
-            foreach (string path in MapScenes)
-                Step($"Clear bake: {System.IO.Path.GetFileNameWithoutExtension(path)}", () => LightingBake.Clear(path));
-            if (AssetDatabase.IsValidFolder(LightingBake.Folder)) AssetDatabase.DeleteAsset(LightingBake.Folder);
             Exit();
         }
 

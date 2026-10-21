@@ -25,7 +25,7 @@ namespace Abandoned.Equipment
             if (IsServer) ServerResetBattery();
             if (flashlight == null) return;
             flashlight.range = FlashlightConfig.Range;
-            flashlight.intensity = FlashlightConfig.Intensity;
+            flashlight.intensity = FlashlightConfig.BeamIntensity;
             flashlight.spotAngle = FlashlightConfig.SpotAngle;
             flashlight.innerSpotAngle = FlashlightConfig.InnerSpotAngle;
             flashlight.color = FlashlightConfig.Color;
@@ -102,7 +102,7 @@ namespace Abandoned.Equipment
             // QA O-01: the warning is still there with flashing reduced, as a slow fade rather than a strobe.
             if (Core.GameSettings.ReduceFlashing)
                 dip = Mathf.Lerp(0.45f, 0.8f, Mathf.PerlinNoise(OwnerClientId * 1.7f, Time.time * 0.6f));
-            flashlight.intensity = FlashlightConfig.Intensity * Mathf.Lerp(1f, dip, flickerPressure);
+            flashlight.intensity = FlashlightConfig.BeamIntensity * Mathf.Lerp(1f, dip, flickerPressure);
         }
     }
 }

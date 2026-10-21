@@ -19,7 +19,7 @@ namespace Abandoned.Core
 
         public override void Create()
         {
-            pass = new AutoExposurePass { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing };
+            pass = new AutoExposurePass { renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing, requiresIntermediateTexture = true };
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -27,6 +27,7 @@ namespace Abandoned.Core
             if (shader == null || !VideoSettings.EyeAdaptation || !VideoSettings.PostProcessing) return;
             RenderTexture rt = renderingData.cameraData.camera.targetTexture;
             if (renderingData.cameraData.cameraType != CameraType.Game || (rt != null && rt.width < 1024)) return;
+            if (renderingData.cameraData.renderType == CameraRenderType.Overlay) return; // the base camera already adapted
             if (material == null) material = UnityEngine.Rendering.CoreUtils.CreateEngineMaterial(shader);
             if (!pass.Setup(material)) return;
             renderer.EnqueuePass(pass);

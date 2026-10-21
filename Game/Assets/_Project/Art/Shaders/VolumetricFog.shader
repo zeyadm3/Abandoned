@@ -42,7 +42,8 @@ Shader "Hidden/Abandoned/VolumetricFog"
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _LIGHT_COOKIES
             #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            // No _SHADOWS_SOFT: one hard shadow tap per sample is enough under the blur, and soft filtering would
+            // multiply the march's cost by the filter's taps.
             #define _ADDITIONAL_LIGHTS 1
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 

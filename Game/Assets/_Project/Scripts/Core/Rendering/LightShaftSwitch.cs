@@ -15,12 +15,11 @@ namespace Abandoned.Core
         // Material names of the interior fake shafts (builders' LightShaft materials).
         private static readonly HashSet<string> Painted = new() { "LightShaft", "ClerestoryLightShaft", "ShopLightShaft", "IronFactory_LightShaft" };
         private static readonly List<Renderer> shafts = new();
-        private static int scannedScenes = -1;
-        private static bool shown = true;
+        private static bool scanned, shown = true;
 
         public static void Apply(bool volumetricsOn)
         {
-            if (scannedScenes != SceneManager.sceneCount || (shafts.Count > 0 && shafts[0] == null)) Scan();
+            if (!scanned) Scan();
             var fog = VolumeManager.instance.stack.GetComponent<VolumetricFogOverride>();
             bool show = !(volumetricsOn && fog != null && fog.IsActive);
             if (show == shown) return;
@@ -31,7 +30,7 @@ namespace Abandoned.Core
 
         private static void Scan()
         {
-            scannedScenes = SceneManager.sceneCount;
+            scanned = true;
             shafts.Clear();
             foreach (Renderer r in Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
             {
@@ -41,13 +40,17 @@ namespace Abandoned.Core
             shown = true; // freshly loaded cards are visible; Apply settles them
         }
 
+        // A level load brings new cards: look again on the next Apply.
+        private static void OnLoaded(Scene scene, LoadSceneMode mode) => scanned = false;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {
             shafts.Clear();
-            scannedScenes = -1;
+            scanned = false;
             shown = true;
-            SceneManager.sceneLoaded += (_, _) => scannedScenes = -1;
+            SceneManager.sceneLoaded -= OnLoaded; // statics survive Play mode without a domain reload
+            SceneManager.sceneLoaded += OnLoaded;
         }
     }
 }

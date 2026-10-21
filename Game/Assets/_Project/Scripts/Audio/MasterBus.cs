@@ -9,7 +9,7 @@ namespace Abandoned.Audio
     /// filter; its numbers are in AudioConfig (Mastering). 2D sounds (UI, the player's own pulse) bypass it with the
     /// other listener effects.
     /// </summary>
-    [DisallowMultipleComponent]
+    // Not DisallowMultipleComponent: ListenerSpace replaces it in one frame (the old one is destroyed at frame end).
     public class MasterBus : MonoBehaviour
     {
         // Copied from the config on the main thread; the audio thread only reads them.

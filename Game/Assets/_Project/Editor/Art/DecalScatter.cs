@@ -36,7 +36,7 @@ namespace Abandoned.EditorTools
 
             string n = sceneName.ToLowerInvariant();
             bool hq = n.Contains("hq"), works = n.Contains("factory");
-            var rng = new System.Random(sceneName.GetHashCode() ^ 0x24c12);
+            var rng = new System.Random(StableHash(sceneName) ^ 0x24c12);
             var root = new GameObject(Root).transform;
             int mask = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
 
@@ -62,6 +62,17 @@ namespace Abandoned.EditorTools
             return made;
         }
 
+        // FNV-1a: string.GetHashCode may differ between runtimes, and the scatter must land in the same places every run.
+        private static int StableHash(string s)
+        {
+            unchecked
+            {
+                uint h = 2166136261;
+                foreach (char c in s) { h ^= c; h *= 16777619; }
+                return (int)h;
+            }
+        }
+
         private static Vector3 PointOn(NavMeshTriangulation nav, List<float> area, float total, System.Random rng)
         {
             float pick = (float)rng.NextDouble() * total;
@@ -76,8 +87,9 @@ namespace Abandoned.EditorTools
         {
             if (!Physics.Raycast(p + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 1.5f, mask, QueryTriggerInteraction.Ignore)) return false;
             float size = 0.8f + (float)rng.NextDouble() * 1.8f;
-            Place(root, "FloorStain", DecalAssets.FloorStain, hit.point + Vector3.up * 0.05f, Quaternion.LookRotation(Vector3.down, Rand(rng)),
-                new Vector3(size, size, 0.4f), new Vector3(0f, 0f, 0.15f));
+            // The box reaches 3 cm above the floor: a stain, not a stain on whatever stands on it.
+            Place(root, "FloorStain", DecalAssets.FloorStain, hit.point + Vector3.up * 0.03f, Quaternion.LookRotation(Vector3.down, Rand(rng)),
+                new Vector3(size, size, 0.4f), new Vector3(0f, 0f, 0.2f));
             return true;
         }
 
@@ -91,14 +103,15 @@ namespace Abandoned.EditorTools
             bool rust = works && rng.NextDouble() < 0.4;
             if (rust)
             {
+                // Boxes sit mostly inside the wall (5 cm out of it), so shelves and props against it stay clean.
                 Vector3 top = hit.point + Vector3.up * (1.6f + (float)rng.NextDouble());
-                Place(root, "RustRun", DecalAssets.RustRun, top - n * 0.02f, Quaternion.LookRotation(-n, Vector3.up), new Vector3(width * 0.5f, 1.8f, 0.4f), Vector3.zero);
+                Place(root, "RustRun", DecalAssets.RustRun, top - n * 0.15f, Quaternion.LookRotation(-n, Vector3.up), new Vector3(width * 0.5f, 1.8f, 0.4f), Vector3.zero);
             }
             else
             {
                 // Grime rises from the floor: the decal's bottom edge sits at the floor.
                 Vector3 at = new Vector3(hit.point.x, p.y + 0.6f, hit.point.z);
-                Place(root, "WallGrime", DecalAssets.Grime, at - n * 0.02f, Quaternion.LookRotation(-n, Vector3.up), new Vector3(width, 1.2f, 0.4f), Vector3.zero);
+                Place(root, "WallGrime", DecalAssets.Grime, at - n * 0.15f, Quaternion.LookRotation(-n, Vector3.up), new Vector3(width, 1.2f, 0.4f), Vector3.zero);
             }
             return true;
         }
@@ -109,8 +122,9 @@ namespace Abandoned.EditorTools
             if (hit.normal.y > -0.7f) return false;
             float size = 0.9f + (float)rng.NextDouble() * 1.8f;
             Material m = works && rng.NextDouble() < 0.6 ? DecalAssets.Soot : DecalAssets.WaterStain;
-            Place(root, m == DecalAssets.Soot ? "Soot" : "WaterStain", m, hit.point - Vector3.up * 0.05f, Quaternion.LookRotation(Vector3.up, Rand(rng)),
-                new Vector3(size, size, 0.4f), new Vector3(0f, 0f, 0.15f));
+            // The box reaches 3 cm below the ceiling, clear of the fixtures hung from it.
+            Place(root, m == DecalAssets.Soot ? "Soot" : "WaterStain", m, hit.point - Vector3.up * 0.03f, Quaternion.LookRotation(Vector3.up, Rand(rng)),
+                new Vector3(size, size, 0.4f), new Vector3(0f, 0f, 0.2f));
             return true;
         }
 

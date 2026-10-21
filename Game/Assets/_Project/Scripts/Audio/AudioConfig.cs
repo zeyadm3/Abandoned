@@ -66,7 +66,8 @@ namespace Abandoned.Audio
         [SerializeField, Range(1f, 10f)] private float compressorRatio = 3f;
         [SerializeField, Range(0.0005f, 0.1f)] private float attackSeconds = 0.008f;
         [SerializeField, Range(0.01f, 2f)] private float releaseSeconds = 0.18f;
-        [SerializeField, Range(0f, 12f)] private float makeupDb = 3f;
+        [Tooltip("Gain after the compressor. 0 keeps the mix as loud as before (the 0.14.0 pass was found far too loud).")]
+        [SerializeField, Range(0f, 12f)] private float makeupDb = 0f;
         [SerializeField, Range(-6f, 0f)] private float ceilingDb = -1f;
 
         [Header("States and ducking (0.24.12)")]

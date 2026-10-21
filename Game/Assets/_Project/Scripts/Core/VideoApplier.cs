@@ -76,7 +76,10 @@ namespace Abandoned.Core
             runtimeAsset.shadowCascadeCount = VideoSettings.ShadowCascades[VideoSettings.Shadows];
             runtimeAsset.mainLightShadowmapResolution = VideoSettings.Shadows >= 3 ? 4096 : 2048;
             runtimeAsset.renderScale = VideoSettings.RenderScale;
-            runtimeAsset.upscalingFilter = VideoSettings.Upscaler switch
+            // Only below 100 %: URP runs STP (and forces its temporal anti-aliasing over the player's choice) whenever
+            // it is selected, even with nothing to upscale.
+            bool upscaling = VideoSettings.RenderScale < 0.999f;
+            runtimeAsset.upscalingFilter = !upscaling ? UpscalingFilterSelection.Linear : VideoSettings.Upscaler switch
             {
                 0 => SystemInfo.supportsComputeShaders ? UpscalingFilterSelection.STP : UpscalingFilterSelection.FSR,
                 1 => UpscalingFilterSelection.FSR,
