@@ -1,4 +1,97 @@
-# TestMap graphics showcase (2026-10-22)
+# TestMap graphics showcase
+
+## Site pass (2026-10-22, second pass)
+
+The user, on the first pass: "it still looks basic"; the bar is a modern AAA-looking indie. Asked for much better level
+design ("not a 20x16 box"), trees and landscaping, much better light and shadows (baked or bounced light allowed for the
+TestMap's static parts), better materials, props, atmosphere and sound, keeping the statue gallery. Only the TestMap
+changes; the user decides afterwards whether any of it goes to the real maps.
+
+The warehouse block the tests walk is **unchanged** (tile grid, section names, stairs, both doors, spawn row, loot,
+colliders), so TestMapNavigationTests, TestMapStructureTests and JuiceTests needed no edits. What changed is everything
+around it.
+
+### Build it
+**Tools > Abandoned > Maps > Test Map > Rebuild Test Map** builds and now also **bakes the lighting** (about 15 minutes
+in all on this Mac: the coplanar pass and the bake are most of it). **Bake Test Map Lighting** (new, 1601) bakes again
+without rebuilding. Assets are in the repository; to fetch and bake them again: `python3 Tools/Art/fetch_nature.py`
+(Blender is used for the trees, maps and the grass card; `FETCH_CACHE=<dir>` keeps the raw downloads, the fir alone is
+a 249 MB FBX).
+
+### Level design (Editor/TestMap/ShowcaseSitePlan.cs has every position)
+- **A fenced yard**, x -40..62, z -54..52, round the warehouse and the gallery, on a 640 m terrain. Past the fence the
+  ground rises into wooded hills, highest on a ridge to the north; a ring of far hills closes the horizon.
+- **The approach:** a gravel road climbs out of the forest from the south-west, cut into the hillside with ditches,
+  under a power line on wooden poles, to the south gate (one leaf hanging open, concrete blocks on the verge, a
+  breeze-block guard hut).
+- **The forecourt:** cracked asphalt from the gate to the warehouse, weeds in the cracks, wet patches, cars under
+  covers, a box trailer without its cab, a skip, pallet stacks, dead lamp posts. The spawn row and both door lanes are
+  clear.
+- **West:** the roofless shell of the old boiler house (broken wall tops, window holes, a fallen girder, the boiler,
+  rubble, young firs growing inside) and its 26 m chimney: walkable, a second space to explore.
+- **East:** a gravel lot with shipping containers stacked in a block with lanes between, a lean-to over gas bottles,
+  crates and a welder, and a 21 m steel water tower. The chimney and water tower are the landmarks from anywhere.
+- **North:** long grass behind the gallery, firs and small trees left to grow inside the fence.
+- **Warehouse outside:** gutters and downpipes at the corners, security lamps, a camera, a hydrant.
+
+### Nature
+- 7,965 terrain trees of 16 kinds: three scanned firs (19, 14 and 14.5 m), young firs, pine saplings, small broadleaf
+  trees and dead snags; tall firs deep in the forest, young ones and small trees at its edges, clearings where the
+  noise says so, nothing within ~9 m of the fence or 7 m of the road.
+- The scanned trees are millions of leaf cards each. `Tools/Art/bake_tree.py` keeps a random share of the cards and
+  grows each kept card so the crown keeps its cover (LOD0 ~95k card faces for the tall fir, LOD1 ~18k), decimates the
+  trunk, and renders an impostor (two crossed quads, front and side) for LOD2. Card textures keep their alpha coverage
+  in the mips (`mipMapsPreserveCoverage`), so far trees don't go bald.
+- Grass: a card rendered from scanned clumps (`bake_card.py`) as Unity's waving terrain grass, in drifts; scanned tufts,
+  ferns, nettles, weeds and shrubs as instanced detail meshes. Mossy boulders, fallen trunks, stumps and brush along
+  the forest edge.
+- Eight scanned ground layers painted by rule: grass and dry meadow in the open, forest floor and leaf litter under
+  the trees, bare dirt and gravel on steep slopes, the gravel road with dirt shoulders, asphalt and weedy gravel in
+  the yard, trodden dirt round the buildings.
+
+### Light and atmosphere (ShowcaseSky.cs)
+- **Sky:** a photographed golden-hour sky (Poly Haven evening_road_01, 4K HDR) as the skybox, the ambient light and
+  the reflections. Its sun is put in the west-south-west, raking across the warehouse's south front.
+- **Sun:** on the same bearing at 16 degrees (the photo's is ~10; lower would put the whole yard in the forest's
+  shadow), warm (1, .7, .45), intensity 5; ambient from the sky at 0.65 so the sun reads.
+- **Baked light, TestMap only:** a `TestMap_Lighting` settings asset (GPU lightmapper, Shadowmask, directional
+  lightmaps, 5 texels/m, baked AO, 3 bounces). The sun is Mixed: realtime shadows close to you, baked shadows and
+  bounce beyond the 35 m shadow distance. Static architecture is lightmapped (583 renderers); models without lightmap
+  UVs and small things are lit by 9,285 light probes, which also light everything that moves or collapses (floor tiles
+  are never static). Fixtures stay realtime (their power and flicker).
+- **Grade:** warm haze toward the sun (fog .0045), volumetric fog to 140 m, contrast 18, cool shadows and warm
+  highlights, bloom .25, vignette .2.
+- **Materials:** the warehouse, gallery and boiler house brick is now Poly Haven's factory_brick at its real 1.5 m
+  repeat (the old remaster scan looked like orange blotches up close), the car park uses the same asphalt scan as the
+  forecourt, containers are four scanned claddings toned down.
+
+### Sound (Scripts/Audio/TestMapSoundscape.cs, Editor/TestMap/ShowcaseSound.cs)
+Birdsong and wind in the trees from points round the forest's edge (spatial, dulled indoors like any outdoor sound),
+crickets in the long grass, a crow now and then from a treetop. Four new SoundIds (appended): BirdsongLoop,
+TreeWindLoop, CricketsLoop, CrowCall, from CC0 Freesound recordings (Tools/Audio/library.csv). Inside, the existing
+ambience (hum, room tone, failing tubes) carries on.
+
+### Also fixed
+- The crew statues in the gallery faced away from the entrance (their backpacks to the door); they face it now.
+
+### What to look at first
+1. **Performance.** ~8,000 LOD trees, grass and detail meshes, a 640 m terrain. Check the F1 perf line at the gate and
+   in the forecourt. Levers if it's heavy: `Terrain.detailObjectDistance` (110), the fir's LOD0 card count in
+   `Tools/Art/fetch_nature.py`, `treeDistance` (650).
+2. **Shadowmask in play.** The realtime/baked shadow hand-off at 35 m, and whether ShadowDirector's fixture shadows
+   behave with the baked sun.
+3. **Footsteps outside.** The whole terrain is tagged Dirt (one surface per terrain), so the asphalt forecourt sounds
+   like dirt; the old car-park slab is still Asphalt.
+4. **The forest from inside the yard.** Firs are thinned scans; up close their crowns are lighter than the original.
+5. **Sound levels** of the four beds (TestMapSoundscape's levels on the Soundscape object).
+
+### Not checked (user's instruction: no play tests, no test suites)
+Built, baked and reviewed from editor screenshots only (Docs/renders/testmap-site has five; Game/Logs/tmshots has the rest). Never played; no test suite run.
+Collapsing floors, loot and spawns are the same objects as before.
+
+---
+
+## First pass (2026-10-22)
 
 The user, after four graphics passes: "I hate the graphics", and that the game lacks graphical fidelity in general
 (not Ghost of Tsushima, but "some level of graphical fidelity"). Asked to redo **only the TestMap** with new lighting,

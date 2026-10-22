@@ -32,7 +32,8 @@ namespace Abandoned.EditorTools
                 var spot = new Vector3(10f + (i - 1.5f) * 1.7f, Floor + .2f, crewZ);
                 GameObject crew = ShowcaseStatues.Crew(statues, Coveralls[i]);
                 if (crew == null) continue;
-                crew.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                // The crew model faces -z, so unturned they face the entrance (at 180 they showed it their backpacks).
+                crew.transform.rotation = Quaternion.identity;
                 Bounds b = Seat(crew, spot);
                 Plaque(statues, $"Crew · {char.ToUpper(Coveralls[i][0])}{Coveralls[i].Substring(1)}", new Vector3(spot.x, Floor + .1f, crewZ - .65f));
                 Light(lights, b, seed++);

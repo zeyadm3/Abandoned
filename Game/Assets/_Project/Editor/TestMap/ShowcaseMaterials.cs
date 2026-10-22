@@ -24,7 +24,7 @@ namespace Abandoned.EditorTools
         public static Material Joist => Surface("TestMap_Timber_Joist", new Color(.38f, .29f, .2f));
         public static Material BlockWall => Surface("TestMap_Painted_Block_Wall", new Color(.62f, .62f, .58f));
         public static Material PlasterWall => Surface("TestMap_Interior_Painted_Plaster_Wall", new Color(.66f, .64f, .59f));
-        public static Material Brick => Surface("TestMap_Brick_Facade", new Color(.43f, .25f, .19f));
+        public static Material Brick => Rescan(Surface("TestMap_Brick_Facade", new Color(.43f, .25f, .19f)), "factory_brick", 1.5f);
         public static Material CastConcrete => Surface("TestMap_Cast_Concrete_Pillar", new Color(.55f, .54f, .52f));
         public static Material Roof => Surface("TestMap_Cast_Concrete_Roof_Slab", new Color(.5f, .5f, .49f));
         public static Material Steel => Surface("TestMap_Steel_Beam", new Color(.36f, .37f, .38f));
@@ -34,7 +34,7 @@ namespace Abandoned.EditorTools
         public static Material Skirting => Surface("TestMap_Painted_Wood_Trim", new Color(.3f, .27f, .23f));
         public static Material Sill => Surface("TestMap_Precast_Concrete_Sill", new Color(.62f, .61f, .58f));
         public static Material Pavement => Surface("TestMap_Pavement_Concrete", new Color(.55f, .54f, .51f));
-        public static Material Asphalt => Surface("TestMap_Asphalt_Carpark", new Color(.2f, .2f, .21f));
+        public static Material Asphalt => Rescan(Surface("TestMap_Asphalt_Carpark", new Color(.2f, .2f, .21f)), "asphalt_02", 5f);
         public static Material Grass => Surface("TestMap_Grass_Lawn", new Color(.27f, .31f, .17f));
         public static Material Dirt => Surface("TestMap_Dirt_Ground", new Color(.33f, .28f, .21f));
         public static Material Gravel => Surface("TestMap_Gravel_Verge", new Color(.42f, .4f, .37f));
@@ -62,6 +62,26 @@ namespace Abandoned.EditorTools
                 Debug.LogWarning($"[Showcase] {name}: no scanned surface matched the name; it stays plain.");
                 material.SetColor("_BaseColor", average);
             }
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        /// <summary>Puts one of the TestMap's own ground and cladding scans (fetch_nature.py, Art/TestMap/Ground) on a
+        /// surface material in place of the remaster's, keeping its triplanar set-up: <paramref name="metres"/> is how much
+        /// wall one repeat of the scan covers. The remaster's colour match is dropped; these scans carry their own.</summary>
+        public static Material Rescan(Material material, string scan, float metres)
+        {
+            string folder = $"{ShowcaseTerrain.GroundFolder}/{scan}";
+            Texture2D colour = ShowcaseNature.Texture(folder + "_diff", srgb: true, normal: false, cutout: false);
+            if (colour == null) return material;
+            Texture2D mask = ShowcaseNature.Texture(folder + "_mask", srgb: false, normal: false, cutout: false);
+            material.SetTexture("_BaseMap", colour);
+            material.SetTexture("_BumpMap", ShowcaseNature.Texture(folder + "_nor_gl", srgb: false, normal: true, cutout: false));
+            material.SetTexture("_MetallicGlossMap", mask);
+            material.SetTexture("_OcclusionMap", mask);
+            material.SetTextureScale("_BaseMap", Vector2.one / metres);
+            material.SetColor("_BaseColor", Color.white);
+            material.SetFloat("_Smoothness", .6f);
             EditorUtility.SetDirty(material);
             return material;
         }

@@ -207,6 +207,11 @@ namespace Abandoned.Audio
         // Loot quirks: hot metal sizzling and liquid sloshing
         LootSizzle,
         LootSlosh,
+        // TestMap site (2026-10-22): the forest round the yard at golden hour (recorded ambience, never a clue).
+        BirdsongLoop,
+        TreeWindLoop,
+        CricketsLoop,
+        CrowCall,
         // @@ids
     }
 }

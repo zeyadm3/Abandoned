@@ -48,7 +48,7 @@ namespace Abandoned.EditorTools
         private static readonly WallOpening Window = new(1.2f, 1f, 1.2f);       // future rope-point fallback route
         private static readonly WallOpening Glazed = new(1.8f, .9f, 1.5f);      // upstairs windows, glass in them
 
-        private static Material concrete, timber, stairs, blockWall, plasterWall, column, ground, asphalt, line;
+        private static Material concrete, timber, stairs, blockWall, plasterWall, column, asphalt, line;
 
         [MenuItem(ToolMenu.TestMap + "Rebuild Test Map", priority = ToolMenu.TestMapP)]
         public static void Create()
@@ -96,7 +96,6 @@ namespace Abandoned.EditorTools
             blockWall = ShowcaseMaterials.BlockWall;
             plasterWall = ShowcaseMaterials.PlasterWall;
             column = ShowcaseMaterials.CastConcrete;
-            ground = ShowcaseMaterials.Dirt;
             asphalt = ShowcaseMaterials.Asphalt;
             line = ShowcaseMaterials.LinePaint;
         }
@@ -283,14 +282,7 @@ namespace Abandoned.EditorTools
 
         private static void BuildExterior(Transform exterior)
         {
-            // Four slabs around the footprint, flush with the ground-floor tiles: no overlap, no z-fighting.
-            Transform slabs = Group("GroundSlabs", exterior);
-            const float t = 0.5f;
-            Box("Ground_S", slabs, new Vector3(10f, -t / 2f, -15f), new Vector3(60f, t, 30f), ground);
-            Box("Ground_N", slabs, new Vector3(10f, -t / 2f, 26f), new Vector3(60f, t, 20f), ground);
-            Box("Ground_W", slabs, new Vector3(-10f, -t / 2f, 8f), new Vector3(20f, t, 16f), ground);
-            Box("Ground_E", slabs, new Vector3(30f, -t / 2f, 8f), new Vector3(20f, t, 16f), ground);
-
+            // The ground round the building is the showcase's terrain (ShowcaseTerrain), 3 cm under the slab.
             Transform parking = Group("Parking", exterior);
             Box("Asphalt", parking, new Vector3(10f, -0.04f, -9f), new Vector3(20f, 0.12f, 14f), asphalt);
             for (int i = 0; i <= 6; i++)

@@ -148,7 +148,7 @@ namespace Abandoned.EditorTools
             Tag(root.Find("GroundFloor/Tiles"), SurfaceMaterial.Concrete);
             Tag(root.Find("UpperFloor/Tiles"), SurfaceMaterial.Wood);
             Tag(root.Find("Stairs"), SurfaceMaterial.Metal);
-            Tag(root.Find("Exterior/GroundSlabs"), SurfaceMaterial.Dirt);
+            // The ground outside is the showcase terrain, tagged Dirt where it is made (ShowcaseTerrain).
             Tag(root.Find("Exterior/Parking"), SurfaceMaterial.Asphalt);
         }
 

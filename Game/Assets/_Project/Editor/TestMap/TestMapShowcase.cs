@@ -14,8 +14,9 @@ namespace Abandoned.EditorTools
     /// surfaces, photo-scanned furniture and fittings, working light fixtures, a roof), and a gallery beside it where
     /// the crew and every monster stand still. TestMapBuilder calls <see cref="Dress"/> once the gameplay is in, then
     /// <see cref="Finish"/> after the first save for the passes the real maps get (NavMesh, reflection probes, wear
-    /// decals, weathering, lighting calibration, the flicker fix). Gameplay colliders are untouched; see
-    /// Docs/TESTMAP_SHOWCASE.md.
+    /// decals, weathering, lighting calibration, the flicker fix) and, in the TestMap only, the baked light. Since the
+    /// site pass the building stands in a fenced yard on a wooded terrain (ShowcaseSitePlan). Gameplay colliders are
+    /// untouched; see Docs/TESTMAP_SHOWCASE.md.
     /// </summary>
     public static class TestMapShowcase
     {
@@ -26,6 +27,7 @@ namespace Abandoned.EditorTools
 
         public static void Dress(Transform root)
         {
+            ShowcaseTerrain.Build(Group("Land", root));
             ShowcaseStructure.Girders(Group("Girders", root), Tile);
             float skin = TestMapBuilder.WallThickness + ShowcaseWalls.SkinGap + ShowcaseWalls.SkinThickness;
             ShowcaseStructure.Roof(Group("Roof", root), Vector3.zero, new Vector3(Width, 0f, Depth), RoofY, skin + .05f);
@@ -34,6 +36,10 @@ namespace Abandoned.EditorTools
             ShowcaseDressing.Dress(root);
             Lights(Group("Lights", root), root);
             ShowcaseExterior.Build(root);
+            ShowcaseYard.Build(root);
+            ShowcaseSite.Build(root);
+            ShowcaseForecourt.Build(root);
+            ShowcaseSound.Build(root);
             ShowcaseGallery.Build(root);
             LevelAtmosphere.Apply(SceneName, ShowcaseLighting.Mood, root);
         }
@@ -43,7 +49,7 @@ namespace Abandoned.EditorTools
         public static void Finish(Scene scene, Transform root)
         {
             // The NavMesh is only for the passes below (probes and decals are laid out from it); nothing walks it here.
-            LocationPlumbing.BakeNavMesh(root, SceneName, Array.Empty<string>());
+            LocationPlumbing.BakeNavMesh(root, SceneName, new[] { "Land" }); // the 640 m terrain would only slow it down
             int probes = RoomReflectionProbes.Place(scene);
             int decals = DecalScatter.Scatter(scene.name);
             SurfaceAging.Place(scene);
@@ -55,9 +61,11 @@ namespace Abandoned.EditorTools
             }
             LightingRebuild.ApplyScene(scene, config);
             GalleryContrast(root);
+            ShowcaseSky.Apply(scene, root);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             (int moved, int faces, int left) = CoplanarFix.FixOpenScene(save: true);
+            ShowcaseSky.BakeAndSave(scene);
             Debug.Log($"[Showcase] TestMap finished: {probes} reflection probes, {decals} wear decals, " +
                       $"{moved} objects moved off shared planes ({left} faces still within 0.1 mm).");
         }

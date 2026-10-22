@@ -119,6 +119,7 @@ Tools > Abandoned
       Reset Tutorial Lessons to Defaults             1540
     Test Map                                         [1600-1699]
       Rebuild Test Map                               1600
+      Bake Test Map Lighting                         1601
   ──────────
   Content
     Data                                             [2000-2099]

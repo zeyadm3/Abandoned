@@ -243,6 +243,12 @@ namespace Abandoned.Audio
             // Loot quirks: hot metal sizzling and liquid sloshing
             Set(SoundId.LootSizzle, Fx, 150, 1f, 12f, Syn, Wall, 3, Loc.Mark("hot metal hisses"), 0.6f);
             Set(SoundId.LootSlosh, Fx, 130, 1f, 15f, Syn, Wall, 3, null, 0.7f);
+            // TestMap site: birds and wind in the trees at the forest's edge, crickets in the long grass (spatial beds,
+            // dulled by walls like any outdoor sound), and a crow now and then from the treetops (no caption: scenery).
+            Set(SoundId.BirdsongLoop, Bed, 175, 8f, 70f, Lib, Dull, pitch: 0f, loop: true);
+            Set(SoundId.TreeWindLoop, Bed, 175, 8f, 60f, Lib, Dull, pitch: 0f, loop: true);
+            Set(SoundId.CricketsLoop, Bed, 180, 3f, 30f, Lib, Dull, pitch: 0f, loop: true);
+            Set(SoundId.CrowCall, Bed, 150, 15f, 160f, Lib, Dull, 3, null, .8f);
             // @@catalog
 
             // 0.24.12: CC0 recordings (Editor/Audio/SoundLibrary) voice these now. Monster vocals and the power going

@@ -100,6 +100,11 @@ T = [
     ("Cues/HumLoop", "electrical hum", 2, 5.0, 60.0, ()),
     ("Cues/RoomToneLoop", "room tone", 2, 10.0, 90.0, ()),
     ("Cues/SurfLoop", "ocean waves", 2, 10.0, 90.0, ()),
+    # TestMap site (2026-10-22): the forest round the yard.
+    ("Cues/BirdsongLoop", "forest birds ambience", 2, 20.0, 120.0, ("city", "traffic", "rain", "voice")),
+    ("Cues/TreeWindLoop", "wind in trees leaves", 2, 20.0, 120.0, ("rain", "traffic", "voice")),
+    ("Cues/CricketsLoop", "crickets evening", 2, 15.0, 120.0, ("traffic", "voice", "rain")),
+    ("Cues/CrowCall", "crow caw", 3, 0.5, 4.0, ("toy", "voice")),
     ("Cues/TravelEngineLoop", "van interior engine", 1, 10.0, 60.0, ()),
     ("Cues/EngineIdle", "truck engine idle", 1, 5.0, 40.0, ()),
 ]
