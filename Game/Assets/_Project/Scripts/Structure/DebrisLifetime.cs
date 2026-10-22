@@ -13,11 +13,15 @@ namespace Abandoned.Structure
     public class DebrisLifetime : MonoBehaviour
     {
         private const float MinTumble = 1.5f, SleepCheckInterval = 0.25f;
+        // A chunk that hasn't dropped this far below the broken floor in MinTumble has wedged across the hole.
+        private const float HangDepth = 0.6f;
 
         private readonly List<Vector3> launches = new();
         private Rigidbody[] bodies = System.Array.Empty<Rigidbody>();
         private int moving, resting, restingCap = int.MaxValue;
         private float tumbleUntil, tumbleFrom, nextCheck;
+        private Bounds hole;
+        private bool hasHole;
 
         /// <summary>Launch velocity of each chunk, in spawn order.</summary>
         public IReadOnlyList<Vector3> Launches => launches;
@@ -27,13 +31,16 @@ namespace Abandoned.Structure
 
         internal void RecordLaunch(Vector3 velocity) => launches.Add(velocity);
 
-        /// <summary>Chunks settle after at most <paramref name="seconds"/>; kept only while the world holds fewer than <paramref name="cap"/> resting chunks.</summary>
-        internal void Settle(float seconds, int cap)
+        /// <summary>Chunks settle after at most <paramref name="seconds"/>; kept only while the world holds fewer than <paramref name="cap"/> resting chunks.
+        /// <paramref name="brokenFloor"/> is where the section was: nothing may stay hanging there.</summary>
+        internal void Settle(float seconds, int cap, Bounds brokenFloor)
         {
             restingCap = cap;
             tumbleFrom = Time.time;
             tumbleUntil = Time.time + Mathf.Max(MinTumble, seconds);
             bodies = GetComponentsInChildren<Rigidbody>(true);
+            hole = brokenFloor;
+            hasHole = brokenFloor.size.x > 0f && brokenFloor.size.z > 0f;
         }
 
         private void Update()
@@ -43,13 +50,31 @@ namespace Abandoned.Structure
             {
                 if (Time.time < tumbleFrom + MinTumble || Time.time < nextCheck) return;
                 nextCheck = Time.time + SleepCheckInterval;
+                DropHanging();
                 foreach (Rigidbody b in bodies) if (b != null && !b.isKinematic && !b.IsSleeping()) return;
             }
             Rest();
         }
 
+        // Chunks that jammed against each other and the intact floor round the hole would read as floor you can't
+        // stand on: they go (the rubble mound below is what stays).
+        private void DropHanging()
+        {
+            if (!hasHole) return;
+            for (int i = 0; i < bodies.Length; i++)
+            {
+                Rigidbody b = bodies[i];
+                if (b == null) continue;
+                Vector3 p = b.position;
+                if (p.y < hole.min.y - HangDepth || p.x < hole.min.x || p.x > hole.max.x || p.z < hole.min.z || p.z > hole.max.z) continue;
+                Destroy(b.gameObject);
+                bodies[i] = null;
+            }
+        }
+
         private void Rest()
         {
+            DropHanging();
             int count = 0;
             foreach (Rigidbody b in bodies) if (b != null) count++;
             DebrisSpawner.Release(moving);

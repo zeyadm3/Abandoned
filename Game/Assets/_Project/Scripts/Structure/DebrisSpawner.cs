@@ -19,6 +19,7 @@ namespace Abandoned.Structure
         public static int RestingChunks { get; private set; }
 
         private static readonly List<DebrisLifetime> Settled = new();
+        private const float ChunkBoxScale = 0.8f;
 
         public static GameObject Spawn(StructuralSection section, GameObject fracturedPrefab, Material material,
             StructureVisualConfig visuals, int seed, bool preserveMaterials = false)
@@ -49,7 +50,9 @@ namespace Abandoned.Structure
                 if (layer >= 0) chunk.layer = layer;
                 r.enabled = true;
                 if (material != null && !preserveMaterials) r.sharedMaterial = material;
-                if (!chunk.TryGetComponent(out Collider _)) chunk.AddComponent<BoxCollider>();
+                // A box round an irregular chunk overlaps its neighbours and the intact floor at the edge, enough to
+                // wedge the whole break across the hole: keep it inside the chunk.
+                if (!chunk.TryGetComponent(out Collider _)) chunk.AddComponent<BoxCollider>().size *= ChunkBoxScale;
 
                 Rigidbody body = chunk.TryGetComponent(out Rigidbody existing) ? existing : chunk.AddComponent<Rigidbody>();
                 body.isKinematic = false;
@@ -65,7 +68,9 @@ namespace Abandoned.Structure
 
             LiveChunks += used;
             lifetime.Track(used);
-            lifetime.Settle(section.Config.DebrisLifetime, visuals.MaxRestingChunks);
+            // A stair's bounds reach down to the floor its rubble lands on, so only flat floors get the hanging check.
+            lifetime.Settle(section.Config.DebrisLifetime, visuals.MaxRestingChunks,
+                section.Type == SectionType.Stair ? default : section.SurfaceBounds);
             return root;
         }
 
