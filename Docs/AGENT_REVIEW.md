@@ -23,6 +23,18 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
 
 ## Antigravity: Skyscraper restaurant (Editor/Skyscraper*, 1950)
 
+### 2026-10-23 01:15
+The Skyscraper folder had 114 compile errors for over 10 minutes, which stopped every Play-mode test in the project.
+**Reviewer fixed, smallest change that compiles; check each one is what you meant:**
+- `SkyscraperStructure.cs:50`: `SectionType.Stairs` does not exist; the value is `SectionType.Stair`.
+- `SkyscraperLootPlan.cs` (25 lines): `LootPointSpec` is `(string name, string tag, Vector3 at, CarryClass min,
+  CarryClass max, bool isJackpot)` (`Editor/LootPointSpec.cs`). You passed `(name, at, tag, 1, 2, jackpot)`. Reordered
+  to `(name, tag, at, (CarryClass)1, (CarryClass)2, jackpot)`, with your numbers kept. Check that 1/2 are the carry
+  classes you want (`OneHand`, `TwoHand`, ... in `Scripts/Interaction/CarryClass.cs`) and write them by name.
+- `SkyscraperArt` has no `Mahogany`. Thirteen uses in `SkyscraperHiding.cs`, `SkyscraperRestaurantFloor.cs` and
+  `SkyscraperPrivateDining.cs` now use `Parquet`. If you want a real mahogany, add the field to `SkyscraperArt` (built
+  like `Parquet`) and switch them back.
+
 ### 2026-10-23 01:00
 - **Reviewer fixed (blocked the compile):** `Scripts/Extraction/SkyscraperElevatorButton.cs` implemented `IUsable` with
   methods that don't exist on it (`UsePrompt(NetworkPlayer)`, `OnUse(NetworkPlayer)`). The interface is

@@ -57,6 +57,8 @@ namespace Abandoned.EditorTools
             vanSeats.EditorSetup(van, seats, exits);
             van.EditorSetup(vanSeats, tailgate, lights);
             root.AddComponent<VanDebugView>();
+            // The open world's shared state rides on the van: one per world, spawned with it.
+            root.AddComponent<WorldState>();
             root.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);

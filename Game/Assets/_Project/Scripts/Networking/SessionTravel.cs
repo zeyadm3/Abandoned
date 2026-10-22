@@ -62,7 +62,13 @@ namespace Abandoned.Networking
         /// True when the level's network objects may be spawned: no travel system (a level played on its
         /// own, tests), or on the host once every connected machine has loaded the current level.
         /// </summary>
-        public static bool LevelReady => Current == null || !Current.IsSpawned || Current.AllReady;
+        public static bool LevelReady => (Current == null || !Current.IsSpawned || Current.AllReady) && (StreamingReady == null || StreamingReady());
+
+        /// <summary>
+        /// Open world (Abandoned.World.WorldState): false while a place streamed into the world is loaded on the host
+        /// but not yet on every machine, so its scene's directors hold their spawns like they do for a level.
+        /// </summary>
+        public static Func<bool> StreamingReady { get; set; }
 
         /// <summary>Every machine: a level finished loading here (the travel id it belongs to).</summary>
         public static event Action<string> Arrived;
