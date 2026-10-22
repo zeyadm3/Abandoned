@@ -42,6 +42,7 @@ namespace Abandoned.EditorTools
                 ("Island Prison", IslandPrisonBuilder.Build),
                 ("Saint Brigid Hospital", Abandoned.Hospital.HospitalBuilder.Build),
                 ("Last Light Motor Lodge", Abandoned.Motel.MotelBuilder.Build),
+                ("Millbrook 3rd Precinct", PoliceStationBuilder.Build),
             };
             if (rebuildHq) steps.Add(("HQ (Salvage Hub)", HqBuilder.AuthorSalvageHub));
             steps.Add(("Tutorial House", TutorialHouseBuilder.Build));

@@ -124,6 +124,10 @@ Tools > Abandoned
       Rebuild Saint Brigid Hospital                  1700
     Motel                                            [1750-1799]
       Rebuild Last Light Motor Lodge                 1750
+    Police Station                                   [1800-1849]
+      Rebuild Police Station                         1800
+      ──
+      Add Police Station Loot                        1820
   ──────────
   Content
     Data                                             [2000-2099]
@@ -305,3 +309,11 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   Authors Motel.unity, Motel-local art/data/navigation and run plumbing; included in Rebuild All Maps.
 - Hospital and Motel ship through both `BuildScenes.SalvageScenes` and `BuildScenes.All`. Their generated
   Resources network prefabs register before NGO starts; the world owns distance streaming and POI activation.
+
+## Police Station (2026-10-23)
+
+- `Maps/Police Station/Rebuild Police Station` — priority 1800, `ToolMenu.PoliceStation` / `PoliceStationP`.
+  Authors PoliceStation.unity (the Millbrook 3rd Precinct, Docs/POLICE_STATION_PLAN.md); included in Rebuild All Maps.
+- `Maps/Police Station/Add Police Station Loot` — 1820. Fills in the precinct's loot definitions
+  (Data/Loot/PoliceStation), models, prefabs and icons; the rebuild runs it first anyway.
+- The scene is in `BuildScenes.All` only (an open-world POI, not yet a contract destination).
