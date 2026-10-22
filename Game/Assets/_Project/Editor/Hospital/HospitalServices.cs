@@ -1,63 +1,143 @@
 using Abandoned.Audio;
+using Abandoned.Core;
 using Abandoned.EditorTools;
 using Abandoned.Extraction;
 using Abandoned.Structure;
 using UnityEditor;
 using UnityEngine;
-
 namespace Abandoned.Hospital
 {
     public static class HospitalServices
     {
-        public static HorrorConfig Build(Transform root,HospitalKit k,HospitalStructure floors)
+        public static HorrorConfig Build(Transform root, HospitalKit kit, HospitalStructure floors)
         {
-            string path=HospitalLoot.Data+"/HospitalHorror.asset";
-            var config=SerializedWiring.LoadOrCreateAsset<HorrorConfig>(path);
-            var so=new SerializedObject(config);var levels=so.FindProperty("levels");levels.arraySize=2;
-            levels.GetArrayElementAtIndex(0).stringValue="Hospital";levels.GetArrayElementAtIndex(1).stringValue="World";
-            so.FindProperty("<Building>k__BackingField").boundsValue=HospitalLayout.Bounds;
-            so.FindProperty("<ArrivalFallback>k__BackingField").vector3Value=new Vector3(24,0,18);
-            so.FindProperty("<ArrivalFigure>k__BackingField").vector3Value=new Vector3(24,4,32);
-            so.FindProperty("<ArrivalDoor>k__BackingField").vector3Value=new Vector3(28,4,32);
-            so.FindProperty("<RoarPoint>k__BackingField").vector3Value=new Vector3(24,6,36);
-            so.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(config);
-            Transform services=HospitalKit.Group("Services",root);
-            int id=0,hideIndex=80;
-            for(int level=0;level<2;level++)
+            StationContext c = floors.Context;
+            var config = SerializedWiring.LoadOrCreateAsset<HorrorConfig>(HospitalLoot.Data + "/HospitalHorror.asset");
+            var data = new SerializedObject(config);
+            SerializedProperty levels = data.FindProperty("levels");
+            levels.arraySize = 2;
+            levels.GetArrayElementAtIndex(0).stringValue = "Hospital";
+            levels.GetArrayElementAtIndex(1).stringValue = "World";
+            data.FindProperty("<Building>k__BackingField").boundsValue = HospitalLayout.Bounds;
+            data.FindProperty("<ArrivalFallback>k__BackingField").vector3Value = new Vector3(30f, 0f, 14f);
+            data.FindProperty("<ArrivalFigure>k__BackingField").vector3Value = new Vector3(30f, 4f, 26f);
+            data.FindProperty("<ArrivalDoor>k__BackingField").vector3Value = new Vector3(32f, 4f, 26f);
+            data.FindProperty("<RoarPoint>k__BackingField").vector3Value = new Vector3(18f, - 2f, 38f);
+            data.FindProperty("<SectorCell>k__BackingField").vector3Value = new Vector3(20f, 100f, 24f);
+            data.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(config);
+            StationLighting.Build(root, c.Plan, c.Art, new Color(.8f, .94f, .87f), 17023);
+            foreach (LightFixture fixture in root.GetComponentsInChildren<LightFixture>())
             {
-                for(float z=4;z<40;z+=8)foreach(float x in new[]{8f,24f,40f})
-                    Fixture(services,k,new Vector3(x,level*4+3.35f,z),id++,level==0?floors.At(new Vector3(x,4,z)):null);
-                foreach(float x in new[]{3f,45f})foreach(float z in new[]{14f,38f})
+                StructuralSection ceiling = floors.At(fixture.transform.position);
+                if (ceiling != null && ceiling.CanCollapse)
                 {
-                    Vector3 at=new(x,level*4,z);
-                    HospitalHiding.Build(services,k,at,x<24?90:-90,hideIndex++,floors.At(at));
+                    fixture.gameObject.AddComponent<SectionProp>().EditorSetup(ceiling);
                 }
             }
-            for(int sector=0;sector<6;sector++)Breaker(services,k,sector,new Vector3(29.1f+sector*1.25f,0,24.3f));
-            var ambience=HospitalKit.Group("Ambience",root).gameObject.AddComponent<LevelAmbience>();
-            ambience.EditorSetup(.14f,.12f,0,new Vector2(22,48));
+            Vector3 [] panels =
+            {
+                new(3f, 0f, .3f),
+                new(18f, 0f, .3f),
+                new(51f, 0f, .3f),
+                new(2f, 0f, 47.6f),
+                new(18f, 0f, 47.6f),
+                new(51f, 0f, 47.6f)
+            };
+            for (int i = 0; i <panels.Length; i++)
+            {
+                Panel(root, kit, i, panels [i], i <3 ? 0f : 180f);
+            }
+            foreach (int floor in new []
+            {
+                0, 1
+            })
+            {
+                foreach (float z in new []
+                {
+                    14f, 34f, 46f
+                })
+                {
+                    Emergency(root, kit, new Vector3(30f, floor * 4f + .4f, z), floors.At(new Vector3(30f, floor * 4f, z)));
+                }
+            }
+            foreach (float x in new []
+            {
+                2f, 18f, 30f
+            })
+            {
+                Emergency(root, kit, new Vector3(x, - 3.6f, 38f), floors.At(new Vector3(x, - 4f, 38f)));
+            }
+            c.Hiding.Closet("Reception", new Vector3(1.4f, 0f, 5f), 90f);
+            c.Hiding.Cabinet("Emergency", new Vector3(14.5f, 0f, 25f), 270f);
+            c.Hiding.Cabinet("Radiology", new Vector3(26.5f, 0f, 31f), 180f);
+            c.Hiding.Cabinet("Pharmacy", new Vector3(40.5f, 0f, 29f), 180f);
+            c.Hiding.Closet("Chapel", new Vector3(1.6f, 0f, 38.5f), 90f);
+            Sound(root, floors);
             return config;
         }
-        private static void Fixture(Transform p,HospitalKit k,Vector3 at,int id,StructuralSection ceiling)
+        private static void Panel(Transform parent, HospitalKit kit, int sector, Vector3 at, float yaw)
         {
-            Transform t=HospitalKit.Group("ClinicalFixture_"+id,p);t.localPosition=at;
-            k.Box("Housing",t,Vector3.zero,new Vector3(1.3f,.12f,.5f),k.Metal,false);
-            Renderer lens=k.Box("Diffuser",t,new Vector3(0,-.08f,0),new Vector3(1.18f,.04f,.4f),k.Glow,false).GetComponent<Renderer>();
-            Transform aim=HospitalKit.Group("Light",t);aim.localPosition=Vector3.down*.13f;aim.localRotation=Quaternion.Euler(90,0,0);
-            Light light=aim.gameObject.AddComponent<Light>();light.type=LightType.Spot;light.range=10;light.spotAngle=110;light.intensity=8;
-            light.color=new Color(.79f,.94f,.84f);light.shadows=id==7||id==22?LightShadows.Soft:LightShadows.None;
-            t.gameObject.AddComponent<LightFixture>().EditorSetup(light,lens,id%7==3,id%11==5,17000+id);
-            k.Attach(t,ceiling);
+            Transform root = HospitalKit.Group("Breaker_" + sector, parent);
+            root.SetPositionAndRotation(at, Quaternion.Euler(0f, yaw, 0f));
+            kit.Box("Cabinet", root, new Vector3(0f, 1.4f, .12f), new Vector3(.7f, .9f, .25f), kit.Metal);
+            Transform lever = HospitalKit.Group("Lever", root);
+            lever.localPosition = new Vector3(.2f, 1.3f, .3f);
+            kit.Box("Grip", lever, new Vector3(0f, .15f, 0f), new Vector3(.1f, .3f, .08f), kit.Accent, false);
+            Renderer lamp = kit.Box("Indicator", root, new Vector3(- .2f, 1.7f, .27f), new Vector3(.07f, .07f, .04f), kit.Glow, false).GetComponent<Renderer>();
+            root.gameObject.AddComponent<BreakerPanel>().EditorSetup(sector, lever, lamp);
+            kit.Label(root,(sector + 1).ToString(), new Vector3(0f, 2f, .28f), 180f, .035f);
         }
-        private static void Breaker(Transform p,HospitalKit k,int sector,Vector3 at)
+        private static void Emergency(Transform parent, HospitalKit kit, Vector3 at, StructuralSection support)
         {
-            Transform t=HospitalKit.Group("Breaker_"+sector,p);t.localPosition=at;
-            k.Box("Cabinet",t,new Vector3(0,1.4f,.12f),new Vector3(.7f,.9f,.25f),k.Metal);
-            Transform handle=HospitalKit.Group("Lever",t);handle.localPosition=new Vector3(.2f,1.3f,.3f);
-            k.Box("Grip",handle,new Vector3(0,.15f,0),new Vector3(.1f,.3f,.08f),k.Accent,false);
-            Renderer lamp=k.Box("Indicator",t,new Vector3(-.2f,1.7f,-.02f),new Vector3(.07f,.07f,.04f),k.Glow,false).GetComponent<Renderer>();
-            t.gameObject.AddComponent<BreakerPanel>().EditorSetup(sector,handle,lamp);
-            k.Label(t,"CIRCUIT "+(sector+1),new Vector3(0,2,-.025f),size:.025f);
+            Transform root = HospitalKit.Group("BatteryRouteLight", parent);
+            root.position = at;
+            kit.Box("BatteryHousing", root, Vector3.zero, new Vector3(.4f, .12f, .1f), kit.Metal, false);
+            root.gameObject.AddComponent<PowerIndependentLight>();
+            Light lamp = root.gameObject.AddComponent<Light>();
+            lamp.type = LightType.Point;
+            lamp.color = new Color(.4f, 1f, .55f);
+            lamp.range = 6f;
+            lamp.intensity = .7f;
+            lamp.shadows = LightShadows.None;
+            root.gameObject.AddComponent<HospitalEmergencyLight>().EditorSetup(lamp, support);
+            if (support != null)
+            {
+                root.gameObject.AddComponent<SectionProp>().EditorSetup(support);
+            }
+        }
+        private static void Sound(Transform parent, HospitalStructure floors)
+        {
+            Transform root = HospitalKit.Group("Soundscape", parent);
+            Transform [] Points(string name, params Vector3 [] positions)
+            {
+                var points = new Transform [positions.Length];
+                for (int i = 0; i <positions.Length; i++)
+                {
+                    points [i] = HospitalKit.Group(name + i, root);
+                    points [i].position = positions [i];
+                }
+                return points;
+            }
+            Transform [] monitors = Points("Monitor", new Vector3(18.7f, 1.6f, 7.5f), new Vector3(6.8f, 1.6f, 19.5f), new Vector3(7f, 5.6f, 21f), new Vector3(3f, 5.6f, 39f));
+            var power = new LightFixture [monitors.Length];
+            LightFixture [] fixtures = parent.GetComponentsInChildren<LightFixture>();
+            for (int i = 0; i <monitors.Length; i++)
+            {
+                float closest = float.MaxValue;
+                foreach (LightFixture fixture in fixtures)
+                {
+                    float distance = Vector3.Distance(monitors [i].position, fixture.transform.position);
+                    if (distance >= closest)
+                    {
+                        continue;
+                    }
+                    closest = distance;
+                    power [i] = fixture;
+                }
+            }
+            HospitalSoundConfig settings = SerializedWiring.LoadOrCreateAsset<HospitalSoundConfig>(HospitalLoot.Data + "/HospitalSound.asset");
+            root.gameObject.AddComponent<HospitalSoundscape>().EditorSetup(settings, monitors, power, Points("PA", new Vector3(30f, 2.8f, 14f), new Vector3(30f, 6.8f, 34f)), Points("Gurney", new Vector3(4f, .5f, 14f), new Vector3(26f, .5f, 14f)), Points("MorgueDrip", new Vector3(6f, - 2.5f, 30f), new Vector3(12f, - 2.5f, 44f)));
         }
     }
 }

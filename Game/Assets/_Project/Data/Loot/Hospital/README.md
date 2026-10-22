@@ -1,1 +1,1 @@
-HospitalBuilder creates nineteen Hospital-only LootDefinitions, HospitalCatalog, HospitalHorror and HospitalLocation here. Inspector tuning on existing definitions is preserved. Spawn tags and authored values are in Editor/Hospital/HospitalLootItems.cs.
+HospitalBuilder authors 37 map-only LootDefinitions, catalog, horror and sound configs, and location data. HospitalLayout contains the 31-room departmental plan and basement. Runtime sound and emergency lamps use existing game systems. Only Claude CLI may execute the builder and review it.
