@@ -7,9 +7,10 @@ namespace Abandoned.Structure
     /// <summary>
     /// What a broken floor leaves behind at the edges still held by the floor or wall beside it: a jagged lip of the
     /// broken slab hinged down into the hole, and the bars that held it, torn out and bent down. Both drop into place
-    /// over a moment as the floor goes. Cosmetic like all debris (Debris layer, no colliders: nothing stands on a lip),
-    /// built from the collapse seed so every machine shows the same edge. A lip goes when the floor holding it falls;
-    /// all of it goes when the building is restored.
+    /// over a moment as the floor goes. The lip is solid (user, 2026-10-22: you walked through it): one box per piece on
+    /// the Default layer, built from the collapse seed so every machine has the same edge, never networked, never
+    /// damaging (the rubble mound's rule). The bars are thin and stay visual only. A lip goes when the floor holding it
+    /// falls; all of it goes when the building is restored.
     /// </summary>
     public class CollapseRemnants : MonoBehaviour
     {
@@ -29,6 +30,11 @@ namespace Abandoned.Structure
             public StructuralSection Holder;
             public readonly List<Bar> Bars = new();
         }
+
+        // Default layer: players, loot and monsters collide with it (Debris ignores players and loot).
+        private const int SolidLayer = 0;
+        // A box round an irregular piece is a little larger than it; this keeps the edge you stand on close to what you see.
+        private const float LipBoxScale = 0.9f;
 
         private static Mesh prism;
         private static Material rust;
@@ -80,9 +86,20 @@ namespace Abandoned.Structure
                 Vector3 twist = new(Next() * 10f - 5f, Next() * 8f - 4f, Next() * 10f - 5f);
                 chunk.transform.rotation = Quaternion.Euler(twist) * chunk.transform.rotation;
                 chunk.transform.position += Vector3.down * Next() * 0.03f;
+                // A lip is solid: you can stand on it, bump into it, and loot can land on it. Same box on every machine,
+                // built from the seed, like the rubble mound.
                 foreach (Collider c in chunk.GetComponentsInChildren<Collider>(true)) Destroy(c);
-                foreach (Transform t in chunk.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = Mathf.Max(0, layer);
+                foreach (Transform t in chunk.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = SolidLayer;
+                if (chunk.TryGetComponent(out MeshFilter filter) && filter.sharedMesh != null)
+                {
+                    var box = chunk.AddComponent<BoxCollider>();
+                    box.center = filter.sharedMesh.bounds.center;
+                    box.size = filter.sharedMesh.bounds.size * LipBoxScale;
+                }
             }
+            // The lips' colliders swing down with their hinge: a kinematic body moves them properly.
+            foreach (Side side in remnants.sides)
+                if (side != null) side.Hinge.gameObject.AddComponent<Rigidbody>().isKinematic = true;
             section.Restored += remnants.OnSectionRestored;
             remnants.Pose(0f);
             return remnants;
