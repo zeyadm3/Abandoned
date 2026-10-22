@@ -41,6 +41,9 @@ namespace Abandoned.EditorTools
         private static readonly Preset School = new(0.002f, 0.04f, 60f, 0.15f, 0.9f, 0.12f, 0.25f, 0.12f, -8f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.95f, 1f, 1.05f));
         // December 3 PM house and neighbourhood.
         private static readonly Preset Tutorial = new(0.0018f, 0.035f, 60f, 0.15f, 0.8f, 0.12f, 0.2f, 0.12f, -5f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.96f, 1f, 1.04f));
+        // The TestMap graphics showcase (2026-10-22): late afternoon, light dust in the sun shafts, a brighter key so
+        // nothing reads as murk, warm whites.
+        private static readonly Preset TestMap = new(0.0025f, 0.04f, 50f, 0.16f, 0.95f, 0.14f, 0.25f, 0.14f, 4f, 0f, new Color(0.9f, 0.88f, 0.84f), new Color(0.97f, 1f, 1.04f));
 
         public const string LensDirtPath = "Assets/_Project/Art/Lighting/LensDirt.png";
 
@@ -126,6 +129,7 @@ namespace Abandoned.EditorTools
             if (n.Contains("prison") || n.Contains("island") || n.Contains("gallows")) return Prison;
             if (n.Contains("school") || n.Contains("burley")) return School;
             if (n.Contains("tutorial") || n.Contains("larch")) return Tutorial;
+            if (n.Contains("testmap")) return TestMap;
             return Mall;
         }
 

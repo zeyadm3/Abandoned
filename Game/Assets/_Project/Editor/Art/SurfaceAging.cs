@@ -25,6 +25,8 @@ namespace Abandoned.EditorTools
             if (n.Contains("school")) return (0.9f, new Color(0.46f, 0.42f, 0.36f), new Color(0.4f, 0.39f, 0.37f));
             // Someone's house, empty a few weeks.
             if (n.Contains("tutorial")) return (0.45f, new Color(0.48f, 0.44f, 0.38f), new Color(0.4f, 0.39f, 0.37f));
+            // The TestMap showcase warehouse: shut a year or two, dusty but not rotten.
+            if (n.Contains("testmap")) return (0.75f, new Color(0.44f, 0.4f, 0.33f), new Color(0.38f, 0.36f, 0.33f));
             // The mall: years closed.
             return (1f, new Color(0.42f, 0.38f, 0.31f), new Color(0.36f, 0.34f, 0.31f));
         }

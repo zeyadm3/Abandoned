@@ -60,7 +60,7 @@ namespace Abandoned.EditorTools
         public static void ApplyScene(Scene scene, IndirectLightingConfig config)
         {
             Physics.SyncTransforms();
-            float target = scene.name switch { "HQ" => 1.45f, "Tutorial" => 1.25f, "School" => 1.4f, "Factory" => 1.5f, "Prison" => 1.35f, _ => 1.5f };
+            float target = scene.name switch { "HQ" => 1.45f, "Tutorial" => 1.25f, "School" => 1.4f, "Factory" => 1.5f, "Prison" => 1.35f, "TestMap" => 1.7f, _ => 1.5f };
             int fixtures = 0, thinCasters = 0;
             int mask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast", "UI");
             foreach (LightFixture fixture in Object.FindObjectsByType<LightFixture>(FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -164,12 +164,14 @@ namespace Abandoned.EditorTools
                 "Prison" => (new Color(.4f, .46f, .52f), new Color(.31f, .35f, .4f), new Color(.18f, .2f, .23f)),
                 "HQ" => (new Color(.3f, .31f, .32f), new Color(.23f, .23f, .22f), new Color(.14f, .13f, .11f)),
                 "Factory" => (new Color(.18f, .19f, .2f), new Color(.15f, .14f, .13f), new Color(.085f, .07f, .06f)),
-                _ => (new Color(.32f, .34f, .37f), new Color(.27f, .29f, .31f), new Color(.15f, .16f, .17f))
+                // The graphics showcase: the late-afternoon sky of ShowcaseLighting.Mood.
+                "TestMap" => (new Color(.5f, .54f, .6f), new Color(.4f, .41f, .42f), new Color(.22f, .21f, .19f)),
+                _ =>(new Color(.32f, .34f, .37f), new Color(.27f, .29f, .31f), new Color(.15f, .16f, .17f))
             };
             RenderSettings.ambientSkyColor = sky;
             RenderSettings.ambientEquatorColor = equator;
             RenderSettings.ambientGroundColor = ground;
-            RenderSettings.fogDensity = scene == "Factory" ? .006f : .0035f;
+            RenderSettings.fogDensity = scene == "Factory" ? .006f : scene == "TestMap" ? .006f : .0035f;
         }
     }
 }
