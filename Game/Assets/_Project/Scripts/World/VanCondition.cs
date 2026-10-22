@@ -4,8 +4,8 @@ namespace Abandoned.World
 {
     /// <summary>
     /// The van's fuel, damage and breakdowns. Host-authoritative: the host feeds it distance driven, idle time and
-    /// impacts; an empty tank or a breakdown stops the engine until refuelled or repaired. Network sync is not wired
-    /// yet (Docs/OPEN_WORLD_PLAN.md).
+    /// impacts; an empty tank or a breakdown stops the engine until refuelled or repaired. <see cref="WorldVan"/> sends
+    /// the result to every machine.
     /// </summary>
     public class VanCondition : MonoBehaviour
     {
@@ -46,6 +46,14 @@ namespace Abandoned.World
             if (speed <= config.SafeImpactSpeed) return;
             Damage = Mathf.Min(100f, Damage + (speed - config.SafeImpactSpeed) * config.DamagePerSpeed);
             if (Damage >= 100f) BrokenDown = true;
+        }
+
+        /// <summary>Host: carry the van's condition over from the company save.</summary>
+        public void Restore(float fuel, float damage)
+        {
+            Fuel = Mathf.Clamp(fuel, 0f, config.TankLitres);
+            Damage = Mathf.Clamp(damage, 0f, 100f);
+            BrokenDown = Damage >= 100f;
         }
 
         public void Refuel(float litres) => Fuel = Mathf.Min(config.TankLitres, Fuel + litres);
