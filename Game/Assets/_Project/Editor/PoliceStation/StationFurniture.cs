@@ -261,6 +261,43 @@ namespace Abandoned.EditorTools
             return t;
         }
 
+        public static Transform Treadmill(StationProps p, string room, Vector3 at, float yaw)
+        {
+            Transform t = p.Place(room, "Treadmill", at, yaw, new Vector3(.8f, 1.35f, 1.8f));
+            if (t == null) return null;
+            StationArt a = p.Art;
+            B.B(t, "Deck", new Vector3(0f, .12f, 0f), new Vector3(.8f, .24f, 1.8f), a.Rubber);
+            B.B(t, "Belt", new Vector3(0f, .245f, .05f), new Vector3(.55f, .01f, 1.5f), a.DarkSteel);
+            foreach (float x in new[] { -.36f, .36f }) B.B(t, "Upright", new Vector3(x, .75f, -.75f), new Vector3(.05f, 1.2f, .05f), a.Steel);
+            B.B(t, "Console", new Vector3(0f, 1.3f, -.78f), new Vector3(.7f, .12f, .25f), a.Rubber);
+            return t;
+        }
+
+        /// <summary>A flat bench with a barbell on its rack (the bar across +-0.95 m).</summary>
+        public static Transform WeightBench(StationProps p, string room, Vector3 at, float yaw)
+        {
+            Transform t = p.Place(room, "WeightBench", at, yaw, new Vector3(1.2f, 1.6f, 1.9f));
+            if (t == null) return null;
+            StationArt a = p.Art;
+            B.B(t, "Pad", new Vector3(0f, .45f, .2f), new Vector3(.3f, .08f, 1.2f), a.Leather);
+            B.B(t, "Frame", new Vector3(0f, .2f, .2f), new Vector3(.08f, .4f, 1.1f), a.DarkSteel);
+            foreach (float s in new[] { -.5f, .5f }) B.B(t, "Upright", new Vector3(s, .75f, -.5f), new Vector3(.06f, 1.5f, .06f), a.DarkSteel);
+            B.B(t, "Bar", new Vector3(0f, 1.2f, -.5f), new Vector3(1.9f, .03f, .03f), a.Chrome);
+            foreach (float s in new[] { -.75f, .75f })
+                B.C(t, "Plate", new Vector3(s, 1.2f, -.5f), new Vector3(.45f, .03f, .45f), a.Rubber).transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            return t;
+        }
+
+        /// <summary>A heavy bag on a chain from the ceiling <paramref name="drop"/> metres above the floor.</summary>
+        public static Transform PunchingBag(StationProps p, string room, Vector3 at, float drop = 3.75f)
+        {
+            Transform t = p.Hang(room, "PunchingBag", at, 0f);
+            B.C(t, "Bag", new Vector3(0f, 1.45f, 0f), new Vector3(.4f, .55f, .4f), p.Art.Leather);
+            float chain = Mathf.Max(.2f, drop - 2.05f);
+            B.B(t, "Chain", new Vector3(0f, 2f + chain * .5f, 0f), new Vector3(.03f, chain, .03f), p.Art.Steel);
+            return t;
+        }
+
         /// <summary>A board on the wall (whiteboard, corkboard, map): no collider, nothing to walk into.</summary>
         public static Transform WallBoard(StationProps p, string room, Vector3 at, float yaw, float width, float height, Material face)
         {

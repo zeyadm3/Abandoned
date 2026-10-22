@@ -33,7 +33,7 @@ namespace Abandoned.EditorTools
                     bool pick = (c.x + c.y) % 2 == 0;
                     // Small rooms always get one, in their first cell.
                     if (!pick && room != null && !lit.Contains(room) && room.Cells.width * room.Cells.height <= 2 && c == room.Cells.min) pick = true;
-                    if (!pick || plan.Pierced.ContainsKey(P.Key(f, c)) || plan.Custom.Contains(c)) continue;
+                    if (!pick || plan.Pierced.ContainsKey(P.Key(f, c)) || plan.Pierced.ContainsKey(P.Key(f + 1, c)) || plan.Custom.Contains(c)) continue;
                     if (room != null) lit.Add(room);
                     float ceiling = Ceiling(plan, f, c, out bool tall);
                     if (float.IsNaN(ceiling)) continue;

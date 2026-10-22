@@ -36,6 +36,7 @@ namespace Abandoned.EditorTools
             Abandoned.Motel.MotelBuilder.ScenePath,
             // Open-world stations, streamed in by distance; not contract destinations until the world lists them.
             PoliceStationLayout.ScenePath,
+            FireStationLayout.ScenePath,
             // The training job (14 Larch Court): ships in every build, but is never a contract destination.
             TutorialHouseLayout.ScenePath,
             TestMapBuilder.ScenePath,

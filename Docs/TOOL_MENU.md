@@ -128,6 +128,10 @@ Tools > Abandoned
       Rebuild Police Station                         1800
       ──
       Add Police Station Loot                        1820
+    Fire Station                                     [1850-1899]
+      Rebuild Fire Station                           1850
+      ──
+      Add Fire Station Loot                          1870
   ──────────
   Content
     Data                                             [2000-2099]
@@ -316,4 +320,13 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   Authors PoliceStation.unity (the Millbrook 3rd Precinct, Docs/POLICE_STATION_PLAN.md); included in Rebuild All Maps.
 - `Maps/Police Station/Add Police Station Loot` — 1820. Fills in the precinct's loot definitions
   (Data/Loot/PoliceStation), models, prefabs and icons; the rebuild runs it first anyway.
+- The scene is in `BuildScenes.All` only (an open-world POI, not yet a contract destination).
+
+## Fire Station (2026-10-23)
+
+- `Maps/Fire Station/Rebuild Fire Station` — priority 1850, `ToolMenu.FireStation` / `FireStationP`.
+  Authors FireStation.unity (Millbrook Fire Station No. 4, Docs/FIRE_STATION_PLAN.md) with the police station's
+  station kit; included in Rebuild All Maps.
+- `Maps/Fire Station/Add Fire Station Loot` — 1870. Fills in the firehouse's loot definitions (Data/Loot/FireStation),
+  models, prefabs and icons; the rebuild runs it first anyway.
 - The scene is in `BuildScenes.All` only (an open-world POI, not yet a contract destination).

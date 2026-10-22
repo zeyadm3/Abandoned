@@ -76,24 +76,8 @@ namespace Abandoned.EditorTools
             StationArt a = ctx.Art;
             P.Room r = L.Room("Gym");
             for (int i = 0; i < 4; i++)
-            {
-                Transform t = p.Place(r.Name, "Treadmill", Props.Against(r, P.Side.South, 3f + i * 3f, 1.8f, out float yaw), yaw, new Vector3(.8f, 1.35f, 1.8f));
-                if (t == null) continue;
-                Props.B(t, "Deck", new Vector3(0f, .12f, 0f), new Vector3(.8f, .24f, 1.8f), a.Rubber);
-                Props.B(t, "Belt", new Vector3(0f, .245f, .05f), new Vector3(.55f, .01f, 1.5f), a.DarkSteel);
-                foreach (float x in new[] { -.36f, .36f }) Props.B(t, "Upright", new Vector3(x, .75f, -.75f), new Vector3(.05f, 1.2f, .05f), a.Steel);
-                Props.B(t, "Console", new Vector3(0f, 1.3f, -.78f), new Vector3(.7f, .12f, .25f), a.Rubber);
-            }
-            foreach (float x in new[] { 46f, 50f })
-            {
-                Transform t = p.Place(r.Name, "WeightBench", new Vector3(x, Y, 12f), 90f, new Vector3(1.2f, 1.6f, 1.9f));
-                if (t == null) continue;
-                Props.B(t, "Pad", new Vector3(0f, .45f, .2f), new Vector3(.3f, .08f, 1.2f), a.Leather);
-                Props.B(t, "Frame", new Vector3(0f, .2f, .2f), new Vector3(.08f, .4f, 1.1f), a.DarkSteel);
-                foreach (float s in new[] { -.5f, .5f }) Props.B(t, "Upright", new Vector3(s, .75f, -.5f), new Vector3(.06f, 1.5f, .06f), a.DarkSteel);
-                Props.B(t, "Bar", new Vector3(0f, 1.2f, -.5f), new Vector3(1.9f, .03f, .03f), a.Chrome);
-                foreach (float s in new[] { -.75f, .75f }) Props.C(t, "Plate", new Vector3(s, 1.2f, -.5f), new Vector3(.45f, .03f, .45f), a.Rubber).transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-            }
+                F.Treadmill(p, r.Name, Props.Against(r, P.Side.South, 3f + i * 3f, 1.8f, out float yaw), yaw);
+            foreach (float x in new[] { 46f, 50f }) F.WeightBench(p, r.Name, new Vector3(x, Y, 12f), 90f);
             Transform rack = p.Place(r.Name, "DumbbellRack", Props.Against(r, P.Side.East, 12f, .6f, out float rackYaw), rackYaw, new Vector3(2.4f, .9f, .6f));
             if (rack != null)
             {
@@ -106,9 +90,7 @@ namespace Abandoned.EditorTools
                 foreach (float x in new[] { -.75f, .75f })
                 foreach (float z in new[] { -.65f, .65f })
                     Props.B(squat, "Post", new Vector3(x, 1.15f, z), new Vector3(.07f, 2.3f, .07f), a.DarkSteel);
-            Transform bag = p.Hang(r.Name, "PunchingBag", new Vector3(44f, Y, 15f), 0f);
-            Props.C(bag, "Bag", new Vector3(0f, 1.45f, 0f), new Vector3(.4f, .55f, .4f), a.Leather);
-            Props.B(bag, "Chain", new Vector3(0f, 2.9f, 0f), new Vector3(.03f, 1.6f, .03f), a.Steel);
+            F.PunchingBag(p, r.Name, new Vector3(44f, Y, 15f));
             Transform mats = p.Hang(r.Name, "Mats", new Vector3(48f, Y + .01f, 5.5f), 0f);
             Props.B(mats, "Mat", Vector3.zero, new Vector3(6f, .02f, 3f), a.Rubber);
             foreach (Vector3 at in new[] { new Vector3(44f, Y, 4.5f), new Vector3(52f, Y, 5f), new Vector3(52f, Y, 16f), new Vector3(43.5f, Y, 19.5f) })
