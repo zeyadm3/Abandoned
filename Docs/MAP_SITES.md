@@ -62,3 +62,18 @@ Code: `Editor/Art/MapSite/` (`MapSite` runs the steps, `MapSiteProfiles` says wh
 
 ## Not checked
 Applied and reviewed from editor captures only (Game/Logs/tmshots/maps). Never played; no tests run.
+
+## The open-world places (2026-10-23)
+The Hospital, Motel, Skyscraper, Police Station and Fire Station are in `AvOverhaul.MapScenes`, so Rebuild All Maps
+gives them the same look, surfaces, weathering, reflections, decals, remaster, lighting and site as the older maps.
+`MapScenes` now lists only scenes saved on disk, so a map not built yet is skipped instead of failing a pass.
+**Art > Upgrade New Maps (Hospital, Motel, Skyscraper, Stations)** runs the whole chain on those five only, after
+their own Rebuild menus, and leaves the six older maps as saved (the remaster writes AuthoringReport-NewMaps.txt).
+- Each has a site profile (sky reused from Art/Skies, no new download) and **no ring**: the world's own land
+  surrounds them when they stream in. Hospital: kloppenheim_06, Motel: industrial_sunset_02, Skyscraper:
+  kloppenheim_07, Police Station: kloppenheim_01, Fire Station: kloofendal_misty_morning (winter).
+- `AvLook` and `LightingRebuild` have a preset for each, matched to the builder's `LevelAtmosphere` mood.
+- The Hospital and Motel builders now start from a scene with a sun, take a mood (`LevelAtmosphere`), a sound bed
+  (`LevelAmbience`) and the solid-props pass with a second NavMesh bake, like the stations; the Skyscraper got a
+  sound bed. Neither the Hospital nor the Motel marks occluders, so they have no occlusion bake.
+- Written and compiled outside Unity (dotnet, 0 errors); no builder or pass has been run yet.

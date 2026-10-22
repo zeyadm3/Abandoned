@@ -142,3 +142,14 @@ the existing **ambientCG** CC0 scans: PaintedPlaster006, Carpet016, Metal049A, R
 PaintedMetal012, Plastic010 and Asphalt031. Source: [ambientCG](https://ambientcg.com/),
 [CC0 license](https://docs.ambientcg.com/license/). Audio reuses the existing credited SoundBank through GameAudio
 (LevelAmbience / HorrorAreaAmbience); signage reuses the existing credited Barlow Condensed font.
+
+## Cloudline Tower & Skyscraper Restaurant (2026-10-23)
+
+Original 50m skyscraper architecture, grand marble lobby, 48m elevator system with host-authoritative cab and
+safety gates, 11-flight fire stairwell tower, mechanical deck, panoramic dining room, cocktail bar, commercial
+kitchen, cold store, VIP penthouse suite, and all 25 salvage models are authored by the project in `Editor/Skyscraper/`
+and `Scripts/Skyscraper/`; no third-party models or new audio packages are added. Materials reference the existing
+**ambientCG** CC0 scans: Marble012, WoodFloor051, Plaster001, Concrete031, Metal049A, DiamondPlate008A, Tiles107,
+PaintedMetal012, Asphalt031, OfficeCeiling001, and Leather037. Source: [ambientCG](https://ambientcg.com/),
+[CC0 license](https://docs.ambientcg.com/license/). Audio reuses existing credited sound banks through GameAudio
+(LiftStart, LiftArrive, LiftSnap, Crash, PowerUp, PowerDown, and factory/tower settling ambience).

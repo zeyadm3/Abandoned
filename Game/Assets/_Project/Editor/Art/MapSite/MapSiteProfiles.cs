@@ -47,6 +47,18 @@ namespace Abandoned.EditorTools
             new("Prison", "kloofendal_43d_clear_puresky", .6003f, 1.254f, 1f, winter: false, grass: true, ring: false, birds: .3f, wind: .45f, crickets: 0f, crows: false),
             // A December afternoon in Michigan: misty, snow on the ground.
             new("Tutorial", "kloofendal_misty_morning_puresky", .6191f, 1.157f, .9f, winter: true, grass: false, ring: true, birds: 0f, wind: .45f, crickets: 0f, crows: true),
+
+            // The open-world places (2026-10-23). No ring: the world's own land surrounds each one when it streams in.
+            // The hospital on an overcast late afternoon: a low sun under broken cloud, crows round the ward block.
+            new("Hospital", "kloppenheim_06_puresky", .6118f, .781f, .6f, winter: false, grass: true, ring: false, birds: .15f, wind: .4f, crickets: .1f, crows: true),
+            // The motel at dusk on the highway: a smoky sunset, crickets in the verges.
+            new("Motel", "industrial_sunset_02_puresky", .5996f, .749f, .5f, winter: false, grass: true, ring: false, birds: 0f, wind: .3f, crickets: .5f, crows: false),
+            // The tower after dark: the town's glow on the clouds, strong wind at height, a paved plaza (no grass).
+            new("Skyscraper", "kloppenheim_07_puresky", .2524f, .327f, .6f, winter: false, grass: false, ring: false, birds: 0f, wind: .7f, crickets: 0f, crows: false),
+            // The precinct on an evening after rain: dusk under cloud.
+            new("PoliceStation", "kloppenheim_01_puresky", .5981f, .914f, .45f, winter: false, grass: true, ring: false, birds: 0f, wind: .35f, crickets: .3f, crows: true),
+            // The fire station on a grey winter afternoon: misty, snow on the ground.
+            new("FireStation", "kloofendal_misty_morning_puresky", .6191f, 1.157f, .9f, winter: true, grass: false, ring: false, birds: 0f, wind: .45f, crickets: 0f, crows: true),
         };
 
         public static bool TryGet(string scene, out MapSiteProfile profile)

@@ -14,11 +14,29 @@ namespace Abandoned.EditorTools
     /// </summary>
     public static class AvOverhaul
     {
-        public static readonly string[] MapScenes =
+        private static readonly string[] AllMapScenes =
         {
             HqBuilder.ScenePath, MallBuilder.ScenePath, SchoolBuilder.ScenePath, FactoryBuilder.ScenePath,
             PrisonBuilder.ScenePath, TutorialHouseLayout.ScenePath,
+            Abandoned.Hospital.HospitalBuilder.ScenePath, Abandoned.Motel.MotelBuilder.ScenePath, SkyscraperBuilder.ScenePath,
+            PoliceStationLayout.ScenePath, FireStationLayout.ScenePath,
         };
+
+        /// <summary>The open-world places built by the map agents on 2026-10-23 (Docs/AGENT_REVIEW.md).</summary>
+        public static readonly string[] NewMapScenes =
+        {
+            Abandoned.Hospital.HospitalBuilder.ScenePath, Abandoned.Motel.MotelBuilder.ScenePath, SkyscraperBuilder.ScenePath,
+            PoliceStationLayout.ScenePath, FireStationLayout.ScenePath,
+        };
+
+        private static string[] scope;
+
+        /// <summary>Every map the passes work on: only scenes saved on disk (a map not built yet is skipped, not an
+        /// error), and only <see cref="NewMapScenes"/> while <see cref="AfterNewMaps"/> runs.</summary>
+        public static string[] MapScenes => Array.FindAll(scope ?? AllMapScenes, System.IO.File.Exists);
+
+        /// <summary>True while a pass is limited to some maps (the remaster then writes its own report).</summary>
+        public static bool Scoped => scope != null;
 
         private static readonly List<string> failures = new();
 
@@ -58,6 +76,25 @@ namespace Abandoned.EditorTools
             Step("Map art, object geometry, materials and effects", VisualRemaster.ApplySaved);
             // 2026-10-22: last, on top of the remaster: each map's sky, scanned trees, grass and outdoor sound.
             Step("Map sites: sky, trees, grass and sound", MapSite.ApplySaved);
+        }
+
+        [MenuItem(ToolMenu.Art + "Upgrade New Maps (Hospital, Motel, Skyscraper, Stations)", priority = ToolMenu.ArtP + 66)]
+        public static void AfterNewMapsMenu()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            AfterNewMaps();
+        }
+
+        /// <summary>
+        /// <see cref="AfterMaps"/> on the five new places only, after their builders have run: look, scanned surfaces,
+        /// weathering, reflections, decals, coplanar faces, the remaster, lighting and the map site (sky, trees, grass,
+        /// outdoor sound). The six older maps are left as saved.
+        /// </summary>
+        public static void AfterNewMaps()
+        {
+            scope = NewMapScenes;
+            try { AfterMaps(); }
+            finally { scope = null; }
         }
 
         /// <summary>For Rebuild All Maps: <see cref="AfterMaps"/>, throwing if any of its steps failed so the rebuild

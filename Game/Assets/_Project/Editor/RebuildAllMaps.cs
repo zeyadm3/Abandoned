@@ -42,6 +42,7 @@ namespace Abandoned.EditorTools
                 ("Island Prison", IslandPrisonBuilder.Build),
                 ("Saint Brigid Hospital", Abandoned.Hospital.HospitalBuilder.Build),
                 ("Last Light Motor Lodge", Abandoned.Motel.MotelBuilder.Build),
+                ("Skyscraper Restaurant", SkyscraperBuilder.Build),
                 ("Millbrook 3rd Precinct", PoliceStationBuilder.Build),
                 ("Millbrook Fire Station No. 4", FireStationBuilder.Build),
             };

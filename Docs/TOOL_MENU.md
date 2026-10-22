@@ -160,6 +160,7 @@ Tools > Abandoned
     ──  Loot Lineup (unsaved scene)                                      3040
     ──  0.24.12: Apply 0.24.12 Look to Saved Maps, Upgrade Surfaces (Scanned Textures), Make Decal Set,
         Scatter Wear Decals (Open Scene), 0.24.12 Look, Surfaces, Sound and Decals   3060-3063, 3065
+        Upgrade New Maps (Hospital, Motel, Skyscraper, Stations): the same, new maps only   3066
     ──  0.24.13: Separate Coplanar Faces (Open Scene)                    3080
         Rebuild Lighting and Shadows                                   3081
         Remaster All Map Art and Objects                               3082
@@ -313,6 +314,13 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   Authors Motel.unity, Motel-local art/data/navigation and run plumbing; included in Rebuild All Maps.
 - Hospital and Motel ship through both `BuildScenes.SalvageScenes` and `BuildScenes.All`. Their generated
   Resources network prefabs register before NGO starts; the world owns distance streaming and POI activation.
+
+## Skyscraper Restaurant (2026-10-23)
+
+- `Maps/Skyscraper Restaurant/Rebuild Skyscraper Restaurant` — priority 1950, `ToolMenu.Skyscraper` / `SkyscraperP`.
+  Authors Skyscraper.unity (Cloudline Tower & Apex Restaurant), dual vertical transit via 48m host-authoritative
+  elevator and 11-flight continuous fire stairwell, mechanical floor, kitchen and cold store, VIP penthouse suite,
+  24 themed salvage definitions, sector power, and structural collapse simulation; included in Rebuild All Maps.
 
 ## Police Station (2026-10-23)
 

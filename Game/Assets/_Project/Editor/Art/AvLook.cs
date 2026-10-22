@@ -45,6 +45,18 @@ namespace Abandoned.EditorTools
         // nothing reads as murk, warm whites.
         private static readonly Preset TestMap = new(0.0025f, 0.04f, 50f, 0.16f, 0.95f, 0.14f, 0.25f, 0.14f, 4f, 0f, new Color(0.9f, 0.88f, 0.84f), new Color(0.97f, 1f, 1.04f));
 
+        // The open-world places (2026-10-23), matched to each builder's LevelAtmosphere mood.
+        // Saint Brigid Hospital: overcast late afternoon, a clinical grey-green haze in the wards, cool shadows.
+        private static readonly Preset Hospital = new(0.004f, 0.035f, 50f, 0.17f, 0.85f, 0.15f, 0.3f, 0.12f, -6f, 3f, new Color(0.86f, 0.9f, 0.88f), new Color(0.93f, 1f, 1.04f));
+        // Last Light Motor Lodge: dusk on the highway, warm low sun and sodium lamps, light dust.
+        private static readonly Preset Motel = new(0.003f, 0.04f, 60f, 0.16f, 0.95f, 0.16f, 0.25f, 0.12f, 9f, 2f, new Color(0.92f, 0.86f, 0.8f), new Color(0.95f, 0.98f, 1.06f));
+        // Cloudline Tower: blue dusk high above the district; thin haze so the view carries, cold shadows.
+        private static readonly Preset Skyscraper = new(0.0015f, 0.02f, 90f, 0.14f, 0.8f, 0.13f, 0.2f, 0.11f, -10f, 0f, new Color(0.86f, 0.9f, 0.96f), new Color(0.92f, 0.98f, 1.1f));
+        // Millbrook 3rd Precinct: evening after rain, sodium outside, the haze of a shut building inside.
+        private static readonly Preset PoliceStation = new(0.0045f, 0.035f, 50f, 0.17f, 0.75f, 0.16f, 0.35f, 0.11f, -8f, 0f, new Color(0.84f, 0.87f, 0.92f), new Color(0.92f, 0.98f, 1.1f));
+        // Millbrook Fire Station No. 4: a grey winter afternoon with a low sun through open bay doors.
+        private static readonly Preset FireStation = new(0.0025f, 0.035f, 60f, 0.15f, 0.9f, 0.13f, 0.25f, 0.12f, -4f, 0f, new Color(0.9f, 0.9f, 0.92f), new Color(0.95f, 1f, 1.05f));
+
         public const string LensDirtPath = "Assets/_Project/Art/Lighting/LensDirt.png";
 
 
@@ -130,6 +142,11 @@ namespace Abandoned.EditorTools
             if (n.Contains("school") || n.Contains("burley")) return School;
             if (n.Contains("tutorial") || n.Contains("larch")) return Tutorial;
             if (n.Contains("testmap")) return TestMap;
+            if (n.Contains("hospital") || n.Contains("brigid")) return Hospital;
+            if (n.Contains("motel")) return Motel;
+            if (n.Contains("skyscraper") || n.Contains("cloudline")) return Skyscraper;
+            if (n.Contains("police") || n.Contains("precinct")) return PoliceStation;
+            if (n.Contains("firestation")) return FireStation;
             return Mall;
         }
 

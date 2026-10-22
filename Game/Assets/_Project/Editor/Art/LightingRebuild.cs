@@ -60,7 +60,11 @@ namespace Abandoned.EditorTools
         public static void ApplyScene(Scene scene, IndirectLightingConfig config)
         {
             Physics.SyncTransforms();
-            float target = scene.name switch { "HQ" => 1.45f, "Tutorial" => 1.25f, "School" => 1.4f, "Factory" => 1.5f, "Prison" => 1.35f, "TestMap" => 1.7f, _ => 1.5f };
+            float target = scene.name switch
+            {
+                "HQ" => 1.45f, "Tutorial" => 1.25f, "School" => 1.4f, "Factory" => 1.5f, "Prison" => 1.35f, "TestMap" => 1.7f,
+                "Hospital" => 1.45f, "Motel" => 1.35f, "Skyscraper" => 1.4f, "PoliceStation" => 1.45f, "FireStation" => 1.4f, _ => 1.5f,
+            };
             int fixtures = 0, thinCasters = 0;
             int mask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast", "UI");
             foreach (LightFixture fixture in Object.FindObjectsByType<LightFixture>(FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -166,6 +170,12 @@ namespace Abandoned.EditorTools
                 "Factory" => (new Color(.18f, .19f, .2f), new Color(.15f, .14f, .13f), new Color(.085f, .07f, .06f)),
                 // The graphics showcase: the late-afternoon sky of ShowcaseLighting.Mood.
                 "TestMap" => (new Color(.5f, .54f, .6f), new Color(.4f, .41f, .42f), new Color(.22f, .21f, .19f)),
+                // The open-world places (2026-10-23), each a lifted version of its builder's LevelAtmosphere mood.
+                "Hospital" => (new Color(.36f, .4f, .41f), new Color(.29f, .32f, .31f), new Color(.15f, .16f, .15f)),
+                "Motel" => (new Color(.38f, .35f, .37f), new Color(.33f, .28f, .26f), new Color(.17f, .15f, .13f)),
+                "Skyscraper" => (new Color(.3f, .36f, .46f), new Color(.24f, .28f, .34f), new Color(.12f, .13f, .15f)),
+                "PoliceStation" => (new Color(.3f, .33f, .39f), new Color(.24f, .26f, .29f), new Color(.12f, .12f, .13f)),
+                "FireStation" => (new Color(.44f, .46f, .5f), new Color(.35f, .36f, .38f), new Color(.2f, .19f, .18f)),
                 _ =>(new Color(.32f, .34f, .37f), new Color(.27f, .29f, .31f), new Color(.15f, .16f, .17f))
             };
             RenderSettings.ambientSkyColor = sky;

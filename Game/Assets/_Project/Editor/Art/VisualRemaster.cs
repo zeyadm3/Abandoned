@@ -82,16 +82,20 @@ namespace Abandoned.EditorTools
             report.AppendLine($"Unused generated meshes removed: {ObjectRemaster.PruneUnusedCache()}");
             string reportFolder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../Docs/renders/art-remaster"));
             Directory.CreateDirectory(reportFolder);
-            File.WriteAllText(Path.Combine(reportFolder, "AuthoringReport.txt"), report.ToString());
+            File.WriteAllText(Path.Combine(reportFolder, AvOverhaul.Scoped ? "AuthoringReport-NewMaps.txt" : "AuthoringReport.txt"), report.ToString());
             AssetDatabase.SaveAssets();
-            Debug.Log("[VisualRemaster] Saved all six maps, material assets and object prefabs. Report: Docs/renders/art-remaster/AuthoringReport.txt");
+            Debug.Log($"[VisualRemaster] Saved {AvOverhaul.MapScenes.Length} maps, material assets and object prefabs. Report: Docs/renders/art-remaster/{(AvOverhaul.Scoped ? "AuthoringReport-NewMaps.txt" : "AuthoringReport.txt")}");
         }
 
         private static int RemasterPrefabs(StringBuilder report)
         {
             int changed = 0;
             string[] folders = { "Assets/_Project/Prefabs/Loot", "Assets/_Project/Prefabs/Equipment",
-                "Assets/_Project/Prefabs/HQ", "Assets/_Project/Prefabs/Meridian", "Assets/_Project/Prefabs/SalvageDressing" };
+                "Assets/_Project/Prefabs/HQ", "Assets/_Project/Prefabs/Meridian", "Assets/_Project/Prefabs/SalvageDressing",
+                // The open-world places keep their loot and fittings in their own art folders (2026-10-23).
+                "Assets/_Project/Art/Hospital", "Assets/_Project/Art/Motel", "Assets/_Project/Art/Skyscraper",
+                "Assets/_Project/Art/PoliceStation", "Assets/_Project/Art/FireStation" };
+            folders = Array.FindAll(folders, AssetDatabase.IsValidFolder);
             foreach (string guid in AssetDatabase.FindAssets("t:Prefab", folders))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);

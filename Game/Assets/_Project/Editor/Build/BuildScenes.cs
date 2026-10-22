@@ -22,6 +22,7 @@ namespace Abandoned.EditorTools
             PrisonBuilder.ScenePath,
             Abandoned.Hospital.HospitalBuilder.ScenePath,
             Abandoned.Motel.MotelBuilder.ScenePath,
+            SkyscraperBuilder.ScenePath,
         };
 
         public static readonly string[] All =
@@ -34,6 +35,7 @@ namespace Abandoned.EditorTools
             PrisonBuilder.ScenePath,
             Abandoned.Hospital.HospitalBuilder.ScenePath,
             Abandoned.Motel.MotelBuilder.ScenePath,
+            SkyscraperBuilder.ScenePath,
             // Open-world stations, streamed in by distance; not contract destinations until the world lists them.
             PoliceStationLayout.ScenePath,
             FireStationLayout.ScenePath,

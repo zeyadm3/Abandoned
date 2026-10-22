@@ -27,6 +27,8 @@ namespace Abandoned.EditorTools
         public const int PoliceStationP = 1800;
         public const string FireStation = Maps + "Fire Station/";
         public const int FireStationP = 1850;
+        public const string Skyscraper = Maps + "Skyscraper Restaurant/";
+        public const int SkyscraperP = 1950;
 
         public const string Content = Root + "Content/";
         public const string Data = Content + "Data/";
