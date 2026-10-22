@@ -56,6 +56,8 @@ namespace Abandoned.EditorTools
                 });
             AssetDatabase.SaveAssets();
             Step("Map art, object geometry, materials and effects", VisualRemaster.ApplySaved);
+            // 2026-10-22: last, on top of the remaster: each map's sky, scanned trees, grass and outdoor sound.
+            Step("Map sites: sky, trees, grass and sound", MapSite.ApplySaved);
         }
 
         /// <summary>For Rebuild All Maps: <see cref="AfterMaps"/>, throwing if any of its steps failed so the rebuild

@@ -65,7 +65,7 @@ a 249 MB FBX).
   repeat (the old remaster scan looked like orange blotches up close), the car park uses the same asphalt scan as the
   forecourt, containers are four scanned claddings toned down.
 
-### Sound (Scripts/Audio/TestMapSoundscape.cs, Editor/TestMap/ShowcaseSound.cs)
+### Sound (Scripts/Audio/OutdoorSoundscape.cs, Editor/TestMap/ShowcaseSound.cs)
 Birdsong and wind in the trees from points round the forest's edge (spatial, dulled indoors like any outdoor sound),
 crickets in the long grass, a crow now and then from a treetop. Four new SoundIds (appended): BirdsongLoop,
 TreeWindLoop, CricketsLoop, CrowCall, from CC0 Freesound recordings (Tools/Audio/library.csv). Inside, the existing
@@ -83,7 +83,7 @@ ambience (hum, room tone, failing tubes) carries on.
 3. **Footsteps outside.** The whole terrain is tagged Dirt (one surface per terrain), so the asphalt forecourt sounds
    like dirt; the old car-park slab is still Asphalt.
 4. **The forest from inside the yard.** Firs are thinned scans; up close their crowns are lighter than the original.
-5. **Sound levels** of the four beds (TestMapSoundscape's levels on the Soundscape object).
+5. **Sound levels** of the four beds (OutdoorSoundscape's levels on the Soundscape object).
 
 ### Not checked (user's instruction: no play tests, no test suites)
 Built, baked and reviewed from editor screenshots only (Docs/renders/testmap-site has five; Game/Logs/tmshots has the rest). Never played; no test suite run.

@@ -151,6 +151,7 @@ Tools > Abandoned
     ──  0.24.13: Separate Coplanar Faces (Open Scene)                    3080
         Rebuild Lighting and Shadows                                   3081
         Remaster All Map Art and Objects                               3082
+        Map Sites: Sky, Trees, Grass and Sound                         3083
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,

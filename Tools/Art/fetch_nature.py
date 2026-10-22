@@ -51,6 +51,10 @@ GROUND_SCANS = ["forrest_ground_01", "grass_ground", "forest_leaves_02", "forest
                 "container_side", "corrugated_iron_02", "factory_wall", "box_profile_metal_sheet",
                 "concrete_moss", "factory_brick"]
 HDRI = "evening_road_01_puresky"
+# The real maps' skies (Editor/Art/MapSite/MapSiteProfiles.cs says which map uses which), into Art/Skies.
+MAP_SKIES = ["kloppenheim_01_puresky", "kloppenheim_07_puresky", "kloppenheim_06_puresky", "industrial_sunset_02_puresky",
+             "kloofendal_43d_clear_puresky", "kloofendal_misty_morning_puresky"]
+SKIES = os.path.join(ROOT, "Game", "Assets", "_Project", "Art", "Skies")
 NATURE = os.path.join(ROOT, "Game", "Assets", "_Project", "Art", "TestMap", "Nature")
 # The terrain's grass card: scanned clumps rendered side by side (bake_card.py).
 CARDS = {"grass_card": ("grass_medium_01", ["grass_medium_01_tall_a_LOD0", "grass_medium_01_mid_a_LOD0",
@@ -129,6 +133,12 @@ def fetch_ground(force):
 
 
 def fetch_sky(force):
+    os.makedirs(SKIES, exist_ok=True)
+    for sky in MAP_SKIES:
+        path = os.path.join(SKIES, sky + "_4k.hdr")
+        if force or not os.path.exists(path):
+            save(json.loads(get(f"https://api.polyhaven.com/files/{sky}"))["hdri"]["4k"]["hdr"]["url"], path)
+        print(f"{sky}: sky")
     os.makedirs(SKY, exist_ok=True)
     path = os.path.join(SKY, HDRI + "_4k.hdr")
     if force or not os.path.exists(path):

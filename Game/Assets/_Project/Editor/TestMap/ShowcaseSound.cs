@@ -7,7 +7,7 @@ using static Abandoned.EditorTools.ShowcaseSitePlan;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Where the TestMap site's outdoor sounds come from (TestMapSoundscape plays them): birds and wind round the forest's
+    /// Where the TestMap site's outdoor sounds come from (OutdoorSoundscape plays them): birds and wind round the forest's
     /// edge, a little way out past the fence; crickets in the long grass north of the gallery and by the boiler house;
     /// crows high in the trees on every side.
     /// </summary>
@@ -45,7 +45,7 @@ namespace Abandoned.EditorTools
                 point.position = new Vector3(p.x, Ground + .3f, p.y);
                 crickets.Add(point);
             }
-            sound.gameObject.AddComponent<TestMapSoundscape>().EditorSetup(birds, wind, crickets.ToArray(), crows);
+            sound.gameObject.AddComponent<OutdoorSoundscape>().EditorSetup(birds, wind, crickets.ToArray(), crows);
         }
     }
 }

@@ -3,12 +3,13 @@ using UnityEngine;
 namespace Abandoned.Audio
 {
     /// <summary>
-    /// The TestMap site's outdoor sound, local and cosmetic on every machine: birdsong and wind in the trees at points
-    /// along the forest's edge (spatial, so the woods are loudest where you stand nearest them, and dulled once you are
-    /// indoors), crickets in the long grass, and a crow now and then from somewhere in the treetops. Never a clue,
-    /// never near a threat.
+    /// A level's outdoor sound, local and cosmetic on every machine: birdsong and wind in the trees at points round the
+    /// level's edge (spatial, so the woods are loudest where you stand nearest them, and dulled once you are indoors),
+    /// crickets in the long grass, and a crow now and then from somewhere in the treetops. A level leaves out what its
+    /// season or hour wouldn't have (no birds at night, no crickets in the snow). Never a clue, never near a threat.
+    /// Placed by the TestMap showcase (ShowcaseSound) and by the site pass on the real maps (MapSite).
     /// </summary>
-    public class TestMapSoundscape : MonoBehaviour
+    public class OutdoorSoundscape : MonoBehaviour
     {
         [SerializeField] private Transform[] birds;
         [SerializeField] private Transform[] wind;
@@ -55,8 +56,12 @@ namespace Abandoned.Audio
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(Transform[] birdPoints, Transform[] windPoints, Transform[] cricketPoints, Transform[] crowPoints)
+        public void EditorSetup(Transform[] birdPoints, Transform[] windPoints, Transform[] cricketPoints, Transform[] crowPoints,
+            float birdsLevel = .55f, float windsLevel = .5f, float cricketsLevel = .35f)
         {
+            birdLevel = birdsLevel;
+            windLevel = windsLevel;
+            cricketLevel = cricketsLevel;
             birds = birdPoints;
             wind = windPoints;
             crickets = cricketPoints;
