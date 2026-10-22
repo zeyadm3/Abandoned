@@ -37,7 +37,16 @@ namespace Abandoned.Structure
             // Every collider below the fragment is cosmetic, including imported nested mesh children.
             if (layer >= 0) foreach (Transform child in root.GetComponentsInChildren<Transform>(true)) child.gameObject.layer = layer;
             var random = new System.Random(seed);
+            // Its own sequence, so choosing the lip never changes the launches below.
+            var pick = new System.Random(seed ^ 0x11b7);
             var lifetime = root.AddComponent<DebrisLifetime>();
+            var sequence = root.AddComponent<BreakSequence>();
+            sequence.Begin(visuals.BreakSag);
+            // Floors keep a broken lip on the sides still held by floor or wall; stairs just fall.
+            CollapseEdges edges = section.Type == SectionType.Stair ? null : CollapseEdges.Find(section);
+            var lip = new List<(GameObject chunk, int side)>();
+            Bounds hole = section.SurfaceBounds;
+            float reach = Mathf.Max(0.5f, Mathf.Max(hole.extents.x, hole.extents.z));
             int used = 0;
             foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true))
             {
@@ -50,21 +59,31 @@ namespace Abandoned.Structure
                 if (layer >= 0) chunk.layer = layer;
                 r.enabled = true;
                 if (material != null && !preserveMaterials) r.sharedMaterial = material;
+                Vector3 centre = Centre(r);
+                int side = edges != null && edges.Any ? edges.SideNear(centre, visuals.RemnantBand) : -1;
+                if (side >= 0 && (float)pick.NextDouble() < visuals.RemnantChance)
+                {
+                    lip.Add((chunk, side));
+                    continue;
+                }
                 // A box round an irregular chunk overlaps its neighbours and the intact floor at the edge, enough to
                 // wedge the whole break across the hole: keep it inside the chunk.
                 if (!chunk.TryGetComponent(out Collider _)) chunk.AddComponent<BoxCollider>().size *= ChunkBoxScale;
 
                 Rigidbody body = chunk.TryGetComponent(out Rigidbody existing) ? existing : chunk.AddComponent<Rigidbody>();
-                body.isKinematic = false;
                 body.useGravity = true;
                 body.mass = visuals.ChunkMass;
                 Vector3 offset = chunk.transform.position - root.transform.position;
                 Vector3 outward = new Vector3(offset.x, 0f, offset.z).normalized;
-                body.linearVelocity = outward * (visuals.BurstSpeed * Next(random)) + Vector3.down * Next(random);
-                body.angularVelocity = new Vector3(Next(random) * 2f - 1f, Next(random) * 2f - 1f, Next(random) * 2f - 1f) * visuals.BurstSpin;
-                lifetime.RecordLaunch(body.linearVelocity);
+                Vector3 velocity = outward * (visuals.BurstSpeed * Next(random)) + Vector3.down * Next(random);
+                Vector3 spin = new Vector3(Next(random) * 2f - 1f, Next(random) * 2f - 1f, Next(random) * 2f - 1f) * visuals.BurstSpin;
+                // The middle lets go first, the edges last.
+                float fromMiddle = Vector2.Distance(new Vector2(centre.x, centre.z), new Vector2(hole.center.x, hole.center.z)) / reach;
+                sequence.Add(body, velocity, spin, visuals.BreakSpread * Mathf.Clamp01(fromMiddle));
+                lifetime.RecordLaunch(velocity);
                 used++;
             }
+            if (lip.Count > 0 || (edges != null && edges.Any)) CollapseRemnants.Create(section, edges, lip, visuals, seed);
 
             LiveChunks += used;
             lifetime.Track(used);
@@ -96,6 +115,12 @@ namespace Abandoned.Structure
         }
 
         private static float Next(System.Random random) => (float)random.NextDouble();
+
+        // Where a chunk really is: pre-fractured pieces often keep the whole tile's pivot.
+        private static Vector3 Centre(Renderer r) =>
+            r.TryGetComponent(out MeshFilter filter) && filter.sharedMesh != null
+                ? r.transform.TransformPoint(filter.sharedMesh.bounds.center)
+                : r.transform.position;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
