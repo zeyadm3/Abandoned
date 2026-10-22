@@ -289,3 +289,8 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
 | Store/Render Store Art and Screenshots (0.24.4) | Store/Render Store Art and Screenshots |
 | Store/Render Draft Trailer (0.24.5) | Store/Render Draft Trailer |
 | Store/Prepare Steam Release (0.24.6) | Store/Prepare Steam Release |
+
+## Hospital (2026-10-23)
+
+- `Maps/Hospital/Rebuild Saint Brigid Hospital` — priority 1700, `ToolMenu.Hospital` / `HospitalP`.
+  Authors Hospital.unity, Hospital-local art/data/navigation and run plumbing; included in Rebuild All Maps.

@@ -124,3 +124,12 @@ is used by this emblem. Details: `Docs/APP_LOGO_0.24.6b.md`.
 - **Paper001:** [ambientCG Paper 001](https://ambientcg.com/view?id=Paper001), CC0 1.0. 2K colour, normal and roughness maps for unprinted paper fibres and page backs.
 - **Cardboard001:** [ambientCG Cardboard 001](https://ambientcg.com/view?id=Cardboard001), CC0 1.0. 2K colour, normal and roughness maps for cartons and corrugated packing.
 - Downloaded with the existing `Tools/Art/fetch_textures.py` workflow into `Art/Scanned/`. Existing texture, model, font and audio credits remain in force. No new packages or paid assets.
+
+## Saint Brigid Hospital (2026-10-23)
+
+Original hospital architecture, beds, fittings, hiding cabinets and all nineteen salvage models are authored
+by the project in `Editor/Hospital`; no third-party model or new audio is added. Materials reference the
+existing **ambientCG** CC0 scans: PaintedPlaster017, Terrazzo018, Metal049A, Rubber004, Fabric030, WoodFloor051,
+PaintedMetal012, Plastic010 and Asphalt031. Source: [ambientCG](https://ambientcg.com/),
+[CC0 license](https://docs.ambientcg.com/license/). Audio uses the existing credited SoundBank through GameAudio
+(LevelAmbience / HorrorAreaAmbience); world signs reuse the existing credited Barlow Condensed font.

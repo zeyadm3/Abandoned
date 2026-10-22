@@ -39,6 +39,7 @@ namespace Abandoned.EditorTools
                 ("Jackson P Burley Middle School", BurleySchoolBuilder.Build),
                 ("Iron Factory", IronFactoryBuilder.Build),
                 ("Island Prison", IslandPrisonBuilder.Build),
+                ("Saint Brigid Hospital", Abandoned.Hospital.HospitalBuilder.Build),
             };
             if (rebuildHq) steps.Add(("HQ (Salvage Hub)", HqBuilder.AuthorSalvageHub));
             steps.Add(("Tutorial House", TutorialHouseBuilder.Build));

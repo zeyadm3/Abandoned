@@ -19,6 +19,8 @@ namespace Abandoned.EditorTools
         public const string HqUpdates = Hq + "Updates/";
         public const string Tutorial = Maps + "Tutorial House/";
         public const string TestMap = Maps + "Test Map/";
+        public const string Hospital = Maps + "Hospital/";
+        public const int HospitalP = 1700;
 
         public const string Content = Root + "Content/";
         public const string Data = Content + "Data/";

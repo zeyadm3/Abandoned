@@ -1,0 +1,1 @@
+HospitalBuilder creates nineteen Hospital-only LootDefinitions, HospitalCatalog, HospitalHorror and HospitalLocation here. Inspector tuning on existing definitions is preserved. Spawn tags and authored values are in Editor/Hospital/HospitalLootItems.cs.
