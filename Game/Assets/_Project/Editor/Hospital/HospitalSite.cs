@@ -13,7 +13,8 @@ namespace Abandoned.Hospital
             foreach(float x in new[]{-6f,54f})k.Box("SideAccess",site,new Vector3(x,-.2f,20),new Vector3(12,.4f,40),k.Asphalt);
             foreach(float x in new[]{20f,28f})k.Box("HaulLaneEdge",site,new Vector3(x,.012f,-8),new Vector3(.1f,.02f,16),k.Glow,false);
             Transform dock=HospitalKit.Group("VanDock",root);dock.localPosition=new Vector3(24,0,-14);dock.localRotation=Quaternion.Euler(0,180,0);
-            k.Label(site,"LOADING",new Vector3(31,.025f,-12),yaw:0,size:.06f);
+            k.Box("LoadingSign",site,new Vector3(31,1.2f,-12),new Vector3(2,.4f,.08f),k.Accent,false);
+            k.Label(site,"LOADING",new Vector3(31,1.2f,-12.05f),size:.04f);
             for(int i=0;i<5;i++)
             {
                 float x=2+i*4;

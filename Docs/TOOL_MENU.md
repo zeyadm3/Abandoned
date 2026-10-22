@@ -120,6 +120,10 @@ Tools > Abandoned
     Test Map                                         [1600-1699]
       Rebuild Test Map                               1600
       Bake Test Map Lighting                         1601
+    Hospital                                         [1700-1749]
+      Rebuild Saint Brigid Hospital                  1700
+    Motel                                            [1750-1799]
+      Rebuild Last Light Motor Lodge                 1750
   ──────────
   Content
     Data                                             [2000-2099]
@@ -294,3 +298,10 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
 
 - `Maps/Hospital/Rebuild Saint Brigid Hospital` — priority 1700, `ToolMenu.Hospital` / `HospitalP`.
   Authors Hospital.unity, Hospital-local art/data/navigation and run plumbing; included in Rebuild All Maps.
+
+## Motel (2026-10-23)
+
+- `Maps/Motel/Rebuild Last Light Motor Lodge` — priority 1750, `ToolMenu.Motel` / `MotelP`.
+  Authors Motel.unity, Motel-local art/data/navigation and run plumbing; included in Rebuild All Maps.
+- Hospital and Motel ship through both `BuildScenes.SalvageScenes` and `BuildScenes.All`. Their generated
+  Resources network prefabs register before NGO starts; the world owns distance streaming and POI activation.

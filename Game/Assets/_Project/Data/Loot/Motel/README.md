@@ -1,0 +1,1 @@
+MotelBuilder creates twenty-two Motel-only LootDefinitions, MotelCatalog, MotelHorror and MotelLocation here. Inspector tuning on existing definitions is preserved. Spawn tags and authored values are in Editor/Motel/MotelLootItems.cs.

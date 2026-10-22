@@ -44,8 +44,8 @@ namespace Abandoned.Hospital
         {
             d.EditorSetup(i.Id,i.Name,i.Value/2,i.Value,i.Weight,i.Carry,i.Size,
                 i.Model==1||i.Model==5?Fragility.High:Fragility.Medium,
-                i.Model==3?SurfaceMaterial.Paper:SurfaceMaterial.Metal,i.Carry>=CarryClass.Heavy?.7f:.25f,
-                i.Jackpot?.15f:1f,PlaceholderShape.Cube,new Color(.6f,.7f,.64f));
+                i.Model==1?SurfaceMaterial.Glass:i.Model==3?SurfaceMaterial.Paper:SurfaceMaterial.Metal,i.Carry>=CarryClass.Heavy? .7f:.25f,
+                i.Jackpot? .15f:1f,PlaceholderShape.Cube,new Color(.6f,.7f,.64f));
             d.EditorSetSpawning(new[]{i.Tag},i.Jackpot);
             if(i.Model==4)d.EditorSetQuirks(LootQuirk.Rattles);
         }

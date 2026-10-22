@@ -19,7 +19,7 @@ namespace Abandoned.Hospital
                 for(int i=0;i<6;i++)
                     loot.Add(new LootPointSpec($"Hospital_{level}_{side}_{bay}_{i:00}",tag,new Vector3(x+5+(i%2)*3,y+.05f,z-4+(i/2)*4),CarryClass.Pocket,CarryClass.Heavy));
                 if(side==1)loot.Add(new LootPointSpec($"Hospital_Jackpot_{level}_{bay}",level==0?"hospital_imaging_prize":"hospital_theatre_prize",
-                    new Vector3(44,y+.05f,z+4),CarryClass.Heavy,CarryClass.Huge,true));
+                    new Vector3(37,y+.05f,z+4),CarryClass.Heavy,CarryClass.Huge,true));
                 if(level==0&&side==0&&bay==0)
                 {
                     Counter(room,k,floors,new Vector3(6,y,4),7);
@@ -50,7 +50,7 @@ namespace Abandoned.Hospital
                 // Fixed pipework, wall sockets and ceiling vents carry the room's identity without aisle clutter.
                 for(int i=0;i<3;i++)
                 {
-                    Vector3 at=new(side==0?.3f:47.7f,y+1.1f,z-3+i*3);
+                    Vector3 at=new(side==0? .3f:47.7f,y+1.1f,z-3+i*3);
                     k.Box("MedicalGasPanel",room,at,new Vector3(.1f,.35f,.7f),k.Accent,false);
                 }
                 Transform audio=HospitalKit.Group("RoomSound",room);audio.localPosition=new Vector3(x,y+1.5f,z);

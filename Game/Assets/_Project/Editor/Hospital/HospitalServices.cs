@@ -22,7 +22,7 @@ namespace Abandoned.Hospital
             so.FindProperty("<RoarPoint>k__BackingField").vector3Value=new Vector3(24,6,36);
             so.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(config);
             Transform services=HospitalKit.Group("Services",root);
-            int id=0;
+            int id=0,hideIndex=80;
             for(int level=0;level<2;level++)
             {
                 for(float z=4;z<40;z+=8)foreach(float x in new[]{8f,24f,40f})
@@ -30,7 +30,7 @@ namespace Abandoned.Hospital
                 foreach(float x in new[]{3f,45f})foreach(float z in new[]{14f,38f})
                 {
                     Vector3 at=new(x,level*4,z);
-                    HospitalHiding.Build(services,k,at,x<24?90:-90,id++,floors.At(at));
+                    HospitalHiding.Build(services,k,at,x<24?90:-90,hideIndex++,floors.At(at));
                 }
             }
             for(int sector=0;sector<6;sector++)Breaker(services,k,sector,new Vector3(29.1f+sector*1.25f,0,24.3f));
@@ -45,7 +45,7 @@ namespace Abandoned.Hospital
             Renderer lens=k.Box("Diffuser",t,new Vector3(0,-.08f,0),new Vector3(1.18f,.04f,.4f),k.Glow,false).GetComponent<Renderer>();
             Transform aim=HospitalKit.Group("Light",t);aim.localPosition=Vector3.down*.13f;aim.localRotation=Quaternion.Euler(90,0,0);
             Light light=aim.gameObject.AddComponent<Light>();light.type=LightType.Spot;light.range=10;light.spotAngle=110;light.intensity=8;
-            light.color=new Color(.79f,.94f,.84f);light.shadows=LightShadows.None;
+            light.color=new Color(.79f,.94f,.84f);light.shadows=id==7||id==22?LightShadows.Soft:LightShadows.None;
             t.gameObject.AddComponent<LightFixture>().EditorSetup(light,lens,id%7==3,id%11==5,17000+id);
             k.Attach(t,ceiling);
         }

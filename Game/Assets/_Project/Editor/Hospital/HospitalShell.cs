@@ -31,7 +31,7 @@ namespace Abandoned.Hospital
                     Transform wall=HospitalKit.Group("ClinicalPartition",shell);wall.localPosition=new Vector3(edge,y,z);wall.localRotation=Quaternion.Euler(0,90,0);
                     DoorWall(wall,k,16,2.4f);
                     // Room identification is mounted on the corridor side, clear of the opening.
-                    Transform sign=HospitalKit.Group("RoomSign",shell);sign.localPosition=new Vector3(edge+(side==0?.14f:-.14f),y+2.8f,z+2.6f);
+                    Transform sign=HospitalKit.Group("RoomSign",shell);sign.localPosition=new Vector3(edge+(side==0? .14f:-.14f),y+2.8f,z+2.6f);
                     sign.localRotation=Quaternion.Euler(0,side==0?-90:90,0);
                     k.Box("Backplate",sign,Vector3.zero,new Vector3(2.2f,.42f,.06f),k.Accent,false);
                     k.Label(sign,HospitalLayout.Rooms[level,side*2+bay],new Vector3(0,0,-.04f),size:.035f);

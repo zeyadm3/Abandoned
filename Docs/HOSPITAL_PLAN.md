@@ -50,8 +50,9 @@ scene-local bounds and HorrorConfig coordinates are authored at origin. The worl
   The shared seeded planner chooses how many prizes actually appear; four markers do not mean four prizes.
 - Ten threat starts: four ground starts and six upper starts;
   every start is beyond the entrance threshold, with upper pressure reachable by both stairs.
-- Eight concealing linen cabinets (HidingLocker/Closet), all section-bound and outside loot reservation bays.
+- Eight concealing linen cabinets (HidingLocker/Closet), ids 80–87, all section-bound and outside loot reservation bays.
 - Thirty ceiling fixtures, deterministically healthy/faulty/dead, six breaker panels with distinct sector indices.
+  Two healthy cross-hall fixtures cast shadows; the other fixtures and yard lights do not.
   Ground ceiling panels/lamps follow their supporting upper slab; bolted room furniture follows its floor.
 - Building interior fog, wind/room tone/fixture hum, spatial ventilation and dripping rooms, plus shared structural,
   breaker, hiding, loot and monster sounds. No custom audio bypasses GameAudio.
@@ -94,6 +95,7 @@ handoff requirements in the world-owned paths, which this task must not edit. No
 For Claude CLI only; none of these actions was performed in this task.
 
 1. Compile, then run the Hospital rebuild entry point to generate Hospital.unity and the owned data/art assets.
+   The second map commit also finishes Hospital material/surface tuning, cabinet ids and non-overlapping prize bays.
 2. Walk entrance → both cross halls → both stairs → each room → south loading marker with Heavy/Huge salvage.
 3. Exercise the Hospital-only catalog: small, Heavy and both prize types; ensure no ordinary/jackpot tag crossover.
 4. Collapse an upper room slab: its furniture, ceiling below and lights disappear; the corridor/stairs remain clear

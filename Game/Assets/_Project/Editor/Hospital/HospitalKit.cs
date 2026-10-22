@@ -42,10 +42,13 @@ namespace Abandoned.Hospital
             if (m != null) return m;
             m = new Material(Shader.Find("Abandoned/Surface") ?? Shader.Find("Universal Render Pipeline/Lit"));
             m.name = "Hospital_" + name; m.SetColor("_BaseColor", tint); m.SetFloat("_Smoothness", smooth);
+            m.SetFloat("_Metallic", name == "Steel" ? .7f : 0f);
             if (scan != null)
             {
                 string dir = "Assets/_Project/Art/Scanned/" + scan;
-                string[] files = Directory.GetFiles(dir, "*_Color.jpg");
+                string[] files = Directory.GetFiles(dir, "*_AmbientOcclusion.jpg");
+                if (files.Length > 0) m.SetTexture("_OcclusionMap", AssetDatabase.LoadAssetAtPath<Texture2D>(files[0]));
+                files = Directory.GetFiles(dir, "*_Color.jpg");
                 if (files.Length > 0) m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(files[0]));
                 files = Directory.GetFiles(dir, "*_NormalGL.jpg");
                 if (files.Length > 0)
@@ -61,7 +64,7 @@ namespace Abandoned.Hospital
         {
             GameObject go = GreyboxFactory.Box(name, parent, at, size, mat, solid);
             // Per-face metre UVs prevent long walls and tiny fittings stretching the same texture.
-            string key = FormattableString.Invariant($"{size.x:0.000}_{size.y:0.000}_{size.z:0.000}");
+            string key = System.FormattableString.Invariant($"{size.x:0.000}_{size.y:0.000}_{size.z:0.000}");
             if (!meshes.TryGetValue(key, out Mesh mesh))
             {
                 Ensure(Art + "/Meshes"); string path = Art + "/Meshes/Box_" + key + ".asset";

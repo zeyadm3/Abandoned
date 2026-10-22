@@ -133,3 +133,12 @@ existing **ambientCG** CC0 scans: PaintedPlaster017, Terrazzo018, Metal049A, Rub
 PaintedMetal012, Plastic010 and Asphalt031. Source: [ambientCG](https://ambientcg.com/),
 [CC0 license](https://docs.ambientcg.com/license/). Audio uses the existing credited SoundBank through GameAudio
 (LevelAmbience / HorrorAreaAmbience); world signs reuse the existing credited Barlow Condensed font.
+
+## Last Light Motor Lodge (2026-10-23)
+
+Original lodge architecture, pool, guest/bathroom/service fittings, wardrobes and all twenty-two salvage models
+are authored by the project in `Editor/Motel`; no third-party model or new audio is added. Materials reference
+the existing **ambientCG** CC0 scans: PaintedPlaster006, Carpet016, Metal049A, Rubber004, Fabric030, WoodFloor051,
+PaintedMetal012, Plastic010 and Asphalt031. Source: [ambientCG](https://ambientcg.com/),
+[CC0 license](https://docs.ambientcg.com/license/). Audio reuses the existing credited SoundBank through GameAudio
+(LevelAmbience / HorrorAreaAmbience); signage reuses the existing credited Barlow Condensed font.

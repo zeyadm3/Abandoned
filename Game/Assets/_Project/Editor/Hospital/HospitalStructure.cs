@@ -25,8 +25,8 @@ namespace Abandoned.Hospital
                 var c=t.gameObject.AddComponent<BoxCollider>(); c.center=Vector3.down*.16f;c.size=new Vector3(4,.32f,4);
                 k.Box("Visual",t,c.center,c.size,k.Floor,false);
                 bool keep=HospitalLayout.Protected(x,z),fall=level>0&&!keep;
-                var s=setup.AddSection(t,SectionType.Floor,fall,fall?.82f:1f,fall?.85f:1f);
-                t.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
+                var s=setup.AddSection(t,SectionType.Floor,fall,fall? .82f:1f,fall? .85f:1f);
+                t.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Terrazzo);
                 if(keep)t.gameObject.AddComponent<SectionKeepClear>();
                 if(fall)SectionNavCarver.EditorAdd(t.gameObject,c.size);
                 tiles[new Vector3Int(x,level,z)]=s;

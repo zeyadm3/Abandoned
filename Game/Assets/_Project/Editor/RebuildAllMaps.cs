@@ -26,6 +26,7 @@ namespace Abandoned.EditorTools
             // The HQ is opt-in: a full HQ regeneration discards hand edits made in Scenes/HQ.unity.
             int choice = EditorUtility.DisplayDialogComplex("Rebuild All Maps",
                 "Rebuilds the Mall, School, Iron Factory, Island Prison and Tutorial House, one after another. " +
+                "Also rebuilds Saint Brigid Hospital and Last Light Motor Lodge. " +
                 "This takes a while and Unity will look frozen between maps.\n\n" +
                 "The HQ: \"Keep my HQ\" only adds the training clipboard to the saved HQ. " +
                 "\"Rebuild HQ too\" regenerates it from code and loses any hand edits made in the HQ scene.",
@@ -40,6 +41,7 @@ namespace Abandoned.EditorTools
                 ("Iron Factory", IronFactoryBuilder.Build),
                 ("Island Prison", IslandPrisonBuilder.Build),
                 ("Saint Brigid Hospital", Abandoned.Hospital.HospitalBuilder.Build),
+                ("Last Light Motor Lodge", Abandoned.Motel.MotelBuilder.Build),
             };
             if (rebuildHq) steps.Add(("HQ (Salvage Hub)", HqBuilder.AuthorSalvageHub));
             steps.Add(("Tutorial House", TutorialHouseBuilder.Build));

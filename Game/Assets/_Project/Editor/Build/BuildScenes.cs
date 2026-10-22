@@ -21,6 +21,7 @@ namespace Abandoned.EditorTools
             FactoryBuilder.ScenePath,
             PrisonBuilder.ScenePath,
             Abandoned.Hospital.HospitalBuilder.ScenePath,
+            Abandoned.Motel.MotelBuilder.ScenePath,
         };
 
         public static readonly string[] All =
@@ -32,6 +33,7 @@ namespace Abandoned.EditorTools
             FactoryBuilder.ScenePath,
             PrisonBuilder.ScenePath,
             Abandoned.Hospital.HospitalBuilder.ScenePath,
+            Abandoned.Motel.MotelBuilder.ScenePath,
             // The training job (14 Larch Court): ships in every build, but is never a contract destination.
             TutorialHouseLayout.ScenePath,
             TestMapBuilder.ScenePath,
