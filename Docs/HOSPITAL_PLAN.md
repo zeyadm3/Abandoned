@@ -1,6 +1,6 @@
 # Saint Brigid Hospital — departmental expansion, 2026-10-23
 
-Implementation only. No compile (including dotnet), Unity invocation, game run, tests, verification, screenshots,
+Implementation only. No compile (including dotnet), Unity invocation, game run, tests, engine verification, screenshots,
 scene generation, navigation bake or occlusion bake was executed by this agent. Claude CLI owns execution/review.
 The existing entry point remains `Abandoned.Hospital.HospitalBuilder.Build` and its namespace is unchanged.
 
@@ -106,6 +106,14 @@ the world moves its terrain/roads around the current anchor. No root-moving scri
   atmosphere volume; those remain useful for the reviewer's standalone scene review.
 - Resource prefix Hospital/Network and location id hospital remain unchanged. Register map prefabs before NGO starts.
   Existing world readiness/adapter code owns activation and persistent van cargo. Its paths were not edited.
+
+## Pre-rebuild source review (2026-10-23)
+
+The builder, menu/rebuild registrations, runtime dependencies and map-owned script metadata are present. The catalog
+contains 37 authored definitions across every carry class; all of their names have English plus nine translated
+sheet entries. Shared structure configs/fractured tile, run/structure network prefabs and loot/carry configs are
+present on disk. Unity folder metadata is included. This was a source/file review only; no compilation or engine
+execution was performed, and generated scene/data/art content still comes from the rebuild.
 
 ## Decisions CLAUDE.md should record
 

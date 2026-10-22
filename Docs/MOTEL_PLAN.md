@@ -1,7 +1,7 @@
 # Last Light Motor Lodge — roadside expansion, 2026-10-23
 
 Implementation only. This agent did not compile (including dotnet), invoke Unity, run the game, run tests or
-verification, generate scenes, bake navigation/occlusion, or take screenshots. Claude CLI owns execution/review.
+engine verification, generate scenes, bake navigation/occlusion, or take screenshots. Claude CLI owns execution/review.
 The entry point remains `Abandoned.Motel.MotelBuilder.Build`; its namespace and menu registration are unchanged.
 
 ## Layout and character
@@ -34,7 +34,8 @@ The lodge has 64 ground slabs and 80 upper pieces: sixteen gallery cells are spl
 The outer half at z=12..14 can peel away with its own railing. The inner half at z=14..16 stays permanent and carries
 SectionKeepClear. The next row, room thresholds at z=16..20, is protected too. Thirty-two rear upper room/manager
 slabs can fall; the manager bedroom now fails over the laundry. The two 3.2 m end stairs and four landings stay solid
-and protected. This gives 48 failing upper sections, with a permanent route between every entrance and either stair.
+and protected. Their stepped solid undersides prevent players or dropped loot entering a low-headroom trap.
+This gives 48 failing upper sections, with a permanent route between every entrance and either stair.
 
 Three 4 × 2 m west pool-deck sections can collapse into the basin, independently of the lodge. The west rim is open
 at deck height so the deck loot is reachable from the courtyard. East guards follow their own section. Low skirts
@@ -124,6 +125,14 @@ The existing absolute configs/NavMesh stay there. No script moves the root and n
 - No standalone horizon/sky geometry exists to hide. The adapter handles standalone camera/sun/global atmosphere.
 - Location id `motel`, scene `Motel`, resource prefix `Motel/Network` and the owned catalog/run clone remain stable.
   World readiness/activation and persistent cargo stay with Claude CLI's world adapter; its paths were not touched.
+
+## Pre-rebuild source review (2026-10-23)
+
+The builder, menu/rebuild registrations, runtime dependencies and map-owned script metadata are present. The catalog
+contains 38 authored definitions across every carry class; all of their names have English plus nine translated
+sheet entries. Shared structure configs/fractured tile, run/structure network prefabs and loot/carry configs are
+present on disk. Unity folder metadata is included. This was a source/file review only; no compilation or engine
+execution was performed, and generated scene/data/art content still comes from the rebuild.
 
 ## Decisions CLAUDE.md should record
 

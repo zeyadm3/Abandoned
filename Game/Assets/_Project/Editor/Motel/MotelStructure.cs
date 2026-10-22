@@ -138,6 +138,13 @@ namespace Abandoned.Motel
                 g.localRotation = Quaternion.Euler(- 26.565f, 0, 0);
                 k.Box("Guard", g, Vector3.zero, new Vector3(.06f, 1.1f, Mathf.Sqrt(80)), k.Metal);
             }
+            // Close the low underside: a player or a dropped case must not enter a headroom trap.
+            for (int block = 1; block < 4; block++)
+            {
+                float height = block - .45f;
+                k.Box("UnderStairFill", visual, new Vector3(0f, height * .5f, block * 2f + 1f),
+                    new Vector3(3.18f, height, 1.99f), k.Wall);
+            }
             setup.AddSection(t, SectionType.Stair, false, fractured : false);
             t.gameObject.AddComponent<SectionKeepClear>();
             var link = t.gameObject.AddComponent<NavMeshLink>();
