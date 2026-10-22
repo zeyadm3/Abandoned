@@ -22,11 +22,18 @@ namespace Abandoned.EditorTools
             Spot(group, index++, new Vector3(6f, L.GroundY, -1.0f), Vector3.back, HideSpotKind.Cabinet, art);
             Spot(group, index++, new Vector3(-6f, L.GroundY, -2.5f), Vector3.forward, HideSpotKind.Locker, art);
 
-            // 2. Mechanical Deck (y = 20m)
+            // 2. Flooded Floor (Story 3, y = 12m)
+            Spot(group, index++, new Vector3(-6f, 12.0f, 2.0f), Vector3.forward, HideSpotKind.Cabinet, art);
+
+            // 3. Mechanical Deck (y = 20m)
             Spot(group, index++, new Vector3(-6f, L.MechanicalY, 6f), Vector3.forward, HideSpotKind.Cabinet, art);
             Spot(group, index++, new Vector3( 6f, L.MechanicalY, 6f), Vector3.forward, HideSpotKind.Cabinet, art);
+            Spot(group, index++, new Vector3(10f, L.MechanicalY, 10f), Vector3.back, HideSpotKind.Machine, art);
 
-            // 3. Restaurant Floor (y = 44m)
+            // 4. Looted Office Floor (Story 8, y = 32m)
+            Spot(group, index++, new Vector3(-6f, 32.0f, 6.0f), Vector3.forward, HideSpotKind.Closet, art);
+
+            // 5. Restaurant Floor (y = 44m)
             // Waiter Service Credenzas in Dining Room
             Spot(group, index++, new Vector3(-4f, L.RestaurantY, 17f), Vector3.back, HideSpotKind.Cabinet, art);
             Spot(group, index++, new Vector3( 4f, L.RestaurantY,  3f), Vector3.forward, HideSpotKind.Cabinet, art);
@@ -44,6 +51,9 @@ namespace Abandoned.EditorTools
             // Penthouse Executive Wardrobe Closet
             Spot(group, index++, new Vector3(14.5f, L.RestaurantY, 6.0f), Vector3.left, HideSpotKind.Closet, art);
 
+            // 6. Roof Terrace Window Washer Locker (y = 50m)
+            Spot(group, index++, new Vector3(2f, L.RoofY, 19f), Vector3.back, HideSpotKind.Locker, art);
+
             return index;
         }
 
@@ -53,6 +63,7 @@ namespace Abandoned.EditorTools
             {
                 HideSpotKind.Locker => new(0.85f, 2.0f, 0.85f),
                 HideSpotKind.Closet => new(1.2f, 2.2f, 1.0f),
+                HideSpotKind.Machine => new(1.4f, 1.8f, 1.4f),
                 _ => new(1.1f, 1.8f, 0.9f) // Cabinet
             };
 
@@ -63,8 +74,9 @@ namespace Abandoned.EditorTools
             Material mat = kind switch
             {
                 HideSpotKind.Locker => art.Steel,
-                HideSpotKind.Closet => art.Parquet,
-                _ => art.Parquet // Cabinet
+                HideSpotKind.Machine => art.Steel,
+                HideSpotKind.Closet => art.Mahogany,
+                _ => art.Mahogany // Cabinet
             };
 
             Transform shell = Group("Shell", root);

@@ -230,6 +230,34 @@ namespace Abandoned.Skyscraper
             GameAudio.Play(sound, DeckPosition + Vector3.up * 1.5f, 1f, 40f);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private void OnDrawGizmos()
+        {
+            if (!DebugView.Visible) return;
+
+            // 1. Elevator Cab Wire Box (green = stopped, yellow = moving, red = broken)
+            Gizmos.color = isBroken.Value ? Color.red : (isMoving.Value ? Color.yellow : Color.green);
+            Vector3 cabCenter = DeckPosition + Vector3.up * 1.4f;
+            Gizmos.DrawWireCube(cabCenter, new Vector3(deckSize.x, 2.8f, deckSize.y));
+
+            // 2. Floor Stops along the shaft
+            if (floorElevations != null)
+            {
+                for (int i = 0; i < floorElevations.Length; i++)
+                {
+                    Gizmos.color = (i == activeFloor.Value && !isMoving.Value) ? Color.cyan : new Color(0.2f, 0.6f, 1.0f, 0.6f);
+                    Vector3 stopPos = (platform != null ? basePlatformPos : transform.position) + Vector3.up * floorElevations[i];
+                    Gizmos.DrawWireCube(stopPos + Vector3.up * 0.1f, new Vector3(deckSize.x, 0.2f, deckSize.y));
+                }
+            }
+
+            // 3. Load indicator sphere (white = safe, magenta = overloaded)
+            float currentLoad = CalculateLoad();
+            Gizmos.color = (currentLoad > maxSafeLoadKg) ? Color.magenta : Color.white;
+            Gizmos.DrawWireSphere(cabCenter + Vector3.up * 1.6f, 0.4f);
+        }
+#endif
+
 #if UNITY_EDITOR
         public void EditorSetup(MovingPlatform deck, float[] floors, GameObject[] gates, Vector2 size, float speed, float maxLoad, int sector)
         {

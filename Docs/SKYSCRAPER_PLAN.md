@@ -3,165 +3,228 @@
 ## 1. Concept & Setting
 **Location:** Cloudline Tower & The Apex Restaurant  
 **Setting:** The upper floors and roof crown of an abandoned 1980s corporate skyscraper towering over the district.
-The crew's van parks at street level in the forecourt plaza. The salvage target is **The Apex Restaurant & Sky Lounge** at the tower's summit, a high-roller venue left frozen in time with vintage wines, silver services, commercial kitchen equipment, and executive vaults.
+The crew's van arrives at street level in the forecourt plaza. The salvage target is **The Apex Restaurant & Sky Lounge** at the tower's summit, a high-roller venue left frozen in time with vintage wines, silver services, commercial kitchen equipment, executive vaults, and a vertiginous roof terrace with a window-cleaning gantry.
 
-### Verticality & The Core Loop
-The Skyscraper is built around high-stakes vertical salvage:
-- **Floor 0: Street Level & Plaza (y = 0 m)**: Forecourt arrival plaza, van parking spot, company extraction truck, revolving doors, grand marble lobby, reception desk, turnstiles, and the dual vertical access points: the **Elevator Bank** and the **Emergency Fire Stairwell**.
-- **Floor 1: Intermediate Service & Mechanical Deck (y = 20 m)**: Mid-tower technical level. Houses the elevator hoist motors, HVAC air handlers, high-voltage transformer cages, electrical switchgear (Sector 1 breaker), and catwalks overlooking the elevator void. Also features the mid-tower stairwell landing and the emergency elevator shaft escape doors.
-- **Floor 2: The Apex Restaurant & Sky Lounge (y = 44 m to 52 m)**:
-  - **Sky Lobby & Reception (y = 44 m)**: Elevator foyer, coat check, maître d' station.
-  - **Grand Dining Room (y = 44 m)**: Panoramic floor-to-ceiling curtain glass overlooking the abyss and distant skyline, white linen banquet tables, fallen chandeliers, central marble statuary, and deteriorating cantilevered floor slabs.
-  - **Cocktail Lounge & Bar (y = 44 m)**: Curved mahogany bar, back-bar mirror displays, brass glass racks, espresso machines, leather lounge armchairs.
-  - **Commercial Kitchen & Prep (y = 44 m)**: Stainless steel ranges, fryers, prep tables, dishwashing station, hood vents, staff lockers.
-  - **Walk-in Cold Store & Pantry (y = 44 m)**: Heavy insulated refrigeration door, meat hooks, wire racks, chilling compressor.
-  - **Private Dining (The Penthouse Suite, y = 44 m)**: Elite private dining room, boardroom table, private cellar display, executive wall safe.
-  - **Observation Terrace (y = 44 m, outdoor)**: Cantilevered observation deck with safety railings and wind shields over the city void.
+### Open World Integration
+- **Coordinate Authoring:** Authored at the origin `(0, 0, 0)`. The map scene is loaded additively without moving its root.
+- **Van Parking Spot:** `(0, 0, -22)` facing North into the grand entrance canopy.
+- **Ground Cutout Rectangle:** `[-24.0, -35.0]` to `[24.0, 22.0]` (48 m wide by 57 m deep).
+- **Edge Elevation:** `0.0 m` meeting the surrounding open world terrain smoothly.
+- **Objects for World Streaming to Hide:**
+  - `Exterior/Truck` (in open world, the crew's van carries `TruckCargo`)
+  - `Exterior/Skyline` (cheap low-poly building silhouette props used for standalone viewing)
+- **Natural Scenery:** No custom sky, trees, or grass added; all atmospheric scattering and horizons are managed by `Art > Upgrade New Maps` (`AvOverhaul`).
 
 ---
 
-## 2. The Elevator & Stairwell System
+## 2. The Vertical Climb & Transits
 
-### Elevator Mechanics (NGO Host-Authoritative)
-The elevator is the crew's lifesaver and their potential coffin:
-- **Cab & Platform:** Enclosed steel-and-glass cab riding vertical guide rails. The floor of the cab carries an active `MovingPlatform` component.
-- **Three Stops:**
-  - Floor 0: Street Lobby (y = 0 m)
-  - Floor 1: Mechanical Deck (y = 20 m)
-  - Floor 2: Apex Restaurant (y = 44 m)
-- **Call & Send Controls:** Interactive `SkyscraperElevatorButton` (`IUsable`, `IHintSource`) on each landing to call the lift, plus a 3-button car panel inside the cab to select destination floors. Requests invoke server RPCs validated by the host.
-- **Landing Gates:** Heavy automated industrial elevator doors on each landing that slide open only when the cab is parked at that floor, preventing players and loot from tumbling into the open shaft during transit.
+Verticality is the heartbeat of Cloudline Tower. The run challenges squads to navigate between the ground plaza (y = 0 m) and the roof terrace (y = 50 m) through two contrasting transit routes:
 
-### What Makes the Lift Fail (Proposed Decisions)
-The prompt specifically instructs: *"You decide what makes the lift fail (power, damage, monsters, or a mix) and record it as a proposed decision."*
-We propose a four-tier failure system:
-1. **Weight Overload & Cable Snap (`LiftSnap`)**:
-   - Safe operating load is **450 kg** (players + carried loot + loose items on deck, calculated via `LoadSources.All`).
-   - If the crew greedily loads heavy salvage (or multiple players carry the 340 kg Grand Vintage Wine Cask onto the lift together), the cables snap midway through the trip.
-   - The cab free-falls down the shaft, triggers the `LiftSnap` and `Crash` sounds, deals crushing drop damage (40 HP) to everyone inside, and permanently breaks the lift for the remainder of the run.
-2. **Power Blackouts & Sector Danger**:
-   - The lift motor is powered by **Sector 1 (Mechanical Deck)**.
-   - When overall run danger increases or a blackout event hits Sector 1, the lift halts immediately in the shaft.
-   - If stalled between floors, the crew must exit via the cab's emergency roof hatch into the shaft maintenance ladders or step onto the Floor 1 mechanical catwalks to reach the stairwell.
-   - Power can be restored by hiking down to the Mechanical Floor (y = 20 m) and throwing the Sector 1 breaker.
-3. **Monster Audio Attraction**:
-   - Elevator motor operation emits heavy mechanical hums and cable friction noise (`NoiseSystem.Emit(lift.Deck, 0.75f, NoiseSource.Other)`), alerting stalking threats. Monsters frequently wait outside landing doors when the lift arrives (`LiftArrive`).
-4. **Structural Creep & Shaft Jamming**:
-   - Tower sway and structural fatigue introduce a seeded door-jam hazard on late-game danger stages, requiring manual pry interactions to open stuck doors.
+### Dual Vertical Transit Architecture
+1. **The Passenger / Freight Elevator (`SkyscraperElevator`, NGO Host-Authoritative)**:
+   - Cab rides guide rails through a 48 m central structural shaft.
+   - 3 active stops:
+     - Floor 0: Street Lobby (y = 0 m)
+     - Floor 1: Mechanical Deck (y = 20 m)
+     - Floor 2: Apex Restaurant Sky Lobby (y = 44 m)
+   - Synchronized sliding landing gates at each level that seal off the open shaft whenever the cab is not present.
+   - Interactive call stations at each landing and a 3-button destination panel inside the car.
 
-### The 44-Metre Fire Stairwell
-- Runs continuously from Street Level (y = 0 m) to the Restaurant (y = 44 m) within a reinforced concrete core.
-- **11 continuous stair runs** with 180-degree switchback landings every 4 vertical metres.
-- Fire break doors at Ground Lobby (y = 0 m), Mechanical Floor (y = 20 m), and Restaurant Sky Lobby (y = 44 m).
-- **Carry Difficulty:** Heavy and Huge loot cannot be sprinted with. Dragging a 220 kg safe down 11 flights of tight concrete stairs requires navigating corners, managing stamina exhaustion, and fending off monsters echoing in the vertical stairwell. Several landings feature weakened concrete that cracks under heavy impact.
+2. **The 44-Metre Fire Stairwell (`SkyscraperStairwell`)**:
+   - 11 continuous switchback stair flights enclosed within a reinforced concrete core.
+   - Fire break exit doors opening onto distinct intermediate landings:
+     - **Story 0 (y = 0 m)**: Street lobby entrance foyer.
+     - **Story 3 (y = 12 m)**: Flooded corporate floor with standing water, burst sprinkler pipes, and wet office desks.
+     - **Story 5 (y = 20 m)**: Intermediate mechanical deck, transformer cage, and catwalks across the shaft void.
+     - **Story 8 (y = 32 m)**: Ransacked executive cubicles, server racks, and broken exterior windows with howling wind.
+     - **Story 11 (y = 44 m)**: Summit Apex Restaurant sky lobby.
+   - **Roof Stair (y = 50 m)**: Exterior steel access stairs leading from the dining terrace up to the helipad roof crown.
+   - **Carrying Decision:** Dragging a 220 kg safe or the 340 kg wine cask down 11 flights of tight concrete stairs tests stamina, corner clearance, and coordination when the elevator is dead.
 
----
-
-## 3. Structural Sections & Collapse Design
-Using `StructureSceneSetup` and `StructuralSection`:
-- **Dining Room Window Slabs**: 4 m x 4 m floor sections along the northern panoramic curtain wall are weakened by years of rain intrusion and thermal shock (`health = 0.65f`, `capacity = 0.55f`). Walking across while carrying heavy loot causes visible fracture stages and eventual collapse into the 44-metre drop below.
-- **Mechanical Floor Catwalks**: Steel grating walkways (`SectionType.Walkway`) over the central elevator machinery void. Overloaded catwalks collapse, dropping salvage into the lower mechanical crawlspace.
-- **Stairwell Landing Floor 6 (y = 24 m)**: Weakened landing section that tests squads dragging heavy loot.
-- All collapsible sections feature `SectionNavCarver` so AI pathfinding dynamically updates and monster pathing diverts around collapsed floor chasms.
-- Safe zones (e.g. truck ramp, lobby elevator entrance) are stamped with `SectionKeepClear` to ensure extraction routes remain navigable.
+### What Makes the Lift Fail
+The lift fails for three clear, readable reasons:
+1. **No Power in Sector 1 (Mechanical Deck)**:
+   - The lift motor is wired to Sector 1. When a blackout event occurs or danger peaks, Sector 1 trips.
+   - Elevator halts immediately. Call and send button prompts clearly display: `Lift (No Power)`.
+   - The indicator lamps above the landing gates turn off.
+   - **Remedy:** Squad must hike to the Mechanical Floor (y = 20 m) and throw the Sector 1 Breaker panel.
+2. **Overweight Cable Snap (`LiftSnap` -> `Crash`)**:
+   - Safe working load is **450 kg** (players + carried loot + loose platform cargo via `LoadSources.All`).
+   - Button prompt warns `Lift (Overloaded)` if current load exceeds 450 kg.
+   - If sent while overloaded, cables snap midway through the shaft: `LiftSnap` plays, camera shakes violently, and the cab plunges into free-fall down the shaft.
+   - Impacts the bottom buffer springs with `SoundId.Crash`, deals 40 HP crushing damage to all occupants, and permanently disables the lift (`Lift (Out of Order)`).
+3. **Shaft Jamming & Structural Damage**:
+   - High-danger aftershocks or monster aggression can jam landing gates, requiring manual inspection and forcing the crew to use intermediate escape doors to the fire stairwell.
 
 ---
 
-## 4. Power Sectors & Lighting
-The building is wired into five distinct power sectors:
-- **Sector 0: Street Level Forecourt & Grand Lobby**: Exterior floodlights, facade up-lighting, lobby reception pendants.
-- **Sector 1: Elevator Shaft & Mechanical Deck**: Motor room high-bay lights, maintenance bulkheads, elevator cab ceiling fixture, and shaft indicator lanterns.
-- **Sector 2: Grand Dining Room & Observation Deck**: Crystal chandeliers, recessed perimeter downlights, terrace wall sconces.
-- **Sector 3: Commercial Kitchen & Cold Store**: Industrial fluorescent fixtures, prep station task lights, cold store vapor-proof bulkheads.
-- **Sector 4: Penthouse VIP Suite & Private Lounge**: Dim recessed luxury halogens, showcase cabinet backlights, private bar pendants.
+## 3. Top-Level Content & Atmosphere
 
-Ceiling fixtures are set up with `LightFixture` components (handling functional, flickering/faulty, and burned-out tubes) linked to `PowerController`. Breaker panels are installed in the Mechanical Room (Sector 1) and Kitchen Service Corridor (Sector 3).
+### Floor 2: The Apex Restaurant (y = 44 m)
+- **Sky Lobby & Reception**: Maître d' podium, guest ledger salvage, and velvet stanchions.
+- **Grand Dining Room**: White linen banquet tables, fallen brass chandeliers, marble pedestals, and floor-to-ceiling curtain glass windows overlooking the district.
+- **Cocktail Lounge & Bar**: Curved rich mahogany bar, mirrored spirit shelves, brass tap tower, and commercial dual-boiler espresso machine (65 kg).
+- **Commercial Kitchen Line**: Stainless steel cooking ranges with cast-iron burners, overhead exhaust hoods, prep tables with butcher blocks, dishwashing sinks, and gravity meat slicer.
+- **Walk-in Cold Store**: Heavy insulated refrigeration latch door, ceiling meat rails, wire shelving, and aged Jamón Ibérico legs.
+- **Penthouse Executive Suite**: VIP private dining boardroom, rich mahogany table, 8 leather executive armchairs, climate-controlled glass wine display wall, and the executive wall safe (220 kg).
+- **Observation Terrace**: Outdoor cantilevered viewing deck with tempered safety glass barriers.
 
----
-
-## 5. Hiding Places (`HidingLocker`)
-Ten themed hiding spots using `HidingLocker` and `HideSpotKind`:
-1. `HideSpotKind.Cabinet`: Dining room waiter station service credenza #1 (North).
-2. `HideSpotKind.Cabinet`: Dining room waiter station service credenza #2 (South).
-3. `HideSpotKind.Cabinet`: Lounge back-bar storage credenza.
-4. `HideSpotKind.Locker`: Kitchen staff locker #1.
-5. `HideSpotKind.Locker`: Kitchen staff locker #2.
-6. `HideSpotKind.Locker`: Kitchen staff locker #3.
-7. `HideSpotKind.Closet`: Walk-in cold store insulated refrigeration cabinet.
-8. `HideSpotKind.Cabinet`: Mechanical floor high-voltage switchgear cabinet #1.
-9. `HideSpotKind.Cabinet`: Mechanical floor electrical control cabinet #2.
-10. `HideSpotKind.Closet`: Penthouse VIP executive wardrobe closet.
+### Summit Roof Terrace & Window Gantry (y = 50 m)
+- **Exterior Access Stairs**: Connects restaurant terrace up to the roof parapet.
+- **Helipad**: Painted contrast "H" helicopter landing target on the open concrete slab.
+- **Window-Cleaning Gantry**: Heavy steel crane rail track along the northern parapet, motorized trolley, A-frame boom arm, and a suspended cradle platform hanging out over the 50 m vertical drop.
+- **Viewing Telescope**: High-power brass observation telescope overlooking the skyline.
 
 ---
 
-## 6. Salvage Loot Catalog (Data/Loot/Skyscraper/)
-24 distinct high-value salvage items across 5 restaurant-themed tags:
-- `skyscraper_dining`
-- `skyscraper_kitchen`
-- `skyscraper_bar`
-- `skyscraper_cellar`
-- `skyscraper_executive`
+## 4. Structural Sections & Collapses
 
-### Highlight Loot Items
+Configured via `StructureSceneSetup` and `StructuralSection`:
+- **Dining Room North Window Slabs**: Cantilevered floor tiles along the glass curtain wall weakened by moisture (`health = 0.65f`, `capacity = 0.55f`). Overloaded squads or dropped heavy loot trigger progressive fractures and collapse into the abyss.
+- **Mechanical Catwalk Shaft Bridge**: Central steel diamond plate catwalk over the elevator machinery void (`health = 0.60f`, `capacity = 0.50f`). Buckles under excessive load.
+- **Stairwell Landing 6 (y = 24 m)**: Concrete landing section testing players carrying heavy salvage down the stairwell.
+- **Window Washer Cradle & Roof Terrace Overlook**: Roof edge platforms that can fail if overloaded.
+- **Protected Core Route**: The interior elevator entrance, primary stair runs, and core lobby corridors are protected by `SectionKeepClear` to ensure an extraction path always exists.
+- **Dynamic AI Updates**: All collapsible modules have `SectionNavCarver` so monster AI paths automatically reroute around broken floor chasms.
+
+---
+
+## 5. Power Sectors & Breaker Panels
+
+All 5 building sectors are fully wired with functional `LightFixture` networks and dedicated `BreakerPanel` units:
+- **Sector 0 (Ground Lobby & Exterior)**: Plaza entrance floodlights, canopy lamps, and grand lobby chandeliers. Breaker panel located in the lobby security niche.
+- **Sector 1 (Elevator Shaft & Stairwell)**: Elevator hoist motors, cab ceiling fixture, shaft bulkheads, and emergency stairwell lamps on all 11 stories. Breaker panel located in the Mechanical Deck electrical room (y = 20 m).
+- **Sector 2 (Grand Dining & Lounge)**: Crystal chandeliers, recessed downlights, and terrace sconces. Breaker panel in the bar service corridor.
+- **Sector 3 (Kitchen & Cold Store)**: Industrial fluorescent tubes and cold store vapor-proof bulkheads. Breaker panel on the kitchen utility wall.
+- **Sector 4 (Penthouse VIP Suite)**: Luxury halogen recessed downlights and private wine wall backlights. Breaker panel in the VIP vestibule.
+
+---
+
+## 6. Environmental Soundscape (`SkyscraperSoundscape`)
+
+Authored in `Scripts/Skyscraper/SkyscraperSoundscape.cs` using only existing `SoundId`s:
+- **Broken Glass Wind Whistling (`SoundId.GhostWhoosh`)**: Spatial high-altitude wind gusts at broken window nodes on the 32 m office floor and the restaurant north curtain wall.
+- **Shaft Cable Creaking (`SoundId.Groan` / `SoundId.Creak`)**: Cable tension and hoist strain resonating throughout the 48 m elevator shaft.
+- **Piano Lid Dropping (`SoundId.DoorSlam`)**: Resonant thud from the grand piano in the lounge.
+- **Bar Glasses Rattling (`SoundId.LootRattle`)**: Clinking stemware on the back-bar racks and sommelier wine displays.
+- **Flooded Floor Water Dripping (`SoundId.WaterDrip`)**: Continuous spatial drip loop beneath the burst sprinkler pipes on Floor 3.
+- **F1 Gizmos**: Enabled via `DebugView.Visible`:
+  - Blue: Wind nodes
+  - Orange: Shaft cable nodes
+  - Magenta: Piano node
+  - Yellow: Glass rattle nodes
+  - Cyan: Water drip nodes
+  - Elevator Gizmos: Cab wireframe (Green = idle, Yellow = moving, Red = broken), shaft stops (Cyan), and load sphere (White = safe, Magenta = overloaded).
+
+---
+
+## 7. Salvage Loot Catalog (32 Items, 2 Jackpots)
+
+Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper/Loot/`:
 | Item ID | Name | Carry Class | Weight | Value Range | Tag | Description |
 |---|---|---|---|---|---|---|
-| `antique_silverware` | Antique Silver Cutlery Set | OneHand | 2.5 kg | $600 - $1,800 | dining | Sterling silver 24-piece dinner service |
-| `crystal_champagne_flutes` | Crystal Flute Set | OneHand | 1.8 kg | $400 - $1,200 | bar | Hand-blown lead crystal glasses in satin case |
-| `vintage_cognac` | 1945 Reserve Cognac | Pocket | 0.9 kg | $1,200 - $3,500 | cellar | Wax-sealed reserve bottle from the private cellar |
-| `gold_cocktail_shaker` | Gold-Plated Cocktail Shaker | Pocket | 0.6 kg | $800 - $2,200 | bar | Engraved art-deco triple-plated shaker |
-| `copper_cookware_set` | Copper Chef Pan Stack | TwoHand | 14.0 kg | $1,500 - $4,200 | kitchen | Heavy solid copper French saute pans |
-| `damascus_knife_roll` | Master Chef Damascus Roll | OneHand | 3.2 kg | $900 - $2,600 | kitchen | Custom Japanese folded steel culinary knives |
-| `grand_espresso_machine` | Commercial Espresso Machine | Heavy | 65.0 kg | $4,500 - $9,500 | bar | Dual-boiler brass and chrome Italian machine |
-| `caviar_tin_reserve` | Imperial Caviar Tin (1kg) | Pocket | 1.1 kg | $2,000 - $5,000 | dining | Vacuum-sealed chilled gold-leaf tin |
-| `vintage_phonograph` | Executive Turntable Console | TwoHand | 18.0 kg | $2,200 - $5,800 | executive | Rare mahogany hi-fi system from the penthouse |
-| `bronze_bull_statue` | Bronze Bull Centerpiece (Jackpot) | Heavy | 85.0 kg | $14,000 - $32,000 | executive | Solid cast bronze charging bull statue |
-| `executive_wall_safe` | Executive Wall Safe (Jackpot) | Heavy | 220.0 kg | $8,000 - $22,000 | executive | Reinforced alloy safe containing corporate bonds |
-| `grand_wine_cask` | Grand Vintage Wine Cask (Jackpot) | Huge | 340.0 kg | $25,000 - $60,000 | cellar | French oak port barrel requiring multi-crew carry |
+| `silver_cutlery_canteen` | Silver Cutlery Canteen | OneHand | 3.5 kg | $800 - $2,200 | dining | Sterling silver 24-piece dinner service |
+| `caviar_tin_reserve` | Reserve Imperial Caviar | Pocket | 1.2 kg | $1,500 - $4,000 | dining | Gold-leaf tin of vacuum-sealed sturgeon caviar |
+| `crystal_wine_decanter` | Crystal Wine Decanter | OneHand | 1.8 kg | $600 - $1,800 | dining | Cut lead crystal spirits decanter |
+| `silver_serving_cloche` | Sterling Serving Cloche | OneHand | 1.5 kg | $450 - $1,300 | dining | Polished dome food cover |
+| `gilded_china_stack` | Gilded Fine China Stack | TwoHand | 6.0 kg | $900 - $2,600 | dining | Stack of 5 porcelain plates with 24k gold rims |
+| `silver_candelabra` | Silver 5-Arm Candelabra | OneHand | 2.8 kg | $550 - $1,600 | dining | Victorian 5-candle silver dining centerpiece |
+| `maitre_d_leather_ledger` | Maître D' Leather Ledger | OneHand | 1.4 kg | $400 - $1,200 | dining | Bound calfskin reservation book |
+| `brass_observation_telescope` | Tower Viewing Telescope | Heavy | 52.0 kg | $3,500 - $8,800 | dining | Heavy brass pedestal viewing telescope |
+| `copper_saute_pan` | Solid Copper Saute Pan | OneHand | 3.2 kg | $700 - $1,900 | kitchen | French copper sauté pan with brass handle |
+| `damascus_knife_roll` | Master Chef Damascus Roll | OneHand | 2.5 kg | $1,200 - $3,200 | kitchen | Folded steel Japanese culinary knives in leather |
+| `black_truffle_crate` | Crate of Black Truffles | OneHand | 4.0 kg | $2,000 - $5,500 | kitchen | Preserved winter truffles in cedar shavings |
+| `aged_iberico_ham` | Aged Jamon Iberico Leg | TwoHand | 8.5 kg | $1,100 - $2,900 | kitchen | Whole cured leg on wooden carving stand |
+| `sous_vide_circulator` | Commercial Immersion Unit | OneHand | 4.2 kg | $850 - $2,400 | kitchen | Stainless steel precision immersion cooker |
+| `heavy_copper_stockpot` | Heavy Copper Stockpot | TwoHand | 12.0 kg | $1,400 - $3,800 | kitchen | Commercial dual-handled stockpot |
+| `brass_meat_slicer` | Commercial Gravity Meat Slicer | Heavy | 48.0 kg | $3,200 - $7,500 | kitchen | Heavy motorized deli slicer |
+| `gold_cocktail_shaker` | Gold-Plated Cocktail Shaker | Pocket | 0.7 kg | $650 - $1,800 | bar | Art-deco engraved cocktail shaker |
+| `crystal_tumbler_set` | Lead Crystal Tumblers (4) | OneHand | 2.0 kg | $400 - $1,100 | bar | Heavy crystal old-fashioned glasses |
+| `vintage_soda_siphon` | Wire-Mesh Soda Siphon | OneHand | 2.2 kg | $300 - $850 | bar | Vintage seltzer bottle with wire casing |
+| `commercial_espresso_machine` | Dual-Boiler Espresso Unit | Heavy | 65.0 kg | $4,500 - $9,500 | bar | Chrome and brass Italian dual-group machine |
+| `brass_draught_tap_tower` | Triple Brass Tap Tower | TwoHand | 14.5 kg | $1,800 - $4,200 | bar | 3-tap draft beer counter tower |
+| `vintage_cognac_1945` | 1945 Imperial Cognac | Pocket | 1.6 kg | $1,800 - $4,800 | cellar | Wax-sealed reserve bottle from cellar |
+| `grand_cru_bordeaux` | 1982 Grand Cru Bordeaux | Pocket | 1.5 kg | $2,500 - $7,000 | cellar | Premier grand cru vintage red wine |
+| `sommelier_tasting_kit` | Master Sommelier Kit | OneHand | 2.8 kg | $950 - $2,700 | cellar | Mahogany case with silver tastevin and openers |
+| `champagne_dom_magnum` | Reserve Champagne Magnum | OneHand | 3.0 kg | $1,600 - $4,200 | cellar | 1.5L magnum bottle in presentation box |
+| `vintage_single_malt_whisky` | 50-Year Islay Single Malt | Pocket | 1.4 kg | $2,200 - $5,600 | cellar | Rare peated Scotch whisky |
+| `grand_wine_cask` | Grand Vintage Cask (Jackpot 1) | Huge | 340.0 kg | $25,000 - $60,000 | cellar | Massive French oak cask requiring team haul |
+| `platinum_fountain_pen` | Solid Platinum Desk Pen | Pocket | 0.15 kg | $1,200 - $3,500 | executive | Executive signing pen with iridium nib |
+| `vintage_phonograph_console` | Executive Turntable Console | TwoHand | 16.0 kg | $2,200 - $6,000 | executive | Rare mahogany audiophile turntable console |
+| `executive_leather_briefcase` | Executive Leather Briefcase | OneHand | 3.0 kg | $1,500 - $4,500 | executive | Full-grain leather case with brass locks |
+| `gantry_anemometer_gauge` | Roof Wind Anemometer Kit | OneHand | 2.6 kg | $750 - $2,100 | executive | Precision weather instrument from roof gantry |
+| `bronze_bull_statue` | Solid Bronze Bull (Jackpot 2) | Heavy | 85.0 kg | $14,000 - $32,000 | executive | Solid cast charging bull sculpture on plinth |
+| `executive_wall_safe` | Executive Wall Safe | Heavy | 220.0 kg | $8,000 - $22,000 | executive | Reinforced alloy safe from VIP penthouse |
 
 ---
 
-## 7. Threat Spawns & NavMesh Layout
-18 threat spawn nodes positioned for vertical pacing:
-- Lower shaft pit & ground lobby back-hall
-- Stairwell landings at levels 3, 6, 9 (cutting off retreat down the stairs)
-- Mechanical deck transformer shadows and catwalk access
-- Kitchen dishwashing station and walk-in freezer door
-- Dining room curtain wall corners
-- Penthouse private dining corridor
+## 8. Hiding Places (15 Spots, 4 Kinds)
+
+1. `HideSpotKind.Cabinet`: Street Lobby concierge back-room credenza
+2. `HideSpotKind.Locker`: Street Lobby security staff locker
+3. `HideSpotKind.Cabinet`: Flooded Floor (12 m) utility supply cabinet
+4. `HideSpotKind.Cabinet`: Mechanical Deck (20 m) switchgear cabinet #1
+5. `HideSpotKind.Cabinet`: Mechanical Deck (20 m) switchgear cabinet #2
+6. `HideSpotKind.Machine`: Mechanical Deck (20 m) HVAC chiller maintenance compartment
+7. `HideSpotKind.Closet`: Looted Office Floor (32 m) executive records closet
+8. `HideSpotKind.Cabinet`: Restaurant Dining North waiter credenza
+9. `HideSpotKind.Cabinet`: Restaurant Dining South waiter credenza
+10. `HideSpotKind.Cabinet`: Cocktail Lounge back-bar cabinet
+11. `HideSpotKind.Locker`: Kitchen staff locker #1
+12. `HideSpotKind.Locker`: Kitchen staff locker #2
+13. `HideSpotKind.Closet`: Walk-in cold store insulated cabinet
+14. `HideSpotKind.Closet`: Penthouse VIP executive wardrobe
+15. `HideSpotKind.Locker`: Roof Terrace window washer gear locker (50 m)
 
 ---
 
-## 8. What to Check First (Review Checklist)
+## 9. Occlusion Culling Design
+
+- **Occluder Static Geometry**: Applied to permanent solid architecture: massive corner pylons, core concrete walls (stairwell core, elevator shaft walls), lobby perimeter walls, and roof parapets.
+- **Never Occluder Static**: All floor slabs, tiles, walkways, catwalks, ramps, stairs, and structural section modules carry no `OccluderStatic` flags, ensuring that collapsed floors never incorrectly occlude what lies below or above them.
+- **Bake Procedure**: `ApplyOcclusionFlags` marks static flags, scene is saved, `OcclusionBake.Bake()` is executed, and scene is re-saved.
+
+---
+
+## 10. What to Check First (Review Checklist)
+
 When loading the map in Unity via **Tools > Abandoned > Maps > Skyscraper Restaurant > Rebuild Skyscraper Restaurant**:
-1. **Elevator Operation:**
-   - Stand in front of the Lobby Elevator doors at (0, 0, 10). Use the call button. Verify the cab descends/parks smoothly, the landing gates open, and `LiftArrive` plays.
-   - Step inside onto the deck. Verify `MovingPlatform` detects feet. Press button 2 (Restaurant). Verify doors close, `LiftStart` plays, and cab ascends 44 metres smoothly to the restaurant.
-   - Verify landing gates open at the summit.
-2. **Elevator Overload Test:**
-   - Place > 450 kg on the elevator deck (or multiple heavy test items). Send the lift.
-   - Verify `LiftSnap` triggers mid-flight, the cab plunges downward, and `Crash` triggers upon striking the buffer springs.
-3. **Stairwell Navigation & Physicality:**
-   - Walk up/down the fire stair tower from y = 0 to y = 44 m. Verify all 11 flights and landings have seamless collider connections without player snagging.
-   - Check the fire exit doors at Ground, Mechanical, and Restaurant levels.
-4. **Restaurant Floor Atmosphere & Scenery:**
-   - Check the panoramic glass view overlooking the skyline and distant foggy mountain basin.
-   - Inspect the dining room tables, chandeliers, bar counter, commercial kitchen fixtures, and walk-in cold store.
-5. **Structural Integrity & Collapses:**
-   - Inspect the designated collapsing dining room floor section near the northern broken window.
-   - Confirm `SectionNavCarver` carves the NavMesh when collapsed.
-6. **Loot Spawning:**
-   - Check that `LootSpawnPoint` tags match the 24 Skyscraper loot items.
-   - Verify heavy loot (such as the Commercial Espresso Machine and Executive Wall Safe) can be dragged or carried out to the elevator or down the stairs.
-7. **Extraction & Truck:**
-   - Verify the company salvage truck sits in the entrance plaza with its rear ramp aligned to the plaza pavement.
-   - Confirm carried salvage dropped in the truck cargo bay registers with `TruckCargo`.
+1. **Elevator Operation & Indicators**:
+   - Check landing call buttons at Lobby (0 m), Mechanical Deck (20 m), and Restaurant (44 m). Verify landing gates open only when cab arrives.
+   - Verify car destination buttons (Lobby, Mechanical, Restaurant) move the elevator smoothly with riders on `MovingPlatform`.
+   - Test Sector 1 power cut: trip Sector 1 breaker -> verify elevator stops and prompts show `Lift (No Power)`. Throw breaker -> verify elevator operates.
+   - Test Overload Snap: place > 450 kg on the cab deck -> verify prompt warns `Lift (Overloaded)`, cables snap with `LiftSnap`, cab plunges into free fall, deals damage, crashes at bottom (`Crash`), and breaks permanently (`Lift (Out of Order)`).
+2. **The 44-Metre Fire Stairwell & Intermediate Floors**:
+   - Walk the continuous 11 flights from 0 m to 44 m to ensure seamless stair colliders.
+   - Inspect intermediate landing fire exit doors:
+     - Floor 3 (12 m): Flooded floor with burst pipes, standing water, and office clutter.
+     - Floor 5 (20 m): Mechanical deck with transformers and catwalks.
+     - Floor 8 (32 m): Looted corporate office with broken window letting in wind.
+     - Floor 11 (44 m): Restaurant sky lobby.
+3. **Summit Content & Roof Terrace**:
+   - Inspect the panoramic dining room, mahogany bar, commercial kitchen line, cold store, and VIP penthouse.
+   - Walk up the exterior stairs from the dining terrace to the Roof Terrace (50 m). Check the painted Helipad, window-cleaning gantry rig, suspended cradle, and viewing telescope.
+4. **Structural Collapse**:
+   - Walk over northern dining room glass-edge cantilever slabs while carrying heavy loot -> observe fracture stages and collapse.
+   - Check central mechanical catwalk over the shaft void.
+   - Verify `SectionNavCarver` carves NavMesh when a slab falls.
+5. **Soundscape & F1 Gizmos**:
+   - Listen for broken window wind whistling, cable creaks in the shaft, piano lid thuds, bar glasses rattling, and flooded floor drips.
+   - Press F1 (`DebugView.Visible`) -> verify colored Gizmo spheres appear at all soundscape points and elevator cab/stops/load.
+6. **Open World Integration**:
+   - Verify van parking point at `(0, 0, -22)`.
+   - Ground cutout rectangle `[-24, -34] to [24, 22]` at elevation `0.0 m`.
+   - Confirm `Exterior/Truck` and `Exterior/Skyline` exist under `Exterior` for world streaming to toggle.
 
 ---
 
-## 9. Proposed Decisions for CLAUDE.md
-The following decisions are proposed for logging in `CLAUDE.md`:
-- **Skyscraper Restaurant (2026-10-23):** Cloudline Tower added as an open-world streamed salvage POI (`Scenes/Skyscraper.unity`).
-  - Dual vertical transit: Host-authoritative 44 m `SkyscraperElevator` (stops: Ground, Mechanical, Apex Restaurant) with weight-limited cable snap at 450 kg, power dependence on Sector 1, and an 11-flight fire stairwell as the reliable, exhausting alternate route.
-  - 5 power sectors (Lobby 0, Mechanical/Shaft 1, Dining/Terrace 2, Kitchen/Cold Store 3, VIP Penthouse 4).
-  - 24 restaurant-themed loot definitions (`Assets/_Project/Data/Loot/Skyscraper/`), including the 340 kg Grand Vintage Wine Cask jackpot.
-  - Collapsible dining window slabs and mechanical catwalks with dynamic `SectionNavCarver` path updates.
+## 11. Proposed Decisions for CLAUDE.md
+
+- **Skyscraper Restaurant (2026-10-23):** Cloudline Tower & The Apex Restaurant added as an open-world streamed salvage POI (`Scenes/Skyscraper.unity`).
+  - Dual vertical transit: Host-authoritative 48 m `SkyscraperElevator` (stops: Ground, Mechanical, Apex Restaurant) with weight-limited cable snap at 450 kg, power dependence on Sector 1, and an 11-flight fire stairwell with stops at Flooded Floor (12 m), Mechanical Deck (20 m), and Looted Office (32 m).
+  - 5 power sectors with independent `BreakerPanel`s (Lobby 0, Mechanical/Shaft 1, Dining/Terrace 2, Kitchen/Cold Store 3, VIP Penthouse 4).
+  - 32 restaurant & executive themed salvage definitions (`Data/Loot/Skyscraper/`), including 2 jackpots: `bronze_bull_statue` (85 kg) and `grand_wine_cask` (340 kg).
+  - Roof crown (50 m) featuring helipad, window-cleaning gantry crane with suspended cradle, and observation telescope.
+  - Environmental `SkyscraperSoundscape` (wind whistling, shaft cables creaking, piano lid falling, glasses rattling, flooded pipe drips) with F1 debug Gizmos.
+  - Strict occlusion culling: permanent walls and shell set as `OccluderStatic`, floor slabs excluded.

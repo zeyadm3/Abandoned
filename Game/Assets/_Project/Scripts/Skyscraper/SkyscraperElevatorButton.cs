@@ -14,7 +14,8 @@ namespace Abandoned.Skyscraper
         [SerializeField] private SkyscraperElevator elevator;
         [Tooltip("Target floor: 0 = Street Lobby, 1 = Mechanical Deck, 2 = Apex Restaurant.")]
         [SerializeField, Range(0, 2)] private int targetFloor;
-        [SerializeField] private string label = "Call Elevator";
+        [Tooltip("True if this is an exterior landing call station; false if inside the cab car panel.")]
+        [SerializeField] private bool isCallStation = true;
 
         public HintId Hint => HintId.Lift;
         public float UseHoldDuration => 0f;
@@ -34,15 +35,27 @@ namespace Abandoned.Skyscraper
             if (elevator.CurrentFloor == targetFloor && !elevator.IsMoving)
                 return Loc.T("Lift (Already Here)");
 
-            string floorName = targetFloor switch
-            {
-                0 => "Lobby (Street)",
-                1 => "Mechanical (Mid)",
-                2 => "Apex Restaurant",
-                _ => $"Floor {targetFloor}"
-            };
+            if (!isCallStation && elevator.CalculateLoad() > 450f)
+                return Loc.T("Lift (Overloaded)");
 
-            return $"{Loc.T(label)}: {Loc.T(floorName)}";
+            if (isCallStation)
+            {
+                return targetFloor switch
+                {
+                    0 => Loc.T("Call Lift: Street Lobby"),
+                    1 => Loc.T("Call Lift: Mechanical Deck"),
+                    2 => Loc.T("Call Lift: Apex Restaurant"),
+                    _ => Loc.T("Lift (In Transit...)")
+                };
+            }
+
+            return targetFloor switch
+            {
+                0 => Loc.T("Send Lift: Street Lobby"),
+                1 => Loc.T("Send Lift: Mechanical Deck"),
+                2 => Loc.T("Send Lift: Apex Restaurant"),
+                _ => Loc.T("Lift (In Transit...)")
+            };
         }
 
         public void Use(GameObject user)
@@ -52,11 +65,11 @@ namespace Abandoned.Skyscraper
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(SkyscraperElevator lift, int floor, string promptLabel)
+        public void EditorSetup(SkyscraperElevator lift, int floor, bool callStation)
         {
             elevator = lift;
             targetFloor = floor;
-            label = promptLabel;
+            isCallStation = callStation;
         }
 #endif
     }

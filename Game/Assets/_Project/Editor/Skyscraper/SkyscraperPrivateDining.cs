@@ -22,18 +22,18 @@ namespace Abandoned.EditorTools
             // Double Entry Doorway (x = 6m, z = 7m)
             Transform entry = Group("VIPEntryDoorway", suite);
             entry.position = new Vector3(6f, y, 7f);
-            Box("DoorJamb", entry, new Vector3(0f, 1.4f, 0f), new Vector3(0.35f, 2.8f, 2.2f), art.Parquet);
-            Box("DoorPanelL", entry, new Vector3(0f, 1.35f, -0.5f), new Vector3(0.08f, 2.7f, 1.0f), art.Parquet);
-            Box("DoorPanelR", entry, new Vector3(0f, 1.35f,  0.5f), new Vector3(0.08f, 2.7f, 1.0f), art.Parquet);
+            Box("DoorJamb", entry, new Vector3(0f, 1.4f, 0f), new Vector3(0.35f, 2.8f, 2.2f), art.Mahogany);
+            Box("DoorPanelL", entry, new Vector3(0f, 1.35f, -0.5f), new Vector3(0.08f, 2.7f, 1.0f), art.Mahogany);
+            Box("DoorPanelR", entry, new Vector3(0f, 1.35f,  0.5f), new Vector3(0.08f, 2.7f, 1.0f), art.Mahogany);
             Box("BrassHandles", entry, new Vector3(-0.06f, 1.1f, 0f), new Vector3(0.04f, 0.4f, 0.2f), art.Brass, false);
 
             // 1. Executive Boardroom / Banquet Table
             Transform table = Group("ExecutiveTable", suite);
             table.position = new Vector3(11f, y, 13f);
-            Box("TableTop", table, new Vector3(0f, 0.78f, 0f), new Vector3(3.2f, 0.1f, 7.5f), art.Parquet);
+            Box("TableTop", table, new Vector3(0f, 0.78f, 0f), new Vector3(3.2f, 0.1f, 7.5f), art.Mahogany);
             Box("TableInlay", table, new Vector3(0f, 0.84f, 0f), new Vector3(2.8f, 0.02f, 7.1f), art.Brass);
-            Box("TablePedestal1", table, new Vector3(0f, 0.38f, -2.4f), new Vector3(1.2f, 0.76f, 1.2f), art.Parquet);
-            Box("TablePedestal2", table, new Vector3(0f, 0.38f,  2.4f), new Vector3(1.2f, 0.76f, 1.2f), art.Parquet);
+            Box("TablePedestal1", table, new Vector3(0f, 0.38f, -2.4f), new Vector3(1.2f, 0.76f, 1.2f), art.Mahogany);
+            Box("TablePedestal2", table, new Vector3(0f, 0.38f,  2.4f), new Vector3(1.2f, 0.76f, 1.2f), art.Mahogany);
 
             // 8 High-Back Leather Executive Armchairs
             for (int r = 0; r < 4; r++)
@@ -61,7 +61,7 @@ namespace Abandoned.EditorTools
             // 2. Climate-Controlled Glass Wine Display Wall (East wall, x = 15.5m)
             Transform wineWall = Group("WineDisplayWall", suite);
             wineWall.position = new Vector3(15.5f, y, 13f);
-            Box("WallBacking", wineWall, new Vector3(0f, 2.2f, 0f), new Vector3(0.4f, 4.4f, 8f), art.Parquet);
+            Box("WallBacking", wineWall, new Vector3(0f, 2.2f, 0f), new Vector3(0.4f, 4.4f, 8f), art.Mahogany);
             Box("GlassFront", wineWall, new Vector3(-0.45f, 2.2f, 0f), new Vector3(0.05f, 4.2f, 7.8f), art.Glass, false);
             for (float sy = 0.8f; sy <= 3.8f; sy += 0.6f)
                 Box($"WineRackTier_{sy:0.0}", wineWall, new Vector3(-0.2f, sy, 0f), new Vector3(0.35f, 0.05f, 7.6f), art.Brass, false);
@@ -69,7 +69,7 @@ namespace Abandoned.EditorTools
             // 3. Executive Credenza & Wall Safe Alcove (South wall, z = 4.2m)
             Transform credenza = Group("ExecutiveCredenza", suite);
             credenza.position = new Vector3(11f, y, 4.5f);
-            Box("CredenzaBase", credenza, new Vector3(0f, 0.5f, 0f), new Vector3(4.5f, 1.0f, 0.8f), art.Parquet);
+            Box("CredenzaBase", credenza, new Vector3(0f, 0.5f, 0f), new Vector3(4.5f, 1.0f, 0.8f), art.Mahogany);
             Box("CredenzaTop", credenza, new Vector3(0f, 1.05f, 0f), new Vector3(4.7f, 0.08f, 0.9f), art.Marble);
 
             // Recessed Safe Frame in the wall above credenza
@@ -80,8 +80,8 @@ namespace Abandoned.EditorTools
         {
             Box("Seat", parent, new Vector3(0f, 0.48f, 0f), new Vector3(0.55f, 0.12f, 0.55f), art.Leather);
             Box("HighBack", parent, new Vector3(0f, 0.95f, -0.22f), new Vector3(0.55f, 0.85f, 0.10f), art.Leather);
-            Box("ArmL", parent, new Vector3(-0.28f, 0.65f, 0.05f), new Vector3(0.08f, 0.25f, 0.45f), art.Parquet);
-            Box("ArmR", parent, new Vector3( 0.28f, 0.65f, 0.05f), new Vector3(0.08f, 0.25f, 0.45f), art.Parquet);
+            Box("ArmL", parent, new Vector3(-0.28f, 0.65f, 0.05f), new Vector3(0.08f, 0.25f, 0.45f), art.Mahogany);
+            Box("ArmR", parent, new Vector3( 0.28f, 0.65f, 0.05f), new Vector3(0.08f, 0.25f, 0.45f), art.Mahogany);
             Box("Pedestal", parent, new Vector3(0f, 0.22f, 0f), new Vector3(0.1f, 0.44f, 0.1f), art.Brass, false);
             Box("StarBase", parent, new Vector3(0f, 0.04f, 0f), new Vector3(0.5f, 0.08f, 0.5f), art.Brass, false);
         }

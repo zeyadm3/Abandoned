@@ -168,11 +168,47 @@ namespace Abandoned.EditorTools
                 case "vintage_cognac_1945":
                 case "grand_cru_bordeaux":
                 case "champagne_dom_magnum":
+                case "vintage_single_malt_whisky":
                     P("Bottle", new(0f, -0.15f, 0f), new(0.85f, 0.65f, 0.85f), darkGlass, true);
                     P("Shoulder", new(0f, 0.22f, 0f), new(0.7f, 0.2f, 0.7f), darkGlass, true);
                     P("Neck", new(0f, 0.38f, 0f), new(0.28f, 0.3f, 0.28f), darkGlass, true);
                     P("FoilCap", new(0f, 0.46f, 0f), new(0.3f, 0.15f, 0.3f), gold, true);
                     P("Label", new(0f, -0.1f, 0.44f), new(0.6f, 0.4f, 0.02f), velvet);
+                    break;
+
+                case "maitre_d_leather_ledger":
+                case "executive_leather_briefcase":
+                    P("BriefcaseBody", Vector3.zero, new(0.95f, 0.85f, 0.35f), leather);
+                    P("BrassLocks", new(0f, 0.45f, 0.18f), new(0.3f, 0.1f, 0.05f), brass);
+                    P("Handle", new(0f, 0.52f, 0f), new(0.25f, 0.15f, 0.06f), darkWood);
+                    break;
+
+                case "brass_observation_telescope":
+                    P("PillarStand", new(0f, -0.3f, 0f), new(0.3f, 0.65f, 0.3f), brass, true);
+                    P("TelescopeBarrel", new(0f, 0.25f, 0f), new(0.35f, 0.35f, 0.95f), brass, true);
+                    P("Eyepiece", new(0f, 0.25f, -0.48f), new(0.18f, 0.18f, 0.15f), silver, true);
+                    P("LensRim", new(0f, 0.25f, 0.48f), new(0.4f, 0.4f, 0.1f), gold, true);
+                    break;
+
+                case "brass_meat_slicer":
+                    P("SlicerBase", new(0f, -0.35f, 0f), new(0.95f, 0.2f, 0.85f), steel);
+                    P("CircularBlade", new(0.15f, 0.1f, 0f), new(0.08f, 0.7f, 0.7f), silver, true);
+                    P("BladeGuard", new(0.18f, 0.15f, 0f), new(0.05f, 0.75f, 0.75f), brass, true);
+                    P("ProductCarriage", new(-0.2f, 0f, 0f), new(0.5f, 0.4f, 0.5f), steel);
+                    break;
+
+                case "brass_draught_tap_tower":
+                    P("TowerColumn", new(0f, 0f, 0f), new(0.4f, 0.95f, 0.4f), brass, true);
+                    P("TapHandle1", new(-0.18f, 0.35f, 0.22f), new(0.08f, 0.35f, 0.08f), darkWood, true);
+                    P("TapHandle2", new( 0.0f,  0.35f, 0.24f), new(0.08f, 0.35f, 0.08f), darkWood, true);
+                    P("TapHandle3", new( 0.18f, 0.35f, 0.22f), new(0.08f, 0.35f, 0.08f), darkWood, true);
+                    break;
+
+                case "gantry_anemometer_gauge":
+                    P("GaugeBox", new(0f, -0.15f, 0f), new(0.85f, 0.6f, 0.75f), steel);
+                    P("MeterDial", new(0f, -0.15f, 0.38f), new(0.55f, 0.55f, 0.05f), silver, true);
+                    P("Spindle", new(0f, 0.35f, 0f), new(0.1f, 0.4f, 0.1f), silver, true);
+                    P("CupsArm", new(0f, 0.45f, 0f), new(0.75f, 0.06f, 0.06f), brass);
                     break;
 
                 default:

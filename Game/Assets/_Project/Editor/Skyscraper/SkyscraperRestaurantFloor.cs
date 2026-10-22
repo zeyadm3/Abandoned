@@ -119,14 +119,14 @@ namespace Abandoned.EditorTools
             // Curved Bar Counter
             Transform counter = Group("BarCounter", bar);
             counter.position = new Vector3(8.5f, y, -2f);
-            Box("CounterBase", counter, new Vector3(0f, 0.55f, 0f), new Vector3(8f, 1.1f, 1.2f), art.Parquet);
+            Box("CounterBase", counter, new Vector3(0f, 0.55f, 0f), new Vector3(8f, 1.1f, 1.2f), art.Mahogany);
             Box("CounterTop", counter, new Vector3(0f, 1.15f, 0f), new Vector3(8.4f, 0.1f, 1.5f), art.Marble);
             Box("BrassFootrail", counter, new Vector3(0f, 0.2f, -0.7f), new Vector3(8f, 0.06f, 0.06f), art.Brass, false);
 
             // Back-Bar Mirrored Spirit Shelving
             Transform backBar = Group("BackBarShelves", bar);
             backBar.position = new Vector3(8.5f, y, 0.5f);
-            Box("WallBacking", backBar, new Vector3(0f, 1.8f, 0f), new Vector3(8f, 3.2f, 0.4f), art.Parquet);
+            Box("WallBacking", backBar, new Vector3(0f, 1.8f, 0f), new Vector3(8f, 3.2f, 0.4f), art.Mahogany);
             Box("MirrorBack", backBar, new Vector3(0f, 2.0f, -0.18f), new Vector3(7.6f, 2.6f, 0.04f), art.Glass, false);
             for (float s = 1.0f; s <= 3.0f; s += 0.6f)
                 Box($"Shelf_{s:0.0}", backBar, new Vector3(0f, s, -0.2f), new Vector3(7.6f, 0.05f, 0.35f), art.Glass, false);

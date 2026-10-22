@@ -31,9 +31,22 @@ namespace Abandoned.EditorTools
                     new Vector3(0.35f, 0.5f, 0.35f), art.Concrete);
             }
 
-            // Company extraction truck at designated parking spot
+            // Company extraction truck at designated parking spot (hidden when loaded in open world)
             Transform truckGroup = Group("Truck", exterior);
             TruckCargo cargo = TruckBuilder.Build(truckGroup, L.TruckRear, L.TruckForward);
+
+            // Stand-in skyline building silhouettes around tower (hidden when loaded in open world)
+            Transform skyline = Group("Skyline", exterior);
+            Vector3[] distantTowers = {
+                new(-90f, 20f, 110f), new(-45f, 35f, 140f), new(40f, 25f, 130f), new(85f, 40f, 100f),
+                new(-110f, 15f, -20f), new(120f, 30f, -10f)
+            };
+            Vector3[] towerDims = {
+                new(28f, 70f, 28f), new(34f, 90f, 34f), new(30f, 80f, 30f), new(36f, 100f, 36f),
+                new(26f, 60f, 26f), new(32f, 85f, 32f)
+            };
+            for (int k = 0; k < distantTowers.Length; k++)
+                Box($"TowerSilhouette_{k}", skyline, distantTowers[k], towerDims[k], art.Concrete, false);
 
             // 2. Entrance Canopy & Modern Facade
             Transform entrance = Group("EntranceCanopy", plaza);

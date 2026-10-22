@@ -16,6 +16,7 @@ namespace Abandoned.EditorTools
 
         public readonly Material Marble;
         public readonly Material Parquet;
+        public readonly Material Mahogany;
         public readonly Material WallPlaster;
         public readonly Material Concrete;
         public readonly Material Steel;
@@ -36,6 +37,7 @@ namespace Abandoned.EditorTools
 
             Marble = CreateMaterial("Marble_Carrara", new Color(0.85f, 0.85f, 0.85f), "Marble012", 0.65f, 0.05f);
             Parquet = CreateMaterial("Parquet_Luxury", new Color(0.45f, 0.32f, 0.22f), "WoodFloor051", 0.45f, 0.0f);
+            Mahogany = CreateMaterial("Mahogany_Rich", new Color(0.28f, 0.12f, 0.08f), "WoodFloor051", 0.55f, 0.0f);
             WallPlaster = CreateMaterial("Wall_Plaster", new Color(0.72f, 0.70f, 0.66f), "Plaster001", 0.15f, 0.0f);
             Concrete = CreateMaterial("Concrete_Core", new Color(0.55f, 0.54f, 0.52f), "Concrete031", 0.18f, 0.0f);
             Steel = CreateMaterial("Steel_Industrial", new Color(0.48f, 0.50f, 0.52f), "Metal049A", 0.55f, 0.85f);

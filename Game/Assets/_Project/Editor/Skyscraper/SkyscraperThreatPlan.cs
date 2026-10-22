@@ -26,6 +26,10 @@ namespace Abandoned.EditorTools
                 new(-12f, 32.1f, -2.4f), // Stairwell story 8
                 new(-12f, 40.1f,  2.4f), // Stairwell story 10 (Half-landing before summit)
 
+                // ---- Intermediate Floors (12m & 32m) ---------------------------------------------
+                new( -4f, 12.1f,  6f), // Flooded floor burst pipe shadow
+                new( -4f, 32.1f,  8f), // Looted corporate office cubicle maze
+
                 // ---- Mechanical Deck (y = 20m) ---------------------------------------------------
                 new(-12f, L.MechanicalY + 0.1f, 12f), // Transformer cage shadow
                 new( 12f, L.MechanicalY + 0.1f, 12f), // Chiller maintenance aisle
@@ -41,7 +45,11 @@ namespace Abandoned.EditorTools
                 new( 12f, L.RestaurantY + 0.1f, 18f), // Dining room northeast window corner
                 new( 14f, L.RestaurantY + 0.1f, -2f), // Cocktail bar service aisle
                 new( 12f, L.RestaurantY + 0.1f, 14f), // Penthouse private dining room
-                new(-16f, L.RestaurantY + 0.1f, 16f)  // Outdoor observation terrace
+                new(-16f, L.RestaurantY + 0.1f, 16f), // Outdoor observation terrace
+
+                // ---- Roof Terrace & Window Gantry (y = 50m) ---------------------------------------
+                new(  0f, L.RoofY + 0.1f,  8f), // Roof helipad center
+                new(  0f, L.RoofY + 0.1f, 19f)  // Window washer gantry track edge
             };
         }
     }

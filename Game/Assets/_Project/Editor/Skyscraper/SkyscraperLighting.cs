@@ -1,3 +1,4 @@
+using Abandoned.Extraction;
 using Abandoned.Structure;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
@@ -46,13 +47,19 @@ namespace Abandoned.EditorTools
                     new Color(1f, 0.85f, 0.65f), 10f, 14f, ref count);
             }
 
-            // Stairwell Emergency Bulkheads (every 8m rise)
+            // Stairwell Emergency Bulkheads (every story from Ground to Summit)
             Transform stairLights = Group("StairwellLights_Sector1", lightsGroup);
-            for (float sy = 2f; sy <= L.RestaurantY; sy += 8f)
+            for (int story = 0; story <= 11; story++)
             {
+                float sy = story * 4.0f + 2.2f;
                 CreateBulkheadFixture(stairLights, art, new Vector3(-12f, sy, -2.8f),
-                    new Color(0.95f, 0.95f, 0.85f), 6f, 8f, ref count);
+                    new Color(0.95f, 0.95f, 0.85f), 5.5f, 7.5f, ref count);
             }
+
+            // Intermediate Floor Lighting: Flooded Floor (12m) and Office (32m)
+            CreateBulkheadFixture(stairLights, art, new Vector3(-3.4f, 12.0f + 3.0f, 3.0f),
+                new Color(0.80f, 0.90f, 1.0f), 6.0f, 8.0f, ref count);
+            CreateFluorescentTube(stairLights, art, new Vector3(-3.4f, 32.0f + 3.2f, 3.0f), ref count);
 
             // 3. Sector 2: Grand Dining Room Chandeliers & Terrace Wall Sconces
             Transform diningLights = Group("DiningLights_Sector2", lightsGroup);
@@ -64,6 +71,12 @@ namespace Abandoned.EditorTools
 
             for (int i = 0; i < chandelierPos.Length; i++)
                 CreateChandelier(diningLights, art, chandelierPos[i], ref count);
+
+            // Observation Terrace Outdoor Sconces
+            CreateSpotFixture(diningLights, art, new Vector3(-16f, L.RestaurantY + 2.8f, 10f), Vector3.right,
+                new Color(1f, 0.92f, 0.8f), 7f, 9f, 80f, ref count);
+            CreateSpotFixture(diningLights, art, new Vector3(-16f, L.RestaurantY + 2.8f, 18f), Vector3.right,
+                new Color(1f, 0.92f, 0.8f), 7f, 9f, 80f, ref count);
 
             // 4. Sector 3: Kitchen Industrial Fluorescents & Cold Store Bulkhead
             Transform kitchenLights = Group("KitchenLights_Sector3", lightsGroup);
@@ -81,6 +94,12 @@ namespace Abandoned.EditorTools
                 new Color(1f, 0.92f, 0.78f), 9f, 12f, ref count);
             CreateCeilingLamp(vipLights, art, new Vector3(11f, L.RestaurantY + 4.8f, 16f),
                 new Color(1f, 0.92f, 0.78f), 9f, 12f, ref count);
+
+            // 6. Breaker Panels for Sectors 0, 2, and 4 (Sectors 1 and 3 are in Mechanical & Kitchen)
+            Transform breakersGroup = Group("Breakers", root);
+            CreateBreakerPanel(breakersGroup, art, 0, new Vector3(-9.5f, L.GroundY, -4.5f), Quaternion.LookRotation(Vector3.forward));
+            CreateBreakerPanel(breakersGroup, art, 2, new Vector3(14.5f, L.RestaurantY, -1.0f), Quaternion.LookRotation(Vector3.left));
+            CreateBreakerPanel(breakersGroup, art, 4, new Vector3(6.2f, L.RestaurantY, 5.0f), Quaternion.LookRotation(Vector3.right));
 
             return count;
         }
@@ -192,6 +211,22 @@ namespace Abandoned.EditorTools
             tube.gameObject.AddComponent<LightFixture>().EditorSetup(light, glow.GetComponent<Renderer>(),
                 roll >= 40 && roll < 70, roll < 15, 3500 + count);
             count++;
+        }
+
+        public static BreakerPanel CreateBreakerPanel(Transform parent, SkyscraperArt art, int sector, Vector3 at, Quaternion rot)
+        {
+            Transform breakerGroup = Group($"Sector{sector}_Breaker", parent);
+            breakerGroup.SetPositionAndRotation(at, rot);
+            Box("Cabinet", breakerGroup, new Vector3(0f, 1.2f, 0f), new Vector3(0.8f, 1.2f, 0.35f), art.Steel);
+            Transform handle = Group("LeverHandle", breakerGroup);
+            handle.localPosition = new Vector3(0.45f, 1.2f, 0f);
+            Box("LeverArm", handle, new Vector3(0f, 0.15f, 0f), new Vector3(0.06f, 0.3f, 0.06f), art.Brass, false);
+            handle.localRotation = Quaternion.Euler(35f, 0f, 0f);
+            GameObject lamp = Box("BreakerLamp", breakerGroup, new Vector3(-0.25f, 1.65f, 0.18f),
+                new Vector3(0.1f, 0.1f, 0.08f), art.LampEmissive, false);
+            var breaker = breakerGroup.gameObject.AddComponent<BreakerPanel>();
+            breaker.EditorSetup(sector, handle, lamp.GetComponent<Renderer>(), true);
+            return breaker;
         }
     }
 }

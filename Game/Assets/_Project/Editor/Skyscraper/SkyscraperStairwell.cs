@@ -29,9 +29,13 @@ namespace Abandoned.EditorTools
             Box("StairWall_North", stairwell, new Vector3(-12f, midY, 3.1f), new Vector3(6.4f, h, 0.3f), art.Concrete);
             Box("StairWall_South", stairwell, new Vector3(-12f, midY, -3.1f), new Vector3(6.4f, h, 0.3f), art.Concrete);
 
-            // East wall with doorways at Ground (0m), Mechanical (20m), and Restaurant (44m)
-            Box("StairWall_East_Base", stairwell, new Vector3(-8.9f, 10f, 0f), new Vector3(0.3f, 20f, 6.4f), art.Concrete);
-            Box("StairWall_East_Upper", stairwell, new Vector3(-8.9f, 32f, 0f), new Vector3(0.3f, 24f, 6.4f), art.Concrete);
+            // East wall with doorways at Ground (0m), Flooded Floor (12m), Mechanical (20m), Office (32m), and Restaurant (44m)
+            Box("StairWall_East_NorthSection", stairwell, new Vector3(-8.9f, midY, 0.75f), new Vector3(0.3f, h, 4.7f), art.Concrete);
+            // Spandrels above each doorway along the south opening column
+            Box("StairWall_East_Spandrel_0", stairwell, new Vector3(-8.9f,  7.3f, -2.4f), new Vector3(0.3f, 9.4f, 1.4f), art.Concrete);
+            Box("StairWall_East_Spandrel_1", stairwell, new Vector3(-8.9f, 17.3f, -2.4f), new Vector3(0.3f, 5.4f, 1.4f), art.Concrete);
+            Box("StairWall_East_Spandrel_2", stairwell, new Vector3(-8.9f, 27.3f, -2.4f), new Vector3(0.3f, 9.4f, 1.4f), art.Concrete);
+            Box("StairWall_East_Spandrel_3", stairwell, new Vector3(-8.9f, 39.3f, -2.4f), new Vector3(0.3f, 9.4f, 1.4f), art.Concrete);
 
             // 2. Build 11 Continuous Switchback Flights
             for (int i = 0; i < FlightCount; i++)
@@ -87,7 +91,9 @@ namespace Abandoned.EditorTools
 
             // 3. Fire Exit Doors (Heavy Steel Doors with Panic Bars)
             BuildFireDoor(stairwell, art, new Vector3(-8.9f, L.GroundY, -2.4f), "Ground Fire Exit");
+            BuildFireDoor(stairwell, art, new Vector3(-8.9f, 12.0f, -2.4f), "Flooded Floor Fire Exit");
             BuildFireDoor(stairwell, art, new Vector3(-8.9f, L.MechanicalY, -2.4f), "Mechanical Fire Exit");
+            BuildFireDoor(stairwell, art, new Vector3(-8.9f, 32.0f, -2.4f), "Office Fire Exit");
             BuildFireDoor(stairwell, art, new Vector3(-8.9f, L.RestaurantY, -2.4f), "Restaurant Fire Exit");
 
             return allLandings;

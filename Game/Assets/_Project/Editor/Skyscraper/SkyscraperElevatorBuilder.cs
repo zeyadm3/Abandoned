@@ -95,14 +95,7 @@ namespace Abandoned.EditorTools
                 Box("CallPlate", callStation, Vector3.zero, new Vector3(0.2f, 0.35f, 0.06f), art.Brass);
                 GameObject btnObj = Box("Button", callStation, new Vector3(0f, 0f, 0.04f), new Vector3(0.1f, 0.1f, 0.04f), art.LampEmissive);
                 var callBtn = btnObj.AddComponent<SkyscraperElevatorButton>();
-                string prompt = f switch
-                {
-                    0 => "Call to Lobby",
-                    1 => "Call to Mechanical",
-                    2 => "Call to Restaurant",
-                    _ => $"Call to Floor {f}"
-                };
-                callBtn.EditorSetup(null, f, prompt);
+                callBtn.EditorSetup(null, f, true);
             }
 
             // Interior car buttons inside the cab
@@ -113,14 +106,7 @@ namespace Abandoned.EditorTools
                 GameObject carBtn = Box($"CarButton_{b}", carPanel, new Vector3(-0.04f, btnOffsets[b], 0f),
                     new Vector3(0.04f, 0.14f, 0.14f), art.LampEmissive);
                 var btn = carBtn.AddComponent<SkyscraperElevatorButton>();
-                string prompt = b switch
-                {
-                    0 => "Send to Lobby",
-                    1 => "Send to Mechanical",
-                    2 => "Send to Restaurant",
-                    _ => $"Send to Floor {b}"
-                };
-                btn.EditorSetup(null, b, prompt);
+                btn.EditorSetup(null, b, false);
                 interiorButtons[b] = btn;
             }
 
@@ -131,10 +117,13 @@ namespace Abandoned.EditorTools
 
             // Connect button references back to the elevator component
             foreach (SkyscraperElevatorButton call in shaftGroup.GetComponentsInChildren<SkyscraperElevatorButton>(true))
-                call.EditorSetup(elevator, (int)typeof(SkyscraperElevatorButton).GetField("targetFloor",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(call),
-                    (string)typeof(SkyscraperElevatorButton).GetField("label",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(call));
+            {
+                int floor = (int)typeof(SkyscraperElevatorButton).GetField("targetFloor",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(call);
+                bool isCall = (bool)typeof(SkyscraperElevatorButton).GetField("isCallStation",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(call);
+                call.EditorSetup(elevator, floor, isCall);
+            }
 
             return elevator;
         }
