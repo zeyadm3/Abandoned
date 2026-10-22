@@ -34,6 +34,8 @@ namespace Abandoned.Equipment
             // QA P-07: four shadowed beams plus the ceiling lights is the atrium's worst case. Your own beam
             // keeps its shadows (that's what makes a dark store read); crewmates' beams light without them.
             if (!IsOwner) flashlight.shadows = LightShadows.None;
+            // Your own body and tool sit just behind the beam: their shadows would fill whatever you light.
+            else Core.OwnBodyShadows.ExcludeFrom(flashlight);
         }
 
         public void ServerResetBattery()

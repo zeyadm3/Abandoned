@@ -193,13 +193,12 @@ namespace Abandoned.Player
         private void UpdateCosmeticsShadowMode()
         {
             if (!IsOwner) return;
-            ShadowCastingMode mode = isThirdPerson ? ShadowCastingMode.On : ShadowCastingMode.ShadowsOnly;
             if (hat != null)
                 foreach (Renderer r in hat.GetComponentsInChildren<Renderer>())
-                    if (r != null) r.shadowCastingMode = mode;
+                    OwnBodyShadows.Set(r, !isThirdPerson);
             if (accessory != null)
                 foreach (Renderer r in accessory.GetComponentsInChildren<Renderer>())
-                    if (r != null) r.shadowCastingMode = mode;
+                    OwnBodyShadows.Set(r, !isThirdPerson);
         }
 
         private GameObject Wearable(CosmeticDefinition d)
@@ -210,8 +209,7 @@ namespace Abandoned.Player
             // Inside your own head it would fill the screen when you look around; you still see its shadow.
             if (IsOwner)
             {
-                ShadowCastingMode mode = isThirdPerson ? ShadowCastingMode.On : ShadowCastingMode.ShadowsOnly;
-                foreach (Renderer r in worn.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = mode;
+                foreach (Renderer r in worn.GetComponentsInChildren<Renderer>()) OwnBodyShadows.Set(r, !isThirdPerson);
             }
             return worn;
         }

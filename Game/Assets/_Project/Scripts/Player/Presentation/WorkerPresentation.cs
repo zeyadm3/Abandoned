@@ -48,10 +48,10 @@ namespace Abandoned.Player
             {
                 ownerHidden = hide;
                 foreach (Renderer renderer in rig.GetComponentsInChildren<Renderer>(true))
-                    renderer.shadowCastingMode = hide ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.On;
+                    Abandoned.Core.OwnBodyShadows.Set(renderer, hide);
                 if (heldTool != null)
                     foreach (Renderer r in heldTool.GetComponentsInChildren<Renderer>())
-                        r.shadowCastingMode = hide ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.On;
+                        Abandoned.Core.OwnBodyShadows.Set(r, hide);
             }
 
             Vector3 motion = transform.position - lastPosition;
@@ -100,7 +100,7 @@ namespace Abandoned.Player
                     heldTool.transform.localPosition = forearm ? new Vector3(0f, -0.31f, 0.03f) : new Vector3(0f, -0.55f, 0.06f);
                     heldTool.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
                     if (ownerHidden)
-                        foreach (Renderer r in heldTool.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+                        foreach (Renderer r in heldTool.GetComponentsInChildren<Renderer>()) Abandoned.Core.OwnBodyShadows.Set(r, true);
                 }
             }
             // Holding gear: the arm comes up to carry it in front, not swinging at the side.

@@ -76,17 +76,18 @@ namespace Abandoned.Structure
             return 0xFF;
         }
 
-        // Bit 0 is Default (everything that moves); storey n of the level is bit n + 1.
+        // Bit 0 is Default (everything that moves); storey n of the level is bit n + 1. Bit 7 is your own first-person
+        // body (OwnBodyShadows), always included so ceiling lights still throw your shadow.
         private static RenderingLayerMask StoreyAndDefault(int index)
         {
             switch (index)
             {
-                case 0: return 0x03;
-                case 1: return 0x05;
-                case 2: return 0x09;
-                case 3: return 0x11;
-                case 4: return 0x21;
-                case 5: return 0x41;
+                case 0: return 0x83;
+                case 1: return 0x85;
+                case 2: return 0x89;
+                case 3: return 0x91;
+                case 4: return 0xA1;
+                case 5: return 0xC1;
                 default: return 0xFF;
             }
         }
