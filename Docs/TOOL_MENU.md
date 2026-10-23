@@ -36,7 +36,8 @@ below. Paths and priorities come from `Game/Assets/_Project/Editor/ToolMenu.cs`;
 | rebuilds or adds to one map's saved scene | `Maps/<Map>/` (a release step: `Maps/<Map>/Updates/`) |
 | rebuilds everything (content and maps) | `Rebuild Entire Game` (top level) |
 | rebuilds every map | `Rebuild All Maps` (top level) |
-| rebuilds only the open-world places, their art, the world, then checks | `Rebuild New Maps and World` (top level) |
+| rebuilds only the five open-world places and their art, then checks | `Rebuild New Maps` (top level) |
+| rebuilds only the open world | `Rebuild World` (top level) |
 | writes ScriptableObject configs or catalogs | `Content/Data/` |
 | makes or rewires prefabs (player, network, threats) | `Content/Prefabs/` |
 | loot definitions, loot prefabs, loot models | `Content/Loot/` |
@@ -50,7 +51,7 @@ below. Paths and priorities come from `Game/Assets/_Project/Editor/ToolMenu.cs`;
 | player builds | `Build/` |
 | Steam store, logo, trailer | `Store/` |
 
-The three top-level items are the only ones outside a group. A new builder that should run on a full rebuild also
+The five top-level items are the only ones outside a group. A new builder that should run on a full rebuild also
 gets a line in `Editor/RebuildEntireGame.cs` (content) or `Editor/RebuildAllMaps.cs` (maps; Rebuild Entire Game runs
 the same map list).
 
@@ -60,7 +61,8 @@ the same map list).
 Tools > Abandoned
   Rebuild Entire Game                                0
   Rebuild All Maps                                   1
-  Rebuild New Maps and World                         2
+  Rebuild New Maps                                   2
+  Rebuild World                                      3
   ──────────
   Maps
     Mall                                             [1000-1099]
@@ -367,9 +369,14 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   normal dev build.
 - 1950 is the Skyscraper Restaurant's (Antigravity).
 
-## Rebuild New Maps and World (2026-10-23)
+## Rebuild New Maps / Rebuild World (2026-10-23)
 
-- `Rebuild New Maps and World` — top level, priority 2, `ToolMenu.RebuildNewMapsP` (Editor/RebuildNewMaps.cs). Runs the
-  Hospital, Motel, Skyscraper Restaurant, Police Station and Fire Station rebuilds, Art > Upgrade New Maps, the open
-  world, then the checks (the three level audits on the new maps, Validate Content, Tools/Text/check.py). A check that
-  finds problems shows as a failed step in the summary. The six older maps are never rebuilt by it.
+- `Rebuild New Maps` — top level, priority 2, `ToolMenu.RebuildNewMapsP` (Editor/RebuildNewMaps.cs). Runs the
+  Hospital, Motel, Skyscraper Restaurant, Police Station and Fire Station rebuilds, Art > Upgrade New Maps, then the
+  checks (the three level audits on the new maps, Validate Content, Tools/Text/check.py). A check that finds problems
+  shows as a failed step in the summary. The six older maps are never rebuilt by it, and neither is the open world
+  (user, 2026-10-23: "one button to rebuild the 5 new maps and a different button to rebuild the world"; it was
+  `Rebuild New Maps and World`).
+- `Rebuild World` — top level, priority 3, `ToolMenu.RebuildWorldP` (Editor/RebuildWorld.cs). The open world alone
+  (`RebuildAllMaps.OpenWorldStep`, the same `WorldBuilder.Build` as `Maps/Open World/Rebuild World`) behind a Play-mode
+  guard, a confirm and the step summary. It reads the maps' saved scenes, so run it after Rebuild New Maps.
