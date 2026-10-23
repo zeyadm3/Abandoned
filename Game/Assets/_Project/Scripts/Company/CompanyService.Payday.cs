@@ -51,6 +51,18 @@ namespace Abandoned.Company
             return true;
         }
 
+        /// <summary>
+        /// Host: a running cost the crew can't go without (the van's diesel, open world). Taken even into debt, like the
+        /// running costs at payday: refusing it would strand a company in debt with no way to drive to a job.
+        /// </summary>
+        public void ChargeRunning(int price, string what)
+        {
+            if (!IsServer || save == null || price <= 0) return;
+            save.money -= price;
+            Saved();
+            Debug.Log($"[Company] Running cost: {what} for ${price:N0}; ${save.money:N0} left.");
+        }
+
         /// <summary>Anyone at the shop: buy one of a catalog item (the host checks level and money).</summary>
         public void RequestBuy(int index)
         {

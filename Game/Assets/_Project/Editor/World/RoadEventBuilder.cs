@@ -79,15 +79,20 @@ namespace Abandoned.EditorTools
         {
             GameObject root = Root("RoadHazard_Wreck", true);
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(Vehicles.Folder + "delivery.fbx");
-            if (model != null)
-            {
-                // Rolled half onto its side across the road, fitted to a real van's size.
-                GameObject art = ModelFit.Place(model, root.transform, Vector3.zero, new Vector3(2f, 2.3f, 5f), 90f, standOnFloor: true);
-                art.transform.localRotation *= Quaternion.Euler(0f, 0f, 75f);
-            }
             var box = root.AddComponent<BoxCollider>();
             box.center = new Vector3(0f, 1.1f, 0f);
             box.size = new Vector3(5f, 2.2f, 2.3f);
+            if (model != null)
+            {
+                // A real van's size, its length across the road (the yaw puts the model's length on x), then rolled half
+                // onto its side about that length and stood back on the road.
+                GameObject art = ModelFit.Place(model, root.transform, new Vector3(0f, 1.15f, 0f), new Vector3(5f, 2.3f, 2.1f), 90f, standOnFloor: true);
+                art.transform.localRotation *= Quaternion.Euler(0f, 0f, 75f);
+                Bounds b = ModelFit.LocalBounds(art, root.transform);
+                art.transform.localPosition -= new Vector3(b.center.x, b.min.y, b.center.z);
+                box.size = b.size;
+                box.center = new Vector3(0f, b.size.y * .5f, 0f);
+            }
             root.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             return Save(root, WreckPath);
         }

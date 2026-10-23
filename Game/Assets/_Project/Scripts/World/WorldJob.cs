@@ -157,6 +157,8 @@ namespace Abandoned.World
             {
                 if (no == null || no.IsPlayerObject || keep.Contains(no) || no.gameObject.scene.name == "DontDestroyOnLoad") continue;
                 if (no.GetComponent<WorldVan>() != null || no.GetComponent<RunState>() != null) continue;
+                // The road's events belong to the road, not the place being left (they're spawned up to 400 m out).
+                if (no.GetComponent<RoadHazard>() != null || no.GetComponent<RoadMonster>() != null) continue;
                 if (no.TryGetComponent(out Interaction.Grabbable g) && (g.Holder != null || g.IsPocketed)) continue;
                 gone.Add(no);
             }

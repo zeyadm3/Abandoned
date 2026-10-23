@@ -64,10 +64,11 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
   fills the hole while the scene isn't loaded (from far away, and for places not built yet).
 - Roads (`WorldRoads`): one from the HQ's district side facing each place, graded through the hills, asphalt mesh with a
   dropped edge, dashed centre line, a collider per 200 m.
-- Streaming (`PoiStreamer`, every machine): the anchor's scene loads within its load distance (700 m from its centre)
-  and unloads past 900 m. A loaded scene is fitted in (`PoiAdapter`): its camera, audio listener, sun, global
-  volumes and far horizon (`hideInWorld`) are switched off; the world's are used. **Each map's own hour and grade are
-  not used in the world yet** (one sky for all; a per-place lighting zone is a possible next step).
+- Streaming (`PoiStreamer`, every machine): the anchor's scene loads within 250 m of its ground and unloads past
+  400 m (`WorldPoi`). A loaded scene is fitted in (`PoiAdapter`): its camera, audio listener and F1 switch are switched
+  off (the world keeps its own F1 state through a load), and so are its far horizons and own truck (`hideInWorld`).
+  Its sky, ambient light and fog, captured from its saved scene (`PlaceLook`), replace the world's while it is loaded,
+  so each map keeps its own hour (the Mall at night, the Police Station at night, the Hospital by day).
 - Readiness: `SessionTravel.StreamingReady` (new hook): while the anchor's scene is loaded on the host but not yet on
   every machine, the level directors in it hold their spawns, as they do for a level load.
 
@@ -122,15 +123,23 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
    HQ, the run started on arriving at the mall (165 loot), two items in the bay locked, horn -> honk -> departed with
    a $1,617 haul, the mall cleared (2 items kept aboard), the appraisal shown only back in the HQ yard, "Back to HQ"
    unloaded the van and reset the board without travelling.
-7. Written, compiled, **not yet played**: road events (`RoadEventDirector` on the van; `RoadHazard` fallen fir and
-   wreck, `RoadMonster`, jump scares with the horror director's figure) and the HQ yard's fuel pump.
-8. In progress: the five new maps' scenes exist (Hospital, Motel, Police Station, Fire Station, Skyscraper);
-   `Rebuild World` measures every built map (`WorldSurvey`), so the next world rebuild fits them in at their sites.
-   Not yet done: that rebuild, a road-entry point per new map, and screenshots. The Prison stays a planned site (an
-   island: it needs a coast and a crossing first).
+7. Done, checked in Play mode (host): a jump scare, a wreck, a fallen fir and the road monster each fired on the
+   HQ-Hospital road (>= 300 m from every place, >= 20 km/h); the monster reached the van, knocked its damage from 1 %
+   to 12 % and left. The pump filled 8 -> 40 L and billed $4 a litre. Fixes found on the way: the wreck's art was
+   fitted along the wrong axis and sunk a metre (now 4.5 m on its side, on the road, collider fitted to it); unloading
+   a place despawned road events still ahead of the van (they are the road's, now kept); diesel is a running cost
+   (`CompanyService.ChargeRunning`) and goes on the tab in debt, since refusing it stranded an indebted company with no
+   way to drive to a job. Tuning note: some road beds climb at 14 %, where the loaded van crawls (16 km/h after 4 s).
+8. Done: all five new maps fitted in by `Rebuild World` and checked streaming in Play mode, one by one (aerial and cab
+   shots in Docs/renders/open-world). `WorldSurvey` now joins every flat slab at ground level for a small site (an
+   apron, a yard and a verge round one building), and parks the van at the map's own `VanParking` / `VanDock` marker
+   when it has no truck. Measured: Hospital 80 x 88 m (van dock, road from the east), Motel 120 x 68 m (road reaches its
+   rear service drive), Police Station 116 x 90 m (van bay, night), Fire Station 124 x 100 m (in front of the apparatus
+   bay), Skyscraper 48 x 57 m (its own truck hidden; its downtown `Exterior/Skyline` blocks are hidden in the world,
+   where they stood in the woods). The Prison stays a planned site (an island: it needs a coast and a crossing first).
 
-Open: the editor stopped answering the Unity MCP at 05:40 during the new maps' builds (Unity idle, bridge
-disconnected); everything left needs it.
+Open: step 4's nettest rerun (needs a fresh Open World > Dev Mac Build). The editor's long stall (05:40 to about
+12:30) was the Skyscraper builder: 14,802 s, most likely its occlusion bake.
 
 ## Upcoming salvage locations (user, 2026-10-23)
 New POIs for the open world, each its own scene streamed by distance like the current maps:

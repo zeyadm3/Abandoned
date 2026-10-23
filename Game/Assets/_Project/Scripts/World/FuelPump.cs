@@ -67,13 +67,11 @@ namespace Abandoned.World
             paidFor += litres;
             int whole = Mathf.FloorToInt(paidFor);
             CompanyService company = CompanyService.Current;
-            if (whole > 0 && company != null && company.IsSpawned && CompanyService.RulesApply)
+            // Billed in five-litre lots (and what is left when the tank is full), not every frame.
+            if ((whole >= 5 || (whole > 0 && litres >= room)) && company != null && company.IsSpawned && CompanyService.RulesApply)
             {
-                if (!company.TryCharge(whole * pricePerLitre, "diesel"))
-                {
-                    filler = VanSeating.Empty;
-                    return;
-                }
+                // Diesel goes on the company's tab even in debt (CompanyService.ChargeRunning).
+                company.ChargeRunning(whole * pricePerLitre, "diesel");
                 paidFor -= whole;
             }
             van.ServerRefuel(litres);

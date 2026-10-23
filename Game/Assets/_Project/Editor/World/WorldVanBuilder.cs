@@ -50,16 +50,16 @@ namespace Abandoned.EditorTools
             Transform[] seats = Seats(root.transform, out Transform[] exits);
             Light[] lights = Lights(root.transform);
 
-            root.AddComponent<VanCondition>();
+            SerializedWiring.Set(root.AddComponent<VanCondition>(), "config", AssetDatabase.LoadAssetAtPath<VanConfig>(ConfigPath));
             var drive = root.AddComponent<VanDrive>();
             drive.EditorSetup(body, wheels, wheelArt, new Vector3(0f, .95f, 1.1f));
             var van = root.AddComponent<WorldVan>();
             var vanSeats = root.AddComponent<VanSeats>();
             vanSeats.EditorSetup(van, seats, exits);
             van.EditorSetup(vanSeats, tailgate, lights, Cargo(root.transform, seats[VanSeats.DriverSeat]));
-            root.AddComponent<VanSound>();
-            root.AddComponent<VanCargoLock>();
-            root.AddComponent<VanDebugView>();
+            SerializedWiring.Set(root.AddComponent<VanSound>(), "van", van);
+            SerializedWiring.Set(root.AddComponent<VanCargoLock>(), "van", van);
+            SerializedWiring.Set(root.AddComponent<VanDebugView>(), "van", van);
             // The open world's shared state rides on the van: one per world, spawned with it.
             root.AddComponent<WorldState>();
             (NetworkObject[] hazards, NetworkObject monster, GameObject scare) = RoadEventBuilder.Build();

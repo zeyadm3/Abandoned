@@ -6,6 +6,14 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
 
 ## For every map agent (read first)
 
+- **Open world fit (2026-10-23 13:00): all five new maps are in the world** and stream in as the van arrives
+  (Docs/OPEN_WORLD_PLAN.md status 8, shots in Docs/renders/open-world). Where the van stops is read from an object named
+  `VanParking` or `VanDock` in your scene (its position and facing): keep that name if you move it. Anything that is
+  only backdrop (skyline blocks, horizon rings) and has no collider: put it under one group and tell the reviewer the
+  path, so the world hides it.
+- **Contract locations and loot catalog:** a map is only a job once `LocationCatalog` has a contract location for its
+  scene and its loot is in the loot catalog (`Tools > Abandoned > Content > Loot > Generate Loot Prefabs`). Hospital,
+  Motel and Skyscraper have neither yet (see your section); the Police and Fire stations have both.
 - **How your map fits the open world** (Docs/OPEN_WORLD_PLAN.md "The moving origin"): your scene is **never moved**. It
   loads additively exactly where you built it (around 0,0,0) and the world's land moves under it, so keep authoring at
   the origin and keep absolute coordinates in your configs. Do **not** add code that moves your root.
@@ -22,6 +30,20 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
   languages: `python3 Tools/Text/check.py` must report 0 missing (CLAUDE.md, 0.24.8).
 
 ## ChatGPT: Hospital (Editor/Hospital, 1700) and Motel (Editor/Motel, 1750)
+
+### 2026-10-23 13:00 (reviewer ran both builders, the audits, the content check and the open world)
+- **Not a job yet.** `ContentValidator`: "BuildScenes.SalvageScenes contains 'Hospital' / 'Motel' with no contract
+  location" (Data/Contracts/Resources/LocationCatalog.asset), and all 37 Hospital and 38 Motel loot items are "not in
+  the loot catalog". Add the contract locations and generate the loot prefabs so the items enter the catalog; then the
+  107 "LootCatalog: an entry is missing its definition or prefab" errors (yours and the Skyscraper's) should go too.
+- Audits (Audit All Levels): Hospital walk-through objects 0, invisible colliders 81, blocked stairs 0; Motel 0, 64, 0.
+  Get the invisible colliders down (CLAUDE.md 0.12.2: keep at 0) or say which are meant (a kerb, a guard rail).
+- Looks: the Motel reads well (shot: Game/Logs/renders/review). The Hospital's outside is a plain dark box with rows
+  of small windows, and its corridors are sparse tiled runs; it needs the depth the Police Station has (entrance
+  canopy, signage-free but readable wings, ward furniture, clutter).
+- Open world: both fit (Hospital 80 x 88 m, Motel 120 x 68 m) and the van stops at your `VanDock`. Good.
+- "needs a TruckCargo / TruckIgnition" for both scenes is the validator's old rule; in the open world the van is the
+  truck, so this one is for the user to settle, not you.
 
 ### 2026-10-23 05:55 (commits ce310a66, f81367a5, 9e59241e)
 - Text: hospital.txt and motel.txt added; nothing missing from either. Good. Both compile in the shared project.
@@ -56,6 +78,17 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
 
 ## Claude desktop: Police Station (Editor/PoliceStation, 1800) and Fire Station (Editor/FireStation, 1850)
 
+### 2026-10-23 13:00 (reviewer ran both builders, the audits, the content check and the open world)
+- Builders: Police 13 s, Fire 35 s. Contract locations and loot catalog are in order. Good.
+- Audits: Police walk-through 0, invisible colliders 130, blocked stairs 0; Fire 4, 55, 0. Bring both counts down
+  (CLAUDE.md: keep at 0), starting with the Fire Station's 4 walk-through objects.
+- Loot weight rule (`ContentValidator`): `Loot_fs_rescue_spreader` and `Loot_fs_roof_ladder` are Heavy/Huge but under
+  50 kg. Raise the weight or make them TwoHand.
+- Looks: the Police Station is the best of the five. The Fire Station's apparatus bay is empty (the builder's log says
+  its three engines were left out because they "would block a doorway"); an empty engine bay is the place's
+  signature. Park them clear of the doors. Its sky is a flat grey.
+- Open world: both fit (Police 116 x 90 m, Fire 124 x 100 m), the van stops at your `VanParking`. Good.
+
 ### 2026-10-23 05:55 (commits 86e2aaec, 56b78b7a)
 - fire_station.txt and police_station.txt added; nothing missing. `StationFurniture` split (Domestic part): no file
   over 300 lines now. Both compile. Scenes saved 03:58; screenshots pending the editor.
@@ -72,6 +105,25 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
   fine for plain data records inside an editor builder; not for components.
 
 ## Antigravity: Skyscraper restaurant (Editor/Skyscraper*, 1950)
+
+### 2026-10-23 13:00 (reviewer ran the builder, the audits, the content check and the open world)
+- **The builder took 14,802 s (4.1 h)** and froze the shared editor for everyone the whole time (most likely its
+  occlusion bake). Cut the bake's cost (a coarser `smallestOccluder` / `smallestHole`, or bake only the tower's solid
+  core) and check the builder runs in minutes.
+- **Runtime error** in the world and alone: `UnassignedReferenceException: The variable visual of StructuralSection
+  has not been assigned` from `Skyscraper/IntermediateFloors/RoofTerrace_50m/WindowCleaningGantry/SuspendedCradle`.
+  Assign its `visual`.
+- **Network:** `'ElevatorCab' is a scene NetworkObject without a source prefab; clients can't spawn it`. Make the cab a
+  prefab (registered in the network prefab list) or keep it out of NGO; as it is, no client sees the lift.
+- **Not a job yet:** no contract location in LocationCatalog for 'Skyscraper', and about 34 loot items are not in the
+  loot catalog (generate the loot prefabs). The 34 loot names are still missing from the text sheets (see 05:55).
+- Loot weight rule: `brass_meat_slicer` is Heavy/Huge under 50 kg; `caviar_tin_reserve`, `grand_cru_bordeaux`,
+  `vintage_cognac_1945` and `vintage_single_malt_whisky` are Pocket items of 1 kg or more.
+- Audits: walk-through objects 92, invisible colliders 20, blocked stairs 0. 92 walk-through objects is high.
+- Looks: the tower reads as a translucent glass box (you see every floor through it); give the facade mullions, spandrel
+  panels and some opaque cladding. Its own collection truck is still in the scene (hidden in the world).
+- Open world: fits (48 x 57 m of street); the downtown `Exterior/Skyline` blocks are hidden in the world (they stood in
+  the woods). Keep them under that path.
 
 ### 2026-10-23 05:55 (commits fda29be4, f653ccb6)
 - **Missing text: 34 Skyscraper loot names** (Data/Loot/Skyscraper/*.asset DisplayName/Description: aged iberico

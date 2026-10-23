@@ -42,17 +42,19 @@ namespace Abandoned.EditorTools
                 Measured("Motel", new Vector3(-700f, 0f, -2300f)),
                 Measured("PoliceStation", new Vector3(-2300f, 0f, -300f)),
                 Measured("FireStation", new Vector3(-200f, 0f, 2300f)),
-                Measured("Skyscraper", new Vector3(2400f, 0f, -1500f)),
+                // Its downtown skyline is a ring of plain blocks for the scene alone; in the world it would stand in the woods.
+                Measured("Skyscraper", new Vector3(2400f, 0f, -1500f), default, "Skyscraper/Exterior/Skyline"),
             };
             return places;
         }
 
         // A built map whose site the world builder measures from its saved scene (WorldSurvey); until then, and if it
         // has no saved scene yet, a planned site.
-        private static WorldPoi Measured(string scene, Vector3 at, Vector2 roadEntry = default)
+        private static WorldPoi Measured(string scene, Vector3 at, Vector2 roadEntry = default, params string[] hide)
         {
             WorldPoi p = Planned(scene, at);
             p.roadEntry = roadEntry;
+            p.hideInWorld = hide;
             p.built = true;
             p.measure = true;
             return p;

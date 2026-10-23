@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -57,6 +58,8 @@ namespace Abandoned.World
             if (!Application.CanStreamedLevelBeLoaded(poi.scene)) return;
             busy.Add(index);
             Debug.Log($"[World] Loading {poi.scene}.");
+            // The scene's own F1 switch sets the overlays as it wakes; the world's state wins.
+            bool debug = DebugView.Visible;
             AsyncOperation op = SceneManager.LoadSceneAsync(poi.scene, LoadSceneMode.Additive);
             if (op == null)
             {
@@ -74,6 +77,7 @@ namespace Abandoned.World
                     WorldRoot.Current.ShowStandIn(index, false);
                 }
                 PoiAdapter.Adopt(scene, poi);
+                DebugView.SetVisible(debug);
                 loaded.Add(index);
                 // The place's own collection truck claimed the cargo role as it woke and was then hidden: the van takes it back.
                 if (WorldVan.Current != null) WorldVan.Current.ClaimCargo();

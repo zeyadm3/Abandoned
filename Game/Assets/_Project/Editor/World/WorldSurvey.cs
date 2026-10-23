@@ -58,14 +58,15 @@ namespace Abandoned.EditorTools
                 Debug.LogWarning($"[WorldBuild] {p.scene}: no flat ground collider found; keeping its planned site.");
                 return;
             }
-            // A district's ground is often several slabs round the building: all the large flat ones at the same level.
+            // A district's ground is often several slabs round the building: all the large flat ones at the same level. A
+            // small site (a yard, an apron and a verge round one building) counts every slab bigger than a parking bay.
             Bounds g = ground.bounds;
-            float top = g.max.y;
+            float top = g.max.y, slab = Mathf.Min(2000f, area * .05f);
             foreach (GameObject root in scene.GetRootGameObjects())
             foreach (Collider c in root.GetComponentsInChildren<Collider>(true))
             {
                 Bounds b = c.bounds;
-                if (!c.isTrigger && b.size.y < 2.5f && b.size.x * b.size.z > 2000f && b.size.x < 2000f && b.size.z < 2000f
+                if (!c.isTrigger && b.size.y < 2.5f && b.size.x * b.size.z > slab && b.size.x < 2000f && b.size.z < 2000f
                     && Mathf.Abs(b.max.y - top) < 1.5f) g.Encapsulate(b);
             }
             p.ground = Rect.MinMaxRect(g.min.x, g.min.z, g.max.x, g.max.z);
@@ -92,9 +93,19 @@ namespace Abandoned.EditorTools
                 }
             }
             p.hideInWorld = hide.ToArray();
-            if (truck != null) p.parking = new Vector3(truck.transform.position.x, truck.transform.eulerAngles.y, truck.transform.position.z);
+            Transform park = truck != null ? truck.transform : Marker(scene, "VanParking") ?? Marker(scene, "VanDock");
+            if (park != null) p.parking = new Vector3(park.position.x, park.eulerAngles.y, park.position.z);
             Debug.Log($"[WorldBuild] {p.scene}: ground {ground.name} {p.ground} at {p.groundHeight:0.00}; hides {string.Join(", ", p.hideInWorld)}; " +
                       $"parking {p.parking}.");
+        }
+
+        // A map without a truck of its own names where the crew's van stops (AGENT_REVIEW "No truck of your own").
+        private static Transform Marker(Scene scene, string name)
+        {
+            foreach (GameObject root in scene.GetRootGameObjects())
+            foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
+                if (t.name == name) return t;
+            return null;
         }
 
         private static string PathOf(Transform t)
