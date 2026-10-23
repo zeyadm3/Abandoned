@@ -65,6 +65,7 @@ namespace Abandoned.EditorTools
 
             // 3. Build Architecture & Set Pieces
             TruckCargo truck = SkyscraperTowerShell.Build(root, art);
+            SkyscraperLobby.Build(root, art);
             SkyscraperElevator elevator = SkyscraperElevatorBuilder.Build(root, art);
             List<Transform> stairLandings = SkyscraperStairwell.Build(root, art, out List<Transform> collapsibleLandings);
             List<Transform> mechPieces = SkyscraperMechanicalFloor.Build(root, art, out List<Transform> collapsibleCatwalks);
@@ -118,9 +119,9 @@ namespace Abandoned.EditorTools
 
             LocationPlumbing.BakeNavMesh(root, L.SceneName, new[]
             {
-                "Exterior/Truck", "Exterior/Skyline", "Exterior/Plaza/EntranceCanopy", "Exterior/TowerFacade/RoofSlab",
-                "Exterior/TowerFacade/ParapetN", "Exterior/TowerFacade/ParapetS",
-                "Exterior/TowerFacade/ParapetE", "Exterior/TowerFacade/ParapetW",
+                "Exterior/Truck", "Exterior/Skyline", "Exterior/TowerFacade/PorteCochere",
+                "Exterior/TowerFacade/RoofCrown", "Exterior/Plaza/DrainedFountainPool",
+                "Exterior/Plaza/StreetLamps", "Lobby/LobbyCeiling",
                 "IntermediateFloors/FloodedFloor_12m/FloodedCeiling",
                 "IntermediateFloors/LootedOffice_32m/OfficeCeiling",
                 "Lights", "ElevatorShaft/ShaftHoist"

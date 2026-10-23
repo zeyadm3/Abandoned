@@ -149,7 +149,8 @@ Original 50m skyscraper architecture, grand marble lobby, 48m elevator system wi
 safety gates, 11-flight fire stairwell tower, mechanical deck, panoramic dining room, cocktail bar, commercial
 kitchen, cold store, VIP penthouse suite, and all 32 salvage models are authored by the project in `Editor/Skyscraper/`
 and `Scripts/Skyscraper/`; no third-party models or new audio packages are added. Materials reference the existing
-**ambientCG** CC0 scans: Marble012, WoodFloor051, Plaster001, Concrete031, Metal049A, DiamondPlate008A, Tiles107,
-PaintedMetal012, Asphalt031, OfficeCeiling001, and Leather037. Source: [ambientCG](https://ambientcg.com/),
+**ambientCG** CC0 scans: Marble012, WoodFloor051, Plaster001, Concrete031, Concrete034, Metal049A,
+Metal016, DiamondPlate008A, Tiles107, PaintedMetal012, Asphalt031, PavingStones126A, Rubber004,
+OfficeCeiling001, and Leather037. Source: [ambientCG](https://ambientcg.com/),
 [CC0 license](https://docs.ambientcg.com/license/). Audio reuses existing credited sound banks through GameAudio
 (LiftStart, LiftArrive, LiftSnap, Crash, PowerUp, PowerDown, and factory/tower settling ambience).

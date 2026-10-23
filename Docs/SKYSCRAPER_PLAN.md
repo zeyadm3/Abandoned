@@ -3,21 +3,77 @@
 ## 1. Concept & Setting
 **Location:** Cloudline Tower & The Apex Restaurant  
 **Setting:** The upper floors and roof crown of an abandoned 1980s corporate skyscraper towering over the district.
-The crew's van arrives at street level in the forecourt plaza. The salvage target is **The Apex Restaurant & Sky Lounge** at the tower's summit, a high-roller venue left frozen in time with vintage wines, silver services, commercial kitchen equipment, executive vaults, and a vertiginous roof terrace with a window-cleaning gantry.
+The crew's van arrives at street level along Broadway Avenue in the forecourt plaza. The salvage target is **The Apex Restaurant & Sky Lounge** at the tower's summit, a high-roller venue left frozen in time with vintage wines, silver services, commercial kitchen equipment, executive vaults, and a vertiginous roof terrace with a window-cleaning gantry.
 
 ### Open World Integration
 - **Coordinate Authoring:** Authored at the origin `(0, 0, 0)`. The map scene is loaded additively without moving its root.
-- **Van Parking Spot:** `(0, 0, -22)` facing North into the grand entrance canopy.
+- **Van Parking Spot:** `(0, 0, -22)` facing North into the grand entrance canopy. Marked with white parking bay lines and yellow hazard diagonal hatching.
 - **Ground Cutout Rectangle:** `[-24.0, -35.0]` to `[24.0, 22.0]` (48 m wide by 57 m deep).
 - **Edge Elevation:** `0.0 m` meeting the surrounding open world terrain smoothly.
 - **Objects for World Streaming to Hide:**
   - `Exterior/Truck` (in open world, the crew's van carries `TruckCargo`)
-  - `Exterior/Skyline` (cheap low-poly building silhouette props used for standalone viewing)
+  - `Exterior/Skyline` (surrounding metropolitan city skyline authored for standalone viewing)
 - **Natural Scenery:** No custom sky, trees, or grass added; all atmospheric scattering and horizons are managed by `Art > Upgrade New Maps` (`AvOverhaul`).
 
 ---
 
-## 2. The Vertical Climb & Transits
+## 2. Surrounding Streetscape, Forecourt Plaza & Urban Scenery
+
+### Broadway Avenue Streetscape (`SkyscraperPlaza`)
+The street surrounding Cloudline Tower is a fully realized urban sector:
+- **Two-Lane City Avenue (`z = -34` to `-22`)**: Paved with `Asphalt031`, complete with double-yellow centerlines, pedestrian crosswalks, drainage manhole covers, and storm sewer grates.
+- **Modern Sodium Street Lighting**: 4 tall steel street lamp posts with dedicated downward spot illumination casting warm pools of light across the pavement.
+- **Abandoned Vehicles**:
+  - *Executive Towncar* parked along the curb.
+  - *Yellow Taxi Cab* with illuminated roof taxi sign, stalled diagonally in the intersection.
+  - *Courier Delivery Van* abandoned mid-dropoff.
+- **East Barricade**: Concrete Jersey barriers and a rusted commercial dumpster blocking off through-traffic.
+
+### Cloudline Forecourt Plaza (`z = -20` to `-10`)
+Pedestrian approach square paving the transition between Broadway Avenue and the tower entrance:
+- **Paved Square**: Interlocking stone paving (`PavingStones126A`).
+- **Drained Tiered Reflecting Pool**: Dark granite coping rims, dry concrete basin floor, murky water puddle (`WaterMurky`), and a central 5-tier abstract brass spiral sculpture (*The Ascendant Spiral*).
+- **Architectural Planters & Landscaping**: Heavy concrete troughs with soil and weathered, withered trees flanking the walkway.
+- **Plaza Amenities**: Teak-slat and steel plaza benches, corporate granite monument sign (*"CLOUDLINE TOWER / 1200 BROADWAY"*), and chrome flagpoles with burgundy corporate pennants.
+- **Underground Parking Garage Ramp**: Concrete retaining walls, 15-degree asphalt descent slope, barrier gate arm, and guard security booth.
+- **Van Extraction Bay**: Company parking stall directly behind the street sidewalk with yellow diagonal hazard striping and `VanParking` survey marker.
+
+---
+
+## 3. Surrounding Metropolitan Skyline (`SkyscraperSkyline`)
+
+Authored under `Exterior/Skyline` to provide breathtaking urban depth whether looking down from street level or gazing out the 44m restaurant curtain glass:
+1. **Trans-Continental Tower (North-West, 85m)**: Stepped Art-Deco skyscraper with setback tiers, vertical window mullions, roof spire, and a pulsing red aviation beacon.
+2. **Metropolitan Financial Plaza (North, 72m)**: Modern glass twin towers connected by an enclosed pedestrian skybridge at y = 42m (directly aligned with the Apex Restaurant's elevation), topped with industrial rooftop cooling towers.
+3. **Vanguard Corporate Monolith (North-East, 92m)**: Imposing dark granite corporate monolith with angled glass crown and summit aviation beacon.
+4. **Federal Reserve Building (West, 38m)**: Heavy brutalist concrete colonnade structure with deep window reveals.
+5. **Grand Central Highway Viaduct (South-West, 8m elevation)**: Concrete elevated freeway overpass spanning across the horizon, carrying abandoned stalled sedans and vans.
+6. **Suspension Bridge Anchor Tower (East, 110m)**: Towering steel suspension bridge cable pylon with cross-portals and navigation warning lights.
+
+---
+
+## 4. Tower Facade & Grand Marble Lobby
+
+### Architectural Shell (`SkyscraperTowerShell`)
+- **Fluted Base Colonnade**: 6m tall dark granite structural piers along the street-level south facade.
+- **Grand Porte-Cochère Canopy**: Cantilevered steel space-frame truss with structural glass skylight, bronze fascia lettering, and suspended downlight lanterns.
+- **Tower Massing**: 4 massive 50m corner concrete pylons anchoring the tower footprint.
+- **Curtain Glass & Mullions**: Full-height curtain glass enclosure on North, East, and West faces, articulated with vertical architectural mullions every 4.5m and horizontal structural spandrel bands at every floor level.
+- **Rooftop Crown**: Reinforced concrete roof slab (y = 50m) and continuous steel parapet coping.
+
+### Grand Double-Height Marble Lobby (`SkyscraperLobby`)
+- **Flooring**: Polished Carrara marble field (`Marble012`) framed with dark granite border inlays (`Concrete034`).
+- **Coffered Ceiling**: Acoustic coffer tiles at y = 6.0m.
+- **Interior Colonnade**: 4 double-height fluted structural pillars with polished brass plinths and capitals.
+- **Entrance Vestibule**: Double-height exterior glazing and a revolving 3-wing glass cylinder door flanked by steel egress portals.
+- **Concierge Reception Desk**: Curved dark granite front, polished brass countertop, mahogany workstation, reservation register ledger, and key card storage rack.
+- **Security Screening Checkpoint**: 4 optical glass-flap security turnstiles, walk-through metal detector portal with indicator lamps, and baggage screening station.
+- **Executive Waiting Lounge**: Black leather executive sofas, armchairs, smoked-glass brass coffee table, and an architectural potted ficus tree.
+- **Tenant Directory Monument**: Polished black granite monument plaque with etched brass directory listing all tower floors.
+
+---
+
+## 5. The Vertical Climb & Transits
 
 Verticality is the heartbeat of Cloudline Tower. The run challenges squads to navigate between the ground plaza (y = 0 m) and the roof terrace (y = 50 m) through two contrasting transit routes:
 
@@ -40,7 +96,7 @@ Verticality is the heartbeat of Cloudline Tower. The run challenges squads to na
      - **Story 8 (y = 32 m)**: Ransacked executive cubicles, server racks, and broken exterior windows with howling wind.
      - **Story 11 (y = 44 m)**: Summit Apex Restaurant sky lobby.
    - **Roof Stair (y = 50 m)**: Exterior steel access stairs leading from the dining terrace up to the helipad roof crown.
-   - **Carrying Decision:** Dragging a 220 kg safe or the 340 kg wine cask down 11 flights of tight concrete stairs tests stamina, corner clearance, and coordination when the elevator is dead.
+   - **Carrying Decision**: Dragging a 220 kg safe or the 340 kg wine cask down 11 flights of tight concrete stairs tests stamina, corner clearance, and coordination when the elevator is dead.
 
 ### What Makes the Lift Fail
 The lift fails for three clear, readable reasons:
@@ -59,7 +115,7 @@ The lift fails for three clear, readable reasons:
 
 ---
 
-## 3. Top-Level Content & Atmosphere
+## 6. Top-Level Content & Atmosphere
 
 ### Floor 2: The Apex Restaurant (y = 44 m)
 - **Sky Lobby & Reception**: Maître d' podium, guest ledger salvage, and velvet stanchions.
@@ -78,7 +134,7 @@ The lift fails for three clear, readable reasons:
 
 ---
 
-## 4. Structural Sections & Collapses
+## 7. Structural Sections & Collapses
 
 Configured via `StructureSceneSetup` and `StructuralSection`:
 - **Dining Room North Window Slabs**: Cantilevered floor tiles along the glass curtain wall weakened by moisture (`health = 0.65f`, `capacity = 0.55f`). Overloaded squads or dropped heavy loot trigger progressive fractures and collapse into the abyss.
@@ -90,10 +146,10 @@ Configured via `StructureSceneSetup` and `StructuralSection`:
 
 ---
 
-## 5. Power Sectors & Breaker Panels
+## 8. Power Sectors & Breaker Panels
 
 All 5 building sectors are fully wired with functional `LightFixture` networks and dedicated `BreakerPanel` units:
-- **Sector 0 (Ground Lobby & Exterior)**: Plaza entrance floodlights, canopy lamps, and grand lobby chandeliers. Breaker panel located in the lobby security niche.
+- **Sector 0 (Ground Lobby & Exterior)**: Plaza street lamps, entrance canopy downlights, and grand lobby chandeliers. Breaker panel located in the lobby security niche.
 - **Sector 1 (Elevator Shaft & Stairwell)**: Elevator hoist motors, cab ceiling fixture, shaft bulkheads, and emergency stairwell lamps on all 11 stories. Breaker panel located in the Mechanical Deck electrical room (y = 20 m).
 - **Sector 2 (Grand Dining & Lounge)**: Crystal chandeliers, recessed downlights, and terrace sconces. Breaker panel in the bar service corridor.
 - **Sector 3 (Kitchen & Cold Store)**: Industrial fluorescent tubes and cold store vapor-proof bulkheads. Breaker panel on the kitchen utility wall.
@@ -101,7 +157,7 @@ All 5 building sectors are fully wired with functional `LightFixture` networks a
 
 ---
 
-## 6. Environmental Soundscape (`SkyscraperSoundscape`)
+## 9. Environmental Soundscape (`SkyscraperSoundscape`)
 
 Authored in `Scripts/Skyscraper/SkyscraperSoundscape.cs` using only existing `SoundId`s:
 - **Broken Glass Wind Whistling (`SoundId.GhostWhoosh`)**: Spatial high-altitude wind gusts at broken window nodes on the 32 m office floor and the restaurant north curtain wall.
@@ -119,9 +175,9 @@ Authored in `Scripts/Skyscraper/SkyscraperSoundscape.cs` using only existing `So
 
 ---
 
-## 7. Salvage Loot Catalog (32 Items, 2 Jackpots)
+## 10. Salvage Loot Catalog (32 Items, 2 Jackpots)
 
-Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper/Loot/`:
+Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper/Loot/`, fully localized in 9 languages:
 | Item ID | Name | Carry Class | Weight | Value Range | Tag | Description |
 |---|---|---|---|---|---|---|
 | `silver_cutlery_canteen` | Silver Cutlery Canteen | OneHand | 3.5 kg | $800 - $2,200 | dining | Sterling silver 24-piece dinner service |
@@ -159,7 +215,7 @@ Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper
 
 ---
 
-## 8. Hiding Places (15 Spots, 4 Kinds)
+## 11. Hiding Places (15 Spots, 4 Kinds)
 
 1. `HideSpotKind.Cabinet`: Street Lobby concierge back-room credenza
 2. `HideSpotKind.Locker`: Street Lobby security staff locker
@@ -179,7 +235,7 @@ Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper
 
 ---
 
-## 9. Occlusion Culling Design
+## 12. Occlusion Culling Design
 
 - **Occluder Static Geometry**: Applied to permanent solid architecture: massive corner pylons, core concrete walls (stairwell core, elevator shaft walls), lobby perimeter walls, and roof parapets.
 - **Never Occluder Static**: All floor slabs, tiles, walkways, catwalks, ramps, stairs, and structural section modules carry no `OccluderStatic` flags, ensuring that collapsed floors never incorrectly occlude what lies below or above them.
@@ -187,44 +243,54 @@ Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper
 
 ---
 
-## 10. What to Check First (Review Checklist)
+## 13. What to Check First (Review Checklist)
 
 When loading the map in Unity via **Tools > Abandoned > Maps > Skyscraper Restaurant > Rebuild Skyscraper Restaurant**:
-1. **Elevator Operation & Indicators**:
+1. **Streetscape, Forecourt Plaza & Skyline**:
+   - Check Broadway Avenue: double-yellow lines, pedestrian crosswalks, street lamps, abandoned vehicles (Executive towncar, yellow cab, courier van), and East barricades with rusted dumpster.
+   - Check Cloudline Plaza: paved stone square, drained reflecting pool with murky puddle, "The Ascendant Spiral" modern brass sculpture, concrete planters with withered trees, teak benches, corporate monument sign, chrome flagpoles with burgundy banners, and underground garage ramp.
+   - Look into the distance / up at the horizon: verify the 6 skyline features (85m Trans-Continental spire with red beacon, 72m twin towers with 42m skybridge, 92m Vanguard monolith, 38m Federal Reserve, 8m elevated highway with stalled cars, 110m suspension bridge tower).
+2. **Grand Double-Height Marble Lobby**:
+   - Walk through the revolving cylinder glass doors into the lobby.
+   - Check the Carrara marble and dark granite floor, fluted double-height pillars, concierge reception desk, optical security turnstiles, metal detector portal, executive leather waiting lounge, and tenant directory plaque.
+3. **Elevator Operation & Indicators**:
    - Check landing call buttons at Lobby (0 m), Mechanical Deck (20 m), and Restaurant (44 m). Verify landing gates open only when cab arrives.
    - Verify car destination buttons (Lobby, Mechanical, Restaurant) move the elevator smoothly with riders on `MovingPlatform`.
    - Test Sector 1 power cut: trip Sector 1 breaker -> verify elevator stops and prompts show `Lift (No Power)`. Throw breaker -> verify elevator operates.
    - Test Overload Snap: place > 450 kg on the cab deck -> verify prompt warns `Lift (Overloaded)`, cables snap with `LiftSnap`, cab plunges into free fall, deals damage, crashes at bottom (`Crash`), and breaks permanently (`Lift (Out of Order)`).
-2. **The 44-Metre Fire Stairwell & Intermediate Floors**:
+4. **The 44-Metre Fire Stairwell & Intermediate Floors**:
    - Walk the continuous 11 flights from 0 m to 44 m to ensure seamless stair colliders.
    - Inspect intermediate landing fire exit doors:
      - Floor 3 (12 m): Flooded floor with burst pipes, standing water, and office clutter.
      - Floor 5 (20 m): Mechanical deck with transformers and catwalks.
      - Floor 8 (32 m): Looted corporate office with broken window letting in wind.
      - Floor 11 (44 m): Restaurant sky lobby.
-3. **Summit Content & Roof Terrace**:
+5. **Summit Content & Roof Terrace**:
    - Inspect the panoramic dining room, mahogany bar, commercial kitchen line, cold store, and VIP penthouse.
    - Walk up the exterior stairs from the dining terrace to the Roof Terrace (50 m). Check the painted Helipad, window-cleaning gantry rig, suspended cradle, and viewing telescope.
-4. **Structural Collapse**:
+6. **Structural Collapse**:
    - Walk over northern dining room glass-edge cantilever slabs while carrying heavy loot -> observe fracture stages and collapse.
    - Check central mechanical catwalk over the shaft void.
    - Verify `SectionNavCarver` carves NavMesh when a slab falls.
-5. **Soundscape & F1 Gizmos**:
+7. **Soundscape & F1 Gizmos**:
    - Listen for broken window wind whistling, cable creaks in the shaft, piano lid thuds, bar glasses rattling, and flooded floor drips.
    - Press F1 (`DebugView.Visible`) -> verify colored Gizmo spheres appear at all soundscape points and elevator cab/stops/load.
-6. **Open World Integration**:
-   - Verify van parking point at `(0, 0, -22)`.
-   - Ground cutout rectangle `[-24, -34] to [24, 22]` at elevation `0.0 m`.
+8. **Open World Integration**:
+   - Verify van parking point at `(0, 0, -22)` with hazard hatching.
+   - Ground cutout rectangle `[-24, -35] to [24, 22]` at elevation `0.0 m`.
    - Confirm `Exterior/Truck` and `Exterior/Skyline` exist under `Exterior` for world streaming to toggle.
 
 ---
 
-## 11. Proposed Decisions for CLAUDE.md
+## 14. Proposed Decisions for CLAUDE.md
 
 - **Skyscraper Restaurant (2026-10-23):** Cloudline Tower & The Apex Restaurant added as an open-world streamed salvage POI (`Scenes/Skyscraper.unity`).
   - Dual vertical transit: Host-authoritative 48 m `SkyscraperElevator` (stops: Ground, Mechanical, Apex Restaurant) with weight-limited cable snap at 450 kg, power dependence on Sector 1, and an 11-flight fire stairwell with stops at Flooded Floor (12 m), Mechanical Deck (20 m), and Looted Office (32 m).
+  - Rich urban setting & streetscape: Broadway Avenue with painted markings, sodium lamps, abandoned vehicles (executive car, yellow cab, courier van), drained reflecting pool with modern brass sculpture, corporate plaza, and underground parking ramp.
+  - Atmospheric 360-degree surrounding cityscape (`Exterior/Skyline`) with 6 distinct architectural landmarks (stepped Art-Deco spire, twin towers with 42m skybridge, dark monolith, brutalist Federal Reserve, elevated highway with wrecks, suspension bridge tower).
+  - Grand double-height marble lobby (`Lobby`) featuring revolving cylinder doors, fluted colonnade, concierge desk, optical turnstiles, metal detector portal, and executive waiting lounge.
   - 5 power sectors with independent `BreakerPanel`s (Lobby 0, Mechanical/Shaft 1, Dining/Terrace 2, Kitchen/Cold Store 3, VIP Penthouse 4).
-  - 32 restaurant & executive themed salvage definitions (`Data/Loot/Skyscraper/`), including 2 jackpots: `bronze_bull_statue` (85 kg) and `grand_wine_cask` (340 kg).
+  - 32 restaurant & executive themed salvage definitions (`Data/Loot/Skyscraper/`), including 2 jackpots: `bronze_bull_statue` (85 kg) and `grand_wine_cask` (340 kg), 100% localized in all 9 languages in `skyscraper.txt`.
   - Roof crown (50 m) featuring helipad, window-cleaning gantry crane with suspended cradle, and observation telescope.
   - Environmental `SkyscraperSoundscape` (wind whistling, shaft cables creaking, piano lid falling, glasses rattling, flooded pipe drips) with F1 debug Gizmos.
   - Strict occlusion culling: permanent walls and shell set as `OccluderStatic`, floor slabs excluded.

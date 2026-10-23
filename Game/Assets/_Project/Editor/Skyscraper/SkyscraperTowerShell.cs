@@ -7,106 +7,103 @@ using L = Abandoned.EditorTools.SkyscraperLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Builds the tower shell, street-level arrival plaza, truck parking bay, entrance canopy,
-    /// and the grand double-height marble lobby with concierge desk and security turnstiles.
+    /// Builds the tower's architectural exterior shell, fluted entrance colonnade, porte-cochère,
+    /// vertical structural mullions, curtain-glass facade, and rooftop crown parapet.
+    /// Integrates the surrounding metropolitan skyline and forecourt plaza.
     /// </summary>
     public static class SkyscraperTowerShell
     {
         public static TruckCargo Build(Transform root, SkyscraperArt art)
         {
             Transform exterior = Group("Exterior", root);
-            Transform plaza = Group("Plaza", exterior);
 
-            // 1. Street Forecourt & Parking Plaza (Asphalt)
-            Box("StreetPavement", plaza, new Vector3(0f, -0.2f, -22f), new Vector3(48f, 0.4f, 26f), art.Asphalt);
+            // 1. Surrounding City Skyline Silhouettes (hidden when streamed in open world)
+            SkyscraperSkyline.Build(exterior, art);
 
-            // Sidewalk curb and entrance apron (Concrete)
-            Box("CurbApron", plaza, new Vector3(0f, 0.05f, -13f), new Vector3(40f, 0.2f, 8f), art.Concrete);
+            // 2. Broadway Streetscape, Forecourt Plaza, Vehicles, and Van Parking Bay
+            TruckCargo cargo = SkyscraperPlaza.Build(exterior, art);
 
-            // Concrete bollards guarding the entrance
-            for (float x = -15f; x <= 15f; x += 3.75f)
-            {
-                if (Mathf.Abs(x) < 3.0f) continue; // Clear walkway to entrance
-                Primitive(PrimitiveType.Cylinder, "Bollard", plaza, new Vector3(x, 0.5f, -16.5f),
-                    new Vector3(0.35f, 0.5f, 0.35f), art.Concrete);
-            }
-
-            // Company extraction truck at designated parking spot (hidden when loaded in open world)
-            Transform truckGroup = Group("Truck", exterior);
-            TruckCargo cargo = TruckBuilder.Build(truckGroup, L.TruckRear, L.TruckForward);
-
-            // Stand-in skyline building silhouettes around tower (hidden when loaded in open world)
-            Transform skyline = Group("Skyline", exterior);
-            Vector3[] distantTowers = {
-                new(-90f, 20f, 110f), new(-45f, 35f, 140f), new(40f, 25f, 130f), new(85f, 40f, 100f),
-                new(-110f, 15f, -20f), new(120f, 30f, -10f)
-            };
-            Vector3[] towerDims = {
-                new(28f, 70f, 28f), new(34f, 90f, 34f), new(30f, 80f, 30f), new(36f, 100f, 36f),
-                new(26f, 60f, 26f), new(32f, 85f, 32f)
-            };
-            for (int k = 0; k < distantTowers.Length; k++)
-                Box($"TowerSilhouette_{k}", skyline, distantTowers[k], towerDims[k], art.Concrete, false);
-
-            // 2. Entrance Canopy & Modern Facade
-            Transform entrance = Group("EntranceCanopy", plaza);
-            Box("CanopyRoof", entrance, new Vector3(0f, 4.5f, -13.5f), new Vector3(14f, 0.3f, 7f), art.Steel);
-            Box("GlassAwning", entrance, new Vector3(0f, 4.4f, -13.5f), new Vector3(13.6f, 0.05f, 6.6f), art.Glass);
-            Box("SupportPillarL", entrance, new Vector3(-6.5f, 2.2f, -16.8f), new Vector3(0.4f, 4.4f, 0.4f), art.Steel);
-            Box("SupportPillarR", entrance, new Vector3( 6.5f, 2.2f, -16.8f), new Vector3(0.4f, 4.4f, 0.4f), art.Steel);
-
-            // 3. Skyscraper Massive Structural Columns & Curtain Facade
-            Transform towerShell = Group("TowerFacade", exterior);
+            // 3. Massive Skyscraper Structural Facade & Tower Massing
+            Transform facade = Group("TowerFacade", exterior);
             float halfW = L.TowerHalfWidth;
             float midZ = (L.TowerBackZ + L.TowerFrontZ) * 0.5f;
             float depth = L.TowerBackZ - L.TowerFrontZ;
 
-            // 4 Massive corner concrete pylons
+            // 4 Massive Corner Concrete Pylons (50m vertical structural anchors)
             Vector3 colSize = new(2.2f, L.RoofY, 2.2f);
-            Box("CornerPylon_SW", towerShell, new Vector3(-halfW + 1.1f, L.RoofY * 0.5f, L.TowerFrontZ + 1.1f), colSize, art.Concrete);
-            Box("CornerPylon_SE", towerShell, new Vector3( halfW - 1.1f, L.RoofY * 0.5f, L.TowerFrontZ + 1.1f), colSize, art.Concrete);
-            Box("CornerPylon_NW", towerShell, new Vector3(-halfW + 1.1f, L.RoofY * 0.5f, L.TowerBackZ - 1.1f), colSize, art.Concrete);
-            Box("CornerPylon_NE", towerShell, new Vector3( halfW - 1.1f, L.RoofY * 0.5f, L.TowerBackZ - 1.1f), colSize, art.Concrete);
+            Box("CornerPylon_SW", facade, new Vector3(-halfW + 1.1f, L.RoofY * 0.5f, L.TowerFrontZ + 1.1f), colSize, art.Concrete);
+            Box("CornerPylon_SE", facade, new Vector3( halfW - 1.1f, L.RoofY * 0.5f, L.TowerFrontZ + 1.1f), colSize, art.Concrete);
+            Box("CornerPylon_NW", facade, new Vector3(-halfW + 1.1f, L.RoofY * 0.5f, L.TowerBackZ - 1.1f), colSize, art.Concrete);
+            Box("CornerPylon_NE", facade, new Vector3( halfW - 1.1f, L.RoofY * 0.5f, L.TowerBackZ - 1.1f), colSize, art.Concrete);
 
-            // Exterior Curtain Glass Wall Panelling
-            Box("FacadeGlass_East", towerShell, new Vector3( halfW, L.RoofY * 0.5f, midZ), new Vector3(0.2f, L.RoofY, depth - 2.2f), art.Glass);
-            Box("FacadeGlass_West", towerShell, new Vector3(-halfW, L.RoofY * 0.5f, midZ), new Vector3(0.2f, L.RoofY, depth - 2.2f), art.Glass);
-            Box("FacadeGlass_North", towerShell, new Vector3(0f, L.RoofY * 0.5f, L.TowerBackZ), new Vector3(halfW * 2f - 2.2f, L.RoofY, 0.2f), art.Glass);
-            Box("FacadeGlass_SouthUpper", towerShell, new Vector3(0f, (L.RoofY + L.LobbyHeight) * 0.5f, L.TowerFrontZ),
-                new Vector3(halfW * 2f - 2.2f, L.RoofY - L.LobbyHeight, 0.2f), art.Glass);
-
-            // Roof Crown / Parapet Wall
-            Box("RoofSlab", towerShell, new Vector3(0f, L.RoofY, midZ), new Vector3(halfW * 2f, 0.5f, depth), art.Concrete);
-            Box("ParapetN", towerShell, new Vector3(0f, L.RoofY + 0.8f, L.TowerBackZ), new Vector3(halfW * 2f, 1.2f, 0.4f), art.Steel);
-            Box("ParapetS", towerShell, new Vector3(0f, L.RoofY + 0.8f, L.TowerFrontZ), new Vector3(halfW * 2f, 1.2f, 0.4f), art.Steel);
-            Box("ParapetE", towerShell, new Vector3( halfW, L.RoofY + 0.8f, midZ), new Vector3(0.4f, 1.2f, depth), art.Steel);
-            Box("ParapetW", towerShell, new Vector3(-halfW, L.RoofY + 0.8f, midZ), new Vector3(0.4f, 1.2f, depth), art.Steel);
-
-            // 4. Ground Level Grand Marble Lobby (y: 0 to 6m)
-            Transform lobby = Group("Lobby", root);
-            Box("LobbyFloor", lobby, new Vector3(0f, -0.1f, midZ), new Vector3(halfW * 2f - 0.4f, 0.2f, depth - 0.4f), art.Marble);
-            Box("LobbyCeiling", lobby, new Vector3(0f, L.LobbyHeight, midZ), new Vector3(halfW * 2f - 0.4f, 0.3f, depth - 0.4f), art.CeilingTile);
-
-            // Lobby Entrance Glazing & Revolving Door Shell
-            Box("LobbyFrontGlassL", lobby, new Vector3(-9.5f, 2.5f, L.TowerFrontZ), new Vector3(15f, 5f, 0.2f), art.Glass);
-            Box("LobbyFrontGlassR", lobby, new Vector3( 9.5f, 2.5f, L.TowerFrontZ), new Vector3(15f, 5f, 0.2f), art.Glass);
-            Box("RevolvingCylinder", lobby, new Vector3(0f, 1.8f, L.TowerFrontZ), new Vector3(3.2f, 3.6f, 3.2f), art.Steel, false);
-
-            // Reception Concierge Desk (Marble & Brass)
-            Transform desk = Group("ReceptionDesk", lobby);
-            Box("DeskFront", desk, new Vector3(6f, 0.6f, -3f), new Vector3(5f, 1.2f, 0.8f), art.Marble);
-            Box("DeskTop", desk, new Vector3(6f, 1.22f, -3f), new Vector3(5.2f, 0.08f, 1.0f), art.Brass);
-            Box("DeskBackCounter", desk, new Vector3(6f, 0.5f, -1.2f), new Vector3(4.5f, 1.0f, 0.6f), art.Steel);
-
-            // Security Turnstiles (Steel & Glass)
-            for (float x = -3.5f; x <= 3.5f; x += 1.75f)
+            // Ground-Level Street Colonnade (Fluted Granite Piers along South Facade)
+            Transform colonnade = Group("StreetColonnade", facade);
+            for (float cx = -14f; cx <= 14f; cx += 7f)
             {
-                Box("Turnstile", lobby, new Vector3(x, 0.55f, -5f), new Vector3(0.25f, 1.1f, 1.4f), art.Steel);
-                Box("TurnstileGlass", lobby, new Vector3(x, 0.6f, -5f), new Vector3(0.04f, 0.8f, 1.1f), art.Glass, false);
+                if (Mathf.Abs(cx) < 3.5f) continue; // Clear main entrance portal
+                Box($"GranitePier_{cx:0}", colonnade, new Vector3(cx, 3.0f, L.TowerFrontZ - 0.2f),
+                    new Vector3(1.2f, 6.0f, 0.8f), art.GraniteDark);
             }
 
-            // Wayfinding Directory Board
-            Box("DirectoryBoard", lobby, new Vector3(-6f, 1.8f, -4f), new Vector3(1.6f, 2.4f, 0.15f), art.Steel);
+            // 4. Grand Entrance Porte-Cochère Canopy (z: -17 to -10)
+            Transform canopy = Group("PorteCochere", facade);
+            Box("CanopyRoofSlab", canopy, new Vector3(0f, 4.6f, -13.5f), new Vector3(14.5f, 0.35f, 7.2f), art.Steel);
+            Box("GlassSkylight", canopy, new Vector3(0f, 4.5f, -13.5f), new Vector3(13.8f, 0.05f, 6.5f), art.Glass, false);
+            Box("CanopyFascia", canopy, new Vector3(0f, 4.9f, -17.15f), new Vector3(14.6f, 0.6f, 0.2f), art.GraniteDark);
+            Box("FasciaBronzeLetters", canopy, new Vector3(0f, 4.9f, -17.26f), new Vector3(10.5f, 0.3f, 0.04f), art.Brass, false);
+
+            // Cantilever support outriggers
+            Box("CanopyPillarL", canopy, new Vector3(-6.8f, 2.25f, -16.9f), new Vector3(0.5f, 4.5f, 0.5f), art.Steel);
+            Box("CanopyPillarR", canopy, new Vector3( 6.8f, 2.25f, -16.9f), new Vector3(0.5f, 4.5f, 0.5f), art.Steel);
+
+            // Suspended bronze entrance downlight pendants
+            for (float lx = -4.5f; lx <= 4.5f; lx += 4.5f)
+            {
+                Transform pendant = Group($"CanopyPendant_{lx:0}", canopy);
+                pendant.position = new Vector3(lx, 4.4f, -13.5f);
+                Primitive(PrimitiveType.Cylinder, "PendantStem", pendant, new Vector3(0f, 0.2f, 0f), new Vector3(0.06f, 0.4f, 0.06f), art.Brass, false);
+                Primitive(PrimitiveType.Cylinder, "Lantern", pendant, new Vector3(0f, -0.1f, 0f), new Vector3(0.4f, 0.2f, 0.4f), art.LampEmissive, false);
+            }
+
+            // 5. Exterior Curtain Glass Enclosure
+            Box("FacadeGlass_East", facade, new Vector3( halfW, L.RoofY * 0.5f, midZ), new Vector3(0.2f, L.RoofY, depth - 2.2f), art.Glass);
+            Box("FacadeGlass_West", facade, new Vector3(-halfW, L.RoofY * 0.5f, midZ), new Vector3(0.2f, L.RoofY, depth - 2.2f), art.Glass);
+            Box("FacadeGlass_North", facade, new Vector3(0f, L.RoofY * 0.5f, L.TowerBackZ), new Vector3(halfW * 2f - 2.2f, L.RoofY, 0.2f), art.Glass);
+            Box("FacadeGlass_SouthUpper", facade, new Vector3(0f, (L.RoofY + L.LobbyHeight) * 0.5f, L.TowerFrontZ),
+                new Vector3(halfW * 2f - 2.2f, L.RoofY - L.LobbyHeight, 0.2f), art.Glass);
+
+            // 6. Vertical Architectural Mullions (Towering Visual Rhythm)
+            Transform mullions = Group("VerticalMullions", facade);
+            // East and West facade mullions
+            for (float mz = L.TowerFrontZ + 3.5f; mz <= L.TowerBackZ - 3.5f; mz += 4.5f)
+            {
+                Box($"MullionW_{mz:0}", mullions, new Vector3(-halfW - 0.15f, L.RoofY * 0.5f, mz), new Vector3(0.3f, L.RoofY, 0.35f), art.GraniteDark, false);
+                Box($"MullionE_{mz:0}", mullions, new Vector3( halfW + 0.15f, L.RoofY * 0.5f, mz), new Vector3(0.3f, L.RoofY, 0.35f), art.GraniteDark, false);
+            }
+            // North facade mullions
+            for (float mx = -halfW + 4.5f; mx <= halfW - 4.5f; mx += 4.5f)
+            {
+                Box($"MullionN_{mx:0}", mullions, new Vector3(mx, L.RoofY * 0.5f, L.TowerBackZ + 0.15f), new Vector3(0.35f, L.RoofY, 0.3f), art.GraniteDark, false);
+            }
+
+            // 7. Horizontal Floor Spandrel Bands (Expressed Structural Floor Slabs)
+            Transform spandrels = Group("FloorSpandrels", facade);
+            float[] spandrelYs = { 6.0f, 12.0f, 20.0f, 32.0f, 44.0f };
+            foreach (float sy in spandrelYs)
+            {
+                Box($"BandN_{sy:0}", spandrels, new Vector3(0f, sy - 0.2f, L.TowerBackZ + 0.1f), new Vector3(halfW * 2f, 0.6f, 0.25f), art.Steel, false);
+                Box($"BandS_{sy:0}", spandrels, new Vector3(0f, sy - 0.2f, L.TowerFrontZ - 0.1f), new Vector3(halfW * 2f, 0.6f, 0.25f), art.Steel, false);
+                Box($"BandE_{sy:0}", spandrels, new Vector3( halfW + 0.1f, sy - 0.2f, midZ), new Vector3(0.25f, 0.6f, depth), art.Steel, false);
+                Box($"BandW_{sy:0}", spandrels, new Vector3(-halfW - 0.1f, sy - 0.2f, midZ), new Vector3(0.25f, 0.6f, depth), art.Steel, false);
+            }
+
+            // 8. Rooftop Crown & Mechanical Parapet Wall (y = 50m)
+            Transform crown = Group("RoofCrown", facade);
+            Box("RoofSlab", crown, new Vector3(0f, L.RoofY, midZ), new Vector3(halfW * 2f, 0.5f, depth), art.Concrete);
+            Box("ParapetN", crown, new Vector3(0f, L.RoofY + 0.8f, L.TowerBackZ), new Vector3(halfW * 2f, 1.2f, 0.4f), art.Steel);
+            Box("ParapetS", crown, new Vector3(0f, L.RoofY + 0.8f, L.TowerFrontZ), new Vector3(halfW * 2f, 1.2f, 0.4f), art.Steel);
+            Box("ParapetE", crown, new Vector3( halfW, L.RoofY + 0.8f, midZ), new Vector3(0.4f, 1.2f, depth), art.Steel);
+            Box("ParapetW", crown, new Vector3(-halfW, L.RoofY + 0.8f, midZ), new Vector3(0.4f, 1.2f, depth), art.Steel);
 
             return cargo;
         }
