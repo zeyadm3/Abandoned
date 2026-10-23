@@ -98,8 +98,9 @@ The new location description has English plus all nine translations in hospital.
 The scene stays at origin. World terrain/roads move under its anchor. No root-moving script or extra truck.
 
 - Own ground: **Rect(-12,-28,80,88)**, x=-12..68,z=-28..60; outer edge top **y=0** (unchanged).
-- **Whole ground with the district (2026-10-23): x=-64..124, z=-100..112**, top **y=0**; the world's road can meet
-  Hospital Drive at the south edge (z=-100, x=39..49), which leads straight to the ambulance approach.
+- **Whole ground with the district and its outer rings (2026-10-23): x=-190..250, z=-226..238**, top **y=0** (the district
+  alone was x=-64..124, z=-100..112); the world's road can meet Hospital Drive at the south edge (z=-226, x=39..49),
+  which leads straight to the ambulance approach.
 - Road mouth: south z=-28, ambulance approach x=44.
 - **Hospital/VanDock (44,0,-14), forward (0,0,-1)** remains unchanged.
 - New building envelope: x=0..56,z=0..48,y=-4..16. The entire own-ground terrain hole must remain, including basement.
@@ -126,6 +127,12 @@ and the art kit"). It never touches the hospital's own ground (x -12..68, z -28.
   barriers dragged aside so the lane is open.
 - Off the NavMesh (a `NavMeshModifier` that ignores the whole group): monsters stay on the hospital's ground. Small
   outside renderers do not occlude (`StationSite.TrimOccluders`), so the occlusion bake stays on masses and walls.
+- **Outer rings** (2026-10-23, user: "for all the 4 maps expand them the surroundings add 2 more layers"): two more
+  rings of the district round all of that, from the shared kit (Docs/POLICE_STATION_PLAN.md "The outer rings"), with
+  12 m ring roads. The boulevard and the back street run out west and east, West and East Streets south and north, and
+  Hospital Drive on south through both rings. A medical district mix: office towers, flats, shops and row houses facing
+  the town; flats, offices, a warehouse and garages facing out; parking decks, towers, a church, a gas station and
+  houses at the edge.
 
 ## Decisions CLAUDE.md should record
 
@@ -154,3 +161,6 @@ For Claude CLI only; not performed by this agent:
    side, lamps lit, nothing standing in a road, Hospital Drive open from the south edge to the ambulance approach, the
    parking decks' ramps and the cars on them, and that monsters never leave the hospital's own ground. Watch the
    rebuild time (occlusion bake) and the frame rate on the boulevard.
+9. **The outer rings**: drive Hospital Drive out to the new south edge through both ring roads; look along each ring
+   (lamps lit on the first, dark with trees on the second, buildings both sides, nothing in a road), watch a building
+   at about 150 m switch to its far mesh, and the rebuild time, scene size and frame rate looking out over the rings.

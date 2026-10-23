@@ -18,7 +18,8 @@ namespace Abandoned.Hospital
     /// the unchanged van dock), West and East Streets and a back street round the other sides. Medical office towers,
     /// two parking decks, a pharmacy, cafes, a gas station, flats, row houses, a chapel and a supply warehouse face in;
     /// signals, lamps, power lines, bus shelters, a taxi rank in the boulevard's kerb lane, abandoned ambulances and a
-    /// quarantine checkpoint left open on the drive. Exterior only, off the NavMesh. Whole ground x -64..124, z -100..112, top 0.
+    /// quarantine checkpoint left open on the drive. Exterior only, off the NavMesh. District ground x -64..124, z -100..112,
+    /// top 0; two more rings round it (StationRings) take the whole ground to x -190..250, z -226..238.
     /// </summary>
     public static class HospitalTown
     {
@@ -41,9 +42,11 @@ namespace Abandoned.Hospital
                 Lots(town, a);
                 Buildings(blocks, a, StationTownArt.For(a));
                 Furniture(street, marks, a);
+                Rings(town, ext, a);
                 GreyboxFactory.MarkStatic(ext);
                 GreyboxFactory.MarkStatic(Site.GroundSlabs(town));
                 Site.TrimOccluders(ext);
+                StationRings.Settle(ext);
                 StationCoverMarks.Apply(ext);
                 StationSurfaces.Apply(town, a);
             }
@@ -51,6 +54,31 @@ namespace Abandoned.Hospital
             {
                 Site.GroundTop = previous;
             }
+        }
+
+        // Two more rings of the district round it (StationRings): the boulevard and the back street run out west and east,
+        // West and East Streets south and north, and Hospital Drive on south to the new edge.
+        private static void Rings(Transform town, Transform ext, StationArt a)
+        {
+            var spec = new StationRingSpec
+            {
+                Inner = Rect.MinMaxRect(West, South, East, North), Road = 12f, Seed = 931, Vacancy = .08f, Lot = a.Gravel, Yard = a.Grass,
+                LampIntensity = 9f,
+            };
+            foreach (int side in new[] { StationRingSpec.South, StationRingSpec.North })
+            {
+                spec.Through(side, -24f, -12f);
+                spec.Through(side, 68f, 80f);
+            }
+            spec.Through(StationRingSpec.South, 39f, 49f);
+            foreach (int side in new[] { StationRingSpec.West, StationRingSpec.East })
+            {
+                spec.Through(side, -40f, -28f);
+                spec.Through(side, 60f, 72f);
+            }
+            var stock = new StationRingStock(a);
+            StationRingPools.District(stock, spec, 9300);
+            StationRings.Build(town, ext, a, spec, stock);
         }
 
         private static void Streets(Transform town, Transform marks, StationArt a)
