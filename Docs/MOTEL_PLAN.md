@@ -155,8 +155,10 @@ The Motel scene never moves. It loads at the authored origin; the world moves la
 The existing absolute configs/NavMesh stay there. No script moves the root and no second cargo truck is authored.
 
 - Own ground rectangle: **x=-8..112, z=-24..44** (`Rect(-8,-24,120,68)`). Every outer ground edge meets **y=0**.
-- **Whole ground with the roadside (2026-10-23): x=-80..190, z=-110..90**, top **y=0**; the world's road can meet the
-  access road at the south edge (z=-110, x=27..37), which leads straight to the apron's mouth at x=32.
+- **Whole ground with the roadside and its outer rings (2026-10-23): x=-206..316, z=-236..216**, top **y=0** (the
+  roadside alone was x=-80..190, z=-110..90); the world's road comes in at the north edge's middle, where a spur
+  (x=50..60) runs in to the first ring road; it can also meet the
+  access road at the south edge (z=-236, x=27..37), which leads straight to the apron's mouth at x=32.
 - Road connection: **south edge z=-24**, across the van apron, aligned with the central lane at x=32.
 - Van parking/loading pose: **(32,0,-12)**, forward **(0,0,-1)**, `Motel/VanDock`.
 - Lodge collapse bounds remain x=-4..68, z=12..28, y=0..8. Courtyard, pool, apron, diner and shed are outside.
@@ -193,6 +195,13 @@ unchanged. `Editor/Motel/MotelTown.cs`, called last in `MotelSite.Build`, built 
   water tower behind the back road, power lines along the highway and the back road, wrecks left on the highway (a
   burnt sedan, a pickup with its door open, a smashed SUV, a tow truck and a sawhorse), dumpsters and litter.
 - Off the NavMesh (a `NavMeshModifier` ignores the whole group); small outside renderers do not occlude.
+- **Outer rings** (2026-10-23, user: "for all the 4 maps expand them the surroundings add 2 more layers"): two more
+  rings of roadside round all of that, from the shared kit (Docs/POLICE_STATION_PLAN.md "The outer rings"), with 12 m
+  ring roads and about one stretch in three left a vacant lot. The highway and the back road run out west and east, the
+  side roads and the access road south, the side roads north, and a spur on the north (x 50..60) meets the middle of
+  the side the open world's road comes in from. A roadside mix: gas stations, shops, strip malls, garages, houses and
+  warehouses facing the town; warehouses, garages and houses facing out; houses in yards, a church, a warehouse and a
+  strip mall at the edge.
 
 ## Decisions CLAUDE.md should record
 
@@ -226,3 +235,6 @@ For Claude CLI only:
 8. **The roadside** (2026-10-23): rebuild, then from the van apron and the highway junctions check buildings on every
    side, lamps lit, nothing standing in a road, the access road open from the south edge to the apron, the billboards
    and water tower, and that monsters never leave the motel's own ground. Watch the rebuild time and the frame rate.
+9. **The outer rings**: drive the access road out to the new south edge and the north spur in to the first ring road;
+   look along each ring (lamps lit on the first, dark with trees on the second, buildings and vacant lots, nothing in
+   a road), watch a building at about 150 m switch to its far mesh, and the rebuild time, scene size and frame rate.

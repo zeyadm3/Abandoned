@@ -20,7 +20,8 @@ namespace Abandoned.Motel
     /// side roads and a back road. Across the highway: a gas station, a burger stand, a strip mall behind its car park, a
     /// tyre shop, warehouses and a liquor store; down the sides an auto salvage garage, a strip mall, shops and houses;
     /// behind, a row of houses in their yards, a church and a warehouse. Billboards over the highway, a water tower,
-    /// power lines, wrecks left on the road. Exterior only, off the NavMesh. Whole ground x -80..190, z -110..90, top 0.
+    /// power lines, wrecks left on the road. Exterior only, off the NavMesh. Roadside ground x -80..190, z -110..90, top 0;
+    /// two more rings round it (StationRings) take the whole ground to x -206..316, z -236..216.
     /// </summary>
     public static class MotelTown
     {
@@ -46,8 +47,10 @@ namespace Abandoned.Motel
                 Yards(blocks, a, t);
                 Furniture(street, marks, a);
                 Landmarks(street, a, t);
+                Rings(town, ext, a);
                 MarkStatic(ext);
                 Site.TrimOccluders(ext);
+                StationRings.Settle(ext);
                 StationCoverMarks.Apply(ext);
                 StationSurfaces.Apply(town, a);
             }
@@ -55,6 +58,33 @@ namespace Abandoned.Motel
             {
                 Site.GroundTop = previous;
             }
+        }
+
+        // Two more rings of roadside round it (StationRings), thinner than a town: the highway and the back road run out
+        // west and east, the side roads and the access road south, the side roads north, and a spur on the north, the
+        // side the open world's road comes in from, meets its middle.
+        private static void Rings(Transform town, Transform ext, StationArt a)
+        {
+            var spec = new StationRingSpec
+            {
+                Inner = Rect.MinMaxRect(West, South, East, North), Road = 12f, Seed = 941, Vacancy = .3f, Lot = a.Dirt, Yard = a.Grass,
+                LampIntensity = 9f,
+            };
+            foreach (int side in new[] { StationRingSpec.South, StationRingSpec.North })
+            {
+                spec.Through(side, -20f, -8f);
+                spec.Through(side, 112f, 124f);
+            }
+            spec.Through(StationRingSpec.South, 27f, 37f);
+            spec.Spur(StationRingSpec.North, 50f, 60f);
+            foreach (int side in new[] { StationRingSpec.West, StationRingSpec.East })
+            {
+                spec.Through(side, -40f, -24f);
+                spec.Through(side, 44f, 54f);
+            }
+            var stock = new StationRingStock(a);
+            StationRingPools.Roadside(stock, spec, 9400);
+            StationRings.Build(town, ext, a, spec, stock);
         }
 
         private static void Roads(Transform town, Transform marks, StationArt a)
