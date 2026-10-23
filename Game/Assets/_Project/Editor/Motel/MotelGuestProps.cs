@@ -21,7 +21,7 @@ namespace Abandoned.Motel
             Bathroom(parent, k, floors, new Vector3(x, y, 24f));
             if (variant == 1)
             {
-                MotelFurniture.Chair(parent, k, floors, new Vector3(x + 3f, y, 22.7f), 90f);
+                MotelFurniture.Chair(parent, k, floors, new Vector3(x + 1.6f, y, 22.7f), 90f);
                 WallArt(parent, k, new Vector3(x + .2f, y + 1.7f, 22.6f), true);
             }
             if (variant == 2)
@@ -44,6 +44,7 @@ namespace Abandoned.Motel
                 k.Box("Back", couch, new Vector3(0f, .65f, .32f), new Vector3(1.8f, .4f, .15f), k.Accent, false);
             }
             WallArt(parent, k, new Vector3(x + 2.1f, y + 2f, 16.15f), false);
+            MotelGuestDetails.Dress(parent, k, floors, room, level);
         }
         private static void Bed(Transform p, MotelKit k, MotelStructure f, Vector3 at, float width, bool bare)
         {

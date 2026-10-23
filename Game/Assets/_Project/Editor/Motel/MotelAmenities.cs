@@ -23,7 +23,7 @@ namespace Abandoned.Motel
             Transform back = MotelKit.Group("OfficeBackRoomWall", g);
             back.position = new Vector3(30f, 0f, 19.5f);
             MotelShell.DoorWall(back, k, 4f, 1.8f);
-            k.Box("BackRoomSide", g, new Vector3(32f, 1.82f, 20.75f), new Vector3(.15f, 3.64f, 2.5f), k.Wall);
+            k.Box("BackRoomSide", g, new Vector3(32f, 1.82f, 20.1f), new Vector3(.15f, 3.64f, 1.2f), k.Wall);
             Transform keys = MotelKit.Group("EmptyKeyBoard", g);
             keys.position = new Vector3(28.22f, 1.7f, 20.7f);
             k.Box("Board", keys, Vector3.zero, new Vector3(.1f, 1.1f, 1.5f), k.Wood, false);

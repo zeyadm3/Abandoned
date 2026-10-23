@@ -141,6 +141,7 @@ namespace Abandoned.Motel
             rail.localRotation = Quaternion.LookRotation(d);
             Box("Top", rail, new Vector3(0, 1.08f, 0), new Vector3(.06f, .06f, d.magnitude), Metal, false);
             Box("Kick", rail, new Vector3(0, .12f, 0), new Vector3(.06f, .2f, d.magnitude), Metal, false);
+            rail.gameObject.AddComponent<IntentionalInvisibleCollider>().EditorSetup("Continuous safety collision behind the visible rail, posts and kick plate.");
             var c = rail.gameObject.AddComponent<BoxCollider>();
             c.center = new Vector3(0, .55f, 0);
             c.size = new Vector3(.08f, 1.1f, d.magnitude);

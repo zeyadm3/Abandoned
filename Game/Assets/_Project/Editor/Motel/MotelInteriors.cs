@@ -30,6 +30,7 @@ namespace Abandoned.Motel
             }
             MotelAmenities.Dress(rooms, kit, floors, loot);
             MotelAnnex.Dress(rooms, kit, floors, loot);
+            MotelCommonDetails.Build(root, kit, floors);
             return loot;
         }
     }

@@ -36,7 +36,10 @@ namespace Abandoned.Motel
                     0f, 7f, 14f, 21f, 28f, 36f, 43f, 50f, 57f, 64f
                 })
                 {
-                    k.Box("PartyWall", shell, new Vector3(x, y + 1.82f, 22), new Vector3(.18f, 3.64f, 12), k.Wall);
+                    if (! MotelRoomRoutes.Partition(shell, k, x, level))
+                    {
+                        k.Box("PartyWall", shell, new Vector3(x, y + 1.82f, 22), new Vector3(.18f, 3.64f, 12), k.Wall);
+                    }
                 }
                 for (int x = 0; x <16; x++)
                 {

@@ -4,6 +4,10 @@ Implementation only. This agent did not compile (including dotnet), invoke Unity
 engine verification, generate scenes, bake navigation/occlusion, or take screenshots. Claude CLI owns execution/review.
 The entry point remains `Abandoned.Motel.MotelBuilder.Build`; its namespace and menu registration are unchanged.
 
+**Current user direction:** preserve the Motel's setting and surrounding area. This pass changes the playable lodge
+and its existing amenity interiors only. MotelSite, the site rectangle, van pose, ground, roads, sky/nature and
+perimeter are unchanged. No additional surrounding buildings or terrain are authored.
+
 ## Layout and character
 
 The lodge retains sixteen 7 × 12 m guest rooms on two floors at y=0/4, reached from the courtyard and upper gallery.
@@ -27,6 +31,39 @@ The main building remains 64 m wide and z=12..28. Diner floors occupy x=80..104,
 x=76..88, z=28..40. Paved connectors and the enlarged rear service yard join all entrances without a new truck.
 The diner and shed are permanent detached structures outside the lodge's final-collapse envelope; the dining room
 is exposed to the sky. They provide extra salvage routes and monster space, not an artificial monster exclusion zone.
+
+## Interior level-design pass (2026-10-23)
+
+Four connecting room pairs create short interior escape loops: ground 102↔103 and 106↔107, upper 201↔202 and
+207↔208. Actual gaps replace their party walls, with 2.2 m openings, timber jambs and removed-leaf hinge plates;
+there is no solid wall behind a decorative doorway. These are permanent open connections, not new lock mechanics.
+A crew avoiding a monster on the gallery can move through the neighbouring room, while accepting the risk of its
+rear upper slabs. The original front doors, protected inner gallery and both stairs remain the primary haul routes.
+The Huge suite prize can still leave by its original door. The connections do not rely on any power state.
+
+Guest variants gain fixed bedside cupboards and powered reading sconces, fitted writing desks with repositioned
+chairs, stacked curtains, bathroom taps, shower heads/rods, gathered shower curtains and tile/skirting bands. New
+fittings stay away from entry wardrobes, original loot points and the connecting-door approaches. The reading-light
+fixtures use emissive lenses without extra shadow lamps and follow their floor support. No static replica of a
+salvage clock, radio, telephone or other loose loot is placed as scenery.
+
+The office back-room side partition now stops before the laundry doorway, leaving a clear turning apron instead
+of splitting that doorway into two narrow approaches. Receipt slots, overhead laundry services and a diner
+extractor improve the existing service interiors. Sixteen exposed joist units follow the individual failing outer
+gallery slabs; a subtle floor inlay distinguishes the protected inner lane. These additions are within the map,
+without changing the courtyard/parking/site construction.
+
+MotelSolids fits furniture collision to visible parts rather than broad boxes through empty chair/table/shelf
+space. Continuous rail safety planes and closed hiding-container occupancy shells carry explicit intentional
+collision reasons. Pool-deck skirts now have matching visible aprons, section-bound independently of the scaled
+slab mesh; losing a deck removes both the skirt collision and its visual. This addresses the reviewer's invisible
+collision findings by changing the shapes and documenting the genuinely intentional shells; no audit was run here.
+
+At rebuild time the shared HospitalRegistration editor helper merges this map's own 38 local loot entries and
+Motel location into the shared catalogs, preserving other maps' entries. That also addresses the reviewer’s
+missing job/loot registration notes. The scene, namespace, catalog/resource paths, existing 72 ordinary markers,
+three prize candidates, 23 hiding spots and 20 threat starts remain stable. No new player-facing wording or
+third-party asset is introduced in this pass.
 
 ## Structural choices and carry routes
 
@@ -139,6 +176,7 @@ execution was performed, and generated scene/data/art content still comes from t
 Last Light is a lodge plus diner, manager flat and maintenance compound. Upper gallery outer halves and the pool
 deck can fail; the inner gallery, thresholds and two end stairs are protected. Ordinary Huge diner/shed salvage
 is separate from the two jackpot definitions. POIs stay at origin; use the expanded ground rectangle above.
+Connecting guest-room loops and detailed fitted interiors are part of the lodge; keep the surrounding site frozen.
 Runtime Motel* scripts in the allowed areas are user-authorized. Upgrade New Maps owns sky/nature/remaster.
 All execution/review belongs to Claude CLI; no compilation, scene generation, bake or gameplay result is claimed.
 
@@ -146,7 +184,9 @@ All execution/review belongs to Claude CLI; no compilation, scene generation, ba
 
 For Claude CLI only:
 
-1. Compile and rebuild Motel, then run Upgrade New Maps. Inspect all four guest variants, manager floor, diner,
+1. Compile and rebuild Motel, then run Upgrade New Maps. Check the four connecting pairs, entry/loot clearances,
+   writing desks/sconces/bath details, office-to-laundry turn, fitted collision and unchanged exterior site.
+   Inspect all four guest variants, manager floor, diner,
    shed, fitted prop density, supported hiding kinds and practical light placement.
 2. Carry the suite stereo through a room door and down both end stairs, the washer out the rear laundry door,
    and the ordinary Huge freezer/transformer through their annex doors to the van.

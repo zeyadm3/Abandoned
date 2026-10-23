@@ -76,6 +76,7 @@ namespace Abandoned.Motel
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(MotelLoot.Data + "/MotelLocation.asset");
             location.EditorSetup("motel", "Last Light Motor Lodge", "Sixteen rooms, a manager's flat, a roadside diner and a failing pool deck.", "Motel", 2, 1, 1.05f, 1f, - .025f, 1.1f, .05f);
             EditorUtility.SetDirty(location);
+            Abandoned.Hospital.HospitalRegistration.Include(catalog, location);
             foreach (GameObject go in scene.GetRootGameObjects())
             {
                 if (go.transform != root && go.name != "NetworkManager" && go.name != "Network")
@@ -83,6 +84,7 @@ namespace Abandoned.Motel
                     go.transform.SetParent(root, true);
                 }
             }
+            MotelSolids.Fit(root);
             MotelOcclusion.Prepare(root);
             MotelNavigation.Build(root);
             // Solid props (0.24.11), guarded by the first bake so no box cuts a route; then bake round them.

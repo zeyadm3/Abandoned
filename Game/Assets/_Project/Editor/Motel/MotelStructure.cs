@@ -78,6 +78,8 @@ namespace Abandoned.Motel
                 var skirt = deck.gameObject.AddComponent<BoxCollider>();
                 skirt.center = new Vector3(0f, - .55f, 0f);
                 skirt.size = new Vector3(3.95f, .5f, 1.95f);
+                Transform apron = k.Box("ClosedDeckApron", deck.transform, skirt.center, skirt.size, k.Wood, false).transform;
+                k.Attach(apron, deck);
                 Transform guard = MotelKit.Group("PoolDeckGuard", root);
                 k.Rail(guard, new Vector3(14f, 0f, at.z - 1f), new Vector3(14f, 0f, at.z + 1f));
                 k.Attach(guard, deck);
@@ -139,11 +141,10 @@ namespace Abandoned.Motel
                 k.Box("Guard", g, Vector3.zero, new Vector3(.06f, 1.1f, Mathf.Sqrt(80)), k.Metal);
             }
             // Close the low underside: a player or a dropped case must not enter a headroom trap.
-            for (int block = 1; block < 4; block++)
+            for (int block = 1; block <4; block++)
             {
                 float height = block - .45f;
-                k.Box("UnderStairFill", visual, new Vector3(0f, height * .5f, block * 2f + 1f),
-                    new Vector3(3.18f, height, 1.99f), k.Wall);
+                k.Box("UnderStairFill", visual, new Vector3(0f, height * .5f, block * 2f + 1f), new Vector3(3.18f, height, 1.99f), k.Wall);
             }
             setup.AddSection(t, SectionType.Stair, false, fractured : false);
             t.gameObject.AddComponent<SectionKeepClear>();
