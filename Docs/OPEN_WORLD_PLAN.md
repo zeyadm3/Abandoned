@@ -91,6 +91,9 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
 ### A job in the open world (`WorldJob`, hooks in the company and run code)
 - A session that starts at the HQ goes into the World at once (`CompanyService.HomeTravel`, when World is in the
   build; batch runs stay put). The HQ streams in round the van in its yard; the HQ's own garage van is hidden.
+- **The HQ's garage door rolls up when the HQ streams into the world** (`PoiAdapter`; the staff door stays locked):
+  walk from the crew room west through the warehouse and out of the garage to the van in the yard, 22 m out. E at
+  the van's left cab door drives, the right door rides, the back is the bench.
 - Pick a contract at the board, drive out: **the job is taken as the van leaves the HQ's ground** (quota owed from
   then, as the van used to leave). No travel screen (`TravelScreen.NoDrive`); the drive is the trip.
 - A place stays **empty until the job's van is on its ground** (`RunDirector.MayStart`); then the run starts as it

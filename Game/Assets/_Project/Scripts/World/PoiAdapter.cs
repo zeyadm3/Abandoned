@@ -37,6 +37,8 @@ namespace Abandoned.World
                         if (volume.isGlobal) volume.enabled = false;
                 // A second F1 switch would toggle the overlays twice per press.
                 foreach (DebugViewToggle toggle in root.GetComponentsInChildren<DebugViewToggle>(true)) toggle.enabled = false;
+                // The HQ's garage is the crew's way out to the van in the yard (its staff door is locked for good).
+                foreach (Company.GarageDoor door in root.GetComponentsInChildren<Company.GarageDoor>(true)) door.SetOpen(1f);
             }
             foreach (string path in poi.hideInWorld)
             {
