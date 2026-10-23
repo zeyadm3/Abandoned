@@ -60,8 +60,9 @@ namespace Abandoned.Hospital
             // Give a standalone scene the same pre-registered content as the persistent world session.
             bootstrap.Manager.NetworkConfig.Prefabs.NetworkPrefabsLists.Add(PrefabList(catalog, runPrefab));
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(HospitalLoot.Data + "/HospitalLocation.asset");
-            location.EditorSetup("hospital", "Saint Brigid Hospital", "Two clinical floors, failing wards and heavy diagnostic salvage.", "Hospital", 3, 1, 1.2f, 1.1f, - .05f, 1.15f, .1f);
+            location.EditorSetup("hospital", "Saint Brigid Hospital", "An abandoned medical city with a glass atrium, stepped wards and a basement morgue.", "Hospital", 3, 1, 1.2f, 1.1f, - .05f, 1.15f, .1f);
             EditorUtility.SetDirty(location);
+            HospitalRegistration.Include(catalog, location);
             foreach (GameObject go in scene.GetRootGameObjects())
             {
                 if (go.transform != root && go.name != "NetworkManager" && go.name != "Network")
@@ -69,6 +70,7 @@ namespace Abandoned.Hospital
                     go.transform.SetParent(root, true);
                 }
             }
+            HospitalSolids.Fit(floors);
             StationSurfaces.Apply(root, floors.Context.Art);
             HospitalNavigation.Build(root);
             // Solid props (0.24.11), guarded by the first bake so no box cuts a route; then bake round them.
@@ -84,6 +86,12 @@ namespace Abandoned.Hospital
             var ambience = new GameObject("Ambience");
             ambience.transform.SetParent(root, false);
             ambience.AddComponent<LevelAmbience>().EditorSetup(.22f, .12f, .03f, new Vector2(20f, 50f));
+            Camera reviewCamera = UnityEngine.Object.FindFirstObjectByType<Camera>();
+            if (reviewCamera != null)
+            {
+                reviewCamera.transform.position = new Vector3(82f, 30f, - 40f);
+                reviewCamera.transform.LookAt(new Vector3(28f, 6f, 24f));
+            }
             BuildScenes.ApplyToEditorSettings();
             NetworkObjectIds.StampScene(scene);
             AssetDatabase.SaveAssets();

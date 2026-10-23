@@ -1,24 +1,24 @@
+using System.Collections.Generic;
 using Abandoned.EditorTools;
 using UnityEngine;
 using P = Abandoned.EditorTools.StationPlan;
 using F = Abandoned.EditorTools.StationPlan.Finish;
 namespace Abandoned.Hospital
 {
-    /// <summary>Departments, circulation and collapse risk share one four-metre grid.</summary>
+    /// <summary>A medical campus in miniature: separate wings around a glazed public gallery.</summary>
     public static class HospitalLayout
     {
         public const string ScenePath = "Assets/_Project/Scenes/Hospital.unity";
-        public const float Width = 56f;
-        public const float Depth = 48f;
-        public static readonly Bounds Bounds = new(new Vector3(28f, 2f, 24f), new Vector3(56f, 12f, 48f));
+        public const float Width = 56f,
+        Depth = 48f;
+        public static readonly Bounds Bounds = new(new Vector3(28f, 6f, 24f), new Vector3(56f, 20f, 48f));
         public static readonly Vector3 [] Crew =
         {
-            new(40f, 0f, - 18f),
-            new(42f, 0f, - 18f),
-            new(46f, 0f, - 18f),
-            new(48f, 0f, - 18f)
+            new(40, 0, - 18),
+            new(42, 0, - 18),
+            new(46, 0, - 18),
+            new(48, 0, - 18)
         };
-        // Kept for callers authored against the first hospital layout.
         public static readonly string [,
         ] Rooms =
         {
@@ -35,10 +35,10 @@ namespace Abandoned.Hospital
                 "LAB AND RECORDS"
             }
         };
-        public static string Tag(int floor, int side, int bay) => floor == 0 ?(side == 0 ?(bay == 0 ? "hospital_reception" : "hospital_pharmacy") : "hospital_clinical") :(side == 0 ? "hospital_ward" : bay == 0 ? "hospital_theatre" : "hospital_records");
+        public static string Tag(int floor, int side, int bay) => floor == 0 ? "hospital_clinical" : "hospital_ward";
         public static P Create()
         {
-            var plan = new P
+            var p = new P
             {
                 SceneName = "Hospital",
                 ScenePath = ScenePath,
@@ -47,125 +47,135 @@ namespace Abandoned.Hospital
                 LogTag = "Hospital",
                 Width = 14,
                 Depth = 12,
+                RoofY = 15.75f,
+                ParapetTop = 17f,
                 Stability = .72f,
                 Seed = 17023
             };
-            plan.FillFloor(0, new RectInt(0, 0, 14, 12));
-            plan.FillFloor(1, new RectInt(0, 0, 14, 12));
-            plan.FillFloor(- 1, new RectInt(0, 6, 8, 6));
-            plan.Hole(1, new Vector2Int(0, 4), new Vector2Int(0, 5), new Vector2Int(13, 6), new Vector2Int(13, 7));
-            plan.Hole(0, new Vector2Int(0, 7), new Vector2Int(0, 8));
-            Ground(plan);
-            Upper(plan);
-            Basement(plan);
-            plan.Stairs.Add(new P.Flight("WestClinicalStair", 0, new Vector3(2f, 0f, 16f), Vector3.forward));
-            plan.Stairs.Add(new P.Flight("EastClinicalStair", 0, new Vector3(54f, 0f, 24f), Vector3.forward));
-            plan.Stairs.Add(new P.Flight("MorgueStair", - 1, new Vector3(2f, - 4f, 36f), Vector3.back));
-            plan.Open(1, 0, 5, 0, 6);
-            plan.Open(1, 13, 7, 13, 8);
-            plan.Open(0, 0, 6, 0, 7);
-            plan.Facade.Add(new P.Opening("AmbulanceBay", P.Side.South, 44f, 6f, 0f, 3.4f, false));
-            plan.Facade.Add(new P.Opening("PublicEntry", P.Side.South, 10f, 3.2f, 0f, 3.1f, false));
-            plan.Facade.Add(new P.Opening("RearEscape", P.Side.North, 30f, 3.2f, 0f, 3.1f, false));
-            // Wards visibly fail over the lobby. The basement makes a ground-floor fall meaningful too.
-            plan.Weak(1, new RectInt(0, 0, 4, 3), .65f, .68f);
-            plan.Weak(1, new RectInt(8, 0, 3, 3), .75f, .7f);
-            plan.UpperRoomsCollapse(1, .86f, .85f);
-            plan.Weak(0, new RectInt(1, 6, 2, 2), .78f, .75f);
-            foreach (int floor in new []
+            for (int f = 0; f <2; f++)
             {
-                0, 1
-            })
-            {
-                plan.Clear(floor, new RectInt(7, 0, 1, 12));
-                plan.Clear(floor, new RectInt(0, 3, 14, 1));
-                plan.Clear(floor, new RectInt(0, 8, 14, 1));
+                p.FillFloor(f, new RectInt(0, 2, 5, 10));
+                p.FillFloor(f, new RectInt(5, 0, 4, 12));
+                p.FillFloor(f, new RectInt(9, 0, 5, 4));
+                p.FillFloor(f, new RectInt(9, 7, 5, 5));
             }
-            plan.Clear(1, new RectInt(0, 6, 14, 1));
-            plan.Clear(0, new RectInt(8, 0, 6, 3));
-            plan.Clear(- 1, new RectInt(0, 9, 8, 1));
-            plan.Clear(- 1, new RectInt(4, 6, 1, 6));
-            // KeepClear prevents rubble; removing weakness also makes the route itself permanent.
-            foreach (Vector3Int key in plan.KeepClear)
+            p.FillFloor(2, new RectInt(0, 6, 5, 6));
+            p.FillFloor(2, new RectInt(10, 7, 4, 5));
+            p.FillFloor(2, new RectInt(5, 9, 5, 1));
+            p.FillFloor(3, new RectInt(1, 7, 4, 5));
+            p.FillFloor(3, new RectInt(10, 8, 4, 4));
+            p.FillFloor(3, new RectInt(5, 9, 5, 1));
+            p.FillFloor(- 1, new RectInt(0, 6, 8, 6));
+            // The gallery is an eight-metre void, with one risky bridge and two permanent side routes.
+            for (int x = 6; x <8; x++)
             {
-                plan.Collapsible.Remove(key);
+                for (int z = 0; z <9; z++)
+                {
+                    if (z != 2 && z != 5)
+                    {
+                        p.Hole(1, new Vector2Int(x, z));
+                    }
+                }
             }
-            return plan;
+            p.Hole(1, new Vector2Int(0, 4), new Vector2Int(0, 5), new Vector2Int(13, 1), new Vector2Int(13, 2), new Vector2Int(13, 8), new Vector2Int(13, 9));
+            p.Hole(2, new Vector2Int(0, 6), new Vector2Int(0, 7), new Vector2Int(13, 8), new Vector2Int(13, 9));
+            p.Hole(3, new Vector2Int(1, 7), new Vector2Int(1, 8), new Vector2Int(13, 8), new Vector2Int(13, 9));
+            p.Hole(0, new Vector2Int(0, 7), new Vector2Int(0, 8));
+            HospitalDepartments.Ground(p);
+            HospitalDepartments.Upper(p);
+            HospitalDepartments.Basement(p);
+            Doors(p);
+            Flight(p, "PublicWest", 0, new Vector3(2, 0, 16), Vector3.forward, 1, 0, 5, 0, 6);
+            Flight(p, "EmergencyEast", 0, new Vector3(54, 0, 4), Vector3.forward, 1, 13, 2, 13, 3);
+            Flight(p, "ClinicalEast", 0, new Vector3(54, 0, 32), Vector3.forward, 1, 13, 9, 13, 10);
+            Flight(p, "WardWest", 1, new Vector3(2, 4, 24), Vector3.forward, 2, 0, 7, 0, 8);
+            Flight(p, "WardEast", 1, new Vector3(54, 4, 40), Vector3.back, 2, 13, 7, 13, 8);
+            Flight(p, "UpperWest", 2, new Vector3(6, 8, 28), Vector3.forward, 3, 1, 8, 1, 9);
+            Flight(p, "UpperEast", 2, new Vector3(54, 8, 32), Vector3.forward, 3, 13, 9, 13, 10);
+            Flight(p, "Morgue", - 1, new Vector3(2, - 4, 36), Vector3.back, 0, 0, 6, 0, 7);
+            p.Facade.Add(new P.Opening("MainEntry", P.Side.South, 28, 6, 0, 5.5f, false));
+            p.Facade.Add(new P.Opening("AmbulanceBay", P.Side.South, 44, 6, 0, 3.4f, false));
+            p.Facade.Add(new P.Opening("RearEscape", P.Side.North, 34, 3.2f, 0, 3.1f, false));
+            for (int f = 1; f <= 3; f++)
+            {
+                p.UpperRoomsCollapse(f, .87f, .86f);
+            }
+            p.Weak(1, new RectInt(6, 5, 2, 1), .65f, .66f);
+            p.Weak(0, new RectInt(1, 6, 2, 2), .78f, .76f);
+            for (int f = 0; f <2; f++)
+            {
+                p.Clear(f, new RectInt(5, 0, 1, 12));
+                p.Clear(f, new RectInt(8, 0, 1, 12));
+                p.Clear(f, new RectInt(0, 5, 5, 1));
+                p.Clear(f, new RectInt(0, 8, 5, 1));
+                p.Clear(f, new RectInt(9, 2, 5, 1));
+                p.Clear(f, new RectInt(9, 7, 5, 1));
+                p.Clear(f, new RectInt(9, 10, 5, 1));
+                p.Clear(f, new RectInt(f == 0 ? 4 : 3, 6, 1, 2));
+            }
+            p.Clear(1, new RectInt(5, 2, 4, 1));
+            p.Clear(1, new RectInt(5, 9, 4, 1));
+            p.Clear(0, new RectInt(10, 0, 2, 2));
+            for (int f = 2; f <= 3; f++)
+            {
+                p.Clear(f, new RectInt(0, 9, 14, 1));
+                p.Clear(f, new RectInt(3, 6, 1, 6));
+                p.Clear(f, new RectInt(12, 7, 2, 5));
+                p.Clear(f, new RectInt(0, 8, 5, 1));
+            }
+            p.Clear(- 1, new RectInt(0, 9, 8, 1));
+            p.Clear(- 1, new RectInt(4, 6, 1, 6));
+            foreach (Vector3Int key in p.KeepClear)
+            {
+                p.Collapsible.Remove(key);
+            }
+            return p;
         }
-        private static void Ground(P p)
+        private static void Flight(P p, string name, int f, Vector3 foot, Vector3 direction, int upper, int ax, int az, int bx, int bz)
         {
-            p.AddRoom("Reception", 0, 0, 0, 4, 3, "hospital_reception");
-            p.AddRoom("Triage", 0, 4, 0, 3, 3, "hospital_clinical", F.Tile);
-            p.AddRoom("Ambulance", 0, 8, 0, 6, 3, "hospital_clinical", F.Concrete, false);
-            p.AddRoom("Emergency", 0, 1, 4, 3, 4, "hospital_clinical", F.Tile);
-            p.AddRoom("Radiology", 0, 4, 4, 3, 4, "hospital_clinical", F.Tile, false);
-            p.AddRoom("Pharmacy", 0, 8, 4, 3, 4, "hospital_pharmacy", F.Tile, false);
-            p.AddRoom("Supplies", 0, 11, 4, 2, 4, "hospital_pharmacy", F.Block);
-            p.AddRoom("Chapel", 0, 0, 9, 4, 3, "hospital_chapel", F.Panel);
-            p.AddRoom("Cafeteria", 0, 4, 9, 3, 3, "hospital_kitchen", F.Tile);
-            p.AddRoom("Kitchen", 0, 8, 9, 3, 3, "hospital_kitchen", F.Tile);
-            p.AddRoom("Changing", 0, 11, 9, 3, 3, "hospital_ward");
-            p.Door(0, 2, 2, 2, 3, true);
-            p.Door(0, 5, 2, 5, 3, true);
-            p.Door(0, 7, 1, 8, 1, true);
-            p.Door(0, 10, 2, 10, 3, true);
-            p.Door(0, 2, 3, 2, 4, true);
-            p.Door(0, 0, 6, 1, 6, true);
-            p.Door(0, 5, 3, 5, 4, true);
-            p.Door(0, 5, 7, 5, 8, true);
-            p.Door(0, 9, 3, 9, 4, true);
-            p.Door(0, 9, 7, 9, 8, true);
-            p.Door(0, 12, 3, 12, 4, true);
-            p.Door(0, 12, 7, 12, 8, true);
-            foreach (int x in new []
-            {
-                2, 5, 9, 12
-            })
-            {
-                p.Door(0, x, 8, x, 9, true);
-            }
+            p.Stairs.Add(new P.Flight(name, f, foot, direction));
+            p.Open(upper, ax, az, bx, bz);
         }
-        private static void Upper(P p)
+        private static void Doors(P p)
         {
-            p.AddRoom("WardA", 1, 0, 0, 4, 3, "hospital_ward");
-            p.AddRoom("WardB", 1, 4, 0, 3, 3, "hospital_ward");
-            p.AddRoom("TheatreA", 1, 8, 0, 3, 3, "hospital_theatre", F.Tile);
-            p.AddRoom("TheatreB", 1, 11, 0, 3, 3, "hospital_theatre", F.Tile);
-            p.AddRoom("IntensiveCare", 1, 1, 4, 3, 2, "hospital_ward", F.Tile);
-            p.AddRoom("Nurses", 1, 4, 4, 3, 2, "hospital_records");
-            p.AddRoom("Sterile", 1, 8, 4, 3, 2, "hospital_theatre", F.Tile);
-            p.AddRoom("Recovery", 1, 11, 4, 3, 2, "hospital_ward");
-            p.AddRoom("Laboratory", 1, 1, 7, 3, 1, "hospital_theatre", F.Tile);
-            p.AddRoom("Records", 1, 4, 7, 3, 1, "hospital_records", F.Block);
-            p.AddRoom("StaffRest", 1, 8, 7, 3, 1, "hospital_reception", F.Panel);
-            p.AddRoom("Consultation", 1, 11, 7, 2, 1, "hospital_clinical");
-            p.AddRoom("Isolation", 1, 0, 9, 4, 3, "hospital_ward");
-            p.AddRoom("Paediatrics", 1, 4, 9, 3, 3, "hospital_ward");
-            p.AddRoom("Administration", 1, 8, 9, 3, 3, "hospital_records", F.Panel);
-            p.AddRoom("EquipmentStore", 1, 11, 9, 3, 3, "hospital_theatre", F.Block);
-            foreach (int x in new []
+            Vector2Int [] steps =
             {
-                2, 5, 9, 12
-            })
+                Vector2Int.left,
+                Vector2Int.right,
+                Vector2Int.up,
+                Vector2Int.down
+            };
+            foreach (P.Room room in p.Rooms)
             {
-                p.Door(1, x, 2, x, 3, true);
-                p.Door(1, x, 3, x, 4, true);
-                p.Door(1, x, 5, x, 6, true);
-                p.Door(1, x, 6, x, 7, true);
-                p.Door(1, x, 7, x, 8, true);
-                p.Door(1, x, 8, x, 9, true);
+                foreach (Vector2Int step in steps)
+                {
+                    float best = float.MaxValue;
+                    Vector2Int chosen = default;
+                    for (int x = room.Cells.xMin; x <room.Cells.xMax; x++)
+                    {
+                        for (int z = room.Cells.yMin; z <room.Cells.yMax; z++)
+                        {
+                            var a = new Vector2Int(x, z);
+                            Vector2Int b = a + step;
+                            if (! p.HasFloor(room.Floor, a) || ! p.HasFloor(room.Floor, b) || p.RoomAt(room.Floor, b) != null)
+                            {
+                                continue;
+                            }
+                            float distance =(P.CellCentre(a, room.Floor) - room.Centre).sqrMagnitude;
+                            if (distance >= best)
+                            {
+                                continue;
+                            }
+                            best = distance;
+                            chosen = a;
+                        }
+                    }
+                    if (best <float.MaxValue)
+                    {
+                        p.Door(room.Floor, chosen.x, chosen.y, chosen.x + step.x, chosen.y + step.y, true);
+                    }
+                }
             }
-        }
-        private static void Basement(P p)
-        {
-            p.AddRoom("Morgue", - 1, 1, 6, 3, 3, "hospital_morgue", F.Tile, false);
-            p.AddRoom("Boiler", - 1, 5, 6, 3, 3, "hospital_plant", F.Concrete, false);
-            p.AddRoom("Autopsy", - 1, 1, 10, 3, 2, "hospital_morgue", F.Tile, false);
-            p.AddRoom("BasementStores", - 1, 5, 10, 3, 2, "hospital_plant", F.Block, false);
-            p.Door(- 1, 2, 8, 2, 9, true);
-            p.Door(- 1, 6, 8, 6, 9, true);
-            p.Door(- 1, 2, 9, 2, 10, true);
-            p.Door(- 1, 6, 9, 6, 10, true);
         }
     }
 }

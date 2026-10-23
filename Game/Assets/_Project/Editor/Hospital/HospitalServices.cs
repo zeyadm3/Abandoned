@@ -19,46 +19,66 @@ namespace Abandoned.Hospital
             levels.GetArrayElementAtIndex(0).stringValue = "Hospital";
             levels.GetArrayElementAtIndex(1).stringValue = "World";
             data.FindProperty("<Building>k__BackingField").boundsValue = HospitalLayout.Bounds;
-            data.FindProperty("<ArrivalFallback>k__BackingField").vector3Value = new Vector3(30f, 0f, 14f);
-            data.FindProperty("<ArrivalFigure>k__BackingField").vector3Value = new Vector3(30f, 4f, 26f);
-            data.FindProperty("<ArrivalDoor>k__BackingField").vector3Value = new Vector3(32f, 4f, 26f);
+            data.FindProperty("<ArrivalFallback>k__BackingField").vector3Value = new Vector3(28f, 0f, 10f);
+            data.FindProperty("<ArrivalFigure>k__BackingField").vector3Value = new Vector3(28f, 4f, 22f);
+            data.FindProperty("<ArrivalDoor>k__BackingField").vector3Value = new Vector3(34f, 4f, 22f);
             data.FindProperty("<RoarPoint>k__BackingField").vector3Value = new Vector3(18f, - 2f, 38f);
             data.FindProperty("<SectorCell>k__BackingField").vector3Value = new Vector3(20f, 100f, 24f);
             data.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(config);
-            StationLighting.Build(root, c.Plan, c.Art, new Color(.8f, .94f, .87f), 17023);
-            foreach (LightFixture fixture in root.GetComponentsInChildren<LightFixture>())
-            {
-                StructuralSection ceiling = floors.At(fixture.transform.position);
-                if (ceiling != null && ceiling.CanCollapse)
-                {
-                    fixture.gameObject.AddComponent<SectionProp>().EditorSetup(ceiling);
-                }
-            }
+            HospitalLighting.Build(root, floors);
             Vector3 [] panels =
             {
-                new(3f, 0f, .3f),
-                new(18f, 0f, .3f),
-                new(51f, 0f, .3f),
-                new(2f, 0f, 47.6f),
-                new(18f, 0f, 47.6f),
-                new(51f, 0f, 47.6f)
+                new(4, 0, 8.25f),
+                new(22, 0, .25f),
+                new(55.5f, 0, 6),
+                new(4, 0, 47.75f),
+                new(30, 0, 47.75f),
+                new(55.5f, 0, 46)
+            };
+            float [] yaw =
+            {
+                0f,
+                0f,
+                270f,
+                180f,
+                180f,
+                270f
             };
             for (int i = 0; i <panels.Length; i++)
             {
-                Panel(root, kit, i, panels [i], i <3 ? 0f : 180f);
+                Panel(root, kit, i, panels [i], yaw [i]);
             }
             foreach (int floor in new []
             {
                 0, 1
             })
             {
-                foreach (float z in new []
+                foreach (float x in new []
                 {
-                    14f, 34f, 46f
+                    22f, 34f
                 })
                 {
-                    Emergency(root, kit, new Vector3(30f, floor * 4f + .4f, z), floors.At(new Vector3(30f, floor * 4f, z)));
+                    foreach (float z in new []
+                    {
+                        10f, 38f
+                    })
+                    {
+                        Emergency(root, kit, new Vector3(x, floor * 4 + .4f, z), floors.At(new Vector3(x, floor * 4, z)));
+                    }
+                }
+            }
+            foreach (int floor in new []
+            {
+                2, 3
+            })
+            {
+                foreach (float x in new []
+                {
+                    14f, 50f
+                })
+                {
+                    Emergency(root, kit, new Vector3(x, floor * 4 + .4f, 38), floors.At(new Vector3(x, floor * 4, 38)));
                 }
             }
             foreach (float x in new []
@@ -66,14 +86,9 @@ namespace Abandoned.Hospital
                 2f, 18f, 30f
             })
             {
-                Emergency(root, kit, new Vector3(x, - 3.6f, 38f), floors.At(new Vector3(x, - 4f, 38f)));
+                Emergency(root, kit, new Vector3(x, - 3.6f, 38), floors.At(new Vector3(x, - 4, 38)));
             }
-            c.Hiding.Closet("Reception", new Vector3(1.4f, 0f, 5f), 90f);
-            c.Hiding.Cabinet("Emergency", new Vector3(14.5f, 0f, 25f), 270f);
-            c.Hiding.Cabinet("Radiology", new Vector3(26.5f, 0f, 31f), 180f);
-            c.Hiding.Cabinet("Pharmacy", new Vector3(40.5f, 0f, 29f), 180f);
-            c.Hiding.Closet("Chapel", new Vector3(1.6f, 0f, 38.5f), 90f);
-            Sound(root, floors);
+            HospitalSound.Build(root);
             return config;
         }
         private static void Panel(Transform parent, HospitalKit kit, int sector, Vector3 at, float yaw)
@@ -105,39 +120,6 @@ namespace Abandoned.Hospital
             {
                 root.gameObject.AddComponent<SectionProp>().EditorSetup(support);
             }
-        }
-        private static void Sound(Transform parent, HospitalStructure floors)
-        {
-            Transform root = HospitalKit.Group("Soundscape", parent);
-            Transform [] Points(string name, params Vector3 [] positions)
-            {
-                var points = new Transform [positions.Length];
-                for (int i = 0; i <positions.Length; i++)
-                {
-                    points [i] = HospitalKit.Group(name + i, root);
-                    points [i].position = positions [i];
-                }
-                return points;
-            }
-            Transform [] monitors = Points("Monitor", new Vector3(18.7f, 1.6f, 7.5f), new Vector3(6.8f, 1.6f, 19.5f), new Vector3(7f, 5.6f, 21f), new Vector3(3f, 5.6f, 39f));
-            var power = new LightFixture [monitors.Length];
-            LightFixture [] fixtures = parent.GetComponentsInChildren<LightFixture>();
-            for (int i = 0; i <monitors.Length; i++)
-            {
-                float closest = float.MaxValue;
-                foreach (LightFixture fixture in fixtures)
-                {
-                    float distance = Vector3.Distance(monitors [i].position, fixture.transform.position);
-                    if (distance >= closest)
-                    {
-                        continue;
-                    }
-                    closest = distance;
-                    power [i] = fixture;
-                }
-            }
-            HospitalSoundConfig settings = SerializedWiring.LoadOrCreateAsset<HospitalSoundConfig>(HospitalLoot.Data + "/HospitalSound.asset");
-            root.gameObject.AddComponent<HospitalSoundscape>().EditorSetup(settings, monitors, power, Points("PA", new Vector3(30f, 2.8f, 14f), new Vector3(30f, 6.8f, 34f)), Points("Gurney", new Vector3(4f, .5f, 14f), new Vector3(26f, .5f, 14f)), Points("MorgueDrip", new Vector3(6f, - 2.5f, 30f), new Vector3(12f, - 2.5f, 44f)));
         }
     }
 }

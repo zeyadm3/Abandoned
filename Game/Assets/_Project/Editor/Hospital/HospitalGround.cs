@@ -1,128 +1,100 @@
 using Abandoned.EditorTools;
 using UnityEngine;
 using F = Abandoned.EditorTools.StationFurniture;
-using B = Abandoned.EditorTools.StationProps;
 namespace Abandoned.Hospital
 {
     public static class HospitalGround
     {
         public static void Dress(StationContext c)
         {
-            StationProps p = c.Props;
-            F.Counter(p, "Reception", new Vector3(4f, 0f, 8f), 90f, 5f);
-            F.Desk(p, "Reception", new Vector3(3f, 0f, 10.5f), 180f);
-            F.Chair(p, "Reception", new Vector3(3f, 0f, 9.5f), 0f);
+            F.Counter(c.Props, "Reception", new Vector3(11, 0, 11), 0f, 4f, 1.05f, c.Art.Trim);
+            F.Desk(c.Props, "Reception", new Vector3(10, 0, 17.5f), 180f);
+            F.Chair(c.Props, "Reception", new Vector3(10, 0, 16.4f), 0f);
+            foreach (float z in new []
+            {
+                11f, 17f
+            })
+            {
+                F.Bench(c.Props, "Reception", new Vector3(18, 0, z), 90f, 2f);
+            }
+            F.WallClock(c.Props, "Reception", new Vector3(12, 2.7f, 8.2f), 0f);
+            F.WaterCooler(c.Props, "Reception", new Vector3(9, 0, 9), 90f);
             for (int i = 0; i <3; i++)
             {
-                F.Bench(p, "Reception", new Vector3(12f, 0f, 3f + i * 3f), 90f, 2f);
+                F.Shelving(c.Props, "Pharmacy", new Vector3(1, 0, 10 + i * 3.5f), 90f, 2.2f, i, c.Art.White);
+                F.Shelving(c.Props, "Pharmacy", new Vector3(7, 0, 10 + i * 3.5f), 270f, 2.2f, i + 7, c.Art.Glass);
             }
-            F.WaterCooler(p, "Reception", new Vector3(1f, 0f, 2f), 90f);
-            F.WallBoard(p, "Reception", new Vector3(.22f, 1.8f, 5f), 90f, 2f, 1f, c.Art.Board);
-            F.WallClock(p, "Reception", new Vector3(6f, 2.7f, .22f), 0f);
+            Cage(c);
+            HospitalClinicalProps.Bed(c, "Triage", new Vector3(6, 0, 28), true);
+            HospitalClinicalProps.Headwall(c, "Triage", new Vector3(4.3f, 0, 28));
             foreach (float x in new []
             {
-                18.7f, 24.5f
-            })
-            {
-                HospitalClinicalProps.Bed(c, "Triage", new Vector3(x, 0f, 7.5f), true);
-                HospitalClinicalProps.Curtain(c, "Triage", new Vector3(x, 0f, 9.2f), 3.5f);
-                HospitalClinicalProps.Headwall(c, "Triage", new Vector3(x, 0f, 11.7f));
-            }
-            F.Counter(p, "Triage", new Vector3(18f, 0f, 2.3f), 90f, 2f, 1f, c.Art.White);
-            foreach (float x in new []
-            {
-                6.8f, 12.5f
+                9.6f, 14.4f
             })
             {
                 foreach (float z in new []
                 {
-                    19.5f, 28f
+                    25.8f, 30.2f
                 })
                 {
-                    HospitalClinicalProps.Bed(c, "Emergency", new Vector3(x, 0f, z), true);
-                    HospitalClinicalProps.Curtain(c, "Emergency", new Vector3(x, 0f, z + 1.6f), 3.3f);
+                    HospitalClinicalProps.Bed(c, "Emergency", new Vector3(x, 0, z), true);
+                    HospitalClinicalProps.Curtain(c, "Emergency", new Vector3(x, 0, z + 1.5f), 2.6f);
                 }
             }
-            HospitalClinicalProps.Scanner(c, "Radiology", new Vector3(19.2f, 0f, 21f));
-            F.Desk(p, "Radiology", new Vector3(24f, 0f, 18f), 0f);
-            F.Chair(p, "Radiology", new Vector3(24f, 0f, 19f), 180f);
-            F.FilingCabinet(p, "Radiology", new Vector3(26.9f, 0f, 28.8f), 270f);
-            HospitalServiceProps.PharmacyCage(c, "Pharmacy");
-            foreach (float z in new []
+            HospitalClinicalProps.Scanner(c, "Radiology", new Vector3(3.5f, 0, 39));
+            F.Desk(c.Props, "Radiology", new Vector3(1.4f, 0, 46), 90f);
+            F.Chair(c.Props, "Radiology", new Vector3(2.5f, 0, 46), 270f);
+            F.Shelving(c.Props, "Supplies", new Vector3(19, 0, 39), 270f, 3f, 12);
+            F.Shelving(c.Props, "Supplies", new Vector3(19, 0, 45), 270f, 3f, 13);
+            F.Lockers(c.Props, "Ambulance", new Vector3(54.7f, 0, 4), 270f, 4);
+            F.Counter(c.Props, "Ambulance", new Vector3(37.1f, 0, 4), 90f, 4f, 1f, c.Art.Steel);
+            for (int i = 0; i <3; i++)
             {
-                23f, 26f, 29f
-            })
-            {
-                F.Shelving(p, "Pharmacy", new Vector3(33f, 0f, z), 90f, 2.2f,(int) z, c.Art.White);
-                F.Shelving(p, "Pharmacy", new Vector3(43f, 0f, z), 270f, 2.2f,(int) z + 3, c.Art.Glass);
+                c.Hiding.Locker("Changing", new Vector3(36.9f + i * 1.8f, 0, 15.1f), 180f);
             }
-            F.Counter(p, "Pharmacy", new Vector3(38f, 0f, 30.8f), 180f, 5f, 1f, c.Art.White);
-            foreach (float z in new []
-            {
-                18.5f, 22f, 27f, 30f
-            })
-            {
-                F.Shelving(p, "Supplies", new Vector3(45f, 0f, z), 90f, 2f,(int) z, c.Art.Paper);
-            }
-            F.Lockers(p, "Ambulance", new Vector3(54.8f, 0f, 7f), 270f, 6);
-            F.Counter(p, "Ambulance", new Vector3(34f, 0f, 5f), 90f, 4f, 1f, c.Art.Steel);
-            // The actual loading path is reserved before any prop is placed.
-            Transform roll = p.Hang("Ambulance", "OpenRollerDoor", new Vector3(44f, 3.5f, .25f), 0f);
-            B.B(roll, "Drum", Vector3.zero, new Vector3(6.4f, .5f, .5f), c.Art.DarkSteel);
             foreach (float x in new []
             {
-                40.7f, 47.3f
+                46f, 52f
             })
             {
-                B.B(roll, "Guide", new Vector3(x - 44f, - 1.8f, 0f), new Vector3(.1f, 3.4f, .12f), c.Art.Safety);
+                F.Table(c.Props, "Cafeteria", new Vector3(x, 0, 14), 0f, 1.4f, .8f, c.Art.White);
+                F.Chair(c.Props, "Cafeteria", new Vector3(x - 1.2f, 0, 14), 90f, false);
+                F.Chair(c.Props, "Cafeteria", new Vector3(x + 1.2f, 0, 14), 270f, false);
             }
-            Social(c);
-        }
-        private static void Social(StationContext c)
-        {
-            StationProps p = c.Props;
             foreach (float z in new []
             {
-                39f, 42f, 45f
+                33.5f, 38.5f
             })
             {
-                foreach (float x in new []
-                {
-                    4f, 12f
-                })
-                {
-                    F.Bench(p, "Chapel", new Vector3(x, 0f, z), 0f, 4f);
-                }
+                F.Bench(c.Props, "Chapel", new Vector3(39, 0, z), 0f, 3f);
             }
-            HospitalServiceProps.Altar(c, "Chapel", new Vector3(8f, 0f, 46.4f));
-            F.Shelving(p, "Chapel", new Vector3(1f, 0f, 45f), 90f, 2f, 13, c.Art.Leather);
-            foreach (float x in new []
-            {
-                19f, 25f
-            })
-            {
-                foreach (float z in new []
-                {
-                    40f, 45f
-                })
-                {
-                    F.Table(p, "Cafeteria", new Vector3(x, 0f, z), 0f, 1.5f, .9f, c.Art.White);
-                    F.Chair(p, "Cafeteria", new Vector3(x, 0f, z - 1f), 0f, false);
-                    F.Chair(p, "Cafeteria", new Vector3(x, 0f, z + 1f), 180f, false);
-                }
-            }
-            F.Vending(p, "Cafeteria", new Vector3(17f, 0f, 46f), 90f);
-            F.Counter(p, "Kitchen", new Vector3(38f, 0f, 46.8f), 180f, 8f, .92f, c.Art.Chrome);
-            F.Stove(p, "Kitchen", new Vector3(33f, 0f, 39f), 90f);
-            F.Fridge(p, "Kitchen", new Vector3(33f, 0f, 41f), 90f);
-            F.Sink(p, "Kitchen", new Vector3(42.8f, 0f, 45f), 270f);
-            F.Shelving(p, "Kitchen", new Vector3(42.8f, 0f, 39f), 270f, 2f, 55, c.Art.Porcelain);
+            HospitalServiceProps.Altar(c, "Chapel", new Vector3(39, 0, 39));
+            F.Counter(c.Props, "Kitchen", new Vector3(48, 0, 39), 180f, 5f, .95f, c.Art.Chrome);
+            F.Stove(c.Props, "Kitchen", new Vector3(45, 0, 33.5f), 90f);
+            F.Sink(c.Props, "Kitchen", new Vector3(51, 0, 38), 270f);
+            F.Fridge(c.Props, "Kitchen", new Vector3(51, 0, 33.5f), 270f);
             for (int i = 0; i <5; i++)
             {
-                c.Hiding.Locker("Changing", new Vector3(45.3f, 0f, 38f + i * 1.7f), 90f);
+                F.Shelving(c.Props, "ServiceStore", new Vector3(38 + i * 3.5f, 0, 47.4f), 180f, 2f, i + 50);
             }
-            F.Bench(p, "Changing", new Vector3(48f, 0f, 44f), 90f, 3f);
-            F.Sink(p, "Changing", new Vector3(54.8f, 0f, 45f), 270f);
+            c.Hiding.Cabinet("Reception", new Vector3(18.6f, 0, 17.8f), 270f);
+            c.Hiding.Cabinet("Radiology", new Vector3(10.6f, 0, 37.5f), 270f);
+            c.Hiding.Closet("Chapel", new Vector3(42.7f, 0, 38.5f), 270f);
+        }
+        private static void Cage(StationContext c)
+        {
+            foreach (float x in new []
+            {
+                1.1f, 6.9f
+            })
+            {
+                Transform t = c.Props.Hang("Pharmacy", "DispensaryScreen", new Vector3(x, 0, 17), 0f);
+                StationProps.B(t, "Mesh", new Vector3(0, 1.5f, 0), new Vector3(2.1f, 3f, .05f), c.Art.Grating);
+                StationProps.B(t, "Cap", new Vector3(0, 3f, 0), new Vector3(2.1f, .08f, .12f), c.Art.Chrome);
+                var box = t.gameObject.AddComponent<BoxCollider>();
+                box.center = new Vector3(0, 1.5f, 0);
+                box.size = new Vector3(2.1f, 3f, .05f);
+            }
         }
     }
 }
