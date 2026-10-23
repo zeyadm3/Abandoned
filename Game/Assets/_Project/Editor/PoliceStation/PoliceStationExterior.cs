@@ -19,33 +19,29 @@ namespace Abandoned.EditorTools
             Transform root = ctx.Root;
             StationArt a = ctx.Art;
             Transform ground = Site.GroundSlabs(root);
-            Site.Slab(ground, "Sidewalk", new Rect(-30f, -6f, 116f, 6f), a.Sidewalk, SurfaceMaterial.Concrete);
-            Site.Slab(ground, "Street", new Rect(-30f, -16f, 116f, 10f), a.Asphalt, SurfaceMaterial.Asphalt);
-            Site.Slab(ground, "Verge", new Rect(-30f, -30f, 116f, 14f), a.Grass, SurfaceMaterial.Dirt);
             Site.Slab(ground, "CarPark", new Rect(-30f, 0f, 30f, 40f), a.Asphalt, SurfaceMaterial.Asphalt);
             Site.Slab(ground, "EastYard", new Rect(56f, 0f, 30f, 40f), a.Asphalt, SurfaceMaterial.Asphalt);
             Site.Slab(ground, "ImpoundYard", new Rect(-30f, 40f, 116f, 20f), a.Gravel, SurfaceMaterial.Dirt);
             Transform ext = Site.Exterior(root);
+            PoliceStationTown.Build(root, ext, a);
             Markings(ext, a);
             Cars(ext, a);
             Impound(ext, a);
             Entrance(ext, a);
             Roof(ext, a);
-            Transform lamps = Group("StreetLamps", ext);
-            foreach (float x in new[] { -20f, 10f, 40f, 70f })
-                StationLighting.StreetLamp(lamps, new Vector3(x, -.02f, -5.4f), new Vector3(x, 0f, -11f), a);
-            StationLighting.StreetLamp(lamps, new Vector3(84f, -.02f, 22f), new Vector3(70f, 0f, 14f), a, 11f);
-            StationLighting.StreetLamp(lamps, new Vector3(-28f, -.02f, 20f), new Vector3(-12f, 0f, 20f), a, 8f);
+            Grounds(ext, a);
+            Transform lamps = Group("LotLamps", ext);
+            StationStreet.Lamp(lamps, a, new Vector3(84f, -.02f, 22f), new Vector3(70f, 0f, 14f), 11f);
+            StationStreet.Lamp(lamps, a, new Vector3(-28f, -.02f, 20f), new Vector3(-12f, 0f, 20f), 8f);
+            StationStreet.Lamp(lamps, a, new Vector3(-2.6f, -.02f, 39f), new Vector3(-12f, 0f, 30f), 7f);
             MarkStatic(ext);
+            Site.TrimOccluders(ext);
             Site.VanBay(root, a, L.VanRear, L.VanForward);
         }
 
         private static void Markings(Transform ext, StationArt a)
         {
             Transform m = Group("Markings", ext);
-            for (float x = -28f; x < 86f; x += 6f)
-                Box("CentreDash", m, new Vector3(x, -.015f, -11f), new Vector3(3f, .01f, .14f), a.Safety, false);
-            Site.Kerb(m, new Vector3(-30f, -.02f, -6f), new Vector3(86f, -.02f, -6f), a);
             for (int i = 0; i <= 6; i++)
                 Box("BayLine", m, new Vector3(-27f + i * 4f, -.015f, 9f), new Vector3(.12f, .01f, 5.2f), a.Paint, false);
             for (int i = 0; i <= 6; i++)
@@ -54,6 +50,13 @@ namespace Abandoned.EditorTools
             Box("StopLine", m, new Vector3(57.4f, -.015f, L.SallyDoor.z), new Vector3(.25f, .01f, L.SallyDoorWidth), a.Paint, false);
             foreach (float z in new[] { L.SallyDoor.z - 3.4f, L.SallyDoor.z + 3.4f })
                 Box("LaneEdge", m, new Vector3(64f, -.015f, z), new Vector3(14f, .01f, .14f), a.Safety, false);
+            // A reserved bay for the chief, a disabled bay by the lobby path, oil where the cruisers stood.
+            Box("ChiefBay", m, new Vector3(-5f, -.015f, 11.8f), new Vector3(3.6f, .01f, .14f), a.Safety, false);
+            for (int i = 0; i < 6; i++)
+            {
+                GameObject oil = Box("Oil", m, new Vector3(-25f + i * 4f, -.012f, 9.5f + (i % 2) * .6f), new Vector3(1.1f, .01f, 1.6f), a.Oil, false);
+                oil.transform.localRotation = Quaternion.Euler(0f, i * 23f, 0f);
+            }
         }
 
         // The patrol car park: cruisers left where they were parked, one burnt out, one with its doors hanging open, two
@@ -62,23 +65,20 @@ namespace Abandoned.EditorTools
         {
             Transform cars = Group("Cars", ext);
             Material patrol = a.Plain("PatrolBlack", new Color(.06f, .065f, .08f), .55f, .3f);
-            Site.Car(cars, "PatrolCar", new Vector3(-25f, -.02f, 9f), 180f, patrol, a, true);
-            Flat(Site.Car(cars, "BurntPatrolCar", new Vector3(-21f, -.02f, 9f), 180f, a.Soot, a, true), -3f);
-            Transform open = Site.Car(cars, "PatrolCar", new Vector3(-13f, -.02f, 9f), 180f, patrol, a, true);
-            foreach (float s in new[] { -1f, 1f })
-            {
-                GameObject door = Box("OpenDoor", open, new Vector3(s * 1.5f, .8f, .6f), new Vector3(.06f, .9f, 1.1f), patrol, false);
-                door.transform.localRotation = Quaternion.Euler(0f, s * 55f, 0f);
-            }
-            Site.Car(cars, "PatrolCar", new Vector3(-17f, -.02f, 31f), 0f, patrol, a, true);
-            Flat(Site.Car(cars, "PatrolCar", new Vector3(-9f, -.02f, 31f), 0f, patrol, a, true), 2.5f);
-            Site.Car(cars, "Sedan", new Vector3(-5f, -.02f, 31f), 0f, a.Plain("SedanRust", new Color(.42f, .3f, .22f), .2f), a);
-            Transform hit = Site.Car(cars, "PatrolCar", new Vector3(-12f, -.02f, 19.5f), 70f, patrol, a, true);
+            const StationVehicleWear dust = StationVehicleWear.Dusty;
+            Site.Car(cars, "PatrolCar", new Vector3(-25f, -.02f, 9f), 180f, patrol, a, true, dust);
+            Flat(Site.Car(cars, "BurntPatrolCar", new Vector3(-21f, -.02f, 9f), 180f, patrol, a, true, StationVehicleWear.Burnt), -2f);
+            Site.Car(cars, "PatrolCar", new Vector3(-13f, -.02f, 9f), 180f, patrol, a, true, StationVehicleWear.DoorOpen | dust);
+            Site.Car(cars, "PatrolCar", new Vector3(-17f, -.02f, 31f), 0f, patrol, a, true, dust | StationVehicleWear.Smashed);
+            Flat(Site.Car(cars, "PatrolCar", new Vector3(-9f, -.02f, 31f), 0f, patrol, a, true, dust | StationVehicleWear.FlatFront), 2.5f);
+            StationVehicles.Car(cars, "UnmarkedCar", new Vector3(-5f, -.02f, 31f), 0f, StationVehicleKind.Sedan, StationVehicleArt.For(a).Paint(3), a, dust, 5);
+            Transform hit = Site.Car(cars, "PatrolCar", new Vector3(-12f, -.02f, 19.5f), 70f, patrol, a, true, StationVehicleWear.Smashed);
             hit.localRotation = Quaternion.Euler(0f, 70f, 1.5f);
-            Site.Car(cars, "PatrolCar", new Vector3(-8.2f, -.02f, 22.4f), 160f, patrol, a, true);
+            Site.Car(cars, "PatrolCar", new Vector3(-8.2f, -.02f, 22.4f), 160f, patrol, a, true, StationVehicleWear.DoorOpen);
             EvidenceVan(cars, a, new Vector3(-25f, -.02f, 31f));
-            Transform crashed = Site.Car(cars, "PatrolCar", new Vector3(26f, -.02f, -9.5f), 72f, patrol, a, true);
+            Transform crashed = Site.Car(cars, "PatrolCar", new Vector3(26f, -.02f, -9.5f), 72f, patrol, a, true, StationVehicleWear.FlatFront | StationVehicleWear.Smashed);
             crashed.localRotation = Quaternion.Euler(0f, 72f, 2.5f);
+            StationVehicles.Car(cars, "ChiefCar", new Vector3(-5f, -.02f, 9f), 180f, StationVehicleKind.Suv, patrol, a, dust, 9);
         }
 
         // A flat tyre: the car sits down on one side.
@@ -88,21 +88,14 @@ namespace Abandoned.EditorTools
         {
             Transform van = Group("EvidenceVan", parent);
             van.position = at;
-            Box("Body", van, new Vector3(0f, 1.35f, -.3f), new Vector3(2.1f, 2.1f, 4.6f), a.White, false);
-            Box("Cab", van, new Vector3(0f, 1.1f, 2.4f), new Vector3(2.05f, 1.5f, 1f), a.White, false);
-            Box("Stripe", van, new Vector3(0f, 1.2f, 0f), new Vector3(2.12f, .25f, 5.6f), a.Accent, false);
-            Box("Windscreen", van, new Vector3(0f, 1.55f, 2.91f), new Vector3(1.9f, .6f, .03f), a.Glass, false);
-            foreach (float s in new[] { -1f, 1f })
-            foreach (float z in new[] { -1.7f, 2f })
-                Primitive(PrimitiveType.Cylinder, "Tyre", van, new Vector3(s * .95f, .38f, z), new Vector3(.76f, .14f, .76f), a.Rubber, false)
-                    .transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            StationApparatus.BoxVan(van, a, a.White, a.Accent, 1);
             var solid = van.gameObject.AddComponent<BoxCollider>();
-            solid.center = new Vector3(0f, 1.25f, 0f);
-            solid.size = new Vector3(2.15f, 2.5f, 5.8f);
+            solid.center = new Vector3(0f, 1.4f, 0f);
+            solid.size = new Vector3(2.3f, 2.8f, 6.2f);
         }
 
         // The impound yard behind the station: fenced, its gate in the east fence left open, the guard's booth, a tow truck
-        // and rows of seized cars (one craned up onto another).
+        // and rows of seized cars (one craned up onto another, some under tarps).
         private static void Impound(Transform ext, StationArt a)
         {
             Transform yard = Group("Impound", ext);
@@ -113,48 +106,91 @@ namespace Abandoned.EditorTools
             gate.SetPositionAndRotation(new Vector3(58f, -.02f, 49f), Quaternion.Euler(0f, 120f, 0f));
             Box("Frame", gate, new Vector3(0f, 1.1f, 3.5f), new Vector3(.08f, 2.2f, 7f), a.Steel);
             Box("Mesh", gate, new Vector3(0f, 1.1f, 3.5f), new Vector3(.02f, 2f, 6.9f), a.Grating, false);
+            Box("Wheel", gate, new Vector3(0f, .1f, 6.8f), new Vector3(.08f, .2f, .2f), a.Rubber, false);
             Transform booth = Group("GuardBooth", yard);
             booth.position = new Vector3(61.5f, -.02f, 44f);
             Box("Body", booth, new Vector3(0f, 1.25f, 0f), new Vector3(2f, 2.5f, 2f), a.White);
-            Box("Window", booth, new Vector3(-1.01f, 1.5f, 0f), new Vector3(.02f, .9f, 1.6f), a.Glass, false);
+            Box("Window", booth, new Vector3(-1.01f, 1.5f, 0f), new Vector3(.02f, .9f, 1.6f), StationTownArt.For(a).Window, false);
             Box("Roof", booth, new Vector3(0f, 2.6f, 0f), new Vector3(2.3f, .15f, 2.3f), a.DarkSteel, false);
             Box("Barrier", booth, new Vector3(-1.2f, 1f, -3f), new Vector3(.1f, .1f, 4f), a.Red, false);
-            Material[] bodies =
-            {
-                a.Plain("WreckBlue", new Color(.15f, .2f, .3f), .15f), a.Plain("WreckGreen", new Color(.2f, .26f, .18f), .15f),
-                a.Plain("WreckWhite", new Color(.6f, .6f, .56f), .2f), a.Plain("WreckRed", new Color(.4f, .1f, .08f), .2f),
-            };
+            Box("BarrierPost", booth, new Vector3(-1.2f, .5f, -1f), new Vector3(.2f, 1f, .2f), a.Red);
+            StationVehicleArt v = StationVehicleArt.For(a);
+            StationVehicleKind[] kinds = { StationVehicleKind.Sedan, StationVehicleKind.Pickup, StationVehicleKind.Hatchback, StationVehicleKind.Suv };
             for (int i = 0; i < 6; i++)
-                Site.Car(yard, "Impounded", new Vector3(6f + i * 8f, -.02f, 50f + (i % 2) * 2.5f), 15f * (i % 3) - 15f, bodies[i % bodies.Length], a);
-            for (int i = 0; i < 5; i++)
-                Site.Car(yard, "Impounded", new Vector3(4f + i * 6f, -.02f, 44f), 90f + (i % 2) * 8f, bodies[(i + 2) % bodies.Length], a);
-            Transform stacked = Site.Car(yard, "StackedWreck", new Vector3(6.2f, 1.48f, 50.1f), -10f, bodies[3], a);
-            stacked.localRotation = Quaternion.Euler(4f, -10f, -3f);
-            TowTruck(yard, a, new Vector3(36f, -.02f, 55.5f));
-            for (int i = 0; i < 4; i++)
             {
-                GameObject tyres = Primitive(PrimitiveType.Cylinder, "TyreStack", yard, new Vector3(52f + (i % 2) * 1.1f, .4f, 44f + i * 1.3f),
-                    new Vector3(.8f, .4f, .8f), a.Rubber);
-                tyres.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Plastic);
+                var at = new Vector3(6f + i * 8f, -.02f, 50f + (i % 2) * 2.5f);
+                float yaw = 15f * (i % 3) - 15f;
+                if (i == 2 || i == 5) Site.CoveredCar(yard, at, yaw, a);
+                else StationVehicles.Car(yard, "Impounded", at, yaw, kinds[i % kinds.Length], v.Paint(i * 3), a,
+                    StationVehicleWear.Dusty | (i % 2 == 0 ? StationVehicleWear.FlatRear : StationVehicleWear.Smashed), 20 + i);
             }
+            for (int i = 0; i < 5; i++)
+                StationVehicles.Car(yard, "Impounded", new Vector3(4f + i * 6f, -.02f, 44f), 90f + (i % 2) * 8f, kinds[(i + 2) % kinds.Length], v.Paint(i * 5 + 1), a,
+                    i == 3 ? StationVehicleWear.Burnt : StationVehicleWear.Dusty, 30 + i);
+            Transform stacked = StationVehicles.Car(yard, "StackedWreck", new Vector3(6.2f, 1.48f, 50.1f), -10f, StationVehicleKind.Hatchback, v.Paint(7), a,
+                StationVehicleWear.Smashed | StationVehicleWear.Dusty, 40);
+            stacked.localRotation = Quaternion.Euler(4f, -10f, -3f);
+            Transform tow = Group("TowTruck", yard);
+            tow.SetPositionAndRotation(new Vector3(36f, -.02f, 55.5f), Quaternion.Euler(0f, 90f, 0f));
+            StationApparatus.TowTruck(tow, a, a.Plain("TowYellow", new Color(.8f, .6f, .1f), .4f, .2f));
+            var towSolid = tow.gameObject.AddComponent<BoxCollider>();
+            towSolid.center = new Vector3(0f, 1.2f, -.3f);
+            towSolid.size = new Vector3(2.4f, 2.4f, 8f);
+            for (int i = 0; i < 6; i++)
+                StationScans.Put(yard, "old_tyre", new Vector3(52f + (i % 2) * 1.1f, -.02f, 43f + i * 1.1f), i * 31f, new Vector3(.9f, .9f, .9f), solid: true);
+            StationScans.Put(yard, "rusted_wheel_rim_01", new Vector3(54.5f, -.02f, 50f), 20f, new Vector3(.7f, .7f, .7f));
+            StationScans.Put(yard, "small_lpg_tank", new Vector3(63.2f, -.02f, 42.4f), 0f, new Vector3(.6f, 1.2f, .6f), solid: true);
+            StationScans.Put(yard, "security_light", new Vector3(57.8f, 3.2f, 57.6f), 225f, new Vector3(.6f, .6f, .6f));
         }
 
-        private static void TowTruck(Transform parent, StationArt a, Vector3 at)
+        // Round the building: bollards along the front, planters, a monument sign at the lobby path, the bike rack, the
+        // generator and transformer in the east yard, cameras on the corners.
+        private static void Grounds(Transform ext, StationArt a)
         {
-            Transform t = Group("TowTruck", parent);
-            t.SetPositionAndRotation(at, Quaternion.Euler(0f, 90f, 0f));
-            Material yellow = a.Plain("TowYellow", new Color(.8f, .6f, .1f), .4f, .2f);
-            Box("Cab", t, new Vector3(0f, 1.4f, 2.2f), new Vector3(2.3f, 2f, 2.2f), yellow, false);
-            Box("Bed", t, new Vector3(0f, .9f, -1.2f), new Vector3(2.3f, .7f, 4.6f), a.DarkSteel, false);
-            Box("Boom", t, new Vector3(0f, 2.1f, -2.4f), new Vector3(.25f, .25f, 2.8f), yellow, false).transform.localRotation = Quaternion.Euler(-25f, 0f, 0f);
-            Box("Hook", t, new Vector3(0f, 1.9f, -3.8f), new Vector3(.05f, 1.2f, .05f), a.Steel, false);
-            foreach (float s in new[] { -1f, 1f })
-            foreach (float z in new[] { 2.2f, -1.6f, -2.8f })
-                Primitive(PrimitiveType.Cylinder, "Tyre", t, new Vector3(s * 1.05f, .5f, z), new Vector3(1f, .16f, 1f), a.Rubber, false)
-                    .transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-            var solid = t.gameObject.AddComponent<BoxCollider>();
-            solid.center = new Vector3(0f, 1.2f, -.3f);
-            solid.size = new Vector3(2.4f, 2.4f, 7.4f);
+            Transform g = Group("Grounds", ext);
+            for (float x = 2f; x < 55f; x += 2.6f)
+                if (Mathf.Abs(x - L.LobbyDoorX) > 3.6f) StationStreet.Bollard(g, a, new Vector3(x, -.02f, -1.1f));
+            foreach (float x in new[] { 9f, 31f, 44f })
+            {
+                Box("Planter", g, new Vector3(x, .3f, -2.4f), new Vector3(2.2f, .6f, 1f), a.Concrete);
+                Box("PlanterSoil", g, new Vector3(x, .605f, -2.4f), new Vector3(2f, .01f, .8f), a.Dirt, false);
+                StationScans.Put(g, "dry_branches_medium_01", new Vector3(x, .6f, -2.4f), x * 10f, new Vector3(1.6f, .9f, .8f));
+            }
+            Transform sign = Group("MonumentSign", g);
+            sign.position = new Vector3(14f, -.02f, -3.6f);
+            Box("Base", sign, new Vector3(0f, .25f, 0f), new Vector3(3f, .5f, .7f), a.Trim);
+            Box("Pier", sign, new Vector3(0f, 1f, 0f), new Vector3(2.6f, 1.2f, .45f), a.Brick);
+            Box("Cap", sign, new Vector3(0f, 1.65f, 0f), new Vector3(2.8f, .12f, .6f), a.Trim, false);
+            Box("Plaque", sign, new Vector3(0f, 1.05f, -.235f), new Vector3(2f, .5f, .02f), a.Brass, false);
+            Badge(sign, a, new Vector3(-.75f, 1.05f, -.26f), .32f);
+            Transform rack = Group("BikeRack", g);
+            rack.position = new Vector3(48f, -.02f, -3f);
+            for (int i = 0; i < 4; i++)
+            {
+                GameObject hoop = Primitive(PrimitiveType.Cylinder, "Hoop", rack, new Vector3(i * .8f, .45f, 0f), new Vector3(.7f, .02f, .7f), a.Steel, false);
+                hoop.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            }
+            StationScans.Put(g, "utility_box_01", new Vector3(84f, -.02f, 36f), 270f, new Vector3(1.2f, 1.6f, .7f), solid: true);
+            StationScans.Put(g, "portable_generator", new Vector3(81f, -.02f, 37f), 200f, new Vector3(1f, .9f, .8f), solid: true);
+            StationScans.Put(g, "propane_tank", new Vector3(83f, -.02f, 38.6f), 0f, new Vector3(.5f, 1.2f, .5f), solid: true);
+            foreach ((Vector3 at, float yaw) in new[] { (new Vector3(-.2f, 4.8f, -.2f), 225f), (new Vector3(56.2f, 4.8f, -.2f), 135f), (new Vector3(56.2f, 4.8f, 40.2f), 45f) })
+            {
+                StationScans.Put(g, "security_camera_01", at, yaw, new Vector3(.5f, .4f, .5f));
+                StationScans.Put(g, "security_light", at + Vector3.down * .9f, yaw, new Vector3(.6f, .6f, .6f));
+            }
+            StationStreet.Dumpster(g, a, new Vector3(60f, -.02f, 37f), 0f, false);
+        }
+
+        // A police star in brass: two squares turned against each other round a disc.
+        private static void Badge(Transform parent, StationArt a, Vector3 at, float size)
+        {
+            foreach (float turn in new[] { 0f, 45f })
+            {
+                GameObject s = Box("Star", parent, at, new Vector3(size, size, .02f), a.Brass, false);
+                s.transform.localRotation = Quaternion.Euler(0f, 0f, turn);
+            }
+            GameObject disc = Primitive(PrimitiveType.Cylinder, "Disc", parent, at + new Vector3(0f, 0f, -.012f), new Vector3(size * .6f, .006f, size * .6f), a.AccentDark, false);
+            disc.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         }
 
         // The lobby's canopy over the street doors, its posts and the two blue lamps; the sally port's door drum and lamp.
@@ -171,6 +207,7 @@ namespace Abandoned.EditorTools
                     a.Plain("BlueLamp", new Color(.2f, .35f, .9f), .7f, 0f, new Color(.3f, .6f, 2.2f)), false);
             }
             Box("DoorMat", e, new Vector3(L.LobbyDoorX, -.012f, -.8f), new Vector3(3f, .01f, 1.2f), a.Rubber, false);
+            Badge(e, a, new Vector3(L.LobbyDoorX, 4.5f, -.22f), .7f);
             Transform flag = Group("Flagpole", e);
             flag.position = new Vector3(6f, -.02f, -3.2f);
             Primitive(PrimitiveType.Cylinder, "Pole", flag, new Vector3(0f, 5f, 0f), new Vector3(.12f, 5f, .12f), a.Chrome);
