@@ -13,7 +13,8 @@ namespace Abandoned.EditorTools
     /// facing in from every side: shops, a diner, row houses, a walk-up, a church and a warehouse across Main Street; a
     /// walk-up, a garage and a warehouse to the west; shops, flats and row houses to the east; clapboard houses with
     /// their yards behind. Traffic lights at the corners, lamps, power lines, parked cars, and an abandoned police
-    /// roadblock on Main Street. Ground x -70..128, z -48..100, top -0.02. Exterior only: no building has an inside.
+    /// roadblock on Main Street. Town ground x -70..128, z -48..100, top -0.02; two more rings round it (StationRings) take
+    /// the whole ground to x -192..250, z -170..222. Exterior only: no building has an inside.
     /// </summary>
     public static class PoliceStationTown
     {
@@ -29,6 +30,31 @@ namespace Abandoned.EditorTools
             Lots(root, a, t);
             Buildings(town, a, t);
             Furniture(street, marks, a);
+            Rings(root, ext, a);
+        }
+
+        // Two more rings of town round it (StationRings): Main and Back Street run out west and east, the avenues south
+        // and north, and a spur on the east, the side the open world's road comes in from, meets its middle.
+        private static void Rings(Transform root, Transform ext, StationArt a)
+        {
+            var spec = new StationRingSpec
+            {
+                Inner = Rect.MinMaxRect(West, South, East, North), Road = 10f, Seed = 911, Vacancy = .1f, Lot = a.Gravel, Yard = a.Grass,
+            };
+            foreach (int side in new[] { StationRingSpec.South, StationRingSpec.North })
+            {
+                spec.Through(side, -40f, -30f);
+                spec.Through(side, 90f, 100f);
+            }
+            foreach (int side in new[] { StationRingSpec.West, StationRingSpec.East })
+            {
+                spec.Through(side, -16f, -6f);
+                spec.Through(side, 64f, 74f);
+            }
+            spec.Spur(StationRingSpec.East, 21f, 31f);
+            var stock = new StationRingStock(a);
+            StationRingPools.Town(stock, spec, 9100);
+            StationRings.Build(root, ext, a, spec, stock);
         }
 
         // Roads first (the east-west ones run the full width; the avenues stop at them), then sidewalks round them.

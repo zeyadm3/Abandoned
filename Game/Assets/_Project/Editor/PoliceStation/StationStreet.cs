@@ -47,15 +47,16 @@ namespace Abandoned.EditorTools
             }
         }
 
-        /// <summary>A sidewalk on <paramref name="r"/>: concrete in flags, a kerb along the road side.</summary>
-        public static void Sidewalk(Transform root, Transform marks, StationArt a, string name, Rect r, bool alongX, float kerbSide)
+        /// <summary>A sidewalk on <paramref name="r"/>: concrete in flags (a joint every <paramref name="joint"/> metres), a
+        /// kerb along the road side.</summary>
+        public static void Sidewalk(Transform root, Transform marks, StationArt a, string name, Rect r, bool alongX, float kerbSide, float joint = 1.6f)
         {
             Site.Slab(Site.GroundSlabs(root), name, r, a.Sidewalk, SurfaceMaterial.Concrete);
             float length = alongX ? r.width : r.height;
             Vector3 centre = new(r.center.x, Site.GroundTop + .006f, r.center.y);
             Vector3 along = alongX ? Vector3.right : Vector3.forward, across = alongX ? Vector3.forward : Vector3.right;
             float half = (alongX ? r.height : r.width) * .5f;
-            for (float d = 1.6f; d < length; d += 1.6f)
+            for (float d = joint; d < length; d += joint)
                 Box("Joint", marks, centre + along * (d - length * .5f), alongX ? new Vector3(.025f, .01f, half * 2f) : new Vector3(half * 2f, .01f, .025f), a.Grime, false);
             Vector3 kerb = centre + across * (kerbSide * (half - .12f));
             Site.Kerb(marks, kerb - along * (length * .5f), kerb + along * (length * .5f), a);

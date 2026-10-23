@@ -131,7 +131,8 @@ scene.
 - **Van parking**: an empty marker `PoliceStation/Exterior/VanParking` at the van's rear doors, **(67, 0, 10)**, forward
   **(1, 0, 0)** (cab east; ramp west to the sally port door at (56, 0, 10)). Painted bay lines and a hatched loading box.
   No truck of the map's own.
-- **Ground rectangle**: x **-70..128**, z **-48..100** (third pass; was x -30..86, z -30..60); the edge's top is at **y -0.02** (every
+- **Ground rectangle**: x **-192..250**, z **-170..222** (the outer rings; the town alone was x -70..128, z -48..100, the
+  first pass x -30..86, z -30..60); the edge's top is at **y -0.02** (every
   ground slab's top: roads, sidewalks, lots and yards are all slabs).
 - **Paths for the world to hide**: none needed (no truck, sky, trees or grass). If the world would rather show its
   own town, `Exterior/Neighbourhood` holds every building and street piece (the streets' slabs stay ground).
@@ -190,6 +191,32 @@ exterior ... more detailed assets for the cars, the chairs, everything". Shared 
   `IntentionalInvisibleCollider` with the reason. The first rebuild reported 79 (police) and 31 (fire) of them as
   invisible colliders; the scanned impound tyres are no longer solid.
 
+## The outer rings (2026-10-23, user: "for all the 4 maps expand them the surroundings add 2 more layers")
+Shared by all four maps (Police and Fire Stations, Hospital, Motel): `Editor/PoliceStation/StationRings.cs` (+
+`.Blocks.cs`), `StationRingSpec`, `StationRingStock`, `StationRingPools`. Each map's town builder calls it last, so
+nothing inside the town's old ground changes.
+- **Layout**, outward from the town's old edge: a 4 m sidewalk, the first **ring road** (10 m at the stations, 12 m at
+  the Hospital and Motel), a sidewalk, a **50 m block** of buildings back to back (one row facing the town, one facing
+  out, a 4 m service gap between), a sidewalk, the second ring road, a sidewalk, and a **36 m edge** with one row facing
+  in and yards behind. The rings add 122 m (stations) or 126 m (Hospital, Motel) on every side.
+- **Streets through**: every street of the town that reached its old edge runs on straight to the new one, crossing
+  both ring roads, with zebras, stop signs on each approach and a blank name blade. A **spur** (a street starting at
+  the first ring road) meets the middle of the side the open world's road comes in from, where the town had no street:
+  east at the Police Station (z 21..31), south at the Fire Station (x 27..37), north at the Motel (x 50..60). The
+  Hospital's comes in from the south, 9 m west of Hospital Drive, which now runs through to the new edge.
+- **Buildings**: copies of a few dozen designs per map (`StationRingPools`: a brick town for the stations, a medical
+  district for the Hospital, a thinner roadside for the Motel: about one stretch in three is a vacant lot). Each design
+  is built once with the town kit at full detail, merged into one saved mesh (`Art/<Map>/RingMeshes`), and placed with
+  its colliders, so a ring of a few hundred buildings is a few hundred renderers, not a hundred thousand boxes. Each
+  copy has a **level of detail**: beyond about 10 % of the screen's height it drops to a far mesh of its big parts
+  (walls, roof, cornices, awnings). Cars along the ring roads are copies the same way.
+- **Light and life**: the first ring road's lamps still light (spot, no shadows); the second ring is past where the
+  power reaches: dark lamps, a power line down its inner sidewalk, scanned trees grown out on its outer sidewalk.
+  Hydrants, bins and meters on the first ring's sidewalk; dumpsters, litter, a tree or a car on the vacant lots.
+- **Rendering**: the copies are not static-batched (that would copy every mesh once per building) and are not
+  occluders (the occlusion bake stays on the town's own masses); they still cull. `StationRings.Settle` does this after
+  the exterior is marked static. All of it is outside the NavMesh.
+
 ## Files
 | File | What |
 |---|---|
@@ -244,3 +271,8 @@ exterior ... more detailed assets for the cars, the chairs, everything". Shared 
 12. **Cars and furniture**: walk round a parked car (wheels in their arches, glass, lamps, a flat tyre sitting down),
     a cruiser, the engines; sit at a desk, look at the chairs, lockers and shelving. A Poly Haven scan that turns out
     to face the wrong way (a waiting chair, the sofa) is a one-number fix in `StationFurniture` (its local yaw).
+13. **The outer rings**: rebuild, then drive or walk out along a street to the new edge: both ring roads, the stop signs
+    and zebras where the street crosses them, buildings on both sides of each block, the first ring's lamps lit, the
+    second's dark with its trees and power line, nothing standing in a road. Watch a building at about 150 m switch to
+    its far mesh (it should be hard to see in the fog), the rebuild time, the scene's size and the frame rate looking
+    out over the rings.
