@@ -138,7 +138,8 @@ Authored at the scene's own origin; the world moves round it, never the scene.
 - **Van parking**: an empty marker `FireStation/Exterior/VanParking` at the van's rear doors, **(12, 0, -11)**, forward
   **(0, 0, -1)** (cab south, toward the street; ramp north to the haul lane's door). Painted bay lines and a hatched
   loading box behind the doors. No truck of the map's own.
-- **Ground rectangle**: x **-70..134**, z **-50..100** (third pass; was x -30..94, z -40..60); the edge's top is at **y -0.02** (every
+- **Ground rectangle**: x **-192..256**, z **-172..222** (the outer rings, Docs/POLICE_STATION_PLAN.md "The outer rings"; the
+  town alone was x -70..134, z -50..100, the first pass x -30..94, z -40..60); the edge's top is at **y -0.02** (every
   ground slab's top: roads, sidewalks, lots and yards are all slabs).
 - **Paths for the world to hide**: none needed (no truck, sky, trees or grass). If the world would rather show its
   own town, `Exterior/Neighbourhood` holds every building and street piece (the streets' slabs stay ground).
@@ -198,6 +199,13 @@ exterior ... more detailed assets for the cars, the chairs, everything". Shared 
   `IntentionalInvisibleCollider` with the reason. The first rebuild reported 79 (police) and 31 (fire) of them as
   invisible colliders; the scanned impound tyres are no longer solid.
 
+## The outer rings (2026-10-23)
+Two more rings of town round the neighbourhood, from the shared kit (Docs/POLICE_STATION_PLAN.md "The outer rings"):
+Main and Back Street run out west and east, the avenues south and north, and a spur on the south (x 27..37) meets the
+middle of the side the open world's road comes in from. A brick town mix (shops, row houses, walk-ups, offices and
+garages facing the town; row houses, warehouses and garages facing out; houses in yards, a church, a gas station and
+warehouses at the edge).
+
 ## Files
 | File | What |
 |---|---|
@@ -250,3 +258,8 @@ re-applies every item's data on each rebuild.
 12. **Cars and furniture**: walk round a parked car (wheels in their arches, glass, lamps, a flat tyre sitting down),
     a cruiser, the engines; sit at a desk, look at the chairs, lockers and shelving. A Poly Haven scan that turns out
     to face the wrong way (a waiting chair, the sofa) is a one-number fix in `StationFurniture` (its local yaw).
+13. **The outer rings**: rebuild, then drive or walk out along a street to the new edge: both ring roads, the stop signs
+    and zebras where the street crosses them, buildings on both sides of each block, the first ring's lamps lit, the
+    second's dark with its trees and power line, nothing standing in a road. Watch a building at about 150 m switch to
+    its far mesh (it should be hard to see in the fog), the rebuild time, the scene's size and the frame rate looking
+    out over the rings.

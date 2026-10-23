@@ -43,6 +43,7 @@ namespace Abandoned.EditorTools
             StationStreet.Lamp(lamps, a, new Vector3(-28f, -.02f, 58f), new Vector3(-20f, 0f, 50f), 8f);
             MarkStatic(ext);
             Site.TrimOccluders(ext);
+            StationRings.Settle(ext);
             Site.VanBay(root, a, L.VanRear, L.VanForward);
         }
 

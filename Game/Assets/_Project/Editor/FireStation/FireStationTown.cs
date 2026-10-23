@@ -14,7 +14,8 @@ namespace Abandoned.EditorTools
     /// gas station, shops, a walk-up, row houses and a warehouse across Main Street; a garage at the west corner; a
     /// walk-up, a warehouse and row houses to the west; a church, two clapboard houses and a shop to the east; houses with
     /// their yards and row houses behind. Traffic lights, lamps, power lines, fire-alarm street boxes and parked cars,
-    /// with the apron and the street in front of it kept clear for the van. Ground x -70..134, z -50..100, top -0.02.
+    /// with the apron and the street in front of it kept clear for the van. Town ground x -70..134, z -50..100, top -0.02;
+    /// two more rings round it (StationRings) take the whole ground to x -192..256, z -172..222.
     /// </summary>
     public static class FireStationTown
     {
@@ -30,6 +31,31 @@ namespace Abandoned.EditorTools
             Lots(root, a);
             Buildings(town, a, t);
             Furniture(street, a);
+            Rings(root, ext, a);
+        }
+
+        // Two more rings of town round it (StationRings): Main and Back Street run out west and east, the avenues south
+        // and north, and a spur on the south, the side the open world's road comes in from, meets its middle.
+        private static void Rings(Transform root, Transform ext, StationArt a)
+        {
+            var spec = new StationRingSpec
+            {
+                Inner = Rect.MinMaxRect(West, South, East, North), Road = 10f, Seed = 921, Vacancy = .1f, Lot = a.Gravel, Yard = a.Grass,
+            };
+            foreach (int side in new[] { StationRingSpec.South, StationRingSpec.North })
+            {
+                spec.Through(side, -40f, -30f);
+                spec.Through(side, 98f, 108f);
+            }
+            foreach (int side in new[] { StationRingSpec.West, StationRingSpec.East })
+            {
+                spec.Through(side, -24f, -14f);
+                spec.Through(side, 64f, 74f);
+            }
+            spec.Spur(StationRingSpec.South, 27f, 37f);
+            var stock = new StationRingStock(a);
+            StationRingPools.Town(stock, spec, 9200);
+            StationRings.Build(root, ext, a, spec, stock);
         }
 
         private static void Streets(Transform root, Transform marks, StationArt a)
