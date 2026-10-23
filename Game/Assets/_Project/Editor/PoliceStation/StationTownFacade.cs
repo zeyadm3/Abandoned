@@ -208,7 +208,7 @@ namespace Abandoned.EditorTools
 
         /// <summary>A shopfront across <paramref name="width"/>: stall riser, glazing with mullions, a recessed door,
         /// posters, a sign band with a maker's mark, an awning, and maybe its roller shutter part-way down.</summary>
-        public static void Storefront(Transform face, StationArt a, StationTownArt t, float width, float height, int seed)
+        public static void Storefront(Transform face, StationArt a, StationTownArt t, float width, float height, int seed, bool awning = true)
         {
             Transform s = Group("Storefront", face);
             float glassTop = height - .9f, doorX = (seed % 3 - 1) * width * .3f;
@@ -238,8 +238,22 @@ namespace Abandoned.EditorTools
                 GameObject poster = Box("Poster", s, new Vector3(px, 1.5f + (roll % 3) * .2f, .064f), new Vector3(.5f, .7f, .003f), roll % 2 == 0 ? a.Paper : t.Sign(roll), false);
                 poster.transform.localRotation = Quaternion.Euler(0f, 0f, (roll % 5 - 2) * 2f);
             }
-            // The awning: a sloped canvas with its valance, on two arms.
+            // The awning: a sloped canvas with its valance, on two arms (none under a strip mall's canopy).
             Material canvas = t.Awning(seed + 2);
+            if (awning) Awning(s, t, canvas, width, glassTop, seed);
+            if (seed % 3 == 2)
+            {
+                // The roller shutter, pulled most of the way down and left.
+                float down = glassTop * (.4f + (seed % 5) * .1f);
+                Box("ShutterBox", s, new Vector3(0f, glassTop + .05f, .2f), new Vector3(width - .1f, .3f, .3f), a.DarkSteel, false);
+                Box("Shutter", s, new Vector3(0f, glassTop - down * .5f, .11f), new Vector3(width - .2f, down, .02f), a.Steel, false);
+                for (float y = glassTop - down + .1f; y < glassTop; y += .12f)
+                    Box("Slat", s, new Vector3(0f, y, .123f), new Vector3(width - .22f, .02f, .006f), a.DarkSteel, false);
+            }
+        }
+
+        private static void Awning(Transform s, StationTownArt t, Material canvas, float width, float glassTop, int seed)
+        {
             Transform aw = Group("Awning", s);
             aw.localPosition = new Vector3(0f, glassTop + .2f, .1f);
             aw.localRotation = Quaternion.Euler(22f, 0f, 0f);
@@ -250,15 +264,6 @@ namespace Abandoned.EditorTools
             Box("Valance", s, new Vector3(0f, glassTop + .2f - .52f - .12f, 1.4f), new Vector3(width - .3f, .25f, .02f), canvas, false);
             foreach (float sx in new[] { -1f, 1f })
                 M.Strut(s, "AwningArm", new Vector3(sx * (width * .5f - .25f), glassTop - .7f, .05f), new Vector3(sx * (width * .5f - .25f), glassTop - .34f, 1.36f), .03f, t.Lattice);
-            if (seed % 3 == 2)
-            {
-                // The roller shutter, pulled most of the way down and left.
-                float down = glassTop * (.4f + (seed % 5) * .1f);
-                Box("ShutterBox", s, new Vector3(0f, glassTop + .05f, .2f), new Vector3(width - .1f, .3f, .3f), a.DarkSteel, false);
-                Box("Shutter", s, new Vector3(0f, glassTop - down * .5f, .11f), new Vector3(width - .2f, down, .02f), a.Steel, false);
-                for (float y = glassTop - down + .1f; y < glassTop; y += .12f)
-                    Box("Slat", s, new Vector3(0f, y, .123f), new Vector3(width - .22f, .02f, .006f), a.DarkSteel, false);
-            }
         }
 
         /// <summary>A gutter run along the eaves and a downpipe at each end of a face.</summary>

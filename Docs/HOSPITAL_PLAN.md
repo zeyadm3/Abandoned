@@ -97,12 +97,35 @@ The new location description has English plus all nine translations in hospital.
 
 The scene stays at origin. World terrain/roads move under its anchor. No root-moving script or extra truck.
 
-- Own ground: **Rect(-12,-28,80,88)**, x=-12..68,z=-28..60; outer edge top **y=0**.
+- Own ground: **Rect(-12,-28,80,88)**, x=-12..68,z=-28..60; outer edge top **y=0** (unchanged).
+- **Whole ground with the district (2026-10-23): x=-64..124, z=-100..112**, top **y=0**; the world's road can meet
+  Hospital Drive at the south edge (z=-100, x=39..49), which leads straight to the ambulance approach.
 - Road mouth: south z=-28, ambulance approach x=44.
 - **Hospital/VanDock (44,0,-14), forward (0,0,-1)** remains unchanged.
 - New building envelope: x=0..56,z=0..48,y=-4..16. The entire own-ground terrain hole must remain, including basement.
-- Courtyard paving and the recessed public forecourt sit inside the existing rectangle. No new roads, horizon, sky,
-  trees or outside settlement are authored. All new visible mass is part of the playable hospital.
+- Courtyard paving and the recessed public forecourt sit inside the existing rectangle. No horizon, sky or trees are
+  authored. The district round it (below) is outside the own ground; if the world would rather show its own
+  surroundings, `Hospital/Neighbourhood` holds all of it (its streets' slabs are its ground).
+
+## The district round it (2026-10-23, user: "work on the surroundings of the hospital and the motel")
+
+`Editor/Hospital/HospitalTown.cs`, called last in `HospitalSite.Build`, built with the station town kit
+(`Editor/PoliceStation/Station*.cs`: buildings, streets, vehicles, scans; Docs/POLICE_STATION_PLAN.md "The neighbourhood
+and the art kit"). It never touches the hospital's own ground (x -12..68, z -28..60) or anything on it.
+- **Streets**: Hospital Boulevard along the front (z -40..-28, four lanes), **Hospital Drive** running south from the
+  ambulance approach (x 39..49) to the district's edge, West and East Streets (x -24..-12 and 68..80) and a back street
+  (z 60..72). Sidewalks, kerbs at the hospital's edge (none across the ambulance approach), crosswalks and signals at
+  the corners and at the drive.
+- **Blocks**: across the boulevard a three-level parking deck, a pharmacy, a cafe by the drive, a six-storey medical
+  office tower with a shop, a gas station and a corner shop; to the west a medical office block, flats, a chapel and
+  row houses; to the east a seven-storey office tower, a four-level parking deck, flats and a shop; behind, flats, row
+  houses and shops, a supply warehouse. Office towers carry a red or green cross on the crown.
+- **The street**: lamps that light on the town's sides (the hospital keeps its own yard lights), power lines, bus
+  shelters, benches, a taxi rank with two cabs in the boulevard's kerb lane, two ambulances abandoned in the streets,
+  parked cars (none on the drive or in front of the approach), and a quarantine checkpoint on the drive with its
+  barriers dragged aside so the lane is open.
+- Off the NavMesh (a `NavMeshModifier` that ignores the whole group): monsters stay on the hospital's ground. Small
+  outside renderers do not occlude (`StationSite.TrimOccluders`), so the occlusion bake stays on masses and walls.
 
 ## Decisions CLAUDE.md should record
 
@@ -127,3 +150,7 @@ For Claude CLI only; not performed by this agent:
    local translations and the merged job/loot catalog entries.
 7. Review host/clients and world streaming at the unchanged VanDock and ground rectangle. No execution result
    is claimed for this implementation.
+8. **The district** (2026-10-23): rebuild, then from the van dock and the boulevard corners check buildings on every
+   side, lamps lit, nothing standing in a road, Hospital Drive open from the south edge to the ambulance approach, the
+   parking decks' ramps and the cars on them, and that monsters never leave the hospital's own ground. Watch the
+   rebuild time (occlusion bake) and the frame rate on the boulevard.

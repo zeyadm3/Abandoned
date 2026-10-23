@@ -34,6 +34,7 @@ namespace Abandoned.EditorTools
             {
                 Lot l = lots[i];
                 Vector3 front = start + along * (cursor + l.Width * .5f);
+                front.y = Site.GroundTop;
                 StationTownBuildings.Build(parent, l.Kind, front, yaw, l.Width, l.Depth, l.Storeys, seed + i * 7, a);
                 cursor += l.Width + l.Gap;
             }
@@ -56,7 +57,8 @@ namespace Abandoned.EditorTools
                 bool blocked = false;
                 foreach (Vector2 c in clear) if (d > c.x - 3.2f && d < c.y + 3.2f) blocked = true;
                 if (blocked || roll % 5 == 0) continue;
-                Vector3 at = start + along * d + Vector3.down * .02f;
+                Vector3 at = start + along * d;
+                at.y = Site.GroundTop;
                 float turn = (roll % 3 - 1) * 2.5f;
                 if (roll % 11 == 3) { Site.CoveredCar(parent, at, yaw + turn, a); continue; }
                 var kind = (StationVehicleKind)(new[] { 0, 2, 3, 4, 0, 2 }[roll % 6]);
@@ -77,6 +79,7 @@ namespace Abandoned.EditorTools
             for (float d = spacing * .5f; d < length; d += spacing)
             {
                 Vector3 foot = start + along * d;
+                foot.y = Site.GroundTop;
                 StationStreet.Lamp(parent, a, foot, foot + road, intensity);
             }
         }
@@ -119,7 +122,7 @@ namespace Abandoned.EditorTools
 
         /// <summary>A strip of something laid on a lot (a driveway, a path, a slab), a centimetre proud of the ground.</summary>
         public static void Paving(Transform parent, Rect r, Material m) =>
-            GreyboxFactory.Box("Paving", parent, new Vector3(r.center.x, -.015f, r.center.y), new Vector3(r.width, .01f, r.height), m);
+            GreyboxFactory.Box("Paving", parent, new Vector3(r.center.x, Site.GroundTop + .005f, r.center.y), new Vector3(r.width, .01f, r.height), m);
 
         /// <summary>A lot of ground between the streets (yards, backlots, the ground under the buildings).</summary>
         public static void Ground(Transform root, string name, Rect r, Material m, SurfaceMaterial surface) =>

@@ -9,11 +9,12 @@ namespace Abandoned.EditorTools
     /// The neighbourhood round a station: original buildings made in code, exterior only (their doors stay shut and
     /// they have no rooms), each one solid. A building stands with the middle of its front at the given point, its front
     /// facing +z of its yaw (toward the street), running back <c>depth</c> metres. Row houses, shops with flats over them
-    /// and apartment blocks here; houses, warehouses, a garage, a church and a gas station in StationTownLandmarks.cs.
+    /// and apartment blocks here; houses, warehouses, a garage, a church and a gas station in StationTownLandmarks.cs; office
+    /// blocks, parking decks and strip malls in StationTownCommercial.cs.
     /// </summary>
     public static partial class StationTownBuildings
     {
-        public enum Kind { Rowhouse, Shop, Apartment, Warehouse, House, Church, GasStation, Garage }
+        public enum Kind { Rowhouse, Shop, Apartment, Warehouse, House, Church, GasStation, Garage, Office, ParkingDeck, StripMall }
 
         public static Transform Build(Transform parent, Kind kind, Vector3 front, float yaw, float width, float depth, int storeys, int seed, StationArt a)
         {
@@ -29,6 +30,9 @@ namespace Abandoned.EditorTools
                 case Kind.House: House(b, a, t, width, depth, seed); break;
                 case Kind.Church: Church(b, a, t, width, depth, seed); break;
                 case Kind.GasStation: GasStation(b, a, t, width, depth, seed); break;
+                case Kind.Office: Office(b, a, t, width, depth, Mathf.Max(3, storeys), seed); break;
+                case Kind.ParkingDeck: ParkingDeck(b, a, t, width, depth, Mathf.Max(2, storeys), seed); break;
+                case Kind.StripMall: StripMall(b, a, t, width, depth, seed); break;
                 default: Garage(b, a, t, width, depth, seed); break;
             }
             return b;

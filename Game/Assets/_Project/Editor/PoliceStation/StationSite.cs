@@ -28,9 +28,16 @@ namespace Abandoned.EditorTools
             return t != null ? t : Group("GroundSlabs", exterior);
         }
 
-        /// <summary>A flat piece of ground, top at <paramref name="top"/>, tagged for footsteps.</summary>
-        public static GameObject Slab(Transform parent, string name, Rect r, Material m, SurfaceMaterial surface, float top = -.02f, float thick = .4f)
+        /// <summary>
+        /// The ground's top for what is being built: the stations' lots sit at -0.02, the Hospital's and the Motel's at 0.
+        /// A town set round another map sets this first (and puts it back); slabs, markings and parked cars follow it.
+        /// </summary>
+        public static float GroundTop = -.02f;
+
+        /// <summary>A flat piece of ground, top at <paramref name="top"/> (default <see cref="GroundTop"/>), tagged for footsteps.</summary>
+        public static GameObject Slab(Transform parent, string name, Rect r, Material m, SurfaceMaterial surface, float top = float.NaN, float thick = .4f)
         {
+            if (float.IsNaN(top)) top = GroundTop;
             GameObject g = Box(name, parent, new Vector3(r.center.x, top - thick * .5f, r.center.y), new Vector3(r.width, thick, r.height), m);
             g.AddComponent<SurfaceTag>().EditorSet(surface);
             return g;

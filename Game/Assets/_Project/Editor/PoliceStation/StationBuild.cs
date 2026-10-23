@@ -54,6 +54,9 @@ namespace Abandoned.EditorTools
             int emergency = StationLighting.Emergency(root, plan, art);
             recipe.Site(ctx);
             int bound = BindToSlabs(ctx);
+            // Open-framed furniture and hiding shells are solid on purpose: mark them for the invisible-collider audit.
+            StationCoverMarks.Apply(ctx.Props.Root);
+            StationCoverMarks.Apply(StationSite.Exterior(root));
             int uvs = StationSurfaces.Apply(root, art);
             StructureSimulation simulation = setup.AddSimulation(plan.Stability, plan.Seed);
 

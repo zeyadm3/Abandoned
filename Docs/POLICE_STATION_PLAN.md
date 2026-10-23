@@ -183,6 +183,12 @@ exterior ... more detailed assets for the cars, the chairs, everything". Shared 
   dentilled cornice under the coping, downpipes with hoppers and shoes.
 - Small renderers outside stop being occluders (`StationSite.TrimOccluders`): the occlusion bake works on building
   masses and walls only, so it should not grow like the Skyscraper's.
+- Later the same day (the Hospital and Motel districts reuse the kit): three more building kinds (glass office tower,
+  open parking deck with split ramps, strip mall under one canopy), `StationSite.GroundTop` (the ground's top the kit
+  builds to: -0.02 here, 0 round the Hospital and Motel), and `StationCoverMarks`: open-framed furniture (tables, desks,
+  bunks, gym kit, coat racks) and barred or doored hiding shells are solid on purpose, so they carry
+  `IntentionalInvisibleCollider` with the reason. The first rebuild reported 79 (police) and 31 (fire) of them as
+  invisible colliders; the scanned impound tyres are no longer solid.
 
 ## Files
 | File | What |

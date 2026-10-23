@@ -63,6 +63,8 @@ namespace Abandoned.Hospital
                 }
             }
             GreyboxFactory.MarkStatic(site);
+            // The district round the hospital's own ground (streets, blocks, street furniture; off the NavMesh).
+            HospitalTown.Build(root);
         }
     }
 }

@@ -137,7 +137,7 @@ namespace Abandoned.EditorTools
             towSolid.center = new Vector3(0f, 1.2f, -.3f);
             towSolid.size = new Vector3(2.4f, 2.4f, 8f);
             for (int i = 0; i < 6; i++)
-                StationScans.Put(yard, "old_tyre", new Vector3(52f + (i % 2) * 1.1f, -.02f, 43f + i * 1.1f), i * 31f, new Vector3(.9f, .9f, .9f), solid: true);
+                StationScans.Put(yard, "old_tyre", new Vector3(52f + (i % 2) * 1.1f, -.02f, 43f + i * 1.1f), i * 31f, new Vector3(.9f, .9f, .9f));
             StationScans.Put(yard, "rusted_wheel_rim_01", new Vector3(54.5f, -.02f, 50f), 20f, new Vector3(.7f, .7f, .7f));
             StationScans.Put(yard, "small_lpg_tank", new Vector3(63.2f, -.02f, 42.4f), 0f, new Vector3(.6f, 1.2f, .6f), solid: true);
             StationScans.Put(yard, "security_light", new Vector3(57.8f, 3.2f, 57.6f), 225f, new Vector3(.6f, .6f, .6f));

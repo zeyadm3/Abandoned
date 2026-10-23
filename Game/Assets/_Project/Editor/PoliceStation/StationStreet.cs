@@ -21,7 +21,7 @@ namespace Abandoned.EditorTools
         {
             Site.Slab(Site.GroundSlabs(root), name, r, a.Asphalt, SurfaceMaterial.Asphalt);
             float length = alongX ? r.width : r.height, half = (alongX ? r.height : r.width) * .5f;
-            Vector3 centre = new(r.center.x, -.014f, r.center.y);
+            Vector3 centre = new(r.center.x, Site.GroundTop + .006f, r.center.y);
             Vector3 along = alongX ? Vector3.right : Vector3.forward, across = alongX ? Vector3.forward : Vector3.right;
             Material yellow = a.Safety;
             foreach (float off in new[] { -.12f, .12f })
@@ -52,7 +52,7 @@ namespace Abandoned.EditorTools
         {
             Site.Slab(Site.GroundSlabs(root), name, r, a.Sidewalk, SurfaceMaterial.Concrete);
             float length = alongX ? r.width : r.height;
-            Vector3 centre = new(r.center.x, -.014f, r.center.y);
+            Vector3 centre = new(r.center.x, Site.GroundTop + .006f, r.center.y);
             Vector3 along = alongX ? Vector3.right : Vector3.forward, across = alongX ? Vector3.forward : Vector3.right;
             float half = (alongX ? r.height : r.width) * .5f;
             for (float d = 1.6f; d < length; d += 1.6f)
@@ -65,9 +65,9 @@ namespace Abandoned.EditorTools
         public static void Crosswalk(Transform marks, StationArt a, Vector3 centre, bool alongX, float roadWidth)
         {
             for (float o = -roadWidth * .5f + .8f; o < roadWidth * .5f - .6f; o += 1f)
-                Box("Zebra", marks, new Vector3(centre.x + (alongX ? 0f : o), -.013f, centre.z + (alongX ? o : 0f)),
+                Box("Zebra", marks, new Vector3(centre.x + (alongX ? 0f : o), Site.GroundTop + .007f, centre.z + (alongX ? o : 0f)),
                     alongX ? new Vector3(3f, .01f, .5f) : new Vector3(.5f, .01f, 3f), a.Paint, false);
-            Box("StopLine", marks, new Vector3(centre.x + (alongX ? 2.2f : 0f), -.013f, centre.z + (alongX ? 0f : 2.2f)),
+            Box("StopLine", marks, new Vector3(centre.x + (alongX ? 2.2f : 0f), Site.GroundTop + .007f, centre.z + (alongX ? 0f : 2.2f)),
                 alongX ? new Vector3(.3f, .01f, roadWidth * .45f) : new Vector3(roadWidth * .45f, .01f, .3f), a.Paint, false);
         }
 
