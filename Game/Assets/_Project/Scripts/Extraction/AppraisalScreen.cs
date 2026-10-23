@@ -17,7 +17,14 @@ namespace Abandoned.Extraction
 
         private ScreenPanel screen;
 
-        public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null;
+        public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null
+                               && (HoldBack == null || !HoldBack());
+
+        /// <summary>
+        /// The open world (Abandoned.World.WorldJob): true while the results wait for the crew to drive home (the
+        /// appraisal and payday are shown at the HQ). Null outside the world.
+        /// </summary>
+        public static System.Func<bool> HoldBack { get; set; }
 
         private bool shown;
 

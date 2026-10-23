@@ -48,6 +48,13 @@ namespace Abandoned.World
             if (Damage >= 100f) BrokenDown = true;
         }
 
+        /// <summary>Host: damage that isn't a collision (something tearing at the van).</summary>
+        public void Knock(float damage)
+        {
+            Damage = Mathf.Min(100f, Damage + Mathf.Max(0f, damage));
+            if (Damage >= 100f) BrokenDown = true;
+        }
+
         /// <summary>Host: carry the van's condition over from the company save.</summary>
         public void Restore(float fuel, float damage)
         {

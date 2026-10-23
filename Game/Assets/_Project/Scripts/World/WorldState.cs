@@ -18,6 +18,9 @@ namespace Abandoned.World
     {
         private readonly NetworkVariable<sbyte> anchor = new(-1,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        // Host-written: the place every machine should have loaded (only ever the anchor), -1 for none.
+        private readonly NetworkVariable<sbyte> streamed = new(-1,
+            NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         // Host: which places each machine has loaded (bit per atlas index).
         private readonly Dictionary<ulong, int> loaded = new();
@@ -26,6 +29,13 @@ namespace Abandoned.World
         public static WorldState Current { get; private set; }
 
         public int Anchor => anchor.Value;
+        public int Streamed => streamed.Value;
+
+        /// <summary>
+        /// Host, before a place is unloaded everywhere: clear what belongs to it (the job's departure, its loot and
+        /// monsters). <see cref="WorldJob"/> fills it in.
+        /// </summary>
+        public static System.Action<int> ServerClearing;
         public WorldAtlas Atlas { get; private set; }
         public WorldPoi AnchorPoi => Atlas != null && anchor.Value >= 0 && anchor.Value < Atlas.Pois.Count ? Atlas.Pois[anchor.Value] : null;
         /// <summary>World position of the game's origin.</summary>
@@ -118,26 +128,35 @@ namespace Abandoned.World
             return true;
         }
 
-        // SessionTravel.LevelReady: while the anchor's scene is loaded here but not yet everywhere, the level's
-        // directors hold their spawns (structure, run, loot, monsters belong to that scene on every machine).
+        // SessionTravel.LevelReady: while the streamed place isn't yet loaded on every machine, the level's directors
+        // hold their spawns (structure, run, loot, monsters belong to that scene on every machine).
         private bool StreamingReady()
         {
-            int a = anchor.Value;
-            if (a < 0 || (LocalLoaded & (1 << a)) == 0) return true;
-            return Everyone(a, true);
+            int s = streamed.Value;
+            return s < 0 || Everyone(s, true);
         }
 
-        // Host: once the van has left the anchor behind and nobody has it loaded, the nearest place becomes the anchor.
+        // Host: the anchor's scene is loaded while the van is near it and unloaded (after it is cleared) once the van
+        // is away; with nothing loaded, the nearest place becomes the anchor.
         private void Update()
         {
             if (!IsSpawned || !IsServer || Atlas == null || WorldVan.Current == null) return;
             int a = anchor.Value;
-            Vector3 van = ToWorld(WorldVan.Current.transform.position);
-            int nearest = Nearest(van);
-            if (nearest < 0 || nearest == a) return;
             WorldPoi current = Atlas.Pois[a];
-            if (Flat(van, current.Centre) < current.unloadDistance || !Everyone(a, false)) return;
-            anchor.Value = (sbyte)nearest;
+            Vector3 van = ToWorld(WorldVan.Current.transform.position);
+            float d = current.FromGround(van);
+            bool loaded = streamed.Value == a;
+            bool want = current.built && Application.CanStreamedLevelBeLoaded(current.scene) && d < (loaded ? current.unloadDistance : current.loadDistance);
+            if (want && !loaded) streamed.Value = (sbyte)a;
+            else if (!want && loaded)
+            {
+                ServerClearing?.Invoke(a);
+                streamed.Value = -1;
+            }
+            if (streamed.Value >= 0 || !Everyone(a, false)) return;
+            int nearest = Nearest(van);
+            // The nearest by ground, not by middle: a big site (the mall's district) is near long before its middle.
+            if (nearest >= 0 && nearest != a && d > current.unloadDistance) anchor.Value = (sbyte)nearest;
         }
 
         public int Nearest(Vector3 world)
@@ -146,7 +165,7 @@ namespace Abandoned.World
             float bestDistance = float.MaxValue;
             for (int i = 0; i < Atlas.Pois.Count; i++)
             {
-                float d = Flat(world, Atlas.Pois[i].Centre);
+                float d = Atlas.Pois[i].FromGround(world);
                 if (d < bestDistance) { bestDistance = d; best = i; }
             }
             return best;

@@ -87,12 +87,41 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
 - Test scene: Scenes/WorldVanTest (a pad with a ramp, bumps, a slalom and a wall). `VanTestDriver` (dev only) holds
   the controls from a script for editor checks.
 
+### A job in the open world (`WorldJob`, hooks in the company and run code)
+- A session that starts at the HQ goes into the World at once (`CompanyService.HomeTravel`, when World is in the
+  build; batch runs stay put). The HQ streams in round the van in its yard; the HQ's own garage van is hidden.
+- Pick a contract at the board, drive out: **the job is taken as the van leaves the HQ's ground** (quota owed from
+  then, as the van used to leave). No travel screen (`TravelScreen.NoDrive`); the drive is the trip.
+- A place stays **empty until the job's van is on its ground** (`RunDirector.MayStart`); then the run starts as it
+  always has (contract terms, loot, decay, monsters). Places without a job are dormant buildings.
+- The van's cargo box is the job's truck (`TruckCargo` on the van; the place's own truck is hidden). Loot in the bay
+  rides locked to the van while someone drives (`VanCargoLock`, via `Grabbable.SetExternallyHeld`).
+- Leaving: the **driver's horn** at the job is the old lever (the honk countdown, then departure), or **driving off the
+  site** leaves at once (`RunState.ServerDepartNow`). Whoever and whatever is aboard counts; crewmates left standing
+  are fetched into the cargo box. The ledger is applied as the van leaves (as before), so a crash on the way home
+  can't lose a payday.
+- **The appraisal waits for home** (`AppraisalScreen.HoldBack`); the World keeps its own appraisal screen, since the
+  place's unloads with it. "Back to HQ" there sells the load (despawns it and the run) instead of travelling
+  (`CompanyService.WorldReturnHome`).
+- A place unloads only after the host clears it (`WorldState.ServerClearing`): a job still running there leaves,
+  everything spawned for it goes except the van, its cargo, hands and pockets, and the run (for the appraisal).
+- `CompanyService.AtHome` replaces "level is HQ" in joining, the lobby, training, the scrap depot and the gear rack.
+- Fuel: 40 L, 2 L/km (about four jobs); the HQ yard's diesel pump (`FuelPump`) fills it at $4 a litre.
+
 ### Status
 1. Done: World scripts compile (42e520ba).
 2. Done: drivable van, solo/host, test scene (b215c2af).
-3. Done: World scene; the HQ streams in round the van at the start; driving 1.4 km away unloads it and moves the
-   origin to the next place, van and seated player carried over (checked in Play mode, editor captures in
-   Game/Logs/renders/open-world).
+3. Done: World scene; the HQ streams in round the van; driving away moves the origin (38086e5c).
+4. Done (one open point): nettest `van` (host + 3 headless clients, `Tools/nettest.sh --no-build van` after
+   Open World > Dev Mac Build): host drives 30 m, a client takes the wheel and drives 28 m by RPC, every client sees the
+   van within 0.01 m of the host, its eyes on its seat and the same fuel. Open: one client stood 4.3 m from its door
+   after climbing out; positions are now logged to find out why.
+5. Done: the Mall streams in as the first place (measured by `WorldSurvey`: 1,056 m of district ground, its truck and
+   mountain horizon hidden, its night sky applied), checked in Play mode.
+6. Done: contract -> drive -> run -> drive back -> payday, checked in Play mode (host): the job taken on leaving the
+   HQ, the run started on arriving at the mall (165 loot), two items in the bay locked, horn -> honk -> departed with
+   a $1,617 haul, the mall cleared (2 items kept aboard), the appraisal shown only back in the HQ yard, "Back to HQ"
+   unloaded the van and reset the board without travelling.
 
 ## Upcoming salvage locations (user, 2026-10-23)
 New POIs for the open world, each its own scene streamed by distance like the current maps:

@@ -36,7 +36,7 @@ namespace Abandoned.Company
         {
             ScrapDepot intake = ScrapDepot.Intake;
             if (!IsServer || intake == null || intake.gameObject.scene.name != HomeLevel || !SessionTravel.LevelReady) return;
-            if ((SessionTravel.Current != null ? SessionTravel.Current.Level : SceneManager.GetActiveScene().name) != HomeLevel) return;
+            if (SessionTravel.Current != null ? !AtHome : SceneManager.GetActiveScene().name != HomeLevel) return;
             if (!NetworkManager.ConnectedClients.TryGetValue(sender, out NetworkClient client) || client.PlayerObject == null) return;
             NetworkPlayer player = client.PlayerObject.GetComponent<NetworkPlayer>();
             if (player == null || player.IsDead || player.Carrier == null || player.Carrier.IsRagdolled) return;

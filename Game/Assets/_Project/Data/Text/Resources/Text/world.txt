@@ -1,0 +1,189 @@
+# The open world (Scripts/World): the van's doors and seats, the driver's line, the roadside repair, the road's monster.
+# Short: the seated line shares the prompt bar with key caps and gauges.
+
+en: The van is full
+zh-CN: 车已坐满
+ja: バンは満員だ
+ko: 밴이 꽉 찼다
+es: La furgoneta está llena
+pt-BR: A van está cheia
+de: Der Transporter ist voll
+fr: La camionnette est pleine
+ru: Фургон полон
+pl: Furgonetka jest pełna
+
+en: Drive the van
+zh-CN: 驾驶货车
+ja: バンを運転する
+ko: 밴 운전하기
+es: Conducir la furgoneta
+pt-BR: Dirigir a van
+de: Transporter fahren
+fr: Conduire la camionnette
+ru: Сесть за руль
+pl: Prowadź furgonetkę
+
+en: Get in the van
+zh-CN: 上车
+ja: バンに乗る
+ko: 밴에 타기
+es: Subir a la furgoneta
+pt-BR: Entrar na van
+de: In den Transporter steigen
+fr: Monter dans la camionnette
+ru: Сесть в фургон
+pl: Wsiądź do furgonetki
+
+en: [{0}] Get out
+zh-CN: [{0}] 下车
+ja: [{0}] 降りる
+ko: [{0}] 내리기
+es: [{0}] Bajar
+pt-BR: [{0}] Sair
+de: [{0}] Aussteigen
+fr: [{0}] Descendre
+ru: [{0}] Выйти
+pl: [{0}] Wysiądź
+
+en: Fuel {0:0} L · Damage {1:0}% · {2:0} km/h
+zh-CN: 燃油 {0:0} 升 · 损伤 {1:0}% · {2:0} 公里/时
+ja: 燃料 {0:0} L · 損傷 {1:0}% · {2:0} km/h
+ko: 연료 {0:0} L · 손상 {1:0}% · {2:0} km/h
+es: Combustible {0:0} L · Daños {1:0} % · {2:0} km/h
+pt-BR: Combustível {0:0} L · Danos {1:0}% · {2:0} km/h
+de: Tank {0:0} l · Schaden {1:0} % · {2:0} km/h
+fr: Carburant {0:0} L · Dégâts {1:0} % · {2:0} km/h
+ru: Топливо {0:0} л · Повреждения {1:0}% · {2:0} км/ч
+pl: Paliwo {0:0} l · Uszkodzenia {1:0}% · {2:0} km/h
+
+en: Broken down: get out and repair it
+zh-CN: 抛锚了：下车修理
+ja: 故障した：降りて修理しろ
+ko: 고장 났다: 내려서 수리해라
+es: Averiada: baja y repárala
+pt-BR: Quebrou: saia e conserte
+de: Liegen geblieben: aussteigen und reparieren
+fr: En panne : descends et répare-la
+ru: Сломался: выйди и почини
+pl: Zepsuta: wysiądź i napraw
+
+en: Out of fuel
+zh-CN: 没油了
+ja: 燃料切れ
+ko: 연료 없음
+es: Sin combustible
+pt-BR: Sem combustível
+de: Tank leer
+fr: Plus de carburant
+ru: Кончилось топливо
+pl: Brak paliwa
+
+en: [W/S] Drive · [A/D] Steer · [{0}] Handbrake · [{1}] Horn
+zh-CN: [W/S] 行驶 · [A/D] 转向 · [{0}] 手刹 · [{1}] 喇叭
+ja: [W/S] 走行 · [A/D] ハンドル · [{0}] サイドブレーキ · [{1}] クラクション
+ko: [W/S] 주행 · [A/D] 조향 · [{0}] 핸드브레이크 · [{1}] 경적
+es: [W/S] Conducir · [A/D] Girar · [{0}] Freno de mano · [{1}] Bocina
+pt-BR: [W/S] Dirigir · [A/D] Virar · [{0}] Freio de mão · [{1}] Buzina
+de: [W/S] Fahren · [A/D] Lenken · [{0}] Handbremse · [{1}] Hupe
+fr: [W/S] Rouler · [A/D] Tourner · [{0}] Frein à main · [{1}] Klaxon
+ru: [W/S] Ехать · [A/D] Руль · [{0}] Ручник · [{1}] Гудок
+pl: [W/S] Jazda · [A/D] Skręt · [{0}] Ręczny · [{1}] Klakson
+
+en: At {0}: [{1}] horn to leave
+zh-CN: 已到{0}：按[{1}]鸣笛离开
+ja: {0}に到着：[{1}] クラクションで出発
+ko: {0} 도착: [{1}] 경적을 울려 출발
+es: En {0}: [{1}] bocina para irse
+pt-BR: Em {0}: [{1}] buzine para partir
+de: In {0}: [{1}] hupen zum Abfahren
+fr: À {0} : [{1}] klaxonne pour partir
+ru: {0}: [{1}] гудок, чтобы уехать
+pl: {0}: [{1}] klakson, by odjechać
+
+en: Drive back to the HQ ({0:0.0} km)
+zh-CN: 开回总部（{0:0.0} 公里）
+ja: 本部へ戻れ（{0:0.0} km）
+ko: 본부로 돌아가라 ({0:0.0} km)
+es: Vuelve a la central ({0:0.0} km)
+pt-BR: Volte para a sede ({0:0.0} km)
+de: Zurück zur Zentrale ({0:0.0} km)
+fr: Retour au QG ({0:0.0} km)
+ru: Возвращайтесь на базу ({0:0.0} км)
+pl: Wracaj do bazy ({0:0.0} km)
+
+en: Job: {0} ({1:0.0} km)
+zh-CN: 任务：{0}（{1:0.0} 公里）
+ja: 仕事：{0}（{1:0.0} km）
+ko: 작업: {0} ({1:0.0} km)
+es: Trabajo: {0} ({1:0.0} km)
+pt-BR: Serviço: {0} ({1:0.0} km)
+de: Auftrag: {0} ({1:0.0} km)
+fr: Chantier : {0} ({1:0.0} km)
+ru: Заказ: {0} ({1:0.0} км)
+pl: Zlecenie: {0} ({1:0.0} km)
+
+en: Repairing the van... {0:0}%
+zh-CN: 正在修理货车……{0:0}%
+ja: バンを修理中… {0:0}%
+ko: 밴 수리 중... {0:0}%
+es: Reparando la furgoneta... {0:0} %
+pt-BR: Consertando a van... {0:0}%
+de: Transporter wird repariert ... {0:0} %
+fr: Réparation de la camionnette... {0:0} %
+ru: Чиню фургон... {0:0}%
+pl: Naprawa furgonetki... {0:0}%
+
+en: Repair the van ({0:0} s)
+zh-CN: 修理货车（{0:0} 秒）
+ja: バンを修理する（{0:0} 秒）
+ko: 밴 수리하기 ({0:0}초)
+es: Reparar la furgoneta ({0:0} s)
+pt-BR: Consertar a van ({0:0} s)
+de: Transporter reparieren ({0:0} s)
+fr: Réparer la camionnette ({0:0} s)
+ru: Починить фургон ({0:0} с)
+pl: Napraw furgonetkę ({0:0} s)
+
+en: Torn at through the van's window
+zh-CN: 被从车窗外撕扯
+ja: バンの窓越しに引き裂かれた
+ko: 밴 창문 너머로 찢겼다
+es: Desgarrado a través de la ventanilla
+pt-BR: Rasgado pela janela da van
+de: Durchs Fenster des Transporters zerfetzt
+fr: Lacéré par la vitre de la camionnette
+ru: Разорван через окно фургона
+pl: Rozszarpany przez okno furgonetki
+
+en: Park the van by the pump to fill up
+zh-CN: 把货车停到油泵旁加油
+ja: 給油するにはバンをポンプの横に停めろ
+ko: 주유하려면 밴을 펌프 옆에 세워라
+es: Aparca la furgoneta junto al surtidor para repostar
+pt-BR: Estacione a van junto à bomba para abastecer
+de: Den Transporter zum Tanken an die Zapfsäule stellen
+fr: Gare la camionnette près de la pompe pour faire le plein
+ru: Поставьте фургон у колонки, чтобы заправиться
+pl: Zaparkuj furgonetkę przy dystrybutorze, by zatankować
+
+en: The tank is full ({0:0} L)
+zh-CN: 油箱已满（{0:0} 升）
+ja: 満タンだ（{0:0} L）
+ko: 연료통이 가득 찼다 ({0:0} L)
+es: El depósito está lleno ({0:0} L)
+pt-BR: O tanque está cheio ({0:0} L)
+de: Der Tank ist voll ({0:0} l)
+fr: Le réservoir est plein ({0:0} L)
+ru: Бак полон ({0:0} л)
+pl: Bak jest pełny ({0:0} l)
+
+en: Fill up the van: {0:0}/{1:0} L, ${2} a litre
+zh-CN: 给货车加油：{0:0}/{1:0} 升，每升 ${2}
+ja: バンに給油：{0:0}/{1:0} L、1リットル ${2}
+ko: 밴 주유: {0:0}/{1:0} L, 리터당 ${2}
+es: Repostar la furgoneta: {0:0}/{1:0} L, ${2} el litro
+pt-BR: Abastecer a van: {0:0}/{1:0} L, ${2} o litro
+de: Transporter tanken: {0:0}/{1:0} l, ${2} pro Liter
+fr: Faire le plein : {0:0}/{1:0} L, ${2} le litre
+ru: Заправить фургон: {0:0}/{1:0} л, ${2} за литр
+pl: Zatankuj furgonetkę: {0:0}/{1:0} l, ${2} za litr

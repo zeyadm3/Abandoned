@@ -29,7 +29,7 @@ namespace Abandoned.Tutorial
         {
             CompanyService company = CompanyService.Current;
             SessionTravel travel = SessionTravel.Current;
-            bool home = company != null && company.IsSpawned && travel != null && travel.IsSpawned && travel.Level == CompanyService.HomeLevel
+            bool home = company != null && company.IsSpawned && travel != null && travel.IsSpawned && CompanyService.AtHome
                         && NetworkPlayer.Local != null && NetworkPlayer.Local.IsSpawned;
             if (!home)
             {

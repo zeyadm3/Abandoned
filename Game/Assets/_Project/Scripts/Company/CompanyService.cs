@@ -21,6 +21,21 @@ namespace Abandoned.Company
     {
         public const string HomeLevel = "HQ";
 
+        /// <summary>
+        /// The open world (Abandoned.World.WorldJob, when the World scene is in the build): is the crew at the HQ, though
+        /// everyone is in the world's level? Null outside the world.
+        /// </summary>
+        public static Func<bool> WorldAtHome { get; set; }
+
+        /// <summary>Open world: what "Back to HQ" does once the crew is home (unload the van) instead of travelling.</summary>
+        public static Action WorldReturnHome { get; set; }
+
+        /// <summary>The level a trip away (training) comes home to: the open world when it is in the build, else the HQ.</summary>
+        public static string HomeTravel { get; set; } = HomeLevel;
+
+        /// <summary>Is everyone at the HQ: its own level, or its place in the open world?</summary>
+        public static bool AtHome => SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel || (WorldAtHome != null && WorldAtHome());
+
         [SerializeField] private CompanyConfig config;
         [SerializeField] private ContractConfig contracts;
         [SerializeField] private EquipmentCatalog equipment;
@@ -129,7 +144,7 @@ namespace Abandoned.Company
             // Players join only at the HQ, between runs (GDD 11, decision log).
             // Only for a game that started at the HQ; a session hosted straight in a level (dev, tests) stays open.
             NetworkBootstrap.JoinBlocker = () => SessionTravel.Current != null && SessionTravel.Current.StartLevel == HomeLevel
-                                                 && SessionTravel.Current.Level != HomeLevel
+                                                 && !AtHome
                 ? Loc.Mark("The crew is out on a job. Join when they're back at the HQ.") : null;
             Debug.Log($"[Company] {save.companyName}: ${save.money:N0}, level {save.level}{(store != null ? $" ({store.Path})" : " (not saved: test/batch run)")}.");
         }
@@ -155,7 +170,8 @@ namespace Abandoned.Company
             SyncDifficulty(); // 0.19.4
             TrainingHousekeeping();
             // The Steam lobby takes joiners only while everyone is at the HQ.
-            bool home = SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel;
+            bool home = AtHome;
+            EnterOpenWorld();
             if (lobby == null && Time.unscaledTime >= nextLobbyLookup)
             {
                 nextLobbyLookup = Time.unscaledTime + 1f;

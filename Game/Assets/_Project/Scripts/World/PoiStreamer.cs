@@ -5,11 +5,11 @@ using UnityEngine.SceneManagement;
 namespace Abandoned.World
 {
     /// <summary>
-    /// Every machine: loads the anchor place's scene additively when the van comes within its load distance and unloads
-    /// it once the van is past its unload distance (hysteresis, so it doesn't flicker at the edge). Only the anchor is
-    /// ever loaded (<see cref="WorldState"/>). A loaded place is fitted into the world (<see cref="PoiAdapter"/>) and
-    /// its flat stand-in is hidden. Reports what it has loaded to the host. Its NetworkObjects are spawned by the host's
-    /// directors in that scene once every machine has it (SessionTravel.LevelReady).
+    /// Every machine: keeps loaded exactly the place the host says (<see cref="WorldState.Streamed"/>, the anchor while
+    /// the van is near it), additively, the world staying the active scene. A loaded place is fitted into the world
+    /// (<see cref="PoiAdapter"/>), takes over the sky (<see cref="WorldRoot.UsePlaceLook"/>) and its flat stand-in is
+    /// hidden. Reports what it has loaded, so the host knows when every machine has a place (its spawns wait for that)
+    /// and when none still has it (the anchor may move). The host clears a place's objects before it says unload.
     /// </summary>
     public class PoiStreamer : MonoBehaviour
     {
@@ -20,7 +20,9 @@ namespace Abandoned.World
         public static PoiStreamer Current { get; private set; }
 
         public bool IsLoaded(int poi) => loaded.Contains(poi);
-        public bool IsBusy => busy.Count > 0;
+
+        /// <summary>This machine: a place finished loading (true) or unloading (false).</summary>
+        public event System.Action<int, bool> Loaded;
 
         private void Awake() => Current = this;
 
@@ -33,40 +35,26 @@ namespace Abandoned.World
         {
             WorldState state = WorldState.Current;
             if (state == null || state.Atlas == null) return;
-            Vector3? focus = Focus(state);
+            int target = state.Streamed;
             for (int i = 0; i < state.Atlas.Pois.Count; i++)
             {
                 if (busy.Contains(i)) continue;
-                WorldPoi poi = state.Atlas.Pois[i];
                 bool isLoaded = loaded.Contains(i);
-                bool want = false;
-                if (i == state.Anchor && poi.built && focus.HasValue && Application.CanStreamedLevelBeLoaded(poi.scene))
-                {
-                    float d = WorldState.Flat(focus.Value, poi.Centre);
-                    want = d < (isLoaded ? poi.unloadDistance : poi.loadDistance);
-                }
-                if (want && !isLoaded) Load(i, poi);
-                else if (!want && isLoaded) Unload(i, poi);
+                if (i == target && !isLoaded) Load(i, state.Atlas.Pois[i]);
+                else if (i != target && isLoaded) Unload(i, state.Atlas.Pois[i]);
             }
             int mask = 0;
             foreach (int i in loaded) mask |= 1 << i;
-            if (mask != reported)
+            if (mask != reported && busy.Count == 0)
             {
                 reported = mask;
                 state.ReportLoaded(mask);
             }
         }
 
-        // What the streaming follows: the van (the crew travels in it); before it exists, this machine's player.
-        private static Vector3? Focus(WorldState state)
-        {
-            if (WorldVan.Current != null && WorldVan.Current.IsSpawned) return state.ToWorld(WorldVan.Current.transform.position);
-            var local = Networking.NetworkPlayer.Local;
-            return local != null ? state.ToWorld(local.transform.position) : null;
-        }
-
         private void Load(int index, WorldPoi poi)
         {
+            if (!Application.CanStreamedLevelBeLoaded(poi.scene)) return;
             busy.Add(index);
             Debug.Log($"[World] Loading {poi.scene}.");
             AsyncOperation op = SceneManager.LoadSceneAsync(poi.scene, LoadSceneMode.Additive);
@@ -80,9 +68,15 @@ namespace Abandoned.World
                 busy.Remove(index);
                 Scene scene = SceneManager.GetSceneByName(poi.scene);
                 if (!scene.IsValid()) return;
+                if (WorldRoot.Current != null)
+                {
+                    WorldRoot.Current.UsePlaceLook(poi);
+                    WorldRoot.Current.ShowStandIn(index, false);
+                }
                 PoiAdapter.Adopt(scene, poi);
                 loaded.Add(index);
-                if (WorldRoot.Current != null) WorldRoot.Current.ShowStandIn(index, false);
+                // The place's own collection truck claimed the cargo role as it woke and was then hidden: the van takes it back.
+                if (WorldVan.Current != null) WorldVan.Current.ClaimCargo();
                 Loaded?.Invoke(index, true);
             };
         }
@@ -90,7 +84,6 @@ namespace Abandoned.World
         private void Unload(int index, WorldPoi poi)
         {
             busy.Add(index);
-            Unloading?.Invoke(index);
             Debug.Log($"[World] Unloading {poi.scene}.");
             AsyncOperation op = SceneManager.UnloadSceneAsync(poi.scene);
             if (op == null)
@@ -103,14 +96,13 @@ namespace Abandoned.World
             {
                 busy.Remove(index);
                 loaded.Remove(index);
-                if (WorldRoot.Current != null) WorldRoot.Current.ShowStandIn(index, true);
+                if (WorldRoot.Current != null)
+                {
+                    WorldRoot.Current.ShowStandIn(index, true);
+                    WorldRoot.Current.UsePlaceLook(null);
+                }
                 Loaded?.Invoke(index, false);
             };
         }
-
-        /// <summary>This machine: a place finished loading (true) or unloading (false).</summary>
-        public event System.Action<int, bool> Loaded;
-        /// <summary>This machine: a place is about to unload (the host clears its objects first).</summary>
-        public event System.Action<int> Unloading;
     }
 }

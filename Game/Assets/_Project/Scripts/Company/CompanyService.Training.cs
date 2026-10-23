@@ -17,7 +17,7 @@ namespace Abandoned.Company
         /// <summary>Host, at the HQ: everyone to the training house. No contract is taken.</summary>
         public void StartTraining()
         {
-            if (!IsServer || SessionTravel.Current == null || SessionTravel.Current.Level != HomeLevel || !TrainingAvailable) return;
+            if (!IsServer || SessionTravel.Current == null || !AtHome || !TrainingAvailable) return;
             active.Value = default;
             Debug.Log("[Company] The crew goes to the training house (nothing is owed or paid).");
             SessionTravel.Current.Travel(TutorialMode.Scene);
@@ -28,7 +28,7 @@ namespace Abandoned.Company
         {
             if (!IsServer || SessionTravel.Current == null) return;
             active.Value = default;
-            SessionTravel.Current.Travel(HomeLevel);
+            SessionTravel.Current.Travel(HomeTravel);
         }
 
         private bool trainedThisVisit;
@@ -41,7 +41,7 @@ namespace Abandoned.Company
                 trainedThisVisit = true;
                 return;
             }
-            if (!trainedThisVisit || SessionTravel.Current == null || SessionTravel.Current.Level != HomeLevel || !SessionTravel.LevelReady) return;
+            if (!trainedThisVisit || SessionTravel.Current == null || !AtHome || !SessionTravel.LevelReady) return;
             trainedThisVisit = false;
             PlayerEquipment.ServerTrimToStock(NetworkManager);
         }

@@ -7,9 +7,10 @@ using UnityEngine.SceneManagement;
 namespace Abandoned.World
 {
     /// <summary>
-    /// Fits a place's scene into the world as it streams in, on every machine: the world's camera, sun, sky and grade
-    /// stay in charge, so the scene's own are switched off, and so are its far horizons (the world's land replaces them).
-    /// The scene's files are never changed.
+    /// Fits a place's scene into the world as it streams in, on every machine: the world's camera stays in charge, so
+    /// the scene's own is switched off, and so are its far horizons and its own collection truck (the world's land and
+    /// the crew's van replace them). Its sun, sky and grade take over from the world's while it is loaded
+    /// (<see cref="WorldRoot.UsePlaceLook"/>). The scene's files are never changed.
     /// </summary>
     public static class PoiAdapter
     {
@@ -24,10 +25,16 @@ namespace Abandoned.World
                         if (camera.TryGetComponent(out CinemachineBrain brain)) brain.enabled = false;
                     }
                 foreach (AudioListener listener in root.GetComponentsInChildren<AudioListener>(true)) listener.enabled = false;
+                // Without a captured look the world's sun and grade stay; two suns would double the light.
                 foreach (Light light in root.GetComponentsInChildren<Light>(true))
-                    if (light.type == LightType.Directional) light.enabled = false;
-                foreach (Volume volume in root.GetComponentsInChildren<Volume>(true))
-                    if (volume.isGlobal) volume.enabled = false;
+                    if (light.type == LightType.Directional)
+                    {
+                        if (!poi.look.captured) light.enabled = false;
+                        else if (light.enabled && RenderSettings.sun == null) RenderSettings.sun = light;
+                    }
+                if (!poi.look.captured)
+                    foreach (Volume volume in root.GetComponentsInChildren<Volume>(true))
+                        if (volume.isGlobal) volume.enabled = false;
                 // A second F1 switch would toggle the overlays twice per press.
                 foreach (DebugViewToggle toggle in root.GetComponentsInChildren<DebugViewToggle>(true)) toggle.enabled = false;
             }

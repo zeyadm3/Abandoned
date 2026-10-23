@@ -8,7 +8,7 @@ namespace Abandoned.World
     public struct VanNetState : INetworkSerializable, IEquatable<VanNetState>
     {
         [Flags]
-        private enum Flag : byte { Engine = 1, BrokenDown = 2, RampDown = 4, Lights = 8, Repairing = 16 }
+        private enum Flag : byte { Engine = 1, BrokenDown = 2, RampDown = 4, Lights = 8, Repairing = 16, Horn = 32 }
 
         private ushort fuel; // hundredths of a litre
         private byte damage, repair; // 0..100; repair progress 0..255
@@ -22,12 +22,13 @@ namespace Abandoned.World
         public bool RampDown => (flags & Flag.RampDown) != 0;
         public bool Lights => (flags & Flag.Lights) != 0;
         public bool Repairing => (flags & Flag.Repairing) != 0;
+        public bool Horn => (flags & Flag.Horn) != 0;
         public float RepairProgress => repair / 255f;
         /// <summary>Front wheel angle as a fraction of full lock (-1..1), for the wheels drawn on clients.</summary>
         public float Steer => steer / 127f;
 
         public static VanNetState Of(float fuel, float damage, bool engine, bool brokenDown, bool rampDown, bool lights,
-            float steer, float repair)
+            float steer, float repair, bool horn = false)
         {
             Flag f = 0;
             if (engine) f |= Flag.Engine;
@@ -35,6 +36,7 @@ namespace Abandoned.World
             if (rampDown) f |= Flag.RampDown;
             if (lights) f |= Flag.Lights;
             if (repair > 0f) f |= Flag.Repairing;
+            if (horn) f |= Flag.Horn;
             return new VanNetState
             {
                 fuel = (ushort)Mathf.Clamp(Mathf.RoundToInt(fuel * 100f), 0, ushort.MaxValue),

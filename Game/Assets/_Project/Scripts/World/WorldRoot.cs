@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Abandoned.World
 {
@@ -11,13 +12,22 @@ namespace Abandoned.World
     {
         [Tooltip("Per place in the atlas: flat ground filling its site while its scene isn't loaded.")]
         [SerializeField] private GameObject[] standIns = new GameObject[0];
+        [Tooltip("The world's own sun and grade: off while a place with its own is loaded.")]
+        [SerializeField] private Light sun;
+        [SerializeField] private Volume look;
+
+        private PlaceLook worldLook;
 
         public static WorldRoot Current { get; private set; }
 
         /// <summary>World position of the game's origin right now.</summary>
         public Vector3 Offset { get; private set; }
 
-        private void Awake() => Current = this;
+        private void Awake()
+        {
+            Current = this;
+            worldLook = PlaceLook.Capture();
+        }
 
         private void OnDestroy()
         {
@@ -40,6 +50,23 @@ namespace Abandoned.World
             if (poi >= 0 && poi < standIns.Length && standIns[poi] != null) standIns[poi].SetActive(show);
         }
 
-        public void EditorSetup(GameObject[] sites) => standIns = sites;
+        /// <summary>Every machine: a place's own sky, sun and grade while it is loaded (null: the world's again).</summary>
+        public void UsePlaceLook(WorldPoi poi)
+        {
+            bool own = poi != null && poi.look.captured;
+            if (own) poi.look.Apply();
+            else worldLook?.Apply();
+            if (sun != null) sun.enabled = !own;
+            if (look != null) look.enabled = !own;
+            if (own) RenderSettings.sun = null;
+            else if (sun != null) RenderSettings.sun = sun;
+        }
+
+        public void EditorSetup(GameObject[] sites, Light worldSun, Volume worldLookVolume)
+        {
+            standIns = sites;
+            sun = worldSun;
+            look = worldLookVolume;
+        }
     }
 }

@@ -27,9 +27,10 @@ namespace Abandoned.World
         [SerializeField] private float downforce = 6f;
 
         [Header("Fuel")]
-        [SerializeField] private float tankLitres = 60f;
-        [SerializeField] private float litresPerKm = .18f;
-        [SerializeField] private float litresPerMinuteIdle = .05f;
+        [SerializeField] private float tankLitres = 40f;
+        [Tooltip("A worn box van, driven hard: about twenty kilometres (four jobs) on a full tank.")]
+        [SerializeField] private float litresPerKm = 2f;
+        [SerializeField] private float litresPerMinuteIdle = .3f;
         [Tooltip("Litres a pump puts in per second.")]
         [SerializeField] private float pumpLitresPerSecond = 6f;
 

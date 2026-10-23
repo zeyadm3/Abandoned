@@ -28,6 +28,7 @@ namespace Abandoned.Networking
                 { SoakNetTestScenario.ScenarioName, () => new SoakNetTestScenario() },
                 { RoomsNetTestScenario.ScenarioName, () => new RoomsNetTestScenario() },
                 { TrainingNetTestScenario.ScenarioName, () => new TrainingNetTestScenario() },
+                { World.VanNetTestScenario.ScenarioName, () => new World.VanNetTestScenario() },
             };
 
         public static IEnumerable<string> Names => Registry.Keys;

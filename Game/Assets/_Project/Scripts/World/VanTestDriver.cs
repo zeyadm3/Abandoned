@@ -13,9 +13,13 @@ namespace Abandoned.World
         public float Throttle, Steer, Seconds;
         public bool Handbrake;
 
+        /// <summary>A test driver is holding the controls (the seated player's own hands stay off them).</summary>
+        public static bool Driving { get; private set; }
+
         private void LateUpdate()
         {
-            if (!DevTools.Enabled || Seconds <= 0f || WorldVan.Current == null) return;
+            Driving = DevTools.Enabled && Seconds > 0f && WorldVan.Current != null;
+            if (!Driving) return;
             Seconds -= Time.deltaTime;
             WorldVan.Current.SendDrive(new VanDriveInput(Throttle, Steer, Handbrake), false);
         }

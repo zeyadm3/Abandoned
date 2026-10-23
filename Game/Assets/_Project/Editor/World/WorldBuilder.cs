@@ -32,21 +32,23 @@ namespace Abandoned.EditorTools
         public static void Build()
         {
             List<WorldPoi> places = WorldPlan.Places();
-            WriteAtlas(places);
+            WorldSurvey.Capture(places);
             GameObject vanPrefab = WorldVanBuilder.Build();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             WorldVanTestScene.AddCameraAndDebug();
-            Sky(scene);
+            (Light sun, Volume look) = Sky(scene);
 
             var root = new GameObject("WorldRoot").AddComponent<WorldRoot>();
             Debug.Log("[WorldBuild] Shaping the land...");
             List<List<Vector3>> roads = WorldTerrain.Shape(places, WorldPlan.Roads(places));
+            WriteAtlas(places, roads);
             Transform land = GreyboxFactory.Group("Land", root.transform);
             WorldTerrain.Tiles(land, places);
             Debug.Log("[WorldBuild] Terrain done; roads...");
             WorldRoads.Build(root.transform, roads);
-            root.EditorSetup(WorldRoads.StandIns(root.transform, places));
+            root.EditorSetup(WorldRoads.StandIns(root.transform, places), sun, look);
             Horizon(root.transform);
+            Pump(root.transform, places[0]);
 
             NetworkSceneBuilder.Add();
             // The crew starts at the HQ, the first origin: these are the HQ's own crew spawns.
@@ -65,12 +67,15 @@ namespace Abandoned.EditorTools
             var world = new GameObject("World");
             world.AddComponent<PoiStreamer>();
             world.AddComponent<WorldDebugView>();
+            world.AddComponent<WorldJob>();
+            // The job's appraisal is shown at home, after the place it was at has unloaded: the world keeps its own.
+            world.AddComponent<Abandoned.Extraction.AppraisalScreen>();
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             Debug.Log($"[WorldBuild] done: {ScenePath}, {places.Count} places, {roads.Count} roads.");
         }
 
-        private static void WriteAtlas(List<WorldPoi> places)
+        private static void WriteAtlas(List<WorldPoi> places, List<List<Vector3>> roads)
         {
             PolishAssets.EnsureFolder(WorldVanBuilder.ConfigFolder);
             var atlas = AssetDatabase.LoadAssetAtPath<WorldAtlas>(AtlasPath);
@@ -79,13 +84,21 @@ namespace Abandoned.EditorTools
                 atlas = ScriptableObject.CreateInstance<WorldAtlas>();
                 AssetDatabase.CreateAsset(atlas, AtlasPath);
             }
-            atlas.EditorSetup(places, 0);
+            // Road centre lines every ten metres, for placing road events ahead of the van.
+            var lines = new List<WorldRoad>();
+            foreach (List<Vector3> road in roads)
+            {
+                var points = new List<Vector3>();
+                for (int i = 0; i < road.Count; i += 5) points.Add(road[i]);
+                lines.Add(new WorldRoad { points = points.ToArray() });
+            }
+            atlas.EditorSetup(places, 0, lines);
             EditorUtility.SetDirty(atlas);
             AssetDatabase.SaveAssets();
         }
 
         // The TestMap's golden-hour photograph and grade (copied once into the world's own profile), a low warm sun.
-        private static void Sky(Scene scene)
+        private static (Light, Volume) Sky(Scene scene)
         {
             var sun = new GameObject("Sun").AddComponent<Light>();
             sun.type = LightType.Directional;
@@ -110,6 +123,20 @@ namespace Abandoned.EditorTools
             post.isGlobal = true;
             post.sharedProfile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(VolumePath);
             DynamicGI.UpdateEnvironment();
+            return (sun, post);
+        }
+
+        // The HQ yard's diesel pump, beside where the van parks (world coordinates: it moves with the land).
+        private static void Pump(Transform parent, WorldPoi home)
+        {
+            Material dark = AssetDatabase.LoadAssetAtPath<Material>(CollectionTruckGeometry.Folder + "/Materials/Truck_Dark.mat");
+            Material paint = AssetDatabase.LoadAssetAtPath<Material>(CollectionTruckGeometry.Folder + "/Materials/Truck_Red.mat");
+            Vector3 at = home.ToWorld(new Vector3(home.parking.x + 6f, 0f, home.parking.z - 2f));
+            GameObject pump = GreyboxFactory.Box("DieselPump", parent, at + Vector3.up * .9f, new Vector3(.8f, 1.8f, .55f), paint);
+            GreyboxFactory.Box("PumpBase", pump.transform.parent, at + Vector3.up * .06f, new Vector3(1.4f, .12f, 1f), dark);
+            GreyboxFactory.Box("PumpHose", pump.transform.parent, at + new Vector3(-.45f, 1f, 0f), new Vector3(.06f, 1.1f, .06f), dark, false);
+            pump.AddComponent<FuelPump>();
+            pump.AddComponent<Abandoned.Core.SurfaceTag>().EditorSet(Abandoned.Core.SurfaceMaterial.Metal);
         }
 
         // A ring of far hills past the land, so the horizon is land and not the sky's empty lower half.

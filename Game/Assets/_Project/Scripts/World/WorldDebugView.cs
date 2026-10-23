@@ -24,7 +24,7 @@ namespace Abandoned.World
                 WorldPoi poi = state.Atlas.Pois[i];
                 string mark = i == state.Anchor ? ">" : " ";
                 string load = streamer != null && streamer.IsLoaded(i) ? "LOADED" : poi.built ? "-" : "planned";
-                text.AppendLine($"{mark} {poi.scene,-12} {WorldState.Flat(van, poi.Centre),6:0} m  {load}");
+                text.AppendLine($"{mark} {poi.scene,-12} {poi.FromGround(van),6:0} m  {load}");
             }
             GUI.Label(new Rect(Screen.width - 330f, 120f, 320f, 20f * (state.Atlas.Pois.Count + 2)), text.ToString(), style);
         }

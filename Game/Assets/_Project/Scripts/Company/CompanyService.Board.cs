@@ -87,7 +87,7 @@ namespace Abandoned.Company
         private void Depart()
         {
             if (selected.Value < 0 || selected.Value >= Board.Count || SessionTravel.Current == null) return;
-            if (SessionTravel.Current.Level != HomeLevel) return;
+            if (!AtHome) return;
             Contract c = Board[selected.Value];
             c.Quota = QuotaFor(c); // the crew that leaves is the crew that owes
             active.Value = c;
@@ -97,7 +97,8 @@ namespace Abandoned.Company
             save.pendingLeftOnPurpose = false;
             Saved();
             Debug.Log($"[Company] Taking the {c.ModifierName} contract at {c.Location}: quota ${c.Quota:N0}, stability {c.Stability:P0}.");
-            SessionTravel.Current.Travel(c.Scene);
+            // Open world: the crew drives there; the job is taken as the van leaves the HQ.
+            if (WorldAtHome == null) SessionTravel.Current.Travel(c.Scene);
         }
 
         /// <summary>Host is on a job that hasn't been settled yet (leaving now counts as a failed job).</summary>
@@ -121,7 +122,21 @@ namespace Abandoned.Company
             active.Value = default;
             selected.Value = -1;
             boardSeed.Value = NewSeed();
-            SessionTravel.Current.Travel(HomeLevel);
+            if (WorldReturnHome != null) WorldReturnHome();
+            else SessionTravel.Current.Travel(HomeLevel);
+        }
+
+        private bool enteredWorld;
+
+        // Host, once per session that starts at the HQ: into the open world (the HQ streams in round the van there).
+        // Batch runs (tests, nettests) stay where they started.
+        private void EnterOpenWorld()
+        {
+            if (enteredWorld || HomeTravel == HomeLevel || Application.isBatchMode || SessionTravel.Current == null
+                || !SessionTravel.Current.IsSpawned || SessionTravel.Current.Level != HomeLevel || !SessionTravel.LevelReady) return;
+            enteredWorld = true;
+            Debug.Log($"[Company] Into the open world ({HomeTravel}).");
+            SessionTravel.Current.Travel(HomeTravel);
         }
     }
 }

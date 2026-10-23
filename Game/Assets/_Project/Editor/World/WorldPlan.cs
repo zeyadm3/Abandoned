@@ -28,20 +28,34 @@ namespace Abandoned.EditorTools
                 new()
                 {
                     scene = "HQ", worldPosition = Vector3.zero, ground = Rect.MinMaxRect(-302f, -328f, 338f, 312f), groundHeight = -.47f,
-                    hideInWorld = new[] { "HQ/IndustrialEstateSurroundings/IndustrialEstateLandscape/EstateScenery" },
+                    // The far estate is the world's land now; the garage van is replaced by the drivable one in the yard.
+                    hideInWorld = new[] { "HQ/IndustrialEstateSurroundings/IndustrialEstateLandscape/EstateScenery", "HQ/Van", "HQ/Van_Model" },
                     parking = new Vector3(10f, 0f, -22f), built = true,
                 },
-                Planned("Mall", new Vector3(2000f, 0f, 600f)),
-                Planned("School", new Vector3(-1900f, 0f, 1300f)),
-                Planned("Factory", new Vector3(900f, 0f, -2100f)),
+                // The mall district's east-west street leaves its ring of buildings on the west at z -57.
+                Measured("Mall", new Vector3(2000f, 0f, 600f), new Vector2(-500f, -57f)),
+                Measured("School", new Vector3(-1900f, 0f, 1300f)),
+                Measured("Factory", new Vector3(900f, 0f, -2100f)),
+                // An island: it needs a coast and a crossing (its boat) before it can join the roads.
                 Planned("Prison", new Vector3(-2250f, 0f, -2100f)),
-                Planned("Hospital", new Vector3(1750f, 0f, 2300f)),
-                Planned("Motel", new Vector3(-700f, 0f, -2300f)),
-                Planned("PoliceStation", new Vector3(-2300f, 0f, -300f)),
-                Planned("FireStation", new Vector3(-200f, 0f, 2300f)),
-                Planned("Skyscraper", new Vector3(2400f, 0f, -1500f)),
+                Measured("Hospital", new Vector3(1750f, 0f, 2300f)),
+                Measured("Motel", new Vector3(-700f, 0f, -2300f)),
+                Measured("PoliceStation", new Vector3(-2300f, 0f, -300f)),
+                Measured("FireStation", new Vector3(-200f, 0f, 2300f)),
+                Measured("Skyscraper", new Vector3(2400f, 0f, -1500f)),
             };
             return places;
+        }
+
+        // A built map whose site the world builder measures from its saved scene (WorldSurvey); until then, and if it
+        // has no saved scene yet, a planned site.
+        private static WorldPoi Measured(string scene, Vector3 at, Vector2 roadEntry = default)
+        {
+            WorldPoi p = Planned(scene, at);
+            p.roadEntry = roadEntry;
+            p.built = true;
+            p.measure = true;
+            return p;
         }
 
         // A place not yet fitted into the world: a 400 m square of level ground round its origin.
@@ -71,6 +85,8 @@ namespace Abandoned.EditorTools
                 Rect site = GroundRect(places[i]);
                 Vector2 toSite = (site.center - hq.center).normalized;
                 Vector2 start = EdgeToward(hq, toSite), end = EdgeToward(site, -toSite);
+                if (places[i].roadEntry != Vector2.zero)
+                    end = places[i].roadEntry + new Vector2(places[i].worldPosition.x, places[i].worldPosition.z);
                 Vector2 outward = Outward(hq, start), inward = Outward(site, end);
                 var rng = new System.Random(places[i].scene.GetHashCode() & 0x7fffffff);
                 Vector2 side = new(-toSite.y, toSite.x);

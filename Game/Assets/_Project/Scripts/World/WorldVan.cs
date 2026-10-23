@@ -1,4 +1,5 @@
 using Abandoned.Core;
+using Abandoned.Extraction;
 using Abandoned.Interaction;
 using Abandoned.Networking;
 using Unity.Netcode;
@@ -19,6 +20,8 @@ namespace Abandoned.World
         [SerializeField] private VanTailgate tailgate;
         [Tooltip("Headlights and tail lights: on while the engine runs.")]
         [SerializeField] private Light[] lights;
+        [Tooltip("The cargo box as the job's truck: what is in it counts toward the haul, who is in it leaves with it.")]
+        [SerializeField] private TruckCargo cargo;
 
         private readonly NetworkVariable<VanNetState> state = new(default,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -42,6 +45,15 @@ namespace Abandoned.World
         public VanSeats Seats => seats;
         public VanCondition Condition => condition;
         public bool HornHeld => horn;
+        public TruckCargo Cargo => cargo;
+
+        /// <summary>Every machine: make the van's cargo box the job's truck again (a place's own truck took the role as it loaded).</summary>
+        public void ClaimCargo()
+        {
+            if (cargo == null) return;
+            cargo.enabled = false;
+            cargo.enabled = true;
+        }
 
         private void Awake()
         {
@@ -116,7 +128,7 @@ namespace Abandoned.World
             bool engine = seats != null && seats.HasDriver && condition.CanDrive;
             bool rampDown = !(seats != null && seats.HasDriver) && drive.Body.linearVelocity.magnitude < 1f;
             float repair = repairer != VanSeating.Empty ? Mathf.Clamp01(repairDone / config.RepairSeconds) : 0f;
-            state.Value = VanNetState.Of(condition.Fuel, condition.Damage, engine, condition.BrokenDown, rampDown, engine, drive.SteerFraction, repair);
+            state.Value = VanNetState.Of(condition.Fuel, condition.Damage, engine, condition.BrokenDown, rampDown, engine, drive.SteerFraction, repair, horn);
         }
 
         private void Update()
@@ -185,6 +197,16 @@ namespace Abandoned.World
             repairer = VanSeating.Empty;
         }
 
+        /// <summary>A player at a pump (not the host) starts filling.</summary>
+        public void RequestPump() => PumpRpc();
+
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void PumpRpc(RpcParams rpcParams = default)
+        {
+            FuelPump pump = FuelPump.Near(transform.position, 9f);
+            if (pump != null) pump.ServerStart(rpcParams.Receive.SenderClientId);
+        }
+
         /// <summary>Host: fill the tank by this many litres (a pump).</summary>
         public void ServerRefuel(float litres)
         {
@@ -204,11 +226,12 @@ namespace Abandoned.World
             if (nt != null && nt.CanCommitToTransform) nt.Teleport(position, rotation, transform.localScale);
         }
 
-        public void EditorSetup(VanSeats vanSeats, VanTailgate gate, Light[] vanLights)
+        public void EditorSetup(VanSeats vanSeats, VanTailgate gate, Light[] vanLights, TruckCargo cargoBox)
         {
             seats = vanSeats;
             tailgate = gate;
             lights = vanLights;
+            cargo = cargoBox;
         }
     }
 }

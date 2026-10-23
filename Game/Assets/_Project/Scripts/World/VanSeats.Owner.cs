@@ -43,8 +43,15 @@ namespace Abandoned.World
                 RequestLeave();
                 return;
             }
-            if (seat == DriverSeat && van != null)
+            if (seat == DriverSeat && van != null && !VanTestDriver.Driving)
+            {
                 van.SendDrive(menus ? VanDriveInput.Parked : new VanDriveInput(input.Move.y, input.Move.x, input.CrouchHeld), !menus && input.UseHeld);
+                // At the job, the horn is the truck's lever: it calls the crew and starts the departure countdown.
+                Extraction.RunState run = Extraction.RunState.Current;
+                if (!menus && input.UsePressed && run != null && run.State.Phase == Extraction.RunPhase.Running && WorldJob.JobPlace >= 0
+                    && WorldJob.VanFrom(WorldJob.JobPlace) <= 25f)
+                    run.RequestDepart();
+            }
             if (hud != null) hud.Override = HudLine(seat);
         }
 
@@ -79,12 +86,26 @@ namespace Abandoned.World
             return at;
         }
 
+        // Where the job is: the place and how far, or home once the job has left it.
+        private static string JobLine()
+        {
+            int job = WorldJob.JobPlace;
+            if (job < 0 || WorldState.Current == null) return "";
+            Extraction.RunState run = Extraction.RunState.Current;
+            bool done = run != null && run.State.Phase == Extraction.RunPhase.Departed;
+            int place = done ? WorldState.Current.Atlas.Home : job;
+            float d = WorldJob.VanFrom(place);
+            string name = Loc.T(WorldState.Current.Atlas.Pois[place].scene);
+            if (d <= 25f) return done ? "" : $" · {Loc.T("At {0}: [{1}] horn to leave", name, InputBindings.Display("Use"))}";
+            return $" · {(done ? Loc.T("Drive back to the HQ ({0:0.0} km)", d / 1000f) : Loc.T("Job: {0} ({1:0.0} km)", name, d / 1000f))}";
+        }
+
         private string HudLine(int seat)
         {
             string leave = Loc.T("[{0}] Get out", InputBindings.Display("Interact"));
             if (van == null) return leave;
             VanNetState s = van.State;
-            string gauges = Loc.T("Fuel {0:0} L · Damage {1:0}% · {2:0} km/h", s.Fuel, s.Damage, van.Drive.SpeedKmh);
+            string gauges = Loc.T("Fuel {0:0} L · Damage {1:0}% · {2:0} km/h", s.Fuel, s.Damage, van.Drive.SpeedKmh) + JobLine();
             if (seat != DriverSeat) return $"{leave} · {gauges}";
             string status = s.BrokenDown ? Loc.T("Broken down: get out and repair it")
                 : s.Fuel <= 0f ? Loc.T("Out of fuel")

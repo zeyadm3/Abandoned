@@ -1,4 +1,5 @@
 using Abandoned.Core;
+using Abandoned.Extraction;
 using Abandoned.World;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -55,10 +56,14 @@ namespace Abandoned.EditorTools
             var van = root.AddComponent<WorldVan>();
             var vanSeats = root.AddComponent<VanSeats>();
             vanSeats.EditorSetup(van, seats, exits);
-            van.EditorSetup(vanSeats, tailgate, lights);
+            van.EditorSetup(vanSeats, tailgate, lights, Cargo(root.transform, seats[VanSeats.DriverSeat]));
+            root.AddComponent<VanSound>();
+            root.AddComponent<VanCargoLock>();
             root.AddComponent<VanDebugView>();
             // The open world's shared state rides on the van: one per world, spawned with it.
             root.AddComponent<WorldState>();
+            (NetworkObject[] hazards, NetworkObject monster, GameObject scare) = RoadEventBuilder.Build();
+            root.AddComponent<RoadEventDirector>().EditorSetup(van, hazards, monster, scare);
             root.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
@@ -127,6 +132,20 @@ namespace Abandoned.EditorTools
             box.size = size;
             t.gameObject.AddComponent<IntentionalInvisibleCollider>().EditorSetup("The van's detailed body collides as simple boxes.");
             return box;
+        }
+
+        // The cargo box as the job's truck: loot in the bay counts, anyone in the cab or the box rides home, and the
+        // driver's seat is the lever (the horn).
+        private static TruckCargo Cargo(Transform van, Transform driver)
+        {
+            Transform bayT = GreyboxFactory.Group("CargoBay", van);
+            var bay = bayT.gameObject.AddComponent<BoxCollider>();
+            bay.isTrigger = true;
+            bay.center = new Vector3(0f, 2.15f, 0f);
+            bay.size = new Vector3(2.6f, 2.2f, 5f);
+            var cargo = van.gameObject.AddComponent<TruckCargo>();
+            cargo.EditorSetup(bay, new Bounds(new Vector3(0f, 2f, 1.4f), new Vector3(3f, 3.6f, 8.4f)), driver);
+            return cargo;
         }
 
         private static VanTailgate Tailgate(Transform van, Transform left, Transform right)
