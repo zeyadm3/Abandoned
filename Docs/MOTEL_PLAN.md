@@ -155,11 +155,14 @@ The Motel scene never moves. It loads at the authored origin; the world moves la
 The existing absolute configs/NavMesh stay there. No script moves the root and no second cargo truck is authored.
 
 - Own ground rectangle: **x=-8..112, z=-24..44** (`Rect(-8,-24,120,68)`). Every outer ground edge meets **y=0**.
+- **Whole ground with the roadside (2026-10-23): x=-80..190, z=-110..90**, top **y=0**; the world's road can meet the
+  access road at the south edge (z=-110, x=27..37), which leads straight to the apron's mouth at x=32.
 - Road connection: **south edge z=-24**, across the van apron, aligned with the central lane at x=32.
 - Van parking/loading pose: **(32,0,-12)**, forward **(0,0,-1)**, `Motel/VanDock`.
 - Lodge collapse bounds remain x=-4..68, z=12..28, y=0..8. Courtyard, pool, apron, diner and shed are outside.
 - Omit world terrain across the complete own-ground rectangle; it must not fill the pool's real depression.
-- No standalone horizon/sky geometry exists to hide. The adapter handles standalone camera/sun/global atmosphere.
+- No standalone horizon/sky geometry exists to hide. The adapter handles standalone camera/sun/global atmosphere. If the
+  world would rather show its own surroundings, `Motel/Roadside` holds all of the roadside (its roads' slabs are its ground).
 - Location id `motel`, scene `Motel`, resource prefix `Motel/Network` and the owned catalog/run clone remain stable.
   World readiness/activation and persistent cargo stay with Claude CLI's world adapter; its paths were not touched.
 
@@ -170,6 +173,26 @@ contains 38 authored definitions across every carry class; all of their names ha
 sheet entries. Shared structure configs/fractured tile, run/structure network prefabs and loot/carry configs are
 present on disk. Unity folder metadata is included. This was a source/file review only; no compilation or engine
 execution was performed, and generated scene/data/art content still comes from the rebuild.
+
+## The roadside round it (2026-10-23, user: "work on the surroundings of the hospital and the motel")
+
+This supersedes "keep the surrounding site frozen" for the area outside the motel's own ground only: the lodge, the
+courtyard, the pool, the apron, the diner and shed, `MotelSite`'s ground, the van pose and the road mouth are
+unchanged. `Editor/Motel/MotelTown.cs`, called last in `MotelSite.Build`, built with the station town kit
+(`Editor/PoliceStation/Station*.cs`; Docs/POLICE_STATION_PLAN.md "The neighbourhood and the art kit").
+- **Roads**: the highway along the front (z -40..-24, four lanes), an **access road** running south from the apron's
+  mouth (x 27..37, rumble strips at the junction) to the edge, the west and east roads (x -20..-8 and 112..124) and a
+  back road (z 44..54). Verges and sidewalks, kerbs at the motel's edge (none across the apron's mouth), crosswalks,
+  signals on the highway, stop signs on the back road.
+- **Across the highway**: a gas station, a burger stand, a strip mall behind its car park (bays, four cars, a cart
+  corral), a tyre shop, two warehouses, a liquor store, shops and an auto garage. **West**: an auto salvage garage, two
+  houses in fenced yards, a shop. **East**: a second strip mall, a shop, a house. **Behind**: seven clapboard houses in
+  their yards with paths and driveways, a warehouse, a church and two more houses at the west corner, a warehouse at
+  the east.
+- **Landmarks**: three billboards (two over the highway, one facing the access road for whoever drives in), the town's
+  water tower behind the back road, power lines along the highway and the back road, wrecks left on the highway (a
+  burnt sedan, a pickup with its door open, a smashed SUV, a tow truck and a sawhorse), dumpsters and litter.
+- Off the NavMesh (a `NavMeshModifier` ignores the whole group); small outside renderers do not occlude.
 
 ## Decisions CLAUDE.md should record
 
@@ -200,3 +223,6 @@ For Claude CLI only:
    reduced flashing, F1 sound markers, translated signs/fonts and all nine text languages.
 7. Review saved occlusion through lost slabs, then host plus three clients and world stream/unload behavior at
    origin using the expanded ground rectangle/edge height and van pose. This agent performed none of these checks.
+8. **The roadside** (2026-10-23): rebuild, then from the van apron and the highway junctions check buildings on every
+   side, lamps lit, nothing standing in a road, the access road open from the south edge to the apron, the billboards
+   and water tower, and that monsters never leave the motel's own ground. Watch the rebuild time and the frame rate.

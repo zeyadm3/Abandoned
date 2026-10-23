@@ -78,6 +78,8 @@ namespace Abandoned.Motel
                 k.Box("Perimeter", g, new Vector3(x, .55f, 10), new Vector3(.2f, 1.1f, 68), k.Accent);
             }
             k.Box("RearFence", g, new Vector3(52, .55f, 43.8f), new Vector3(120, 1.1f, .2f), k.Accent);
+            // The roadside round the motel's own ground (roads, businesses, houses, billboards; off the NavMesh).
+            MotelTown.Build(root);
         }
         private static void Pool(Transform p, MotelKit k)
         {
