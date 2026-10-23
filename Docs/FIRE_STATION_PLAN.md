@@ -138,9 +138,59 @@ Authored at the scene's own origin; the world moves round it, never the scene.
 - **Van parking**: an empty marker `FireStation/Exterior/VanParking` at the van's rear doors, **(12, 0, -11)**, forward
   **(0, 0, -1)** (cab south, toward the street; ramp north to the haul lane's door). Painted bay lines and a hatched
   loading box behind the doors. No truck of the map's own.
-- **Ground rectangle**: x **-30..94**, z **-40..60**; the edge's top is at **y -0.02** (every ground slab's top).
-- **Paths for the world to hide**: none. The scene has no truck, no sky, no trees, no grass and no far scenery.
+- **Ground rectangle**: x **-70..134**, z **-50..100** (third pass; was x -30..94, z -40..60); the edge's top is at **y -0.02** (every
+  ground slab's top: roads, sidewalks, lots and yards are all slabs).
+- **Paths for the world to hide**: none needed (no truck, sky, trees or grass). If the world would rather show its
+  own town, `Exterior/Neighbourhood` holds every building and street piece (the streets' slabs stay ground).
 - The NavMesh covers the building (the lot is left out): monsters reach the crew only inside.
+
+## The town round it (third pass)
+- **The town** (`FireStationTown`): Main Street in front of the apron, West Avenue (x -40..-30), East Avenue
+  (x 98..108) and a back street behind the rear yard (z 64..74). Across Main Street: a gas station, three shops, a
+  walk-up, row houses and a warehouse, a garage at the west corner, two shops at the east. West: a walk-up, a warehouse,
+  row houses. East: a church on the corner, two houses set back in their yards, a shop. Behind: six clapboard houses
+  in fenced yards and four row houses. Red fire-alarm street boxes, signals, lamps, power lines, road works on the back
+  street, cars parked along the kerbs but none on the apron's side of Main Street, where the van comes and goes.
+- The lot itself: the detailed engines and Ladder 4 in the bay (chocks under the front wheels), a retired pumper and a
+  rescue van in the rear yard, a rolled car and a roof-cut car in the drill yard, the smoke container ribbed and
+  sooted, barrel stoves, crates, a searchlight, a memorial with the old bell by the flagpole, kerbs along the
+  station's sidewalks, scanned hydrants, crew cars and a covered car in the east lot, a camera and security light.
+
+## The neighbourhood and the art kit (third pass, 2026-10-23)
+User: "add buildings around them, improve the entire level design ... the surrounding scenery, the inside ... and the
+exterior ... more detailed assets for the cars, the chairs, everything". Shared station kit, `Editor/PoliceStation/`:
+- **Town** (`StationTownBuildings`, `StationTownLandmarks`, `StationTownFacade`, `StationTownArt`, `StationTownPlan`):
+  original buildings made in code, exterior only (doors shut, no rooms), each solid: row houses with stoops and
+  areaway railings, shops with flats over them (shopfronts, sign bands with a maker's mark and no lettering, awnings,
+  half-down roller shutters, posters), walk-up apartment blocks (fire escapes, window air-conditioners, rooftop water
+  tanks, stair bulkheads, dishes), warehouses with loading docks and roller doors, an auto garage, clapboard houses
+  with gable roofs, porches and shutters, a brick church with its belfry, rose window and spire, a gas station with
+  canopy, pumps, kiosk and price sign. Windows have frames, mullions, sills, lintels and grime streaks; panes are glass,
+  blinds, dark, boarded or broken by seed. Photographed brick, corrugated iron and weathered concrete (the Poly Haven
+  ground scans already in Art/TestMap/Ground, read only) beside the code-made brick, siding and stucco.
+- **Streets** (`StationStreet`): roads and sidewalks as ground slabs (so the world's survey reads them), double yellow
+  centre lines, edge lines, drains, manholes, tar patches, flagged sidewalks with kerbs, crosswalks at every corner;
+  scanned street lamps that still light (spot, no shadows), power poles from the scanned kit with sagging wires,
+  traffic signals on mast arms, stop signs and street-name blades (blank), a bus shelter, benches, mailboxes, news
+  boxes, parking meters, hydrants, dumpsters, bollards, sawhorses, concrete barriers, litter.
+- **Vehicles** (`StationVehicles`, `StationVehicleShape`, `StationApparatus`, `StationMeshes`): every car is a smooth
+  lofted body with cut wheel arches, a tinted glasshouse under a painted roof, pillars, lathed tyres and rims, lamps,
+  grille, bumpers, plates, mirrors, handles and wipers; sedan, hatchback, SUV, pickup and police cruiser (light bar,
+  push bar, spotlight, white doors). Wear: flat tyres, crazed glass, dust, an open door, burnt out on its rims, roof
+  cut off. Fire pumpers and the aerial ladder truck (custom cab, roll-up compartments, pump panel, hose bed, racked
+  ground ladders, dual rears, lattice aerial on its turntable), a box van and a tow truck. Meshes are saved per station
+  in `Art/<Station>/Meshes`.
+- **Furniture** (`StationFurniture*.cs`, same method names as before): office chairs on five-star bases with casters and
+  padded cushions, scanned waiting chairs and sofa, desks with drawers, locks, CRT or flat monitors, phones and scanned
+  desk lamps, binders and stationery, filing cabinets with a drawer left out, braced shelving with lidded and
+  labelled boxes, lockers with vents, number plates and the odd one ajar, slatted crates, scanned barrels, lathed
+  toilets, basins and pedestals, bunks with ladders and rumpled bedding, a CRT television, a fridge with notes on it,
+  a range with a pot, gym kit with lathed plates.
+- **The station's own walls** (`StationFacadeDetail`): each window framed, mullioned and transomed in its reveal, a
+  stone lintel and keystone, the grime streak under the sill; brick pilasters on the bay lines, stone quoins, a
+  dentilled cornice under the coping, downpipes with hoppers and shoes.
+- Small renderers outside stop being occluders (`StationSite.TrimOccluders`): the occlusion bake works on building
+  masses and walls only, so it should not grow like the Skyscraper's.
 
 ## Files
 | File | What |
@@ -188,3 +238,9 @@ re-applies every item's data on each rebuild.
 10. **Not done here (other owners)**: `LocationPlumbing.ConfigureHorrorScenes` drops `FireStation` from the
     HorrorConfig scene list whenever another map is rebuilt; no remaster or lighting profile yet; the stale generated
     assets in `Art/FireStation` and `Data/Loot/FireStation` are updated in place by the rebuild.
+11. **Third pass (town and art)**: rebuild, then look round from the van bay and the street corners: buildings on every
+    side, lamps lit, wires sagging between the poles, no car or lamp standing in a road, no building on a sidewalk.
+    The build is bigger: watch the rebuild's time (the occlusion bake above all) and the frame rate on the street.
+12. **Cars and furniture**: walk round a parked car (wheels in their arches, glass, lamps, a flat tyre sitting down),
+    a cruiser, the engines; sit at a desk, look at the chairs, lockers and shelving. A Poly Haven scan that turns out
+    to face the wrong way (a waiting chair, the sofa) is a one-number fix in `StationFurniture` (its local yaw).

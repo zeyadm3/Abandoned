@@ -59,7 +59,7 @@ namespace Abandoned.EditorTools
         }
 
         // Contiguous stretches of a side whose inside cell is not custom.
-        private static IEnumerable<(float from, float to, List<Vector2Int> cells)> Runs(StationPlan plan, P.Side side)
+        internal static IEnumerable<(float from, float to, List<Vector2Int> cells)> Runs(StationPlan plan, P.Side side)
         {
             int count = side is P.Side.South or P.Side.North ? plan.Width : plan.Depth;
             var cells = new List<Vector2Int>();
@@ -85,7 +85,7 @@ namespace Abandoned.EditorTools
             }
         }
 
-        private static List<Hole> Openings(StationPlan plan, P.Side side, float from, float to, List<Vector2Int> cells)
+        internal static List<Hole> Openings(StationPlan plan, P.Side side, float from, float to, List<Vector2Int> cells)
         {
             var holes = plan.Facade.Where(o => o.Side == side).Select(o => new Hole(o.Centre, o.Width, o.Bottom, o.Top, o.Glazed)).ToList();
             bool alongX = side is P.Side.South or P.Side.North;

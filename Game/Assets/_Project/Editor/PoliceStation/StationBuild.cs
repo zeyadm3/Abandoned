@@ -46,6 +46,7 @@ namespace Abandoned.EditorTools
             Dictionary<Vector3Int, StructuralSection> sections = StationFloors.AddSections(setup, plan, floors);
             int walls = StationWalls.BuildInterior(root, plan, art);
             int shell = StationFacade.Build(root, plan, art);
+            shell += StationFacadeDetail.Apply(root, plan, art);
 
             var ctx = new StationContext(root, plan, art, setup, sections, plan.SceneName.ToLowerInvariant() + "_loot_");
             recipe.Dress(ctx);

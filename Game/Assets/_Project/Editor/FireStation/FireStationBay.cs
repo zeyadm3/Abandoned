@@ -49,32 +49,15 @@ namespace Abandoned.EditorTools
             ctx.Threat(new Vector3(26f, 0f, 21f));
         }
 
-        // A pumper, cab to the street. One solid box; the detail is visual.
+        // A pumper, cab to the street. One solid box; the detail is visual (StationApparatus).
         private static void Engine(Props p, StationArt a, P.Room r, string name, float x)
         {
             Transform t = p.Place(r.Name, name, new Vector3(x, 0f, 7.4f), 180f, new Vector3(2.5f, 3.2f, 9.6f));
             if (t == null) return;
-            Props.B(t, "Body", new Vector3(0f, 1.35f, -1.2f), new Vector3(2.45f, 1.9f, 6.6f), a.Red);
-            Props.B(t, "Cab", new Vector3(0f, 1.55f, 3.3f), new Vector3(2.45f, 2.3f, 2.6f), a.Red);
-            Props.B(t, "Windscreen", new Vector3(0f, 2.05f, 4.61f), new Vector3(2.2f, .9f, .03f), a.Glass);
+            StationApparatus.Pumper(t, a, a.Red, Mathf.RoundToInt(x));
+            // Chocks under the front wheels and a hose laid out of the side outlet, as it was left.
             foreach (float s in new[] { -1f, 1f })
-            {
-                Props.B(t, "CabWindow", new Vector3(s * 1.23f, 2.05f, 3.5f), new Vector3(.02f, .8f, 1.6f), a.Glass);
-                Props.B(t, "PumpPanel", new Vector3(s * 1.24f, 1.6f, 1.4f), new Vector3(.03f, 1f, 1f), a.Chrome);
-                for (int g = 0; g < 3; g++)
-                    Props.C(t, "Gauge", new Vector3(s * 1.26f, 1.8f, 1.1f + g * .3f), new Vector3(.12f, .01f, .12f), a.Brass).transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                for (int d = 0; d < 3; d++)
-                    Props.B(t, "Shutter", new Vector3(s * 1.235f, 1.45f, -3.6f + d * 1.5f), new Vector3(.02f, 1.3f, 1.35f), a.Steel);
-                foreach (float z in new[] { 3f, -2.2f, -3.5f })
-                    Props.C(t, "Tyre", new Vector3(s * 1.1f, .55f, z), new Vector3(1.1f, .18f, 1.1f), a.Rubber).transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                Props.B(t, "LadderRail", new Vector3(s * .5f, 2.4f, -1.2f), new Vector3(.08f, .1f, 7f), a.Steel);
-            }
-            for (int i = 0; i < 18; i++) Props.B(t, "Rung", new Vector3(0f, 2.4f, -4.5f + i * .38f), new Vector3(1f, .04f, .04f), a.Steel);
-            Props.B(t, "Bumper", new Vector3(0f, .55f, 4.72f), new Vector3(2.5f, .3f, .2f), a.Chrome);
-            Props.B(t, "Grille", new Vector3(0f, 1.15f, 4.61f), new Vector3(1.4f, .6f, .02f), a.Chrome);
-            Props.B(t, "LightBar", new Vector3(0f, 2.75f, 3.7f), new Vector3(1.6f, .1f, .3f), a.WarningRed);
-            Props.B(t, "HoseBed", new Vector3(0f, 2.4f, -3.9f), new Vector3(2f, .3f, 1.5f), a.Plain("HoseCanvas", new Color(.62f, .56f, .4f), .1f));
-            Props.B(t, "RearStep", new Vector3(0f, .45f, -4.6f), new Vector3(2.4f, .1f, .4f), a.Steel);
+                Props.B(t, "Chock", new Vector3(s * 1.04f, .12f, 3.95f), new Vector3(.3f, .24f, .25f), a.Safety);
         }
 
         // Ladder 4: a long chassis, the aerial ladder nested on top from its turntable at the back, outriggers stowed.
@@ -82,31 +65,7 @@ namespace Abandoned.EditorTools
         {
             Transform t = p.Place(r.Name, "Ladder4", new Vector3(20f, 0f, 8.4f), 180f, new Vector3(2.55f, 3.5f, 12.4f));
             if (t == null) return;
-            Props.B(t, "Chassis", new Vector3(0f, 1.2f, -1f), new Vector3(2.5f, 1.5f, 9.6f), a.Red);
-            Props.B(t, "Cab", new Vector3(0f, 1.5f, 4.7f), new Vector3(2.5f, 2.3f, 2.8f), a.Red);
-            Props.B(t, "Windscreen", new Vector3(0f, 2f, 6.11f), new Vector3(2.25f, .9f, .03f), a.Glass);
-            Props.C(t, "Turntable", new Vector3(0f, 2.05f, -3.8f), new Vector3(1.9f, .2f, 1.9f), a.DarkSteel);
-            Props.B(t, "Pedestal", new Vector3(0f, 2.5f, -3.8f), new Vector3(1f, .7f, 1.2f), a.Red);
-            for (int s = 0; s < 3; s++)
-            {
-                float w = 1.2f - s * .15f, y = 2.95f + s * .14f;
-                foreach (float x in new[] { -w * .5f, w * .5f })
-                    Props.B(t, "Rail", new Vector3(x, y, .4f), new Vector3(.08f, .14f, 10f - s * .6f), a.Chrome);
-                for (int i = 0; i < 24; i++) Props.B(t, "Rung", new Vector3(0f, y, -4.3f + i * .4f), new Vector3(w, .03f, .03f), a.Steel);
-            }
-            Props.B(t, "Bucket", new Vector3(0f, 2.9f, 5.8f), new Vector3(1f, .6f, .6f), a.Chrome);
-            foreach (float s in new[] { -1f, 1f })
-            {
-                foreach (float z in new[] { 4.3f, -2.7f, -4.1f })
-                    Props.C(t, "Tyre", new Vector3(s * 1.12f, .55f, z), new Vector3(1.1f, .18f, 1.1f), a.Rubber).transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                foreach (float z in new[] { -2f, 2.6f })
-                    Props.B(t, "Outrigger", new Vector3(s * 1.3f, .6f, z), new Vector3(.2f, .5f, .5f), a.Safety);
-                for (int d = 0; d < 4; d++)
-                    Props.B(t, "Shutter", new Vector3(s * 1.255f, 1.2f, -4.5f + d * 1.9f), new Vector3(.02f, 1.1f, 1.7f), a.Steel);
-                Props.B(t, "GroundLadders", new Vector3(s * 1.32f, 1.95f, -.5f), new Vector3(.12f, .3f, 6f), a.Wood);
-            }
-            Props.B(t, "Bumper", new Vector3(0f, .55f, 6.2f), new Vector3(2.55f, .3f, .2f), a.Chrome);
-            Props.B(t, "LightBar", new Vector3(0f, 2.7f, 5.2f), new Vector3(1.6f, .1f, .3f), a.WarningRed);
+            StationApparatus.LadderTruck(t, a, a.Red, 4);
         }
 
         private static void TurnoutRack(Props p, StationArt a, P.Room r, P.Side wall, float along)

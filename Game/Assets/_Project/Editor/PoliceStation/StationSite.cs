@@ -1,5 +1,6 @@
 using Abandoned.Core;
 using Abandoned.Extraction;
+using UnityEditor;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
 using P = Abandoned.EditorTools.StationPlan;
@@ -87,38 +88,41 @@ namespace Abandoned.EditorTools
             solid.size = new Vector3(.12f, height, length);
         }
 
-        /// <summary>An abandoned sedan (or a patrol car with a light bar): solid, flat tyres, dust on the glass.</summary>
-        public static Transform Car(Transform parent, string name, Vector3 at, float yaw, Material body, StationArt art, bool lightBar = false)
+        /// <summary>An abandoned sedan (or a police cruiser): the detailed car of <see cref="StationVehicles"/>, solid.</summary>
+        public static Transform Car(Transform parent, string name, Vector3 at, float yaw, Material body, StationArt art, bool lightBar = false,
+            StationVehicleWear wear = StationVehicleWear.None)
         {
-            Transform car = Group(name, parent);
-            car.SetPositionAndRotation(at, Quaternion.Euler(0f, yaw, 0f));
-            Box("Body", car, new Vector3(0f, .62f, 0f), new Vector3(1.8f, .62f, 4.7f), body, false);
-            Box("Cabin", car, new Vector3(0f, 1.18f, -.2f), new Vector3(1.6f, .52f, 2.3f), body, false);
-            Box("Windscreen", car, new Vector3(0f, 1.18f, .96f), new Vector3(1.5f, .46f, .04f), art.Glass, false);
-            Box("RearScreen", car, new Vector3(0f, 1.18f, -1.36f), new Vector3(1.5f, .42f, .04f), art.Glass, false);
-            foreach (float side in new[] { -1f, 1f })
+            int seed = Mathf.Abs(Mathf.RoundToInt(at.x * 7f + at.z * 13f));
+            StationVehicleKind kind = lightBar ? StationVehicleKind.Cruiser : (StationVehicleKind)(new[] { 0, 2, 3, 0, 4 }[seed % 5]);
+            return StationVehicles.Car(parent, name, at, yaw, kind, body, art, wear, seed);
+        }
+
+        /// <summary>A car under a tarp (the scanned covered car), or a code-built sedan if the scan is missing.</summary>
+        public static Transform CoveredCar(Transform parent, Vector3 at, float yaw, StationArt art)
+        {
+            GameObject g = StationScans.Put(parent, "covered_car", at, yaw, new Vector3(2.4f, 2f, 5.4f), solid: true);
+            return g != null ? g.transform : Car(parent, "Car", at, yaw, StationVehicleArt.For(art).Paint(Mathf.RoundToInt(at.x)), art,
+                wear: StationVehicleWear.Dusty);
+        }
+
+        /// <summary>
+        /// Only big things hide what is behind them: every renderer under <paramref name="root"/> smaller than
+        /// <paramref name="size"/> metres on its longest side stops being an occluder (it stays static and is still
+        /// culled), so the occlusion bake works on building masses and walls, not on thousands of mullions and cars.
+        /// </summary>
+        public static int TrimOccluders(Transform root, float size = 4f)
+        {
+            int trimmed = 0;
+            foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true))
             {
-                Box("SideGlass", car, new Vector3(side * .81f, 1.2f, -.2f), new Vector3(.02f, .38f, 2.1f), art.Glass, false);
-                foreach (float z in new[] { -1.45f, 1.45f })
-                {
-                    GameObject wheel = Primitive(PrimitiveType.Cylinder, "Tyre", car, new Vector3(side * .78f, .3f, z), new Vector3(.62f, .12f, .62f), art.Rubber, false);
-                    wheel.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                }
+                Vector3 e = r.bounds.size;
+                if (Mathf.Max(e.x, Mathf.Max(e.y, e.z)) >= size) continue;
+                StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(r.gameObject);
+                if ((flags & StaticEditorFlags.OccluderStatic) == 0) continue;
+                GameObjectUtility.SetStaticEditorFlags(r.gameObject, flags & ~StaticEditorFlags.OccluderStatic);
+                trimmed++;
             }
-            Box("Bumper_F", car, new Vector3(0f, .42f, 2.38f), new Vector3(1.82f, .18f, .1f), art.Chrome, false);
-            Box("Bumper_R", car, new Vector3(0f, .42f, -2.38f), new Vector3(1.82f, .18f, .1f), art.Chrome, false);
-            if (lightBar)
-            {
-                Box("LightBar", car, new Vector3(0f, 1.5f, -.1f), new Vector3(1.2f, .1f, .25f), art.Rubber, false);
-                Box("Lens_R", car, new Vector3(-.35f, 1.52f, -.1f), new Vector3(.45f, .08f, .22f), art.Red, false);
-                Box("Lens_B", car, new Vector3(.35f, 1.52f, -.1f), new Vector3(.45f, .08f, .22f), art.AccentDark, false);
-                Box("Door_L", car, new Vector3(-.905f, .75f, .1f), new Vector3(.01f, .5f, 1.9f), art.White, false);
-                Box("Door_R", car, new Vector3(.905f, .75f, .1f), new Vector3(.01f, .5f, 1.9f), art.White, false);
-            }
-            var solid = car.gameObject.AddComponent<BoxCollider>();
-            solid.center = new Vector3(0f, .75f, 0f);
-            solid.size = new Vector3(1.85f, 1.5f, 4.8f);
-            return car;
+            return trimmed;
         }
 
         /// <summary>A kerb along a line (a low solid strip).</summary>
