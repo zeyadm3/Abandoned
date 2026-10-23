@@ -124,6 +124,7 @@ namespace Abandoned.EditorTools
                 "Exterior/Plaza/StreetLamps", "Lobby/LobbyCeiling",
                 "IntermediateFloors/FloodedFloor_12m/FloodedCeiling",
                 "IntermediateFloors/LootedOffice_32m/OfficeCeiling",
+                "IntermediateFloors/RooftopInfrastructure",
                 "Lights", "ElevatorShaft/ShaftHoist"
             });
 

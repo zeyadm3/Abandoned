@@ -123,13 +123,11 @@ namespace Abandoned.EditorTools
             Box("DirectoryPlinth", dir, new Vector3(0f, 0.9f, 0f), new Vector3(2.2f, 1.8f, 0.25f), art.GraniteDark);
             Box("BrassPlaque", dir, new Vector3(0f, 1.0f, -0.14f), new Vector3(1.9f, 1.4f, 0.02f), art.Brass, false);
 
-            // 9. Elevator Vestibule Portals (North wall transitions)
-            Transform portals = Group("CorePortals", lobby);
-            Box("ElevatorPortalL", portals, new Vector3(-1.6f, 1.5f, -2.25f), new Vector3(0.3f, 3.0f, 0.2f), art.Brass);
-            Box("ElevatorPortalR", portals, new Vector3( 1.6f, 1.5f, -2.25f), new Vector3(0.3f, 3.0f, 0.2f), art.Brass);
-            Box("ElevatorPortalTop", portals, new Vector3(0f, 3.1f, -2.25f), new Vector3(3.5f, 0.3f, 0.2f), art.Brass);
+            // 9. Elevator Vestibule Portals & Lobby Details (4-Car Bank, Cafe, Valet, Security)
+            SkyscraperLobbyDetails.Build(lobby, art);
 
             // Stairwell fire door portal at x = -8.9f, z = -2.4m
+            Transform portals = Group("CorePortals", lobby);
             Box("StairDoorFrame", portals, new Vector3(-8.9f, 1.4f, -2.4f), new Vector3(0.3f, 2.8f, 1.4f), art.Steel);
         }
     }

@@ -29,6 +29,14 @@ The street surrounding Cloudline Tower is a fully realized urban sector:
   - *Courier Delivery Van* abandoned mid-dropoff.
 - **East Barricade**: Concrete Jersey barriers and a rusted commercial dumpster blocking off through-traffic.
 
+### Dense Municipal Infrastructure (`SkyscraperStreetDetails`)
+- **Metro Subway Station Entrance (`x = -17m, z = -30m`)**: Subterranean stairwell steps descending into darkness, cast-iron perimeter railing, twin illuminated green/bronze globe lamps, "METRO / 49TH ST - DOWNTOWN" station archway, and chained security gate.
+- **Sidewalk Newsstand Kiosk (`x = 16m, z = -22.5m`)**: Corrugated steel kiosk with roll-up security grill, magazine racks, bundled newspaper stacks tied with twine, and vintage illuminated soda vending machine.
+- **Transit Bus Passenger Shelter (`x = -9m, z = -22.2m`)**: Modern cantilevered glass canopy, slatted steel bench, and illuminated double-sided route map billboard.
+- **Utility Roadwork Excavation Trench (`x = 2m, z = -30m`)**: Asphalt roadway excavation trench bridged by diamond-plate steel plates, flanked by orange-and-white hazard drums and A-frame sawhorses with flashing amber warning beacons.
+- **Curbside Municipal Props**: Two cast-iron fire hydrants with brass chain valve caps, blue USPS drop mailbox, mechanical parking meters, and high-voltage electrical transformer cabinet on concrete pad.
+- **West Delivery Service Alleyway (`x = -18.2m, z = -12m`)**: Service alley with stacks of wooden cargo pallets, steel grease/oil drums, and suspended fire escape landing with counterweight ladder.
+
 ### Cloudline Forecourt Plaza (`z = -20` to `-10`)
 Pedestrian approach square paving the transition between Broadway Avenue and the tower entrance:
 - **Paved Square**: Interlocking stone paving (`PavingStones126A`).
@@ -70,6 +78,12 @@ Authored under `Exterior/Skyline` to provide breathtaking urban depth whether lo
 - **Security Screening Checkpoint**: 4 optical glass-flap security turnstiles, walk-through metal detector portal with indicator lamps, and baggage screening station.
 - **Executive Waiting Lounge**: Black leather executive sofas, armchairs, smoked-glass brass coffee table, and an architectural potted ficus tree.
 - **Tenant Directory Monument**: Polished black granite monument plaque with etched brass directory listing all tower floors.
+
+### Grand Lobby Opulence & 4-Car Elevator Bank (`SkyscraperLobbyDetails`)
+- **Art-Deco 4-Car Elevator Bank (`z = -2.25m, x: -6m to +6m`)**: Polished brass architraves, marble frieze, and analog dial arrow floor indicators. Car 1 is barricaded with a yellow crossbar, Car 2 is the operational freight/passenger lift the crew rides, Car 3 is jammed slightly open revealing a dark shaft void, and Car 4 is boarded up with timber planks. Central ornate brass call station pediment with jewel pushbuttons.
+- **Cloudline Gourmet Cafe & Espresso Bar (`x = -13.5m, z = -6.5m`)**: L-shaped black granite cafe counter with brass footrail, dual-boiler espresso machine, glass pastry display case, wall chalkboard menu, and high-top leather bar stools.
+- **Bellhop Luggage & Valet Station (`x = 2.5m, z = -7.5m`)**: Two polished brass birdcage luggage trolleys with red carpet decks, stacked vintage leather suitcases, and valet key podium.
+- **Security Supervisor Monitoring Console (`x = 7.5m, z = -5.8m`)**: Steel console desk with a 4-screen CRT CCTV surveillance monitor bank, red emergency direct-line phone, and gooseneck PA microphone.
 
 ---
 
@@ -126,11 +140,30 @@ The lift fails for three clear, readable reasons:
 - **Penthouse Executive Suite**: VIP private dining boardroom, rich mahogany table, 8 leather executive armchairs, climate-controlled glass wine display wall, and the executive wall safe (220 kg).
 - **Observation Terrace**: Outdoor cantilevered viewing deck with tempered safety glass barriers.
 
+### Sommelier Wine Vault & Reserve Cellar (`SkyscraperWineVault`)
+- **Smoked Glass Vault Enclosure (`x = 14m, z = -2.5m, y = 44m`)**: Heavy brass framing, pivot glass vault door with tubular brass handle, and electronic keypad lock.
+- **Floor-to-Ceiling Wine Racks**: Diagonal criss-cross mahogany lattice bins holding hundreds of reserve vintage bottles.
+- **Sommelier Tasting Table**: Marble-top table with crystal wine decanter cradle, silver tastevin, and leather inventory ledger.
+- **Refrigerated Compressor Unit**: Corner chiller with digital LED temperature readout ("12.5°C").
+- **Jackpot Timber Chocks**: Heavy timber cradle holding the 340 kg `grand_wine_cask`.
+
+### Luxury Restroom & Powder Room Suite (`SkyscraperRestrooms`)
+- **Restrooms Enclosure (`x = -13.5m, z = 6.0m, y = 44m`)**: Checkered marble tile floor, dividing partitions, brass "RESTROOMS" plaque.
+- **Double Vanity Counter**: Carrara marble floating counter with 2 undermount basins, brass gooseneck faucets, full-width back-lit mirror, and soap/towel dispensers.
+- **Private Toilet Cubicles**: Dark mahogany stalls with brass latches; Stall 1 open, Stall 2 closed with red "OCCUPIED" indicator.
+- **Storytelling Details**: Dripping faucet, shattered mirror crack decals, and overturned brass waste basket.
+
 ### Summit Roof Terrace & Window Gantry (y = 50 m)
 - **Exterior Access Stairs**: Connects restaurant terrace up to the roof parapet.
 - **Helipad**: Painted contrast "H" helicopter landing target on the open concrete slab.
 - **Window-Cleaning Gantry**: Heavy steel crane rail track along the northern parapet, motorized trolley, A-frame boom arm, and a suspended cradle platform hanging out over the 50 m vertical drop.
 - **Viewing Telescope**: High-power brass observation telescope overlooking the skyline.
+
+### Industrial Rooftop Mechanical Infrastructure (`SkyscraperRooftopDetails`)
+- **Massive Rooftop HVAC Chillers (y = 50m, z = -6m)**: Twin industrial chillers with vibration-isolation spring footings, 4-blade top cooling fan cowlings, and insulated ductwork trunks.
+- **Telecommunications Antenna Mast (y = 50m, x = 12m, z = 18m)**: 10m high steel lattice tower, microwave parabolic dish, transceiver panels, and summit aviation beacon.
+- **Window Washer Rigging Shack (y = 50m, x = -12m, z = 18m)**: Corrugated maintenance shack with spare cable winches, steel rope spools, and grease drums.
+- **Observation Terrace Amenities (y = 44m, x = -16m)**: Stainless steel mushroom radiant patio heaters and teak skyline cocktail tables.
 
 ---
 
@@ -248,11 +281,13 @@ Authored in `Data/Loot/Skyscraper/` with procedural 3D models in `Art/Skyscraper
 When loading the map in Unity via **Tools > Abandoned > Maps > Skyscraper Restaurant > Rebuild Skyscraper Restaurant**:
 1. **Streetscape, Forecourt Plaza & Skyline**:
    - Check Broadway Avenue: double-yellow lines, pedestrian crosswalks, street lamps, abandoned vehicles (Executive towncar, yellow cab, courier van), and East barricades with rusted dumpster.
+   - Inspect Municipal Street Details: subterranean Metro subway station entrance with steps and globe lamps, sidewalk newsstand kiosk with magazine racks and soda machine, cantilevered transit bus shelter, roadwork excavation trench with steel plates, hazard barrels, flashing sawhorses, fire hydrants, USPS mailbox, parking meters, electrical cabinet, and west alley with pallet stacks and fire escape.
    - Check Cloudline Plaza: paved stone square, drained reflecting pool with murky puddle, "The Ascendant Spiral" modern brass sculpture, concrete planters with withered trees, teak benches, corporate monument sign, chrome flagpoles with burgundy banners, and underground garage ramp.
    - Look into the distance / up at the horizon: verify the 6 skyline features (85m Trans-Continental spire with red beacon, 72m twin towers with 42m skybridge, 92m Vanguard monolith, 38m Federal Reserve, 8m elevated highway with stalled cars, 110m suspension bridge tower).
 2. **Grand Double-Height Marble Lobby**:
    - Walk through the revolving cylinder glass doors into the lobby.
    - Check the Carrara marble and dark granite floor, fluted double-height pillars, concierge reception desk, optical security turnstiles, metal detector portal, executive leather waiting lounge, and tenant directory plaque.
+   - Inspect the Art-Deco 4-car elevator bank (service car yellow crossbar, active car, jammed void car, boarded car), Cloudline Cafe espresso bar, birdcage luggage trolleys, and security supervisor CCTV monitor desk.
 3. **Elevator Operation & Indicators**:
    - Check landing call buttons at Lobby (0 m), Mechanical Deck (20 m), and Restaurant (44 m). Verify landing gates open only when cab arrives.
    - Verify car destination buttons (Lobby, Mechanical, Restaurant) move the elevator smoothly with riders on `MovingPlatform`.
@@ -267,7 +302,10 @@ When loading the map in Unity via **Tools > Abandoned > Maps > Skyscraper Restau
      - Floor 11 (44 m): Restaurant sky lobby.
 5. **Summit Content & Roof Terrace**:
    - Inspect the panoramic dining room, mahogany bar, commercial kitchen line, cold store, and VIP penthouse.
+   - Inspect the Sommelier Wine Vault & Reserve Cellar: criss-cross mahogany wine racks, marble tasting table, cellar chiller, and jackpot cask chocks.
+   - Inspect the luxury Powder Room & Restrooms: double vanity marble counter, backlit mirror, private toilet cubicles with occupied indicator, and leaking fixtures.
    - Walk up the exterior stairs from the dining terrace to the Roof Terrace (50 m). Check the painted Helipad, window-cleaning gantry rig, suspended cradle, and viewing telescope.
+   - Inspect rooftop industrial HVAC chillers with cooling fans and the 10m telecommunications antenna mast with microwave dish and aviation beacon.
 6. **Structural Collapse**:
    - Walk over northern dining room glass-edge cantilever slabs while carrying heavy loot -> observe fracture stages and collapse.
    - Check central mechanical catwalk over the shaft void.
@@ -287,10 +325,12 @@ When loading the map in Unity via **Tools > Abandoned > Maps > Skyscraper Restau
 - **Skyscraper Restaurant (2026-10-23):** Cloudline Tower & The Apex Restaurant added as an open-world streamed salvage POI (`Scenes/Skyscraper.unity`).
   - Dual vertical transit: Host-authoritative 48 m `SkyscraperElevator` (stops: Ground, Mechanical, Apex Restaurant) with weight-limited cable snap at 450 kg, power dependence on Sector 1, and an 11-flight fire stairwell with stops at Flooded Floor (12 m), Mechanical Deck (20 m), and Looted Office (32 m).
   - Rich urban setting & streetscape: Broadway Avenue with painted markings, sodium lamps, abandoned vehicles (executive car, yellow cab, courier van), drained reflecting pool with modern brass sculpture, corporate plaza, and underground parking ramp.
+  - Complete municipal infrastructure: Subterranean Metro subway entrance, newsstand kiosk, bus shelter, roadwork excavation trench, fire hydrants, mailbox, parking meters, transformer cabinet, and delivery service alley.
   - Atmospheric 360-degree surrounding cityscape (`Exterior/Skyline`) with 6 distinct architectural landmarks (stepped Art-Deco spire, twin towers with 42m skybridge, dark monolith, brutalist Federal Reserve, elevated highway with wrecks, suspension bridge tower).
-  - Grand double-height marble lobby (`Lobby`) featuring revolving cylinder doors, fluted colonnade, concierge desk, optical turnstiles, metal detector portal, and executive waiting lounge.
+  - Grand double-height marble lobby (`Lobby`) featuring revolving cylinder doors, fluted colonnade, concierge desk, optical turnstiles, metal detector portal, executive waiting lounge, Art-Deco 4-car elevator bank, Cloudline Cafe espresso bar, luggage trolleys, and security CCTV console.
+  - Summit culinary amenities: Sommelier Wine Vault & Reserve Cellar with jackpot cask chocks, luxury Powder Room restroom suite with double vanity and cubicles, commercial kitchen line, and VIP Penthouse.
+  - High-altitude rooftop infrastructure: Industrial twin HVAC chillers, 10m communications mast with microwave dish and aviation beacon, gantry maintenance shack, helipad, and observation terrace patio heaters.
   - 5 power sectors with independent `BreakerPanel`s (Lobby 0, Mechanical/Shaft 1, Dining/Terrace 2, Kitchen/Cold Store 3, VIP Penthouse 4).
   - 32 restaurant & executive themed salvage definitions (`Data/Loot/Skyscraper/`), including 2 jackpots: `bronze_bull_statue` (85 kg) and `grand_wine_cask` (340 kg), 100% localized in all 9 languages in `skyscraper.txt`.
-  - Roof crown (50 m) featuring helipad, window-cleaning gantry crane with suspended cradle, and observation telescope.
   - Environmental `SkyscraperSoundscape` (wind whistling, shaft cables creaking, piano lid falling, glasses rattling, flooded pipe drips) with F1 debug Gizmos.
   - Strict occlusion culling: permanent walls and shell set as `OccluderStatic`, floor slabs excluded.

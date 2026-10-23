@@ -22,6 +22,7 @@ namespace Abandoned.EditorTools
 
             // 2. Broadway Streetscape, Forecourt Plaza, Vehicles, and Van Parking Bay
             TruckCargo cargo = SkyscraperPlaza.Build(exterior, art);
+            SkyscraperStreetDetails.Build(exterior, art);
 
             // 3. Massive Skyscraper Structural Facade & Tower Massing
             Transform facade = Group("TowerFacade", exterior);

@@ -149,6 +149,10 @@ namespace Abandoned.EditorTools
             Box("SafetyGlassRailingW", terrace, new Vector3(-2f, 0.7f, 0f), new Vector3(0.1f, 1.3f, 12f), art.Glass);
             Box("SafetyGlassRailingN", terrace, new Vector3(0f, 0.7f, 6f), new Vector3(4f, 1.3f, 0.1f), art.Glass);
 
+            // 6. Sommelier Wine Vault & Restroom Powder Room
+            SkyscraperWineVault.Build(floorGroup, art);
+            SkyscraperRestrooms.Build(floorGroup, art);
+
             return allSlabs;
         }
     }

@@ -163,6 +163,9 @@ namespace Abandoned.EditorTools
             Primitive(PrimitiveType.Cylinder, "Tube", telescope, new Vector3(0f, 1.25f, 0f), new Vector3(0.3f, 1.1f, 0.3f), art.Brass)
                 .transform.localRotation = Quaternion.Euler(30f, 0f, 0f);
 
+            // 4. Rooftop Industrial Infrastructure & Terrace Amenities
+            SkyscraperRooftopDetails.Build(floorsGroup, art);
+
             return allFloorSlabs;
         }
     }
