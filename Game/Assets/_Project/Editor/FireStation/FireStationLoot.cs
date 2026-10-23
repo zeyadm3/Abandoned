@@ -11,8 +11,9 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// The firehouse's salvage (Docs/FIRE_STATION_PLAN.md "Loot"): apparatus-bay gear, the crew's quarters, the hose
-    /// tower's brass and the watch office's old alarm equipment, on the station's own four tags. Data only. Three
-    /// jackpots: the antique hand pumper (apparatus), the vintage jukebox (quarters) and the bronze station bell (tower).
+    /// tower's brass and the watch office's old alarm equipment, on the station's own four tags. Data only. Two jackpots,
+    /// both apparatus: the Jaws of Life (heavy) and the thermal imaging camera (one hand, worth almost as much). The big
+    /// carries are not jackpots but cost a crew: the antique hand pumper, the jukebox, the bronze bell from the tower top.
     /// </summary>
     public static class FireStationLoot
     {
@@ -44,20 +45,20 @@ namespace Abandoned.EditorTools
                 new[] { T(0, -.05f, 0, 1, .9f, 1, "yellow"), R(0, .42f, 0, .9f, .2f, .9f, "yellow"), T(0, .5f, 0, .3f, .1f, .3f, "chrome") }),
             I("leather_helmet", "Leather Fire Helmet", 200, 700, 1.8f, CarryClass.OneHand, new(.32f, .24f, .42f), Fragility.Low, SurfaceMaterial.Fabric, 1f, L.Apparatus,
                 new[] { R(0, .05f, -.05f, .65f, .9f, .65f, "leather"), B(0, -.4f, 0, 1, .1f, 1, "leather"), B(0, .1f, .35f, .3f, .4f, .05f, "brass") }),
-            I("thermal_camera", "Firefighter's Thermal Camera", 400, 1100, 1.5f, CarryClass.OneHand, new(.16f, .22f, .2f), Fragility.Medium, SurfaceMaterial.Plastic, .9f, L.Apparatus,
-                new[] { B(0, 0, 0, 1, 1, 1, "yellow"), B(0, .1f, .51f, .7f, .5f, .02f, "black"), B(0, -.45f, -.1f, .5f, .2f, .6f, "rubber") }),
-            I("rescue_spreader", "Hydraulic Rescue Spreader", 600, 1500, 20f, CarryClass.TwoHand, new(.3f, .25f, .85f), Fragility.Low, SurfaceMaterial.Metal, .8f, L.Apparatus,
-                new[] { B(0, 0, -.25f, .8f, .9f, .5f, "yellow"), B(-.2f, 0, .3f, .2f, .5f, .6f, "steel"), B(.2f, 0, .3f, .2f, .5f, .6f, "steel"), T(0, .45f, -.25f, .3f, .1f, .3f, "black") }, noise: .5f),
+            I("thermal_camera", "Thermal Imaging Camera", 6000, 11000, 1.5f, CarryClass.OneHand, new(.16f, .22f, .2f), Fragility.Medium, SurfaceMaterial.Plastic, .3f, L.Apparatus,
+                new[] { B(0, 0, 0, 1, 1, 1, "yellow"), B(0, .1f, .51f, .7f, .5f, .02f, "black"), B(0, -.45f, -.1f, .5f, .2f, .6f, "rubber") }, jackpot: true, noise: .3f),
+            I("rescue_spreader", "Jaws of Life", 9000, 16000, 45f, CarryClass.Heavy, new(.3f, .25f, .85f), Fragility.Low, SurfaceMaterial.Metal, .3f, L.Apparatus,
+                new[] { B(0, 0, -.25f, .8f, .9f, .5f, "yellow"), B(-.2f, 0, .3f, .2f, .5f, .6f, "steel"), B(.2f, 0, .3f, .2f, .5f, .6f, "steel"), T(0, .45f, -.25f, .3f, .1f, .3f, "black") }, jackpot: true, noise: .7f),
             I("engine_siren", "Chrome Engine Siren", 300, 800, 15f, CarryClass.TwoHand, new(.35f, .35f, .45f), Fragility.Low, SurfaceMaterial.Metal, .9f, L.Apparatus,
                 new[] { T(0, 0, 0, 1, .8f, 1, "chrome"), B(0, 0, .45f, .8f, .8f, .1f, "chrome"), B(0, -.45f, -.1f, .6f, .1f, .6f, "black") }),
             I("portable_pump", "Portable Fire Pump", 500, 1200, 85f, CarryClass.Heavy, new(.8f, .7f, .6f), Fragility.Low, SurfaceMaterial.Metal, .6f, L.Apparatus,
                 new[] { B(0, -.1f, 0, .9f, .7f, .9f, "red"), B(0, .4f, 0, 1, .06f, 1, "steel"), T(.4f, 0, .2f, .2f, .5f, .2f, "brass"), B(-.3f, .2f, 0, .3f, .3f, .5f, "black") }, noise: .8f),
             I("foam_drum", "Drum of Foam Concentrate", 100, 300, 110f, CarryClass.Heavy, new(.6f, .9f, .6f), Fragility.Low, SurfaceMaterial.Metal, .8f, L.Apparatus,
                 new[] { T(0, 0, 0, 1, 1, 1, "yellow"), T(0, .5f, 0, 1.02f, .03f, 1.02f, "steel"), T(0, 0, 0, 1.02f, .05f, 1.02f, "steel") }, LootQuirk.Sloshes, noise: .7f),
-            I("hand_pumper", "Antique Hand Pumper", 25000, 45000, 480f, CarryClass.Huge, new(1.4f, 1.6f, 2.8f), Fragility.Medium, SurfaceMaterial.Wood, .1f, L.Apparatus,
+            I("hand_pumper", "Antique Hand Pumper", 9000, 16000, 480f, CarryClass.Huge, new(1.4f, 1.6f, 2.8f), Fragility.Medium, SurfaceMaterial.Wood, .1f, L.Apparatus,
                 new[] { B(0, .05f, 0, .8f, .5f, .7f, "red"), T(0, .45f, .1f, .35f, .3f, .35f, "brass"), B(0, .38f, 0, 1.1f, .04f, .04f, "wood"), B(0, .38f, -.42f, .04f, .04f, .4f, "wood"),
                     T(-.45f, -.25f, .3f, .08f, .5f, .5f, "darkwood"), T(.45f, -.25f, .3f, .08f, .5f, .5f, "darkwood"), T(-.45f, -.25f, -.3f, .08f, .5f, .5f, "darkwood"), T(.45f, -.25f, -.3f, .08f, .5f, .5f, "darkwood") },
-                jackpot: true, noise: 1f, wheeled: true),
+                noise: 1f, wheeled: true),
 
             // ---- The quarters: day room, kitchen, bunk room, captain's quarters, fitness ----------------------------
             I("alarm_clock", "Wind-up Alarm Clock", 20, 80, .4f, CarryClass.Pocket, new(.12f, .14f, .07f), Fragility.Medium, SurfaceMaterial.Metal, 1.8f, L.Quarters,
@@ -76,9 +77,9 @@ namespace Abandoned.EditorTools
                 new[] { R(0, -.22f, 0, 1, .5f, 1, "wood"), R(0, .02f, 0, .75f, .35f, 1, "wood"), B(0, .35f, 0, .14f, .5f, .5f, "darkwood"), B(0, -.15f, .52f, .3f, .3f, .02f, "black") }),
             I("dumbbells", "Pair of Dumbbells", 30, 90, 20f, CarryClass.OneHand, new(.4f, .15f, .3f), Fragility.None, SurfaceMaterial.Metal, 1.4f, L.Quarters,
                 new[] { B(-.3f, 0, 0, .25f, 1, 1, "black"), B(.3f, 0, 0, .25f, 1, 1, "black"), B(0, 0, 0, 1, .2f, .2f, "chrome") }, noise: .5f),
-            I("jukebox", "Vintage Jukebox", 8000, 16000, 150f, CarryClass.Huge, new(.95f, 1.55f, .7f), Fragility.Medium, SurfaceMaterial.Wood, .15f, L.Quarters,
+            I("jukebox", "Vintage Jukebox", 4000, 8000, 150f, CarryClass.Huge, new(.95f, 1.55f, .7f), Fragility.Medium, SurfaceMaterial.Wood, .15f, L.Quarters,
                 new[] { B(0, -.15f, 0, 1, .7f, 1, "darkwood"), R(0, .3f, 0, 1, .45f, .95f, "glass"), B(0, .3f, .02f, .9f, .1f, .95f, "lamp"), B(0, -.3f, .51f, .6f, .2f, .02f, "chrome"), B(-.45f, 0, .5f, .05f, .9f, .05f, "redlamp"), B(.45f, 0, .5f, .05f, .9f, .05f, "redlamp") },
-                jackpot: true, noise: .9f),
+                noise: .9f),
 
             // ---- The hose tower and the turnout room --------------------------------------------------------------
             I("hose_roll", "Rolled Canvas Hose", 40, 150, 18f, CarryClass.TwoHand, new(.55f, .55f, .14f), Fragility.None, SurfaceMaterial.Fabric, 1.6f, L.Tower,
@@ -91,9 +92,9 @@ namespace Abandoned.EditorTools
                 new[] { T(0, -.05f, 0, .9f, .6f, .9f, "glass"), T(0, -.45f, 0, 1, .1f, 1, "brass"), T(0, .32f, 0, .7f, .15f, .7f, "brass"), B(0, .46f, 0, .5f, .08f, .08f, "brass") }),
             I("brass_whistle", "Brass Fire Whistle", 100, 300, .2f, CarryClass.Pocket, new(.1f, .03f, .03f), Fragility.Low, SurfaceMaterial.Metal, 1.2f, L.Tower,
                 new[] { T(0, 0, 0, 1, 1, 1, "brass") }),
-            I("station_bell", "Bronze Station Bell", 9000, 16000, 160f, CarryClass.Heavy, new(.7f, .8f, .7f), Fragility.None, SurfaceMaterial.Metal, .2f, L.Tower,
+            I("station_bell", "Bronze Station Bell", 3000, 6000, 160f, CarryClass.Heavy, new(.7f, .8f, .7f), Fragility.None, SurfaceMaterial.Metal, .2f, L.Tower,
                 new[] { R(0, .05f, 0, .9f, .9f, .9f, "brass"), T(0, -.35f, 0, 1, .1f, 1, "brass"), B(0, .45f, 0, .3f, .1f, .3f, "black") },
-                jackpot: true, noise: 1f),
+                noise: 1f),
 
             // ---- The watch office, the station office and the storage loft -----------------------------------------
             I("tape_register", "Alarm Tape Register", 800, 2000, 12f, CarryClass.TwoHand, new(.4f, .4f, .3f), Fragility.Medium, SurfaceMaterial.Metal, .7f, L.Watch,
@@ -112,6 +113,25 @@ namespace Abandoned.EditorTools
                 new[] { R(0, .05f, -.05f, .65f, .9f, .65f, "white"), B(0, -.4f, 0, 1, .1f, 1, "white"), B(0, .1f, .35f, .3f, .4f, .05f, "gold") }),
             I("parade_banner", "Parade Banner", 50, 200, 3f, CarryClass.TwoHand, new(1f, .15f, .15f), Fragility.Low, SurfaceMaterial.Fabric, 1.2f, L.Watch,
                 new[] { T(0, 0, 0, 1, .7f, .7f, "red"), B(.52f, 0, 0, .05f, 1, 1, "gold"), B(-.52f, 0, 0, .05f, 1, 1, "gold") }),
+
+            // ---- More from the bay, the SCBA room and the quarters (second pass) ---------------------------------------
+            I("fire_extinguisher", "Fire Extinguisher", 40, 120, 9f, CarryClass.OneHand, new(.18f, .55f, .18f), Fragility.Low, SurfaceMaterial.Metal, 1.8f, L.Apparatus,
+                new[] { T(0, -.05f, 0, 1, .85f, 1, "red"), B(0, .44f, 0, .4f, .12f, .5f, "black"), B(.3f, .3f, 0, .3f, .05f, .1f, "black") }, LootQuirk.Sloshes),
+            I("pike_pole", "Pike Pole", 60, 180, 4f, CarryClass.TwoHand, new(.08f, .08f, 1.8f), Fragility.None, SurfaceMaterial.Metal, 1.2f, L.Apparatus,
+                new[] { B(0, 0, -.05f, .5f, .5f, .9f, "yellow"), B(0, 0, .47f, .9f, .9f, .06f, "steel"), B(0, .3f, .45f, .3f, .5f, .1f, "steel") }),
+            I("turnout_coat", "Turnout Coat", 80, 250, 3f, CarryClass.OneHand, new(.55f, .7f, .25f), Fragility.Low, SurfaceMaterial.Fabric, 1.6f, L.Apparatus,
+                new[] { B(0, 0, 0, 1, 1, 1, "khaki"), B(0, -.2f, .51f, .9f, .06f, .02f, "yellow"), B(0, .2f, .51f, .9f, .06f, .02f, "yellow"), B(0, .45f, 0, .5f, .1f, .8f, "black") }),
+            I("scba_mask", "SCBA Face Mask", 150, 400, 1f, CarryClass.OneHand, new(.22f, .25f, .2f), Fragility.Medium, SurfaceMaterial.Plastic, 1.4f, L.Apparatus,
+                new[] { R(0, 0, 0, 1, 1, .8f, "black"), B(0, .05f, .38f, .7f, .5f, .05f, "glass"), T(0, -.3f, .4f, .3f, .15f, .3f, "grey") }),
+            I("rescue_saw", "Rescue Saw", 400, 900, 12f, CarryClass.TwoHand, new(.3f, .35f, .75f), Fragility.Low, SurfaceMaterial.Metal, .9f, L.Apparatus,
+                new[] { B(0, 0, -.25f, 1, 1, .5f, "red"), T(0, 0, .25f, .9f, .1f, .9f, "steel"), B(0, .45f, -.3f, .2f, .1f, .4f, "black") }, LootQuirk.Rattles, noise: .6f),
+            I("roof_ladder", "Roof Ladder Section", 200, 500, 26f, CarryClass.Heavy, new(.45f, .1f, 2.4f), Fragility.Low, SurfaceMaterial.Wood, .6f, L.Apparatus,
+                new[] { B(-.45f, 0, 0, .1f, 1, 1, "wood"), B(.45f, 0, 0, .1f, 1, 1, "wood"), B(0, 0, -.35f, .9f, .5f, .015f, "wood"), B(0, 0, -.1f, .9f, .5f, .015f, "wood"),
+                    B(0, 0, .15f, .9f, .5f, .015f, "wood"), B(0, 0, .4f, .9f, .5f, .015f, "wood"), B(0, .4f, .48f, .9f, .4f, .04f, "steel") }, noise: .6f),
+            I("first_aid_bag", "Medic Bag", 60, 200, 3f, CarryClass.OneHand, new(.45f, .3f, .25f), Fragility.Low, SurfaceMaterial.Fabric, 1.4f, L.Quarters,
+                new[] { B(0, -.05f, 0, 1, .9f, 1, "red"), B(0, .45f, 0, .5f, .1f, .2f, "black"), B(0, 0, .51f, .2f, .2f, .02f, "white"), B(0, 0, .51f, .06f, .5f, .02f, "white") }),
+            I("cpr_dummy", "Training Dummy", 80, 220, 12f, CarryClass.TwoHand, new(.5f, .3f, 1.6f), Fragility.Low, SurfaceMaterial.Plastic, .8f, L.Watch,
+                new[] { B(0, 0, .15f, .9f, .8f, .45f, "ivory"), B(0, 0, .45f, .45f, .7f, .15f, "ivory"), B(0, -.1f, -.3f, .8f, .5f, .4f, "blue") }),
         };
     }
 }

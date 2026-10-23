@@ -123,6 +123,34 @@ namespace Abandoned.EditorTools
             return made;
         }
 
+        // A roof cell with a square hatch: four strips of slab round it (each solid), a curb, the lid thrown open.
+        private static int Hatch(Transform roof, StationPlan plan, StationArt art, Vector2Int cell)
+        {
+            Transform t = Group($"Hatch_{cell.x}_{cell.y}", roof);
+            t.position = P.CellCentre(cell) + Vector3.up * plan.RoofY;
+            float hole = P.HatchSize, side = (P.Tile - hole) * .5f, o = (hole + side) * .5f, y = P.Slab * .5f;
+            foreach ((Vector3 at, Vector3 size) in new[]
+            {
+                (new Vector3(-o, y, 0f), new Vector3(side, P.Slab, P.Tile)), (new Vector3(o, y, 0f), new Vector3(side, P.Slab, P.Tile)),
+                (new Vector3(0f, y, -o), new Vector3(hole, P.Slab, side)), (new Vector3(0f, y, o), new Vector3(hole, P.Slab, side)),
+            })
+            {
+                Box("Slab", t, at, size, art.Roof);
+                Box("Ceiling", t, new Vector3(at.x, -.012f, at.z), new Vector3(size.x, .02f, size.z), art.Ceiling, false);
+            }
+            float h = hole * .5f + .05f;
+            foreach ((Vector3 at, Vector3 size) in new[]
+            {
+                (new Vector3(-h, P.Slab + .2f, 0f), new Vector3(.1f, .4f, hole + .2f)), (new Vector3(h, P.Slab + .2f, 0f), new Vector3(.1f, .4f, hole + .2f)),
+                (new Vector3(0f, P.Slab + .2f, h), new Vector3(hole, .4f, .1f)),
+            })
+                Box("Curb", t, at, size, art.DarkSteel, false);
+            // The lid leans back on the north side; you climb out facing south, the way the ladder sets you down.
+            GameObject lid = Box("Lid", t, new Vector3(0f, P.Slab + .4f + hole * .5f, h + .12f), new Vector3(hole + .1f, hole + .1f, .05f), art.DarkSteel, false);
+            lid.transform.localRotation = Quaternion.Euler(12f, 0f, 0f);
+            return 5;
+        }
+
         // The flat roof over every non-custom cell, one slab per row run.
         private static int Roof(Transform shell, StationPlan plan, StationArt art)
         {
@@ -133,7 +161,9 @@ namespace Abandoned.EditorTools
                 int start = -1;
                 for (int x = 0; x <= plan.Width; x++)
                 {
-                    bool use = x < plan.Width && !plan.Custom.Contains(new Vector2Int(x, z));
+                    var cell = new Vector2Int(x, z);
+                    bool use = x < plan.Width && !plan.Custom.Contains(cell) && !plan.RoofHatches.Contains(cell);
+                    if (x < plan.Width && plan.RoofHatches.Contains(cell)) made += Hatch(roof, plan, art, cell);
                     if (use && start < 0) start = x;
                     if (use || start < 0) continue;
                     float x0 = start * P.Tile, x1 = x * P.Tile;

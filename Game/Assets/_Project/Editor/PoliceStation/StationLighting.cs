@@ -134,6 +134,68 @@ namespace Abandoned.EditorTools
             root.gameObject.AddComponent<BreakerPanel>().EditorSetup(sector, pivot, lamp.GetComponent<Renderer>());
         }
 
+        public const string EmergencyGroup = "EmergencyLights";
+
+        /// <summary>
+        /// Battery emergency lights: a twin-head unit over every doorway that opens onto a hall, on the hall side, and
+        /// over each outside door. Dim and warm, never on the building's power (no <see cref="LightFixture"/>), so a
+        /// blackout still leaves the way out faintly marked.
+        /// </summary>
+        public static int Emergency(Transform root, StationPlan plan, StationArt art)
+        {
+            Transform group = Group(EmergencyGroup, root);
+            int made = 0;
+            foreach (P.Doorway d in plan.Doors)
+            {
+                bool aHall = plan.RoomAt(d.Floor, d.A) == null, bHall = plan.RoomAt(d.Floor, d.B) == null;
+                if (!aHall && !bHall) continue;
+                Vector2Int hallCell = aHall ? d.A : d.B, other = aHall ? d.B : d.A;
+                Vector3 hall = P.CellCentre(hallCell, d.Floor), room = P.CellCentre(other, d.Floor);
+                Vector3 mid = (hall + room) * .5f, toHall = (hall - room).normalized;
+                Unit(group, $"Emergency_{made}", mid + toHall * .15f + Vector3.up * (d.Height + .32f), toHall, art);
+                made++;
+            }
+            foreach (P.Opening o in plan.Facade)
+            {
+                if (o.Glazed) continue;
+                Vector3 inward = o.Side switch { P.Side.South => Vector3.forward, P.Side.North => Vector3.back, P.Side.West => Vector3.right, _ => Vector3.left };
+                Vector3 at = o.Side switch
+                {
+                    P.Side.South => new Vector3(o.Centre, 0f, 0f),
+                    P.Side.North => new Vector3(o.Centre, 0f, plan.Depth * P.Tile),
+                    P.Side.West => new Vector3(0f, 0f, o.Centre),
+                    _ => new Vector3(plan.Width * P.Tile, 0f, o.Centre),
+                };
+                // Over the opening; under a storey's ceiling it tucks in just below it.
+                float y = o.Top + .32f < 3.6f || o.Top > 4f ? o.Top + .32f : 3.6f;
+                Unit(group, $"Emergency_{made}", at + inward * (P.ShellThickness * .5f + .12f) + Vector3.up * y, inward, art);
+                made++;
+            }
+            return made;
+        }
+
+        private static void Unit(Transform parent, string name, Vector3 at, Vector3 facing, StationArt art)
+        {
+            Transform unit = Group(name, parent);
+            unit.SetPositionAndRotation(at, Quaternion.LookRotation(facing, Vector3.up));
+            Box("Case", unit, Vector3.zero, new Vector3(.36f, .16f, .1f), art.White, false);
+            foreach (float x in new[] { -.13f, .13f })
+            {
+                GameObject head = Box("Head", unit, new Vector3(x, -.02f, .1f), new Vector3(.09f, .09f, .1f), art.Lamp, false);
+                head.transform.localRotation = Quaternion.Euler(25f, x < 0f ? -20f : 20f, 0f);
+            }
+            Transform aim = Group("Light", unit);
+            aim.localPosition = new Vector3(0f, -.05f, .1f);
+            aim.localRotation = Quaternion.Euler(55f, 0f, 0f);
+            Light l = aim.gameObject.AddComponent<Light>();
+            l.type = LightType.Spot;
+            l.range = 6f;
+            l.spotAngle = 110f;
+            l.intensity = .7f;
+            l.color = new Color(1f, .82f, .62f);
+            l.shadows = LightShadows.None;
+        }
+
         /// <summary>A sodium street lamp on a pole, arm toward <paramref name="toward"/>; not on the building's power.</summary>
         public static void StreetLamp(Transform parent, Vector3 foot, Vector3 toward, StationArt art, float intensity = 9f)
         {

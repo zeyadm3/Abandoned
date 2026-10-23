@@ -7,11 +7,11 @@ using P = Abandoned.EditorTools.StationPlan;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// The lot round a station: ground slabs round the footprint (never under it), the company truck backed up to the
-    /// carry route with the shared collection apron and markings, and the street furniture both stations use (fences,
-    /// abandoned cars, trees, kerbs). Everything lives under <c>Exterior</c> (or <c>Truck</c>), which the NavMesh bake
-    /// leaves out: monsters reach the crew only once they are inside. The open world places the whole scene; nothing here
-    /// assumes a world position.
+    /// The lot round a station: ground slabs round the footprint (never under it), the van's parking bay at the carry
+    /// route (the open world's van is the job's truck; no map has one of its own), and the street furniture both stations
+    /// use (fences, abandoned cars, kerbs). No trees, sky or grass: the world and Art > Upgrade New Maps add those.
+    /// Everything lives under <c>Exterior</c>, which the NavMesh bake leaves out: monsters reach the crew only once they
+    /// are inside. The scene stays at its own origin; the world moves round it.
     /// </summary>
     public static class StationSite
     {
@@ -35,24 +35,38 @@ namespace Abandoned.EditorTools
             return g;
         }
 
+        public const string VanParkingName = "VanParking";
+
         /// <summary>
-        /// The truck backed up with its rear at <paramref name="rear"/>, cab toward <paramref name="forward"/> (the ramp
-        /// runs back toward the building), on the shared concrete apron with the collection markings.
+        /// Where the crew's van parks (the open world's van is the job's truck; no map has a truck of its own): its rear
+        /// at <paramref name="rear"/>, cab toward <paramref name="forward"/>, ramp back toward the building. Painted bay
+        /// lines on the ground, a loading box behind the rear doors, and an empty <c>Exterior/VanParking</c> marker
+        /// (position = the van's rear, forward = its heading) for the world's survey.
         /// </summary>
-        public static TruckCargo Truck(Transform root, StationArt art, Vector3 rear, Vector3 forward)
+        public static Transform VanBay(Transform root, StationArt art, Vector3 rear, Vector3 forward)
         {
             forward.y = 0f;
             forward.Normalize();
-            Transform ground = GroundSlabs(root);
-            Vector3 apronCentre = rear - forward * 6.5f;
-            GameObject apron = Box("DockApron", ground, new Vector3(apronCentre.x, -.16f, apronCentre.z),
-                new Vector3(MeridianCollectionBayBuilder.ApproachWidth + .6f, .12f, 4.4f), art.Concrete);
-            // The collection bay widens the apron along its local x: turn it so x runs across the approach.
-            apron.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
-            apron.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-            TruckCargo cargo = TruckBuilder.Build(Group("Truck", root), rear, forward);
-            MeridianCollectionBayBuilder.Build(root, cargo);
-            return cargo;
+            Transform ext = Exterior(root);
+            Transform bay = Group("VanBay", ext);
+            bay.SetPositionAndRotation(new Vector3(rear.x, 0f, rear.z), Quaternion.LookRotation(forward, Vector3.up));
+            const float width = 3.4f, length = 8.6f, y = -.015f;
+            // The van's own outline, from its rear doors to past its cab.
+            foreach (float s in new[] { -1f, 1f })
+                Box("BayEdge", bay, new Vector3(s * width * .5f, y, length * .5f), new Vector3(.14f, .01f, length), art.Paint, false);
+            Box("BayEnd", bay, new Vector3(0f, y, length), new Vector3(width, .01f, .14f), art.Paint, false);
+            // The loading box behind the doors (where the ramp comes down): yellow hatching, kept clear.
+            Box("LoadEdge", bay, new Vector3(0f, y, -4.6f), new Vector3(width, .01f, .14f), art.Safety, false);
+            foreach (float s in new[] { -1f, 1f })
+                Box("LoadSide", bay, new Vector3(s * width * .5f, y, -2.3f), new Vector3(.14f, .01f, 4.6f), art.Safety, false);
+            for (int i = 0; i < 5; i++)
+            {
+                GameObject hatch = Box("Hatch", bay, new Vector3(-1.2f + i * .6f, y, -2.3f), new Vector3(.1f, .01f, 3.6f), art.Safety, false);
+                hatch.transform.localRotation = Quaternion.Euler(0f, 30f, 0f);
+            }
+            Transform marker = Group(VanParkingName, ext);
+            marker.SetPositionAndRotation(new Vector3(rear.x, 0f, rear.z), Quaternion.LookRotation(forward, Vector3.up));
+            return marker;
         }
 
         /// <summary>A chain-link fence from a to b on posts every 2.5 m: solid, 2.2 m, with a mesh you see through.</summary>
@@ -105,15 +119,6 @@ namespace Abandoned.EditorTools
             solid.center = new Vector3(0f, .75f, 0f);
             solid.size = new Vector3(1.85f, 1.5f, 4.8f);
             return car;
-        }
-
-        /// <summary>A plain tree (the map-site pass swaps trees by name and shape for scanned ones).</summary>
-        public static void Tree(Transform parent, Vector3 at, float height, StationArt art, Material leaves)
-        {
-            Transform tree = Group("Tree", parent);
-            tree.position = at;
-            Primitive(PrimitiveType.Cylinder, "Trunk", tree, new Vector3(0f, height * .3f, 0f), new Vector3(.3f, height * .3f, .3f), art.DarkWood);
-            Primitive(PrimitiveType.Sphere, "Canopy", tree, new Vector3(0f, height * .7f, 0f), new Vector3(height * .5f, height * .55f, height * .5f), leaves, false);
         }
 
         /// <summary>A kerb along a line (a low solid strip).</summary>

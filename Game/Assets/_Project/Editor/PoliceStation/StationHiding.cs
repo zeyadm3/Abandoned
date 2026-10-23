@@ -16,13 +16,13 @@ namespace Abandoned.EditorTools
     /// in from). A spot on a slab that can fall goes with it. Spots go through <see cref="StationProps.Place"/>, so a
     /// spot that would block a doorway or flight is left out.
     /// </summary>
-    public sealed class StationHiding
+    public sealed partial class StationHiding
     {
         public const int Max = 127;
         private readonly StationProps props;
         private readonly Func<Vector3, StructuralSection> support;
         public int Count { get; private set; }
-        public int Lockers, Cabinets, Closets, Cells;
+        public int Lockers, Cabinets, Closets, Cells, Carts, Cages;
 
         public StationHiding(StationProps props, Func<Vector3, StructuralSection> support)
         {

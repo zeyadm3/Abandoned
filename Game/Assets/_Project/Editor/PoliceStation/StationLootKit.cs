@@ -11,8 +11,9 @@ namespace Abandoned.EditorTools
     /// Makes a station's loot playable from data: the definitions (in the station's own Data/Loot folder, ids prefixed
     /// so they never clash with another location's), original low-poly models built from each item's part list inside
     /// its Size box (so the art never changes a collider or a floor load), the network loot prefabs, the catalog, the
-    /// network prefab list and the inventory icons. Only fills in what is missing: Inspector tuning is kept, and it is
-    /// cheap to run again. Adding an item is adding a line of data, no code.
+    /// network prefab list and the inventory icons. The data here is the source: each run writes it into the definitions
+    /// again (tune an item in its list, not in the Inspector), and only remakes models and prefabs that are missing or
+    /// whose item changed size or carry class, so it is cheap to run again. Adding an item is adding a line of data.
     /// </summary>
     public sealed class StationLootKit
     {
@@ -63,7 +64,8 @@ namespace Abandoned.EditorTools
 
         public void EnsureContent()
         {
-            int defined = CreateMissing();
+            var changed = new HashSet<string>();
+            int defined = Apply(changed);
             int modelled = AssignMissing();
             int prefabs = 0;
             foreach (Item item in items)
@@ -71,19 +73,22 @@ namespace Abandoned.EditorTools
                 LootDefinition definition = Load(item.Id);
                 if (definition == null) continue;
                 bool missing = AssetDatabase.LoadAssetAtPath<GameObject>(LootPrefabGenerator.PrefabPathFor(definition)) == null;
-                if (!missing && modelled == 0) continue;
+                if (!missing && modelled == 0 && !changed.Contains(item.Id)) continue;
                 LootPrefabGenerator.Generate(definition);
                 prefabs++;
             }
-            if (defined + modelled + prefabs == 0) return;
+            if (defined + modelled + prefabs + changed.Count == 0) return;
             LootPrefabGenerator.WriteCatalog();
             NetworkContentBuilder.RegisterNetworkPrefabs();
             if (LootIconRenderer.Render(force: false) > 0) UiContentBuilder.BuildIcons();
             AssetDatabase.SaveAssets();
-            Debug.Log($"[{logTag}] Loot: {defined} new definitions, {modelled} new models, {prefabs} prefabs (re)built.");
+            Debug.Log($"[{logTag}] Loot: {defined} new definitions, {changed.Count} changed, {modelled} new models, {prefabs} prefabs (re)built.");
         }
 
-        private int CreateMissing()
+        // The station's items follow this code: every run writes each definition's data again (none of them is tuned by
+        // hand), and an item whose size, carry class or jackpot flag changed gets its prefab (and, for a new size, its
+        // model) made again. Returns how many definitions were new; fills in which existing ones changed.
+        private int Apply(HashSet<string> changed)
         {
             PolishAssets.EnsureFolder(dataFolder);
             int made = 0;
@@ -92,21 +97,28 @@ namespace Abandoned.EditorTools
                 if (!item.Id.StartsWith(prefix)) Debug.LogError($"[{logTag}] Loot id '{item.Id}' must start with '{prefix}'.");
                 string path = PathFor(item.Id);
                 var definition = AssetDatabase.LoadAssetAtPath<LootDefinition>(path);
-                if (definition == null)
+                bool isNew = definition == null;
+                if (isNew)
                 {
                     definition = ScriptableObject.CreateInstance<LootDefinition>();
-                    definition.EditorSetup(item.Id, item.Name, item.Min, item.Max, item.Kg, item.Class, item.Size, item.Fragility,
-                        item.Material, item.Noise, item.Rarity, item.Placeholder, item.Color);
-                    definition.EditorSetQuirks(item.Quirks);
-                    definition.EditorSetWheeled(item.Wheeled);
                     AssetDatabase.CreateAsset(definition, path);
                     made++;
                 }
-                if (definition.SpawnTags == null || definition.SpawnTags.Length == 0)
+                CarryClass oldClass = definition.CarryClass;
+                Vector3 oldSize = definition.Size;
+                bool oldJackpot = definition.Jackpot;
+                definition.EditorSetup(item.Id, item.Name, item.Min, item.Max, item.Kg, item.Class, item.Size, item.Fragility,
+                    item.Material, item.Noise, item.Rarity, item.Placeholder, item.Color);
+                definition.EditorSetQuirks(item.Quirks);
+                definition.EditorSetWheeled(item.Wheeled);
+                definition.EditorSetSpawning(item.Tags, item.Jackpot);
+                if (!isNew)
                 {
-                    definition.EditorSetSpawning(item.Tags, item.Jackpot);
-                    EditorUtility.SetDirty(definition);
+                    bool resized = (oldSize - item.Size).sqrMagnitude > 1e-6f;
+                    if (resized) definition.EditorSetModel(null, 0f, item.Size);
+                    if (resized || oldClass != item.Class || oldJackpot != item.Jackpot) changed.Add(item.Id);
                 }
+                EditorUtility.SetDirty(definition);
             }
             return made;
         }

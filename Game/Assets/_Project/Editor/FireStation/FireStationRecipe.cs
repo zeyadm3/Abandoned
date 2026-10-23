@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Millbrook Fire Station No. 4 for <see cref="StationBuild"/> (Docs/FIRE_STATION_PLAN.md): a grey winter afternoon,
-    /// warm lamps inside, the truck at the middle bay door, the hose tower and the pole.
+    /// warm lamps inside, the crew's van at the haul lane's door, the hose tower and the pole.
     /// </summary>
     public sealed class FireStationRecipe : StationRecipe
     {
@@ -26,18 +26,19 @@ namespace Abandoned.EditorTools
         public override (Color colour, float density) InteriorHaze => (new Color(.14f, .13f, .12f), .015f);
         public override Vector3 Entrance => L.HaulDoor;
 
+        /// <summary>On the apron between the van's ramp and the haul lane's door.</summary>
         public override IReadOnlyList<Vector3> CrewSpawns => new[]
         {
-            new Vector3(8.5f, .05f, -6.5f), new Vector3(10f, .05f, -6.5f), new Vector3(14f, .05f, -6.5f), new Vector3(15.5f, .05f, -6.5f),
+            new Vector3(8.5f, .05f, -5f), new Vector3(10f, .05f, -5f), new Vector3(14f, .05f, -5f), new Vector3(15.5f, .05f, -5f),
         };
 
         public override IEnumerable<string> NavMeshIgnored => new[]
         {
-            FireStationTower.GroupName + "/Platforms", FireStationTower.GroupName + "/Ladders", FireStationTower.GroupName + "/Hoses",
-            FireStationTower.GroupName + "/Lamps", FireStationTower.GroupName + "/Shell/Roof", "FirePole",
+            FireStationTower.GroupName + "/Hoses", FireStationTower.GroupName + "/Lamps", FireStationTower.GroupName + "/Shell/Roof",
+            "FirePole", StationAccess.GroupName,
         };
 
-        public override (Vector3 position, Vector3 lookAt) Camera => (new Vector3(60f, 24f, -36f), new Vector3(20f, 4f, 16f));
+        public override (Vector3 position, Vector3 lookAt) Camera => (new Vector3(78f, 26f, -38f), new Vector3(28f, 4f, 18f));
 
         public override StationArt CreateArt() =>
             new(L.ArtFolder, "Fire", new Color(.95f, .6f, .5f), new Color(.6f, .08f, .06f), LampColour);
@@ -49,8 +50,8 @@ namespace Abandoned.EditorTools
             PolishAssets.EnsureFolder(L.LootFolder);
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(L.LootFolder + "/Location_FireStation.asset");
             location.EditorSetup("fire_station", "Millbrook Fire Station No. 4",
-                "A 1930s firehouse: the engine still in its bay, an antique pumper on show and a hose tower you can only drop things down. The truck backs up to the middle bay door.",
-                L.SceneName, 1, 1, 1f, 1f, -.03f, 1f, .1f);
+                "A 1930s firehouse: two engines and the ladder truck still in the bay, bunk rooms on a floor that sags over them, and a hose tower full of brass. The van backs up to the empty lane's door.",
+                L.SceneName, 1, 1, 1.05f, 1f, -.03f, 1f, .1f);
             EditorUtility.SetDirty(location);
         }
 
@@ -60,6 +61,7 @@ namespace Abandoned.EditorTools
             FireStationBay.Dress(ctx);
             FireStationGround.Dress(ctx);
             FireStationUpper.Dress(ctx);
+            FireStationBasement.Dress(ctx);
         }
 
         public override void Site(StationContext ctx) => FireStationExterior.Build(ctx);
@@ -82,9 +84,10 @@ namespace Abandoned.EditorTools
                 return list;
             }
             scape.gameObject.AddComponent<FireStationSoundscape>().EditorSetup(
-                Points("Radio", new Vector3(31f, 1.2f, 5.5f), new Vector3(4f, 2f, 5.3f)),
-                Points("Tower", new Vector3(4f, 16f, 32f), new Vector3(7.3f, 12f, 30f), new Vector3(4f, 9f, 34f)),
-                Points("Drip", new Vector3(12f, .2f, 14f), new Vector3(47f, 4.5f, 19f), new Vector3(46f, .5f, 30f), new Vector3(47.4f, .9f, 24f)));
+                Points("Radio", new Vector3(40.4f, 1.2f, 5.5f), new Vector3(4f, 2f, 4.1f), new Vector3(41f, 5.2f, 28f)),
+                Points("Tower", new Vector3(4f, 18f, 34f), new Vector3(4f, 10f, 33f), new Vector3(4f, 4f, 36f)),
+                Points("Drip", new Vector3(12f, .2f, 14f), new Vector3(62f, 4.5f, 4.5f), new Vector3(47.4f, .9f, 39.3f), new Vector3(58f, .3f, 35f),
+                    new Vector3(50f, -3.5f, 34f)));
         }
     }
 }

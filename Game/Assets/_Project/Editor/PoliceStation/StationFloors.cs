@@ -86,7 +86,7 @@ namespace Abandoned.EditorTools
             floor == art.Carpet ? SurfaceMaterial.Carpet : floor == art.Vinyl ? SurfaceMaterial.Tile :
             floor == art.Terrazzo ? SurfaceMaterial.Terrazzo : SurfaceMaterial.Concrete;
 
-        private static Transform Stair(Transform parent, P.Flight flight, StationArt art)
+        public static Transform Stair(Transform parent, P.Flight flight, StationArt art)
         {
             float length = P.Flight.Length, width = P.Flight.Width, rise = flight.Rise;
             Transform root = Group(flight.Name, parent);
@@ -139,7 +139,7 @@ namespace Abandoned.EditorTools
         }
 
         // Stepped solid under the flight, just below its slope: no headroom trap, no loot rolling under.
-        private static void UnderFill(Transform parent, P.Flight flight, StationArt art)
+        public static void UnderFill(Transform parent, P.Flight flight, StationArt art)
         {
             Transform fill = Group(flight.Name + "_Under", parent);
             fill.SetPositionAndRotation(flight.Foot, Quaternion.LookRotation(flight.Direction, Vector3.up));

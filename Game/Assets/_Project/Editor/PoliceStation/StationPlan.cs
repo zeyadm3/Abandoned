@@ -41,6 +41,9 @@ namespace Abandoned.EditorTools
         public readonly HashSet<Vector3Int> KeepClear = new();
         /// <summary>Slabs with a small square opening in the middle (side in metres): a fire pole's hole.</summary>
         public readonly Dictionary<Vector3Int, float> Pierced = new();
+        /// <summary>Roof cells with a hatch (a ladder comes up through it from the top floor's hall).</summary>
+        public readonly HashSet<Vector2Int> RoofHatches = new();
+        public const float HatchSize = 1.3f;
         /// <summary>Cells outside the generic shell and walls: a special structure builds its own (a hose tower).</summary>
         public readonly HashSet<Vector2Int> Custom = new();
 

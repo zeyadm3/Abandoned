@@ -50,6 +50,7 @@ namespace Abandoned.EditorTools
             var ctx = new StationContext(root, plan, art, setup, sections, plan.SceneName.ToLowerInvariant() + "_loot_");
             recipe.Dress(ctx);
             int lights = StationLighting.Build(root, plan, art, recipe.LampColour, plan.Seed);
+            int emergency = StationLighting.Emergency(root, plan, art);
             recipe.Site(ctx);
             int bound = BindToSlabs(ctx);
             int uvs = StationSurfaces.Apply(root, art);
@@ -91,7 +92,8 @@ namespace Abandoned.EditorTools
             int collapsible = plan.Collapsible.Keys.Count(k => sections.ContainsKey(k) && !plan.Pierced.ContainsKey(k));
             Debug.Log($"[{plan.LogTag}] Built {plan.DisplayName}: {sections.Count} slabs ({collapsible} can fall), {floors.Stairs.Count} flights, " +
                       $"{walls} wall pieces, {shell} shell pieces, {ctx.Props.Placed} fittings, {ctx.Hiding.Count} hiding places " +
-                      $"({ctx.Hiding.Cells} cells, {ctx.Hiding.Lockers} lockers, {ctx.Hiding.Cabinets} cabinets, {ctx.Hiding.Closets} closets), " +
+                      $"({ctx.Hiding.Cells} cells, {ctx.Hiding.Lockers} lockers, {ctx.Hiding.Cabinets} cabinets, {ctx.Hiding.Cages} gear cages, " +
+                      $"{ctx.Hiding.Closets} closets, {ctx.Hiding.Carts} carts), {emergency} emergency lights, " +
                       $"{lights} ceiling lights, {ctx.Breakers} breakers, {loot.Count}/{ctx.Loot.Count} loot points ({loot.Count(l => l.IsJackpot)} jackpot), " +
                       $"{threats.Count}/{ctx.Threats.Count} monster spawns, {bound} fittings on slabs that can fall, {solid} made solid, " +
                       $"{uvs} boxes with world-scale UVs, {ctx.Props.Problems.Count + ctx.Problems.Count} problems (warnings above).");
@@ -151,7 +153,8 @@ namespace Abandoned.EditorTools
         {
             if (!Physics.Raycast(at + Vector3.up * .4f, Vector3.down, out RaycastHit floor, .9f, ~0, QueryTriggerInteraction.Ignore))
                 return "no floor under it";
-            if (floor.collider.GetComponentInParent<StructuralSection>() == null) return $"it stands on {floor.collider.name}, not a floor";
+            if (floor.collider.GetComponentInParent<StructuralSection>() == null && !OnRoof(floor.collider.transform))
+                return $"it stands on {floor.collider.name}, not a floor";
             foreach (Collider c in Physics.OverlapBox(at + Vector3.up * .95f, new Vector3(radius, .75f, radius), Quaternion.identity, ~0, QueryTriggerInteraction.Ignore))
             {
                 StructuralSection s = c.GetComponentInParent<StructuralSection>();
@@ -159,6 +162,14 @@ namespace Abandoned.EditorTools
                 return $"it is inside {c.transform.parent?.name}/{c.name}";
             }
             return null;
+        }
+
+        // The flat roof (Shell/Roof, reached by a hatch) is a floor too, though not a structural one.
+        private static bool OnRoof(Transform t)
+        {
+            for (; t != null; t = t.parent)
+                if (t.name == "Roof" && t.parent != null && t.parent.name == "Shell") return true;
+            return false;
         }
 
         private static void AddHorrorScene(string sceneName)
