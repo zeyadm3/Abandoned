@@ -5,7 +5,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Architectural dimensions, coordinate layouts, and level boundaries for the Skyscraper Restaurant.
-    /// Defines vertical transitions between Ground Plaza (0m), Mechanical Deck (20m), and Apex Restaurant (44m).
+    /// Defines vertical transitions between Ground Plaza (0m), Mechanical Deck (120m), and Apex Restaurant (244m).
     /// </summary>
     public static class SkyscraperLayout
     {
@@ -16,12 +16,15 @@ namespace Abandoned.EditorTools
         // Vertical floor elevations
         public const float GroundY = 0f;
         public const float LobbyHeight = 6.0f;
-        public const float MechanicalY = 20.0f;
+        public const float MechanicalY = 200.0f;
         public const float MechanicalHeight = 5.0f;
-        public const float RestaurantY = 44.0f;
+        public const float RestaurantY = 404.0f;
         public const float RestaurantHeight = 6.0f;
-        public const float RoofY = 50.0f;
+        public const float RoofY = 410.0f;
         public const float SlabThickness = 0.4f;
+
+        public const float FloodedY=120f;
+        public const float OfficeY=280f;
 
         // Footprint limits
         public const float TowerHalfWidth = 18f; // x from -18 to +18 (36m wide)
@@ -30,13 +33,13 @@ namespace Abandoned.EditorTools
         public const float PlazaSouthZ = -34f;   // Van forecourt limit
 
         // Elevator Shaft Core (x: -2.5 to 2.5, z: -2.5 to 2.5)
-        public static readonly Vector3 ShaftCenter = new(0f, 24f, 0f);
-        public static readonly Vector3 ShaftSize = new(4.6f, 48f, 4.6f);
+        public static readonly Vector3 ShaftCenter = new(0f, (RestaurantY+4f)*.5f, 0f);
+        public static readonly Vector3 ShaftSize = new(4.6f, RestaurantY+4f, 4.6f);
         public static readonly Vector3 CabDeckSize = new(3.4f, 0.2f, 3.4f);
 
         // Fire Stairwell Core (x: -15 to -9, z: -3 to +3)
-        public static readonly Vector3 StairwellCenter = new(-12f, 22f, 0f);
-        public static readonly Vector3 StairwellSize = new(6f, 45f, 6f);
+        public static readonly Vector3 StairwellCenter = new(-12f, (RoofY+3f)*.5f, 1f);
+        public static readonly Vector3 StairwellSize = new(7.2f, RoofY+3f, 12f);
 
         // Van & Extraction Truck Location in the street forecourt
         public static readonly Vector3 TruckRear = new(0f, 0f, -22f);
@@ -52,8 +55,8 @@ namespace Abandoned.EditorTools
         };
 
         // Overall building volume for atmosphere, occlusion, and horror pacing
-        public static readonly Bounds BuildingBounds = new(new Vector3(0f, 25f, 0f), new Vector3(44f, 54f, 46f));
-        public static readonly Bounds RestaurantBounds = new(new Vector3(0f, 47f, 6f), new Vector3(38f, 10f, 34f));
-        public static readonly Bounds MechanicalBounds = new(new Vector3(0f, 22.5f, 5f), new Vector3(38f, 7f, 30f));
+        public static readonly Bounds BuildingBounds = new(new Vector3(0f, RoofY*.5f+2f, 0f), new Vector3(44f, RoofY+8f, 46f));
+        public static readonly Bounds RestaurantBounds = new(new Vector3(0f, RestaurantY+3f, 6f), new Vector3(38f, 10f, 34f));
+        public static readonly Bounds MechanicalBounds = new(new Vector3(0f, MechanicalY+2.5f, 5f), new Vector3(38f, 7f, 30f));
     }
 }

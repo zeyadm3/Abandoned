@@ -30,11 +30,12 @@ namespace Abandoned.EditorTools
             Physics.SyncTransforms();
             var existing = Object.FindObjectsByType<ReflectionProbe>(FindObjectsSortMode.None).Where(p => p.gameObject.scene == scene).ToList();
 
-            // Grow the cell until the count fits the budget.
+            // Grow the cell until the count fits the budget. The largest size is used whatever the count (the biggest
+            // cells get the probes): a tower of many storeys never fits, and once fell out of the loop with none.
             for (float cell = 10f; cell <= 40f; cell *= 1.25f)
             {
                 var cells = Cells(nav, cell);
-                if (cells.Count > MaxProbes * 1.5f && cell < 40f) continue;
+                if (cells.Count > MaxProbes * 1.5f && cell * 1.25f <= 40f) continue;
                 var go = new GameObject(ObjectName);
                 SceneManager.MoveGameObjectToScene(go, scene);
                 int placed = 0;

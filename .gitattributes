@@ -13,3 +13,9 @@
 *.hdr filter=lfs diff=lfs merge=lfs -text
 *.exr filter=lfs diff=lfs merge=lfs -text
 *OcclusionCullingData.asset filter=lfs diff=lfs merge=lfs -text
+# The open-world places' scenes are built from code and pass GitHub's 100 MB file limit (2026-10-24).
+Game/Assets/_Project/Scenes/Hospital.unity filter=lfs diff=lfs merge=lfs -text
+Game/Assets/_Project/Scenes/Motel.unity filter=lfs diff=lfs merge=lfs -text
+Game/Assets/_Project/Scenes/Skyscraper.unity filter=lfs diff=lfs merge=lfs -text
+Game/Assets/_Project/Scenes/PoliceStation.unity filter=lfs diff=lfs merge=lfs -text
+Game/Assets/_Project/Scenes/FireStation.unity filter=lfs diff=lfs merge=lfs -text

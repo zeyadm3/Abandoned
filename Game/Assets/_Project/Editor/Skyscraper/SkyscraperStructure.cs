@@ -29,8 +29,8 @@ namespace Abandoned.EditorTools
                     capacity: collapsible ? 0.55f : 1.0f);
 
                 if (collapsible)
-                    SectionNavCarver.EditorAdd(slab.gameObject, new Vector3(3.9f, 0.4f, 3.9f));
-                else if (Mathf.Abs(slab.position.x) < 3.0f && slab.position.z < -2.0f)
+                    SectionNavCarver.EditorAdd(slab.gameObject, slab.GetComponent<BoxCollider>().size);
+                else if (slab.position.z < 6f || Mathf.Abs(slab.position.x) < 2.1f)
                     slab.gameObject.AddComponent<SectionKeepClear>(); // Keep elevator lobby clear
             }
 
@@ -42,18 +42,19 @@ namespace Abandoned.EditorTools
                     capacity: collapsible ? 0.50f : 1.0f);
 
                 if (collapsible)
-                    SectionNavCarver.EditorAdd(piece.gameObject, new Vector3(6.0f, 0.16f, 1.4f));
+                    SectionNavCarver.EditorAdd(piece.gameObject, piece.GetComponent<BoxCollider>().size);
             }
 
             // 3. Stairwell Landings
             foreach (Transform landing in stairLandings)
             {
                 bool collapsible = collapsibleLandings.Contains(landing);
+                if (!collapsible) landing.gameObject.AddComponent<SectionKeepClear>();
                 setup.AddSection(landing, SectionType.Stair, collapsible, health: collapsible ? 0.70f : 1.0f,
                     capacity: collapsible ? 0.60f : 1.0f);
 
                 if (collapsible)
-                    SectionNavCarver.EditorAdd(landing.gameObject, new Vector3(5.6f, 0.3f, 1.2f));
+                    SectionNavCarver.EditorAdd(landing.gameObject, landing.GetComponent<BoxCollider>().size);
             }
 
             // 4. Intermediate & Roof Sections
@@ -66,7 +67,7 @@ namespace Abandoned.EditorTools
                         capacity: collapsible ? 0.55f : 1.0f);
 
                     if (collapsible)
-                        SectionNavCarver.EditorAdd(piece.gameObject, new Vector3(4.0f, 0.3f, 4.0f));
+                        SectionNavCarver.EditorAdd(piece.gameObject, piece.GetComponent<BoxCollider>().size);
                 }
             }
 

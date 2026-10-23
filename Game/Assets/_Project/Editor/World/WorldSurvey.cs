@@ -83,6 +83,8 @@ namespace Abandoned.EditorTools
                 }
                 foreach (Transform child in root.transform)
                 {
+                    // The summit's weather belongs to the loaded location, even though its volume extends past the site.
+                    if (child.GetComponentInChildren<Abandoned.Skyscraper.SkyscraperCloudLayer>(true) != null) continue;
                     // Far scenery only: nothing anyone can touch or that the game drives.
                     if (child.GetComponentInChildren<Collider>(true) != null || child.GetComponentInChildren<NetworkObject>(true) != null) continue;
                     var renderers = child.GetComponentsInChildren<Renderer>(true);

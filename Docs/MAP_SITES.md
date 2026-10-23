@@ -77,3 +77,11 @@ their own Rebuild menus, and leaves the six older maps as saved (the remaster wr
   (`LevelAmbience`) and the solid-props pass with a second NavMesh bake, like the stations; the Skyscraper got a
   sound bed. Neither the Hospital nor the Motel marks occluders, so they have no occlusion bake.
 - Written and compiled outside Unity (dotnet, 0 errors); no builder or pass has been run yet.
+- **Applied 2026-10-23.** Rebuild New Maps froze on the Hospital (twice): `CoplanarFix` scanned the outer rings'
+  10-17 million triangles. The audit now skips `OuterRings` (Docs/GRAPHICS_PLAYBOOK.md section 5), and the whole
+  chain ran on the five maps in about an hour: flicker fix 4-19 min per map (possible-flicker pairs left: Hospital 74,
+  Motel 93, Skyscraper 1, Police Station 76, Fire Station 93; the Mall has about 100), remaster, lighting, sky,
+  trees (Hospital 144, Motel 174, Police 96, Fire 72 swapped) and grass (Hospital 59,656, Motel 101,785, Police
+  62,298 tufts). The Skyscraper had no room reflections: `RoomReflectionProbes` gave up when a tower of many storeys
+  never fitted its probe budget; it now uses the largest cell size (123 probes). Review captures:
+  Game/Logs/renders/newmaps/*_sheet_b.png. Each map keeps its builder's mood, which is as dark as the older maps.

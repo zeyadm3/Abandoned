@@ -82,7 +82,7 @@ namespace Abandoned.EditorTools
         /// <summary>Every overlapping coplanar pair of drawn faces in the open scene(s), grouped per renderer/submesh pair.</summary>
         public static List<Fight> FindFights(out int triangleCount, float maxGap = PlaneGap)
         {
-            var renderers = Drawn().ToList();
+            var renderers = Drawn().Where(r => !InOuterRings(r)).ToList();
             var tris = new List<Tri>(1 << 20);
             for (int r = 0; r < renderers.Count; r++) Collect(renderers[r], r, tris);
             triangleCount = tris.Count;
@@ -228,6 +228,16 @@ namespace Abandoned.EditorTools
             if (g == null) return "no LOD group above it";
             if (!g.enabled) return "its LOD group is switched off";
             return $"not listed in {g.name}'s {g.lodCount} levels";
+        }
+
+        // The new maps' outer rings of town (StationRings) are 10-17 million triangles seen from 50 m and more. Holding
+        // them in world space up to nine times per CoplanarFix run froze the editor on Rebuild New Maps (2026-10-23), and
+        // nothing that far away is close enough to the camera to flicker.
+        private static bool InOuterRings(Renderer r)
+        {
+            for (Transform p = r.transform.parent; p != null; p = p.parent)
+                if (p.name == StationRings.GroupName) return true;
+            return false;
         }
 
         /// <summary>Renderers that draw opaque or cut-out surfaces: active, enabled, a mesh, not debris, not shadow-only.</summary>

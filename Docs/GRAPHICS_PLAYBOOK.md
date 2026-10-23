@@ -110,6 +110,18 @@ grass, ring, sound levels. Add the scene to `AvOverhaul.MapScenes` if it isn't t
   `~/Library/Logs/Unity/Editor.log` (record its size, grep from there for a marker you log). `delayCall` never fires
   while the editor is unfocused. Async bakes can be polled with `Lightmapping.isRunning`.
 - **Never use `Tools/unity.sh` while Unity is open.**
+- **Backdrop geometry and `CoplanarFix`.** `GraphicsAudit.FindFights` holds every drawn triangle in world space and
+  `CoplanarFix` runs it up to nine times per map. The new maps' outer rings of town (`StationRings`, a group named
+  `OuterRings`) are 10-17 million triangles each, and Rebuild New Maps froze on the Hospital until the editor was
+  killed (2026-10-23). The audit now skips anything under `OuterRings`; the rest of each new map is 3-4.5 million
+  triangles, and the Hospital's fix takes about 16 minutes. Put any new far backdrop under that group name, or the
+  same freeze comes back.
+- **Cached in-memory meshes go stale in long runs.** `SalvageModelFactory` kept its cylinder and sphere meshes in a
+  static dictionary; they are never saved, so Unity unloads them on a scene change. In Rebuild Entire Game every truck
+  built after the first map (School, Factory, Skyscraper, Tutorial; all share `Art/Generated/CollectionTruck0157`
+  meshes) lost its hub caps, axles, dampers, fuel tank and exhaust ("Combine mesh instance N is null"), and the world
+  van threw a NullReferenceException. The cache now remakes a mesh that is gone. Any new static mesh cache needs the
+  same `mesh == null` check.
 - Blender (`/Applications/Blender.app`) runs headless with `--factory-startup`; it ships numpy. Run scripts with the
   downloads passed as arguments. Its EEVEE renders can abort when Unity holds the GPU: retry once.
 - Measure a sky's sun: load the HDR in Blender, take the brightest pixel; u = x / width.

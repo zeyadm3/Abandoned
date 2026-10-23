@@ -36,6 +36,7 @@ namespace Abandoned.EditorTools
         public readonly Material WaterMurky;
         public readonly Material CeilingTile;
         public readonly Material Glass;
+        public readonly Material TowerCladding;
         public readonly Material Brass;
         public readonly Material Leather;
         public readonly Material LampEmissive;
@@ -68,6 +69,13 @@ namespace Abandoned.EditorTools
             CeilingTile = CreateMaterial("Ceiling_Office", new Color(0.65f, 0.65f, 0.64f), "OfficeCeiling001", 0.10f, 0.0f);
             Leather = CreateMaterial("Leather_Lounge", new Color(0.28f, 0.18f, 0.14f), "Leather037", 0.30f, 0.0f);
             Brass = CreateMaterial("Brass_Trim", new Color(0.82f, 0.68f, 0.32f), null, 0.75f, 0.90f);
+
+            TowerCladding=CreateMaterial("Tower_Cladding",new Color(.18f,.24f,.29f),null,.65f,.25f);
+
+            // A small sky-coloured reflection floor keeps sealed office glazing legible at night.
+            TowerCladding.EnableKeyword("_EMISSION");
+            TowerCladding.SetColor("_EmissionColor",new Color(.015f,.03f,.05f));
+            EditorUtility.SetDirty(TowerCladding);
 
             // Architectural Curtain Glass (tinted dark sky reflection)
             Glass = CreateGlassMaterial("Curtain_Glass", new Color(0.12f, 0.20f, 0.24f, 0.85f), 0.92f);
@@ -127,14 +135,23 @@ namespace Abandoned.EditorTools
         {
             string path = $"{MaterialsFolder}/{name}.mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (mat != null) return mat;
-
-            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
-            mat = new Material(shader) { name = name };
-            mat.SetColor("_BaseColor", tint);
+            bool create = mat == null;
+            if (create) mat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name };
+            mat.SetColor("_BaseColor", new Color(tint.r, tint.g, tint.b, .16f));
             mat.SetFloat("_Smoothness", smoothness);
-            mat.SetFloat("_Metallic", 0.1f);
-            AssetDatabase.CreateAsset(mat, path);
+            mat.SetFloat("_Metallic", 0f);
+            mat.SetFloat("_Surface",1f);
+            mat.SetFloat("_Blend",0f);
+            mat.SetFloat("_SrcBlend",(float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetFloat("_ZWrite",0f);
+            mat.SetFloat("_Cull",0f);
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            mat.SetOverrideTag("RenderType","Transparent");
+            mat.renderQueue=3000;
+            if (create) AssetDatabase.CreateAsset(mat,path);
+            EditorUtility.SetDirty(mat);
             return mat;
         }
 
@@ -142,7 +159,13 @@ namespace Abandoned.EditorTools
         {
             string path = $"{MaterialsFolder}/{name}.mat";
             var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (mat != null) return mat;
+            if (mat != null)
+            {
+                mat.EnableKeyword("_EMISSION");
+                mat.SetColor("_EmissionColor", emission);
+                EditorUtility.SetDirty(mat);
+                return mat;
+            }
 
             Shader shader = Shader.Find("Universal Render Pipeline/Lit");
             mat = new Material(shader) { name = name };

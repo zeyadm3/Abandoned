@@ -9,8 +9,8 @@ using L = Abandoned.EditorTools.SkyscraperLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Builds the 48-metre vertical elevator shaft, motorized hoist, cab with MovingPlatform,
-    /// landing call stations, and sliding shaft gates at Ground (0m), Mechanical (20m), and Restaurant (44m).
+    /// Builds the 248-metre vertical elevator shaft, motorized hoist, cab with MovingPlatform,
+    /// landing call stations, and sliding shaft gates at Ground (0m), Mechanical (120m), and Restaurant (244m).
     /// </summary>
     public static class SkyscraperElevatorBuilder
     {
@@ -19,22 +19,32 @@ namespace Abandoned.EditorTools
             Transform shaftGroup = Group("ElevatorShaft", root);
 
             // 1. Shaft Structural Walls & Steel Guide Rails
-            float shaftH = 48f;
+            float shaftH = L.RestaurantY + 4f;
             float midY = shaftH * 0.5f;
             Box("ShaftWall_North", shaftGroup, new Vector3(0f, midY, 2.3f), new Vector3(4.8f, shaftH, 0.2f), art.Concrete);
             Box("ShaftWall_West", shaftGroup, new Vector3(-2.3f, midY, 0f), new Vector3(0.2f, shaftH, 4.8f), art.Concrete);
             Box("ShaftWall_East", shaftGroup, new Vector3( 2.3f, midY, 0f), new Vector3(0.2f, shaftH, 4.8f), art.Concrete);
+
+            float previousTop = 0f;
+            foreach (float level in new[] { L.GroundY, L.MechanicalY, L.RestaurantY })
+            {
+                if (level > previousTop)
+                    Box("ShaftSouthSpandrel", shaftGroup, new Vector3(0f,(previousTop+level)/2f,-2.3f),new Vector3(4.8f,level-previousTop,.2f),art.Concrete);
+                previousTop = level + 3f;
+                Box("LandingSill", shaftGroup, new Vector3(0f,level-.1f,-2.05f),new Vector3(2.2f,.2f,.7f),art.DiamondPlate);
+            }
+            Box("ShaftSouthTop",shaftGroup,new Vector3(0f,L.RestaurantY+3.5f,-2.3f),new Vector3(4.8f,1f,.2f),art.Concrete);
 
             // Vertical steel guide rails for the cab
             Box("GuideRail_L", shaftGroup, new Vector3(-2.15f, midY, 0f), new Vector3(0.12f, shaftH, 0.2f), art.Steel);
             Box("GuideRail_R", shaftGroup, new Vector3( 2.15f, midY, 0f), new Vector3(0.12f, shaftH, 0.2f), art.Steel);
 
             // Counterweight frame riding the north wall
-            Box("Counterweight", shaftGroup, new Vector3(0f, 24f, 2.05f), new Vector3(2.4f, 4.5f, 0.35f), art.Steel);
+            Box("Counterweight", shaftGroup, new Vector3(0f, L.RestaurantY * .5f, 2.05f), new Vector3(2.4f, 4.5f, 0.35f), art.Steel);
 
-            // 2. Shaft Head Machine Hoist & Cable Drums (y = 48m)
+            // 2. Shaft Head Machine Hoist & Cable Drums (y = 248m)
             Transform hoist = Group("ShaftHoist", shaftGroup);
-            hoist.position = new Vector3(0f, 48.5f, 0f);
+            hoist.position = new Vector3(0f, L.RestaurantY + 4.5f, 0f);
             Box("MotorBase", hoist, Vector3.zero, new Vector3(3.2f, 0.8f, 2.2f), art.Steel);
             Primitive(PrimitiveType.Cylinder, "CableDrum", hoist, new Vector3(0f, 0.8f, 0f), new Vector3(1.4f, 1.2f, 1.4f), art.Steel)
                 .transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
@@ -54,7 +64,7 @@ namespace Abandoned.EditorTools
             MovingPlatform platform = deckGo.gameObject.AddComponent<MovingPlatform>();
 
             // Enclosed Cab Body (y: 0 to 2.8m)
-            Transform cabBody = Group("CabBody", cabRoot.transform);
+            Transform cabBody = Group("CabBody", deckGo);
             float cabH = 2.8f, cabHalf = cabH * 0.5f;
             Box("CabWall_L", cabBody, new Vector3(-1.65f, cabHalf, 0f), new Vector3(0.1f, cabH, 3.4f), art.Steel);
             Box("CabWall_R", cabBody, new Vector3( 1.65f, cabHalf, 0f), new Vector3(0.1f, cabH, 3.4f), art.Steel);
@@ -64,8 +74,8 @@ namespace Abandoned.EditorTools
             Box("CabHandrail", cabBody, new Vector3(0f, 1.0f, 1.45f), new Vector3(2.8f, 0.06f, 0.06f), art.Brass);
 
             // 4. Interior Car Destination Button Panel (Inside the cab)
-            Transform carPanel = Group("CarButtonPanel", cabRoot.transform);
-            carPanel.position = new Vector3(1.5f, 1.2f, -0.6f);
+            Transform carPanel = Group("CarButtonPanel", deckGo);
+            carPanel.localPosition = new Vector3(1.5f, 1.2f, -0.6f);
             Box("PanelPlate", carPanel, Vector3.zero, new Vector3(0.06f, 0.9f, 0.35f), art.Brass);
 
             // 5. Landing Gates & Exterior Call Stations for the 3 Floors
@@ -78,6 +88,9 @@ namespace Abandoned.EditorTools
                 Transform landing = Group($"Landing_Floor{f}", shaftGroup);
                 landing.position = new Vector3(0f, y, -2.3f);
 
+                // Permanent side infill keeps every shaft landing sealed outside the gate aperture.
+                foreach (float side in new[] { -1f, 1f })
+                    Box("ShaftDoorSideWall",shaftGroup,new Vector3(side*1.95f,y+1.5f,-2.3f),new Vector3(.9f,3f,.2f),art.Concrete);
                 // Landing Door Frame & Sliding Gate Panels
                 Box("DoorFrameL", landing, new Vector3(-1.3f, 1.4f, 0f), new Vector3(0.4f, 2.8f, 0.2f), art.Steel);
                 Box("DoorFrameR", landing, new Vector3( 1.3f, 1.4f, 0f), new Vector3(0.4f, 2.8f, 0.2f), art.Steel);
@@ -91,7 +104,8 @@ namespace Abandoned.EditorTools
 
                 // Exterior Call Station Button
                 Transform callStation = Group($"CallStation_Floor{f}", landing);
-                callStation.position = new Vector3(1.75f, y + 1.2f, -2.25f);
+                callStation.position = new Vector3(1.75f, y + 1.2f, -2.55f);
+                callStation.rotation = Quaternion.Euler(0f,180f,0f);
                 Box("CallPlate", callStation, Vector3.zero, new Vector3(0.2f, 0.35f, 0.06f), art.Brass);
                 GameObject btnObj = Box("Button", callStation, new Vector3(0f, 0f, 0.04f), new Vector3(0.1f, 0.1f, 0.04f), art.LampEmissive);
                 var callBtn = btnObj.AddComponent<SkyscraperElevatorButton>();
@@ -112,8 +126,11 @@ namespace Abandoned.EditorTools
 
             // 6. Assemble the SkyscraperElevator NetworkBehaviour
             cabRoot.AddComponent<NetworkObject>();
+            // MovingPlatform carries the complete car; none of its children may be statically batched.
+            foreach (Transform child in deckGo.GetComponentsInChildren<Transform>(true))
+                UnityEditor.GameObjectUtility.SetStaticEditorFlags(child.gameObject, 0);
             var elevator = cabRoot.AddComponent<SkyscraperElevator>();
-            elevator.EditorSetup(platform, floorYs, gates, new Vector2(3.4f, 3.4f), 4.0f, 450f, 1);
+            elevator.EditorSetup(platform, floorYs, gates, new Vector2(3.4f, 3.4f), 8.0f, 450f, 1);
 
             // Connect button references back to the elevator component
             foreach (SkyscraperElevatorButton call in shaftGroup.GetComponentsInChildren<SkyscraperElevatorButton>(true))

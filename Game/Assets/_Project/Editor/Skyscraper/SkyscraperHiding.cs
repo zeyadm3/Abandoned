@@ -18,41 +18,13 @@ namespace Abandoned.EditorTools
             Transform group = Group("HidingPlaces", root);
             int index = 0;
 
-            // 1. Ground Lobby
-            Spot(group, index++, new Vector3(6f, L.GroundY, -1.0f), Vector3.back, HideSpotKind.Cabinet, art);
-            Spot(group, index++, new Vector3(-6f, L.GroundY, -2.5f), Vector3.forward, HideSpotKind.Locker, art);
-
-            // 2. Flooded Floor (Story 3, y = 12m)
-            Spot(group, index++, new Vector3(-6f, 12.0f, 2.0f), Vector3.forward, HideSpotKind.Cabinet, art);
-
-            // 3. Mechanical Deck (y = 20m)
-            Spot(group, index++, new Vector3(-6f, L.MechanicalY, 6f), Vector3.forward, HideSpotKind.Cabinet, art);
-            Spot(group, index++, new Vector3( 6f, L.MechanicalY, 6f), Vector3.forward, HideSpotKind.Cabinet, art);
-            Spot(group, index++, new Vector3(10f, L.MechanicalY, 10f), Vector3.back, HideSpotKind.Machine, art);
-
-            // 4. Looted Office Floor (Story 8, y = 32m)
-            Spot(group, index++, new Vector3(-6f, 32.0f, 6.0f), Vector3.forward, HideSpotKind.Closet, art);
-
-            // 5. Restaurant Floor (y = 44m)
-            // Waiter Service Credenzas in Dining Room
-            Spot(group, index++, new Vector3(-4f, L.RestaurantY, 17f), Vector3.back, HideSpotKind.Cabinet, art);
-            Spot(group, index++, new Vector3( 4f, L.RestaurantY,  3f), Vector3.forward, HideSpotKind.Cabinet, art);
-
-            // Lounge Bar Cabinet
-            Spot(group, index++, new Vector3(12.5f, L.RestaurantY, -2f), Vector3.left, HideSpotKind.Cabinet, art);
-
-            // Kitchen Staff Lockers
-            Spot(group, index++, new Vector3(-14.5f, L.RestaurantY, -6.5f), Vector3.forward, HideSpotKind.Locker, art);
-            Spot(group, index++, new Vector3(-13.5f, L.RestaurantY, -6.5f), Vector3.forward, HideSpotKind.Locker, art);
-
-            // Cold Store Walk-in Refrigeration Bay
-            Spot(group, index++, new Vector3(-14.0f, L.RestaurantY, -4.5f), Vector3.right, HideSpotKind.Closet, art);
-
-            // Penthouse Executive Wardrobe Closet
-            Spot(group, index++, new Vector3(14.5f, L.RestaurantY, 6.0f), Vector3.left, HideSpotKind.Closet, art);
-
-            // 6. Roof Terrace Window Washer Locker (y = 50m)
-            Spot(group, index++, new Vector3(2f, L.RoofY, 19f), Vector3.back, HideSpotKind.Locker, art);
+            Spot(group,index++,new Vector3(15,0,18),Vector3.left,HideSpotKind.Cabinet,art);
+            foreach(float y in new[]{120f,200f,280f})
+                Spot(group,index++,new Vector3(16,y,18),Vector3.left,HideSpotKind.Locker,art);
+            Spot(group,index++,new Vector3(-17,404f,8),Vector3.right,HideSpotKind.Locker,art);
+            Spot(group,index++,new Vector3(17,404f,11),Vector3.left,HideSpotKind.Cabinet,art);
+            Spot(group,index++,new Vector3(16,404f,19.5f),Vector3.left,HideSpotKind.Closet,art);
+            Spot(group,index++,new Vector3(14,410f,18),Vector3.back,HideSpotKind.Locker,art);
 
             return index;
         }

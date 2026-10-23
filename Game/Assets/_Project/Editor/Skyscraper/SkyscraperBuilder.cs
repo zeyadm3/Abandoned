@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Master builder for the Skyscraper Restaurant (Scenes/Skyscraper.unity).
-    /// Constructs the forecourt plaza, 48m elevator, 11-flight stairwell, mechanical floor,
+    /// Constructs the forecourt plaza, 248m elevator, 61-storey stairwell, mechanical floor,
     /// panoramic restaurant, commercial kitchen, VIP suite, and all network and run plumbing.
     /// </summary>
     public static class SkyscraperBuilder
@@ -43,7 +43,9 @@ namespace Abandoned.EditorTools
         );
 
         [MenuItem(ToolMenu.Skyscraper + "Rebuild Skyscraper Restaurant", priority = ToolMenu.SkyscraperP)]
-        public static void Rebuild() => Build();
+        public static void Rebuild() { Build(); SkyscraperWorld.Refresh(); }
+
+        public static void BuildAndExit() => ReleaseKit.RunAndExit(() => { Build(); SkyscraperWorld.Refresh(); });
 
         public static void Build()
         {
@@ -117,23 +119,26 @@ namespace Abandoned.EditorTools
                     go.transform.SetParent(root, true);
             }
 
-            LocationPlumbing.BakeNavMesh(root, L.SceneName, new[]
-            {
-                "Exterior/Truck", "Exterior/Skyline", "Exterior/TowerFacade/PorteCochere",
-                "Exterior/TowerFacade/RoofCrown", "Exterior/Plaza/DrainedFountainPool",
-                "Exterior/Plaza/StreetLamps", "Lobby/LobbyCeiling",
-                "IntermediateFloors/FloodedFloor_12m/FloodedCeiling",
-                "IntermediateFloors/LootedOffice_32m/OfficeCeiling",
-                "IntermediateFloors/RooftopInfrastructure",
-                "Lights", "ElevatorShaft/ShaftHoist"
-            });
+            SkyscraperNavigation.Build(root);
 
             LevelAtmosphere.Apply(L.SceneName, Mood, root);
             // The building's sound bed: strong wind at the top of the tower, a faint hum, the frame settling now and then.
             var ambience = new GameObject("Ambience");
             ambience.transform.SetParent(root, false);
             ambience.AddComponent<Abandoned.Audio.LevelAmbience>().EditorSetup(.42f, .08f, .02f, new Vector2(16f, 40f));
+            SkyscraperClouds.Build(root);
             PlaceCamera();
+
+            // Finish this destination in the same material/light system as the other maps.
+            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+                throw new InvalidOperationException("Could not assign the skyscraper scene before finishing.");
+            if (MapSiteProfiles.TryGet(L.SceneName, out MapSiteProfile site)) MapSky.Apply(site);
+            SurfaceAging.Place(scene);
+            ObjectRemaster.ApplyToScene(scene);
+            EnvironmentRemaster.ResetSession();
+            EnvironmentRemaster.ApplyToScene(scene);
+            RoomReflectionProbes.Place(scene);
+            LightingRebuild.ApplyScene(scene, AssetDatabase.LoadAssetAtPath<IndirectLightingConfig>(LightingRebuild.BounceConfigPath));
 
             // 9. Occlusion Flags, Scene Save & Occlusion Baking
             ApplyOcclusionFlags(root);
@@ -150,7 +155,7 @@ namespace Abandoned.EditorTools
             if (!EditorSceneManager.SaveScene(scene, ScenePath))
                 throw new InvalidOperationException("Unity could not save the Skyscraper Restaurant after occlusion bake.");
 
-            Debug.Log($"[Skyscraper] Built {L.DisplayName}: 48m Elevator, 11-flight Stairwell, {restaurantSlabs.Count} Dining slabs " +
+            Debug.Log($"[Skyscraper] Built {L.DisplayName}: 408m Elevator, 101-storey Stairwell, {restaurantSlabs.Count} Dining slabs " +
                       $"({collapsibleDining.Count} collapsible), {mechPieces.Count} Mechanical pieces, {hidingCount} Hiding spots, " +
                       $"{loot.Count} Loot points, {threats.Count} Threat spawns, {lightCount} Lamps.");
         }
@@ -197,7 +202,7 @@ namespace Abandoned.EditorTools
             string locPath = $"{SkyscraperLoot.DataFolder}/SkyscraperLocation.asset";
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(locPath);
             location.EditorSetup("skyscraper", "Cloudline Skyscraper Restaurant",
-                "A luxury restaurant atop an abandoned skyscraper. Reach it via the freight lift or 11 flights of stairs.",
+                "A luxury restaurant atop an abandoned skyscraper. Reach it via the freight lift or 101 storeys of stairs.",
                 "Skyscraper", 2, 1, 1.4f, 1.25f, -0.1f, 1.1f, 0.15f);
             EditorUtility.SetDirty(location);
         }
@@ -206,8 +211,8 @@ namespace Abandoned.EditorTools
         {
             Camera camera = Object.FindFirstObjectByType<Camera>();
             if (camera == null) return;
-            camera.transform.position = new Vector3(0f, 32f, -44f);
-            camera.transform.LookAt(new Vector3(0f, 24f, 0f));
+            camera.transform.position = new Vector3(-200f, 160f, -300f);
+            camera.transform.LookAt(new Vector3(0f, 220f, 0f));
         }
 
         private static void BuildSoundscape(Transform root, List<Transform> intermediateNodes)
@@ -227,7 +232,7 @@ namespace Abandoned.EditorTools
             Transform wind3 = Node("Wind_TerraceEdge", new Vector3(-16f, L.RestaurantY + 2.0f, 16.0f));
             Transform wind4 = intermediateNodes != null && intermediateNodes.Count > 1 ? intermediateNodes[1] : wind3;
 
-            Transform cable1 = Node("Cable_ShaftHead", new Vector3(0f, 48.5f, 0f));
+            Transform cable1 = Node("Cable_ShaftHead", new Vector3(0f, L.RestaurantY+4.5f, 0f));
             Transform cable2 = Node("Cable_MidShaft", new Vector3(0f, L.MechanicalY + 2.5f, 0f));
             Transform cable3 = Node("Cable_ShaftPit", new Vector3(0f, L.GroundY + 1.5f, 0f));
 
@@ -261,6 +266,7 @@ namespace Abandoned.EditorTools
                                 renderer.GetComponentInParent<HidingLocker>() != null ||
                                 renderer.GetComponentInParent<LightFixture>() != null ||
                                 renderer.GetComponentInParent<BreakerPanel>() != null;
+                bool isGlass = renderer.sharedMaterial != null && renderer.sharedMaterial.renderQueue >= 2900;
                 bool isScenery = (skyline != null && go.transform.IsChildOf(skyline)) ||
                                 (truck != null && go.transform.IsChildOf(truck));
                 string name = go.name.ToLowerInvariant();
@@ -268,7 +274,7 @@ namespace Abandoned.EditorTools
                                name.Contains("walkway") || name.Contains("ramp") || name.Contains("bridge") ||
                                name.Contains("landing") || name.Contains("cradle");
 
-                if (isSection || isDynamic || isScenery || isFloor)
+                if (isSection || isDynamic || isScenery || isFloor || isGlass)
                 {
                     flags &= ~StaticEditorFlags.OccluderStatic;
                 }

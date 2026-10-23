@@ -1,131 +1,71 @@
 using System.Collections.Generic;
-using Abandoned.Core;
-using Abandoned.Structure;
 using UnityEngine;
 using static Abandoned.EditorTools.GreyboxFactory;
-using L = Abandoned.EditorTools.SkyscraperLayout;
+using A = Abandoned.EditorTools.SkyscraperArchitecture;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>
-    /// Builds the 44-metre concrete fire stair tower connecting Ground (0m) to Apex Restaurant (44m).
-    /// Features 11 continuous switchback stair flights, structural landings, railings, and heavy fire exit doors.
-    /// </summary>
     public static class SkyscraperStairwell
     {
-        public const int FlightCount = 11;
-        public const float StoryRise = 4.0f;
-
-        public static List<Transform> Build(Transform root, SkyscraperArt art, out List<Transform> collapsibleLandings)
+        public const int FlightCount = (int)(SkyscraperLayout.RestaurantY/4f);
+        public const int HalfFlights=(int)(SkyscraperLayout.RoofY/2f);
+        public const float StoryRise = 4f;
+        public static List<Transform> Build(Transform root, SkyscraperArt art, out List<Transform> weak)
         {
-            Transform stairwell = Group("StairwellTower", root);
-            collapsibleLandings = new List<Transform>();
-            var allLandings = new List<Transform>();
-
-            // 1. Concrete Stairwell Enclosure Core Walls (x: -15 to -9, z: -3 to +3, y: 0 to 45m)
-            float h = L.RestaurantY + 1.5f;
-            float midY = h * 0.5f;
-            Box("StairWall_West", stairwell, new Vector3(-15.1f, midY, 0f), new Vector3(0.3f, h, 6.4f), art.Concrete);
-            Box("StairWall_North", stairwell, new Vector3(-12f, midY, 3.1f), new Vector3(6.4f, h, 0.3f), art.Concrete);
-            Box("StairWall_South", stairwell, new Vector3(-12f, midY, -3.1f), new Vector3(6.4f, h, 0.3f), art.Concrete);
-
-            // East wall with doorways at Ground (0m), Flooded Floor (12m), Mechanical (20m), Office (32m), and Restaurant (44m)
-            Box("StairWall_East_NorthSection", stairwell, new Vector3(-8.9f, midY, 0.75f), new Vector3(0.3f, h, 4.7f), art.Concrete);
-            // Spandrels above each doorway along the south opening column
-            Box("StairWall_East_Spandrel_0", stairwell, new Vector3(-8.9f,  7.3f, -2.4f), new Vector3(0.3f, 9.4f, 1.4f), art.Concrete);
-            Box("StairWall_East_Spandrel_1", stairwell, new Vector3(-8.9f, 17.3f, -2.4f), new Vector3(0.3f, 5.4f, 1.4f), art.Concrete);
-            Box("StairWall_East_Spandrel_2", stairwell, new Vector3(-8.9f, 27.3f, -2.4f), new Vector3(0.3f, 9.4f, 1.4f), art.Concrete);
-            Box("StairWall_East_Spandrel_3", stairwell, new Vector3(-8.9f, 39.3f, -2.4f), new Vector3(0.3f, 9.4f, 1.4f), art.Concrete);
-
-            // 2. Build 11 Continuous Switchback Flights
-            for (int i = 0; i < FlightCount; i++)
+            Transform g = Group("StairwellTower", root);
+            weak = new List<Transform>();
+            var landings = new List<Transform>();
+            Box("CoreWallWest", g, new Vector3(-15.75f, ((SkyscraperLayout.RoofY+3f)*.5f), 1f), new Vector3(.3f, (SkyscraperLayout.RoofY+3f), 12.6f), art.Concrete);
+            Box("CoreWallNorth", g, new Vector3(-12f, ((SkyscraperLayout.RoofY+3f)*.5f), 7.15f), new Vector3(7.8f, (SkyscraperLayout.RoofY+3f), .3f), art.Concrete);
+            Box("CoreWallSouth", g, new Vector3(-12f, ((SkyscraperLayout.RoofY+3f)*.5f), -5.15f), new Vector3(7.8f, (SkyscraperLayout.RoofY+3f), .3f), art.Concrete);
+            // East wall leaves a 2.4m south doorway at each accessible story and a north roof doorway.
+            Box("CoreWallEastMiddle", g, new Vector3(-8.25f, ((SkyscraperLayout.RoofY+3f)*.5f), 1f), new Vector3(.3f, (SkyscraperLayout.RoofY+3f), 5.6f), art.Concrete);
+            EastStrip(g, art, -3.5f, new[] {0f, 120f, 200f, 280f, 404f});
+            EastStrip(g, art, 5.5f, new[] {SkyscraperLayout.RoofY});
+            for (int i = 0; i <= HalfFlights; i++)
             {
-                float baseY = i * StoryRise;
-                Transform storyGroup = Group($"StairStory_{i:00}", stairwell);
-
-                // Main landing at South side (z: -1.8 to -3.0, x: -14.8 to -9.2)
-                Transform mainLanding = Group($"Landing_Main_{i}", storyGroup);
-                mainLanding.position = new Vector3(-12f, baseY, -2.4f);
-                BoxCollider colMain = mainLanding.gameObject.AddComponent<BoxCollider>();
-                colMain.center = new Vector3(0f, -0.15f, 0f);
-                colMain.size = new Vector3(5.6f, 0.3f, 1.2f);
-                Box("Visual", mainLanding, colMain.center, colMain.size, art.Concrete, false);
-                mainLanding.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-                allLandings.Add(mainLanding);
-
-                // Landing 6 (y = 24m) is weakened concrete that can crack under heavy loot loads
-                if (i == 6) collapsibleLandings.Add(mainLanding);
-
-                // Half landing at North side (z: 1.8 to 3.0, x: -14.8 to -9.2, y = baseY + 2.0m)
-                Transform halfLanding = Group($"Landing_Half_{i}", storyGroup);
-                halfLanding.position = new Vector3(-12f, baseY + 2.0f, 2.4f);
-                BoxCollider colHalf = halfLanding.gameObject.AddComponent<BoxCollider>();
-                colHalf.center = new Vector3(0f, -0.15f, 0f);
-                colHalf.size = new Vector3(5.6f, 0.3f, 1.2f);
-                Box("Visual", halfLanding, colHalf.center, colHalf.size, art.Concrete, false);
-                halfLanding.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-                allLandings.Add(halfLanding);
-
-                // Flight 1: Ascending Northward from Main Landing to Half Landing (x: -13.6m)
-                BuildRampFlight(storyGroup, art, new Vector3(-13.6f, baseY + 1.0f, 0f),
-                    new Vector3(2.4f, 2.0f, 3.6f), true);
-
-                // Flight 2: Ascending Southward from Half Landing to Next Main Landing (x: -10.4m)
-                BuildRampFlight(storyGroup, art, new Vector3(-10.4f, baseY + 3.0f, 0f),
-                    new Vector3(2.4f, 2.0f, 3.6f), false);
-
-                // Central Divider Handrail
-                Box("DividerRail", storyGroup, new Vector3(-12.0f, baseY + 2.0f, 0f),
-                    new Vector3(0.08f, 3.6f, 3.4f), art.Steel);
+                float y = i * 2f;
+                bool north = i % 2 == 1;
+                float z = north ? 5.5f : -3.5f;
+                Transform landing = A.Slab(g, new Vector3(-12f, y, z), new Vector2(7.2f, 3f), art.Concrete);
+                landing.name = $"Landing_{i:00}";
+                landings.Add(landing);
+                if (i < HalfFlights) Flight(g, art, i, !north);
+                if (north) A.Rail(g, new Vector3(-15.3f, y, 6.8f), new Vector3(-8.7f, y, 6.8f), art.Steel);
             }
-
-            // Top Final Landing at Restaurant Sky Lobby (y = 44m)
-            Transform topLanding = Group("Landing_TopSummit", stairwell);
-            topLanding.position = new Vector3(-12f, L.RestaurantY, 0f);
-            BoxCollider topCol = topLanding.gameObject.AddComponent<BoxCollider>();
-            topCol.center = new Vector3(0f, -0.15f, 0f);
-            topCol.size = new Vector3(5.6f, 0.3f, 6.0f);
-            Box("Visual", topLanding, topCol.center, topCol.size, art.Concrete, false);
-            topLanding.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
-            allLandings.Add(topLanding);
-
-            // 3. Fire Exit Doors (Heavy Steel Doors with Panic Bars)
-            BuildFireDoor(stairwell, art, new Vector3(-8.9f, L.GroundY, -2.4f), "Ground Fire Exit");
-            BuildFireDoor(stairwell, art, new Vector3(-8.9f, 12.0f, -2.4f), "Flooded Floor Fire Exit");
-            BuildFireDoor(stairwell, art, new Vector3(-8.9f, L.MechanicalY, -2.4f), "Mechanical Fire Exit");
-            BuildFireDoor(stairwell, art, new Vector3(-8.9f, 32.0f, -2.4f), "Office Fire Exit");
-            BuildFireDoor(stairwell, art, new Vector3(-8.9f, L.RestaurantY, -2.4f), "Restaurant Fire Exit");
-
-            return allLandings;
+            foreach (float y in new[] {0f,120f,200f,280f,404f})
+            {
+                A.Portal(g, new Vector3(-8.25f,y,-3.5f), 2.4f, 2.8f, art.Steel, true);
+                Label(g, "ExitDirection", "EXIT / STAIRS", new Vector3(-8.02f,y+3.05f,-3.5f), Quaternion.Euler(0,-90,0), .09f, Color.white);
+            }
+            return landings;
         }
-
-        private static void BuildRampFlight(Transform parent, SkyscraperArt art, Vector3 center, Vector3 size, bool northUp)
+        private static void EastStrip(Transform g, SkyscraperArt art, float z, float[] doors)
         {
-            Transform ramp = Group(northUp ? "Flight_NorthUp" : "Flight_SouthUp", parent);
-            ramp.position = center;
-
-            // Ramp angle matching 2.0m rise over 3.6m run (~29 degrees)
-            float angle = Mathf.Atan2(size.y, size.z) * Mathf.Rad2Deg;
-            if (!northUp) angle = -angle;
-
-            float diagonalLength = Mathf.Sqrt(size.y * size.y + size.z * size.z);
-            GameObject slab = Box("TreadSlab", ramp, Vector3.zero, new Vector3(size.x, 0.25f, diagonalLength), art.Concrete);
-            slab.transform.localRotation = Quaternion.Euler(angle, 0f, 0f);
-
-            // Outer Handrail
-            float railX = northUp ? -size.x * 0.45f : size.x * 0.45f;
-            GameObject rail = Box("Handrail", ramp, new Vector3(railX, 0.9f, 0f), new Vector3(0.06f, 0.06f, diagonalLength), art.Steel, false);
-            rail.transform.localRotation = Quaternion.Euler(angle, 0f, 0f);
+            float start = 0f;
+            foreach (float y in doors)
+            {
+                if (y > start) Box("CoreWallEastSpandrel",g,new Vector3(-8.25f,(y+start)/2,z),new Vector3(.3f,y-start,3.4f),art.Concrete);
+                start = y+2.8f;
+            }
+            if (start < (SkyscraperLayout.RoofY+3f)) Box("CoreWallEastSpandrel",g,new Vector3(-8.25f,((SkyscraperLayout.RoofY+3f)+start)/2,z),new Vector3(.3f,(SkyscraperLayout.RoofY+3f)-start,3.4f),art.Concrete);
         }
-
-        private static void BuildFireDoor(Transform parent, SkyscraperArt art, Vector3 at, string name)
+        private static void Flight(Transform parent, SkyscraperArt art, int i, bool north)
         {
-            Transform door = Group(name, parent);
-            door.position = at;
-            Box("Frame", door, new Vector3(0f, 1.25f, 0f), new Vector3(0.35f, 2.5f, 1.2f), art.Steel);
-            Box("DoorLeaf", door, new Vector3(0f, 1.25f, 0f), new Vector3(0.08f, 2.4f, 1.0f), art.Steel);
-            Box("PushBar", door, new Vector3(-0.06f, 1.0f, 0f), new Vector3(0.05f, 0.08f, 0.8f), art.Brass);
-            Box("ExitSign", door, new Vector3(0f, 2.6f, 0f), new Vector3(0.06f, 0.25f, 0.6f), art.RedEmergencyEmissive);
+            Transform g = Group($"Flight_{i:00}",parent);
+            float x = north ? -13.65f : -10.35f, y = i*2f;
+            float angle = Mathf.Atan2(2f,6f)*Mathf.Rad2Deg;
+            var slope = Box("ContinuousCarryRamp",g,new Vector3(x,y+1f-.12f/Mathf.Cos(angle*Mathf.Deg2Rad),1f),
+                new Vector3(2.7f,.24f,Mathf.Sqrt(40f)),art.Concrete);
+            slope.transform.localRotation = Quaternion.Euler(north ? -angle : angle,0,0);
+            for (int s=0;s<12;s++)
+            {
+                float z = north ? -2f+(s+.5f)*.5f : 4f-(s+.5f)*.5f;
+                Box("Tread",g,new Vector3(x,y+(s+.5f)/6f+.025f,z),new Vector3(2.7f,.05f,.5f),art.Concrete,false);
+                Box("Nosing",g,new Vector3(x,y+(s+.5f)/6f+.055f,z+(north ? .22f : -.22f)),new Vector3(2.65f,.012f,.035f),art.Brass,false);
+            }
+            float railX = north ? -12.22f : -11.78f;
+            A.Rail(g,new Vector3(railX,y,north ? -2f : 4f),new Vector3(railX,y+2f,north ? 4f : -2f),art.Steel);
         }
     }
 }

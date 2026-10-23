@@ -24,7 +24,9 @@ namespace Abandoned.EditorTools
             string finish, Vector3? euler = null, int sides = 12)
         {
             sides = Mathf.Max(6, sides);
-            if (!cylinders.TryGetValue(sides, out Mesh mesh)) cylinders[sides] = mesh = CylinderMesh(sides);
+            // The cached meshes are never saved, so Unity unloads them on a scene change; a long run (Rebuild Entire
+            // Game) then built trucks and the world van without their cylinders. Make a new one once the old is gone.
+            if (!cylinders.TryGetValue(sides, out Mesh mesh) || mesh == null) cylinders[sides] = mesh = CylinderMesh(sides);
             return Part(mesh, parent, name, centre, size, finish, euler);
         }
 
@@ -32,7 +34,7 @@ namespace Abandoned.EditorTools
             string finish, Vector3? euler = null, int sides = 12)
         {
             sides = Mathf.Max(6, sides);
-            if (!spheres.TryGetValue(sides, out Mesh mesh)) spheres[sides] = mesh = SphereMesh(sides);
+            if (!spheres.TryGetValue(sides, out Mesh mesh) || mesh == null) spheres[sides] = mesh = SphereMesh(sides);
             return Part(mesh, parent, name, centre, size, finish, euler);
         }
 

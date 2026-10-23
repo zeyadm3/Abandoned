@@ -145,6 +145,7 @@ namespace Abandoned.EditorTools
                 GameObject pad = GreyboxFactory.Box("Pad", site, new Vector3(r.center.x, WorldPlan.GroundY(p) - 1f, r.center.y),
                     new Vector3(r.width, 2f, r.height), i == 0 ? home : lot);
                 pad.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+                if(p.scene=="Skyscraper")pad.GetComponent<Renderer>().enabled=false;
                 pad.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
                 WorldProxies.Place(site, p);
                 sites[i] = site.gameObject;
