@@ -92,11 +92,14 @@ namespace Abandoned.Interaction
         /// </summary>
         public bool SoloDragAllowed { get; set; } = true;
 
-        /// <summary>A flatbed trolley in hand (M10.2): Heavy and Huge items can be dragged short-handed, Huge ones slowly.</summary>
-        public bool FlatbedDrag { get; set; }
-        // Anyone may drag Heavy loot alone; Huge loot needs the flatbed or a crew (alone it only nudges).
+        /// <summary>
+        /// A hand trolley in a pocket: Huge items can be dragged short-handed, slowly. It took over the flatbed's job when
+        /// the flatbed was removed (2026-10-22), so a solo player can still take a jackpot out.
+        /// </summary>
+        public bool TrolleyDrag { get; set; }
+        // Anyone may drag Heavy loot alone; Huge loot needs the hand trolley or a crew (alone it only nudges).
         public bool CanSoloDrag(CarryClass carryClass) =>
-            carryClass == CarryClass.Heavy || carryClass == CarryClass.Huge && FlatbedDrag;
+            carryClass == CarryClass.Heavy || carryClass == CarryClass.Huge && TrolleyDrag;
 
         /// <summary>Velocity a dropped object inherits, so dropping on the run doesn't stop it dead.</summary>
         public Vector3 DropVelocity => motor != null ? motor.MovementVelocity : Vector3.zero;

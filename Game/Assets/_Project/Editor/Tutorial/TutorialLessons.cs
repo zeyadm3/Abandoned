@@ -112,7 +112,7 @@ namespace Abandoned.EditorTools
             new("laundry.watch", 3, "Look up", "There's a watch on the shelf above the machines. Pocket it.", TutorialCheck.PocketItem, key: "watch",
                 voice: "There's a watch on the shelf above the machines. Pocket it."),
 
-            // 4. The hallway and the west wing: load limits, backing off, the support jack, a floor that fails.
+            // 4. The hallway and the west wing: load limits, backing off, crossing a cracking floor, a floor that fails.
             new("hall.floors", 4, "Floors", "Every floor has a load limit: you, what you carry, what you drag. Creaks mean near the limit, cracks mean it's weakening, and a sag means you have two seconds.",
                 TutorialCheck.Read, amount: 11f, radio: "DISPATCH: That hallway's old timber over the basement. Listen to it.", guide: "look section:hallway",
                 voice: "Listen up, this part matters. Every floor has a load limit. Creaks mean you're close. Cracks mean it's giving. And a sag means you've got two seconds."),
@@ -123,13 +123,9 @@ namespace Abandoned.EditorTools
                 voice: "Bring it down the hallway, toward the kitchen. And listen to that floor."),
             new("hall.back", 4, "Get off it", "Too much weight: it's cracking. Get everyone off the hallway.", TutorialCheck.OffSection, key: "hallway", amount: 2f,
                 voice: "Hear that? It's cracking. Everybody off the hallway. Now."),
-            new("hall.room", 4, "Make room", "You need a free place for a support jack. Drop something: hold {key:Inventory}, choose it, press {key:Drop}.", TutorialCheck.FreeSlot,
-                hud: "pockets", voice: "You'll need a free place for a support jack. Drop something you don't need."),
-            new("hall.jack", 4, "Brace it", "Take a support jack from the crate in the dining room. Stand on the hallway, hands empty, and use it ({key:Use}): it props the floor up from the basement.",
-                TutorialCheck.SectionBraced, key: "hallway",
-                voice: "Grab a support jack from the crate in the dining room. Stand on the hallway, hands empty, and use it. It props the floor up from below."),
-            new("hall.across", 4, "Across", "Now take the clock across into the kitchen. A braced floor holds more.", TutorialCheck.ItemInArea, key: "clock", area: "kitchen",
-                voice: "Now take the clock across into the kitchen. A braced floor holds a lot more."),
+            new("hall.across", 4, "Across", "Now take the clock across into the kitchen in one go, with nobody else on the hallway. Don't stop on a cracking floor.",
+                TutorialCheck.ItemInArea, key: "clock", area: "kitchen",
+                voice: "Now take the clock across into the kitchen. One go, nobody else on the hallway, and don't stop on a cracking floor."),
             new("hall.necklace", 4, "The necklace", "There's a pearl necklace on the nightstand in the south bedroom. Go and get it.",
                 TutorialCheck.HoldItem, key: "necklace", radio: "DISPATCH: South bedroom's had a leak for years. Careful.",
                 beat: TutorialBeat.ArmCollapse, beatKey: TutorialHouseStructure.BedroomBKey,

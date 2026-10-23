@@ -16,7 +16,7 @@ namespace Abandoned.Tutorial
         private static readonly List<TutorialGearCrate> Live = new();
 
         [SerializeField, Range(0, 31)] private int index;
-        [Tooltip("The equipment catalog id it hands out (hand_trolley, support_jack, medkit...).")]
+        [Tooltip("The equipment catalog id it hands out (hand_trolley, medkit...).")]
         [SerializeField] private string equipmentId = "hand_trolley";
 
         public static IReadOnlyList<TutorialGearCrate> All => Live;

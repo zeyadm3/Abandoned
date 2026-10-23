@@ -35,6 +35,7 @@ namespace Abandoned.EditorTools
                 SceneManager.SetActiveScene(scene);
                 p.look = PlaceLook.Capture();
                 if (p.measure) Measure(scene, p);
+                WorldProxies.Bake(scene, p);
                 if (before.IsValid()) SceneManager.SetActiveScene(before);
                 EditorSceneManager.CloseScene(scene, true);
                 Debug.Log($"[WorldBuild] {p.scene}: sky {(p.look.skybox != null ? p.look.skybox.name : "none")}, fog {(p.look.fog ? p.look.fogDensity.ToString("0.0000") : "off")}.");

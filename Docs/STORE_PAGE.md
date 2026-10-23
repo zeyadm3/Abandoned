@@ -27,7 +27,7 @@ collapse under weight and impacts, and everything on them comes down too. Plan y
 think twice before the whole crew stands on the glass bridge with the piano.
 
 **Your loot is heavy.** A grand piano needs three people on the handles. A vase is worth $25,000 until it
-touches anything. Pockets for the small stuff, a cart or a trolley for the big stuff, a rope and pulley or
+touches anything. Pockets for the small stuff, a cart or a trolley for the big stuff, a full crew or
 a freight lift for the really big stuff, and a truck that won't wait forever.
 
 **Something hears you.** The Blind One hunts by sound: footsteps, dropped loot, creaking floors and your

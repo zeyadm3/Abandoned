@@ -48,7 +48,7 @@ namespace Abandoned.Interaction
         [field: Tooltip("Let one player drag Heavy items along the floor. Huge items still need a team or tools.")]
         [field: SerializeField] public bool SoloDragHeavy { get; private set; } = true;
         [field: SerializeField, Range(0.1f, 1f)] public float DragSpeedMultiplier { get; private set; } = 0.35f;
-        [field: Tooltip("A Huge item dragged short-handed on a flatbed trolley (M10.2) goes this share of the drag speed.")]
+        [field: Tooltip("A Huge item dragged short-handed on a hand trolley goes this share of the drag speed.")]
         [field: SerializeField, Range(0.1f, 1f)] public float HugeDragSpeedScale { get; private set; } = 0.55f;
         [field: SerializeField, Min(0.3f)] public float DragHoldDistance { get; private set; } = 1.4f;
         [field: Tooltip("Spring scale while dragging: heavy things lag well behind.")]

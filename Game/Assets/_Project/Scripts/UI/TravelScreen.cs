@@ -20,7 +20,6 @@ namespace Abandoned.UI
             "Scan as soon as you're inside: prices first, plans second.", // @loc
             "Weak floors creak before they crack and crack before they go. Listen.", // @loc
             "The truck's board shows the haul. Load it, read it, argue about it.", // @loc
-            "A rope and pulley over a hole beats carrying a piano down the stairs.", // @loc
             "Bolt cutters are quiet. Crowbars are not.", // @loc
             "Two people on a heavy item go at the slower one's pace. Choose your partner.", // @loc
             "The Blind One hears your voice chat. Whisper. Or don't, and run.", // @loc
@@ -32,6 +31,12 @@ namespace Abandoned.UI
         private int seenTravel = -1;
         private float until;
         private Audio.SoundLoop rumble;
+
+        /// <summary>
+        /// The open world (Abandoned.World): levels reached by driving, or that are the world itself, get no drive screen
+        /// (decision: driving is the only way to a location). Null outside the world.
+        /// </summary>
+        public static System.Func<string, bool> NoDrive { get; set; }
 
         /// <summary>Tests: the drive is on screen.</summary>
         public bool Showing { get; private set; }
@@ -46,7 +51,7 @@ namespace Abandoned.UI
             if (seenTravel < 0) { seenTravel = id; return; }
             if (id == seenTravel) return;
             seenTravel = id;
-            Begin(level);
+            if (NoDrive == null || !NoDrive(level)) Begin(level);
         }
 
         private void Update()
@@ -63,7 +68,7 @@ namespace Abandoned.UI
             else if (id != seenTravel)
             {
                 seenTravel = id;
-                Begin(travel.Level);
+                if (NoDrive == null || !NoDrive(travel.Level)) Begin(travel.Level);
             }
             if (Showing && (root == null || root.panel == null)) Refresh(travel.Level);
             Set(Showing && (Time.unscaledTime < until || !SessionTravel.LevelReady || !Loaded(travel.Level)));

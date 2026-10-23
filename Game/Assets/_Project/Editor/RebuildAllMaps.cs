@@ -34,6 +34,16 @@ namespace Abandoned.EditorTools
             if (choice == 1) return;
             bool rebuildHq = choice == 2;
 
+            var steps = MapSteps(rebuildHq);
+            // 0.24.12: the builders recreate their materials, so the scanned surfaces, looks, sound and decals follow them.
+            steps.Add(AfterMapsStep);
+            steps.Add(OpenWorldStep);
+            RunSteps("Rebuild All Maps", steps);
+        }
+
+        /// <summary>Every map's own rebuild, in a safe order (the HQ, if wanted, before the tutorial's clipboard).</summary>
+        public static List<(string name, Action run)> MapSteps(bool rebuildHq)
+        {
             var steps = new List<(string name, Action run)>
             {
                 ("Mall and Parking", MeridianMallOverhaul.Author),
@@ -49,24 +59,36 @@ namespace Abandoned.EditorTools
             if (rebuildHq) steps.Add(("HQ (Salvage Hub)", HqBuilder.AuthorSalvageHub));
             steps.Add(("Tutorial House", TutorialHouseBuilder.Build));
             steps.Add(("Training clipboard in the HQ", TutorialHqClipboard.AddToSavedHq));
-            // 0.24.12: the builders recreate their materials, so the scanned surfaces, looks, sound and decals follow them.
-            steps.Add(("0.24.12 look, surfaces, sound and decals", AvOverhaul.AfterMapsOrThrow));
+            return steps;
+        }
 
+        /// <summary>Runs after the maps: the 0.24.12 look, surfaces, sound, decals, and the lighting rebuild.</summary>
+        public static readonly (string name, Action run) AfterMapsStep = ("0.24.12 look, surfaces, sound and decals", AvOverhaul.AfterMapsOrThrow);
+
+        /// <summary>Last: the open world reads every map's finished sky and fog (Docs/OPEN_WORLD_PLAN.md).</summary>
+        public static readonly (string name, Action run) OpenWorldStep = ("Open world (land, roads, places' looks)", WorldBuilder.Build);
+
+        /// <summary>
+        /// Runs each step with a progress bar; a step that throws is logged and skipped (its saved scene unchanged) and
+        /// the rest still run. Ends with the build scene list, a save and a summary dialog.
+        /// </summary>
+        public static void RunSteps(string title, List<(string name, Action run)> steps)
+        {
             var failed = new List<string>();
             try
             {
                 for (int i = 0; i < steps.Count; i++)
                 {
-                    EditorUtility.DisplayProgressBar("Rebuild All Maps", $"{steps[i].name} ({i + 1}/{steps.Count})", (float)i / steps.Count);
+                    EditorUtility.DisplayProgressBar(title, $"{steps[i].name} ({i + 1}/{steps.Count})", (float)i / steps.Count);
                     try
                     {
                         steps[i].run();
-                        Debug.Log($"[RebuildAllMaps] {steps[i].name}: done.");
+                        Debug.Log($"[{title}] {steps[i].name}: done.");
                     }
                     catch (Exception e)
                     {
                         failed.Add(steps[i].name);
-                        Debug.LogError($"[RebuildAllMaps] {steps[i].name} failed; its saved scene is unchanged.");
+                        Debug.LogError($"[{title}] {steps[i].name} failed; its saved scene is unchanged.");
                         Debug.LogException(e);
                         // Drop the half-built scene unsaved, or the next map's save prompt would offer to keep it.
                         EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -83,8 +105,8 @@ namespace Abandoned.EditorTools
             string summary = failed.Count == 0
                 ? $"All {steps.Count} steps finished."
                 : $"{steps.Count - failed.Count} of {steps.Count} steps finished. Failed (see the Console):\n- " + string.Join("\n- ", failed);
-            Debug.Log("[RebuildAllMaps] " + summary.Replace("\n", " "));
-            EditorUtility.DisplayDialog("Rebuild All Maps", summary, "OK");
+            Debug.Log($"[{title}] " + summary.Replace("\n", " "));
+            EditorUtility.DisplayDialog(title, summary, "OK");
         }
     }
 }

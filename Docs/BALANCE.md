@@ -29,17 +29,20 @@ job, level 8 around job 6, level 10 around job 9, level 15 around job 20, level 
 
 ## Unlock table (GDD 13)
 
+Removed on 2026-10-22 (user): flare, portable floodlight, spray chalk, flatbed trolley, backpack, moving blanket,
+crash mat, rope & pulley, support jack and the Armored Bay. Level 1 also has glow sticks $150 and flashlight battery $500;
+level 5 the thermal camera $12,000; level 6 the scout drone $16,000.
+
 | Level | Gear (shop) | Truck | Contracts |
 |---|---|---|---|
 | 1 | flashlight $400, radio $600, hand trolley $2,500, medkit $1,500 (single use), crowbar $2,000 | – | power off, unstable, rush job, fragile collection, heavy jackpot, picked over |
-| 2 | planks $800 (single use), noise maker $1,200 (single use), backpack $4,000, bolt cutters $3,500 | Bigger Bay $12,000 (cargo ×1.35) | storm, sealed |
-| 3 | stress scanner $8,000, flatbed trolley $9,000 ("better trolley") | Floodlights $8,000 | |
-| 4 | motion detector $9,000 | Tuned Engine $10,000 (honk 7 s) | |
+| 2 | planks $800 (single use), noise maker $1,200 (single use), bolt cutters $3,500, sledgehammer $3,000, lockpick $1,800 | Bigger Bay $12,000 (cargo ×1.35) | storm, sealed |
+| 3 | stress scanner $8,000 | Floodlights $8,000, Threat Forecast $9,000 | |
+| 4 | motion detector $9,000 | Tuned Engine $10,000 (honk 7 s), Truck Winch $18,000 | |
 | 5 | | Box Truck $30,000 (cargo ×1.75; GDD "truck, more cargo") | |
 | 6 | night vision $14,000 | | |
 | 7 | | V8 $25,000 (honk 4 s) | |
-| 8 | rope & pulley $2,000 (single use), support jack $2,500 (single use) | | hot property ("harder modifiers") |
-| 9 | | Armored Bay $40,000 | |
+| 8 | | | hot property ("harder modifiers") |
 | 15 | | | night job, condemned ("night contracts, elite modifiers") |
 
 The new company's starter kit (4 flashlights, 4 radios, a medkit, a hand trolley) is free. Bankruptcy takes

@@ -11,7 +11,7 @@ How we work: Docs/PLAYBOOK.md.
 - This folder (repo root): CLAUDE.md, Docs/, Tools/ (batch-mode scripts), .gitignore, .gitattributes
 - Game/ is the Unity project (Assets/, Packages/, ProjectSettings/ live inside Game/)
 - All paths below are relative to Game/ unless they start with Docs/
-- Tools > Abandoned menu: laid out in Docs/TOOL_MENU.md (Rebuild All Maps at the top, then Maps, Content, Art,
+- Tools > Abandoned menu: laid out in Docs/TOOL_MENU.md (Rebuild Entire Game and Rebuild All Maps at the top, then Maps, Content, Art,
   UI, Checks, Project, Build, Store)
 
 ## Locked tech stack — do not substitute
@@ -138,7 +138,7 @@ follow (Rebuild All Maps does it; batch: `Tools/unity.sh exec Abandoned.EditorTo
 
 **Training job / tutorial (2026-10-20, written, never compiled or run).** 14 Larch Court: a one-storey Michigan
 ranch at 3 PM in December, from the user's floor plan at 1.4x (two bathrooms as drawn), with a basement, the
-neighbourhood, and 48 data-driven lessons in 9 chapters (`Scripts/Tutorial`, `Editor/Tutorial`, `Data/Tutorial`).
+neighbourhood, and 46 data-driven lessons in 9 chapters (`Scripts/Tutorial`, `Editor/Tutorial`, `Data/Tutorial`).
 Reached from the main menu's Training card and the HQ's training clipboard; never pays, never saves, nobody dies.
 Everything about it, what changed in existing systems and what to check first: Docs/TUTORIAL.md. The scene does not
 exist until **Tools > Abandoned > Maps > Tutorial House > Rebuild Tutorial House** (then **Add Training Clipboard to HQ**); it is
@@ -302,6 +302,17 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-22 (user: "remove some of the gear some are useless"): **gear cut.** Out of the shop: flare, portable
+  floodlight, spray chalk, flatbed trolley, backpack, moving blanket, crash mat, rope & pulley, support jack, and the
+  Armored Bay truck upgrade (17 gear items and 7 upgrades remain). Removed from both catalogs, their builders
+  (`EquipmentContentBuilder`, `CompanyContentBuilder`, which now also drops upgrades no longer listed) and their
+  definition assets, so no rebuild brings them back. Saves keep ids, so old saves just ignore them. The tutorial lost
+  "Make room" and "Brace it" and its jack crate (46 lessons); "Across" now teaches crossing a cracking floor in one go.
+  The items' runtime code (`EquipmentKind` values, `PlayerEquipment` branches, Pulley/SupportJack/CrashMat/
+  PlacedFloodlight, `RunState.Terms.Armored`) is left in place, unreachable, until a cleanup with a Unity compile.
+  Same day (user): **the hand trolley took over the flatbed's job**: with one in a pocket, a solo player or short crew
+  drags Huge loot at `CarryConfig.HugeDragSpeedScale` (`PlayerCarrier.TrolleyDrag`, was `FlatbedDrag`), so jackpots stay
+  possible solo. Heavy loot was already draggable by anyone.
 - 2026-10-21 (user: graphics "a 3 out of 10 ... at least an eight", "textures are overlapping and switching between
   them ... fix that in all the maps", better textures, "improve all the shadows and the lighting"): **0.24.13.**
   - No two drawn faces may share a plane and overlap. `CoplanarFix` runs last in AvOverhaul.AfterMaps (so after every

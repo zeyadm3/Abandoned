@@ -324,8 +324,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3098765378013844383}
-  - {fileID: 7535900461944318676}
+  - {fileID: 8310050321930340469}
+  - {fileID: 2709863418246093311}
   m_Father: {fileID: 392421105701120631}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2470292970987327402
@@ -412,7 +412,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 392421105701120631}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3689329058541428300
+--- !u!1 &3250540824682807566
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -420,54 +420,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5052535094467000074}
+  - component: {fileID: 2709863418246093311}
+  - component: {fileID: 3377639686537837058}
+  - component: {fileID: 4633662527221471187}
   m_Layer: 9
-  m_Name: CarryGrip_B
+  m_Name: Salvage_Rust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5052535094467000074
+--- !u!4 &2709863418246093311
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3689329058541428300}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.575, y: 0.07949999, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 392421105701120631}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4168584691930691877
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3098765378013844383}
-  - component: {fileID: 695948800782246014}
-  - component: {fileID: 2300105545938924039}
-  m_Layer: 9
-  m_Name: Salvage_Metal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3098765378013844383
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4168584691930691877}
+  m_GameObject: {fileID: 3250540824682807566}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.285, z: -0.0025000274}
@@ -476,21 +445,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5230425798463792234}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &695948800782246014
+--- !u!33 &3377639686537837058
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4168584691930691877}
-  m_Mesh: {fileID: 4300000, guid: 173ec8162ead84e24b6a27af41b2f6d0, type: 2}
---- !u!23 &2300105545938924039
+  m_GameObject: {fileID: 3250540824682807566}
+  m_Mesh: {fileID: 4300000, guid: 20cc082df485d4a038efb291bebc7737, type: 2}
+--- !u!23 &4633662527221471187
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4168584691930691877}
+  m_GameObject: {fileID: 3250540824682807566}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -533,6 +502,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3689329058541428300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5052535094467000074}
+  m_Layer: 9
+  m_Name: CarryGrip_B
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5052535094467000074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3689329058541428300}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.575, y: 0.07949999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 392421105701120631}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5902900642924849662
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,7 +690,7 @@ Transform:
   - {fileID: 8413502025300904645}
   m_Father: {fileID: 392421105701120631}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8570554267915655362
+--- !u!1 &8803674637128192978
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -698,23 +698,54 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7535900461944318676}
-  - component: {fileID: 7145730827077631228}
-  - component: {fileID: 1725479927512668410}
+  - component: {fileID: 1076960733125217531}
   m_Layer: 9
-  m_Name: Salvage_Rust
+  m_Name: CarryGrip_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7535900461944318676
+--- !u!4 &1076960733125217531
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570554267915655362}
+  m_GameObject: {fileID: 8803674637128192978}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.575, y: 0.07949999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 392421105701120631}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9197935612861785271
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8310050321930340469}
+  - component: {fileID: 1314454888540815405}
+  - component: {fileID: 3038817432749931914}
+  m_Layer: 9
+  m_Name: Salvage_Metal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8310050321930340469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9197935612861785271}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.285, z: -0.0025000274}
@@ -723,21 +754,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5230425798463792234}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7145730827077631228
+--- !u!33 &1314454888540815405
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570554267915655362}
-  m_Mesh: {fileID: 4300000, guid: 20cc082df485d4a038efb291bebc7737, type: 2}
---- !u!23 &1725479927512668410
+  m_GameObject: {fileID: 9197935612861785271}
+  m_Mesh: {fileID: 4300000, guid: 173ec8162ead84e24b6a27af41b2f6d0, type: 2}
+--- !u!23 &3038817432749931914
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570554267915655362}
+  m_GameObject: {fileID: 9197935612861785271}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -780,37 +811,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &8803674637128192978
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1076960733125217531}
-  m_Layer: 9
-  m_Name: CarryGrip_A
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1076960733125217531
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8803674637128192978}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.575, y: 0.07949999, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 392421105701120631}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2846375116922976977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -819,11 +819,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6522655169847619304}
     m_Modifications:
-    - target: {fileID: 1934805573500859997, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
+    - target: {fileID: 613790101145943710, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 4300000, guid: 3131e3d947af24858ac4d9872aa34b7e, type: 2}
-    - target: {fileID: 3285667018076267255, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
+    - target: {fileID: 1668371664234226522, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
@@ -832,14 +832,6 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4049763470457896023, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 4130034791888091783, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 5044556180390456485, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
@@ -891,6 +883,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 6463843949543311640, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7531605412406904033, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7585009223829661838, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7649461293443369834, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -911,10 +915,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 4300000, guid: 3ba945081db6842ca83bc6dede00ff7f, type: 2}
-    - target: {fileID: 8433530789657897776, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 8631867589100736634, guid: 7fbfbfe49b24d45978c752687891cf8a, type: 3}
       propertyPath: m_Layer
       value: 9

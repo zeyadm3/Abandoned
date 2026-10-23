@@ -22,5 +22,5 @@ down/up, Shift fast, mouse wheel = speed; your player stands still; only your sc
 6. Someone falls two floors still holding the TV. The TV survives. They don't.
 7. The sad trombone of a missed quota + the boss's voicemail.
 8. Cutting a shutter quietly; the store behind it is full of jewellery.
-9. Lowering the piano through a hole on the rope and pulley while the floor cracks.
+9. Three people walking the piano across a floor that cracks under every step.
 10. The truck leaving as the last player sprints for the ramp.

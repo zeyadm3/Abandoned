@@ -134,10 +134,8 @@ Each contract has a **Structural Stability %** (e.g., 63%). Lower stability mean
 ## 6.3 Tools that interact with it
 
 - **Stress scanner:** shows section health as a color overlay for a few seconds
-- **Support jack:** place under a floor section to raise its capacity
 - **Planks:** bridge gaps left by collapses
-- **Rope & pulley:** lower heavy loot through holes instead of using stairs
-- **Crowbar:** deliberately break weak sections (make your own shortcut)
+- **Crowbar / sledgehammer:** deliberately break weak sections (make your own shortcut)
 
 ## 6.4 Design rules
 
@@ -180,7 +178,7 @@ No real-time destruction simulation. Instead:
 | **One-hand** | Laptop, small painting, bottles | One player, can still hold flashlight |
 | **Two-hand** | TV, computer tower, vase | One player, slow, no flashlight |
 | **Heavy** | Server rack, safe, vending machine | 2 players, or 1 with a hand trolley |
-| **Huge** | Piano, statue, military generator | 3–4 players, or tools (trolley + ramp, pulley) — a solo player can move them slowly with a trolley + ramp |
+| **Huge** | Piano, statue, military generator | 3–4 players, or a hand trolley — a solo player or short crew can drag them slowly with one |
 
 **Solo:** the hand trolley is available from the start. Jackpots are possible solo, just hard.
 
@@ -200,7 +198,7 @@ No real-time destruction simulation. Instead:
 | Vending machine | $6,000 | Very heavy | Heavy | Low | Rattles loudly |
 | Grand piano | $35,000 | Massive | Huge | Medium | Won't fit through normal doors — find the loading bay |
 | Marble statue | $100,000 | Massive | Huge | Medium | The greed item |
-| Military generator | $60,000 | Massive | Huge | Low | Needs 4 people or a trolley + ramp |
+| Military generator | $60,000 | Massive | Huge | Low | Needs 4 people or a hand trolley |
 
 ## 7.4 Loot rules
 
@@ -310,27 +308,22 @@ Bought at HQ between runs. Limited inventory: **2 hand slots + 4 pocket slots**.
 - Flashlight
 - Walkie-talkie radio
 - Medkit
-- Hand trolley (so solo players can move Heavy items)
+- Hand trolley (so solo players and short crews can drag Huge items, slowly)
 
 ### Mid
 - Stress scanner
-- Backpack (more pocket slots)
-- Rope (lower loot through holes)
 - Planks (bridge gaps)
 - Motion detector
 - Noise maker (distract the Blind One)
 
 ### Advanced
-- Support jack
 - Night vision
 - Thermal camera
 - Bolt cutters / lockpick (locked rooms)
 - Drone (scout ahead)
 
-### Team equipment
-- Flatbed trolley + ramp (Huge items, slowly)
-- Pulley system (lower loot between floors)
-- Portable floodlight (scares some threats, uses power)
+Removed on 2026-10-22 (user): backpack, rope & pulley, support jack, flatbed trolley, portable floodlight, flares,
+spray chalk, moving blanket, crash mat, and the truck's armor upgrade.
 
 ---
 
@@ -341,15 +334,15 @@ Bought at HQ between runs. Limited inventory: **2 hand slots + 4 pocket slots**.
 | Level | Unlocks |
 |---|---|
 | 1 | Beat-up van, small cargo, mall contracts, hand trolley |
-| 3 | Better trolley, stress scanner in shop |
+| 3 | Stress scanner in shop |
 | 5 | Truck (more cargo), hospital contracts |
-| 8 | Pulley, support jacks, harder modifiers |
+| 8 | Harder modifiers |
 | 10 | Hotel contracts |
 | 15 | Night contracts, elite modifiers |
 | 20+ | Classified contracts (post-launch endgame) |
 
 ## Truck upgrades
-Cargo space, engine (faster honk-to-leave), armor (Hunter can't follow inside), floodlights, winch.
+Cargo space, engine (faster honk-to-leave), floodlights, winch, threat forecast.
 
 ## Company failure
 Three failed quotas in a row → bankruptcy. Start a new company, keep cosmetic unlocks and a small permanent bonus. Runs stay tense without saves feeling fragile.

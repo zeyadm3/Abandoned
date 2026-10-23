@@ -12,7 +12,7 @@ using static Abandoned.Tests.PlayerTestRig;
 
 namespace Abandoned.Tests
 {
-    /// <summary>M9.4 gear in the mall: the backpack's pockets, the support jack's brace, the crowbar's strikes.</summary>
+    /// <summary>M9.4 gear in the mall: the crowbar's strikes.</summary>
     public class StructureGearTests
     {
         private PlayerTestRig rig;
@@ -56,38 +56,6 @@ namespace Abandoned.Tests
             rig.Teleport(tile.transform.position + Vector3.up * 0.05f);
             rig.Settle();
             return tile;
-        }
-
-        [UnityTest]
-        public IEnumerator TheBackpackEasesTheLoad()
-        {
-            // Pockets are four fixed slots (Docs/FIELD_HUD.md); a worn backpack eases carried weight instead.
-            var carrier = rig.Player.GetComponent<Interaction.PlayerCarrier>();
-            int pockets = carrier.Inventory.Capacity;
-            Assert.IsFalse(carrier.Backpack);
-            yield return Equip("backpack");
-            yield return null;
-            Assert.IsTrue(carrier.Backpack, "worn from a pocket");
-            Assert.AreEqual(pockets, carrier.Inventory.Capacity, "no extra pockets");
-        }
-
-        [UnityTest]
-        public IEnumerator TheSupportJackBracesTheFloorYouStandOn()
-        {
-            StructuralSection tile = StandOnUpperTile();
-            float capacity = tile.Capacity;
-            yield return Equip("support_jack");
-            yield return PressUse();
-            float until = Time.time + 3f;
-            while (Time.time < until && Object.FindAnyObjectByType<SupportJack>() == null) yield return null;
-            SupportJack jack = Object.FindAnyObjectByType<SupportJack>();
-            Assert.IsNotNull(jack, "a jack post appeared");
-            Assert.AreSame(tile, jack.Section);
-            Assert.AreEqual(capacity * jack.CapacityMultiplier, tile.Capacity, 1f, "the floor holds more");
-            Assert.Less(jack.transform.position.y, tile.transform.position.y - 2f, "standing on the floor below");
-            Assert.IsNull(gear.InSlot(0), "single use");
-            tile.ResetState();
-            Assert.AreEqual(capacity, tile.Capacity, 1f, "a restore (the next run) takes the brace away");
         }
 
         [UnityTest]

@@ -11,7 +11,7 @@ namespace Abandoned.EditorTools
     /// <summary>
     /// The house's floors as structural sections (timber: they creak and crack like any level's), the basement under
     /// the west wing, the bulkhead stair down to it from the patio, the yard and the ceilings. Two sections teach:
-    /// the hallway (a weak floor that cracks under a heavy carry and takes a support jack, but never gives way) and
+    /// the hallway (a weak floor that cracks under a heavy carry but never gives way) and
     /// the middle of the south bedroom (it falls under the first player to stand on it, 2.4 m into the basement).
     /// Everything else can never collapse.
     /// </summary>
@@ -185,8 +185,7 @@ namespace Abandoned.EditorTools
                 float x0 = overPatch ? patch.xMax + .05f : m.xMin;
                 if (m.xMax - x0 > .2f) Box("Joist", basement, new Vector3((x0 + m.xMax) * .5f, -L.Slab - .1f, z), new Vector3(m.xMax - x0, .2f, .05f), art.Oak, false);
             }
-            // The beam and its columns run north-south through the middle, clear of the patch and of the hallway
-            // (the support jack's post stands under the hallway).
+            // The beam and its columns run north-south through the middle, clear of the patch and of the hallway.
             const float beamX = 3.6f;
             float beamFrom = patch.yMax + .4f;
             Box("SteelBeam", basement, new Vector3(beamX, -L.Slab - .17f, (beamFrom + m.yMax) * .5f), new Vector3(.12f, .14f, m.yMax - beamFrom), art.Steel, false);

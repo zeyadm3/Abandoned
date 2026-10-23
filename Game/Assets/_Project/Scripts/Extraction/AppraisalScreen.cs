@@ -13,7 +13,8 @@ namespace Abandoned.Extraction
     /// </summary>
     public class AppraisalScreen : MonoBehaviour
     {
-        [SerializeField] private RunDirector director;
+        // None in the open world's own copy (Abandoned.World): the job's place has unloaded by the time it shows.
+        [Core.OptionalReference, SerializeField] private RunDirector director;
 
         private ScreenPanel screen;
 

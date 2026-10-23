@@ -145,7 +145,7 @@ namespace Abandoned.Equipment
                 flashlight.enabled = on;
             }
             if (carrier != null) carrier.SoloDragAllowed = true;
-            if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
+            if (carrier != null) carrier.TrolleyDrag = Has(EquipmentKind.HandTrolley);
             if (carrier != null) carrier.Backpack = Has(EquipmentKind.Backpack);
             if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = 0;
         }
@@ -156,7 +156,7 @@ namespace Abandoned.Equipment
             TickDroppedTools();
             // The company can appear or change after we spawned (HQ load): keep the effects current.
             if (carrier != null) carrier.SoloDragAllowed = true;
-            if (carrier != null) carrier.FlatbedDrag = Has(EquipmentKind.Flatbed);
+            if (carrier != null) carrier.TrolleyDrag = Has(EquipmentKind.HandTrolley);
             if (carrier != null) carrier.Backpack = Has(EquipmentKind.Backpack);
             TickFlashlight();
             // Preserve the switch position while hands are occupied: setting down restores the beam.
@@ -215,7 +215,7 @@ namespace Abandoned.Equipment
             for (int other = 0; other < EquipState.SlotCount; other++) if (other != slot && state.Value[other] == index) usedHere++;
             if (index >= 0 && (catalog.At(index) == null || state.Value[slot] != index && Available(index, this) - usedHere <= 0)) return;
             // Gear is changed at the HQ, not mid-run (when a company exists).
-            if (CompanyService.RulesApply && Networking.SessionTravel.Current != null && Networking.SessionTravel.Current.Level != CompanyService.HomeLevel) return;
+            if (CompanyService.RulesApply && Networking.SessionTravel.Current != null && !CompanyService.AtHome) return;
             state.Value = state.Value.With(slot, index);
         }
 

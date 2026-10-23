@@ -176,7 +176,7 @@ namespace Abandoned.Interaction
             }
         }
 
-        /// <summary>True when a short crew may drag it: anyone holding it has a trolley for it (hand trolley: Heavy; flatbed: Huge too).</summary>
+        /// <summary>True when a short crew may drag it: anyone holding it may drag it (Heavy: anyone; Huge: with a hand trolley).</summary>
         public bool CanBeDraggedUnderCrewed
         {
             get

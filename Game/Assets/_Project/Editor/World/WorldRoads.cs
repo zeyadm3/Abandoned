@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
     /// <summary>
     /// The world's roads as meshes laid on their graded beds: asphalt with a dropped edge (no gap shows against the
     /// shoulder), a dashed centre line, a collider per 200 m stretch so the van drives on the road, not the terrain.
-    /// Also each place's stand-in: level ground over its site while its scene isn't loaded.
+    /// Also each place's stand-in: level ground over its site and a far copy of its buildings while its scene isn't loaded.
     /// </summary>
     public static class WorldRoads
     {
@@ -127,7 +127,10 @@ namespace Abandoned.EditorTools
             return mesh;
         }
 
-        /// <summary>Per place, level ground over its site (shown while its scene isn't loaded); returns them in atlas order.</summary>
+        /// <summary>
+        /// Per place, level ground over its site and its far copy (<see cref="WorldProxies"/>), shown while its scene isn't
+        /// loaded; returns them in atlas order.
+        /// </summary>
         public static GameObject[] StandIns(Transform parent, IReadOnlyList<WorldPoi> places)
         {
             Transform group = GreyboxFactory.Group("SiteStandIns", parent);
@@ -138,11 +141,13 @@ namespace Abandoned.EditorTools
             {
                 WorldPoi p = places[i];
                 Rect r = WorldPlan.GroundRect(p);
-                GameObject site = GreyboxFactory.Box($"Site_{p.scene}", group, new Vector3(r.center.x, WorldPlan.GroundY(p) - 1f, r.center.y),
+                Transform site = GreyboxFactory.Group($"Site_{p.scene}", group);
+                GameObject pad = GreyboxFactory.Box("Pad", site, new Vector3(r.center.x, WorldPlan.GroundY(p) - 1f, r.center.y),
                     new Vector3(r.width, 2f, r.height), i == 0 ? home : lot);
-                site.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
-                site.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
-                sites[i] = site;
+                pad.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+                pad.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Asphalt);
+                WorldProxies.Place(site, p);
+                sites[i] = site.gameObject;
             }
             return sites;
         }

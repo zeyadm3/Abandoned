@@ -32,6 +32,7 @@ namespace Abandoned.EditorTools
         public static void Build()
         {
             List<WorldPoi> places = WorldPlan.Places();
+            WorldProxies.Clear();
             WorldSurvey.Capture(places);
             GameObject vanPrefab = WorldVanBuilder.Build();
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);

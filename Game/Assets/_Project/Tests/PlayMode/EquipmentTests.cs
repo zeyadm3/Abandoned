@@ -74,12 +74,14 @@ namespace Abandoned.Tests
             PlayerCarrier carrier = me.GetComponent<PlayerCarrier>();
             yield return Frames();
             Assert.IsTrue(carrier.CanSoloDrag(CarryClass.Heavy), "alone, the company's trolley rides along without a hand slot (QA D-09)");
+            Assert.IsFalse(carrier.CanSoloDrag(CarryClass.Huge), "Huge loot needs the trolley in a pocket");
             int trolley = me.Catalog.IndexOf("hand_trolley");
             Assert.AreEqual(1, me.Available(trolley));
             me.RequestEquip(1, trolley);
             yield return Frames();
             Assert.AreEqual(EquipmentKind.HandTrolley, me.InSlot(1).Kind);
             Assert.IsTrue(carrier.CanSoloDrag(CarryClass.Heavy), "the trolley lets one person drag Heavy loot");
+            Assert.IsTrue(carrier.CanSoloDrag(CarryClass.Huge), "and Huge loot, slowly (it took over the flatbed's job)");
             Assert.AreEqual(0, me.Available(trolley), "the company's only trolley is taken");
             me.RequestEquip(0, trolley);
             yield return Frames();

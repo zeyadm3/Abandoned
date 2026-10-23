@@ -125,7 +125,6 @@ namespace Abandoned.EditorTools
         private static void Crates(Transform parent, TutorialHouseArt art)
         {
             Crate(parent, 0, "hand_trolley", L.TrolleyCrate, -90f, art.OrnamentGold, art);
-            Crate(parent, 1, "support_jack", L.JackCrate, -90f, art.OrnamentRed, art);
             Crate(parent, 2, "medkit", L.MedkitCrate, -90f, art.Pillow, art);
         }
 

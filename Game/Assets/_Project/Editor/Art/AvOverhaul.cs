@@ -97,6 +97,15 @@ namespace Abandoned.EditorTools
             finally { scope = null; }
         }
 
+        /// <summary>For Rebuild New Maps and World: <see cref="AfterNewMaps"/>, throwing if any of its steps failed.</summary>
+        public static void AfterNewMapsOrThrow()
+        {
+            int before = failures.Count;
+            AfterNewMaps();
+            if (failures.Count > before)
+                throw new InvalidOperationException("New-map steps failed: " + string.Join(", ", failures.GetRange(before, failures.Count - before)));
+        }
+
         /// <summary>For Rebuild All Maps: <see cref="AfterMaps"/>, throwing if any of its steps failed so the rebuild
         /// reports it instead of "All steps finished".</summary>
         public static void AfterMapsOrThrow()

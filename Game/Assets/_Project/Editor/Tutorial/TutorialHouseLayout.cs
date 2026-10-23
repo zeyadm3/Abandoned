@@ -90,10 +90,9 @@ namespace Abandoned.EditorTools
             new(52f, Grade, 16.6f), new(53.1f, Grade, 16.6f), new(54.2f, Grade, 16.6f), new(55.3f, Grade, 16.6f),
         };
         public static readonly Vector3 VanPosition = new(64.6f, Grade, 18.5f);
-        // The kit crates beside the truck's ramp (hand trolley, medkit) and in the dining room (support jacks).
+        // The kit crates beside the truck's ramp (hand trolley, medkit).
         public static readonly Vector3 TrolleyCrate = new(31.6f, Grade, 12.9f);
         public static readonly Vector3 MedkitCrate = new(32.8f, Grade, 12.9f);
-        public static readonly Vector3 JackCrate = new(14.75f, Floor, 13.4f);
 
         // ---- The house's bounding box (atmosphere, building bounds) ----
         public static readonly Bounds Building = new(new Vector3(13.25f, .7f, 8.75f), new Vector3(27.2f, 7.6f, 18.2f));

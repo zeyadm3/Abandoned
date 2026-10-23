@@ -42,7 +42,7 @@ through a wall.
   floor) in the middle, Bedroom A (north) with the grandfather clock on its west wall. Each bedroom has a closet on its
   east wall. The hallway opens into the kitchen on its east side.
 - **The band (18.5 x 7.5 m):** kitchen (counters on the north and west walls, an island well clear), dining (the table
-  in the middle, the sideboard and the jack crate on the north wall), living room (sofa on the north wall, the TV on the
+  in the middle, the sideboard on the north wall), living room (sofa on the north wall, the TV on the
   south wall, the front door in the east wall). The route from the hallway to the front door along the band's south half
   is 4 m wide.
 - **The suite:** the laundry alcove off the dining room (bypass doors 2.9 m wide), the ensuite (only through the
@@ -52,11 +52,10 @@ through a wall.
   for it to slide the other way, as it used to open right in front of the stairs.
 - **Basement** under the west wing and a strip under the patio and kitchen (2.4 m down): furnace and breaker on the
   west wall, water heater, shelving, a workbench in the strip. Kept empty under the rotten patch (where you land) and
-  under the hallway (where the support jack's post stands).
+  under the hallway.
 - **Two teaching floors** (`Editor/Tutorial/TutorialHouseStructure.cs`): the **hallway** is weak timber (about 112 kg
   capacity: a person alone is fine, a person and the grandfather clock overload it); it creaks and cracks but its health
-  never falls below 20 % (`StructuralSection.neverBelow`), so it never gives way, and a support jack can brace it from
-  the basement. The **middle of the south bedroom** falls when the lesson arms it and someone stands on it, 2.4 m into
+  never falls below 20 % (`StructuralSection.neverBelow`), so it never gives way. The **middle of the south bedroom** falls when the lesson arms it and someone stands on it, 2.4 m into
   the basement (under the 2.5 m safe-fall height). Every other floor can never collapse.
 - **The yard** (`TutorialNeighbourhood`, the "Yard" group, in the NavMesh): the driveway to Larch Court with the truck
   on it and the kit crates by its ramp, a board fence round the back yard, trees, the mailbox and bins, a snowman, the
@@ -89,7 +88,7 @@ the washer and dryer are real salvage spawned by the lessons (rule of 0.24.9).
 
 ## The lessons
 
-48 lessons in 9 chapters, data in `Data/Tutorial/Steps/*.asset` and the ordered `Data/Tutorial/Resources/TutorialCatalog.asset`
+46 lessons in 9 chapters, data in `Data/Tutorial/Steps/*.asset` and the ordered `Data/Tutorial/Resources/TutorialCatalog.asset`
 (defaults in `Editor/Tutorial/TutorialLessons.cs`, written once by **Build Tutorial Content**; after that the assets
 are the truth: edit, reorder or add lessons without code).
 
@@ -99,8 +98,8 @@ are the truth: edit, reorder or add lessons without code).
 2. **The kitchen:** the $25,000 vase (fragile), carry it to the truck, empty a pocket in the cargo bay, noise, the hand
    trolley from the kit crates, move the fridge (crews: lift it together), haul it to the truck.
 3. **The laundry:** shut and open the sliding doors, pocket the watch on the shelf.
-4. **The hallway:** load limits, fetch the grandfather clock, listen to the hallway crack, get off it, make room, brace
-   it with a support jack from the dining room crate, take the clock across, then the necklace in the south bedroom
+4. **The hallway:** load limits, fetch the grandfather clock, listen to the hallway crack, get off it, take the clock
+   across in one go with nobody else on it (2026-10-22: the support jack and its two lessons were removed with the item), then the necklace in the south bedroom
    (the floor gives way), how floors fail.
 5. **The basement:** get down, throw the breaker, climb out by the bulkhead.
 6. **The visitor:** a Blind One comes in through the patio slider; hide in the master closet; wait until it walks out
@@ -148,7 +147,7 @@ local and cosmetic on each machine, driven by one value the host writes (`RunTra
 Where the arrows lead is data: each lesson's **Guide** line ("take item:lamp", "go area:porch", "use crate:hand_trolley",
 "load truck", "use lever", "use door:0", "use breaker", "hide closet:0", "away section:hallway", "brace section:hallway",
 "look area:porch", "none"). Empty works it out from the check, including phases: the vase first, then the truck once
-someone holds it; the support jack crate, then the hallway once someone carries a jack; for the quota, the nearest
+someone holds it; for the quota, the nearest
 unloaded training item, or the truck while someone carries one. **Highlight** names HUD pieces (vitals, compass, haul,
 pockets, battery, cargo). Host side: `TutorialGuides` (target), `TutorialMeter` (progress), `TutorialGuideState`; the
 struct is `TutorialGuide` (`TutorialGuideKind`, `TutorialGuideTarget`, `TutorialReadout`, append-only enums).
@@ -172,7 +171,7 @@ builder now places (`truck_ramp`, `truck_bay`) or, in a house built before that,
 | Held still in training | Route changes, aftershocks, building decay and the total collapse, the danger level, monster waves/arrivals/drift/relocation, the Crew Director, boss requests, rush orders, the doors' random shuts, tips, the first-day guide, profile/achievement records. |
 | Power | Training power is off; `PowerController.sectorsWithoutHorror` (new, set by the builder) lets the breaker relight its sector without the horror pacing. |
 | Hiding | `HideSpotKind.Closet` (new, appended): a sliding-panel closet that conceals like a locker. |
-| Floors | `StructuralSection.neverBelow` (new): a collapsible section that teaches the warnings and takes a jack but never falls. |
+| Floors | `StructuralSection.neverBelow` (new): a collapsible section that teaches the warnings but never falls. |
 | Gear | `PlayerEquipment.ServerGive`, `ServerTrainingKit`, `ServerHint` (new, host). |
 | Monster | `ThreatDirector.SpawnScripted(kind, at, facing)` (new): exactly where the lesson wants it. |
 | Text | `Data/Text/Resources/Text/tutorial.txt` (every line in 9 languages; Claude's translations, no native review). `Tools/Text/check.py` now also reads `ChapterName`, `CrewDescription` and `RadioLine` from content assets. |
@@ -204,14 +203,13 @@ builder now places (`truck_ramp`, `truck_bay`) or, in a house built before that,
   the wings (the patio is open, the house shut); nothing inside but dark behind the glass; the look varies house to
   house (mirrored, paint, garage, hood, chimney); the near / far switch as you walk away is not distracting; frame
   rate looking down Larch Court. If the far switch pops too close, `TutorialStreetHouse` sets it (LOD 0.25).
-- **The hallway lesson:** with the clock on the trolley the hallway should go Stressed and then Cracking, never fall;
-  the support jack must find the basement floor under it.
+- **The hallway lesson:** with the clock on the trolley the hallway should go Stressed and then Cracking, never fall.
 - **The fall:** the south bedroom's floor should fall under the player into the basement without hurting them, the
   bed and nightstand falling with it; climbing out by the bulkhead.
 - **The breaker:** it should light the basement (and, by sector, part of the house) with the power off.
 - **The visitor:** the Blind One should spawn on the patio, come in through the open slider, wander near the dining
   room, then walk back out and vanish; while hidden in the master closet, nobody should be found.
-- **Kit crates:** taking the trolley, the jack and a medkit; leaving training should leave no crate gear in hands at the HQ.
+- **Kit crates:** taking the trolley and a medkit; leaving training should leave no crate gear in hands at the HQ.
 - **The flow from the HQ** (clipboard) and from the main menu (Training card), the appraisal's buttons, "Run the
   training again", the pause menu's skip/restart/leave, a two-player run (Multiplayer Play Mode).
 - **Text:** the field note's wrapping in all nine languages (long German and Russian lines).

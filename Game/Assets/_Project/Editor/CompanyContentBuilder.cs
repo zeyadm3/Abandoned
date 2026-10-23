@@ -174,8 +174,7 @@ namespace Abandoned.EditorTools
                 Upgrade("engine_1", "Tuned Engine", "It starts first time: the truck leaves 7 s after the lever, not 10.", TruckUpgradeKind.Engine, 1, 10000, 4, 7f),
                 Upgrade("cargo_2", "Box Truck", "A proper box truck: 75 % more cargo space than the van.", TruckUpgradeKind.Cargo, 2, 30000, 5, 1.75f),
                 Upgrade("engine_2", "V8", "Leaves 4 s after the lever. Hold on to something.", TruckUpgradeKind.Engine, 2, 25000, 7, 4f),
-                Upgrade("armor", "Armored Bay", "Steel plates and a cage: nothing that lives in there can touch you inside the truck.",
-                    TruckUpgradeKind.Armor, 1, 40000, 9, 1f),
+                // "armor" (Armored Bay) was taken out on 2026-10-22 (user's call).
                 // 0.20+ (append only)
                 Upgrade("winch", "Truck Winch", "A cable drum at the tailgate: it reels a Heavy or Huge item across the court and up the ramp.",
                     TruckUpgradeKind.Winch, 1, 18000, 4, 1f),
@@ -186,7 +185,7 @@ namespace Abandoned.EditorTools
             var catalog = LoadOrCreateAsset<TruckUpgradeCatalog>(TruckUpgradeCatalogPath);
             // Keep the existing order (network bits); append what's new.
             var current = new System.Collections.Generic.List<TruckUpgradeDefinition>(catalog.Items);
-            current.RemoveAll(d => d == null);
+            current.RemoveAll(d => d == null || !items.Contains(d));
             foreach (TruckUpgradeDefinition d in items)
                 if (!current.Contains(d)) current.Add(d);
             catalog.EditorSet(current);

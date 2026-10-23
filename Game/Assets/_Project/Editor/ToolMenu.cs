@@ -27,6 +27,8 @@ namespace Abandoned.EditorTools
         public const int PoliceStationP = 1800;
         public const string FireStation = Maps + "Fire Station/";
         public const int FireStationP = 1850;
+        public const string OpenWorld = Maps + "Open World/";
+        public const int OpenWorldP = 1900;
         public const string Skyscraper = Maps + "Skyscraper Restaurant/";
         public const int SkyscraperP = 1950;
 
@@ -47,7 +49,8 @@ namespace Abandoned.EditorTools
         public const string Store = Root + "Store/";
 
         // Priority bands (Docs/TOOL_MENU.md). Within a band: +0 the main action, +20/+40 for later sections.
-        public const int RebuildAllP = 0;
+        public const int RebuildGameP = 0, RebuildAllP = 1;
+        public const int RebuildNewMapsP = 2;
         public const int MallP = 1000, SchoolP = 1100, FactoryP = 1200, PrisonP = 1300, HqP = 1400, TutorialP = 1500, TestMapP = 1600;
         public const int DataP = 2000, PrefabsP = 2100, LootP = 2200, AudioP = 2300, CharactersP = 2400, FeaturesP = 2500;
         public const int ArtP = 3000, UiP = 4000, ChecksP = 5000, ProjectP = 6000, BuildP = 7000, StoreP = 8000;
