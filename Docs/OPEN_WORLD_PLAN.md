@@ -113,10 +113,10 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
 1. Done: World scripts compile (42e520ba).
 2. Done: drivable van, solo/host, test scene (b215c2af).
 3. Done: World scene; the HQ streams in round the van; driving away moves the origin (38086e5c).
-4. Done (one open point): nettest `van` (host + 3 headless clients, `Tools/nettest.sh --no-build van` after
-   Open World > Dev Mac Build): host drives 30 m, a client takes the wheel and drives 28 m by RPC, every client sees the
-   van within 0.01 m of the host, its eyes on its seat and the same fuel. Open: one client stood 4.3 m from its door
-   after climbing out; positions are now logged to find out why.
+4. Done: nettest `van` (host + 3 headless clients, `Tools/nettest.sh --no-build van` after Open World > Dev Mac
+   Build): host drives 30 m, a client takes the wheel and drives 28 m by RPC, every client sees the van within 0.04 m
+   of the host, its eyes on its seat and the same fuel, and each one climbing out stands at its own door. 4/4 passed
+   on 04ec6ea8 (the earlier 4.3 m case was the old build).
 5. Done: the Mall streams in as the first place (measured by `WorldSurvey`: 1,056 m of district ground, its truck and
    mountain horizon hidden, its night sky applied), checked in Play mode.
 6. Done: contract -> drive -> run -> drive back -> payday, checked in Play mode (host): the job taken on leaving the
@@ -138,8 +138,8 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
    bay), Skyscraper 48 x 57 m (its own truck hidden; its downtown `Exterior/Skyline` blocks are hidden in the world,
    where they stood in the woods). The Prison stays a planned site (an island: it needs a coast and a crossing first).
 
-Open: step 4's nettest rerun (needs a fresh Open World > Dev Mac Build). The editor's long stall (05:40 to about
-12:30) was the Skyscraper builder: 14,802 s, most likely its occlusion bake.
+All eight steps are done. The editor's long stall (05:40 to about 12:30) was the Skyscraper builder: 14,802 s, most
+likely its occlusion bake (in Docs/AGENT_REVIEW.md for its agent).
 
 ## Upcoming salvage locations (user, 2026-10-23)
 New POIs for the open world, each its own scene streamed by distance like the current maps:
