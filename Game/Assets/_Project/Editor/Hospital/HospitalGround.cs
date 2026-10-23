@@ -88,12 +88,13 @@ namespace Abandoned.Hospital
                 1.1f, 6.9f
             })
             {
-                Transform t = c.Props.Hang("Pharmacy", "DispensaryScreen", new Vector3(x, 0, 17), 0f);
+                Transform t = c.Props.Place("Pharmacy", "DispensaryScreen", new Vector3(x, 0, 12), 0f, new Vector3(2.1f, 3f, .05f));
+                if (t == null)
+                {
+                    continue;
+                }
                 StationProps.B(t, "Mesh", new Vector3(0, 1.5f, 0), new Vector3(2.1f, 3f, .05f), c.Art.Grating);
                 StationProps.B(t, "Cap", new Vector3(0, 3f, 0), new Vector3(2.1f, .08f, .12f), c.Art.Chrome);
-                var box = t.gameObject.AddComponent<BoxCollider>();
-                box.center = new Vector3(0, 1.5f, 0);
-                box.size = new Vector3(2.1f, 3f, .05f);
             }
         }
     }
