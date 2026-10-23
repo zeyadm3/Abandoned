@@ -122,6 +122,15 @@ over (host: van, loot, monsters; each owner: their player) by the same step. Sid
    HQ, the run started on arriving at the mall (165 loot), two items in the bay locked, horn -> honk -> departed with
    a $1,617 haul, the mall cleared (2 items kept aboard), the appraisal shown only back in the HQ yard, "Back to HQ"
    unloaded the van and reset the board without travelling.
+7. Written, compiled, **not yet played**: road events (`RoadEventDirector` on the van; `RoadHazard` fallen fir and
+   wreck, `RoadMonster`, jump scares with the horror director's figure) and the HQ yard's fuel pump.
+8. In progress: the five new maps' scenes exist (Hospital, Motel, Police Station, Fire Station, Skyscraper);
+   `Rebuild World` measures every built map (`WorldSurvey`), so the next world rebuild fits them in at their sites.
+   Not yet done: that rebuild, a road-entry point per new map, and screenshots. The Prison stays a planned site (an
+   island: it needs a coast and a crossing first).
+
+Open: the editor stopped answering the Unity MCP at 05:40 during the new maps' builds (Unity idle, bridge
+disconnected); everything left needs it.
 
 ## Upcoming salvage locations (user, 2026-10-23)
 New POIs for the open world, each its own scene streamed by distance like the current maps:

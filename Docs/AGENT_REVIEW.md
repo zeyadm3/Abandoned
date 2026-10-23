@@ -23,6 +23,16 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
 
 ## ChatGPT: Hospital (Editor/Hospital, 1700) and Motel (Editor/Motel, 1750)
 
+### 2026-10-23 05:55 (commits ce310a66, f81367a5, 9e59241e)
+- Text: hospital.txt and motel.txt added; nothing missing from either. Good. Both compile in the shared project.
+- **Paths (user to decide):** new runtime code outside Editor/Hospital and Editor/Motel:
+  `Scripts/Audio/HospitalSoundConfig.cs`, `HospitalSoundscape.cs`, `MotelSoundConfig.cs`, `MotelSoundscape.cs`,
+  `Scripts/Structure/HospitalEmergencyLight.cs`, `MotelEmergencyLight.cs`, `Scripts/UI/MotelWorldSign.cs` (plus the
+  earlier `Scripts/Networking/*NetworkContent.cs`). Four near-identical soundscape/emergency-light pairs: one shared
+  component with per-map data (a ScriptableObject) would follow CLAUDE.md's data-driven rule.
+- The reviewer's own run of both builders (05:37) finished in 3 s and 2 s; their scenes (saved 05:28) are what the
+  reviewer will screenshot once the editor answers again.
+
 ### 2026-10-23 02:20 (commits e65d2522, c1432020)
 - **Paths:** `Scripts/Networking/HospitalNetworkContent.cs` and `Scripts/Networking/MotelNetworkContent.cs` are outside
   Editor/Hospital and Editor/Motel. If they are needed at run time, ask the user to approve the location (or fold them
@@ -46,6 +56,10 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
 
 ## Claude desktop: Police Station (Editor/PoliceStation, 1800) and Fire Station (Editor/FireStation, 1850)
 
+### 2026-10-23 05:55 (commits 86e2aaec, 56b78b7a)
+- fire_station.txt and police_station.txt added; nothing missing. `StationFurniture` split (Domestic part): no file
+  over 300 lines now. Both compile. Scenes saved 03:58; screenshots pending the editor.
+
 ### 2026-10-23 02:20 (commits 7be97196, 12d2b67e)
 - Both compiled first time in the shared project. Good.
 - **Paths:** `Scripts/Audio/PoliceStationSoundscape.cs` and `Scripts/Audio/FireStationSoundscape.cs` are outside
@@ -58,6 +72,15 @@ Newest notes first inside each section. "Reviewer fixed" lines were done only be
   fine for plain data records inside an editor builder; not for components.
 
 ## Antigravity: Skyscraper restaurant (Editor/Skyscraper*, 1950)
+
+### 2026-10-23 05:55 (commits fda29be4, f653ccb6)
+- **Missing text: 34 Skyscraper loot names** (Data/Loot/Skyscraper/*.asset DisplayName/Description: aged iberico
+  ham, black truffle crate, ... `python3 Tools/Text/check.py --missing` lists all 34). Add them to skyscraper.txt in
+  all nine languages. The elevator lines are now in the sheet. Good.
+- Runtime code moved to a new area `Scripts/Skyscraper/` (`SkyscraperElevator`, `SkyscraperElevatorButton`,
+  `SkyscraperSoundscape`): a new Scripts/<Area> folder means a new namespace area under CLAUDE.md; the user decides.
+- Compiles. Scene saved 03:58; the reviewer's rebuild of it stalled when the editor stopped answering (see the
+  plan's status); screenshots pending.
 
 ### 2026-10-23 02:20
 - **Missing text:** five lines in `Scripts/Extraction/SkyscraperElevator*.cs` are not in any sheet ("fell with the
