@@ -8,8 +8,9 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// The precinct's lot (x -30..86, z -30..60): the street and sidewalk to the south, the patrol car park to the west,
-    /// the fenced impound yard behind, and the east yard where the company truck backs up to the sally port. The lobby's
-    /// canopy and its two blue lamps, street lamps, trees, and on the roof the radio mast and the plant.
+    /// the fenced impound yard behind, and the east yard where the crew's van backs up to the sally port. The lobby's
+    /// canopy and its two blue lamps, street lamps, and on the roof the radio mast and the plant. No truck of its own and
+    /// no trees, sky or grass (the world and Art > Upgrade New Maps add those).
     /// </summary>
     public static class PoliceStationExterior
     {
@@ -35,11 +36,8 @@ namespace Abandoned.EditorTools
                 StationLighting.StreetLamp(lamps, new Vector3(x, -.02f, -5.4f), new Vector3(x, 0f, -11f), a);
             StationLighting.StreetLamp(lamps, new Vector3(84f, -.02f, 22f), new Vector3(70f, 0f, 14f), a, 11f);
             StationLighting.StreetLamp(lamps, new Vector3(-28f, -.02f, 20f), new Vector3(-12f, 0f, 20f), a, 8f);
-            Transform trees = Group("Trees", ext);
-            foreach (float x in new[] { -24f, 2f, 34f, 48f, 80f })
-                Site.Tree(trees, new Vector3(x, -.02f, -3.6f), 7f + Mathf.Abs(x % 3f), a, a.Plain("Leaves", new Color(.16f, .22f, .1f), .1f));
             MarkStatic(ext);
-            Site.Truck(root, a, L.TruckRear, L.TruckForward);
+            Site.VanBay(root, a, L.VanRear, L.VanForward);
         }
 
         private static void Markings(Transform ext, StationArt a)
@@ -58,25 +56,69 @@ namespace Abandoned.EditorTools
                 Box("LaneEdge", m, new Vector3(64f, -.015f, z), new Vector3(14f, .01f, .14f), a.Safety, false);
         }
 
+        // The patrol car park: cruisers left where they were parked, one burnt out, one with its doors hanging open, two
+        // that ran into each other on the way out, the evidence van; one more nosed into the kerb out in the street.
         private static void Cars(Transform ext, StationArt a)
         {
             Transform cars = Group("Cars", ext);
             Material patrol = a.Plain("PatrolBlack", new Color(.06f, .065f, .08f), .55f, .3f);
             Site.Car(cars, "PatrolCar", new Vector3(-25f, -.02f, 9f), 180f, patrol, a, true);
-            Site.Car(cars, "PatrolCar", new Vector3(-13f, -.02f, 9f), 180f, patrol, a, true);
+            Flat(Site.Car(cars, "BurntPatrolCar", new Vector3(-21f, -.02f, 9f), 180f, a.Soot, a, true), -3f);
+            Transform open = Site.Car(cars, "PatrolCar", new Vector3(-13f, -.02f, 9f), 180f, patrol, a, true);
+            foreach (float s in new[] { -1f, 1f })
+            {
+                GameObject door = Box("OpenDoor", open, new Vector3(s * 1.5f, .8f, .6f), new Vector3(.06f, .9f, 1.1f), patrol, false);
+                door.transform.localRotation = Quaternion.Euler(0f, s * 55f, 0f);
+            }
             Site.Car(cars, "PatrolCar", new Vector3(-17f, -.02f, 31f), 0f, patrol, a, true);
+            Flat(Site.Car(cars, "PatrolCar", new Vector3(-9f, -.02f, 31f), 0f, patrol, a, true), 2.5f);
             Site.Car(cars, "Sedan", new Vector3(-5f, -.02f, 31f), 0f, a.Plain("SedanRust", new Color(.42f, .3f, .22f), .2f), a);
-            // One left in the street, nosed into the kerb, doors open.
+            Transform hit = Site.Car(cars, "PatrolCar", new Vector3(-12f, -.02f, 19.5f), 70f, patrol, a, true);
+            hit.localRotation = Quaternion.Euler(0f, 70f, 1.5f);
+            Site.Car(cars, "PatrolCar", new Vector3(-8.2f, -.02f, 22.4f), 160f, patrol, a, true);
+            EvidenceVan(cars, a, new Vector3(-25f, -.02f, 31f));
             Transform crashed = Site.Car(cars, "PatrolCar", new Vector3(26f, -.02f, -9.5f), 72f, patrol, a, true);
             crashed.localRotation = Quaternion.Euler(0f, 72f, 2.5f);
         }
 
+        // A flat tyre: the car sits down on one side.
+        private static void Flat(Transform car, float roll) => car.localRotation = Quaternion.Euler(0f, car.localEulerAngles.y, roll);
+
+        private static void EvidenceVan(Transform parent, StationArt a, Vector3 at)
+        {
+            Transform van = Group("EvidenceVan", parent);
+            van.position = at;
+            Box("Body", van, new Vector3(0f, 1.35f, -.3f), new Vector3(2.1f, 2.1f, 4.6f), a.White, false);
+            Box("Cab", van, new Vector3(0f, 1.1f, 2.4f), new Vector3(2.05f, 1.5f, 1f), a.White, false);
+            Box("Stripe", van, new Vector3(0f, 1.2f, 0f), new Vector3(2.12f, .25f, 5.6f), a.Accent, false);
+            Box("Windscreen", van, new Vector3(0f, 1.55f, 2.91f), new Vector3(1.9f, .6f, .03f), a.Glass, false);
+            foreach (float s in new[] { -1f, 1f })
+            foreach (float z in new[] { -1.7f, 2f })
+                Primitive(PrimitiveType.Cylinder, "Tyre", van, new Vector3(s * .95f, .38f, z), new Vector3(.76f, .14f, .76f), a.Rubber, false)
+                    .transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            var solid = van.gameObject.AddComponent<BoxCollider>();
+            solid.center = new Vector3(0f, 1.25f, 0f);
+            solid.size = new Vector3(2.15f, 2.5f, 5.8f);
+        }
+
+        // The impound yard behind the station: fenced, its gate in the east fence left open, the guard's booth, a tow truck
+        // and rows of seized cars (one craned up onto another).
         private static void Impound(Transform ext, StationArt a)
         {
             Transform yard = Group("Impound", ext);
             Site.Fence(yard, "Fence_W", new Vector3(-2f, -.02f, 41f), new Vector3(-2f, -.02f, 58f), a);
             Site.Fence(yard, "Fence_N", new Vector3(-2f, -.02f, 58f), new Vector3(58f, -.02f, 58f), a);
-            Site.Fence(yard, "Fence_E", new Vector3(58f, -.02f, 58f), new Vector3(58f, -.02f, 41f), a);
+            Site.Fence(yard, "Fence_E", new Vector3(58f, -.02f, 58f), new Vector3(58f, -.02f, 49f), a);
+            Transform gate = Group("Gate", yard);
+            gate.SetPositionAndRotation(new Vector3(58f, -.02f, 49f), Quaternion.Euler(0f, 120f, 0f));
+            Box("Frame", gate, new Vector3(0f, 1.1f, 3.5f), new Vector3(.08f, 2.2f, 7f), a.Steel);
+            Box("Mesh", gate, new Vector3(0f, 1.1f, 3.5f), new Vector3(.02f, 2f, 6.9f), a.Grating, false);
+            Transform booth = Group("GuardBooth", yard);
+            booth.position = new Vector3(61.5f, -.02f, 44f);
+            Box("Body", booth, new Vector3(0f, 1.25f, 0f), new Vector3(2f, 2.5f, 2f), a.White);
+            Box("Window", booth, new Vector3(-1.01f, 1.5f, 0f), new Vector3(.02f, .9f, 1.6f), a.Glass, false);
+            Box("Roof", booth, new Vector3(0f, 2.6f, 0f), new Vector3(2.3f, .15f, 2.3f), a.DarkSteel, false);
+            Box("Barrier", booth, new Vector3(-1.2f, 1f, -3f), new Vector3(.1f, .1f, 4f), a.Red, false);
             Material[] bodies =
             {
                 a.Plain("WreckBlue", new Color(.15f, .2f, .3f), .15f), a.Plain("WreckGreen", new Color(.2f, .26f, .18f), .15f),
@@ -84,12 +126,35 @@ namespace Abandoned.EditorTools
             };
             for (int i = 0; i < 6; i++)
                 Site.Car(yard, "Impounded", new Vector3(6f + i * 8f, -.02f, 50f + (i % 2) * 2.5f), 15f * (i % 3) - 15f, bodies[i % bodies.Length], a);
+            for (int i = 0; i < 5; i++)
+                Site.Car(yard, "Impounded", new Vector3(4f + i * 6f, -.02f, 44f), 90f + (i % 2) * 8f, bodies[(i + 2) % bodies.Length], a);
+            Transform stacked = Site.Car(yard, "StackedWreck", new Vector3(6.2f, 1.48f, 50.1f), -10f, bodies[3], a);
+            stacked.localRotation = Quaternion.Euler(4f, -10f, -3f);
+            TowTruck(yard, a, new Vector3(36f, -.02f, 55.5f));
             for (int i = 0; i < 4; i++)
             {
                 GameObject tyres = Primitive(PrimitiveType.Cylinder, "TyreStack", yard, new Vector3(52f + (i % 2) * 1.1f, .4f, 44f + i * 1.3f),
                     new Vector3(.8f, .4f, .8f), a.Rubber);
                 tyres.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Plastic);
             }
+        }
+
+        private static void TowTruck(Transform parent, StationArt a, Vector3 at)
+        {
+            Transform t = Group("TowTruck", parent);
+            t.SetPositionAndRotation(at, Quaternion.Euler(0f, 90f, 0f));
+            Material yellow = a.Plain("TowYellow", new Color(.8f, .6f, .1f), .4f, .2f);
+            Box("Cab", t, new Vector3(0f, 1.4f, 2.2f), new Vector3(2.3f, 2f, 2.2f), yellow, false);
+            Box("Bed", t, new Vector3(0f, .9f, -1.2f), new Vector3(2.3f, .7f, 4.6f), a.DarkSteel, false);
+            Box("Boom", t, new Vector3(0f, 2.1f, -2.4f), new Vector3(.25f, .25f, 2.8f), yellow, false).transform.localRotation = Quaternion.Euler(-25f, 0f, 0f);
+            Box("Hook", t, new Vector3(0f, 1.9f, -3.8f), new Vector3(.05f, 1.2f, .05f), a.Steel, false);
+            foreach (float s in new[] { -1f, 1f })
+            foreach (float z in new[] { 2.2f, -1.6f, -2.8f })
+                Primitive(PrimitiveType.Cylinder, "Tyre", t, new Vector3(s * 1.05f, .5f, z), new Vector3(1f, .16f, 1f), a.Rubber, false)
+                    .transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            var solid = t.gameObject.AddComponent<BoxCollider>();
+            solid.center = new Vector3(0f, 1.2f, -.3f);
+            solid.size = new Vector3(2.4f, 2.4f, 7.4f);
         }
 
         // The lobby's canopy over the street doors, its posts and the two blue lamps; the sally port's door drum and lamp.
@@ -148,7 +213,7 @@ namespace Abandoned.EditorTools
             {
                 Transform unit = Group("AirHandler", roof);
                 unit.position = at;
-                Box("Body", unit, new Vector3(0f, .8f, 0f), new Vector3(2.6f, 1.6f, 1.6f), a.Steel, false);
+                Box("Body", unit, new Vector3(0f, .8f, 0f), new Vector3(2.6f, 1.6f, 1.6f), a.Steel);
                 Primitive(PrimitiveType.Cylinder, "Fan", unit, new Vector3(0f, 1.62f, 0f), new Vector3(1.1f, .03f, 1.1f), a.DarkSteel, false);
             }
             Primitive(PrimitiveType.Cylinder, "VentStack", roof, new Vector3(4f, y + 1.2f, 30f), new Vector3(.5f, 1.2f, .5f), a.DarkSteel, false);

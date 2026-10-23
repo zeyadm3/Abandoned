@@ -25,8 +25,11 @@ namespace Abandoned.EditorTools
         public const int Width = 14, Depth = 10;
         /// <summary>The sally port's vehicle door in the east wall (centre), and the truck's rear, cab to the east.</summary>
         public static readonly Vector3 SallyDoor = new(Width * P.Tile, 0f, 10f);
-        public static readonly Vector3 TruckRear = new(Width * P.Tile + 11f, 0f, 10f);
-        public static readonly Vector3 TruckForward = Vector3.right;
+        /// <summary>Where the crew's van parks: its rear doors 11 m out from the sally port's door, cab to the east.</summary>
+        public static readonly Vector3 VanRear = new(Width * P.Tile + 11f, 0f, 10f);
+        public static readonly Vector3 VanForward = Vector3.right;
+        /// <summary>The roof hatch, over the upper hall by the rear stair; a ladder goes up to it.</summary>
+        public static readonly Vector2Int RoofHatch = new(11, 8);
         public const float SallyDoorWidth = 6f, SallyDoorHeight = 3.4f;
         public const float LobbyDoorX = 20f;
 
@@ -43,7 +46,7 @@ namespace Abandoned.EditorTools
             };
             p.FillFloor(0, new RectInt(0, 0, Width, Depth));
             p.FillFloor(1, new RectInt(0, 0, Width, Depth));
-            p.FillFloor(-1, new RectInt(0, 4, 8, 6));
+            p.FillFloor(-1, new RectInt(0, 4, 13, 6));
             // The basement stair comes up through the ground floor; the main and rear stairs go up through the upper one.
             p.Hole(0, new Vector2Int(1, 4), new Vector2Int(1, 5));
             p.Hole(1, new Vector2Int(2, 4), new Vector2Int(2, 5), new Vector2Int(13, 6), new Vector2Int(13, 7));
@@ -59,6 +62,7 @@ namespace Abandoned.EditorTools
             p.Open(1, 13, 7, 13, 8);
 
             p.Facade.Add(new P.Opening("LobbyDoors", P.Side.South, LobbyDoorX, P.WideDoor, 0f, P.WideDoorHeight, false));
+            p.RoofHatches.Add(RoofHatch);
             p.Facade.Add(new P.Opening("SallyPortDoor", P.Side.East, SallyDoor.z, SallyDoorWidth, 0f, SallyDoorHeight, false));
             Strength(p);
             return p;
@@ -132,6 +136,13 @@ namespace Abandoned.EditorTools
             p.Door(-1, 0, 6, 0, 7);
             p.Door(-1, 6, 6, 6, 7, wide: true);
             p.Door(-1, 4, 8, 5, 8);
+            // East of the armoury: the evidence vault, basement records and the evidence intake under the sally port.
+            p.AddRoom("Evidence_Vault", -1, 8, 7, 3, 3, Evidence, F.Concrete, windows: false);
+            p.AddRoom("Basement_Records", -1, 11, 7, 2, 3, Office, F.Block, windows: false);
+            p.AddRoom("Evidence_Intake", -1, 8, 4, 5, 2, Evidence, F.Tile, windows: false);
+            p.Door(-1, 9, 6, 9, 7, wide: true);
+            p.Door(-1, 11, 6, 11, 7);
+            p.Door(-1, 10, 5, 10, 6, wide: true);
         }
 
         private static void Strength(P p)
@@ -140,6 +151,9 @@ namespace Abandoned.EditorTools
             p.Weak(1, new RectInt(0, 7, 4, 3), .6f, .5f);     // the evidence room: the headline
             p.Weak(1, new RectInt(10, 0, 4, 6), .7f, .6f);    // the gym over the sally port
             p.Weak(1, new RectInt(0, 0, 3, 4), .8f, .7f);     // the records archive
+            // Over the cell block: the captain's office and the bureau's back row give way onto the cells.
+            p.Weak(1, new RectInt(4, 7, 3, 3), .6f, .5f);
+            p.Weak(1, new RectInt(3, 5, 4, 1), .7f, .6f);
             p.UpperRoomsCollapse(1);
             // The locker room's shower corner is water-rotted and drops into the firing range.
             p.Weak(0, new RectInt(0, 8, 2, 2), .7f, .6f);
@@ -152,7 +166,7 @@ namespace Abandoned.EditorTools
             p.Clear(0, new RectInt(2, 4, 1, 2));
             p.Clear(0, new RectInt(13, 5, 1, 3));
             p.Clear(0, new RectInt(7, 4, 3, 1));
-            p.Clear(-1, new RectInt(0, 6, 8, 1));
+            p.Clear(-1, new RectInt(0, 6, 13, 1));
             p.Clear(-1, new RectInt(1, 4, 1, 2));
         }
 

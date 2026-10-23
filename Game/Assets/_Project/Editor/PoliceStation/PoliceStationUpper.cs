@@ -25,8 +25,35 @@ namespace Abandoned.EditorTools
             Captain(ctx);
             BreakRoom(ctx);
             Props p = ctx.Props;
+            Variety(ctx);
+            Roof(ctx);
             F.WaterCooler(p, "Upper_Hall", new Vector3(.6f, Y, 21f), 90f);
             F.ExitSign(p, "Upper_Hall", new Vector3(10f, Y + 3.3f, 27.88f), 180f);
+        }
+
+        private static void Variety(StationContext ctx)
+        {
+            Props p = ctx.Props;
+            Material coat = ctx.Art.Plain("UniformCoat", new Color(.12f, .14f, .2f), .2f);
+            F.Copier(p, "Detective_Bureau", new Vector3(34f, Y, 23.2f), 180f);
+            F.CaseBoard(p, "Detective_Bureau", new Vector3(39.88f, Y + 1.6f, 16f), 270f, 3);
+            F.CoatRack(p, "Detective_Bureau", new Vector3(13f, Y, 22.8f), coat);
+            F.TrashCan(p, "Detective_Bureau", new Vector3(21.5f, Y, 13.6f), true);
+            F.FallenChair(p, "Detective_Bureau", new Vector3(30.5f, Y, 13.4f), 70f);
+            F.FloorLitter(p, "Detective_Bureau", new Vector3(24f, Y, 7f), 6);
+            F.Bookcase(p, "Captain_Office", new Vector3(27.57f, Y, 34f), 270f, 1.4f, 9);
+            F.TrashCan(p, "Break_Room", new Vector3(43f, Y, 30f));
+            F.Extinguisher(p, "Upper_Hall", new Vector3(30f, Y + 1.2f, 27.88f), 180f);
+        }
+
+        // The roof: the hatch's ladder up from the hall by the rear stair, and what was left up there.
+        private static void Roof(StationContext ctx)
+        {
+            StationAccess.RoofLadder(ctx, L.RoofHatch, 1);
+            float top = L.Plan.RoofY + P.Slab;
+            ctx.AddLoot(L.Armoury, new Vector3(20f, top, 22.4f), CarryClass.Pocket, CarryClass.OneHand);
+            ctx.AddLoot(L.Office, new Vector3(36f, top, 12f), CarryClass.Pocket, CarryClass.TwoHand);
+            ctx.AddLoot(L.Office, new Vector3(52f, top, 26f), CarryClass.Pocket, CarryClass.OneHand);
         }
 
         // Records archive: x 0-12, z 0-16, door north at x 2.

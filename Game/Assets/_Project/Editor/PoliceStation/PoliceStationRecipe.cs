@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// The Millbrook 3rd Precinct for <see cref="StationBuild"/> (Docs/POLICE_STATION_PLAN.md): a wet evening after
-    /// rain, cold fluorescent light inside, the truck at the sally port.
+    /// rain, cold fluorescent light inside, the crew's van at the sally port.
     /// </summary>
     public sealed class PoliceStationRecipe : StationRecipe
     {
@@ -43,7 +43,7 @@ namespace Abandoned.EditorTools
             PolishAssets.EnsureFolder(L.LootFolder);
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(L.LootFolder + "/Location_PoliceStation.asset");
             location.EditorSetup("police_station", "Millbrook 3rd Precinct",
-                "A brick precinct with a basement armoury, a cell block and an evidence room whose floor won't take much more. The truck backs into the sally port.",
+                "A brick precinct over a basement of evidence and guns: a cell block, a vault, and an evidence room whose floor won't take much more. The van backs up to the sally port.",
                 L.SceneName, 2, 1, 1.05f, 1f, -.02f, 1f, .1f);
             EditorUtility.SetDirty(location);
         }

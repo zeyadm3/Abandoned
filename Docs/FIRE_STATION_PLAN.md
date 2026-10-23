@@ -160,6 +160,15 @@ extinguishers, case boards, knocked-over chairs, litter and ceiling damage; `Sta
 `StationAccess` (fixed ladders, roof ladders); `StationLighting.Emergency`; `StationSite.VanBay`; `StationLootKit`
 re-applies every item's data on each rebuild.
 
+## Decisions for CLAUDE.md (to record; this doc does not edit it)
+- 2026-10-23 (same brief as the police station): **Millbrook Fire Station No. 4** (`Scenes/FireStation.unity`,
+  `Editor/FireStation/`), an open-world POI built with the station kit. Loot on its own tags (`fire_apparatus`,
+  `fire_quarters`, `fire_tower`, `fire_watch`), ids prefixed `fs_`, data in Data/Loot/FireStation.
+- Second pass (2026-10-23): **no truck of its own** (the van parks at `Exterior/VanParking`, rear (12, 0, -11), cab
+  south); the haul lane is lane 2. **The hose tower has stairs** and is on the NavMesh (it replaced the first pass's
+  ladder-only, monster-free tower); its 12 m landing and bell deck can fall. **The fire pole stays a ladder**. Two
+  jackpots: the Jaws of Life and the thermal imaging camera.
+
 ## What to check first
 1. **Compile**, then **Rebuild Fire Station** and read the Console: one `[FireStation] Built ...` line with every count
    (lights, emergency units, breakers, bound fittings, loot points and jackpots, hiding places by kind, monsters), and a
@@ -179,12 +188,3 @@ re-applies every item's data on each rebuild.
 10. **Not done here (other owners)**: `LocationPlumbing.ConfigureHorrorScenes` drops `FireStation` from the
     HorrorConfig scene list whenever another map is rebuilt; no remaster or lighting profile yet; the stale generated
     assets in `Art/FireStation` and `Data/Loot/FireStation` are updated in place by the rebuild.
-
-## Decisions for CLAUDE.md (to record; this doc does not edit it)
-- 2026-10-23 (same brief as the police station): **Millbrook Fire Station No. 4** (`Scenes/FireStation.unity`,
-  `Editor/FireStation/`), an open-world POI built with the station kit. Loot on its own tags (`fire_apparatus`,
-  `fire_quarters`, `fire_tower`, `fire_watch`), ids prefixed `fs_`, data in Data/Loot/FireStation.
-- Second pass (2026-10-23): **no truck of its own** (the van parks at `Exterior/VanParking`, rear (12, 0, -11), cab
-  south); the haul lane is lane 2. **The hose tower has stairs** and is on the NavMesh (it replaced the first pass's
-  ladder-only, monster-free tower); its 12 m landing and bell deck can fall. **The fire pole stays a ladder**. Two
-  jackpots: the Jaws of Life and the thermal imaging camera.

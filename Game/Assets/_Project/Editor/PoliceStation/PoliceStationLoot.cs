@@ -106,6 +106,15 @@ namespace Abandoned.EditorTools
                     B(0, .35f, .4f, .9f, .05f, .05f, "chrome"), B(0, 0, .05f, .2f, .2f, .3f, "steel") },
                 jackpot: true, noise: 1f, wheeled: true),
 
+            I("seized_watch", "Seized Gold Watch", 1500, 3500, .2f, CarryClass.Pocket, new(.05f, .02f, .06f), Fragility.Medium, SurfaceMaterial.Metal, .6f, L.Evidence,
+                new[] { T(0, 0, 0, 1, 1, .8f, "gold"), B(0, .5f, 0, .7f, .05f, .6f, "glass"), B(0, 0, .5f, .4f, .6f, .4f, "leather") }),
+            I("digital_scale", "Evidence Scale", 40, 120, 1.2f, CarryClass.OneHand, new(.25f, .06f, .2f), Fragility.Medium, SurfaceMaterial.Plastic, 1.5f, L.Evidence,
+                new[] { B(0, 0, 0, 1, 1, 1, "black"), B(0, .52f, 0, .8f, .05f, .7f, "steel"), B(0, .1f, .51f, .4f, .4f, .02f, "glass") }),
+            I("body_camera", "Body Camera", 150, 450, .2f, CarryClass.Pocket, new(.06f, .09f, .03f), Fragility.Medium, SurfaceMaterial.Plastic, 1.3f, L.Evidence,
+                new[] { B(0, 0, 0, 1, 1, 1, "black"), T(0, .2f, .5f, .5f, .3f, .5f, "glass"), B(0, -.4f, -.5f, .8f, .2f, .1f, "grey") }),
+            I("vault_ledger", "Evidence Vault Ledger", 200, 600, 2f, CarryClass.OneHand, new(.32f, .06f, .42f), Fragility.Low, SurfaceMaterial.Paper, 1f, L.Evidence,
+                new[] { B(0, 0, 0, 1, 1, 1, "leather"), B(.03f, 0, 0, .95f, .8f, .97f, "paper"), B(-.48f, 0, 0, .05f, 1.05f, 1.02f, "darkwood") }),
+
             // ---- The armoury, the range and the locker room ---------------------------------------------------------
             I("ammo_can", "Ammunition Can", 80, 250, 8f, CarryClass.OneHand, new(.3f, .19f, .16f), Fragility.None, SurfaceMaterial.Metal, 1.5f, L.Armoury,
                 new[] { B(0, 0, 0, 1, 1, 1, "green"), B(0, .55f, 0, .4f, .1f, .2f, "black") }, LootQuirk.Rattles, noise: .4f),

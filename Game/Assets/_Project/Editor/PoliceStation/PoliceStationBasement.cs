@@ -8,9 +8,10 @@ using Props = Abandoned.EditorTools.StationProps;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// The precinct's basement (y -4), reached only by the basement stair: the boiler room, property storage (a jackpot),
-    /// the generator room with the breaker bank, the four-lane firing range under the locker room's rotten shower floor,
-    /// and the armoury (the rifle locker). Everything valuable down here goes up one flight and along the main hall.
+    /// The precinct's basement (y -4), reached only by the basement stair: the boiler room, property storage, the generator
+    /// room with the breaker bank, the four-lane firing range under the locker room's rotten shower floor, and the
+    /// armoury (the rifle locker); east of them the evidence vault, records and intake (<see cref="PoliceStationVault"/>).
+    /// Everything valuable down here goes up one flight and along the main hall.
     /// </summary>
     public static class PoliceStationBasement
     {
@@ -24,6 +25,7 @@ namespace Abandoned.EditorTools
             Range(ctx);
             Armoury(ctx);
             Corridor(ctx);
+            PoliceStationVault.Dress(ctx);
         }
 
         // Boiler room: x 0-4, z 16-24, door north at x 2.
@@ -50,7 +52,8 @@ namespace Abandoned.EditorTools
             foreach (float along in new[] { 2.2f, 4.8f })
                 F.Shelving(p, r.Name, Props.Against(r, P.Side.East, along, .5f, out float yaw), yaw, 2.2f, (int)(along * 7f));
             ctx.Hiding.Cabinet(r, P.Side.West, 4f);
-            ctx.AddLoot(L.Evidence, new Vector3(14.5f, Y, 19.4f), CarryClass.Pocket, CarryClass.Huge, true);
+            // The impounded motorcycle's corner (the vault next door holds the jackpot now).
+            ctx.AddLoot(L.Evidence, new Vector3(14.5f, Y, 19.4f), CarryClass.Pocket, CarryClass.Huge);
             ctx.AddLoot(L.Evidence, new Vector3(11.4f, Y, 21.8f), CarryClass.Pocket, CarryClass.TwoHand);
             ctx.AddLoot(L.Evidence, new Vector3(17.4f, Y, 22.6f), CarryClass.Pocket, CarryClass.Heavy);
         }
@@ -105,6 +108,8 @@ namespace Abandoned.EditorTools
             foreach (Vector3 at in new[] { new Vector3(8f, Y, 30f), new Vector3(8f, Y, 38f), new Vector3(12f, Y, 34f) })
                 ctx.AddLoot(L.Armoury, at, CarryClass.Pocket, CarryClass.TwoHand);
             ctx.Threat(new Vector3(12f, Y, 31f));
+            // Under the locker room's rotten shower floor.
+            F.CeilingDamage(p, r.Name, new Vector3(4f, Y, 37.4f), P.Story - P.Slab, 23);
         }
 
         // Armoury: x 20-32, z 28-40; wide door south at x 26, door west at z 34.

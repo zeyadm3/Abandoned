@@ -30,6 +30,32 @@ namespace Abandoned.EditorTools
             Dispatch(ctx);
             Briefing(ctx);
             LockerRoom(ctx);
+            Variety(ctx);
+        }
+
+        // The things that make each room its own: coat racks, bins, litter, a chair knocked over, extinguishers in the
+        // halls, a radiator under a window; and in the cell block, the ceiling showing the floor above going.
+        private static void Variety(StationContext ctx)
+        {
+            Props p = ctx.Props;
+            Material coat = ctx.Art.Plain("UniformCoat", new Color(.12f, .14f, .2f), .2f);
+            F.CoatRack(p, "Records", new Vector3(10.8f, 0f, 10.6f), coat);
+            F.TrashCan(p, "Records", new Vector3(1f, 0f, 10.8f));
+            F.FloorLitter(p, "Records", new Vector3(8f, 0f, 6.2f), 1);
+            F.Radiator(p, "Lobby", new Vector3(14f, 0f, .52f), 0f);
+            F.TrashCan(p, "Lobby", new Vector3(13f, 0f, 8.8f), true);
+            F.CoatRack(p, "Squad_Room", new Vector3(29f, 0f, 10.8f), coat);
+            F.TrashCan(p, "Squad_Room", new Vector3(36.2f, 0f, 10.9f));
+            F.FloorLitter(p, "Squad_Room", new Vector3(33f, 0f, 10f), 2);
+            F.Extinguisher(p, "Booking", new Vector3(28.2f, 1.2f, 25.4f), 90f);
+            F.CeilingDamage(p, "Holding_Cells", new Vector3(20f, 0f, 27f), P.Story - P.Slab, 21);
+            F.CeilingDamage(p, "Holding_Cells", new Vector3(24.4f, 0f, 34.4f), P.Story - P.Slab, 22);
+            F.FloorLitter(p, "Holding_Cells", new Vector3(18f, 0f, 30f), 4);
+            F.TrashCan(p, "Dispatch", new Vector3(51f, 0f, 26.6f));
+            F.FallenChair(p, "Briefing_Room", new Vector3(43.6f, 0f, 37.9f), 30f);
+            F.TrashCan(p, "Locker_Room", new Vector3(9f, 0f, 25.2f));
+            F.Extinguisher(p, "Main_Hall", new Vector3(10f, 1.2f, 12.12f), 0f);
+            F.Extinguisher(p, "Main_Hall", new Vector3(30f, 1.2f, 15.88f), 180f);
         }
 
         // Records: x 0-12, z 0-12, door north at x 6.
