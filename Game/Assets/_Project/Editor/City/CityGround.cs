@@ -15,8 +15,11 @@ namespace Abandoned.EditorTools
         public const float SquareMetres = 16f;
         public static readonly int Steps = Mathf.RoundToInt(CityPlan.Cell / SquareMetres);
 
-        /// <summary>Ground reaches this far past the city band, so the roads out have somewhere to go.</summary>
-        public const float Outskirts = 1024f;
+        /// <summary>
+        /// Ground reaches this far past the city band, so the roads out have somewhere to go. The draft wants just
+        /// enough to see the edge; in the world it has to reach the corners, so <see cref="CityWorld"/> raises it.
+        /// </summary>
+        public static float Outskirts { get; set; } = 1024f;
 
         private const int Paving = 0, ParkGrass = 1, Wild = 2;
 

@@ -153,7 +153,23 @@ Budgets to hold, checked by a new `CityBudgetTests` beside `MallRenderBudgetTest
      other map streams in over its own ground. It is the one site with no road: the boat is the crossing.
 7. **The city takes the World's place** — `WorldPlan` grows to 8192 m and reads its place positions from
    `CityPlan`; `WorldBuilder` lays the city where `WorldTerrain`'s hills are now, keeping the van, the streaming,
-   the road events and the job flow. Until this step the city is the draft scene and `Scenes/World` is untouched.
+   the road events and the job flow.
+   *Done (2026-10-24, written, not run in Unity.)* `Editor/City/CityWorld`, with edits to `WorldPlan` and
+   `WorldBuilder`. **Rebuild World** now builds the city; **Rebuild World as Hills (old)** still builds what was
+   there before, so the world that has actually been played can be put back while the city is judged.
+   - **No terrain in the city world.** The city's ground reaches the world's edge, so there is nothing for a Unity
+     Terrain to do, and leaving it out means no hills have to be flattened under six kilometres of streets. The
+     outskirts are flat for now; bringing the hills back outside the band is a later pass.
+   - **The HQ is no longer the world's origin.** It stands on the harbour like any other place. The movable root
+     has always allowed this — the anchor decides the origin at run time — but `WorldPlan`'s comment said
+     otherwise, and that is corrected.
+   - **The Prison is a measured place, not a planned one.** The note saying it "needs a coast and a crossing"
+     has been true since 2026-10-19 and is no longer.
+   - **Road events still have roads.** `CityWorld.AtlasRoads` writes only the named arterials, the Circus arms and
+     the spurs into the places — a few dozen lines. Every street in the city would be thousands, and an event
+     belongs on a road you are driving along, not in a side street you are passing.
+   - What is kept untouched: the van, `PoiStreamer`, the stand-ins, the player spawns, the fuel pump, the session
+     objects and the atlas format.
 8. **Perf pass and review renders** — budget tests, `GraphicsAudit`, aerial and cab shots per district.
 
 Detail (facades, shopfronts, streetscape, props) is a later pass, district by district, once the draft drives well.

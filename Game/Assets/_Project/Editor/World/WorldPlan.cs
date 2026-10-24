@@ -5,15 +5,16 @@ using UnityEngine;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Where everything in the open world is (world metres; the HQ's own origin is the world's origin). Six kilometres
-    /// square of wooded hills; each place sits on its own level ground about two kilometres from its neighbours, and a
-    /// road leaves the HQ's district on the side facing each place. Places whose scenes aren't built yet get their site
-    /// and road now, and a flat stand-in until their scene exists.
+    /// Where everything in the open world is, in world metres. Eight kilometres square, holding the drawn city
+    /// (Docs/CITY_PLAN.md): each place stands on a district of it, on ground measured from its own saved scene, and
+    /// the city's streets are how you reach it. Places whose scenes aren't built yet get a flat stand-in until one
+    /// exists. No place is the world's origin any more, the HQ included — the anchor decides that at run time.
     /// </summary>
     public static class WorldPlan
     {
-        public const float Size = 6144f, Half = Size / 2f;
-        public const int Tiles = 6;
+        // Grown from 6144 for the city (Docs/CITY_PLAN.md): its band is 6 x 3 km, and the places need room round it.
+        public const float Size = 8192f, Half = Size / 2f;
+        public const int Tiles = 8;
         public const float TileSize = Size / Tiles;
         public const float RoadHalfWidth = 4.2f;
         /// <summary>Lowest and highest the land may go (terrain base and height).</summary>
@@ -27,25 +28,39 @@ namespace Abandoned.EditorTools
                 // The HQ's company yard and its vacant district stand on one flat plane (DistrictGround, y -0.47).
                 new()
                 {
-                    scene = "HQ", worldPosition = Vector3.zero, ground = Rect.MinMaxRect(-302f, -328f, 338f, 312f), groundHeight = -.47f,
+                    scene = "HQ", worldPosition = At("HQ"), ground = Rect.MinMaxRect(-302f, -328f, 338f, 312f), groundHeight = -.47f,
                     // The far estate is the world's land now; the garage van is replaced by the drivable one in the yard.
                     hideInWorld = new[] { "HQ/IndustrialEstateSurroundings/IndustrialEstateLandscape/EstateScenery", "HQ/Van", "HQ/Van_Model" },
                     parking = new Vector3(10f, 0f, -22f), built = true,
                 },
                 // The mall district's east-west street leaves its ring of buildings on the west at z -57.
-                Measured("Mall", new Vector3(2000f, 0f, 600f), new Vector2(-500f, -57f)),
-                Measured("School", new Vector3(-1900f, 0f, 1300f)),
-                Measured("Factory", new Vector3(900f, 0f, -2100f)),
-                // An island: it needs a coast and a crossing (its boat) before it can join the roads.
-                Planned("Prison", new Vector3(-2250f, 0f, -2100f)),
-                Measured("Hospital", new Vector3(1750f, 0f, 2300f)),
-                Measured("Motel", new Vector3(-700f, 0f, -2300f)),
-                Measured("PoliceStation", new Vector3(-2300f, 0f, -300f)),
-                Measured("FireStation", new Vector3(-200f, 0f, 2300f)),
+                Measured("Mall", At("Mall"), new Vector2(-500f, -57f)),
+                Measured("School", At("School")),
+                Measured("Factory", At("Factory")),
+                // The city's sea gave it a coast at last (Docs/CITY_PLAN.md step 6): an island off the waterfront,
+                // reached by its boat from the quay, so it is a real place now rather than a planned one.
+                Measured("Prison", At("Prison")),
+                Measured("Hospital", At("Hospital")),
+                Measured("Motel", At("Motel")),
+                Measured("PoliceStation", At("PoliceStation")),
+                Measured("FireStation", At("FireStation")),
                 // Its downtown skyline is a ring of plain blocks for the scene alone; in the world it would stand in the woods.
-                Measured("Skyscraper", new Vector3(2400f, 0f, -1500f), default, "Skyscraper/Exterior/Skyline"),
+                Measured("Skyscraper", At("Skyscraper"), default, "Skyscraper/Exterior/Skyline"),
             };
             return places;
+        }
+
+        /// <summary>
+        /// Where a place stands, taken from the city plan so the drawing is the one source of truth for it
+        /// (Docs/CITY_PLAN.md, "Where the existing maps go"). The HQ is no longer the world's origin: it sits on the
+        /// harbour like any other place, which the movable root has always allowed — the anchor decides the origin.
+        /// </summary>
+        private static Vector3 At(string scene)
+        {
+            foreach (CityPlan.Site site in CityPlan.Sites)
+                if (site.Scene == scene) return new Vector3(site.Centre.x, 0f, site.Centre.y);
+            Debug.LogWarning($"[WorldPlan] {scene} has no slot in the city plan; left at the origin.");
+            return Vector3.zero;
         }
 
         // A built map whose site the world builder measures from its saved scene (WorldSurvey); until then, and if it

@@ -144,6 +144,7 @@ Tools > Abandoned
       Add Fire Station Loot                          1870
     Open World                                       [1900-1949]
       Rebuild World                                  1900
+      Rebuild World as Hills (old)                   1901
       Preview City Plan                              1902
       Rebuild City Draft                             1904
       Build Van                                      1920

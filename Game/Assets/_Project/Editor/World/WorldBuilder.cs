@@ -26,10 +26,23 @@ namespace Abandoned.EditorTools
         public static void BuildMenu()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-            Build();
+            Build(true);
         }
 
-        public static void Build()
+        /// <summary>
+        /// The wooded hills the world was before the city (Docs/CITY_PLAN.md). Kept reachable so the world that has
+        /// actually been played can still be rebuilt while the city is being judged; it goes once the city is in.
+        /// </summary>
+        [MenuItem(ToolMenu.OpenWorld + "Rebuild World as Hills (old)", priority = ToolMenu.OpenWorldP + 1)]
+        public static void BuildHillsMenu()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            Build(false);
+        }
+
+        public static void Build() => Build(true);
+
+        public static void Build(bool city)
         {
             List<WorldPoi> places = WorldPlan.Places();
             WorldProxies.Clear();
@@ -40,15 +53,32 @@ namespace Abandoned.EditorTools
             (Light sun, Volume look) = Sky(scene);
 
             var root = new GameObject("WorldRoot").AddComponent<WorldRoot>();
-            Debug.Log("[WorldBuild] Shaping the land...");
-            List<List<Vector3>> roads = WorldTerrain.Shape(places, WorldPlan.Roads(places));
+            List<List<Vector3>> roads;
+            if (city)
+            {
+                // The city is the land: it brings its own ground out to the world's edge, so no terrain is shaped
+                // under it and no radial roads are run out of the HQ. Its streets are how you get anywhere.
+                Transform cityLand = GreyboxFactory.Group("Land", root.transform);
+                CityWorld.Build(cityLand);
+                roads = CityWorld.AtlasRoads();
+            }
+            else
+            {
+                Debug.Log("[WorldBuild] Shaping the land...");
+                roads = WorldTerrain.Shape(places, WorldPlan.Roads(places));
+            }
             WriteAtlas(places, roads);
-            Transform land = GreyboxFactory.Group("Land", root.transform);
-            WorldTerrain.Tiles(land, places);
-            Debug.Log("[WorldBuild] Terrain done; roads...");
-            WorldRoads.Build(root.transform, roads);
+            if (!city)
+            {
+                Transform land = GreyboxFactory.Group("Land", root.transform);
+                WorldTerrain.Tiles(land, places);
+                Debug.Log("[WorldBuild] Terrain done; roads...");
+                WorldRoads.Build(root.transform, roads);
+            }
+            // The stand-ins stay either way: they are what a place shows while its own scene is not loaded, and
+            // PoiStreamer hides and shows them by index as the van comes and goes.
             root.EditorSetup(WorldRoads.StandIns(root.transform, places), sun, look);
-            Horizon(root.transform);
+            if (!city) Horizon(root.transform);
             Pump(root.transform, places[0]);
 
             NetworkSceneBuilder.Add();
