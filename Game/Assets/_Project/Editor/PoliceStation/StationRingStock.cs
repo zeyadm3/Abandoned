@@ -71,9 +71,12 @@ namespace Abandoned.EditorTools
         });
 
         /// <summary>A parked car, nose toward +z.</summary>
-        public int Car(StationVehicleKind kind, int seed, StationVehicleWear wear) =>
-            Add($"Car{kind}_{seed}", 2f, 5f, t => StationVehicles.Car(t, "Car", new Vector3(0f, Site.GroundTop, 0f), 0f, kind,
-                StationVehicleArt.For(a).Paint(seed), a, wear, seed), .5f, .06f);
+        public int Car(StationVehicleKind kind, int seed, StationVehicleWear wear) => Car(kind, seed, wear, null);
+
+        /// <summary>A parked car in <paramref name="paint"/> (a taxi's yellow, a cruiser's black), nose toward +z.</summary>
+        public int Car(StationVehicleKind kind, int seed, StationVehicleWear wear, Material paint) =>
+            Add($"Car{kind}_{seed}{(paint != null ? "_" + paint.name : "")}", 2f, 5f, t => StationVehicles.Car(t, "Car", new Vector3(0f, Site.GroundTop, 0f), 0f, kind,
+                paint != null ? paint : StationVehicleArt.For(a).Paint(seed), a, wear, seed), .5f, .06f);
 
         /// <summary>A copy of design <paramref name="i"/> with its front's middle at <paramref name="at"/>, facing <paramref name="yaw"/>.</summary>
         public Transform Place(Transform parent, int i, Vector3 at, float yaw)
