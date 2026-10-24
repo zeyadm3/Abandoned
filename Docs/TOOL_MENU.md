@@ -144,6 +144,7 @@ Tools > Abandoned
       Add Fire Station Loot                          1870
     Open World                                       [1900-1949]
       Rebuild World                                  1900
+      Preview City Plan                              1902
       Build Van                                      1920
       Build Van Test Scene                           1921
       Dev Mac Build (nettest)                        1940
