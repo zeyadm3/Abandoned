@@ -9,7 +9,7 @@ using Street = Abandoned.EditorTools.StationStreet;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// The neighbourhood round Burley under snow (Docs/SCHOOL_REVAMP.md "Neighbourhood and campus, 2026-10-24"), built
+    /// The neighbourhood round Pine Hollow under snow (Docs/SCHOOL_REVAMP.md "Neighbourhood and campus, 2026-10-24"), built
     /// with the station town kit and its outer rings. Rose Hill Drive along the front, Concord Avenue south off it,
     /// Henry Avenue up the west side, Madison Avenue down the east, all with sidewalks, plow banks, crossings, lamps and
     /// cars left at the kerb; houses, row houses, corner shops and churches facing them on every block outside the campus;

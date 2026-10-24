@@ -6,8 +6,8 @@ using L = Abandoned.EditorTools.BurleySchoolLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Builds the scenic surroundings of Jackson P. Burley Middle School in winter at 3:00 PM:
-    /// Distant snow-capped Blue Ridge mountain backdrop, Booker T. Washington Park with a frozen ice pond
+    /// Builds the scenic surroundings of Pine Hollow Middle School in winter at 3:00 PM:
+    /// Distant snow-capped Blue Ridge mountain backdrop, Hollow Creek Park with a frozen ice pond
     /// and wooden footbridge, snow-covered pine trees, the front loop and flagpoles. The streets, the houses round
     /// the campus, the campus grounds and the two outer rings are BurleySchoolTown (2026-10-24).
     /// </summary>
@@ -24,8 +24,8 @@ namespace Abandoned.EditorTools
             // 1. Distant Snow-Capped Blue Ridge Mountain Backdrop
             BuildMountainBackdrop(Group("BlueRidgeMountainPanorama", surroundings), art);
 
-            // 2. Booker T. Washington Park with Frozen Pond & Footbridge
-            BuildBookerTPark(Group("BookerTWashingtonPark", surroundings), art);
+            // 2. Hollow Creek Park with Frozen Pond & Footbridge
+            BuildHollowCreekPark(Group("HollowCreekPark", surroundings), art);
 
             // 3-4. The neighbourhood: streets, houses, the campus grounds and two outer rings (BurleySchoolTown).
             BurleySchoolTown.Build(surroundings, art);
@@ -48,10 +48,10 @@ namespace Abandoned.EditorTools
         // =========================================================================
         private static void BuildMountainBackdrop(Transform parent, BurleySchoolArt art)
         {
-            // Monumental snow-capped mountain ridges encircling Charlottesville
+            // Monumental snow-capped mountain ridges encircling the town
             (Vector3 pos, Vector3 size, float rotY)[] ridges =
             {
-                // North Ridge (visible behind Booker T. Park)
+                // North Ridge (visible behind Hollow Creek Park)
                 (new Vector3(120f, 65f, 420f), new Vector3(550f, 130f, 120f), -8f),
                 (new Vector3(-180f, 85f, 460f), new Vector3(480f, 170f, 140f), 15f),
                 // West Ridge (visible past Henry Ave)
@@ -72,11 +72,11 @@ namespace Abandoned.EditorTools
         }
 
         // =========================================================================
-        // 2. BOOKER T. WASHINGTON PARK WITH FROZEN POND & FOOTBRIDGE
+        // 2. HOLLOW CREEK PARK WITH FROZEN POND & FOOTBRIDGE
         // =========================================================================
-        private static void BuildBookerTPark(Transform parent, BurleySchoolArt art)
+        private static void BuildHollowCreekPark(Transform parent, BurleySchoolArt art)
         {
-            Rect r = L.BookerTParkBounds;
+            Rect r = L.ParkBounds;
             Vector3 center = new(r.center.x, -0.1f, r.center.y);
             Vector3 pond = center + new Vector3(15f, 0.05f, 10f);
             const float pondWidth = 42f;
@@ -146,7 +146,7 @@ namespace Abandoned.EditorTools
                 new(12f, 0f, 93f),
                 // Parking Lot border (clear of the drive in from the service yard)
                 new(97f, 0f, 95f), new(132f, 0f, 88f),
-                // Booker T. Washington Park Grove
+                // Hollow Creek Park Grove
                 new(95f, 0f, 142f), new(110f, 0f, 155f), new(135f, 0f, 148f), new(150f, 0f, 160f),
                 new(85f, 0f, 165f), new(125f, 0f, 175f), new(165f, 0f, 150f),
                 // Athletics perimeter & track banks
@@ -194,7 +194,7 @@ namespace Abandoned.EditorTools
 
             // American Flag (Center)
             BuildFlagpole(flagPlaza, "MainFlagpole", Vector3.zero, 11f, art.Limestone, art.GoldAccent, art.WhiteStripe);
-            // Burley Bears School Flag (Kelly Green and Old Gold)
+            // Pine Hollow Wolves School Flag (Kelly Green and Old Gold)
             BuildFlagpole(flagPlaza, "SchoolFlagpole", new Vector3(-2.2f, 0f, 0f), 8.5f, art.Limestone, art.GoldAccent, art.LockerGreen);
         }
 

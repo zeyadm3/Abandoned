@@ -1,5 +1,13 @@
 # School revamp — 2026-10-20
 
+**Renamed 2026-10-24** (user: "rename the school"; chose Pine Hollow): the school is **Pine Hollow Middle School**, the
+Pine Hollow Wolves (green and gold, founded 1951), a fictional school in a fictional Blue Ridge town. Jackson P. Burley
+is a real person and Burley a real Charlottesville school, and nothing in the fiction is named after a real person.
+The job board shows "Pine Hollow Middle School" (all nine languages; `Location_School`), every piece of lettering in
+the world says Pine Hollow or Wolves, the menu is **Maps > School > Rebuild Pine Hollow Middle School**, and the park
+is Hollow Creek Park. The code keeps its `BurleySchool*` class and file names and its `Burley_*` material names
+(internal only, so saved scenes and assets keep their references). Older sections below keep the old name.
+
 Implementation only. The user explicitly requested **no testing, running, or verification**. No compiler,
 Unity rebuild, navigation/occlusion bake, audit, render, play session or player build was invoked for this pass.
 The changes are in the school authoring source; the saved scene still requires the rebuild below.
@@ -7,7 +15,7 @@ The changes are in the school authoring source; the saved scene still requires t
 ## Apply in Unity
 
 1. Open the `Game` Unity project and allow the source imports to finish.
-2. Use **Tools > Abandoned > Maps > School > Rebuild Jackson P Burley Middle School**.
+2. Use **Tools > Abandoned > Maps > School > Rebuild Pine Hollow Middle School**.
 
 That existing menu regenerates `Assets/_Project/Scenes/School.unity`, school materials and meshes,
 the School navigation asset and the occlusion data. It also retains the existing truck, collection bay,
@@ -70,8 +78,8 @@ run plumbing, power controller, structural simulation and network scene stamping
 ## Neighbourhood and campus (2026-10-24)
 
 User: "rework the surroundings and level design of the school"; asked how far into the building, they chose
-outside and campus (the building's inside is unchanged). Written, not compiled or rebuilt: run **Rebuild Jackson P
-Burley Middle School**, then **Art > Map Sites: Sky, Trees, Grass and Sound** (it lays the land and woods round the
+outside and campus (the building's inside is unchanged). Written, not compiled or rebuilt: run **Rebuild Pine
+Hollow Middle School**, then **Art > Map Sites: Sky, Trees, Grass and Sound** (it lays the land and woods round the
 new, bigger ground) and **Art > Rebuild Lighting and Shadows**; Rebuild All Maps does all of it.
 
 - **Layout fix**: the running track's oval used to run under Rose Hill Drive (its south curve reached z -39, the road

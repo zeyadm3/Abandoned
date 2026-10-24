@@ -8,7 +8,7 @@ using T = Abandoned.EditorTools.BurleySchoolTown;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// The street life of Burley's neighbourhood under snow: sodium lamps, the signals at Madison, stop signs at Henry and
+    /// The street life of Pine Hollow's neighbourhood under snow: sodium lamps, the signals at Madison, stop signs at Henry and
     /// Concord, a power line down Rose Hill, a bus shelter, hydrants and bins, cars left at the kerb where the plow buried
     /// them, broken plow banks along every kerb, and the city's snowplow abandoned on Rose Hill.
     /// </summary>

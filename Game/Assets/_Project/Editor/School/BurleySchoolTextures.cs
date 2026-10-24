@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Generates complete winter PBR surface texture sets (BaseColor, Normal, Mask) for
-    /// Jackson P. Burley Middle School: crystalline winter snow, wind-blown snowdrifts,
+    /// Pine Hollow Middle School: crystalline winter snow, wind-blown snowdrifts,
     /// frozen ice sheets, frost-dusted colonial brick, polished hardwood gymnasium court,
     /// institutional linoleum tiles, frosted multi-pane window glass, snowy asphalt, and winter pine foliage.
     /// </summary>

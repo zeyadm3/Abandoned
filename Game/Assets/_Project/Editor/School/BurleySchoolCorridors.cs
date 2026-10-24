@@ -152,7 +152,7 @@ namespace Abandoned.EditorTools
             Box("ShelfFoot", display, new Vector3(0f, .27f, .045f), new Vector3(4.1f, .48f, .09f), art.OakWood);
             Box("BrokenSlidingRail", display, new Vector3(0f, .79f, .55f), new Vector3(4.14f, .035f, .025f), art.MetalSteel, false);
             Box("FixedHeaderPlaque", display, new Vector3(0f, 2.38f, .065f), new Vector3(3.72f, .29f, .035f), art.Limestone, false);
-            Label(display, "Header", "BURLEY  •  HONOUR & ACHIEVEMENT", new Vector3(0f, 2.38f, .09f),
+            Label(display, "Header", "WOLVES  •  HONOUR & ACHIEVEMENT", new Vector3(0f, 2.38f, .09f),
                 Quaternion.Euler(0f, 180f, 0f), .09f, new Color(.2f, .26f, .18f));
             for (int i = 0; i < 3; i++)
             {

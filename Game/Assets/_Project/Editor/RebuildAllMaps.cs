@@ -47,7 +47,7 @@ namespace Abandoned.EditorTools
             var steps = new List<(string name, Action run)>
             {
                 ("Mall and Parking", MeridianMallOverhaul.Author),
-                ("Jackson P Burley Middle School", BurleySchoolBuilder.Build),
+                ("Pine Hollow Middle School", BurleySchoolBuilder.Build),
                 ("Iron Factory", IronFactoryBuilder.Build),
                 ("Island Prison", IslandPrisonBuilder.Build),
                 ("Saint Brigid Hospital", Abandoned.Hospital.HospitalBuilder.Build),

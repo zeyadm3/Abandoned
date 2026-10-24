@@ -36,7 +36,7 @@ namespace Abandoned.EditorTools
             }
             Box("HalfCourtLine", parent, center, new Vector3(20f, 0.012f, 0.08f), art.WhiteStripe, false);
             F.Ring(parent, "CenterCourtRing", center + Vector3.up * 0.004f, 2.2f, 0.1f, art.GoldAccent);
-            Label(parent, "CenterCourtLettering", "BURLEY\nBEARS", center + Vector3.up * 0.025f,
+            Label(parent, "CenterCourtLettering", "PINE HOLLOW\nWOLVES", center + Vector3.up * 0.025f,
                 Quaternion.Euler(90f, 0f, 0f), 0.13f, new Color(0.74f, 0.61f, 0.2f));
 
             // A break in the bleachers preserves the gym door's full carry route.
@@ -64,7 +64,7 @@ namespace Abandoned.EditorTools
             scoreboard.position = new Vector3(99.75f, 5.5f, 44f);
             Box("RivetedHousing", scoreboard, Vector3.zero, new Vector3(0.26f, 2.2f, 5.2f), art.MetalSteel, false);
             Box("DeadDisplay", scoreboard, new Vector3(-0.15f, 0f, 0f), new Vector3(0.025f, 2f, 5f), art.LabEpoxy, false);
-            Label(scoreboard, "ScoreFace", "BURLEY     GUEST\n58      52\nPERIOD 4", new Vector3(-0.175f, 0f, 0f),
+            Label(scoreboard, "ScoreFace", "WOLVES     GUEST\n58      52\nPERIOD 4", new Vector3(-0.175f, 0f, 0f),
                 Quaternion.Euler(0f, -90f, 0f), 0.12f, new Color(0.68f, 0.22f, 0.12f));
             F.Tube(scoreboard, "FeedConduit", new Vector3(0f, 1.1f, 0f), new Vector3(0f, 2.35f, 0f), 0.045f, art.MetalSteel);
 
@@ -83,7 +83,7 @@ namespace Abandoned.EditorTools
                 float z = 32f + i * 11f;
                 Box($"ChampionshipBanner_{i}", parent, new Vector3(69.2f, 5.8f, z),
                     new Vector3(0.035f, 1.75f, 1.2f), art.LockerGreen, false);
-                Label(parent, $"BannerText_{i}", "BURLEY\n" + (1956 + i * 2), new Vector3(69.23f, 5.8f, z),
+                Label(parent, $"BannerText_{i}", "WOLVES\n" + (1956 + i * 2), new Vector3(69.23f, 5.8f, z),
                     Quaternion.Euler(0f, 90f, 0f), 0.08f, new Color(0.75f, 0.62f, 0.24f));
             }
             for (int i = 0; i < 4; i++)

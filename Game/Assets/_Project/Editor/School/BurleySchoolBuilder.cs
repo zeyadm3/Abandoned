@@ -15,13 +15,13 @@ using L = Abandoned.EditorTools.BurleySchoolLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Master world builder for Jackson P. Burley Middle School (Charlottesville, VA),
+    /// Master world builder for Pine Hollow Middle School (fictional; a Blue Ridge town),
     /// with a winter campus, distinct salvage rooms, two academic return routes and a service basement.
     /// Rebuild is an explicit authoring action: compilation, navigation and occlusion are left to the user.
     /// </summary>
     public static class BurleySchoolBuilder
     {
-        [MenuItem(ToolMenu.School + "Rebuild Jackson P Burley Middle School", priority = ToolMenu.SchoolP)]
+        [MenuItem(ToolMenu.School + "Rebuild Pine Hollow Middle School", priority = ToolMenu.SchoolP)]
         public static void Rebuild() => Build();
 
         public static void BuildAndExit()
@@ -41,7 +41,7 @@ namespace Abandoned.EditorTools
         public static void Build()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
-                throw new InvalidOperationException("Rebuild Jackson P. Burley Middle School in Edit mode.");
+                throw new InvalidOperationException("Rebuild Pine Hollow Middle School in Edit mode.");
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
@@ -130,16 +130,16 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets();
 
             if (!EditorSceneManager.SaveScene(scene, L.ScenePath))
-                throw new InvalidOperationException("Unity could not save Jackson P. Burley Middle School.");
+                throw new InvalidOperationException("Unity could not save Pine Hollow Middle School.");
 
             // 16. Occlusion Culling Bake
             if (!OcclusionBake.Bake())
                 Debug.LogWarning("[BurleySchool] Occlusion bake completed with warnings.");
 
             if (!EditorSceneManager.SaveScene(scene, L.ScenePath))
-                throw new InvalidOperationException("Unity could not save Jackson P. Burley Middle School after occlusion bake.");
+                throw new InvalidOperationException("Unity could not save Pine Hollow Middle School after occlusion bake.");
 
-            Debug.Log($"[BurleySchool] Successfully rebuilt Jackson P. Burley Middle School in winter at 3:00 PM! " +
+            Debug.Log($"[BurleySchool] Successfully rebuilt Pine Hollow Middle School in winter at 3:00 PM! " +
                       $"{structResult.Pieces.Count} floor tiles, {loot.Count} loot locations, {threats.Count} threat spawns. " +
                       $"Two academic stairs, service basement, winter campus and original room furnishings authored.");
         }

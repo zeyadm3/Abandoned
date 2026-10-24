@@ -10,7 +10,7 @@ using T = Abandoned.EditorTools.BurleySchoolTown;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Burley's grounds round the building, laid out so every outside door has a cleared, lit way back to the truck at the
+    /// Pine Hollow's grounds round the building, laid out so every outside door has a cleared, lit way back to the truck at the
     /// front loop: a walk from the auditorium's south door, a covered walk along the west wing past a bus lane with three
     /// buses, a path up past two portable classrooms to a fenced boiler-room service yard (its north door opens into
     /// it), and from the gym's north door round its east side and along its front. A service drive runs from Henry

@@ -14,9 +14,9 @@ namespace Abandoned.Tests
         private static readonly string[] NewLocationText =
         {
             "Abandoned Mall (today's daily job)",
-            "Abandoned School",
+            "Pine Hollow Middle School",
             "Classrooms, a gym and a basement built around failing bleachers.",
-            "Abandoned School (today's daily job)",
+            "Pine Hollow Middle School (today's daily job)",
             "Abandoned Factory",
             "Machine halls, loading docks and high catwalks over a live production floor.",
             "Abandoned Factory (today's daily job)",

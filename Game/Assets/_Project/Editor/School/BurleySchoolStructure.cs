@@ -9,7 +9,7 @@ using L = Abandoned.EditorTools.BurleySchoolLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Builds the physical and structural floor systems for Jackson P. Burley Middle School.
+    /// Builds the physical and structural floor systems for Pine Hollow Middle School.
     /// Manages ground slabs, two-story academic wing floors, weak collapsible second-story tiles,
     /// and stairwells with NavMesh links and keep-clear corridors.
     /// </summary>

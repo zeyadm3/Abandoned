@@ -72,8 +72,8 @@ namespace Abandoned.EditorTools
             }
             Box("NorthEndZone", field, new Vector3(0f, 0.04f, 31.5f), new Vector3(width, 0.015f, 7f), art.LockerGreen, false);
             Box("SouthEndZone", field, new Vector3(0f, 0.04f, -31.5f), new Vector3(width, 0.015f, 7f), art.LockerGreen, false);
-            Label(field, "NorthEndZoneName", "BURLEY BEARS", new Vector3(0f, 0.055f, 31.5f), Quaternion.Euler(90f, 0f, 0f), 0.28f, art.GoldAccent.GetColor("_BaseColor"));
-            Label(field, "SouthEndZoneName", "BURLEY", new Vector3(0f, 0.055f, -31.5f), Quaternion.Euler(90f, 180f, 0f), 0.32f, art.GoldAccent.GetColor("_BaseColor"));
+            Label(field, "NorthEndZoneName", "PINE HOLLOW WOLVES", new Vector3(0f, 0.055f, 31.5f), Quaternion.Euler(90f, 0f, 0f), 0.28f, art.GoldAccent.GetColor("_BaseColor"));
+            Label(field, "SouthEndZoneName", "PINE HOLLOW", new Vector3(0f, 0.055f, -31.5f), Quaternion.Euler(90f, 180f, 0f), 0.32f, art.GoldAccent.GetColor("_BaseColor"));
             BuildGrandstand(Group("StadiumBleachers", parent), art);
         }
 

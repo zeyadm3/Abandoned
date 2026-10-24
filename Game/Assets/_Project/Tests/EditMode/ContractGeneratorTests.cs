@@ -28,7 +28,7 @@ namespace Abandoned.Tests
             definitions = new[]
             {
                 Location("mall", "Abandoned Mall", "Mall"),
-                Location("school", "Abandoned School", "School", stability: -0.03f, quota: 0.82f),
+                Location("school", "Pine Hollow Middle School", "School", stability: -0.03f, quota: 0.82f),
                 Location("factory", "Abandoned Factory", "Factory", stability: -0.08f, window: 1.05f, quota: 1.1f),
                 Location("prison", "Abandoned Prison", "Prison", stability: -0.06f, window: 0.9f),
             };

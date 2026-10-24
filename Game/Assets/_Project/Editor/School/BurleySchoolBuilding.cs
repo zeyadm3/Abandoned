@@ -5,7 +5,7 @@ using L = Abandoned.EditorTools.BurleySchoolLayout;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>Burley's brick school envelope, open entrance, internal room walls and winter roofscape.</summary>
+    /// <summary>Pine Hollow's brick school envelope, open entrance, internal room walls and winter roofscape.</summary>
     public static class BurleySchoolBuilding
     {
         public static void Build(Transform root, BurleySchoolArt art)
@@ -102,7 +102,7 @@ namespace Abandoned.EditorTools
             Transform pediment = Group("Pediment", entablature);
             pediment.localPosition = new Vector3(0f, 0.52f, -1.35f);
             A.Pediment(pediment, art);
-            Label(entablature, "HistoricSchoolTitle", "JACKSON P. BURLEY HIGH SCHOOL", new Vector3(0f, 0f, -1.92f),
+            Label(entablature, "HistoricSchoolTitle", "PINE HOLLOW MIDDLE SCHOOL", new Vector3(0f, 0f, -1.92f),
                 Quaternion.identity, 0.15f, new Color(0.22f, 0.2f, 0.18f));
 
             Transform entrance = Group("EntranceDoors", parent);
@@ -123,7 +123,7 @@ namespace Abandoned.EditorTools
             Box("TransomGlass", entrance, new Vector3(0f, 2.96f, 0f), new Vector3(3.2f, 0.64f, 0.05f), art.WindowGlass);
             Box("Lintel", entrance, new Vector3(0f, 3.34f, 0f), new Vector3(3.6f, 0.16f, 0.35f), art.Limestone);
             Box("SchoolPlaque", parent, new Vector3(50.6f, 1.65f, 19.65f), new Vector3(1.1f, 0.7f, 0.12f), art.LockerGreen, false);
-            Label(parent, "SchoolPlaqueText", "BURLEY\nMIDDLE SCHOOL", new Vector3(50.6f, 1.65f, 19.58f), Quaternion.identity, 0.085f, art.GoldAccent.GetColor("_BaseColor"));
+            Label(parent, "SchoolPlaqueText", "PINE HOLLOW\nMIDDLE SCHOOL", new Vector3(50.6f, 1.65f, 19.58f), Quaternion.identity, 0.085f, art.GoldAccent.GetColor("_BaseColor"));
             Label(parent, "Cornerstone", "1951", new Vector3(40f, 0.85f, 19.5f), Quaternion.identity, 0.1f, new Color(0.2f, 0.19f, 0.17f));
         }
 

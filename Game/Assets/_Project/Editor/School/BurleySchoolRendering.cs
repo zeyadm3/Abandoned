@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Configures rendering reach, camera distance (LevelCameraRange 5000m),
-    /// and occlusion culling tagging for Jackson P. Burley Middle School.
+    /// and occlusion culling tagging for Pine Hollow Middle School.
     /// Ensures distant Blue Ridge mountains and winter surroundings are always visible without pop-in.
     /// </summary>
     public static class BurleySchoolRendering

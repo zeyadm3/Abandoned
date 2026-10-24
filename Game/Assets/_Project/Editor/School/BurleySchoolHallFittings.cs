@@ -134,7 +134,7 @@ namespace Abandoned.EditorTools
             {
                 Box("WallPennant", parent, new Vector3(x, floorY + 2.74f, 32.185f), new Vector3(1.2f, .82f, .018f), art.StageCurtain, false);
                 Box("PennantPole", parent, new Vector3(x, floorY + 3.17f, 32.21f), new Vector3(1.32f, .035f, .035f), art.GoldAccent, false);
-                Label(parent, "SchoolPennant", x < 40f ? "BURLEY\nEST. 1951" : "BEARS\nGREEN & GOLD",
+                Label(parent, "SchoolPennant", x < 40f ? "PINE HOLLOW\nEST. 1951" : "WOLVES\nGREEN & GOLD",
                     new Vector3(x, floorY + 2.74f, 32.2f), Quaternion.Euler(0f, 180f, 0f), .09f, new Color(.85f, .75f, .38f));
             }
         }
@@ -146,7 +146,7 @@ namespace Abandoned.EditorTools
             directory.rotation = Quaternion.Euler(0f, -90f, 0f);
             Box("OakFrame", directory, Vector3.zero, new Vector3(2.6f, 1.75f, .1f), art.OakWood, false);
             Box("DirectoryFace", directory, new Vector3(0f, 0f, -.065f), new Vector3(2.42f, 1.57f, .035f), art.LockerGreen, false);
-            Label(directory, "Header", "JACKSON P. BURLEY", new Vector3(0f, .57f, -.09f), Quaternion.identity, .13f, new Color(.87f, .77f, .43f));
+            Label(directory, "Header", "PINE HOLLOW", new Vector3(0f, .57f, -.09f), Quaternion.identity, .13f, new Color(.87f, .77f, .43f));
             Label(directory, "Directory", "GROUND  •  CLASSROOMS / CLINIC\nWEST  •  AUDITORIUM\nEAST  •  GYMNASIUM\nNORTH  •  CAFETERIA\nUPPER  •  SCIENCE / LIBRARY", new Vector3(0f, -.1f, -.09f), Quaternion.identity, .09f, new Color(.85f, .84f, .75f));
         }
 

@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Distributes 45+ authored salvage loot points (including high-value Jackpots) and 18
-    /// strategic monster threat spawn positions throughout Jackson P. Burley Middle School
+    /// strategic monster threat spawn positions throughout Pine Hollow Middle School
     /// across all academic, athletic, performance, and utility wings for responsive threat director pacing.
     /// </summary>
     public static class BurleySchoolLootAndThreats

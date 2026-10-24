@@ -96,7 +96,7 @@ Tools > Abandoned
       ──
       Rebuild Mall Only (no material restore)        1080
     School                                           [1100-1199]
-      Rebuild Jackson P Burley Middle School         1100
+      Rebuild Pine Hollow Middle School              1100
     Iron Factory                                     [1200-1299]
       Rebuild Iron Factory                           1200
       ──
@@ -244,7 +244,7 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
 | Mall/Truck Cab Instruments (0.21.4) | Maps/Mall/Updates/0.21.4 Truck Cab Instruments |
 | Mall/Replace Loot Look-alikes (0.24.9) | Maps/Mall/Updates/0.24.9 Replace Loot Look-alikes |
 | Mall/Apply 0.24.11 (basement ground, solid props) | Maps/Mall/Updates/0.24.11 Basement Ground and Solid Props |
-| Create School | *removed: duplicate of Maps/School/Rebuild Jackson P Burley Middle School* |
+| Create School | *removed: duplicate of Maps/School/Rebuild Pine Hollow Middle School* |
 | Factory/Rebuild Iron Factory | Maps/Iron Factory/Rebuild Iron Factory |
 | Factory/Add Iron Factory Loot | Maps/Iron Factory/Add Iron Factory Loot |
 | Prison/Rebuild Island Prison | Maps/Island Prison/Rebuild Island Prison |

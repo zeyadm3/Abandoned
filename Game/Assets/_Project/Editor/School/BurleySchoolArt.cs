@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Master materials and PBR surface shaders for Jackson P. Burley Middle School in winter.
+    /// Master materials and PBR surface shaders for Pine Hollow Middle School in winter.
     /// Fully binds generated BaseColor, Normal, and Mask maps for snow, brick, tile, hardwood, and glass.
     /// </summary>
     public sealed class BurleySchoolArt
@@ -90,7 +90,7 @@ namespace Abandoned.EditorTools
             AcousticCeiling = CreatePbr("Burley_AcousticCeiling", "AcousticCeiling", Color.white);
             PlasterWall = CreatePbr("Burley_PlasterWall", "SchoolPlaster", Color.white);
 
-            // 3. Interior Facilities & Burley Colors (Kelly Green and Old Gold)
+            // 3. Interior Facilities & Pine Hollow Colors (Kelly Green and Old Gold)
             LockerGreen = CreatePbr("Burley_LockerGreen", "LockerMetal", Color.white);
             GoldAccent = PolishAssets.Material("Burley_GoldAccent", new Color(0.86f, 0.72f, 0.22f), roughness: 0.32f);
             GymWood = CreatePbr("Burley_GymWood", "GymMaple", Color.white);

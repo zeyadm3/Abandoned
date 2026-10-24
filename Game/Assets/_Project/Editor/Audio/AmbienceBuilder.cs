@@ -18,7 +18,7 @@ namespace Abandoned.EditorTools
         /// <summary>The island prison: sea wind through every gap, no hum (the power plant is long dead), the cellhouse settling.</summary>
         public static void Island(Transform root) => Add(root, wind: 0.34f, hum: 0f, plainHum: 0.02f, settleEvery: new Vector2(18f, 45f));
 
-        /// <summary>Burley Middle School: wind down empty school halls, distant locker rattles, flickering light hum.</summary>
+        /// <summary>Pine Hollow Middle School: wind down empty school halls, distant locker rattles, flickering light hum.</summary>
         public static void School(Transform root) => Add(root, wind: 0.22f, hum: 0.12f, plainHum: 0.04f, settleEvery: new Vector2(16f, 44f));
 
         /// <summary>The training house: winter wind at the windows, no hum (the power is off), the old frame settling now and then.</summary>
