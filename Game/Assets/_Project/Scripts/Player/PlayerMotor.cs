@@ -40,6 +40,8 @@ namespace Abandoned.Player
         private bool tethered;
         private Vector3 tetherAnchor;
         private float tetherSlack, tetherPullStart, tetherPullSpeed;
+        private MovingPlatform ridingPlatform;
+        private Vector3 supportedFeet;
 
         public PlayerMovementConfig Config => config;
         public Vector3 Velocity => horizontalVelocity + Vector3.up * verticalVelocity;
@@ -103,6 +105,7 @@ namespace Abandoned.Player
             verticalVelocity = 0f;
             stuckToGround = false;
             airborne = false;
+            ridingPlatform = null;
         }
 
         private void Update() => Simulate(inputReader.Current, Time.deltaTime);
@@ -132,9 +135,13 @@ namespace Abandoned.Player
             if (onRope) verticalVelocity = -rope;
             float fallSpeed = -verticalVelocity;
             // 0.16.3: riding the freight lift. Its own move first, so the step below starts from where it carried us.
-            if (IsGrounded && MovingPlatform.Under(before) is MovingPlatform platform && platform.FrameDelta != Vector3.zero)
+            // Keep last step's support: a rising cab can move above the old feet before a fresh ray runs.
+            MovingPlatform platform = ridingPlatform;
+            if (platform != null && (!platform.isActiveAndEnabled || (before-supportedFeet).sqrMagnitude>.04f)) platform=null;
+            if (IsGrounded && platform == null) platform=MovingPlatform.Under(before);
+            if (IsGrounded && platform != null && platform.FrameDelta != Vector3.zero)
             {
-                controller.Move(platform.FrameDelta);
+                platform.Carry(controller);
                 before = transform.position;
             }
             CollisionFlags flags = controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
@@ -155,6 +162,8 @@ namespace Abandoned.Player
 
             // Report the state after this step's move, not before it.
             IsGrounded = controller.isGrounded;
+            ridingPlatform = IsGrounded ? MovingPlatform.Under(transform.position) : null;
+            supportedFeet = transform.position;
         }
 
         /// <summary>
@@ -184,7 +193,7 @@ namespace Abandoned.Player
         }
 
         /// <summary>Forget any fall in progress (after teleports, respawns, getting up from a ragdoll).</summary>
-        public void ResetFallTracking() => airborne = false;
+        public void ResetFallTracking() { airborne = false; ridingPlatform = null; }
 
         private void TrackFall(float yBefore, float fallSpeed)
         {

@@ -20,9 +20,11 @@ namespace Abandoned.Skyscraper
     {
         [Header("Floors & Platform")]
         [SerializeField] private MovingPlatform platform;
-        [Tooltip("Floor elevations in metres: 0 = Lobby (0m), 1 = Mechanical (20m), 2 = Restaurant (44m).")]
-        [SerializeField] private float[] floorElevations = { 0f, 20f, 44f };
+        [Tooltip("Floor elevations in metres: Lobby, Mechanical, Apex Restaurant.")]
+        [SerializeField] private float[] floorElevations = { 0f, 200f, 404f };
         [SerializeField] private GameObject[] landingGates;
+        [SerializeField] private SkyscraperElevatorDoor cabDoor;
+        [SerializeField,Min(.1f)] private float departureDelay=.85f;
         [SerializeField] private Vector2 deckSize = new(3.5f, 3.5f);
 
         [Header("Performance & Limits")]
@@ -42,6 +44,8 @@ namespace Abandoned.Skyscraper
         private float nextNoiseTime;
         private float overloadTimer;
         private bool hasSnapped;
+        private float departAt;
+        private SkyscraperElevatorDoor[] landingDoors;
 
         public static SkyscraperElevator Active { get; private set; }
         public int CurrentFloor => activeFloor.Value;
@@ -53,6 +57,9 @@ namespace Abandoned.Skyscraper
         private void Awake()
         {
             basePlatformPos = platform != null ? platform.transform.position : transform.position;
+            landingDoors=new SkyscraperElevatorDoor[landingGates!=null?landingGates.Length:0];
+            for(int i=0;i<landingDoors.Length;i++)
+                if(landingGates[i]!=null)landingDoors[i]=landingGates[i].GetComponent<SkyscraperElevatorDoor>();
         }
 
         public override void OnNetworkSpawn()
@@ -97,6 +104,7 @@ namespace Abandoned.Skyscraper
             isMoving.Value = true;
             overloadTimer = load > maxSafeLoadKg ? 2.5f : -1f;
             hasSnapped = false;
+            departAt=Time.time+departureDelay;
 
             NoiseSystem.Emit(DeckPosition, 0.75f, NoiseSource.Other);
             BroadcastSoundRpc(SoundId.LiftStart);
@@ -105,6 +113,7 @@ namespace Abandoned.Skyscraper
 
         private void Update()
         {
+            if(!IsSpawned)return;
             if (IsServer)
                 UpdateServer();
 
@@ -150,6 +159,8 @@ namespace Abandoned.Skyscraper
                 Debug.LogWarning("[SkyscraperElevator] Power lost! Elevator stalled mid-shaft.");
                 return;
             }
+
+            if(Time.time<departAt || !DoorsClosed())return;
 
             // Check for overload snap countdown
             if (overloadTimer > 0f)
@@ -198,13 +209,27 @@ namespace Abandoned.Skyscraper
                 for (int i = 0; i < landingGates.Length; i++)
                 {
                     if (landingGates[i] == null) continue;
-                    bool cabHereAndStopped = !isMoving.Value && !isBroken.Value &&
+                    bool cabHereAndStopped = activeFloor.Value==i && !isMoving.Value && !isBroken.Value &&
                                              Mathf.Abs(currentHeight.Value - floorElevations[Mathf.Clamp(i, 0, floorElevations.Length - 1)]) < 0.15f;
                     // Gate is active (closed) if elevator is moving or parked at a different level
-                    landingGates[i].SetActive(!cabHereAndStopped);
+                    if(landingDoors!=null && i<landingDoors.Length && landingDoors[i]!=null)landingDoors[i].SetOpen(cabHereAndStopped);
+                    else landingGates[i].SetActive(!cabHereAndStopped);
                 }
             }
+            int floor=Mathf.Clamp(activeFloor.Value,0,floorElevations.Length-1);
+            if(cabDoor!=null)cabDoor.SetOpen(!isMoving.Value && !isBroken.Value && Mathf.Abs(currentHeight.Value-floorElevations[floor])<.025f);
         }
+
+        private bool DoorsClosed()
+        {
+            if(cabDoor!=null && !cabDoor.IsClosed)return false;
+            if(landingDoors!=null)foreach(var door in landingDoors)if(door!=null && !door.IsClosed)return false;
+            return true;
+        }
+
+#if UNITY_EDITOR
+        public void EditorSetCabDoor(SkyscraperElevatorDoor door)=>cabDoor=door;
+#endif
 
         public float CalculateLoad()
         {

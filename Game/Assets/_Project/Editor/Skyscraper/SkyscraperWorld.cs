@@ -47,7 +47,7 @@ namespace Abandoned.EditorTools
             AssetDatabase.SaveAssets();
             if(!EditorSceneManager.SaveScene(world))throw new System.InvalidOperationException("Could not save the refreshed skyscraper world model.");
             EditorSceneManager.OpenScene(SkyscraperLayout.ScenePath,OpenSceneMode.Single);
-            Debug.Log("[Skyscraper] World distant model refreshed to 410m with its downtown district; summit clouds preserved during streaming.");
+            Debug.Log("[Skyscraper] World distant model refreshed to 416m with its downtown district; summit clouds preserved during streaming.");
         }
     }
 }

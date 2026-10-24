@@ -10,7 +10,7 @@ namespace Abandoned.EditorTools
         {
             Transform g=Group("Lights",root);int count=0;
             foreach(float x in new[]{-5f,5f}) Lamp(g,a,new Vector3(x,4.1f,-13),true,ref count);
-            foreach(float y in new[]{0f,120f,200f,280f})
+            foreach(float y in new[]{120f,200f,280f})
             foreach(float x in new[]{-5f,6f,14f})
             foreach(float z in new[]{-6f,6f,17f}) Lamp(g,a,new Vector3(x,y+(y==0?5.4f:3.1f),z),y==0,ref count);
             foreach(float x in new[]{-4.5f,4.5f})
@@ -18,6 +18,12 @@ namespace Abandoned.EditorTools
             foreach(Vector3 at in new[]{new Vector3(4,408f,-6),new Vector3(-12,407.4f,-7),new Vector3(-5.5f,406.8f,-7),
                 new Vector3(-12,408.6f,11),new Vector3(-12,408.6f,17),new Vector3(12,408.6f,17),new Vector3(14.7f,408.7f,0),new Vector3(14.7f,408.7f,6)})
                 Lamp(g,a,at,at.x>-8,ref count);
+            foreach(Vector3 at in new[]{new Vector3(-4.8f,414.2f,-6.7f),new Vector3(.2f,414.2f,-6.7f),
+                new Vector3(13,414.2f,2.5f),new Vector3(13,414.2f,8),new Vector3(13,414.2f,17.5f),
+                new Vector3(-13,414.2f,12.5f),new Vector3(-13,414.2f,17.5f),new Vector3(7.2f,414.5f,3.5f),
+                new Vector3(0,411.3f,8),new Vector3(0,411.3f,16.5f)})
+                Lamp(g,a,at,true,ref count);
+            BuildAtriumChandelier(g,a,ref count);
             for(int i=0;i<SkyscraperStairwell.HalfFlights;i++)
             {
                 // Each luminaire sits over its landing and stays below the next one.
@@ -28,13 +34,32 @@ namespace Abandoned.EditorTools
             if(car!=null)
             {
                 Transform holder=Group("CabLuminaire",car);holder.localPosition=new Vector3(0,2.6f,0);
-                Lamp(holder,a,Vector3.zero,false,ref count,true);
+                Lamp(holder,a,Vector3.zero,true,ref count,true);
             }
             CreateBreakerPanel(g,a,0,new Vector3(5,0,-2.8f),Quaternion.identity);
             CreateBreakerPanel(g,a,2,new Vector3(3.5f,404f,-2.7f),Quaternion.identity);
             CreateBreakerPanel(g,a,3,new Vector3(-8.2f,404f,9),Quaternion.Euler(0,90,0));
-            CreateBreakerPanel(g,a,4,new Vector3(12,404f,13.2f),Quaternion.Euler(0,180,0));
+            CreateBreakerPanel(g,a,4,new Vector3(12,SkyscraperLayout.UpperRestaurantY,13.2f),Quaternion.Euler(0,180,0));
             return count;
+        }
+        private static void BuildAtriumChandelier(Transform p,SkyscraperArt a,ref int count)
+        {
+            Transform g=Group("SignatureAtriumChandelier",p);
+            g.position=new Vector3(0,SkyscraperLayout.RestaurantY,12.25f);
+            for(int tier=0;tier<3;tier++)
+            {
+                float h=9.5f-tier*.9f,r=3.8f-tier;
+                SkyscraperFineDining.Halo(g,"ContinuousBrassHalo",new Vector3(0,h,0),r,a.Brass);
+                SkyscraperFineDining.Halo(g,"LuminousHalo",new Vector3(0,h-.06f,0),r-.055f,a.LampEmissive);
+                for(int i=0;i<32;i++)
+                {
+                    float t=i*Mathf.PI*2/32;
+                    Vector3 at=new Vector3(Mathf.Sin(t)*r,h,Mathf.Cos(t)*r);
+                    Box("CrystalPendant",g,at+Vector3.down*.25f,new Vector3(.055f,.42f,.055f),a.Glass,false);
+                    if(i%8==0)Box("SuspensionCable",g,new Vector3(at.x,(h+11.5f)*.5f,at.z),new Vector3(.012f,11.5f-h,.012f),a.Brass,false);
+                }
+            }
+            Lamp(p,a,new Vector3(0,414.1f,12.25f),true,ref count);
         }
         private static void Lamp(Transform parent,SkyscraperArt a,Vector3 at,bool warm,ref int count,bool local=false)
         {

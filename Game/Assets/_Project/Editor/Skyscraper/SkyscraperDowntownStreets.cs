@@ -63,7 +63,7 @@ namespace Abandoned.EditorTools
             Transform painted = stock.Place(city, marks, Vector3.zero, 0f);
             painted.name = "StreetMarkings";
             // Paint on the road hides nothing: the builder's occlusion pass leaves floors out by name.
-            foreach (Renderer r in painted.GetComponentsInChildren<Renderer>(true)) r.gameObject.name = "StreetMarkingsFloor";
+            foreach (Renderer renderer in painted.GetComponentsInChildren<Renderer>(true)) renderer.gameObject.name = "StreetMarkingsFloor";
         }
 
         private static void Road(Transform g, string name, Rect r, SkyscraperArt a)

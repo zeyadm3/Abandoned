@@ -23,9 +23,10 @@ namespace Abandoned.EditorTools
                 Spot(group,index++,new Vector3(16,y,18),Vector3.left,HideSpotKind.Locker,art);
             Spot(group,index++,new Vector3(-17,404f,8),Vector3.right,HideSpotKind.Locker,art);
             Spot(group,index++,new Vector3(17,404f,11),Vector3.left,HideSpotKind.Cabinet,art);
-            Spot(group,index++,new Vector3(16,404f,19.5f),Vector3.left,HideSpotKind.Closet,art);
-            Spot(group,index++,new Vector3(14,410f,18),Vector3.back,HideSpotKind.Locker,art);
+            Spot(group,index++,new Vector3(16,L.UpperRestaurantY,19.5f),Vector3.left,HideSpotKind.Closet,art);
+            Spot(group,index++,new Vector3(14,L.RoofY,18),Vector3.back,HideSpotKind.Locker,art);
 
+            Spot(group,index++,new Vector3(16,L.UpperRestaurantY,11.3f),Vector3.left,HideSpotKind.Cabinet,art);
             return index;
         }
 

@@ -20,8 +20,8 @@ namespace Abandoned.EditorTools
             Box("CoreWallSouth", g, new Vector3(-12f, ((SkyscraperLayout.RoofY+3f)*.5f), -5.15f), new Vector3(7.8f, (SkyscraperLayout.RoofY+3f), .3f), art.Concrete);
             // East wall leaves a 2.4m south doorway at each accessible story and a north roof doorway.
             Box("CoreWallEastMiddle", g, new Vector3(-8.25f, ((SkyscraperLayout.RoofY+3f)*.5f), 1f), new Vector3(.3f, (SkyscraperLayout.RoofY+3f), 5.6f), art.Concrete);
-            EastStrip(g, art, -3.5f, new[] {0f, 120f, 200f, 280f, 404f});
-            EastStrip(g, art, 5.5f, new[] {SkyscraperLayout.RoofY});
+            EastStrip(g, art, -3.5f, new[] {0f, 120f, 200f, 280f, 404f, SkyscraperLayout.RoofY});
+            EastStrip(g, art, 5.5f, new[] {SkyscraperLayout.UpperRestaurantY});
             for (int i = 0; i <= HalfFlights; i++)
             {
                 float y = i * 2f;

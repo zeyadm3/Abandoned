@@ -5,7 +5,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Architectural dimensions, coordinate layouts, and level boundaries for the Skyscraper Restaurant.
-    /// Defines vertical transitions between Ground Plaza (0m), Mechanical Deck (120m), and Apex Restaurant (244m).
+    /// Apex occupies two six-metre stories above the 404m arrival floor.
     /// </summary>
     public static class SkyscraperLayout
     {
@@ -20,7 +20,8 @@ namespace Abandoned.EditorTools
         public const float MechanicalHeight = 5.0f;
         public const float RestaurantY = 404.0f;
         public const float RestaurantHeight = 6.0f;
-        public const float RoofY = 410.0f;
+        public const float UpperRestaurantY = RestaurantY + RestaurantHeight;
+        public const float RoofY = UpperRestaurantY + RestaurantHeight;
         public const float SlabThickness = 0.4f;
 
         public const float FloodedY=120f;
@@ -56,7 +57,7 @@ namespace Abandoned.EditorTools
 
         // Overall building volume for atmosphere, occlusion, and horror pacing
         public static readonly Bounds BuildingBounds = new(new Vector3(0f, RoofY*.5f+2f, 0f), new Vector3(44f, RoofY+8f, 46f));
-        public static readonly Bounds RestaurantBounds = new(new Vector3(0f, RestaurantY+3f, 6f), new Vector3(38f, 10f, 34f));
+        public static readonly Bounds RestaurantBounds = new(new Vector3(0f, (RestaurantY+RoofY)*.5f, 6f), new Vector3(38f, RoofY-RestaurantY+2f, 34f));
         public static readonly Bounds MechanicalBounds = new(new Vector3(0f, MechanicalY+2.5f, 5f), new Vector3(38f, 7f, 30f));
     }
 }

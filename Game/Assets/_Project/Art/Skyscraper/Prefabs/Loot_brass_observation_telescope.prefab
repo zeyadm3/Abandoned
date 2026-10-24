@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 9093627451213461889}
   - component: {fileID: 961268323587834843}
   - component: {fileID: 7490439334349128237}
-  - component: {fileID: 4791676329825607859}
   m_Layer: 9
   m_Name: Loot_brass_observation_telescope
   m_TagString: Untagged
@@ -163,8 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkLoot
   ShowTopMostFoldoutHeaderGroup: 1
-  config: {fileID: 0}
-  networkTransform: {fileID: 0}
+  config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
+  networkTransform: {fileID: 7490439334349128237}
 --- !u!114 &961268323587834843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,21 +223,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &4791676329825607859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7398306860387331679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb76335270d545dcb12021f58a54ab7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkLoot
-  ShowTopMostFoldoutHeaderGroup: 1
-  config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
-  networkTransform: {fileID: 7490439334349128237}
 --- !u!1 &8214494898260665518
 GameObject:
   m_ObjectHideFlags: 0

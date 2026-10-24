@@ -101,15 +101,15 @@ namespace Abandoned.EditorTools
         public static void CheckSavedAndExit()=>ReleaseKit.RunAndExit(()=>
         {
             EditorSceneManager.OpenScene(SkyscraperLayout.ScenePath,OpenSceneMode.Single);
-            foreach(float y in new[]{120f,200f,280f,404f,410f})
+            foreach(float y in new[]{120f,200f,280f,404f,SkyscraperLayout.UpperRestaurantY,SkyscraperLayout.RoofY})
             {
-                bool found=NavMesh.SamplePosition(new Vector3(-7,y,y==410?5.5f:-3.5f),out NavMeshHit end,.65f,NavMesh.AllAreas);
+                bool found=NavMesh.SamplePosition(new Vector3(-7,y,y==SkyscraperLayout.UpperRestaurantY?5.5f:-3.5f),out NavMeshHit end,.65f,NavMesh.AllAreas);
                 NavMesh.SamplePosition(new Vector3(-4,0,-18),out NavMeshHit start,.65f,NavMesh.AllAreas);
                 var path=new NavMeshPath();NavMesh.CalculatePath(start.position,end.position,NavMesh.AllAreas,path);
                 if(!found || path.status!=NavMeshPathStatus.PathComplete)
                     throw new System.InvalidOperationException("Saved skyscraper route is disconnected at "+y+"m.");
             }
-            Debug.Log("[SkyscraperNav] Reloaded scene: complete street routes to all five destinations, including the 410m roof.");
+            Debug.Log("[SkyscraperNav] Reloaded scene: complete street routes to both restaurant floors and the 416m roof.");
         });
         public static void RebakeAndExit()=>ReleaseKit.RunAndExit(()=>
         {
@@ -117,9 +117,9 @@ namespace Abandoned.EditorTools
             Transform root=GameObject.Find("Skyscraper").transform;
             Build(root);SkyscraperClouds.ResizeExisting(root);
             AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene);
-            foreach(float y in new[]{120f,200f,280f,404f,410f})
+            foreach(float y in new[]{120f,200f,280f,404f,SkyscraperLayout.UpperRestaurantY,SkyscraperLayout.RoofY})
             {
-                bool sampled=NavMesh.SamplePosition(new Vector3(-7,y,y==410?5.5f:-3.5f),out NavMeshHit end,.65f,NavMesh.AllAreas);
+                bool sampled=NavMesh.SamplePosition(new Vector3(-7,y,y==SkyscraperLayout.UpperRestaurantY?5.5f:-3.5f),out NavMeshHit end,.65f,NavMesh.AllAreas);
                 NavMesh.SamplePosition(new Vector3(-4,0,-18),out NavMeshHit start,.65f,NavMesh.AllAreas);
                 var path=new NavMeshPath();NavMesh.CalculatePath(start.position,end.position,NavMesh.AllAreas,path);
                 Debug.Log($"[SkyscraperNav] Destination {y}: sampled={sampled}, path={path.status}.");

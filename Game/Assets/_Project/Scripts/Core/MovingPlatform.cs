@@ -12,6 +12,8 @@ namespace Abandoned.Core
     {
         private Vector3 last;
         private bool started;
+        private Collider[] carryColliders;
+        private bool[] restoreCollisions;
 
         /// <summary>How far it moved this frame.</summary>
         public Vector3 FrameDelta { get; private set; }
@@ -22,15 +24,40 @@ namespace Abandoned.Core
             if (!started)
             {
                 started = true;
-                last = position;
+                last = transform.position;
             }
             FrameDelta = position - last;
             last = position;
             transform.position = position;
+            // Player sweeps and support rays run before the next physics tick, including at the final stop.
+            if (FrameDelta != Vector3.zero) Physics.SyncTransforms();
         }
 
         /// <summary>A belt (Iron Factory): carries its riders this far this frame without moving itself.</summary>
         public void Drift(Vector3 frameDelta) => FrameDelta = frameDelta;
+
+        public void Carry(CharacterController rider)
+        {
+            // The cab's floor and roof move with its passengers. A delayed height update must not
+            // sweep the rider into either; external walls and ceilings still block the displacement.
+            if(carryColliders==null)
+            {
+                carryColliders=GetComponentsInChildren<Collider>(true);
+                restoreCollisions=new bool[carryColliders.Length];
+            }
+            for(int i=0;i<carryColliders.Length;i++)
+            {
+                Collider part=carryColliders[i];
+                restoreCollisions[i]=part!=null && part!=rider && part.enabled && !part.isTrigger && part.gameObject.activeInHierarchy && !Physics.GetIgnoreCollision(rider,part);
+                if(restoreCollisions[i])Physics.IgnoreCollision(rider,part,true);
+            }
+            try { rider.Move(FrameDelta); }
+            finally
+            {
+                for(int i=0;i<carryColliders.Length;i++)
+                    if(restoreCollisions[i] && carryColliders[i]!=null)Physics.IgnoreCollision(rider,carryColliders[i],false);
+            }
+        }
 
         /// <summary>The platform under a point (feet), if any.</summary>
         public static MovingPlatform Under(Vector3 feet, float reach = 0.45f)

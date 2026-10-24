@@ -10,12 +10,14 @@ namespace Abandoned.EditorTools
     {
         public static readonly Rect Shaft = Rect.MinMaxRect(-2.4f, -2.4f, 2.4f, 2.4f);
         public static readonly Rect Stairs = Rect.MinMaxRect(-15.6f, -5f, -8.4f, 7f);
+        public static readonly Rect DiningAtrium = Rect.MinMaxRect(-6f, 6f, 6f, 18.5f);
+        public static readonly Rect GrandStairOpening = Rect.MinMaxRect(4.55f, -7.8f, 9.85f, 4.8f);
         public static readonly Vector2[] DiningTables = {
             new(-4.5f, 8f), new(4.5f, 8f), new(-4.5f, 13f), new(4.5f, 13f),
             new(-4.5f, 18f), new(4.5f, 18f)
         };
 
-        public static List<Transform> Deck(Transform parent, float y, Material material, bool roof = false)
+        public static List<Transform> Deck(Transform parent, float y, Material material, bool roof = false, params Rect[] openings)
         {
             var result = new List<Transform>();
             for (float x = -18f; x < 18f; x += 4f)
@@ -24,6 +26,7 @@ namespace Abandoned.EditorTools
                 var pieces = new List<Rect> { new Rect(x, z, 4f, 4f) };
                 if (!roof) pieces = Subtract(pieces, Shaft);
                 pieces = Subtract(pieces, Stairs);
+                foreach (Rect opening in openings) pieces = Subtract(pieces, opening);
                 foreach (Rect r in pieces)
                     if (r.width > .01f && r.height > .01f)
                         result.Add(Slab(parent, new Vector3(r.center.x, y, r.center.y), r.size, material));
@@ -54,7 +57,7 @@ namespace Abandoned.EditorTools
             var collider = slab.gameObject.AddComponent<BoxCollider>();
             collider.center = Vector3.down * .2f;
             collider.size = new Vector3(size.x, .4f, size.y);
-            Box("Surface", slab, collider.center, collider.size, material, false);
+            Box("Surface", Group("Visual", slab), collider.center, collider.size, material, false);
             slab.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Concrete);
             return slab;
         }

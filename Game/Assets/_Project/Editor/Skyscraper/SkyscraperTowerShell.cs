@@ -23,7 +23,8 @@ namespace Abandoned.EditorTools
                 if(bottom>=SkyscraperLayout.RestaurantY) break;
                 Face(g,a,bottom,top);
             }
-            Face(g,a,SkyscraperLayout.RestaurantY,SkyscraperLayout.RoofY);
+            Face(g,a,SkyscraperLayout.RestaurantY,SkyscraperLayout.UpperRestaurantY);
+            Face(g,a,SkyscraperLayout.UpperRestaurantY,SkyscraperLayout.RoofY);
             Transform canopy=Group("PorteCochere",g);
             Box("CanopyRoof",canopy,new Vector3(0,4.5f,-13.1f),new Vector3(11f,.25f,6.2f),a.GraniteDark);
             Box("BronzeFascia",canopy,new Vector3(0,4.3f,-16.25f),new Vector3(11f,.22f,.12f),a.Brass,false);

@@ -57,12 +57,20 @@ namespace Abandoned.EditorTools
             try
             {
                 Shot("01-arrival",new Vector3(-10,1.7f,-25),new Vector3(0,12,-10));
-                Shot("02-lobby",new Vector3(0,1.7f,-9),new Vector3(-1,2.2f,-1));
+                Shot("02-lobby",new Vector3(-3,1.7f,-8.7f),new Vector3(4,2.2f,-2.4f));
+                Shot("18-lobby-wide",new Vector3(-6.5f,1.75f,-8.3f),new Vector3(5,2.4f,-2.4f));
+                Shot("19-elevator-cab",new Vector3(0,1.65f,-1.35f),new Vector3(.3f,1.55f,1.3f));
+                Shot("20-lobby-lounge",new Vector3(0,1.7f,5),new Vector3(9,1.8f,16));
                 Shot("03-dining",new Vector3(0,405.7f,5),new Vector3(0,406f,20));
+                Shot("13-atrium",new Vector3(0,405.7f,4),new Vector3(0,410.5f,14));
+                Shot("14-gallery",new Vector3(-4,411.7f,4),new Vector3(4,411.5f,15));
+                Shot("15-chefs-table",new Vector3(-10,411.7f,10),new Vector3(-13,411.4f,17));
+                Shot("16-grand-stair",new Vector3(2,405.7f,-6),new Vector3(7.4f,408.6f,1));
+                Shot("17-private-dining",new Vector3(8.8f,411.7f,15),new Vector3(14,411.4f,18));
                 Shot("04-lounge",new Vector3(6,405.7f,0),new Vector3(16,406f,4));
                 Shot("05-kitchen",new Vector3(-10,405.7f,9),new Vector3(-15,405.5f,18));
                 Shot("06-stairwell",new Vector3(-10,405.7f,-3.5f),new Vector3(-13.5f,407f,4));
-                Shot("07-roof",new Vector3(-7,411.7f,6),new Vector3(0,412f,18));
+                Shot("07-roof",new Vector3(-7,SkyscraperLayout.RoofY+1.7f,6),new Vector3(0,SkyscraperLayout.RoofY+2f,18));
                 Shot("09-cloud-crown",new Vector3(-65,418,-85),new Vector3(0,404f,6));
                 Shot("10-tall-tower",new Vector3(-350,220,-370),new Vector3(0,240,25));
                 Shot("11-downtown-street",new Vector3(-40,2,-28),new Vector3(-180,80,-28));
@@ -70,7 +78,7 @@ namespace Abandoned.EditorTools
                 Shot("08-wine",new Vector3(-11,405.7f,-5.8f),new Vector3(-15,405.6f,-9));
             }
             finally {Object.DestroyImmediate(go);target.Release();Object.DestroyImmediate(target);AssetDatabase.DeleteAsset(scratch);}
-            Debug.Log("[SkyscraperReview] Saved twelve review views to "+folder);
+            Debug.Log("[SkyscraperReview] Saved twenty review views to "+folder);
         });
     }
 }

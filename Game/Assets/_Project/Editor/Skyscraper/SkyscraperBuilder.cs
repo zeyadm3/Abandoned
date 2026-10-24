@@ -19,7 +19,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// Master builder for the Skyscraper Restaurant (Scenes/Skyscraper.unity).
-    /// Constructs the forecourt plaza, 248m elevator, 61-storey stairwell, mechanical floor,
+    /// Constructs the forecourt plaza, 404m arrival lift, full-height stairwell, mechanical floor,
     /// panoramic restaurant, commercial kitchen, VIP suite, and all network and run plumbing.
     /// </summary>
     public static class SkyscraperBuilder
@@ -75,7 +75,8 @@ namespace Abandoned.EditorTools
             List<Transform> intermediateSlabs = SkyscraperIntermediateFloors.Build(root, art,
                 out List<Transform> collapsibleRoofTiles, out List<Transform> soundNodes);
             SkyscraperKitchen.Build(root, art);
-            SkyscraperPrivateDining.Build(root, art);
+            restaurantSlabs.AddRange(SkyscraperUpperDining.Build(root, art, out List<Transform> upperWeak));
+            collapsibleDining.AddRange(upperWeak);
             int hidingCount = SkyscraperHiding.Build(root, art);
             int lightCount = SkyscraperLighting.Build(root, art);
 
@@ -140,6 +141,9 @@ namespace Abandoned.EditorTools
             RoomReflectionProbes.Place(scene);
             LightingRebuild.ApplyScene(scene, AssetDatabase.LoadAssetAtPath<IndirectLightingConfig>(LightingRebuild.BounceConfigPath));
 
+            SkyscraperRestaurantFinish.Apply(root, art);
+            SkyscraperEntryFinish.Apply(root, art);
+
             // 9. Occlusion Flags, Scene Save & Occlusion Baking
             ApplyOcclusionFlags(root);
             BuildScenes.ApplyToEditorSettings();
@@ -155,7 +159,7 @@ namespace Abandoned.EditorTools
             if (!EditorSceneManager.SaveScene(scene, ScenePath))
                 throw new InvalidOperationException("Unity could not save the Skyscraper Restaurant after occlusion bake.");
 
-            Debug.Log($"[Skyscraper] Built {L.DisplayName}: 408m Elevator, 101-storey Stairwell, {restaurantSlabs.Count} Dining slabs " +
+            Debug.Log($"[Skyscraper] Built {L.DisplayName}: 404m arrival, two restaurant stories, 416m roof, {restaurantSlabs.Count} Dining slabs " +
                       $"({collapsibleDining.Count} collapsible), {mechPieces.Count} Mechanical pieces, {hidingCount} Hiding spots, " +
                       $"{loot.Count} Loot points, {threats.Count} Threat spawns, {lightCount} Lamps.");
         }
@@ -202,7 +206,7 @@ namespace Abandoned.EditorTools
             string locPath = $"{SkyscraperLoot.DataFolder}/SkyscraperLocation.asset";
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(locPath);
             location.EditorSetup("skyscraper", "Cloudline Skyscraper Restaurant",
-                "A luxury restaurant atop an abandoned skyscraper. Reach it via the freight lift or 101 storeys of stairs.",
+                "A two-story fine-dining restaurant above the clouds, with a grand stair, tasting gallery and private dining. Reach it via the freight lift or 101 storeys of stairs.",
                 "Skyscraper", 2, 1, 1.4f, 1.25f, -0.1f, 1.1f, 0.15f);
             EditorUtility.SetDirty(location);
         }

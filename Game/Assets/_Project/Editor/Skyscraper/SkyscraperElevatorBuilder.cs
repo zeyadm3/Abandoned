@@ -9,8 +9,8 @@ using L = Abandoned.EditorTools.SkyscraperLayout;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// Builds the 248-metre vertical elevator shaft, motorized hoist, cab with MovingPlatform,
-    /// landing call stations, and sliding shaft gates at Ground (0m), Mechanical (120m), and Restaurant (244m).
+    /// Builds the 404-metre vertical elevator shaft, motorized hoist, cab with MovingPlatform,
+    /// landing call stations and interlocked passenger doors at 0m, 200m and 404m.
     /// </summary>
     public static class SkyscraperElevatorBuilder
     {
@@ -31,7 +31,7 @@ namespace Abandoned.EditorTools
                 if (level > previousTop)
                     Box("ShaftSouthSpandrel", shaftGroup, new Vector3(0f,(previousTop+level)/2f,-2.3f),new Vector3(4.8f,level-previousTop,.2f),art.Concrete);
                 previousTop = level + 3f;
-                Box("LandingSill", shaftGroup, new Vector3(0f,level-.1f,-2.05f),new Vector3(2.2f,.2f,.7f),art.DiamondPlate);
+                Box("LandingSill", shaftGroup, new Vector3(0f,level-.175f,-2.05f),new Vector3(2.2f,.35f,.72f),art.LiftSteel);
             }
             Box("ShaftSouthTop",shaftGroup,new Vector3(0f,L.RestaurantY+3.5f,-2.3f),new Vector3(4.8f,1f,.2f),art.Concrete);
 
@@ -57,21 +57,23 @@ namespace Abandoned.EditorTools
             // Floor deck with MovingPlatform and BoxCollider
             Transform deckGo = Group("CabDeck", cabRoot.transform);
             BoxCollider deckCol = deckGo.gameObject.AddComponent<BoxCollider>();
-            deckCol.center = new Vector3(0f, -0.1f, 0f);
-            deckCol.size = L.CabDeckSize;
-            Box("Visual", deckGo, deckCol.center, deckCol.size, art.DiamondPlate, false);
+            deckCol.center = new Vector3(0f, -0.175f, 0f);
+            deckCol.size = new Vector3(L.CabDeckSize.x,.35f,L.CabDeckSize.z);
+            Box("Visual", deckGo, deckCol.center, deckCol.size, art.LiftSteel, false);
             deckGo.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
             MovingPlatform platform = deckGo.gameObject.AddComponent<MovingPlatform>();
 
             // Enclosed Cab Body (y: 0 to 2.8m)
             Transform cabBody = Group("CabBody", deckGo);
             float cabH = 2.8f, cabHalf = cabH * 0.5f;
-            Box("CabWall_L", cabBody, new Vector3(-1.65f, cabHalf, 0f), new Vector3(0.1f, cabH, 3.4f), art.Steel);
-            Box("CabWall_R", cabBody, new Vector3( 1.65f, cabHalf, 0f), new Vector3(0.1f, cabH, 3.4f), art.Steel);
-            Box("CabWall_Back", cabBody, new Vector3(0f, cabHalf, 1.65f), new Vector3(3.4f, cabH, 0.1f), art.Steel);
-            Box("CabRoof", cabBody, new Vector3(0f, cabH + 0.05f, 0f), new Vector3(3.4f, 0.1f, 3.4f), art.Steel);
-            Box("CabInteriorMirror", cabBody, new Vector3(0f, 1.5f, 1.58f), new Vector3(2.6f, 1.6f, 0.04f), art.Glass, false);
-            Box("CabHandrail", cabBody, new Vector3(0f, 1.0f, 1.45f), new Vector3(2.8f, 0.06f, 0.06f), art.Brass);
+            Box("CabWall_L", cabBody, new Vector3(-1.65f, cabHalf, 0f), new Vector3(0.1f, cabH, 3.4f), art.LiftSteel);
+            Box("CabWall_R", cabBody, new Vector3( 1.65f, cabHalf, 0f), new Vector3(0.1f, cabH, 3.4f), art.LiftSteel);
+            Box("CabWall_Back", cabBody, new Vector3(0f, cabHalf, 1.65f), new Vector3(3.4f, cabH, 0.1f), art.LiftSteel);
+            Box("CabRoof", cabBody, new Vector3(0f, cabH + 0.05f, 0f), new Vector3(3.4f, 0.1f, 3.4f), art.LiftSteel);
+            SkyscraperCabInterior.Build(cabBody,art);
+            var cabDoor=SkyscraperCabInterior.Door(deckGo,art,"CabPassengerDoors",new Vector3(0,0,-1.58f),true);
+            foreach(float x in new[]{-1.38f,1.38f})
+                Box("CabFrontReturn",cabBody,new Vector3(x,1.4f,-1.62f),new Vector3(.45f,2.8f,.1f),art.LiftSteel);
 
             // 4. Interior Car Destination Button Panel (Inside the cab)
             Transform carPanel = Group("CarButtonPanel", deckGo);
@@ -92,15 +94,14 @@ namespace Abandoned.EditorTools
                 foreach (float side in new[] { -1f, 1f })
                     Box("ShaftDoorSideWall",shaftGroup,new Vector3(side*1.95f,y+1.5f,-2.3f),new Vector3(.9f,3f,.2f),art.Concrete);
                 // Landing Door Frame & Sliding Gate Panels
-                Box("DoorFrameL", landing, new Vector3(-1.3f, 1.4f, 0f), new Vector3(0.4f, 2.8f, 0.2f), art.Steel);
-                Box("DoorFrameR", landing, new Vector3( 1.3f, 1.4f, 0f), new Vector3(0.4f, 2.8f, 0.2f), art.Steel);
-                Box("DoorHeader", landing, new Vector3(0f, 2.7f, 0f), new Vector3(3.0f, 0.4f, 0.2f), art.Steel);
+                Box("DoorFrameL", landing, new Vector3(-1.3f, 1.4f, 0f), new Vector3(0.4f, 2.8f, 0.2f), art.LiftSteel);
+                Box("DoorFrameR", landing, new Vector3( 1.3f, 1.4f, 0f), new Vector3(0.4f, 2.8f, 0.2f), art.LiftSteel);
+                Box("DoorHeader", landing, new Vector3(0f, 2.7f, 0f), new Vector3(3.0f, 0.4f, 0.2f), art.LiftSteel);
 
                 // Gate object that is disabled (open) when the cab is parked here
-                Transform gate = Group($"Gate_Floor{f}", landing);
-                Box("GatePanelL", gate, new Vector3(-0.55f, 1.35f, 0.05f), new Vector3(1.1f, 2.7f, 0.08f), art.Steel);
-                Box("GatePanelR", gate, new Vector3( 0.55f, 1.35f, 0.05f), new Vector3(1.1f, 2.7f, 0.08f), art.Steel);
-                gates[f] = gate.gameObject;
+                var gate=SkyscraperCabInterior.Door(landing,art,$"Gate_Floor{f}",new Vector3(0,0,.05f),f==0);
+                gates[f]=gate.gameObject;
+                Label(landing,"LandingDestination",f==0?"LOBBY":f==1?"MECHANICAL":"APEX RESTAURANT",new Vector3(0,3.18f,-.15f),Quaternion.identity,.032f,new Color(.88f,.8f,.61f));
 
                 // Exterior Call Station Button
                 Transform callStation = Group($"CallStation_Floor{f}", landing);
@@ -122,6 +123,7 @@ namespace Abandoned.EditorTools
                 var btn = carBtn.AddComponent<SkyscraperElevatorButton>();
                 btn.EditorSetup(null, b, false);
                 interiorButtons[b] = btn;
+                Label(carPanel,"CarButtonLegend",b==0?"L":b==1?"M":"A",new Vector3(-.085f,btnOffsets[b],.16f),Quaternion.Euler(0,90,0),.024f,Color.white);
             }
 
             // 6. Assemble the SkyscraperElevator NetworkBehaviour
@@ -131,6 +133,10 @@ namespace Abandoned.EditorTools
                 UnityEditor.GameObjectUtility.SetStaticEditorFlags(child.gameObject, 0);
             var elevator = cabRoot.AddComponent<SkyscraperElevator>();
             elevator.EditorSetup(platform, floorYs, gates, new Vector2(3.4f, 3.4f), 8.0f, 450f, 1);
+            elevator.EditorSetCabDoor(cabDoor);
+            Label(cabBody,"CabFloorDisplay","L / LOBBY",new Vector3(0,2.28f,-1.66f),Quaternion.Euler(0,180,0),.022f,new Color(.85f,.82f,.68f));
+            Transform display=cabBody.Find("CabFloorDisplay");
+            display.gameObject.AddComponent<SkyscraperElevatorDisplay>().EditorSetup(elevator,display.GetComponent<TextMesh>());
 
             // Connect button references back to the elevator component
             foreach (SkyscraperElevatorButton call in shaftGroup.GetComponentsInChildren<SkyscraperElevatorButton>(true))

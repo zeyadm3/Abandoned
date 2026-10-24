@@ -29,22 +29,22 @@ namespace Abandoned.EditorTools
             Transform roof=Group("RooftopInfrastructure",g);
             foreach(float x in new[]{5f,12f})
             {
-                Box("RooftopChiller",roof,new Vector3(x,411.1f,-5),new Vector3(4,2.2f,4),a.Steel);
+                Box("RooftopChiller",roof,new Vector3(x,SkyscraperLayout.RoofY+1.1f,-5),new Vector3(4,2.2f,4),a.Steel);
                 foreach(float z in new[]{-6f,-4f})
-                    Primitive(PrimitiveType.Cylinder,"ChillerFan",roof,new Vector3(x,412.25f,z),new Vector3(1.5f,.08f,1.5f),a.GraniteDark,false);
+                    Primitive(PrimitiveType.Cylinder,"ChillerFan",roof,new Vector3(x,SkyscraperLayout.RoofY+2.25f,z),new Vector3(1.5f,.08f,1.5f),a.GraniteDark,false);
             }
             // Walkable roof access emerges north of the stair core, clear of plant equipment.
-            Box("GantryTrack",roof,new Vector3(0,410.12f,20),new Vector3(28,.2f,.3f),a.Steel);
-            Box("GantryMast",roof,new Vector3(3,412f,20),new Vector3(.3f,4,.3f),a.Steel);
-            Box("GantryBoom",roof,new Vector3(3,414f,21),new Vector3(.3f,.3f,4),a.Steel);
+            Box("GantryTrack",roof,new Vector3(0,SkyscraperLayout.RoofY+.12f,20),new Vector3(28,.2f,.3f),a.Steel);
+            Box("GantryMast",roof,new Vector3(3,SkyscraperLayout.RoofY+2f,20),new Vector3(.3f,4,.3f),a.Steel);
+            Box("GantryBoom",roof,new Vector3(3,SkyscraperLayout.RoofY+4f,21),new Vector3(.3f,.3f,4),a.Steel);
             for(float x=-3;x<=3;x+=6)
             {
-                Box("HelipadBar",roof,new Vector3(x,410.015f,12),new Vector3(.4f,.015f,6),a.RoadWhite,false);
+                Box("HelipadBar",roof,new Vector3(x,SkyscraperLayout.RoofY+.015f,12),new Vector3(.4f,.015f,6),a.RoadWhite,false);
             }
-            Box("HelipadCrossbar",roof,new Vector3(0,410.015f,12),new Vector3(6,.015f,.4f),a.RoadWhite,false);
+            Box("HelipadCrossbar",roof,new Vector3(0,SkyscraperLayout.RoofY+.015f,12),new Vector3(6,.015f,.4f),a.RoadWhite,false);
             for(float x=-12;x<=12;x+=6)
-                Box("RoofEdgeBeacon",roof,new Vector3(x,410.4f,21.5f),new Vector3(.16f,.2f,.16f),a.RedEmergencyEmissive,false);
-            SkyscraperFurnishings.Worktop(roof,a,new Vector3(-5,410f,18),new Vector2(2,1));
+                Box("RoofEdgeBeacon",roof,new Vector3(x,SkyscraperLayout.RoofY+.4f,21.5f),new Vector3(.16f,.2f,.16f),a.RedEmergencyEmissive,false);
+            SkyscraperFurnishings.Worktop(roof,a,new Vector3(-5,SkyscraperLayout.RoofY,18),new Vector2(2,1));
             return slabs;
         }
     }

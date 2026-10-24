@@ -14,9 +14,9 @@ namespace Abandoned.EditorTools
             foreach(Transform s in slabs)
                 if(s.position.z>18 && s.position.x>-7 && s.position.x<7) weak.Add(s);
             Transform arrival=Group("SkyLobby",g);
-            Box("HostPodium",arrival,new Vector3(5.8f,404.55f,-6.8f),new Vector3(.9f,1.1f,.7f),a.Mahogany);
-            Label(arrival,"RestaurantIdentity","A P E X",new Vector3(5.8f,407.3f,-9.85f),Quaternion.Euler(0,180,0),.4f,new Color(.9f,.75f,.4f));
-            Label(arrival,"Directions","DINING  →     ←  STAIRS",new Vector3(0,407.2f,-2.55f),Quaternion.identity,.11f,Color.white);
+            Box("HostPodium",arrival,new Vector3(3.2f,404.55f,-7.5f),new Vector3(.9f,1.1f,.7f),a.Mahogany);
+            Label(arrival,"RestaurantIdentity","A P E X",new Vector3(3.2f,407.3f,-9.85f),Quaternion.Euler(0,180,0),.4f,new Color(.9f,.75f,.4f));
+            Label(arrival,"Directions","THE DINING ROOM     /     GALLERY UPSTAIRS",new Vector3(0,407.2f,-2.55f),Quaternion.identity,.11f,Color.white);
             // The central aisle remains four metres wide from the arrival hall to the north view.
             foreach(Vector2 table in A.DiningTables)
                 SkyscraperFurnishings.Table(g,a,new Vector3(table.x,404f,table.y));
@@ -30,6 +30,7 @@ namespace Abandoned.EditorTools
             // Low window-side banquettes leave room for traffic behind the dining chairs.
             SkyscraperFurnishings.Bench(g,a,new Vector3(-4.5f,404f,21),0);
             SkyscraperFurnishings.Bench(g,a,new Vector3(4.5f,404f,21),0);
+            SkyscraperRestaurantDetails.Build(g,a,slabs);
             BuildBar(g,a);
             SkyscraperRestrooms.Build(g,a);
             SkyscraperWineVault.Build(g,a);

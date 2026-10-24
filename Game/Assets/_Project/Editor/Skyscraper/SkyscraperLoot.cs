@@ -61,6 +61,7 @@ namespace Abandoned.EditorTools
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
                 if (prefab == null)
                     prefab = BuildNetworkPrefab(def, prefabPath);
+                else prefab = RepairNetworkPrefab(prefab,prefabPath);
 
                 entries.Add(new LootCatalog.Entry { definition = def, prefab = prefab });
             }
@@ -133,7 +134,8 @@ namespace Abandoned.EditorTools
                 nt.SyncScaleX = nt.SyncScaleY = nt.SyncScaleZ = false;
                 nt.Interpolate = true;
 
-                var net = root.AddComponent<NetworkLoot>();
+                // NetworkSharedCarry's RequireComponent already adds this on heavy salvage.
+                var net = root.GetComponent<NetworkLoot>() ?? root.AddComponent<NetworkLoot>();
                 SerializedWiring.Set(net, "networkTransform", nt);
                 var netConfig = AssetDatabase.LoadAssetAtPath<LootNetConfig>(NetworkContentBuilder.LootNetConfigPath);
                 SerializedWiring.Set(net, "config", netConfig);
@@ -158,5 +160,26 @@ namespace Abandoned.EditorTools
             EnsureFolder(parent);
             AssetDatabase.CreateFolder(parent, System.IO.Path.GetFileName(path));
         }
+
+        private static GameObject RepairNetworkPrefab(GameObject prefab,string path)
+        {
+            var copies=prefab.GetComponents<NetworkLoot>();
+            if(copies.Length==1 && copies[0].Config!=null)return prefab;
+            GameObject root=PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                copies=root.GetComponents<NetworkLoot>();
+                var net=copies.Length>0?copies[0]:root.AddComponent<NetworkLoot>();
+                for(int i=copies.Length-1;i>0;i--)Object.DestroyImmediate(copies[i]);
+                SerializedWiring.Set(net,"config",AssetDatabase.LoadAssetAtPath<LootNetConfig>(NetworkContentBuilder.LootNetConfigPath));
+                SerializedWiring.Set(net,"networkTransform",root.GetComponent<NetworkTransform>());
+                prefab=PrefabUtility.SaveAsPrefabAsset(root,path);
+                NetworkObjectIds.StampPrefab(prefab);
+                return prefab;
+            }
+            finally{PrefabUtility.UnloadPrefabContents(root);}
+        }
+
+        public static void RepairAndExit()=>ReleaseKit.RunAndExit(()=>{EnsureContent();});
     }
 }

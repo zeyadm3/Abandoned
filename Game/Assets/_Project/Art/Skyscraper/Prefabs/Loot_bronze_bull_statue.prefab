@@ -50,7 +50,6 @@ GameObject:
   - component: {fileID: 4232708135496063594}
   - component: {fileID: 8551450864433342637}
   - component: {fileID: 2803110659149335991}
-  - component: {fileID: 1212488899648742989}
   m_Layer: 9
   m_Name: Loot_bronze_bull_statue
   m_TagString: Untagged
@@ -195,8 +194,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkLoot
   ShowTopMostFoldoutHeaderGroup: 1
-  config: {fileID: 0}
-  networkTransform: {fileID: 0}
+  config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
+  networkTransform: {fileID: 2803110659149335991}
 --- !u!114 &8551450864433342637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,21 +255,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1212488899648742989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2613360568262569659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb76335270d545dcb12021f58a54ab7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkLoot
-  ShowTopMostFoldoutHeaderGroup: 1
-  config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
-  networkTransform: {fileID: 2803110659149335991}
 --- !u!1 &9146196550502691730
 GameObject:
   m_ObjectHideFlags: 0

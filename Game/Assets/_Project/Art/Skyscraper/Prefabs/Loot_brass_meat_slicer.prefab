@@ -103,7 +103,6 @@ GameObject:
   - component: {fileID: 3768188250086272496}
   - component: {fileID: 3147291632690431588}
   - component: {fileID: 8461758520727345466}
-  - component: {fileID: 1410659836084698645}
   m_Layer: 9
   m_Name: Loot_brass_meat_slicer
   m_TagString: Untagged
@@ -248,8 +247,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkLoot
   ShowTopMostFoldoutHeaderGroup: 1
-  config: {fileID: 0}
-  networkTransform: {fileID: 0}
+  config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
+  networkTransform: {fileID: 8461758520727345466}
 --- !u!114 &3147291632690431588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,21 +308,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1410659836084698645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7437902430761536172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbb76335270d545dcb12021f58a54ab7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Networking.NetworkLoot
-  ShowTopMostFoldoutHeaderGroup: 1
-  config: {fileID: 11400000, guid: d11bc2ecce8ee4e74ad99e9f51c713f3, type: 2}
-  networkTransform: {fileID: 8461758520727345466}
 --- !u!1001 &5245271097920513979
 PrefabInstance:
   m_ObjectHideFlags: 0

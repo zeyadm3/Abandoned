@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
         {
             Transform g=Group("Restrooms",parent);
             // Move the powder room to the southeast, leaving the cellar approach clear.
-            g.localPosition=Vector3.right*17f;
+            g.localPosition=Vector3.right*20f;
             Box("RestroomWallWest",g,new Vector3(-8.1f,405.6f,-7.6f),new Vector3(.18f,3.2f,4.8f),a.WallPlaster);
             Box("RestroomWallEast",g,new Vector3(-3f,405.6f,-7.6f),new Vector3(.18f,3.2f,4.8f),a.WallPlaster);
             Box("RestroomWallFront",g,new Vector3(-6.5f,405.6f,-5.2f),new Vector3(3.2f,3.2f,.18f),a.WallPlaster);

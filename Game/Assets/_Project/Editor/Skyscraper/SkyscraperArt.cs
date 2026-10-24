@@ -15,6 +15,8 @@ namespace Abandoned.EditorTools
         public const string MaterialsFolder = Folder + "/Materials";
 
         public readonly Material Marble;
+        public readonly Material LiftSteel;
+        public readonly Material LobbyWalnut;
         public readonly Material Parquet;
         public readonly Material Mahogany;
         public readonly Material WallPlaster;
@@ -39,6 +41,9 @@ namespace Abandoned.EditorTools
         public readonly Material TowerCladding;
         public readonly Material Brass;
         public readonly Material Leather;
+        public readonly Material Linen;
+        public readonly Material Porcelain;
+        public readonly Material Velvet;
         public readonly Material LampEmissive;
         public readonly Material RedEmergencyEmissive;
 
@@ -47,6 +52,8 @@ namespace Abandoned.EditorTools
             EnsureFolders();
 
             Marble = CreateMaterial("Marble_Carrara", new Color(0.85f, 0.85f, 0.85f), "Marble012", 0.65f, 0.05f);
+            LiftSteel = CreateMaterial("Lift_BrushedChampagne", new Color(.64f,.59f,.48f), null, .65f, .78f);
+            LobbyWalnut = CreateMaterial("Lobby_Walnut", new Color(.42f,.31f,.23f), "WoodFloor051", .45f, 0);
             Parquet = CreateMaterial("Parquet_Luxury", new Color(0.45f, 0.32f, 0.22f), "WoodFloor051", 0.45f, 0.0f);
             Mahogany = CreateMaterial("Mahogany_Rich", new Color(0.28f, 0.12f, 0.08f), "WoodFloor051", 0.55f, 0.0f);
             WallPlaster = CreateMaterial("Wall_Plaster", new Color(0.72f, 0.70f, 0.66f), "Plaster001", 0.15f, 0.0f);
@@ -69,6 +76,9 @@ namespace Abandoned.EditorTools
             CeilingTile = CreateMaterial("Ceiling_Office", new Color(0.65f, 0.65f, 0.64f), "OfficeCeiling001", 0.10f, 0.0f);
             Leather = CreateMaterial("Leather_Lounge", new Color(0.28f, 0.18f, 0.14f), "Leather037", 0.30f, 0.0f);
             Brass = CreateMaterial("Brass_Trim", new Color(0.82f, 0.68f, 0.32f), null, 0.75f, 0.90f);
+            Linen = CreateMaterial("Apex_IvoryLinen", new Color(.91f,.86f,.73f), "Fabric030", .18f, 0);
+            Porcelain = CreateMaterial("Apex_BoneChina", new Color(.97f,.94f,.87f), null, .82f, 0);
+            Velvet = CreateMaterial("Apex_EmeraldUpholstery", new Color(.055f,.19f,.15f), "Leather037", .32f, 0);
 
             TowerCladding=CreateMaterial("Tower_Cladding",new Color(.18f,.24f,.29f),null,.65f,.25f);
 
@@ -163,6 +173,7 @@ namespace Abandoned.EditorTools
             {
                 mat.EnableKeyword("_EMISSION");
                 mat.SetColor("_EmissionColor", emission);
+                GeneratedMaterialRepair.Apply(mat);
                 EditorUtility.SetDirty(mat);
                 return mat;
             }
@@ -172,6 +183,7 @@ namespace Abandoned.EditorTools
             mat.SetColor("_BaseColor", albedo);
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", emission);
+            GeneratedMaterialRepair.Apply(mat);
             AssetDatabase.CreateAsset(mat, path);
             return mat;
         }
