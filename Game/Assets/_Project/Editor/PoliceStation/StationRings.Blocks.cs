@@ -122,11 +122,12 @@ namespace Abandoned.EditorTools
         private static void DarkLamp(Transform s, Vector3 foot, float yaw) =>
             StationScans.Put(s, "street_lamp_01", foot, yaw, new Vector3(2.5f, 9f, 2.5f), solid: true);
 
-        // The scanned trees the maps' sites use, tall ones only (the saplings would look planted yesterday).
-        private static (GameObject prefab, float height)[] Trees()
+        // The scanned trees the maps' sites use, tall ones only (the saplings would look planted yesterday); on a winter
+        // map the evergreens and bare snags.
+        private static (GameObject prefab, float height)[] Trees(bool winter)
         {
             var tall = new List<(GameObject, float)>();
-            foreach ((GameObject prefab, float height) in MapTrees.Forest(false))
+            foreach ((GameObject prefab, float height) in MapTrees.Forest(winter))
                 if (prefab != null && height >= 4f) tall.Add((prefab, height));
             return tall.ToArray();
         }

@@ -7,7 +7,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// The mixes the outer rings are drawn from, one per kind of place: a brick town round the stations, a medical
-    /// district round the hospital, a roadside strip round the motel. Rows facing the town are its busier street fronts;
+    /// district round the hospital, a roadside strip round the motel, a residential suburb round the school. Rows facing the town are its busier street fronts;
     /// rows facing out are backs of blocks (row houses, warehouses, garages); the edge is mostly houses in their yards.
     /// A design listed twice turns up twice as often. Block rows stay within StationRings.RowDepth, the edge within EdgeDepth.
     /// </summary>
@@ -52,6 +52,21 @@ namespace Abandoned.EditorTools
             Add(s.Back, k.Building(K.Warehouse, 26f, 22f, 1, seed + 11), k.Building(K.Garage, 18f, 20f, 1, seed + 12), h2, h4, shop, garage);
             Add(s.Edge, h1, h2, h3, h4, h1, h3, k.Building(K.Warehouse, 30f, 26f, 1, seed + 13), k.Building(K.Church, 16f, 22f, 1, seed + 14),
                 k.Building(K.Garage, 20f, 22f, 1, seed + 15), k.Building(K.StripMall, 36f, 16f, 1, seed + 16));
+            Cars(k, s, seed + 40);
+        }
+
+        /// <summary>A residential neighbourhood (the School's): mostly clapboard houses in their yards, row houses and a
+        /// few corner shops, garages and churches; walk-ups only on the busier fronts.</summary>
+        public static void Suburb(StationRingStock k, StationRingSpec s, int seed)
+        {
+            int h1 = k.House(seed + 1), h2 = k.House(seed + 2), h3 = k.House(seed + 3), h4 = k.House(seed + 4), h5 = k.House(seed + 5);
+            int row3 = k.Building(K.Rowhouse, 7f, 14f, 3, seed + 6), row2 = k.Building(K.Rowhouse, 7f, 14f, 2, seed + 7);
+            int shop = k.Building(K.Shop, 10f, 16f, 2, seed + 8), garage = k.Building(K.Garage, 16f, 18f, 1, seed + 9);
+            Add(s.Front, h1, h2, h3, h4, h5, h1, h3, row3, row3, row2, shop, k.Building(K.Shop, 12f, 18f, 1, seed + 10),
+                k.Building(K.Apartment, 18f, 20f, 4, seed + 11), k.Building(K.Church, 16f, 22f, 1, seed + 12));
+            Add(s.Back, h1, h2, h3, h4, h5, h2, h4, row2, garage, k.Building(K.Warehouse, 20f, 20f, 1, seed + 13));
+            Add(s.Edge, h1, h2, h3, h4, h5, h1, h2, h3, h5, row3, garage, k.Building(K.Church, 16f, 24f, 1, seed + 14),
+                k.Building(K.GasStation, 24f, 22f, 1, seed + 15));
             Cars(k, s, seed + 40);
         }
 

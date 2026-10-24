@@ -27,6 +27,8 @@ namespace Abandoned.EditorTools
         /// <summary>Chance that the next stretch of a row is a vacant lot instead of a building.</summary>
         public float Vacancy = .1f;
         public float LampIntensity = 8f;
+        /// <summary>A winter map: the street trees are evergreens and bare snags.</summary>
+        public bool Winter;
         public Material Lot, Yard;
         public SurfaceMaterial LotSurface = SurfaceMaterial.Dirt, YardSurface = SurfaceMaterial.Dirt;
 

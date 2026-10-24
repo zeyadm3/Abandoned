@@ -34,7 +34,7 @@ namespace Abandoned.EditorTools
             Transform rings = Group(GroupName, ext);
             Transform marks = Group("RingMarkings", rings), blocks = Group("RingBlocks", rings), street = Group("RingFurniture", rings);
             var rng = new System.Random(spec.Seed);
-            (GameObject prefab, float height)[] trees = Trees();
+            (GameObject prefab, float height)[] trees = Trees(spec.Winter);
             for (int side = 0; side < 4; side++)
             {
                 Ground(root, marks, a, spec, l, side);

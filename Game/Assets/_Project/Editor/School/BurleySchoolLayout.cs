@@ -54,9 +54,11 @@ namespace Abandoned.EditorTools
         // Outdoor Basketball Courts (East of School)
         public static readonly Rect OutdoorBasketballCourt = new(104f, 12f, 28f, 24f);
 
-        // Oval Running Track & Football / Soccer Field (oriented North-South parallel to Madison Ave)
-        public static readonly Rect AthleticTrackBounds = new(136f, -36f, 80f, 104f);
-        public static readonly Rect FootballFieldBounds = new(152f, -20f, 48f, 72f);
+        // Oval Running Track & Football / Soccer Field (oriented North-South parallel to Madison Ave). Authored round
+        // z 14 and moved TrackShift north so the oval clears Rose Hill Drive; these bounds are where they stand now.
+        public const float TrackShift = 38f;
+        public static readonly Rect AthleticTrackBounds = new(136f, -36f + TrackShift, 80f, 104f);
+        public static readonly Rect FootballFieldBounds = new(152f, -20f + TrackShift, 48f, 72f);
 
         // Baseball Diamond (North of Parking Lot towards Booker T. Washington Park)
         public static readonly Vector3 BaseballHomePlate = new(118f, 0f, 108f);

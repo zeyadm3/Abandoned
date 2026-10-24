@@ -12,8 +12,14 @@ namespace Abandoned.EditorTools
         public static void Build(Transform root, BurleySchoolArt art)
         {
             Transform athletics = Group("AthleticsComplex", root);
-            BuildTrackAndFootballField(Group("TrackAndFootballField", athletics), art);
-            BuildTerracedHillside(Group("TerracedHillside", athletics), art);
+            // The track, the field and their terraces were authored round z 14, where the oval's south curve ran under
+            // Rose Hill Drive; they stand TrackShift further north, clear of the road and its sidewalk (2026-10-24).
+            Transform track = Group("TrackAndFootballField", athletics);
+            BuildTrackAndFootballField(track, art);
+            track.localPosition = Vector3.forward * L.TrackShift;
+            Transform terraces = Group("TerracedHillside", athletics);
+            BuildTerracedHillside(terraces, art);
+            terraces.localPosition = Vector3.forward * L.TrackShift;
             BuildOutdoorBasketballCourt(Group("OutdoorBasketballCourt", athletics), art);
             BuildBaseballDiamond(Group("BaseballDiamond", athletics), art);
             BuildParkingLot(Group("NortheastParkingLot", athletics), art);

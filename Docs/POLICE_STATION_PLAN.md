@@ -216,6 +216,9 @@ nothing inside the town's old ground changes.
 - **Rendering**: the copies are not static-batched (that would copy every mesh once per building) and are not
   occluders (the occlusion bake stays on the town's own masses); they still cull. `StationRings.Settle` does this after
   the exterior is marked static. All of it is outside the NavMesh.
+- 2026-10-24 (the School's neighbourhood reuses it): `StationRings.Frontage` lines stock buildings up along any street
+  inside a map's old ground, `StationRingStock.Remap` / `Repaint` swap materials (snow on a winter map),
+  `StationRingSpec.Winter` plants evergreens and snags, and `StationRingPools.Suburb` is a residential mix.
 
 ## Files
 | File | What |

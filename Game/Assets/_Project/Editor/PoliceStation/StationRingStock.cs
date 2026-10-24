@@ -35,6 +35,10 @@ namespace Abandoned.EditorTools
         private readonly StationArt a;
         private readonly List<Design> designs = new();
 
+        /// <summary>Materials swapped as each design is merged (a winter map puts snow on the roofs this way). Fill it
+        /// before the first copy is placed.</summary>
+        public readonly Dictionary<Material, Material> Remap = new();
+
         public StationRingStock(StationArt art) => a = art;
 
         public float Width(int i) => designs[i].Width;
@@ -100,6 +104,31 @@ namespace Abandoned.EditorTools
             return t;
         }
 
+        /// <summary>Every renderer under <paramref name="root"/> drawn with a material in <paramref name="map"/> gets its
+        /// replacement (the town's streets and lots on a winter map). Returns how many renderers changed.</summary>
+        public static int Repaint(Transform root, Dictionary<Material, Material> map)
+        {
+            int changed = 0;
+            foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true))
+            {
+                Material[] before = r.sharedMaterials, after = Swap(before, map);
+                bool differs = false;
+                for (int i = 0; i < before.Length; i++) differs |= before[i] != after[i];
+                if (!differs) continue;
+                r.sharedMaterials = after;
+                changed++;
+            }
+            return changed;
+        }
+
+        private static Material[] Swap(Material[] mats, Dictionary<Material, Material> map)
+        {
+            var result = (Material[])mats.Clone();
+            for (int i = 0; i < result.Length; i++)
+                if (result[i] != null && map.TryGetValue(result[i], out Material to)) result[i] = to;
+            return result;
+        }
+
         private static Renderer Draw(string name, Transform parent, Mesh mesh, Material[] mats, Matrix4x4 local)
         {
             Transform t = GreyboxFactory.Group(name, parent);
@@ -151,7 +180,7 @@ namespace Abandoned.EditorTools
                     // Meshes the editor can't read (imported scans) and mirrored pieces stand as their own renderers.
                     if (!mesh.isReadable || m.determinant < 0f)
                     {
-                        d.Details.Add((mesh, r.sharedMaterials, m));
+                        d.Details.Add((mesh, Swap(r.sharedMaterials, Remap), m));
                         continue;
                     }
                     Vector3 e = r.bounds.size;
@@ -162,6 +191,7 @@ namespace Abandoned.EditorTools
                     {
                         Material mat = mats[Mathf.Min(sub, mats.Length - 1)];
                         if (mat == null) continue;
+                        if (Remap.TryGetValue(mat, out Material swapped)) mat = swapped;
                         if (!near.ContainsKey(mat)) { near[mat] = new List<CombineInstance>(); far[mat] = new List<CombineInstance>(); order.Add(mat); }
                         var piece = new CombineInstance { mesh = mesh, subMeshIndex = sub, transform = m };
                         near[mat].Add(piece);
