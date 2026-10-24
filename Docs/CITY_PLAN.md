@@ -91,6 +91,15 @@ Budgets to hold, checked by a new `CityBudgetTests` beside `MallRenderBudgetTest
 1. **`CityPlan`** — the drawing as data: coastline, river polyline, arterials, minor grid, roundabout, parks,
    districts and the ten site slots. One file, no geometry; reviewable as a gizmo map before anything is built.
 2. **Ground and water** — city ground plane, sea, river, coast, park ground, bridge piers. Terrain only outside.
+   *Done (2026-10-24, written, not run in Unity.)* `Editor/City/CityGround`, `CityWater`, `CityMesh` and
+   `CityDraftBuilder`, menu **Maps > Open World > Rebuild City Draft**. Two things settled while building it:
+   - **The draft is its own scene**, `Scenes/CityDraft`, not the World. Scenes/World works and has been played, so
+     the city grows beside it and takes its place at step 6 once the budgets above are met. It is deliberately kept
+     out of `BuildScenes.All`: a scene path for an unfinished map stops everyone's player builds.
+   - **Ground is cut at 16 m.** A cell whose squares are all one surface is a single quad; only the cells the coast
+     or the river cut into are described square by square. That holds the whole ground to a few thousand triangles
+     and gives the shoreline a ragged edge close to the drawing's own. Collision stays boxes: the solid squares are
+     run together into as few slabs as possible, so an inland cell needs one.
 3. **Roads** — arterials, minor streets, the roundabout, junctions and bridges, merged per cell; the drivable
    surface and its colliders. Drive the whole city with nothing else in it.
 4. **Block massing (the rough draft)** — plain extruded boxes per block, heights seeded by district (downtown
