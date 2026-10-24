@@ -25,10 +25,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ANTITILE
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _OCCLUSIONMAP
+  - _TRIPLANAR
   - _WEATHERING
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -44,7 +44,7 @@ Material:
     m_TexEnvs:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 9265bea57641f4758b0a334b2dda4cf3, type: 3}
-        m_Scale: {x: 3.8494625, y: 3.8494625}
+        m_Scale: {x: 0.6666667, y: 0.6666667}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 4c7ee2a169821459b826f241216fae1c, type: 3}
@@ -103,7 +103,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AntiTile: 1
+    - _AntiTile: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 0.35
@@ -132,7 +132,7 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _Triplanar: 0
+    - _Triplanar: 1
     - _Variation: 0.08
     - _Weathering: 1
     - _WorkflowMode: 1
