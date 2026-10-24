@@ -102,12 +102,59 @@ Budgets to hold, checked by a new `CityBudgetTests` beside `MallRenderBudgetTest
      run together into as few slabs as possible, so an inland cell needs one.
 3. **Roads** — arterials, minor streets, the roundabout, junctions and bridges, merged per cell; the drivable
    surface and its colliders. Drive the whole city with nothing else in it.
+   *Done (2026-10-24, written, not run in Unity.)* `Editor/City/CityRoadNetwork` makes the centrelines (each
+   district's grid at its own angle, an arterial every 600 m, the named roads, the Circus ring and its five arms);
+   `Editor/City/CityRoads` turns them into surface. Three things settled while building it:
+   - **Roads are stamped into a 4 m grid before any geometry is made.** Two crossing strips laid over each other
+     would be coplanar faces, which 0.24.13 forbids because they flicker. Sharing squares instead means junctions
+     come out solid for free, and a cell's whole road surface merges into one mesh.
+   - **Only bridges carry collision.** The ground under a street is already solid from step 2, so a road is just a
+     surface 5 cm above it. Squares that fall over the river become a deck with its own box colliders, standing on
+     step 2's piers — so bridges appear wherever a road meets the river, without being placed by hand.
+   - **No road is ever stamped over the sea**, so the coast ends roads rather than bridging them.
+   Left for the detail pass: lane markings, kerbs, pavements, street furniture.
 4. **Block massing (the rough draft)** — plain extruded boxes per block, heights seeded by district (downtown
    80-180 m, retail 12-20 m, residential 8-14 m, industrial 10-24 m), one box collider each, merged per cell.
    **Stop here and look at it.** No facades, no windows, no interiors.
+   *Done (2026-10-24, written, not run in Unity.)* `Editor/City/CityMassing`, with a `Box` added to `CityMesh`.
+   A block is the square the streets leave behind, found from the same grid maths the roads are laid on, then cut
+   into lots by kind: one tower downtown, one set-back building on a civic block, two sheds in industry, four
+   walk-ups in a residential block, nine houses in a suburb. Heights are seeded off the block's position, so a
+   rebuild puts the same city back, and most of a street sits low with the odd one standing well above it.
+   - **Blocks keep off the water, the parks, the Circus, the named roads and the ten site slots.** A site is held
+     clear by 260 m for now; step 6 re-cuts that from each scene's real ground, which the Mall (640 m) will need.
+   - **A cell's buildings merge into one mesh per district kind**, and all the boxes of one district share a single
+     rotated holder carrying their colliders, so a cell costs a handful of objects rather than hundreds.
+   - Known rough edge: a block is rejected if its centre is near a named road, so a road crossing a grid at an
+     angle leaves a slightly wider gap than it should. Blocks are also square, never L-shaped round a corner.
 5. **Cell streaming and LOD** — `CityStreamer`, far silhouettes, fog and far plane, the budget tests.
+   *Done (2026-10-24, written, not run in Unity.)* `Scripts/World/CityStreamer` (runtime), `Editor/City/CityCells`
+   (build time) and `Tests/EditMode/CityBudgetTests`. What measuring it changed:
+   - **The city is cheap in triangles and dear in draw calls.** About 5,000 buildings come to roughly 50k triangles
+     in all; what actually costs is a renderer per cell per material, several hundred of them. So the far copy is
+     the cell's own meshes combined into **one mesh of one material** — the saving is calls, not geometry.
+   - **Distances are measured in the streamer's own space**, so the city can hang under `WorldRoot` at step 6 and
+     the moving origin changes nothing. A slice of cells is looked at per frame, never all of them.
+   - **The road raster is snapped to whole cells.** It used to start at the city band's edge, which is not a
+     multiple of 256 m, so a road square and the ground under it could land in different cells and the streamer
+     would have torn them apart.
+   - Budgets are asserted from four spots (downtown, retail core, harbour, a bridge): under 700 renderers,
+     1.5 M triangles and 4,000 objects. The test ignores itself until the draft has been built.
 6. **The ten places** — slots, `WorldSurvey` measurement, roads reaching each one, the prison's island and quay.
-7. **Perf pass and review renders** — budget tests, `GraphicsAudit`, aerial and cab shots per district.
+   *Done (2026-10-24, written, not run in Unity.)* `Editor/City/CitySites` and `Editor/City/CityIsland`.
+   - **Every footprint is measured, not guessed.** `CitySites.Measure` opens each map's saved scene through the
+     existing `WorldSurvey` and reads its real ground. The 260 m placeholder from step 4 is gone: the Mall's
+     district is 640 m across and the Hospital's campus 88 m, so one figure would have paved over the Mall or left
+     a hole round the Hospital. A map whose scene is missing falls back to 120 m and says so in the console.
+   - **Spurs go through the road raster**, not on top of it. A spur is added to `CityRoadNetwork` like any other
+     line, so it joins the grid properly instead of laying a second surface over it and flickering.
+   - **Gallows Rock is an island at last.** A 600 m pad in the sea with a stepped rock skirt, and a quay on the
+     nearest point of the coast with a `BoatDock` marker. The prison's own scene streams in over the pad, as every
+     other map streams in over its own ground. It is the one site with no road: the boat is the crossing.
+7. **The city takes the World's place** — `WorldPlan` grows to 8192 m and reads its place positions from
+   `CityPlan`; `WorldBuilder` lays the city where `WorldTerrain`'s hills are now, keeping the van, the streaming,
+   the road events and the job flow. Until this step the city is the draft scene and `Scenes/World` is untouched.
+8. **Perf pass and review renders** — budget tests, `GraphicsAudit`, aerial and cab shots per district.
 
 Detail (facades, shopfronts, streetscape, props) is a later pass, district by district, once the draft drives well.
 

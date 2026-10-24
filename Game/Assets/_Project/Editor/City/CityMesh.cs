@@ -53,6 +53,27 @@ namespace Abandoned.EditorTools
                 new Vector3(from.x, top, from.y), new Vector3(from.x, bottom, from.y),
                 new Vector3(to.x, bottom, to.y), new Vector3(to.x, top, to.y));
 
+            /// <summary>
+            /// A building: four walls and a roof, turned to its street. No floor, because nothing ever sees under
+            /// a block, and leaving it out keeps the base off the ground's plane where the two could flicker.
+            /// </summary>
+            public void Box(Vector2 centre, Vector2 size, float height, float yaw)
+            {
+                float rad = yaw * Mathf.Deg2Rad;
+                Vector2 along = new(Mathf.Cos(rad), Mathf.Sin(rad));
+                Vector2 across = new(-along.y, along.x);
+                Vector2 a = along * (size.x * .5f), b = across * (size.y * .5f);
+                Vector2[] feet = { centre - a - b, centre - a + b, centre + a + b, centre + a - b };
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 from = feet[i], to = feet[(i + 1) % 4];
+                    Quad(new Vector3(from.x, CityPlan.GroundY, from.y), new Vector3(from.x, height, from.y),
+                         new Vector3(to.x, height, to.y), new Vector3(to.x, CityPlan.GroundY, to.y));
+                }
+                Quad(new Vector3(feet[0].x, height, feet[0].y), new Vector3(feet[3].x, height, feet[3].y),
+                     new Vector3(feet[2].x, height, feet[2].y), new Vector3(feet[1].x, height, feet[1].y));
+            }
+
             /// <summary>Saves what has been gathered, or null if nothing was. Over the same asset path every run.</summary>
             public Mesh Save(string name)
             {

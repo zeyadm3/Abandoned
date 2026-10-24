@@ -72,6 +72,7 @@ namespace Abandoned.EditorTools
                     }
 
             Transform cell = GreyboxFactory.Group($"Cell_{cx}_{cz}", group);
+            CityCells.Register(new Vector2Int(cx, cz), cell);
             string[] names = { "Paving", "Park", "Wild" };
             for (int i = 0; i < pieces.Length; i++)
             {
