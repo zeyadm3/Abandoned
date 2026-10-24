@@ -27,6 +27,13 @@ Iron Factory, Island Prison and Tutorial House. Realtime light only (user's choi
 map keeps its hour and weather. Sky, brick/asphalt swap, tree swap, snowy land past the edge (School, Tutorial),
 grass, outdoor sound. Rebuild All Maps runs it last.
 
+### Skyscraper and School again (2026-10-24)
+After both were rebuilt from scratch (Cloudline's downtown and two-storey restaurant; Pine Hollow's neighbourhood and
+outer rings), the whole `AvOverhaul.AfterMaps` chain ran on those two scenes only (its `scope` set to them): look,
+scanned surfaces, weathering, room reflections (School 18, Skyscraper 123), wear decals, coplanar faces, remaster,
+lighting (40 and 272 calibrated fixtures), sky, trees (231 and 1,107 swapped), the School's snowy forest ring and
+sound. Then Rebuild World. Report: `Docs/renders/art-remaster/AuthoringReport-SkyscraperSchool-2026-10-24.txt`.
+
 ---
 
 ## 2. Where everything is
@@ -115,7 +122,17 @@ grass, ring, sound levels. Add the scene to `AvOverhaul.MapScenes` if it isn't t
   `OuterRings`) are 10-17 million triangles each, and Rebuild New Maps froze on the Hospital until the editor was
   killed (2026-10-23). The audit now skips anything under `OuterRings`; the rest of each new map is 3-4.5 million
   triangles, and the Hospital's fix takes about 16 minutes. Put any new far backdrop under that group name, or the
-  same freeze comes back.
+  same freeze comes back. The Skyscraper's downtown street life (`Exterior/Skyline/Streetscape`: ring-kit block
+  meshes, kerb cars and scanned street trees) was another 59 million, so `Streetscape` is skipped too (2026-10-24).
+  Measure a map's drawn triangles per group before running the chain on it.
+- **Black faces after `CoplanarFix` (fixed 2026-10-24).** `CoplanarFix.LiftInMesh` copied a lifted face's normal,
+  tangent, colour and UVs only while each list still had the mesh's original length, so in any mesh with more than one
+  lifted face every face after the first got zero normals and UVs and drew black (the School's snow roofs showed it).
+  The test is now made once before the loop. 157 already-saved meshes (24,724 vertices: School town, Skyscraper,
+  Prison, Factory/Polish/Skyscraper loot, salvage props, the truck, world proxies) were repaired in place by copying
+  each lifted vertex's attributes from the vertex it was lifted off (same position less the lift, along the face
+  normal). 140 other meshes still hold blocks of 60 zero-normal vertices that match no lifted face (mostly loot and
+  `ObjectRemaster` props); that is a separate, older pattern, left as it was.
 - **Cached in-memory meshes go stale in long runs.** `SalvageModelFactory` kept its cylinder and sphere meshes in a
   static dictionary; they are never saved, so Unity unloads them on a scene change. In Rebuild Entire Game every truck
   built after the first map (School, Factory, Skyscraper, Tutorial; all share `Art/Generated/CollectionTruck0157`

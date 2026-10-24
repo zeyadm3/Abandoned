@@ -407,6 +407,11 @@ namespace Abandoned.EditorTools
                 subs[s] = new List<int>();
                 mesh.GetTriangles(subs[s], s);
             }
+            // Decided once: the lists grow with every lifted face, so a per-face "Count == vertexCount" test only held for
+            // the first one and every later face got zero normals, tangents and UVs (black faces; fixed 2026-10-24).
+            bool hasNormals = nrm.Count == vertexCount, hasTangents = tan.Count == vertexCount, hasColors = col.Count == vertexCount;
+            var hasUv = new bool[8];
+            for (int ch = 0; ch < 8; ch++) hasUv[ch] = uv[ch] != null && uv[ch].Count == vertexCount;
             int lifted = 0;
             foreach (var ((sub, index), lift) in faces)
             {
@@ -418,10 +423,10 @@ namespace Abandoned.EditorTools
                 {
                     int src = tri[index + k];
                     pos.Add(pos[src] + offset);
-                    if (nrm.Count == vertexCount) nrm.Add(nrm[src]);
-                    if (tan.Count == vertexCount) tan.Add(tan[src]);
-                    if (col.Count == vertexCount) col.Add(col[src]);
-                    for (int ch = 0; ch < 8; ch++) if (uv[ch] != null && uv[ch].Count == vertexCount) uv[ch].Add(uv[ch][src]);
+                    if (hasNormals) nrm.Add(nrm[src]);
+                    if (hasTangents) tan.Add(tan[src]);
+                    if (hasColors) col.Add(col[src]);
+                    for (int ch = 0; ch < 8; ch++) if (hasUv[ch]) uv[ch].Add(uv[ch][src]);
                     tri[index + k] = pos.Count - 1;
                 }
                 lifted++;

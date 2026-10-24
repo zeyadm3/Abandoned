@@ -232,11 +232,12 @@ namespace Abandoned.EditorTools
 
         // The new maps' outer rings of town (StationRings) are 10-17 million triangles seen from 50 m and more. Holding
         // them in world space up to nine times per CoplanarFix run froze the editor on Rebuild New Maps (2026-10-23), and
-        // nothing that far away is close enough to the camera to flicker.
+        // nothing that far away is close enough to the camera to flicker. The Skyscraper's downtown street life
+        // (SkyscraperDowntownStreetscape: the same ring-kit block meshes plus scanned street trees) is 59 million more.
         private static bool InOuterRings(Renderer r)
         {
             for (Transform p = r.transform.parent; p != null; p = p.parent)
-                if (p.name == StationRings.GroupName) return true;
+                if (p.name == StationRings.GroupName || p.name == "Streetscape") return true;
             return false;
         }
 
