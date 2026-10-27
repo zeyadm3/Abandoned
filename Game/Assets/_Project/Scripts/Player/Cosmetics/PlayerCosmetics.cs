@@ -27,6 +27,7 @@ namespace Abandoned.Player
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         private Renderer[] coverall;
+        private WorkerLook[] looks;
         private MaterialPropertyBlock block;
         private Transform hatAnchor;
         private GameObject hat, accessory;
@@ -70,18 +71,14 @@ namespace Abandoned.Player
         {
             if (!IsOwner || catalog == null) return;
             choice.Value = outfit;
-            PlayerProfile.Wear(catalog.Coverall(outfit.Coverall)?.Id, catalog.Hat(outfit.Hat)?.Id, catalog.Accessory(outfit.Accessory)?.Id);
+            PlayerProfile.Wear(catalog.Coverall(outfit.Coverall)?.Id, catalog.Hat(outfit.Hat)?.Id, catalog.Accessory(outfit.Accessory)?.Id,
+                catalog.Character(outfit.Character)?.Id ?? "", catalog.Outfit(outfit.Outfit)?.Id ?? "");
             Apply();
         }
 
         // ---- Wardrobe purchases (0.12.5): the owner asks, the host charges the company, the owner keeps it. ----
 
-        public CosmeticDefinition Definition(CosmeticKind kind, int index) => catalog == null ? null : kind switch
-        {
-            CosmeticKind.Coverall => catalog.Coverall(index),
-            CosmeticKind.Hat => catalog.Hat(index),
-            _ => catalog.Accessory(index),
-        };
+        public CosmeticDefinition Definition(CosmeticKind kind, int index) => catalog == null ? null : catalog.Get(kind, index);
 
         /// <summary>Owner: buy a wardrobe item with company money (the host checks the price and the funds).</summary>
         public void RequestBuy(CosmeticKind kind, int index)
@@ -117,12 +114,7 @@ namespace Abandoned.Player
             }
             PlayerProfile.Grant(d);
             PurchaseMessage = Loc.T("Bought: {0}.", d.LocalName);
-            Wear(kind switch
-            {
-                CosmeticKind.Coverall => choice.Value.WithCoverall(index),
-                CosmeticKind.Hat => choice.Value.WithHat(index),
-                _ => choice.Value.WithAccessory(index),
-            });
+            Wear(choice.Value.With(kind, index));
         }
 
         private void Update()
@@ -171,11 +163,17 @@ namespace Abandoned.Player
                 r.SetPropertyBlock(block);
             }
 
+            // The skinned look on the standing body and on the ragdoll (2026 remake).
+            CosmeticDefinition person = catalog.Character(c.Character);
+            looks ??= GetComponentsInChildren<WorkerLook>(true);
+            foreach (WorkerLook look in looks)
+                if (look != null) look.Apply(person, catalog.Outfit(c.Outfit), suit != null ? suit.Color : Color.white);
+
             if (hat != null) Destroy(hat);
             if (accessory != null) Destroy(accessory);
-            hat = Wearable(catalog.Hat(c.Hat));
+            hat = Wearable(catalog.Hat(c.Hat), person);
             CosmeticDefinition extra = catalog.Accessory(c.Accessory);
-            accessory = Wearable(extra);
+            accessory = Wearable(extra, person);
             accessoryOnBody = extra != null && extra.BodyMounted;
             UpdateCosmeticsShadowMode();
             LateUpdate();
@@ -201,10 +199,12 @@ namespace Abandoned.Player
                     OwnBodyShadows.Set(r, !isThirdPerson);
         }
 
-        private GameObject Wearable(CosmeticDefinition d)
+        private GameObject Wearable(CosmeticDefinition d, CosmeticDefinition person)
         {
             if (d == null || d.HatPrefab == null) return null;
             GameObject worn = Instantiate(d.HatPrefab, hatAnchor, false);
+            // Body pieces (rucksacks, belts) keep their size; head pieces follow the character's head.
+            if (person != null && !d.BodyMounted) worn.transform.localScale *= person.HatScale;
             foreach (Collider col in worn.GetComponentsInChildren<Collider>()) Destroy(col);
             // Inside your own head it would fill the screen when you look around; you still see its shadow.
             if (IsOwner)

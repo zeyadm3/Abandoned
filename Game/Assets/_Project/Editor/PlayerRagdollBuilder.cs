@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Abandoned.EditorTools
@@ -54,6 +55,11 @@ namespace Abandoned.EditorTools
 
         private static void Dress(Transform player, params Rigidbody[] bodies)
         {
+            if (Remake.CrewLookBuilder.Available && WorkerVisualBuilder.HasLooks())
+            {
+                DressSkinned(player, bodies);
+                return;
+            }
             // The physics remains the same nine parts. Reuse the authored outfit so going down never changes
             // the worker into primitive capsules or loses the reinforced clothing, boots and equipment harness.
             GameObject source = WorkerVisualBuilder.Build(player);
@@ -76,6 +82,29 @@ namespace Abandoned.EditorTools
                     }
             }
             finally { Object.DestroyImmediate(source); }
+        }
+
+        /// <summary>
+        /// 2026 remake: the same skinned look as the standing worker, bound to bone helpers that sit inside the nine
+        /// bodies at the standing joints' rest positions (the forearm rides on its arm body, the shin's bone on the shin),
+        /// so one set of bind poses serves both.
+        /// </summary>
+        private static void DressSkinned(Transform player, Rigidbody[] b)
+        {
+            // pelvis, chest, head, armL, armR, thighL, thighR, shinL, shinR -> crew bone order.
+            Rigidbody[] carriers = { b[0], b[1], b[2], b[3], b[3], b[4], b[4], b[5], b[7], b[6], b[8] };
+            Transform[] owner = carriers.Select(r => r.transform).ToArray();
+            var bones = new Transform[Remake.CrewLookBuilder.Bones.Length];
+            for (int i = 0; i < bones.Length; i++)
+            {
+                var helper = new GameObject("Bone_" + Remake.CrewLookBuilder.Bones[i]).transform;
+                helper.SetParent(owner[i], false);
+                helper.position = player.TransformPoint(Remake.CrewLookBuilder.Rest[i]);
+                helper.rotation = player.rotation;
+                bones[i] = helper;
+            }
+            Transform ragdoll = b[0].transform.parent;
+            Remake.CrewLookBuilder.AddLook(ragdoll.gameObject, ragdoll, ragdoll.InverseTransformPoint(player.position), bones);
         }
 
         private static Rigidbody BoxPart(Transform root, string name, Vector3 pos, Vector3 size, float massShare, float total, Material m)

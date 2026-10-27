@@ -16,6 +16,13 @@ CACHE = os.path.expanduser('~/Library/Caches/AbandonedRemake/preview')
 def save(name):
     os.makedirs(CACHE, exist_ok=True)
     path = os.path.join(CACHE, name + '.blend')
+    # Pack the baked images: the live Blender may not read them from ~/Documents.
+    for img in bpy.data.images:
+        if img.source == 'FILE' and img.filepath and not img.packed_file:
+            try:
+                img.pack()
+            except RuntimeError:
+                pass
     bpy.ops.wm.save_as_mainfile(filepath=path, copy=True, compress=True)
     print('[remake-preview]', path)
     return path

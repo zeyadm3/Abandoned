@@ -32,17 +32,23 @@ namespace Abandoned.EditorTools
             var root = new GameObject("Body");
             root.transform.SetParent(parent, false);
             root.transform.localPosition = Vector3.up * BodyY;
-            Part("HipsVisual", root.transform, "Hips");
+            // 2026 remake: one skinned head and outfit on the joints; the rigid per-joint parts stay as the fallback
+            // until the remake looks exist (Tools/Blender/remake/crew, then Build Crew Looks).
+            bool skinned = Remake.CrewLookBuilder.Available && HasLooks();
+            if (!skinned) Part("HipsVisual", root.transform, "Hips");
             Transform torso = GreyboxFactory.Group("Torso", root.transform);
             torso.localPosition = Vector3.up * TorsoY;
-            Transform torsoVisual = Part("TorsoVisual", torso, "Torso").transform;
-            // Crew numbers: the back panel, the vest's ID patch, each shoulder pocket (WorkerPresentation fills them in).
-            // They sit in the visual groups so a ragdoll's copy keeps them.
-            NumberBadge(torsoVisual, new Vector3(0f, .133f, -.239f), 0f, .07f);
-            NumberBadge(torsoVisual, new Vector3(-.045f, .253f, .2135f), 180f, .035f);
+            if (!skinned)
+            {
+                Transform torsoVisual = Part("TorsoVisual", torso, "Torso").transform;
+                // Crew numbers: the back panel, the vest's ID patch, each shoulder pocket (WorkerPresentation fills them in).
+                // They sit in the visual groups so a ragdoll's copy keeps them.
+                NumberBadge(torsoVisual, new Vector3(0f, .133f, -.239f), 0f, .07f);
+                NumberBadge(torsoVisual, new Vector3(-.045f, .253f, .2135f), 180f, .035f);
+            }
             Transform head = GreyboxFactory.Group("Head", torso);
             head.localPosition = Vector3.up * HeadY;
-            Part("HeadVisual", head, "Head");
+            if (!skinned) Part("HeadVisual", head, "Head");
             Transform crown = GreyboxFactory.Group("HeadAnchor", head);
             crown.localPosition = Vector3.up * CrownY;
 
@@ -53,18 +59,24 @@ namespace Abandoned.EditorTools
                 string n = i == 0 ? "L" : "R";
                 arms[i] = GreyboxFactory.Group("Arm" + n, torso);
                 arms[i].localPosition = new Vector3(side * Shoulder.x, Shoulder.y, 0f);
-                Transform armVisual = Part("ArmVisual", arms[i], "UpperArm" + n).transform;
-                NumberBadge(armVisual, new Vector3(side * .0732f, -.10f, .004f), side < 0f ? 90f : -90f, .03f);
+                if (!skinned)
+                {
+                    Transform armVisual = Part("ArmVisual", arms[i], "UpperArm" + n).transform;
+                    NumberBadge(armVisual, new Vector3(side * .0732f, -.10f, .004f), side < 0f ? 90f : -90f, .03f);
+                }
                 elbows[i] = GreyboxFactory.Group("Elbow", arms[i]);
                 elbows[i].localPosition = Vector3.down * UpperArm;
-                Part("ForearmVisual", elbows[i], "Forearm" + n);
+                if (!skinned) Part("ForearmVisual", elbows[i], "Forearm" + n);
                 legs[i] = GreyboxFactory.Group("Leg" + n, root.transform);
                 legs[i].localPosition = new Vector3(side * Hip.x, Hip.y, 0f);
-                Part("ThighVisual", legs[i], "Thigh" + n);
+                if (!skinned) Part("ThighVisual", legs[i], "Thigh" + n);
                 knees[i] = GreyboxFactory.Group("Knee", legs[i]);
                 knees[i].localPosition = Vector3.down * Thigh;
-                Part("ShinVisual", knees[i], "Shin" + n);
+                if (!skinned) Part("ShinVisual", knees[i], "Shin" + n);
             }
+            if (skinned)
+                Remake.CrewLookBuilder.AddLook(root, root.transform, Vector3.down * BodyY,
+                    new[] { root.transform, torso, head, arms[0], elbows[0], arms[1], elbows[1], legs[0], knees[0], legs[1], knees[1] });
             var coverall = new List<Renderer>();
             Material suit = Suit;
             foreach (Renderer renderer in root.GetComponentsInChildren<Renderer>())
@@ -72,6 +84,13 @@ namespace Abandoned.EditorTools
             root.AddComponent<WorkerRig>().EditorSetup(arms[0], arms[1], legs[0], legs[1], knees[0], knees[1], torso, crown,
                 coverall.ToArray(), elbows[0], elbows[1]);
             return root;
+        }
+
+        /// <summary>The catalog has the remake's characters and outfits (Build Crew Looks has run).</summary>
+        public static bool HasLooks()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<CosmeticCatalog>(CosmeticsBuilder.CatalogPath);
+            return catalog != null && catalog.Characters.Count > 0 && catalog.Outfits.Count > 0;
         }
 
         /// <summary>One exported joint model under a named group; each mesh gets the project material for its key.</summary>

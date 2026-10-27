@@ -67,6 +67,12 @@ namespace Abandoned.EditorTools
             new("crown", "Scrap Crown", "Bolted together from ten quotas' worth of junk.", reward: "quota_crusher"),
             new("hazmat", "Hazmat Hood", "Twenty-five buildings and you're still breathing.", reward: "career_salvager"),
             new("goldhat", "Gold Hard Hat", "A million hauled. Still does nothing against a floor.", reward: "millionaire"),
+            // 2026 remake (append only: the order is the network index)
+            new("trucker", "Trucker Cap", "Mesh back, faded patch, permanent sweat line.", 900),
+            new("ushanka", "Trapper Hat", "Fur flaps for the winter jobs. The fur is not from a monster. Probably.", 2200),
+            new("headlamp", "Headlamp", "A strap and a light. The light doesn't work. The strap does.", 1400),
+            new("souwester", "Sou'wester", "Oilskin rain hat. For the island, and every roof that leaks.", 1600),
+            new("firehelmet", "Fire Helmet", "Bought at the station's auction. The brass shield is real.", 5000),
         };
 
         private static readonly Item[] Accessories =
@@ -83,6 +89,10 @@ namespace Abandoned.EditorTools
             new("radio", "Shoulder Radio", "For the medic who brought someone back.", reward: "medic", body: true),
             new("moustache", "Handlebar Moustache", "Grown on the way out with the jackpot.", reward: "the_greed_item"),
             new("shades", "Aviator Shades", "Ten floors gave way. You didn't blink.", reward: "gravity_wins"),
+            // 2026 remake (append only)
+            new("halfmask", "Half-Face Respirator", "Twin filters, rated for dust and regret.", 1800),
+            new("headset", "Crew Headset", "Boom mic, both cups. Nobody's on the other end.", 2400),
+            new("gaiter", "Neck Gaiter", "Pull it up when the ceiling comes down.", 700),
         };
 
         [MenuItem(ToolMenu.Characters + "Build Cosmetics", priority = ToolMenu.CharactersP)]
@@ -109,6 +119,9 @@ namespace Abandoned.EditorTools
                 foreach (string guid in AssetDatabase.FindAssets("", new[] { folder }))
                 {
                     string path = AssetDatabase.GUIDToAssetPath(guid);
+                    // Characters and outfits are the remake's (Remake/CrewLookBuilder), not this list's.
+                    string file = System.IO.Path.GetFileName(path);
+                    if (file.StartsWith("Character_") || file.StartsWith("Outfit_")) continue;
                     if (!AssetDatabase.IsValidFolder(path) && !keep.Contains(path)) AssetDatabase.DeleteAsset(path);
                 }
             AssetDatabase.SaveAssets();
@@ -151,6 +164,18 @@ namespace Abandoned.EditorTools
         private static GameObject Model(string prefix, string id, HashSet<string> keep)
         {
             var root = new GameObject($"{prefix}_{id}");
+            // 2026 remake: modelled at real size on the crown of the new heads (Tools/Blender/remake/crew/wearables.py).
+            var remade = AssetDatabase.LoadAssetAtPath<GameObject>($"{Remake.RemakePaths.Characters}/Wearables/{prefix}_{id}.fbx");
+            if (remade != null)
+            {
+                var model = (GameObject)PrefabUtility.InstantiatePrefab(remade, root.transform);
+                model.transform.localPosition = Vector3.zero;
+                string remadePath = $"{PrefabFolder}/{prefix}_{id}.prefab";
+                keep.Add(remadePath);
+                GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, remadePath);
+                Object.DestroyImmediate(root);
+                return saved;
+            }
             // The kit was modelled on the old 27 cm head; Fit refits it to the 2026-10-22 worker.
             Transform fit = new GameObject("Fit").transform;
             fit.SetParent(root.transform, false);

@@ -112,16 +112,20 @@ namespace Abandoned.UI
             shown = choice;
             CosmeticDefinition suit = catalog.Coverall(choice.Coverall);
             worker?.Tint(suit != null ? suit.Color : Color.white);
+            CosmeticDefinition person = catalog.Character(choice.Character);
+            if (worker != null && worker.TryGetComponent(out WorkerLook look))
+                look.Apply(person, catalog.Outfit(choice.Outfit), suit != null ? suit.Color : Color.white);
             if (hat != null) Destroy(hat);
             if (accessory != null) Destroy(accessory);
-            hat = Wear(catalog.Hat(choice.Hat));
-            accessory = Wear(catalog.Accessory(choice.Accessory));
+            hat = Wear(catalog.Hat(choice.Hat), person);
+            accessory = Wear(catalog.Accessory(choice.Accessory), person);
         }
 
-        private GameObject Wear(CosmeticDefinition d)
+        private GameObject Wear(CosmeticDefinition d, CosmeticDefinition person = null)
         {
             if (d == null || d.HatPrefab == null) return null;
             GameObject worn = Instantiate(d.HatPrefab, crown, false);
+            if (person != null && !d.BodyMounted) worn.transform.localScale *= person.HatScale;
             foreach (Collider c in worn.GetComponentsInChildren<Collider>()) Destroy(c);
             return worn;
         }

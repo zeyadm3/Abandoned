@@ -90,7 +90,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | Phase | State |
 |---|---|
 | 0 Pipeline and art bible | done (2026-10-27) |
-| 1 Characters and wardrobe | |
+| 1 Characters and wardrobe | done (2026-10-27): 8 workers, 10 outfits x 3 builds, 20 hats, 15 accessories |
 | 2 Monsters | |
 | 3 Gear and shop | |
 | 4 Truck, upgrades, van, truck cosmetics | |
@@ -99,6 +99,20 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 7 The hiring and the HQ-centred game | |
 | 8 UI | |
 | 9 Integration and handover | |
+
+## Phase 1 notes (characters and wardrobe)
+
+- Blender: `Tools/Blender/remake/crew/` - `characters.py` (heads; `face.py` parameterised sculpt, `skin.py`, `hair.py`,
+  `roster.py`), `outfit_build.py` (`outfits.py` recipes on the 2026-10-22 crew garments, three builds by reshaping one
+  mesh so they share UVs), `wearables.py` (hats and accessories on the crown), `skinned.py` (merge, weights, bake source).
+- Unity: `Editor/Remake/CrewLookBuilder` (Content > Characters > Build Crew Looks (remake)) re-skins every FBX onto
+  WorkerRig's joint order with rest bind poses, writes `Character_*` / `Outfit_*` definitions and appends them to the
+  catalog. `Scripts/Player/Presentation/WorkerLook` swaps meshes at run time; the ragdoll has bone helpers at the same
+  rest positions, so one set of bind poses serves both. `CosmeticChoice` gained Character and Outfit bytes (5 bytes on
+  the wire). The coverall colour tints each outfit's `_Tint` material (same textures as its base set).
+- Wardrobe tabs: Worker, Outfit, Colour, Hats, Accessories. Text: `Data/Text/.../remake_crew.txt`.
+- Not done here: the first-person gloves are still the 2026-10-22 crew gloves for every outfit; the crew numbers
+  (TextMesh badges) are gone from the skinned worker.
 
 ## Blocked
 

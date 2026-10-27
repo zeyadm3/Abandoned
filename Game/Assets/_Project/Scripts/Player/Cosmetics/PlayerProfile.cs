@@ -11,7 +11,8 @@ namespace Abandoned.Player
     public static class PlayerProfile
     {
         private const string RunsKey = "profile.runs", EscapesKey = "profile.escapes", HaulKey = "profile.haul",
-            CoverallKey = "profile.coverall", HatKey = "profile.hat", AccessoryKey = "profile.accessory", OwnedKey = "profile.owned";
+            CoverallKey = "profile.coverall", HatKey = "profile.hat", AccessoryKey = "profile.accessory", OwnedKey = "profile.owned",
+            CharacterKey = "profile.character", OutfitKey = "profile.outfit";
 
         private static HashSet<string> owned;
 
@@ -21,6 +22,8 @@ namespace Abandoned.Player
         public static string Coverall => Prefs.GetString(CoverallKey, "");
         public static string Hat => Prefs.GetString(HatKey, "");
         public static string Accessory => Prefs.GetString(AccessoryKey, "");
+        public static string Character => Prefs.GetString(CharacterKey, "");
+        public static string Outfit => Prefs.GetString(OutfitKey, "");
 
         /// <summary>Free, bought here, or awarded by an achievement this player has.</summary>
         public static bool Unlocked(CosmeticDefinition d)
@@ -61,18 +64,20 @@ namespace Abandoned.Player
             Prefs.Save();
         }
 
-        public static void Wear(string coverallId, string hatId, string accessoryId = null)
+        public static void Wear(string coverallId, string hatId, string accessoryId = null, string characterId = null, string outfitId = null)
         {
             Prefs.SetString(CoverallKey, coverallId ?? "");
             Prefs.SetString(HatKey, hatId ?? "");
             Prefs.SetString(AccessoryKey, accessoryId ?? "");
+            if (characterId != null) Prefs.SetString(CharacterKey, characterId);
+            if (outfitId != null) Prefs.SetString(OutfitKey, outfitId);
             Prefs.Save();
         }
 
         /// <summary>Tests only: a clean profile (and they must restore what they changed).</summary>
         public static void ResetAll()
         {
-            foreach (string k in new[] { RunsKey, EscapesKey, HaulKey, CoverallKey, HatKey, AccessoryKey, OwnedKey }) Prefs.Delete(k);
+            foreach (string k in new[] { RunsKey, EscapesKey, HaulKey, CoverallKey, HatKey, AccessoryKey, OwnedKey, CharacterKey, OutfitKey }) Prefs.Delete(k);
             owned = null;
             Prefs.Save();
         }

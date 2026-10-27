@@ -166,6 +166,7 @@ Tools > Abandoned
       Build Sound Bank, Build Recorded Library (0.24.12)   2300, 2302
     Characters                                       [2400-2499]
       Build Cosmetics                                2400
+      Build Crew Looks (remake)                      2401
       ──
       Generate and Apply Full Redesign, Apply Redesign from Exported Models  2420-2421
     Features                                         [2500-2599]

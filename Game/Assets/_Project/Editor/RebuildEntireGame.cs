@@ -76,7 +76,11 @@ namespace Abandoned.EditorTools
                 LootModelBuilder.AssignMissing();
                 LootPrefabGenerator.GenerateAll();
             }),
-            ("Cosmetics", () => CosmeticsBuilder.CreateMissing()),
+            ("Cosmetics", () =>
+            {
+                CosmeticsBuilder.CreateMissing();
+                Remake.CrewLookBuilder.Build();
+            }),
             ("Prefabs", () =>
             {
                 PlayerPrefabBuilder.Create();

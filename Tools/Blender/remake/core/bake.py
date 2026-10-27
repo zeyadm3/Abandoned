@@ -57,7 +57,7 @@ def unwrap(ob, margin=.004):
     _select_only(ob)
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=margin, area_weight=1.0,
+    bpy.ops.uv.smart_project(angle_limit=math.radians(72), island_margin=margin, area_weight=1.0,
                              correct_aspect=True, scale_to_bounds=False)
     bpy.ops.uv.select_all(action='SELECT')
     bpy.ops.uv.pack_islands(rotate=True, scale=True, margin=margin)
@@ -121,7 +121,7 @@ def _bake(ob, kind, img, mats, high=None, **kw):
     _clear(added)
 
 
-def _bake_metallic(ob, img, mats):
+def _bake_metallic(ob, img, mats, high=None):
     """Cycles has no metallic pass: route each material's Metallic input to an emission output and bake EMIT."""
     swaps = []
     for m in mats:
@@ -140,7 +140,7 @@ def _bake_metallic(ob, img, mats):
             em.inputs['Color'].default_value = (v, v, v, 1)
         nt.links.new(em.outputs['Emission'], out.inputs['Surface'])
         swaps.append((m, em, old, out))
-    _bake(ob, 'EMIT', img, mats)
+    _bake(ob, 'EMIT', img, mats, high=high)
     for m, em, old, out in swaps:
         if old:
             m.node_tree.links.new(old, out.inputs['Surface'])
@@ -159,7 +159,7 @@ def _save(img, path):
     img.save()
 
 
-def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples=16, unwrap_first=True):
+def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples=16, unwrap_first=True, high_all=False):
     """Bake ob's procedural surfaces into <name>_BaseColor/_Normal/_Mask under out_dir; returns the new material."""
     os.makedirs(out_dir, exist_ok=True)
     setup(samples)
@@ -167,6 +167,9 @@ def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples
         unwrap(ob)
     size = size or atlas_size(ob)
     mats = _baked_materials(ob)
+    if high is not None:
+        for h in (high if isinstance(high, (list, tuple)) else [high]):
+            mats += [m for m in _baked_materials(h) if m not in mats]
     if not mats:
         return None
     sc = bpy.context.scene
@@ -175,16 +178,17 @@ def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples
     sc.render.bake.use_pass_direct = False
     sc.render.bake.use_pass_indirect = False
     sc.render.bake.use_pass_color = True
-    _bake(ob, 'DIFFUSE', col, mats)
+    src = high if high_all else None
+    _bake(ob, 'DIFFUSE', col, mats, high=src)
 
     nor = _image(name + '_Normal', size, (.5, .5, 1, 1), non_color=True)
     sc.render.bake.normal_space = 'TANGENT'
     _bake(ob, 'NORMAL', nor, mats, high=high)
 
     rough = _image(name + '_Rough', size, non_color=True)
-    _bake(ob, 'ROUGHNESS', rough, mats)
+    _bake(ob, 'ROUGHNESS', rough, mats, high=src)
     metal = _image(name + '_Metal', size, non_color=True)
-    _bake_metallic(ob, metal, mats)
+    _bake_metallic(ob, metal, mats, high=src)
     ao = _image(name + '_AO', size, (1, 1, 1, 1), non_color=True)
     sc.world = sc.world or bpy.data.worlds.new('World')
     sc.world.light_settings.distance = ao_distance

@@ -99,8 +99,11 @@ namespace Abandoned.EditorTools.Remake
             // Textures can arrive after the model that uses them: top up an existing material on the next tick.
             EditorApplication.delayCall += () =>
             {
-                var m = AssetDatabase.LoadAssetAtPath<Material>($"{area}/Materials/{set}.mat");
-                if (m != null) RemakeMaterials.Fill(m, set, folder);
+                foreach (string name in new[] { set, set + "_Tint" })
+                {
+                    var m = AssetDatabase.LoadAssetAtPath<Material>($"{area}/Materials/{name}.mat");
+                    if (m != null) RemakeMaterials.Fill(m, set, folder);
+                }
             };
         }
     }

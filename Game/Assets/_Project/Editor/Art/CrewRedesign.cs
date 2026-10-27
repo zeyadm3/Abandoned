@@ -17,6 +17,7 @@ namespace Abandoned.EditorTools
             {
                 AssetDatabase.ImportAsset(WorkerVisualBuilder.ArtFolder, ImportAssetOptions.ImportRecursive);
                 CosmeticsBuilder.CreateMissing();
+                Remake.CrewLookBuilder.Build();
                 PlayerPrefabBuilder.Create();
                 AssetDatabase.SaveAssets();
                 Debug.Log("[CrewRedesign] wardrobe refitted, player prefab rebuilt.");

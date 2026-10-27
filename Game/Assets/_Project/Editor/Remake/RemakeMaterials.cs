@@ -31,9 +31,12 @@ namespace Abandoned.EditorTools.Remake
                 AssetDatabase.CreateAsset(material, path);
             }
             if (shared) ConfigureShared(material, set);
-            else Fill(material, set, areaFolder + "/Textures");
+            else Fill(material, TextureSet(set), areaFolder + "/Textures");
             return material;
         }
+
+        /// <summary>"&lt;Set&gt;_Tint" materials (outfit faces that take the player's colour) share their base set's textures.</summary>
+        public static string TextureSet(string set) => set.EndsWith("_Tint") ? set.Substring(0, set.Length - 5) : set;
 
         /// <summary>Points a material at its set's textures (whatever has been imported so far).</summary>
         public static void Fill(Material material, string set, string textureFolder)
@@ -144,7 +147,7 @@ namespace Abandoned.EditorTools.Remake
                 else
                 {
                     string area = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(path)).Replace('\\', '/');
-                    Fill(m, m.name, area + "/Textures");
+                    Fill(m, TextureSet(m.name), area + "/Textures");
                 }
             }
             AssetDatabase.SaveAssets();

@@ -10,15 +10,18 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// The HQ wardrobe (GDD 18; redone in 0.12.5), landscape: you on the left (drag to turn; whatever you
-    /// select is tried on), the coveralls / hats / accessories as cards in the middle, and the selected item
+    /// The HQ wardrobe (GDD 18; redone in 0.12.5; workers and outfits since the 2026 remake), landscape: you on the
+    /// left (drag to turn; whatever you select is tried on), workers / outfits / colours / hats / accessories as cards
+    /// in the middle, and the selected item
     /// on the right with what it takes: wear it, buy it once with company money (the host checks the funds),
     /// or earn it with an achievement. The crew sees what you wear at once.
     /// </summary>
     public class WardrobeView
     {
-        private static readonly string[] Tabs = { "COVERALLS", "HATS", "ACCESSORIES" }; // @loc
-        private static readonly CosmeticKind[] Kinds = { CosmeticKind.Coverall, CosmeticKind.Hat, CosmeticKind.Accessory };
+        // 2026 remake: who you are and what you wear come first; the old coverall colour now tints the outfit.
+        private static readonly string[] Tabs = { "WORKER", "OUTFIT", "COLOUR", "HATS", "ACCESSORIES" }; // @loc
+        private static readonly CosmeticKind[] Kinds =
+            { CosmeticKind.Character, CosmeticKind.Outfit, CosmeticKind.Coverall, CosmeticKind.Hat, CosmeticKind.Accessory };
 
         private readonly VisualElement preview, grid, swatch;
         private readonly Label funds, status, title, about, unlock;
@@ -107,13 +110,11 @@ namespace Abandoned.UI
 
         private CosmeticKind Kind => Kinds[tab];
 
-        private IReadOnlyList<CosmeticDefinition> Items => me == null || me.Catalog == null ? new List<CosmeticDefinition>() :
-            Kind == CosmeticKind.Coverall ? me.Catalog.Coveralls : Kind == CosmeticKind.Hat ? me.Catalog.Hats : me.Catalog.Accessories;
+        private IReadOnlyList<CosmeticDefinition> Items => me == null || me.Catalog == null ? new List<CosmeticDefinition>() : me.Catalog.Of(Kind);
 
-        private int Worn() => me == null ? 0 : Kind == CosmeticKind.Coverall ? me.Choice.Coverall : Kind == CosmeticKind.Hat ? me.Choice.Hat : me.Choice.Accessory;
+        private int Worn() => me == null ? 0 : me.Choice.Of(Kind);
 
-        private CosmeticChoice With(CosmeticChoice c, int index) =>
-            Kind == CosmeticKind.Coverall ? c.WithCoverall(index) : Kind == CosmeticKind.Hat ? c.WithHat(index) : c.WithAccessory(index);
+        private CosmeticChoice With(CosmeticChoice c, int index) => c.With(Kind, index);
 
         private void Rebuild()
         {
