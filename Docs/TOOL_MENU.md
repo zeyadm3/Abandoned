@@ -202,6 +202,7 @@ Tools > Abandoned
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,
     Render Loot Icons (all)                                              4000-4004
+    Render Remake Icons (gear, cosmetics, truck, loot)                   4005
     ──  Font Fallbacks (0.19.9), Language Fonts (0.24.8)                 4020-4021
   ──────────
   Checks                                             [5000-5999]

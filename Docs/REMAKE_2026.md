@@ -97,7 +97,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 5 Loot | done (2026-10-27): all 345 items remastered and installed |
 | 6 Maps | done (2026-10-27) for props and fittings: 75 kit models, 5,327 props swapped across the 11 maps; architecture itself not remodelled (see notes) |
 | 7 The hiring and the HQ-centred game | done (2026-10-27): HR office, interview, training, "you're hired", creator; title screen, cut-down pause, HQ stations |
-| 8 UI | |
+| 8 UI | done (2026-10-27): clean modern horror theme layer, 3D icons for gear, cosmetics, truck fittings and loot |
 | 9 Integration and handover | |
 
 ## Phase 1 notes (characters and wardrobe)
@@ -235,6 +235,22 @@ and credited in `Docs/ASSET_CREDITS.md`.
   garage door (`TruckGarageTerminal`, from phase 4). Per-player voice levels are also in Settings > Voice
   (`CrewRoster`, shared by both).
 - Rebuild All Maps runs the stations and the HR office after the training clipboard.
+
+## Phase 8 notes (UI)
+
+- Theme: `Art/UI/Resources/Remake2026.uss`, loaded last in `UiThemeAssets.Layers` (the older sheets stay, in order):
+  a colder, darker palette (the `.horror-theme` variables), one sodium-amber accent and a blood red for danger, flat
+  panels with hairline rules, sharp corners, a focus bar on buttons, flat cards with the accent on the chosen one,
+  and the new screens (subtitles, creator, crew board, cut-down pause). No class was renamed, so every screen and HUD
+  piece picks it up without code changes; fonts are the project's OFL set.
+- Icons: `Editor/Remake/IconRenderer` (UI > Render Remake Icons) renders every remade model alone on a transparent
+  ground into `Art/Remake/Icons/`: gear (`item/<id>`, replacing the drawn silhouette of the same name), hats,
+  accessories, workers (portraits) and outfits (`cosmetic/<id>`), truck fittings (`truckcos/<id>`), and re-renders
+  every loot icon with the remastered models; then it rebuilds the UiIcons registry. Rebuild Entire Game runs it last.
+  The wardrobe, the character creator and the truck garage show the icon on each card (`UI/IconChip`, the letter
+  stays as the fallback). MSAA x8 render textures come back empty on this Mac's Metal; the studio uses x4.
+- Not done: the title screen's backdrop is still the HQ behind the menu (no staged crew-and-truck scene), and the HUD,
+  contract board, shop, results and travel screens were re-themed, not re-laid out.
 
 ## Blocked
 

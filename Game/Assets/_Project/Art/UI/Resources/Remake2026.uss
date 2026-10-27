@@ -1,0 +1,148 @@
+/* 2026 remake, phase 8: clean modern horror. Loaded last (UiThemeAssets.Layers), so it re-tunes what the older
+   layers draw rather than replacing them: a colder, darker palette with one sodium-amber accent and a blood red for
+   danger, flat panels with hairline rules, sharp corners, quiet type and generous spacing. Every class here exists in
+   the code (MenuKit, the HUD pieces, the views); nothing is renamed. Fonts stay the project's OFL set. */
+
+/* ---------- palette ---------- */
+
+.horror-theme {
+    --c-ink: rgb(6, 7, 8);
+    --c-panel: rgba(10, 11, 12, 0.94);
+    --c-panel-2: rgb(17, 18, 20);
+    --c-panel-3: rgb(27, 28, 31);
+    --c-line: rgba(220, 224, 228, 0.12);
+    --c-accent: rgb(214, 158, 72);
+    --c-accent-hot: rgb(242, 196, 112);
+    --c-accent-ink: rgb(12, 10, 6);
+    --c-text: rgb(226, 228, 230);
+    --c-dim: rgb(160, 164, 170);
+    --c-faint: rgb(108, 112, 118);
+    --c-good: rgb(140, 182, 150);
+    --c-bad: rgb(196, 62, 52);
+    --c-money: rgb(205, 196, 160);
+}
+
+/* ---------- pages and panels: flat sheets, a hairline, a thin accent edge ---------- */
+
+.mm-page {
+    background-color: var(--c-panel);
+    border-left-width: 3px;
+    border-right-width: 1px;
+    border-right-color: var(--c-line);
+    padding-left: 72px;
+    padding-right: 64px;
+}
+
+.panel {
+    background-color: var(--c-panel);
+    border-width: 1px;
+    border-color: var(--c-line);
+    border-radius: 0;
+}
+
+.mm-page .heading { letter-spacing: 8px; font-size: 54px; }
+.mm-page .menu-record { letter-spacing: 5px; font-size: 12px; color: var(--c-accent); }
+.mm-page .subtitle { color: var(--c-dim); font-size: 17px; }
+.section { letter-spacing: 4px; color: var(--c-accent); font-size: 14px; margin-top: 18px; }
+.text { color: var(--c-dim); }
+.text--error { color: var(--c-bad); }
+
+/* ---------- buttons: text on dark, a bar that grows on focus, the accent fill for what matters ---------- */
+
+.menu-button {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-left-width: 2px;
+    border-left-color: rgba(214, 158, 72, 0);
+    border-radius: 0;
+    color: var(--c-text);
+    padding-left: 14px;
+    transition-duration: 0.12s;
+}
+
+.menu-button:hover, .menu-button:focus {
+    background-color: rgba(214, 158, 72, 0.08);
+    border-left-width: 4px;
+    border-left-color: var(--c-accent);
+    color: var(--c-accent-hot);
+}
+
+.menu-button--small {
+    border-width: 1px;
+    border-color: var(--c-line);
+    background-color: var(--c-panel-2);
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.menu-button--small:hover, .menu-button--small:focus { border-color: var(--c-accent); background-color: var(--c-panel-3); }
+.menu-button--on { border-color: var(--c-accent); color: var(--c-accent-hot); background-color: rgba(214, 158, 72, 0.12); }
+.menu-button--important { color: var(--c-bad); }
+.menu-button--important:hover, .menu-button--important:focus { border-left-color: var(--c-bad); background-color: rgba(196, 62, 52, 0.1); }
+
+/* ---------- the title screen ---------- */
+
+.mm-main__shade { background-color: rgba(4, 5, 6, 0.55); }
+.mm-nav__item { letter-spacing: 6px; font-size: 26px; }
+.mm-nav__item--active { color: var(--c-accent-hot); }
+.mm-card { border-left-width: 1px; border-left-color: var(--c-line); background-color: rgba(8, 9, 10, 0.7); }
+.mm-card__title { letter-spacing: 6px; }
+.mm-status { border-top-width: 1px; border-top-color: var(--c-line); background-color: rgba(6, 7, 8, 0.85); }
+
+/* ---------- cards (wardrobe, creator, garage): flat tiles, the accent on the one chosen ---------- */
+
+.wardrobe__card {
+    background-color: var(--c-panel-2);
+    border-width: 1px;
+    border-color: var(--c-line);
+    border-radius: 0;
+}
+
+.wardrobe__card:hover, .wardrobe__card:focus { background-color: var(--c-panel-3); border-color: rgba(214, 158, 72, 0.6); }
+.wardrobe__card--selected { background-color: rgba(214, 158, 72, 0.1); border-color: var(--c-accent); border-width: 1px; border-left-width: 4px; }
+.wardrobe__card--locked { opacity: 0.55; }
+.wardrobe__chip { border-radius: 0; background-color: var(--c-panel-3); }
+.wardrobe__chip--icon { width: 96px; height: 96px; background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit; }
+.wardrobe__preview { background-color: rgb(9, 10, 11); border-width: 1px; border-color: var(--c-line); }
+.wardrobe__detail { border-left-width: 1px; border-left-color: var(--c-line); }
+
+/* ---------- the character creator (the hiring) ---------- */
+
+.creator { background-color: rgb(6, 7, 8); }
+.creator .mm-page { width: 100%; max-width: 100%; border-left-width: 0; }
+.creator__sign {
+    align-self: flex-end;
+    margin-top: 14px;
+    padding: 12px 40px;
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--c-accent-ink);
+    background-color: var(--c-accent);
+    border-width: 0;
+}
+.creator__sign:hover, .creator__sign:focus { background-color: var(--c-accent-hot); color: var(--c-accent-ink); }
+
+/* ---------- the hiring's subtitles ---------- */
+
+.dialogue__box { border-left-width: 3px; border-left-color: var(--c-accent); background-color: rgba(6, 7, 8, 0.82); }
+.dialogue__speaker { letter-spacing: 3px; font-size: 16px; color: var(--c-accent); }
+.dialogue__role { letter-spacing: 3px; font-size: 13px; color: var(--c-faint); }
+.dialogue__line { color: var(--c-text); font-size: 25px; }
+.dialogue__reply { align-self: flex-start; margin-top: 4px; font-size: 18px; }
+.dialogue__hint { letter-spacing: 2px; }
+
+/* ---------- the crew board and the cut-down pause ---------- */
+
+.crew-board .heading { font-size: 46px; }
+.crew-row { border-bottom-width: 1px; border-bottom-color: var(--c-line); padding-top: 8px; padding-bottom: 8px; }
+.crew-row__swatch { border-radius: 0; }
+.crew-row__talking--on { background-color: var(--c-good); }
+.pause { background-color: rgba(4, 5, 6, 0.6); }
+.pause__left { border-left-width: 3px; border-left-color: var(--c-accent); background-color: var(--c-panel); padding: 48px 56px; }
+.pause__eyebrow { letter-spacing: 6px; color: var(--c-accent); }
+.pause__warning { color: var(--c-faint); }
+
+/* ---------- the HUD: quieter frames, the same layout ---------- */
+
+.hud-card { border-radius: 0; border-color: var(--c-line); background-color: rgba(8, 9, 10, 0.72); }
+.toast { border-radius: 0; border-left-width: 3px; border-left-color: var(--c-accent); background-color: rgba(8, 9, 10, 0.9); }

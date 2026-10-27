@@ -144,7 +144,7 @@ namespace Abandoned.UI
                 var chip = new VisualElement { pickingMode = PickingMode.Ignore };
                 chip.AddToClassList("wardrobe__chip");
                 if (Slot == TruckCosmeticSlot.Paint) chip.style.backgroundColor = d.Color;
-                else chip.Add(new Label(d.LocalName.Substring(0, 1)) { pickingMode = PickingMode.Ignore });
+                else IconChip.Fill(chip, "truckcos/" + d.Id, d.LocalName);
                 card.Add(chip);
                 var name = new Label(d.LocalName) { pickingMode = PickingMode.Ignore };
                 name.AddToClassList("wardrobe__card-name");

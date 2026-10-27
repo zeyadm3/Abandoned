@@ -66,6 +66,8 @@ namespace Abandoned.EditorTools
             (ThirdPartyModelImport.Root + "Kenney/BoardGameIcons", "board"), (ThirdPartyModelImport.Root + "Kenney/InputPrompts", "mouse"),
             (LootIconRenderer.Folder, "loot"),
             (UiGearIconBuilder.Folder, "item"),
+            // 2026 remake: rendered models; the gear's replace the drawn silhouettes of the same name (later wins).
+            (Remake.IconRenderer.Gear, "item"), (Remake.IconRenderer.Cosmetics, "cosmetic"), (Remake.IconRenderer.Truck, "truckcos"),
             ("Assets/_Project/Art/Generated/AchievementIcons", "achievement"), // 0.24.3
         };
 

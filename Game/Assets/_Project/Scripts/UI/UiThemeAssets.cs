@@ -20,7 +20,9 @@ namespace Abandoned.UI
             // The training job's guidance (lesson card, checklist, markers); inert outside the training house.
             "TrainingHud",
             // 0.24.12 menus: layout over everything above, colours from the theme.
-            "ModernMenus"
+            "ModernMenus",
+            // 2026 remake: clean modern horror, the palette and finish over everything above.
+            "Remake2026"
         };
 
         /// <summary>One theme stack for the menu document and independent in-world displays.</summary>
