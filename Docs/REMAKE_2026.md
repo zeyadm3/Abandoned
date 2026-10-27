@@ -303,7 +303,7 @@ stations and the HR office (after the training clipboard), and last the icons.
   into the existing mesh asset: copying a mesh with blend shapes over it crashed Unity). `Player/Presentation/WorkerFace`
   (added by WorkerLook) blinks every 2-6 s and opens the jaw with a crewmate's voice chat, or with the HR manager's
   recorded line. Honest limit: the head has no mouth slit, so the jaw drops the chin; the lips don't part.
-  **Still to run in Unity:** Art > Remake: Build Crew Looks, then Maps > HQ > Rebuild HR Office, then Art > Remake:
+  **Still to run in Unity:** Content > Characters > Build Crew Looks (remake), then Maps > HQ > Rebuild HR Office, then Art > Remake:
   Refresh Materials (the heads were re-exported; the saved look meshes don't have the shapes until then).
 - **The HR meeting (user: "don't work, laggy, bugs"):** the editor's auto-host skipped the hiring (now a first-time
   host at home is sent to the office); the cursor stayed locked during replies (freed, and 1-4 pick a reply); the
