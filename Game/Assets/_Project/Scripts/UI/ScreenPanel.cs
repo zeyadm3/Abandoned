@@ -57,10 +57,14 @@ namespace Abandoned.UI
         /// <summary>Keep the archive finish after any station-specific book or terminal rules.</summary>
         public void ApplyArchiveStyles()
         {
-            StyleSheet styles = Resources.Load<StyleSheet>("AbandonedPanels");
-            if (styles == null) return;
-            if (Panel.styleSheets.Contains(styles)) Panel.styleSheets.Remove(styles);
-            Panel.styleSheets.Add(styles);
+            // 2026 remake: the remake's theme and layouts go after the archive finish, so they win on the panel too.
+            foreach (string name in new[] { "AbandonedPanels", "Remake2026", "Remake2026Layouts" })
+            {
+                StyleSheet styles = Resources.Load<StyleSheet>(name);
+                if (styles == null) continue;
+                if (Panel.styleSheets.Contains(styles)) Panel.styleSheets.Remove(styles);
+                Panel.styleSheets.Add(styles);
+            }
         }
 
         public void Show(bool visible)

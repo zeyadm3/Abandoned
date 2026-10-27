@@ -22,7 +22,9 @@ namespace Abandoned.UI
             // 0.24.12 menus: layout over everything above, colours from the theme.
             "ModernMenus",
             // 2026 remake: clean modern horror, the palette and finish over everything above.
-            "Remake2026"
+            "Remake2026",
+            // ...and the screens laid out again in that style (contract board, appraisal, travel, HUD).
+            "Remake2026Layouts"
         };
 
         /// <summary>One theme stack for the menu document and independent in-world displays.</summary>

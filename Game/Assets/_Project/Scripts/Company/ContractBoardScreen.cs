@@ -80,7 +80,6 @@ namespace Abandoned.Company
                 bool taken = company.Selected == i;
                 var sheet = new VisualElement();
                 sheet.AddToClassList("sheet");
-                sheet.style.rotate = new Rotate((c.Seed % 5 - 2) * 0.8f);
                 cards.Add(sheet);
                 var pin = new VisualElement { pickingMode = PickingMode.Ignore };
                 pin.AddToClassList("sheet__pin");
