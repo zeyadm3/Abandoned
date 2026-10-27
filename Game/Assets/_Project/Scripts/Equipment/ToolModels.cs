@@ -10,6 +10,20 @@ namespace Abandoned.Equipment
 
         public static GameObject Build(EquipmentDefinition definition, Transform parent, float scale = 1f)
         {
+            // 2026 remake: the remodelled gear when there is one.
+            GameObject remade = GearModels.For(definition.Kind);
+            if (remade != null)
+            {
+                var holder = new GameObject($"Tool_{definition.Id}");
+                holder.transform.SetParent(parent, false);
+                holder.transform.localScale = Vector3.one * scale;
+                GameObject model = Object.Instantiate(remade, holder.transform, false);
+                model.transform.localPosition = Vector3.zero;
+                model.transform.localRotation = Quaternion.identity;
+                foreach (Renderer r in model.GetComponentsInChildren<Renderer>())
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                return holder;
+            }
             string key = $"{(int)definition.Kind}_{ColorUtility.ToHtmlStringRGBA(definition.Color)}";
             if (!Models.TryGetValue(key, out var parts))
             {

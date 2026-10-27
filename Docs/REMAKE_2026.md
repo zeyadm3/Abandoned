@@ -92,7 +92,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 0 Pipeline and art bible | done (2026-10-27) |
 | 1 Characters and wardrobe | done (2026-10-27): 8 workers, 10 outfits x 3 builds, 20 hats, 15 accessories |
 | 2 Monsters | done (2026-10-27): all 8 sculpted, baked, skinned, five takes each |
-| 3 Gear and shop | |
+| 3 Gear and shop | done (2026-10-27): 17 items; rack and shop terminal are remodelled with the HQ (phase 6) |
 | 4 Truck, upgrades, van, truck cosmetics | |
 | 5 Loot | |
 | 6 Maps | |
@@ -124,6 +124,16 @@ and credited in `Docs/ASSET_CREDITS.md`.
   remake model and keeps its baked material; `Editor/Remake/MonsterInstaller` (Content > Prefabs > Install Remade
   Monsters (remake)) upgrades the eight prefabs, and Rebuild Entire Game runs it after the threat builders.
 - Blender's voxel remesh returns almost nothing below about 1.2 cm voxels; `anatomy.Body.build` clamps to that.
+
+## Phase 3 notes (gear)
+
+- Blender: `Tools/Blender/remake/gear/toolart.py` is a twin of `Scripts/Equipment/ToolArtBuilder` (same primitives,
+  Unity coordinates, sizes as diameters), so `gear.py` ports every C# design line for line and adds bevels, turned
+  profiles, knurled grips and worn baked paint. Grip at the origin, +Z forward, as before.
+- Unity: `Scripts/Equipment/GearModels` (Data/Equipment/Resources/GearModels) maps each kind to its model;
+  `ToolModels.Build` (first person, crewmates' hands, dropped tools) uses it and falls back to the code-built mesh.
+  `Editor/Remake/GearModelBuilder` (Content > Data > Create Gear Models (remake)) also dresses the thrown noise maker
+  and the deployed drone; the glow stick keeps its emissive body, which is its light.
 
 ## Blocked
 

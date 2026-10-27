@@ -64,6 +64,7 @@ namespace Abandoned.EditorTools
                 StructureContentBuilder.CreateMissing();
                 HealthContentBuilder.Create();
                 EquipmentContentBuilder.CreateMissing();
+                Remake.GearModelBuilder.Build();
                 CompanyContentBuilder.CreateMissing();
                 RunPressureContentBuilder.CreateMissing();
                 RoomsContentBuilder.CreateMissing();
@@ -90,6 +91,7 @@ namespace Abandoned.EditorTools
                 ThreatContentBuilder.CreateBlindOne();
                 ThreatContentBuilder.CreateOthers();
                 NewThreatContentBuilder.Create();
+                Remake.MonsterInstaller.Install();
                 HorrorContentBuilder.Create();
                 GarageDoorBuilder.Create();
             }),
