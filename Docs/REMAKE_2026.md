@@ -297,6 +297,28 @@ stations and the HR office (after the training clipboard), and last the icons.
   space; `Editor/Remake/HqStationModels` takes the old drawing off (recorded in `_KitSwap`, so undo brings it back) and
   stands the model in, keeping the colliders, the scripts and the terminal's amber screen. KitSwap.Apply on the HQ
   does it, so Rebuild All Maps keeps it.
+- **Blinks and lip sync:** `Tools/Blender/remake/crew/face_shapes.py` gives every head (the eight workers and the HR
+  manager) a Blink and a JawOpen shape key, plus a dark mouth cavity; `core/export.py` keeps shape keys (it skips
+  modifiers for those meshes). `CrewLookBuilder.Combine` copies blend shapes into the combined look meshes (it writes
+  into the existing mesh asset: copying a mesh with blend shapes over it crashed Unity). `Player/Presentation/WorkerFace`
+  (added by WorkerLook) blinks every 2-6 s and opens the jaw with a crewmate's voice chat, or with the HR manager's
+  recorded line. Honest limit: the head has no mouth slit, so the jaw drops the chin; the lips don't part.
+  **Still to run in Unity:** Art > Remake: Build Crew Looks, then Maps > HQ > Rebuild HR Office, then Art > Remake:
+  Refresh Materials (the heads were re-exported; the saved look meshes don't have the shapes until then).
+- **The HR meeting (user: "don't work, laggy, bugs"):** the editor's auto-host skipped the hiring (now a first-time
+  host at home is sent to the office); the cursor stayed locked during replies (freed, and 1-4 pick a reply); the
+  seated manager's crew presentation scripts fought her pose every frame (all off but the rig, look and face); the
+  office played on its own did nothing (it previews both scenes, with its own subtitle document); the office's point
+  lights cast shadows (six maps each a frame; now only the sun casts); the skip bar no longer restyles every frame.
+- **Screen layouts:** `Art/UI/Resources/Remake2026Layouts.uss` after Remake2026: flat contract cards (no tilt), a
+  two-column appraisal, the travel screen, the HUD pockets, compass and danger marks. `ScreenPanel` re-adds the theme
+  layers in order.
+- **Map chain:** not re-run yet (about 2.7 hours in the editor: KitSwap, CoplanarFix, remaster, MapSite). The Hospital
+  CoplanarFix stall was already fixed on 2026-10-24. Run Rebuild All Maps (or `AvOverhaul.AfterMaps`) when the editor
+  is free.
+- **Architecture per map:** not started. Every map's walls, slabs and facades are thousands of scaled cubes (the HQ
+  alone 3,401) carrying the 0.24.13 surfaces and the CoplanarFix offsets; replacing them is a map-by-map rebuild that
+  needs looking at in the editor, not a blind pass.
 
 ## Blocked
 

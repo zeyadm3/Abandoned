@@ -121,6 +121,15 @@ namespace Abandoned.Onboarding
             }
         }
 
-        public void SkipProgress(float amount) => skipFill.style.width = Length.Percent(Mathf.Clamp01(amount) * 100f);
+        private float shownSkip = -1f;
+
+        // Called every frame while a scene plays: only touch the style (and so the layout) when the fill moves.
+        public void SkipProgress(float amount)
+        {
+            amount = Mathf.Clamp01(amount);
+            if (Mathf.Approximately(amount, shownSkip)) return;
+            shownSkip = amount;
+            skipFill.style.width = Length.Percent(amount * 100f);
+        }
     }
 }
