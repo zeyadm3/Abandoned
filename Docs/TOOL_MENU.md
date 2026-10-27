@@ -165,6 +165,8 @@ Tools > Abandoned
       Create Example Loot Definitions, Generate Loot Prefabs, Assign Loot Models   2200-2202
       ──
       Author Salvage Asset Library (0.15.5), Author Additional Pickable Stock (0.15.7)  2220-2221
+      ──
+      Export Loot for Remaster (remake), Install Remastered Loot (remake)   2240-2241
     Audio                                            [2300-2399]
       Build Sound Bank, Build Recorded Library (0.24.12)   2300, 2302
     Characters                                       [2400-2499]

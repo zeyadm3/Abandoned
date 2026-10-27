@@ -76,6 +76,7 @@ namespace Abandoned.EditorTools
                 CustomMallArt.Prepare();
                 LootCatalogBuilder.CreateMissing();
                 LootModelBuilder.AssignMissing();
+                Remake.LootInstaller.Assign();
                 LootPrefabGenerator.GenerateAll();
             }),
             ("Cosmetics", () =>

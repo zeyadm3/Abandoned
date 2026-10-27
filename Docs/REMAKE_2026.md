@@ -94,7 +94,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 2 Monsters | done (2026-10-27): all 8 sculpted, baked, skinned, five takes each |
 | 3 Gear and shop | done (2026-10-27): 17 items; rack and shop terminal are remodelled with the HQ (phase 6) |
 | 4 Truck, upgrades, van, truck cosmetics | done (2026-10-27) except the arrival van and the Prison boat hull (see notes) |
-| 5 Loot | in progress: export + remaster pipeline written; remaster of all 345 items was running when the session stopped |
+| 5 Loot | done (2026-10-27): all 345 items remastered and installed |
 | 6 Maps | |
 | 7 The hiring and the HQ-centred game | |
 | 8 UI | |
@@ -158,15 +158,21 @@ and credited in `Docs/ASSET_CREDITS.md`.
   re-imports them, and every remake builder calls it first.
 - Not done: the arrival van (still the Kenney van) and the Island Prison boat's hull keep their old art.
 
-## Phase 5 status (loot) - where to pick up
+## Phase 5 notes (loot)
 
 - `Editor/Remake/LootExport` (Content > Loot > Export Loot for Remaster (remake)) writes every loot prefab's visible look
   in prefab space to `Game/Logs/remake/loot/*.obj` + `manifest.json` (345 items: the 239 originals plus the newer maps').
 - `Tools/Blender/remake/loot/remaster.py` reads them (own OBJ reader; Blender = (-x, z, y) of the OBJ), welds, gives
   light models one creased subdivision, bevels hard edges, classifies each material into a worn surface (or keeps its
-  texture), bakes, writes `Art/Remake/Loot/Loot_<id>.fbx`. Log: `Game/Logs/remake/loot.log` (grep FAILED).
-- Still to write: a Unity step that points each LootDefinition's Model at its remade FBX (yaw 0, Size unchanged),
-  then `LootPrefabGenerator.GenerateAll` and `LootLookalikes`, then commit. Then phases 6-9.
+  texture), decimates to the carry class's budget, bakes one 512/1024 set, writes `Art/Remake/Loot/Loot_<id>.fbx`
+  with three LODs. Log: `Game/Logs/remake/loot.log` (0 FAILED of 345).
+- `Editor/Remake/LootInstaller` (Content > Loot > Install Remastered Loot (remake)) points each definition with a
+  remaster at it (yaw 0: the export already carried the old yaw; the Size box is kept, so colliders, spawns and weight
+  don't move) and regenerates those prefabs in place (GUIDs and network ids stay). Rebuild Entire Game calls
+  `LootInstaller.Assign` before `GenerateAll`.
+- Look-alikes: nothing to re-run. `LootLookalikes` swaps scenery placed from the dressing prefabs, which are separate
+  from the loot prefabs; the remastered loot now looks less like any old scenery, not more.
+- Loot icons are re-rendered with the UI in phase 8.
 
 ## Blocked
 
