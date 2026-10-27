@@ -16,5 +16,7 @@ namespace Abandoned.UI
         Play,
         // 2026 remake (append only)
         TruckGarage,
+        Creator,
+        CrewBoard,
     }
 }

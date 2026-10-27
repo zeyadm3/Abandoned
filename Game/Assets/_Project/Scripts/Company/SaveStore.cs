@@ -63,6 +63,17 @@ namespace Abandoned.Company
             }
         }
 
+        /// <summary>Any save slot on this machine holds a company (the 2026 hiring treats its player as hired).</summary>
+        public static bool AnyExists
+        {
+            get
+            {
+                for (int slot = 1; slot <= Slots; slot++)
+                    if (File.Exists(System.IO.Path.Combine(Application.persistentDataPath, FileFor(slot)))) return true;
+                return false;
+            }
+        }
+
         public string Path => path;
         public bool Exists => File.Exists(path);
 

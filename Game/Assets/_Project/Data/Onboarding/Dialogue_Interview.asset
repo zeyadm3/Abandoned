@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7876c10a424e4c35845e55d770e31fb, type: 3}
+  m_Name: Dialogue_Interview
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Onboarding.DialogueDefinition
+  <Id>k__BackingField: interview
+  <Speaker>k__BackingField: Dana Whitfield
+  <SpeakerRole>k__BackingField: Human Resources
+  lines:
+  - text: Come in, come in. Sit anywhere that isn't the plant.
+    shot: 1
+    hold: 0.2
+    condition: 
+    replies: []
+  - text: Dana Whitfield, Human Resources. Abandoned Salvaging. You saw the advert?
+    shot: 0
+    hold: 0.45
+    condition: 
+    replies:
+    - text: Every word of it.
+      answer: Then you're the first.
+    - text: I skimmed it.
+      answer: Honest. That'll help, out there.
+    - text: There was an advert?
+      answer: There was a sign on a fence. Same thing.
+  - text: We go into buildings nobody else will. Malls, schools, a prison on a rock.
+      We bring out what's worth money.
+    shot: -1
+    hold: 0.45
+    condition: 
+    replies: []
+  - text: 'The floors are tired. They crack, they groan, and sometimes they go. Weight
+      is everything: yours, and whatever you''re carrying.'
+    shot: 2
+    hold: 0.45
+    condition: 
+    replies: []
+  - text: And the buildings aren't always empty. Don't ask me what's in them.
+    shot: 0
+    hold: 0.45
+    condition: 
+    replies:
+    - text: What's in them?
+      answer: I said don't ask me. The field guide on the dispatch bench knows more
+        than I do.
+    - text: Is it safe?
+      answer: It's a job. It pays because it isn't.
+    - text: Sounds fine.
+      answer: Good. Hold on to that.
+  - text: Here's how hiring works. There's a training job, a house on Larch Court.
+      Empty. Nothing pays, and nothing in there can kill you.
+    shot: 3
+    hold: 0.45
+    condition: 
+    replies: []
+  - text: A trainer talks you through it on the radio. Carry things, read the floors,
+      load the truck. Do it properly.
+    shot: 0
+    hold: 0.45
+    condition: 
+    replies: []
+  - text: Come back here after, and if you've done it right, you're hired. Simple
+      as that.
+    shot: -1
+    hold: 0.45
+    condition: 
+    replies:
+    - text: When do I start?
+      answer: Now. The van's outside.
+    - text: And if I don't do it right?
+      answer: Then you do it again. We're short-handed.
+  - text: Go on. Larch Court. I'll have the papers ready.
+    shot: 5
+    hold: 0.8
+    condition: 
+    replies: []

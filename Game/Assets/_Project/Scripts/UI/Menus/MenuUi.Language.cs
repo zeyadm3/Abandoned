@@ -64,6 +64,10 @@ namespace Abandoned.UI
             views[MenuScreen.Wardrobe] = wardrobe.Root;
             garage = new TruckGarageView(this);
             views[MenuScreen.TruckGarage] = garage.Root;
+            creator = new CharacterCreatorView(this);
+            views[MenuScreen.Creator] = creator.Root;
+            crewBoard = new CrewBoardView(this);
+            views[MenuScreen.CrewBoard] = crewBoard.Root;
             howToPlay = new HowToPlayView(this);
             views[MenuScreen.HowToPlay] = howToPlay.Root;
             demoEnd = new DemoEndView(this);

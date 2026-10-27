@@ -160,8 +160,12 @@ namespace Abandoned.Networking
             Changed?.Invoke();
         }
 
+        /// <summary>Takes an accepted invite before it is joined (true: handled; the hiring keeps it for later).</summary>
+        public static Func<ulong, bool> InviteGate { get; set; }
+
         private async void OnInviteAccepted(ulong lobbyId)
         {
+            if (InviteGate != null && InviteGate(lobbyId)) return;
             try
             {
                 await JoinAsync(lobbyId);

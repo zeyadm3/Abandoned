@@ -62,7 +62,7 @@ How we work: Docs/PLAYBOOK.md.
 ## Code style
 - One class per file. File name = class name.
 - Namespaces: Abandoned.<Area> (Core, Player, Interaction, Loot, Structure, Networking,
-  Threats, Extraction, Company, Contracts, Equipment, Voice, Audio, UI).
+  Threats, Extraction, Company, Contracts, Equipment, Voice, Audio, UI, Onboarding).
 - Folders: Assets/_Project/Scripts/<Area>/, Assets/_Project/Data/<Area>/,
   Assets/_Project/Prefabs/, Assets/_Project/Scenes/, Assets/_Project/Editor/,
   Assets/_Project/Art/ (materials, meshes, textures; greybox materials in Art/Greybox/)

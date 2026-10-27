@@ -29,6 +29,8 @@ namespace Abandoned.Core
 
         public static void SetString(string key, string value) { if (InMemory) memory[key] = value; else PlayerPrefs.SetString(key, value); }
 
+        public static bool HasKey(string key) => InMemory ? memory.ContainsKey(key) : PlayerPrefs.HasKey(key);
+
         public static void Delete(string key) { if (InMemory) memory.Remove(key); else PlayerPrefs.DeleteKey(key); }
 
         /// <summary>Writes to disk now (PlayerPrefs otherwise only flushes on a clean quit).</summary>

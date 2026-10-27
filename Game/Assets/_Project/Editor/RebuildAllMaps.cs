@@ -59,6 +59,9 @@ namespace Abandoned.EditorTools
             if (rebuildHq) steps.Add(("HQ (Salvage Hub)", HqBuilder.AuthorSalvageHub));
             steps.Add(("Tutorial House", TutorialHouseBuilder.Build));
             steps.Add(("Training clipboard in the HQ", TutorialHqClipboard.AddToSavedHq));
+            // 2026 remake: the stations that took over the pause menu, and the hiring's HR office.
+            steps.Add(("Crew board, trophy cabinet, notice board and garage desk in the HQ", Hiring.HqStations.AddToSavedHq));
+            steps.Add(("HR office (the hiring)", Hiring.HrOfficeBuilder.Build));
             return steps;
         }
 

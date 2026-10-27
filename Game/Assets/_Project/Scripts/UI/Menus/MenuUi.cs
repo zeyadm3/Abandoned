@@ -36,6 +36,8 @@ namespace Abandoned.UI
         private float nextCrtTwitch, crtTwitchUntil;
         private WardrobeView wardrobe;
         private TruckGarageView garage;
+        private CharacterCreatorView creator;
+        private CrewBoardView crewBoard;
         private HowToPlayView howToPlay;
         private DemoEndView demoEnd;
         private AchievementsView achievements;
@@ -125,6 +127,7 @@ namespace Abandoned.UI
             if (GetComponent<FirstDayGuide>() == null) gameObject.AddComponent<FirstDayGuide>();
             if (GetComponent<Tutorial.TutorialHud>() == null) gameObject.AddComponent<Tutorial.TutorialHud>();
             if (GetComponent<Tutorial.TutorialLaunch>() == null) gameObject.AddComponent<Tutorial.TutorialLaunch>();
+            if (GetComponent<Onboarding.OnboardingFlow>() == null) gameObject.AddComponent<Onboarding.OnboardingFlow>();
             if (GetComponent<Threats.ThreatFilesTracker>() == null) gameObject.AddComponent<Threats.ThreatFilesTracker>();
             if (GetComponent<TextDebugOverlay>() == null) gameObject.AddComponent<TextDebugOverlay>();
         }
@@ -161,14 +164,18 @@ namespace Abandoned.UI
             bool running = bootstrap.IsRunning;
             AutoOpenDemoEnd(running);
             if (!running) paused = pausedForScreen = false;
+            // The hiring (2026 remake) owns the screen offline: no title menu behind the HR office; Esc is settings.
+            bool hiring = !running && Onboarding.OnboardingFlow.OwnsScreen;
             if (EscapePressed() && !ControlsView.Busy && !ChatView.Typing)
             {
-                if (pushed.Count > 0) Back();
+                if (pushed.Count > 0 && pushed.Peek() == MenuScreen.Creator) Push(MenuScreen.Settings);
+                else if (pushed.Count > 0) Back();
+                else if (hiring) Push(MenuScreen.Settings);
                 else if (running && paused) Resume();
                 else if (running && !CursorOwner.UiActive) OpenPause();
             }
 
-            MenuScreen baseScreen = !running ? MenuScreen.Main : paused ? MenuScreen.Pause : MenuScreen.None;
+            MenuScreen baseScreen = !running ? (hiring ? MenuScreen.None : MenuScreen.Main) : paused ? MenuScreen.Pause : MenuScreen.None;
             if (baseScreen == MenuScreen.None) pushed.Clear();
             MenuScreen top = pushed.Count > 0 ? pushed.Peek() : baseScreen;
             if (top != Showing) Show(top);
@@ -176,8 +183,8 @@ namespace Abandoned.UI
             MenuKit.Show(wear, menuVisible);
             fx.SetVisible(top != MenuScreen.None);
             fx.Tick();
-            post.Mode = !running ? MenuBackdropMode.Title : top != MenuScreen.None ? MenuBackdropMode.Pause : MenuBackdropMode.None;
-            if (!running) backdrop.Tick();
+            post.Mode = !running && !hiring ? MenuBackdropMode.Title : top != MenuScreen.None ? MenuBackdropMode.Pause : MenuBackdropMode.None;
+            if (!running && !hiring) backdrop.Tick();
             else backdrop.Stop();
             if (menuVisible && Time.unscaledTime >= nextCrtTwitch)
             {
@@ -187,7 +194,7 @@ namespace Abandoned.UI
             document.rootVisualElement.EnableInClassList("crt-twitch", menuVisible && !MenuEffectsConfig.Calm && Time.unscaledTime < crtTwitchUntil);
             // Offline menus also claim the cursor: controller navigation uses the same UI-active signal.
             CursorOwner.Set(this, top != MenuScreen.None);
-            if (!running && Cursor.lockState != CursorLockMode.None)
+            if (!running && !hiring && Cursor.lockState != CursorLockMode.None)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
@@ -196,6 +203,7 @@ namespace Abandoned.UI
             if (top == MenuScreen.Main) main.Refresh();
             else if (top == MenuScreen.Play) play.Refresh();
             else if (top == MenuScreen.Pause) pause.Refresh();
+            else if (top == MenuScreen.CrewBoard) crewBoard.Refresh();
             if (InputBindings.WasPressed("HideHud")) ClipMode = !ClipMode;
             // M10.11: a free camera for trailer shots, only in a game (and gone when it ends).
             if (running && InputBindings.WasPressed("PhotoCamera") && (Player.FreeCamera.Active || Player.FreeCamera.Allowed)) Player.FreeCamera.Toggle();

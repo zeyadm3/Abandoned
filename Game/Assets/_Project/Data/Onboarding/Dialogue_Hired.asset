@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7876c10a424e4c35845e55d770e31fb, type: 3}
+  m_Name: Dialogue_Hired
+  m_EditorClassIdentifier: Abandoned.Runtime::Abandoned.Onboarding.DialogueDefinition
+  <Id>k__BackingField: hired
+  <Speaker>k__BackingField: Dana Whitfield
+  <SpeakerRole>k__BackingField: Human Resources
+  lines:
+  - text: There you are. Sit, sit.
+    shot: 1
+    hold: 0.2
+    condition: 
+    replies: []
+  - text: The trainer says you were quick. Don't be that quick on a real floor.
+    shot: 0
+    hold: 0.45
+    condition: quick
+    replies: []
+  - text: The trainer says you took your time. Good. The ones who rush don't stay
+      long.
+    shot: 0
+    hold: 0.45
+    condition: slow
+    replies: []
+  - text: The trainer says you listened. Most don't.
+    shot: 0
+    hold: 0.45
+    condition: steady
+    replies: []
+  - text: So. You're hired. Welcome to Abandoned Salvaging.
+    shot: -1
+    hold: 0.45
+    condition: 
+    replies:
+    - text: Thanks.
+      answer: Don't thank me. Thank whoever left all that stuff behind.
+    - text: What's the pay?
+      answer: A cut of what you bring out. So bring out more.
+    - text: Do I get a uniform?
+      answer: You get a locker. Pick your kit in a minute.
+  - text: Sign here. And here. That one says the company isn't responsible for...
+      well. Anything.
+    shot: 3
+    hold: 0.8
+    condition: 
+    replies: []
+  - text: Right. Pick your kit, then the HQ is yours. The telephone on the dispatch
+      bench has the jobs.
+    shot: 4
+    hold: 0.45
+    condition: 
+    replies: []
+  - text: And mind the floors.
+    shot: 5
+    hold: 1
+    condition: 
+    replies: []

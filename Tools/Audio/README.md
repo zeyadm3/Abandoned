@@ -9,6 +9,7 @@ in the Unity project. Nothing in this folder ships with the game.
 | `generate_boss_voicemails.py` | `Game/Assets/_Project/Art/Audio/Voicemail/Resources/Voicemail/vm_*.wav` (answering-machine tape) | `am_michael`, `am_fenrir`, `am_onyx`, `bm_george` |
 | `generate_tutorial_dispatch.py` | `Game/Assets/_Project/Art/Audio/TutorialDispatch/Resources/TutorialDispatch/td_*.wav` (handheld radio, the training job's dispatcher) | `af_heart`, `af_bella`, `bf_emma` |
 | `generate_tutorial_narration.py` | `Game/Assets/_Project/Art/Audio/TutorialNarration/Resources/TutorialNarration/tn_*.wav` (light radio, the training job's trainer reading every lesson) | `am_michael` |
+| `generate_hr_interview.py` | `Game/Assets/_Project/Art/Audio/Onboarding/Resources/Onboarding/hr_*.wav` (the hiring's HR manager, dry office voice; lines are the `Say(...)` calls in `Editor/Onboarding/OnboardingDialogue.cs`) | `af_sarah` |
 
 The voices are mixed on purpose (user, 2026-10-12: "keep it random, sometimes it's that person, sometimes
 it's another one"):

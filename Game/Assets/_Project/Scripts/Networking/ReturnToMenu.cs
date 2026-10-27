@@ -16,6 +16,9 @@ namespace Abandoned.Networking
         private const string HomeLevel = "HQ";
         private bool pending;
 
+        /// <summary>Once: where the next ended session goes instead of the HQ (the hiring's HR office, 2026 remake).</summary>
+        public static string Next { get; set; }
+
         private void OnEnable()
         {
             if (bootstrap != null) bootstrap.SessionEnded += OnSessionEnded;
@@ -37,6 +40,13 @@ namespace Abandoned.Networking
         {
             if (!pending) return;
             pending = false;
+            string next = Next;
+            Next = null;
+            if (!string.IsNullOrEmpty(next) && Application.CanStreamedLevelBeLoaded(next))
+            {
+                SceneManager.LoadScene(next);
+                return;
+            }
             // Back to the HQ (the menu of a game in progress) when the build has one; else this level again.
             if (Application.CanStreamedLevelBeLoaded(HomeLevel))
             {

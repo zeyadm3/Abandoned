@@ -306,13 +306,13 @@ namespace Abandoned.UI
         private void Voice()
         {
             Section(Loc.T("HEARING"));
-            Note(MenuKit.Percent(body, Loc.T("Voices"), VoiceSettings.Volume, v => VoiceSettings.Volume = v), Loc.T("Everyone's voice; per-player volume is in the pause menu's crew list."));
+            Note(MenuKit.Percent(body, Loc.T("Voices"), VoiceSettings.Volume, v => VoiceSettings.Volume = v), Loc.T("Everyone's voice; each crewmate's own volume is in the crew list below."));
             Section(Loc.T("MICROPHONE"));
             // 0.23.3
             Note(MenuKit.Percent(body, Loc.T("Microphone gain"), VoiceSettings.MicGain / 3f, v => VoiceSettings.MicGain = v * 3f), Loc.T("How loud your mic counts for the open-mic gate (33 % is normal)."));
             Note(MenuKit.Percent(body, Loc.T("Open mic threshold"), VoiceSettings.OpenMicThreshold / 4f, v => VoiceSettings.OpenMicThreshold = v * 4f), Loc.T("Higher: you must speak louder before open mic sends (25 % is normal)."));
             Note(MenuKit.Percent(body, Loc.T("Radio volume"), VoiceSettings.RadioVolume, v => VoiceSettings.RadioVolume = v), Loc.T("The walkie-talkie, on top of the voice volume."));
-            Note(Toggle(Loc.T("Voice chat off"), VoiceSettings.VoiceOff, v => VoiceSettings.VoiceOff = v), Loc.T("Send nothing and hear nobody. Per-crewmate volumes are in the pause menu and are remembered."));
+            Note(Toggle(Loc.T("Voice chat off"), VoiceSettings.VoiceOff, v => VoiceSettings.VoiceOff = v), Loc.T("Send nothing and hear nobody. Per-crewmate volumes are in the crew list below and are remembered."));
             Note(Toggle(Loc.T("Text chat off"), VoiceSettings.TextChatOff, v => VoiceSettings.TextChatOff = v), Loc.T("The chat key does nothing and nobody's lines show."));
             var options = new List<string> { Loc.T("System default") };
             options.AddRange(Microphone.devices);
@@ -322,6 +322,15 @@ namespace Abandoned.UI
             MenuKit.Switch(body, Loc.T("Talk"), VoiceSettings.Mode == VoiceMode.PushToTalk, Loc.T("Push to talk ({0})", InputBindings.Display("PushToTalk")), Loc.T("Open mic"),
                 ptt => VoiceSettings.Mode = ptt ? VoiceMode.PushToTalk : VoiceMode.OpenMic);
             Note(Toggle(Loc.T("Mute my microphone"), VoiceSettings.MicMuted, m => VoiceSettings.MicMuted = m), Loc.T("Nobody hears you, in any mode."));
+            // 2026 remake: the pause menu no longer lists the crew, so each crewmate's volume lives here (and on the HQ crew board).
+            Section(Loc.T("CREW"));
+            var crew = new CrewRoster(body, kick: false);
+            Label alone = MenuKit.Text(body, "", "settings__note");
+            crew.Root.schedule.Execute(() =>
+            {
+                int count = crew.Refresh(menu.Bootstrap);
+                alone.text = count > 1 ? "" : Loc.T("Nobody else is here. Crewmates appear here in a game.");
+            }).Every(250);
             VisualElement meter = Row(Loc.T("Mic level"));
             micBar = UiKit.Bar(meter, "mic-meter");
             Label status = MenuKit.Text(body, "", "settings__note");

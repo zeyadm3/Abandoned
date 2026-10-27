@@ -53,9 +53,11 @@ namespace Abandoned.Tutorial
             if (!show) return;
             bool host = training.IsServer;
             CompanyService company = CompanyService.Current;
-            MenuKit.Show(skip, host && training.CanSkip);
+            // Being hired (2026 remake): the first training can't be skipped or left.
+            bool hiring = Onboarding.OnboardingProgress.InHiringTraining;
+            MenuKit.Show(skip, host && training.CanSkip && !hiring);
             MenuKit.Show(restart, host && !training.Finished);
-            MenuKit.Show(leave, host && company != null && company.IsSpawned);
+            MenuKit.Show(leave, host && company != null && company.IsSpawned && !hiring);
             string text = host ? Loc.T("Training never pays and nothing here is saved.") : Loc.T("The host can skip lessons, restart a chapter or end the training.");
             if (note.text != text) note.text = text;
         }

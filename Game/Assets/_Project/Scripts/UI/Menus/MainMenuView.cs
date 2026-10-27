@@ -30,6 +30,15 @@ namespace Abandoned.UI
         private readonly MenuTitle title;
         private readonly EarlyAccessNotice earlyAccess;
         private int memoShown = -1;
+        private Button continueItem;
+
+        // The chosen save, or a new company for a new hire; friends join you at the HQ.
+        private static string ContinueText()
+        {
+            int slot = Company.SaveStore.Slot;
+            string saved = Company.SaveStore.Describe(slot);
+            return Loc.T("Save {0}: {1}. To the HQ; invite friends from the crew board there.", slot, saved);
+        }
 
         public VisualElement Root { get; }
 
@@ -72,11 +81,21 @@ namespace Abandoned.UI
             cardText = MenuKit.Text(card, "", "mm-card__text");
             memo = MenuKit.Text(card, "", "mm-card__memo");
 
-            Item(Loc.T("Play"), Loc.T("Host a crew, join your friends, or take the training job at 14 Larch Court."),
-                () => menu.Push(MenuScreen.Play), SoundId.UiConfirm);
+            // 2026 remake: a short title screen. Everything else happens at the HQ: friends are invited from the crew
+            // board, training is the clipboard by the dispatch telephone, achievements are in the trophy cabinet.
+            continueItem = Item(Loc.T("Continue"), "", () => menu.Bootstrap.StartHost(), SoundId.UiConfirm);
+            var slots = new string[Company.SaveStore.Slots];
+            for (int i = 0; i < slots.Length; i++) slots[i] = $"{i + 1}: {Company.SaveStore.Describe(i + 1)}";
+            MenuKit.Choice(nav, Loc.T("Save"), slots, Company.SaveStore.Slot - 1, i =>
+            {
+                Company.SaveStore.Slot = i + 1;
+                Describe(0);
+            });
             Item(Loc.T("Settings"), Loc.T("Controls, picture, sound, voice and accessibility."), () => menu.Push(MenuScreen.Settings));
-            Item(Loc.T("Achievements"), Loc.T("What the company has on record about you."), () => menu.Push(MenuScreen.Achievements));
             Item(Loc.T("Credits"), Loc.T("The people and the free assets behind the game."), () => menu.Push(MenuScreen.Credits));
+            // Development builds keep the direct join (LAN, nettests, Multiplayer Play Mode).
+            if (DevTools.Enabled)
+                Item(Loc.T("Join by address (dev)"), Loc.T("Host or join over the network directly. Development builds only."), () => menu.Push(MenuScreen.Play));
             Item(Loc.T("Quit"), Loc.T("Leave the building. The salvage will still be there."), menu.Quit, SoundId.UiBack, important: true);
 
             var status = new VisualElement();
@@ -102,7 +121,7 @@ namespace Abandoned.UI
             Describe(0);
         }
 
-        private void Item(string text, string description, Action click, SoundId sound = SoundId.UiClick, bool important = false)
+        private Button Item(string text, string description, Action click, SoundId sound = SoundId.UiClick, bool important = false)
         {
             int index = items.Count;
             Button button = MenuKit.Button(nav, text, click, sound, important: important);
@@ -111,6 +130,7 @@ namespace Abandoned.UI
             button.RegisterCallback<PointerEnterEvent>(_ => Describe(index));
             button.RegisterCallback<FocusInEvent>(_ => Describe(index));
             items.Add(button);
+            return button;
         }
 
         // The card follows the pointer and the focus; the item it describes stays marked.
@@ -120,7 +140,7 @@ namespace Abandoned.UI
             for (int i = 0; i < items.Count; i++) items[i].EnableInClassList("mm-nav__item--active", i == index);
             cardIndex.text = $"{index + 1:00} / {items.Count:00}";
             cardTitle.text = items[index].text;
-            cardText.text = items[index].userData as string ?? "";
+            cardText.text = items[index] == continueItem ? ContinueText() : items[index].userData as string ?? "";
         }
 
         /// <summary>Every frame while showing: the last game's notice, the memo, the logo's signal.</summary>

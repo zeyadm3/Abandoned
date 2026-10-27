@@ -96,7 +96,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 4 Truck, upgrades, van, truck cosmetics | done (2026-10-27) except the arrival van and the Prison boat hull (see notes) |
 | 5 Loot | done (2026-10-27): all 345 items remastered and installed |
 | 6 Maps | done (2026-10-27) for props and fittings: 75 kit models, 5,327 props swapped across the 11 maps; architecture itself not remodelled (see notes) |
-| 7 The hiring and the HQ-centred game | |
+| 7 The hiring and the HQ-centred game | done (2026-10-27): HR office, interview, training, "you're hired", creator; title screen, cut-down pause, HQ stations |
 | 8 UI | |
 | 9 Integration and handover | |
 
@@ -200,6 +200,41 @@ and credited in `Docs/ASSET_CREDITS.md`.
   (no architecture kit or new fracture stages); the HQ gear rack and shop terminal (functional, left alone); the
   arrival van; the Prison boat hull. The kit was swapped into the saved scenes without running the rest of the map
   chain (CoplanarFix, remaster) afterwards; Rebuild All Maps runs everything in order.
+
+## Phase 7 notes (the hiring and the HQ-centred game)
+
+- Flow (`Scripts/Onboarding/OnboardingFlow`, on the session object): first launch, once the early-access notice is
+  closed, loads `Scenes/HrOffice` offline: the interview; then hosts solo at the HQ and goes straight to the training
+  house (as the old Training card did); when the training is finished and the crew is home, it ends the session and
+  loads the HR office again (`ReturnToMenu.Next`): "you're hired", then the character creator, then the HQ.
+  Progress is local (`OnboardingProgress`: New, Interviewed, Trained, Hired + creator done), so quitting resumes there.
+  A machine that played before (a finished training, a run or a company save) counts as hired and sees the creator
+  once. During the hiring's training, the pause menu hides "skip lesson" and "leave training".
+- A Steam invite accepted before being hired (`SteamLobbyFlow.InviteGate`) is kept and joined after the creator; if
+  that lobby is gone, the player gets their own HQ and a toast.
+- The editor auto-hosts on Play, which skips the title screen and so the hiring: test it in a build, or turn off
+  `NetworkConfig.AutoHostInEditor`. Maps > HQ > Reset Hiring on This Machine starts it again.
+- The scene: `Editor/Onboarding/HrOfficeBuilder` (Maps > HQ > Rebuild HR Office (hiring)): a small office from the map
+  kit, the manager (Dana Whitfield, fictional; `Tools/Blender/remake/onboarding/hr_manager.py`, the crew pipeline with
+  her own face and an office outfit, built as a look outside the wardrobe by `CrewLookBuilder.BuildNpc`), six
+  Cinemachine shots (shot 0 the seated first-person view with limited look, five set-ups). `HrManagerActor` seats the
+  crew figure, turns her head to you and nods with her voice (no blinks or jaw: the crew rig has no face bones).
+- The scenes are data (`Data/Onboarding/Dialogue_*.asset`, written from `Editor/Onboarding/OnboardingDialogue`): lines,
+  the shot to cut to, replies that change a line (never the outcome) and conditions on how long the training took.
+  `CutsceneDirector` plays them on Cinemachine priorities and the brain's blends (Timeline wasn't needed). Click moves
+  on; holding Space skips the rest.
+- Voice: `Tools/Audio/generate_hr_interview.py` (Kokoro-82M, voice af_sarah) records every `Say(...)` line to
+  `Art/Audio/Onboarding/Resources/Onboarding/hr_<md5>.wav` (28 lines). Subtitles in all nine languages
+  (`Data/Text/Resources/Text/remake_onboarding.txt`).
+- Title screen: Continue (hosts the chosen save), the save slot, Settings, Credits, Quit; development builds keep
+  "Join by address (dev)" (the old Play screen) for LAN tests and nettests. Training is the HQ clipboard.
+- Pause menu: Resume, Settings, Leave game, Quit to desktop (plus the training buttons in the practice house).
+- HQ stations (`Editor/Onboarding/HqStations`, Maps > HQ > Add Remake Stations to HQ, added to the saved HQ in place):
+  the crew board in the dispatch office (`CrewBoardView`: the crew, voice levels, kick, Steam invites, host rules), the
+  trophy cabinet in the crew room (achievements), the notice board (how to play), and the truck garage desk by the
+  garage door (`TruckGarageTerminal`, from phase 4). Per-player voice levels are also in Settings > Voice
+  (`CrewRoster`, shared by both).
+- Rebuild All Maps runs the stations and the HR office after the training clipboard.
 
 ## Blocked
 

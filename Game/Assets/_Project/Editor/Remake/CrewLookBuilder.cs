@@ -84,39 +84,61 @@ namespace Abandoned.EditorTools.Remake
             return list;
         }
 
-        private static CosmeticDefinition Character(HeadMeta meta)
+        /// <summary>
+        /// A look that is not in the wardrobe (the HR manager of the hiring, 2026 remake phase 7): her head and outfit
+        /// from `folder` (Head_&lt;head&gt;.json/.fbx, Outfit_&lt;outfit&gt;.json/.fbx), definitions written to `dataFolder`.
+        /// </summary>
+        public static (CosmeticDefinition person, CosmeticDefinition outfit) BuildNpc(string folder, string head, string outfit, string dataFolder)
         {
-            GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>($"{RemakePaths.Characters}/Head_{meta.id}.fbx");
+            AssetDatabase.ImportAsset(folder, ImportAssetOptions.ImportRecursive);
+            RemakeMaterials.EnsureModelMaterials(folder);
+            string meshes = folder + "/Meshes";
+            PolishAssets.EnsureFolder(meshes);
+            PolishAssets.EnsureFolder(dataFolder);
+            var hm = JsonUtility.FromJson<HeadMeta>(File.ReadAllText($"{folder}/Head_{head}.json"));
+            var om = JsonUtility.FromJson<OutfitMeta>(File.ReadAllText($"{folder}/Outfit_{outfit}.json"));
+            CosmeticDefinition person = Character(hm, folder, meshes, dataFolder);
+            CosmeticDefinition wear = Outfit(om, folder, meshes, dataFolder);
+            AssetDatabase.SaveAssets();
+            return (person, wear);
+        }
+
+        private static CosmeticDefinition Character(HeadMeta meta, string folder = RemakePaths.Characters, string meshes = MeshFolder,
+                                                    string dataFolder = null)
+        {
+            GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>($"{folder}/Head_{meta.id}.fbx");
             if (model == null) return null;
-            Mesh mesh = Combine(model, $"Head_{meta.id}", out Material[] materials);
-            CosmeticDefinition d = Definition($"Character_{meta.id}", meta.id, meta.name, CosmeticKind.Character, meta.blurb, 0);
+            Mesh mesh = Combine(model, $"Head_{meta.id}", out Material[] materials, null, meshes);
+            CosmeticDefinition d = Definition($"Character_{meta.id}", meta.id, meta.name, CosmeticKind.Character, meta.blurb, 0, dataFolder);
             // Hats were fitted to the neutral head (scale 1, crown 1.778); smaller heads get smaller hats.
             d.EditorSetLook(mesh, null, materials, -1, meta.build, Mathf.Clamp(meta.scale, .85f, 1.1f));
             EditorUtility.SetDirty(d);
             return d;
         }
 
-        private static CosmeticDefinition Outfit(OutfitMeta meta)
+        private static CosmeticDefinition Outfit(OutfitMeta meta, string folder = RemakePaths.Characters, string meshFolder = MeshFolder,
+                                                 string dataFolder = null)
         {
-            GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>($"{RemakePaths.Characters}/Outfit_{meta.id}.fbx");
+            GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>($"{folder}/Outfit_{meta.id}.fbx");
             if (model == null) return null;
             var meshes = new Mesh[3];
             Material[] materials = null;
             for (int b = 0; b < 3; b++)
-                meshes[b] = Combine(model, $"Outfit_{meta.id}_B{b}", out materials, $"Outfit_{meta.id}_B{b}");
+                meshes[b] = Combine(model, $"Outfit_{meta.id}_B{b}", out materials, $"Outfit_{meta.id}_B{b}", meshFolder);
             int tint = -1;
             if (materials != null)
                 for (int i = 0; i < materials.Length; i++)
                     if (materials[i] != null && materials[i].name.EndsWith("_Tint")) tint = i;
-            CosmeticDefinition d = Definition($"Outfit_{meta.id}", meta.id, meta.name, CosmeticKind.Outfit, meta.blurb, meta.price);
+            CosmeticDefinition d = Definition($"Outfit_{meta.id}", meta.id, meta.name, CosmeticKind.Outfit, meta.blurb, meta.price, dataFolder);
             d.EditorSetLook(null, meshes, materials, tint, 0, 1f);
             EditorUtility.SetDirty(d);
             return d;
         }
 
-        private static CosmeticDefinition Definition(string file, string id, string name, CosmeticKind kind, string about, int price)
+        private static CosmeticDefinition Definition(string file, string id, string name, CosmeticKind kind, string about, int price,
+                                                     string dataFolder = null)
         {
-            string path = $"{CosmeticsBuilder.DataFolder}/{file}.asset";
+            string path = $"{dataFolder ?? CosmeticsBuilder.DataFolder}/{file}.asset";
             var d = AssetDatabase.LoadAssetAtPath<CosmeticDefinition>(path);
             if (d == null)
             {
@@ -131,7 +153,7 @@ namespace Abandoned.EditorTools.Remake
         /// One mesh in feet space from the model's skinned renderers (all of them, or only `only`), submeshes in material
         /// order, bone weights remapped to <see cref="Bones"/>, bind poses for the rest pose. Saved as an asset.
         /// </summary>
-        private static Mesh Combine(GameObject model, string assetName, out Material[] materials, string only = null)
+        private static Mesh Combine(GameObject model, string assetName, out Material[] materials, string only = null, string folder = MeshFolder)
         {
             GameObject copy = Object.Instantiate(model);
             copy.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -199,7 +221,7 @@ namespace Abandoned.EditorTools.Remake
             for (int i = 0; i < materials.Length; i++)
                 if (materials[i] != null && materials[i].name.EndsWith("_Tint"))
                     materials[i] = RemakeMaterials.GetOrCreate(materials[i].name, RemakePaths.Characters);
-            string path = $"{MeshFolder}/{assetName}.asset";
+            string path = $"{folder}/{assetName}.asset";
             var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null)
             {

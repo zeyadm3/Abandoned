@@ -43,6 +43,8 @@ namespace Abandoned.EditorTools
             FireStationLayout.ScenePath,
             // The training job (14 Larch Court): ships in every build, but is never a contract destination.
             TutorialHouseLayout.ScenePath,
+            // The hiring's HR office (2026 remake): offline, first launch only; reached by scene name, never by travel.
+            Hiring.HrOfficeBuilder.ScenePath,
             TestMapBuilder.ScenePath,
         };
 

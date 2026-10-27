@@ -120,6 +120,11 @@ Tools > Abandoned
         0.18.7 Add Loot Catalogue and Trophy Shelf
         0.19.4 Add Difficulty Switch
         0.19.6 Add Break-Room Toys
+      ──  2026 remake (the hiring)
+      Rebuild HR Office (hiring)                     1480
+      Add Remake Stations to HQ                      1481
+      Build Hiring Dialogue                          1482
+      Reset Hiring on This Machine                   1483
     Tutorial House                                   [1500-1599]
       Rebuild Tutorial House                         1500
       Add Training Clipboard to HQ                   1501

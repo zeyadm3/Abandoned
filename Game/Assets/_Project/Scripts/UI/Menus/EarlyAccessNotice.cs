@@ -25,6 +25,9 @@ namespace Abandoned.UI
 
         public bool Visible => !dismissed;
 
+        /// <summary>The notice is still up (the hiring waits for it).</summary>
+        public static bool Open => !dismissed;
+
         public EarlyAccessNotice(VisualElement parent, Font titleFont, Action continueToMenu = null)
         {
             this.continueToMenu = continueToMenu;
