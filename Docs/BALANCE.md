@@ -54,6 +54,26 @@ Extraction window 10–18 min (rush job ×0.6, hot property ×0.55). Danger rise
 faster decay, sharper hearing, faster monsters, more of them; after the window it climbs sharply. Storm: hearing
 ×0.6, decay ×1.4.
 
+## 2026 remake: what the new things cost
+
+All paid with company money at the HQ (the host checks the funds and the crew's spending rule); owned for good.
+
+| What | Prices | Unlock level | Where it is set |
+|---|---|---|---|
+| Truck paints (12) | stock orange free; 1,000 (rust) to 6,000 (purple); gold flake 15,000 | 1-12 | `Editor/Remake/TruckRemakeBuilder` |
+| Truck liveries (6) | 800 (road grime) to 3,500 (flames) | 1-4 | same |
+| Bumpers (3) | 3,000 to 6,000 (snow plough) | 2-6 | same |
+| Roof (2) | 2,500 beacons, 3,000 rack | 2-3 | same |
+| Wheels (4) | steel free; 4,500 to 5,000; gold 12,000 | 4-10 | same |
+| Mud flaps (3) | rubber free; 1,200 to 1,500 | 1-2 | same |
+| Ornaments (4) | 800 (bobblehead) to 3,000 (eagle) | 1-4 | same |
+| Horns (5) | stock free; 1,500 (goose) to 6,000 (ship's horn) | 1-6 | same |
+| Outfits (10) | salvage and coveralls free; 600 (hoodie) to 2,400 (turnout gear) | - | `Tools/Blender/remake/crew/outfits.py` (price in each outfit's JSON) |
+| Workers (8) | free; a new hire picks one in the character creator | - | `CrewLookBuilder` |
+
+A first job pays roughly 1,500-4,000 to the company, so the first paint is one or two jobs and the gold fittings are
+the long goal. Nothing here changes gameplay.
+
 ## What to watch in playtests
 
 - Do crews make quota on the first job without knowing the game? If not: BaseQuota down to $25k.

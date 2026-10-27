@@ -48,3 +48,16 @@ Rules that hold for the whole run (user, 2026-10-27):
 - Never hand-edit `.unity`/`.prefab` YAML; use editor scripts. Keep `.meta` files.
 - New text: `Loc.T` / `Loc.Mark`, then `python3 Tools/Text/check.py` at 0 missing (all nine languages).
 - Append-only enums and catalogs (cosmetics, truck upgrades, truck cosmetics, sound ids).
+- Every remake builder calls `RemakeMaterials.EnsureModelMaterials(<folder>)` first: a model imported before its
+  textures has empty material slots.
+- Never `GetComponent<T>() ?? AddComponent<T>()` in editor code: a missing component is Unity's fake null.
+- Icon or preview renders: MSAA x4 at most; x8 render textures come back empty on this Mac (Metal).
+
+## Where each part lives (phases 1-8, details in Docs/REMAKE_2026.md)
+
+- Characters `crew/` + `Editor/Remake/CrewLookBuilder` (also `BuildNpc` for looks outside the wardrobe); monsters
+  `threats/` + `MonsterInstaller`; gear `gear/` + `GearModelBuilder`; truck `truck/` + `TruckRemakeBuilder`; loot
+  `loot/remaster.py` + `LootExport`/`LootInstaller`; map props `maps/kit*.py` + `KitFamilies`/`KitSwap`; the hiring
+  `onboarding/hr_manager.py` + `Editor/Onboarding/*` + `Scripts/Onboarding/*`; icons `Editor/Remake/IconRenderer`.
+- A new map prop family: a function in `maps/kit_*.py` (X length, +Y front, Z up, on the floor, its typical size),
+  its entry in `FAMILIES`, then a `KitFamily` line (name pattern, typical size, fit) and Survey before swapping.

@@ -98,7 +98,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 6 Maps | done (2026-10-27) for props and fittings: 75 kit models, 5,327 props swapped across the 11 maps; architecture itself not remodelled (see notes) |
 | 7 The hiring and the HQ-centred game | done (2026-10-27): HR office, interview, training, "you're hired", creator; title screen, cut-down pause, HQ stations |
 | 8 UI | done (2026-10-27): clean modern horror theme layer, 3D icons for gear, cosmetics, truck fittings and loot |
-| 9 Integration and handover | |
+| 9 Integration and handover | done (2026-10-27) |
 
 ## Phase 1 notes (characters and wardrobe)
 
@@ -251,6 +251,39 @@ and credited in `Docs/ASSET_CREDITS.md`.
   stays as the fallback). MSAA x8 render textures come back empty on this Mac's Metal; the studio uses x4.
 - Not done: the title screen's backdrop is still the HQ behind the menu (no staged crew-and-truck scene), and the HUD,
   contract board, shop, results and travel screens were re-themed, not re-laid out.
+
+## Handover (phase 9)
+
+Built, compiled and authored into the saved scenes and assets; **never played, tested or verified** (the user's
+instruction). Commits on `main`: phase 0 `f3aaed061`, 1 `ce4cb9040`, 2 `ecef7920e`, 3 `7f58a3018`, 4 `3d7c891eb`,
+5 `b6107e28d`, 6 `90c6ae494`, 7 `a8cfaa983`, 8 `1cb06acf8`, 9 (this one). Never pushed.
+
+Rebuild Entire Game reapplies everything in order: gear models and truck cosmetics (data), loot (the remastered models
+assigned before the prefabs), the crew looks, the monsters, every map (KitSwap inside AvOverhaul.AfterMaps), the HQ
+stations and the HR office (after the training clipboard), and last the icons.
+
+**What is not done (honest list):**
+- Maps: walls, slabs, stairs and facades keep their code-built geometry (no architecture kit, no new fracture
+  stages); the arrival van and the Prison boat hull keep their old art; the HQ gear rack and shop terminal too.
+- Characters: first-person gloves are the same for every outfit; no crew number on the skinned worker.
+- The HR manager has no blinks or lip sync (the crew rig has no face bones): her head turns and nods with her voice.
+  Her office outfit is the crew's jacket shape in a dark office colour.
+- UI: re-themed, not re-laid out (HUD, contract board, shop, results, travel screen keep their layouts); the title
+  screen's backdrop is the HQ behind the menu, not a staged scene.
+- The kit was swapped into the saved scenes without re-running the rest of the map chain (CoplanarFix, remaster);
+  Rebuild All Maps runs them all in order.
+
+**What to check first (in this order):**
+1. Compile (`Tools/unity.sh compile`), then open each map and look at the swapped props (`_KitSwap` lists them;
+   Art > Remake: Undo Kit Props in Open Map takes one map back). Windows are stretched to their openings, one style
+   per map; wall pieces turn their back to the nearest wall by raycast, so check lockers, shelves and beds.
+2. The hiring: a player build (or AutoHostInEditor off, then Maps > HQ > Reset Hiring on This Machine): interview,
+   training, "you're hired", the creator, the HQ. Try quitting at each stage, and accept a Steam invite as a new hire.
+3. The HQ: crew board (invite, kick, rules, voice levels), trophy cabinet, notice board, garage desk, the cut-down Esc
+   menu, the title screen's Continue and save slot.
+4. A Mall job with the remastered loot (sizes, grips, how it sits on shelves) and the remodelled gear.
+5. Each of the eight monsters, the truck with upgrades and cosmetics, the wardrobe and creator icons.
+6. Then `Tools/unity.sh all`, the nettests (cosmetic and truck-look sync), and the Checks menu audits.
 
 ## Blocked
 

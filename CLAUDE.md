@@ -101,6 +101,17 @@ How we work: Docs/PLAYBOOK.md.
 
 ## Current milestone
 
+**The 2026 remake (2026-10-27, `main`).** The game's look rebuilt with the Blender and Unity MCPs, layouts and gameplay
+kept: eight playable workers with ten outfits, hats and accessories (skinned on the crew rig); the eight monsters
+re-sculpted with the same proportions and takes; the 17 gear items; the collection truck, its visible upgrades and a new
+**truck cosmetics** feature (39 fittings, a garage desk at the HQ); all 345 loot items remastered at their old sizes; a
+75-model kit standing in for 5,327 code-built props across the 11 maps (KitSwap, colliders untouched); **the hiring**
+(first launch: an HR interview in a new offline office scene, the training house, "you're hired", a character creator,
+then the HQ); a title screen, a pause menu cut to Resume/Settings/Leave/Quit and HQ stations for the rest (crew board,
+trophy cabinet, notice board); a clean-modern-horror theme layer and rendered icons. Built, compiled and authored; never
+played, tested or verified (the user's instruction). Everything, phase by phase, what is not done and what to check
+first: **Docs/REMAKE_2026.md**. Rebuild Entire Game reapplies it all. The open world and the TestMap were not touched.
+
 **Map and object art remaster (2026-10-22, `codex/lighting-rebuild`).** Applied to all six saved maps and 110 prop,
 loot and equipment prefabs: 500+ shared PBR materials, 7,878 refined prop renderers, physical texture scales,
 preserved artwork/local portable mapping, 281 fitted wall junctions, architectural glazing and 49 refined emitters.
@@ -302,6 +313,21 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-27 (user: "totally rework the entire game", then the plan in Docs/REMAKE_2026.md "The plan"; "you will not
+  test, verify, or run the game while you are building"; no AI generators; commit each phase to `main`): **the 2026
+  remake.**
+  - Remake art lives under `Art/Remake/<Area>` and is made by scripts under `Tools/Blender/remake/` (batch Blender;
+    the live Blender can't read ~/Documents, so it works from a mirror, `sync_live.sh`). Texture sets are
+    `<Set>_BaseColor/_Normal/_Mask`; `RemakeImport` and `RemakeMaterials` turn them into materials. Every remake
+    builder calls `RemakeMaterials.EnsureModelMaterials` first (models imported before their textures get empty slots).
+  - Players pick a worker and an outfit (`CosmeticKind.Character`/`Outfit`, appended; `CosmeticChoice` is 5 bytes).
+  - Maps: props and fittings are swapped by `KitSwap` only where a group purely draws; colliders stay, so no NavMesh or
+    occlusion rebake. Architecture keeps its code-built geometry and 0.24.12/13 materials.
+  - The hiring is local and offline (`Abandoned.Onboarding`, Prefs); a machine that played before counts as hired.
+    The editor's auto-host skips it: test in a build or turn off AutoHostInEditor.
+  - The Esc menu is only Resume, Settings, Leave and Quit; the crew, invites, rules, achievements and how to play live
+    in the HQ. Per-crewmate voice levels are also in Settings > Voice. Players are still only invited from the HQ.
+  - Unity's fake null: never `GetComponent<T>() ?? AddComponent<T>()` in editor code (a missing component is not C# null).
 - 2026-10-22 (user: "remove some of the gear some are useless"): **gear cut.** Out of the shop: flare, portable
   floodlight, spray chalk, flatbed trolley, backpack, moving blanket, crash mat, rope & pulley, support jack, and the
   Armored Bay truck upgrade (17 gear items and 7 upgrades remain). Removed from both catalogs, their builders
