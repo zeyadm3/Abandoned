@@ -190,6 +190,9 @@ Tools > Abandoned
         Map Sites: Sky, Trees, Grass and Sound                         3083
     ──  2026 remake: Remake: Refresh Materials                           3100
         Remake: Refit Trucks in Saved Maps                             3101
+        Remake: Inventory Open Map                                     3102
+        Remake: Swap Kit Props in Open Map, Undo Kit Props in Open Map 3103-3104
+        Remake: Survey Kit Props in All Maps                           3105
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,

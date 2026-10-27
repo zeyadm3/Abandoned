@@ -235,7 +235,8 @@ namespace Abandoned.EditorTools.Remake
             CosmeticDefinition clothes = catalog != null ? catalog.Outfit(0) : null;
             SkinnedMeshRenderer head = Renderer("LookHead", parent, feet, bones);
             SkinnedMeshRenderer outfit = Renderer("LookOutfit", parent, feet, bones);
-            var look = host.GetComponent<WorkerLook>() ?? host.AddComponent<WorkerLook>();
+            var look = host.GetComponent<WorkerLook>();
+            if (look == null) look = host.AddComponent<WorkerLook>();
             look.EditorSetup(head, outfit);
             if (person != null)
             {

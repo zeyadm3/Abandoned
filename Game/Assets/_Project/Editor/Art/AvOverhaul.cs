@@ -53,6 +53,8 @@ namespace Abandoned.EditorTools
         {
             Step("Render pipeline", RenderPipelineSetup.Apply);
             Step("Map looks", AvLook.ApplyToSaved);
+            // 2026 remake: modelled props in place of code-built ones, before the surfaces and the coplanar fix see them.
+            Step("Map remake: kit props", Remake.KitSwap.ApplySaved);
             Step("Scanned surfaces", MaterialUpgrade.Run);
             Step("Decal set", DecalAssets.MakeAll);
             Step("Sound bank", SoundBankBuilder.CreateMissing);

@@ -189,6 +189,8 @@ namespace Abandoned.EditorTools
             string path = AssetDatabase.GetAssetPath(source).ToLowerInvariant();
             // Unsaved procedural meshes have no durable identity for cache reuse or subsequent authoring passes.
             if (string.IsNullOrEmpty(path)) return false;
+            // The 2026 remake's models arrive finished (bevelled, baked, with LODs).
+            if (path.Contains("/art/remake/")) return false;
             if (path.Contains("/characters/") || path.Contains("/threats/") || path.Contains("/cosmetics/") || path.Contains("/ui/") ||
                 path.Contains("landscape") || path.Contains("horizon") || path.Contains("street/streethouse")) return false;
             string own = (source.name + " " + filter.name).ToLowerInvariant();

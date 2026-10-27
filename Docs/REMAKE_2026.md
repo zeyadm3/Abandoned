@@ -95,7 +95,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 3 Gear and shop | done (2026-10-27): 17 items; rack and shop terminal are remodelled with the HQ (phase 6) |
 | 4 Truck, upgrades, van, truck cosmetics | done (2026-10-27) except the arrival van and the Prison boat hull (see notes) |
 | 5 Loot | done (2026-10-27): all 345 items remastered and installed |
-| 6 Maps | |
+| 6 Maps | done (2026-10-27) for props and fittings: 75 kit models, 5,327 props swapped across the 11 maps; architecture itself not remodelled (see notes) |
 | 7 The hiring and the HQ-centred game | |
 | 8 UI | |
 | 9 Integration and handover | |
@@ -173,6 +173,33 @@ and credited in `Docs/ASSET_CREDITS.md`.
 - Look-alikes: nothing to re-run. `LootLookalikes` swaps scenery placed from the dressing prefabs, which are separate
   from the loot prefabs; the remastered loot now looks less like any old scenery, not more.
 - Loot icons are re-rendered with the UI in phase 8.
+
+## Phase 6 notes (maps)
+
+- Inventory: `Editor/Remake/MapInventory` (Art > Remake: Inventory Open Map) wrote `Game/Logs/remake/maps/<Scene>_inventory.json`
+  for all 11 maps (about 230,000 renderers). The maps are mostly code-built from primitives, so the remake works on
+  **props and fittings**: whole groups named like a desk, a car, a window, a shelf.
+- Kit: `Tools/Blender/remake/maps/` - `parts.py` (boxes by extents, posts, rails, lathes, frames; bake and LOD export),
+  `kit_furniture.py`, `kit_services.py`, `kit_street.py`, `kit.py` (batch entry). 46 families, 75 models
+  (`Art/Remake/Maps/Kit/Kit_<family>_<a-d>.fbx`, one baked set each, three LODs). Log: `Game/Logs/remake/kit.log`.
+- Matching: `Editor/Remake/KitFamilies` (names, a real one's size, a tolerance, how it fits: stand, stretch or hang,
+  whether it backs onto a wall, one style per map for windows). A group is swapped only if it only draws: renderers,
+  colliders, LOD groups, section props and passive markers (SurfaceTag, NavMesh hints). Anything with a loot spawn
+  point, a door, a light, text or a script is left alone, as are PolyHaven scans, remake models and the 0.24.9
+  look-alike stand-ins (dust sheets, packaging, fixed fittings). `Art > Remake: Survey Kit Props in All Maps` writes
+  `kit_survey.txt` (matches with sample names, what was turned down and why, prop-like names no family knows).
+- Swap: `Editor/Remake/KitSwap` takes the group's renderers off (recorded in `KitSwapRecord` on the scene's `_KitSwap`
+  object, with LOD levels) and stands the model in its place: proportions pick the variant and quarter turn,
+  wall pieces turn their back to the nearest wall (raycast), the old layer, storey light layers, shadows and static
+  flags carry over. Colliders stay, so **no NavMesh or occlusion rebake**. Re-running restores everything first;
+  `Remake: Undo Kit Props in Open Map` restores only. `AvOverhaul.AfterMaps` runs it right after the map looks, so
+  Rebuild All Maps keeps it. `ObjectRemaster` now skips anything under `Art/Remake/`.
+- Swapped: HQ 203, Mall 214, School 399, Factory 181, Prison 156, Tutorial 50, Hospital 850, Motel 684,
+  Skyscraper 606, Police Station 1,035, Fire Station 949.
+- Not done in this phase: walls, slabs, stairs and facades keep their code-built geometry and 0.24.12/13 materials
+  (no architecture kit or new fracture stages); the HQ gear rack and shop terminal (functional, left alone); the
+  arrival van; the Prison boat hull. The kit was swapped into the saved scenes without running the rest of the map
+  chain (CoplanarFix, remaster) afterwards; Rebuild All Maps runs everything in order.
 
 ## Blocked
 

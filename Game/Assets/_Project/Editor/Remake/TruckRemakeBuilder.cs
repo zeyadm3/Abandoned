@@ -144,7 +144,8 @@ namespace Abandoned.EditorTools.Remake
             instance.transform.localRotation = Quaternion.identity;
             var renderers = instance.GetComponentsInChildren<Renderer>(true);
             Transform parts = GreyboxFactory.Group("TruckFittings", truckRoot);
-            var look = truckRoot.GetComponent<TruckLook>() ?? truckRoot.gameObject.AddComponent<TruckLook>();
+            var look = truckRoot.GetComponent<TruckLook>();
+            if (look == null) look = truckRoot.gameObject.AddComponent<TruckLook>();
             look.EditorSetup(renderers, parts, preview);
             return true;
         }
