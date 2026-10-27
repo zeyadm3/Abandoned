@@ -46,6 +46,8 @@ namespace Abandoned.EditorTools.Remake
                     Debug.LogWarning($"[KitSwap] {scene.name}: {c.Group.name} not swapped: {e.Message}");
                 }
             }
+            // The HQ's working stations (gear rack, shop terminal) are dressed here too, so an undo and redo keeps them.
+            swapped += HqStationModels.Dress(scene, record);
             EditorUtility.SetDirty(record);
             return $"[KitSwap] {scene.name}: {swapped} props swapped ({restored} renderers restored first); no models yet for: " +
                    (missing.Count > 0 ? string.Join(", ", missing.OrderBy(m => m)) : "none");
@@ -183,6 +185,39 @@ namespace Abandoned.EditorTools.Remake
                 Object.DestroyImmediate(filter);
             }
             record.EditorAdded(holder);
+        }
+
+        /// <summary>Takes these renderers off (recorded, so <see cref="Undo"/> brings them back) and stands `model` at the
+        /// origin of `parent`, drawing like the first of them did.</summary>
+        public static GameObject Replace(KitSwapRecord record, List<MeshRenderer> renderers, GameObject model, Transform parent, string name)
+        {
+            if (renderers.Count == 0) return null;
+            var holder = new GameObject(name);
+            holder.transform.SetParent(parent, false);
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(model);
+            go.transform.SetParent(holder.transform, false);
+            foreach (Collider c in go.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
+            MeshRenderer first = renderers[0];
+            StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(first.gameObject);
+            foreach (Transform part in holder.GetComponentsInChildren<Transform>(true))
+            {
+                part.gameObject.layer = first.gameObject.layer;
+                GameObjectUtility.SetStaticEditorFlags(part.gameObject, flags);
+            }
+            foreach (Renderer r in holder.GetComponentsInChildren<Renderer>(true)) r.renderingLayerMask = first.renderingLayerMask;
+            foreach (MeshRenderer r in renderers)
+            {
+                var filter = r.GetComponent<MeshFilter>();
+                record.EditorRemoved(new KitSwapRecord.Removed
+                {
+                    owner = r.gameObject, mesh = filter.sharedMesh, materials = r.sharedMaterials,
+                    renderingLayers = r.renderingLayerMask, shadows = r.shadowCastingMode
+                });
+                Object.DestroyImmediate(r);
+                Object.DestroyImmediate(filter);
+            }
+            record.EditorAdded(holder);
+            return holder;
         }
 
         /// <summary>The variant and quarter turn (0 or 1) whose proportions are closest to the copy's (ties broken by

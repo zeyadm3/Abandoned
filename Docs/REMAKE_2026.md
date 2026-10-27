@@ -293,6 +293,10 @@ stations and the HR office (after the training clipboard), and last the icons.
   launch (the hull in the swaying HullArt group; the wheelhouse over the solid block, whose collider stays).
   `Vehicles.Dress` prefers the remade vans and `IslandBoat.Build` dresses the launch, so rebuilds keep them.
   Remake models imported before their textures need Art > Remake: Refresh Materials (the vehicles did).
+- **HQ gear rack and shop terminal:** `Tools/Blender/remake/hq/hq_stations.py`, each drawn in its station's own
+  space; `Editor/Remake/HqStationModels` takes the old drawing off (recorded in `_KitSwap`, so undo brings it back) and
+  stands the model in, keeping the colliders, the scripts and the terminal's amber screen. KitSwap.Apply on the HQ
+  does it, so Rebuild All Maps keeps it.
 
 ## Blocked
 
