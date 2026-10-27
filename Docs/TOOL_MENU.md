@@ -155,9 +155,11 @@ Tools > Abandoned
       Create Company Content, Create Equipment Content, Create Health and Flashlight Content,
       Create Structure Content, Create Door and Locker Config, Create Pacing and Decay Configs,
       Create Crew Director Config, Build Achievements                     2000-2007
+      Create Gear Models (remake)                                         2008
     Prefabs                                          [2100-2199]
       Create Network Content, Create Structure Net Prefab, Create Player Prefab,
       Create Threat Prefabs, Create New Horror Threats                   2100-2104
+      Install Remade Monsters (remake)                                   2105
     Loot                                             [2200-2299]
       Create Example Loot Definitions, Generate Loot Prefabs, Assign Loot Models   2200-2202
       ──

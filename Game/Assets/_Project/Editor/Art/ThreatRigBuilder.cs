@@ -20,7 +20,10 @@ namespace Abandoned.EditorTools
             foreach (ThreatPresentation presentation in root.GetComponents<ThreatPresentation>()) UnityEngine.Object.DestroyImmediate(presentation);
             foreach (ThreatAnimationSync animation in root.GetComponents<ThreatAnimationSync>()) UnityEngine.Object.DestroyImmediate(animation);
             foreach (ThreatHorrorAudio audio in root.GetComponents<ThreatHorrorAudio>()) UnityEngine.Object.DestroyImmediate(audio);
-            string modelPath = $"{ArtFolder}/{modelName}.fbx";
+            // 2026 remake: the remodelled monster when it exists, with its own baked materials.
+            string remade = $"{Remake.RemakePaths.Threats}/{modelName}.fbx";
+            bool isRemake = AssetDatabase.LoadAssetAtPath<GameObject>(remade) != null;
+            string modelPath = isRemake ? remade : $"{ArtFolder}/{modelName}.fbx";
             GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
             if (source == null) throw new InvalidOperationException($"Missing custom threat model: {modelPath}. Run Tools/Blender/threats.py first.");
             var visual = new GameObject("Visual");
@@ -35,6 +38,7 @@ namespace Abandoned.EditorTools
             root.AddComponent<ThreatHorrorAudio>();
             foreach (Renderer renderer in visual.GetComponentsInChildren<Renderer>())
             {
+                if (isRemake) break;
                 Material[] mats = renderer.sharedMaterials;
                 for (int i = 0; i < mats.Length; i++) mats[i] = Material(mats[i] != null ? mats[i].name : "THREAT_Ash");
                 renderer.sharedMaterials = mats;

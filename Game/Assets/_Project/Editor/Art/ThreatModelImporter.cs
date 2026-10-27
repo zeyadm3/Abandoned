@@ -9,7 +9,10 @@ namespace Abandoned.EditorTools
     public class ThreatModelImporter : AssetPostprocessor
     {
         public override uint GetVersion() => 2;
-        private bool IsThreat => assetPath.StartsWith("Assets/_Project/Art/Custom/Threats/", StringComparison.Ordinal) && assetPath.EndsWith(".fbx", StringComparison.OrdinalIgnoreCase);
+        // 2026 remake: the remodelled monsters (Tools/Blender/remake/threats) import the same way.
+        private bool IsThreat => (assetPath.StartsWith("Assets/_Project/Art/Custom/Threats/", StringComparison.Ordinal) ||
+                                  assetPath.StartsWith(Remake.RemakePaths.Threats + "/", StringComparison.Ordinal)) &&
+                                 assetPath.EndsWith(".fbx", StringComparison.OrdinalIgnoreCase);
         private void OnPreprocessModel()
         {
             if (!IsThreat) return;

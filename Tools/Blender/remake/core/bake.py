@@ -111,9 +111,10 @@ def _bake(ob, kind, img, mats, high=None, **kw):
     added = _target_nodes(mats, img)
     sc = bpy.context.scene
     sc.render.bake.use_selected_to_active = high is not None
+    cage, ray = kw.pop('cage', .02), kw.pop('ray', .05)
     if high is not None:
-        sc.render.bake.cage_extrusion = kw.pop('cage', .02)
-        sc.render.bake.max_ray_distance = kw.pop('ray', .05)
+        sc.render.bake.cage_extrusion = cage
+        sc.render.bake.max_ray_distance = ray
         _select_only(ob, also=high if isinstance(high, (list, tuple)) else [high])
     else:
         _select_only(ob)
@@ -121,7 +122,7 @@ def _bake(ob, kind, img, mats, high=None, **kw):
     _clear(added)
 
 
-def _bake_metallic(ob, img, mats, high=None):
+def _bake_metallic(ob, img, mats, high=None, ray=.05):
     """Cycles has no metallic pass: route each material's Metallic input to an emission output and bake EMIT."""
     swaps = []
     for m in mats:
@@ -140,7 +141,7 @@ def _bake_metallic(ob, img, mats, high=None):
             em.inputs['Color'].default_value = (v, v, v, 1)
         nt.links.new(em.outputs['Emission'], out.inputs['Surface'])
         swaps.append((m, em, old, out))
-    _bake(ob, 'EMIT', img, mats, high=high)
+    _bake(ob, 'EMIT', img, mats, high=high, ray=ray, cage=ray * .4)
     for m, em, old, out in swaps:
         if old:
             m.node_tree.links.new(old, out.inputs['Surface'])
@@ -159,7 +160,8 @@ def _save(img, path):
     img.save()
 
 
-def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples=16, unwrap_first=True, high_all=False):
+def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples=16, unwrap_first=True, high_all=False,
+               ray=.05):
     """Bake ob's procedural surfaces into <name>_BaseColor/_Normal/_Mask under out_dir; returns the new material."""
     os.makedirs(out_dir, exist_ok=True)
     setup(samples)
@@ -179,20 +181,20 @@ def bake_asset(ob, name, out_dir, size=None, high=None, ao_distance=.15, samples
     sc.render.bake.use_pass_indirect = False
     sc.render.bake.use_pass_color = True
     src = high if high_all else None
-    _bake(ob, 'DIFFUSE', col, mats, high=src)
+    _bake(ob, 'DIFFUSE', col, mats, high=src, ray=ray, cage=ray * .4)
 
     nor = _image(name + '_Normal', size, (.5, .5, 1, 1), non_color=True)
     sc.render.bake.normal_space = 'TANGENT'
-    _bake(ob, 'NORMAL', nor, mats, high=high)
+    _bake(ob, 'NORMAL', nor, mats, high=high, ray=ray, cage=ray * .4)
 
     rough = _image(name + '_Rough', size, non_color=True)
-    _bake(ob, 'ROUGHNESS', rough, mats, high=src)
+    _bake(ob, 'ROUGHNESS', rough, mats, high=src, ray=ray, cage=ray * .4)
     metal = _image(name + '_Metal', size, non_color=True)
-    _bake_metallic(ob, metal, mats, high=src)
+    _bake_metallic(ob, metal, mats, high=src, ray=ray)
     ao = _image(name + '_AO', size, (1, 1, 1, 1), non_color=True)
     sc.world = sc.world or bpy.data.worlds.new('World')
     sc.world.light_settings.distance = ao_distance
-    _bake(ob, 'AO', ao, mats, high=high)
+    _bake(ob, 'AO', ao, mats, high=high, ray=ray, cage=ray * .4)
 
     mask = _image(name + '_Mask', size, non_color=True)
     r, m, a = _pixels(rough), _pixels(metal), _pixels(ao)

@@ -32,10 +32,10 @@ def high_copy(ob, levels=2, name=None):
 def _arrays(ob):
     me = ob.data
     n = len(me.vertices)
-    co = np.empty(n * 3, np.float32)
+    co = np.empty(n * 3, np.float64)
     me.vertices.foreach_get('co', co)
     me.calc_normals_split() if hasattr(me, 'calc_normals_split') else None
-    nor = np.empty(n * 3, np.float32)
+    nor = np.empty(n * 3, np.float64)
     me.vertices.foreach_get('normal', nor)
     return co.reshape(-1, 3), nor.reshape(-1, 3)
 
@@ -48,7 +48,7 @@ def _write(ob, co):
 def displace(ob, fn, strength=1.0):
     """Move every vertex along its normal by strength * fn(position array Nx3) -> N."""
     co, nor = _arrays(ob)
-    d = fn(co) * strength
+    d = np.nan_to_num(fn(co) * strength, nan=0.0, posinf=0.0, neginf=0.0)
     _write(ob, co + nor * d[:, None])
     return ob
 

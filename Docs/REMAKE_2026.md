@@ -91,7 +91,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 |---|---|
 | 0 Pipeline and art bible | done (2026-10-27) |
 | 1 Characters and wardrobe | done (2026-10-27): 8 workers, 10 outfits x 3 builds, 20 hats, 15 accessories |
-| 2 Monsters | |
+| 2 Monsters | done (2026-10-27): all 8 sculpted, baked, skinned, five takes each |
 | 3 Gear and shop | |
 | 4 Truck, upgrades, van, truck cosmetics | |
 | 5 Loot | |
@@ -113,6 +113,17 @@ and credited in `Docs/ASSET_CREDITS.md`.
 - Wardrobe tabs: Worker, Outfit, Colour, Hats, Accessories. Text: `Data/Text/.../remake_crew.txt`.
 - Not done here: the first-person gloves are still the 2026-10-22 crew gloves for every outfit; the crew numbers
   (TextMesh badges) are gone from the skinned worker.
+
+## Phase 2 notes (monsters)
+
+- Blender: `Tools/Blender/remake/threats/` - `anatomy.py` (node graphs skinned into one sculpt with the Skin modifier,
+  voxel remesh, node-label skin weights), `monsters.py` (the eight designs, horror flesh and stone materials),
+  `takes.py` (the same rig and take names/lengths as Tools/Blender/threats.py, eased keys, a Special per monster).
+- Same heights, widths, hip heights and arm lengths as the 2026-10-08 threats, so agents, reach and timing still fit.
+- Unity: `Art/Remake/Threats/<Name>.fbx`; `ThreatModelImporter` handles that folder too; `ThreatRigBuilder` prefers the
+  remake model and keeps its baked material; `Editor/Remake/MonsterInstaller` (Content > Prefabs > Install Remade
+  Monsters (remake)) upgrades the eight prefabs, and Rebuild Entire Game runs it after the threat builders.
+- Blender's voxel remesh returns almost nothing below about 1.2 cm voxels; `anatomy.Body.build` clamps to that.
 
 ## Blocked
 

@@ -35,6 +35,7 @@ def show(name, clear=True):
     path = os.path.join(CACHE, name + '.blend')
     with bpy.data.libraries.load(path, link=False) as (src, dst):
         dst.objects = list(src.objects)
+        dst.actions = list(src.actions)
     for ob in dst.objects:
         if ob is not None and ob.name not in bpy.context.scene.collection.objects:
             bpy.context.scene.collection.objects.link(ob)
