@@ -171,6 +171,29 @@ Budgets to hold, checked by a new `CityBudgetTests` beside `MallRenderBudgetTest
    - What is kept untouched: the van, `PoiStreamer`, the stand-ins, the player spawns, the fuel pump, the session
      objects and the atlas format.
 8. **Perf pass and review renders** — budget tests, `GraphicsAudit`, aerial and cab shots per district.
+   *Written (2026-10-24), not run: it has nothing to measure until the city is built.*
+   `Editor/City/CityAudit`, menu **Checks > Audit and Render City**. It reads whichever city exists — `Scenes/World`
+   once the city is in it, otherwise `Scenes/CityDraft` — so the draft and the real thing give the same numbers.
+   It reports and renders; it changes nothing.
+   - **Counts and budgets** per probe (downtown, retail core, harbour, a bridge), printed with the limit beside
+     them, so what a detail pass has left to spend is obvious rather than pass/fail.
+   - **Coplanar faces** through the existing `GraphicsAudit.FindFights`, not a second implementation. Keep near 0.
+   - **The two checks that catch a wrong trace**: blocks standing on a map's ground, and a map whose spur never
+     reached the grid, leaving the van parked more than 80 m from any road.
+   - **Eight review shots** into Docs/renders/city: the city from the air, downtown and the Circus, a street at
+     eye height, the river and a bridge, the harbour, the quay and Gallows Rock, the retail core.
+   Fixed while writing it: far cell copies were left active by the builder, so in the editor every cell drew its
+   far copy through its near one — a waste, and two faces in the same plane. They are built inactive now.
+
+## What is left
+
+The draft is written through to its last step, and **none of it has run in Unity**. In order:
+1. **Preview City Plan**, and check the coast, the river and the Circus against the drawing.
+2. **Rebuild World** (slow: ten scenes measured, then the whole city), or **Rebuild City Draft** to keep
+   `Scenes/World` untouched a while longer.
+3. **Audit and Render City**, and read the numbers and the eight shots.
+4. Then the detail passes, district by district: facades, shopfronts, kerbs, pavements, street furniture,
+   lane markings, and the hills back in the outskirts.
 
 Detail (facades, shopfronts, streetscape, props) is a later pass, district by district, once the draft drives well.
 

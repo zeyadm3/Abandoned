@@ -78,6 +78,9 @@ namespace Abandoned.EditorTools
             UnityEditor.AssetDatabase.CreateAsset(mesh, $"{CityMesh.Folder}/Far_{at.x}_{at.y}.asset");
 
             GameObject copy = CityMesh.Render("Far", cell, mesh, material);
+            // Off until the streamer asks for it: left on, it would draw through the near copy it is a copy of,
+            // which is both a waste and two faces in the same plane.
+            copy.SetActive(false);
             return (copy, mesh.triangles.Length / 3);
         }
     }
