@@ -182,6 +182,7 @@ Tools > Abandoned
         Rebuild Lighting and Shadows                                   3081
         Remaster All Map Art and Objects                               3082
         Map Sites: Sky, Trees, Grass and Sound                         3083
+    ──  2026 remake: Remake: Refresh Materials                           3100
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,
