@@ -33,10 +33,18 @@ namespace Abandoned.Onboarding
             figure.transform.localPosition = Vector3.up * hipHeight;
             foreach (TextMesh mark in figure.GetComponentsInChildren<TextMesh>()) mark.text = "";
             foreach (Collider c in figure.GetComponentsInChildren<Collider>()) Destroy(c);
+            // The crew figure carries the player's presentation scripts; here they would fight the seated pose every
+            // frame (and look for a player that isn't there). Only the rig, the look and the face stay on.
+            foreach (Behaviour b in figure.GetComponentsInChildren<Behaviour>(true))
+                if (!(b is WorkerRig) && !(b is WorkerLook) && !(b is WorkerFace)) b.enabled = false;
+            foreach (Animator a in figure.GetComponentsInChildren<Animator>(true)) a.enabled = false;
             rig = figure.GetComponent<WorkerRig>();
             if (rig == null) return;
             rig.Tint(tint);
             if (rig.TryGetComponent(out WorkerLook look)) look.Apply(person, outfit, tint);
+            // Her jaw follows her recorded voice (the same loudness that drives her nod).
+            WorkerFace face = rig.GetComponent<WorkerFace>();
+            if (face != null) face.Loudness = () => talk * 1.6f;
             headRest = rig.HeadAnchor.localRotation;
         }
 

@@ -17,6 +17,12 @@ namespace Abandoned.Player
         private MaterialPropertyBlock block;
 
         public SkinnedMeshRenderer Head => head;
+
+        // 2026 remake: blinks and the jaw following speech, on every worker that wears a look.
+        private void Awake()
+        {
+            if (GetComponent<WorkerFace>() == null) gameObject.AddComponent<WorkerFace>();
+        }
         public SkinnedMeshRenderer Outfit => outfit;
 
         public void Apply(CosmeticDefinition character, CosmeticDefinition clothes, Color tint)

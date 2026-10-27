@@ -165,6 +165,8 @@ namespace Abandoned.EditorTools.Remake
             var weights = new List<BoneWeight>();
             var subs = new List<List<int>>();
             var mats = new List<Material>();
+            // Blend shapes (the heads' Blink and JawOpen) by name: each part's deltas at its own vertex range.
+            var shapes = new Dictionary<string, List<(int start, Vector3[] deltas)>>();
             try
             {
                 foreach (SkinnedMeshRenderer smr in copy.GetComponentsInChildren<SkinnedMeshRenderer>(true))
@@ -176,6 +178,15 @@ namespace Abandoned.EditorTools.Remake
                     for (int i = 0; i < remap.Length; i++)
                         remap[i] = Mathf.Max(0, System.Array.IndexOf(Bones, smr.bones[i] != null ? smr.bones[i].name : ""));
                     int start = verts.Count;
+                    for (int b = 0; b < src.blendShapeCount; b++)
+                    {
+                        var deltas = new Vector3[src.vertexCount];
+                        src.GetBlendShapeFrameVertices(b, src.GetBlendShapeFrameCount(b) - 1, deltas, null, null);
+                        for (int i = 0; i < deltas.Length; i++) deltas[i] = m.MultiplyVector(deltas[i]);
+                        string shape = src.GetBlendShapeName(b);
+                        if (!shapes.TryGetValue(shape, out var list)) shapes[shape] = list = new List<(int, Vector3[])>();
+                        list.Add((start, deltas));
+                    }
                     Vector3[] v = src.vertices, n = src.normals;
                     Vector4[] t = src.tangents;
                     Vector2[] uv = src.uv;
@@ -205,7 +216,15 @@ namespace Abandoned.EditorTools.Remake
             }
             finally { Object.DestroyImmediate(copy); }
 
-            var mesh = new Mesh { name = assetName, indexFormat = verts.Count > 65000 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16 };
+            // Written straight into the existing asset when there is one (CopySerialized of a mesh with blend shapes onto an
+            // asset crashed the editor's SaveAssets, 2026-10-28): same GUID, no serialized copy.
+            string path = $"{folder}/{assetName}.asset";
+            Mesh existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            Mesh mesh = existing != null ? existing : new Mesh();
+            mesh.Clear();
+            mesh.ClearBlendShapes();
+            mesh.name = assetName;
+            mesh.indexFormat = verts.Count > 65000 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
             mesh.SetVertices(verts);
             mesh.SetNormals(normals);
             mesh.SetTangents(tangents);
@@ -216,19 +235,19 @@ namespace Abandoned.EditorTools.Remake
             var bind = new Matrix4x4[Bones.Length];
             for (int i = 0; i < Bones.Length; i++) bind[i] = Matrix4x4.Translate(-Rest[i]);
             mesh.bindposes = bind;
+            foreach (KeyValuePair<string, List<(int start, Vector3[] deltas)>> shape in shapes)
+            {
+                var all = new Vector3[verts.Count];
+                foreach ((int start, Vector3[] deltas) in shape.Value)
+                    System.Array.Copy(deltas, 0, all, start, Mathf.Min(deltas.Length, all.Length - start));
+                mesh.AddBlendShapeFrame(shape.Key, 100f, all, null, null);
+            }
             mesh.RecalculateBounds();
             materials = mats.ToArray();
             for (int i = 0; i < materials.Length; i++)
                 if (materials[i] != null && materials[i].name.EndsWith("_Tint"))
                     materials[i] = RemakeMaterials.GetOrCreate(materials[i].name, RemakePaths.Characters);
-            string path = $"{folder}/{assetName}.asset";
-            var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
-            if (existing != null)
-            {
-                EditorUtility.CopySerialized(mesh, existing);
-                Object.DestroyImmediate(mesh);
-                mesh = existing;
-            }
+            if (existing != null) EditorUtility.SetDirty(mesh);
             else AssetDatabase.CreateAsset(mesh, path);
             Debug.Log($"[CrewLook] {assetName}: {verts.Count} verts, bounds {mesh.bounds.min:F2}..{mesh.bounds.max:F2}");
             return mesh;

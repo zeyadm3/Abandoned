@@ -59,7 +59,13 @@ namespace Abandoned.Onboarding
                 var options = new string[line.replies.Count];
                 for (int i = 0; i < options.Length; i++) options[i] = Loc.T(line.replies[i].text);
                 view.Replies(options, i => pick = i);
-                while (pick < 0 && !skipping) yield return null;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                while (pick < 0 && !skipping)
+                {
+                    pick = NumberKey(options.Length);
+                    yield return null;
+                }
                 view.Replies(null, null);
                 choosing = false;
                 CursorOwner.Set(this, false);
@@ -111,6 +117,15 @@ namespace Abandoned.Onboarding
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
+        }
+
+        private static int NumberKey(int count)
+        {
+            if (Keyboard.current == null) return -1;
+            Key[] keys = { Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4 };
+            for (int i = 0; i < count && i < keys.Length; i++)
+                if (Keyboard.current[keys[i]].wasPressedThisFrame) return i;
+            return -1;
         }
 
         private bool Advanced()

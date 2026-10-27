@@ -168,7 +168,8 @@ namespace Abandoned.EditorTools.Hiring
                 light.intensity = intensity;
                 light.range = range;
                 light.color = color;
-                light.shadows = name == "CeilingPanel" ? LightShadows.Soft : LightShadows.None;
+                // Only the sun casts: a shadowed point light renders six maps a frame for a room this small.
+                light.shadows = LightShadows.None;
             }
         }
 

@@ -28,6 +28,9 @@ namespace Abandoned.Onboarding
         private bool hostAtHome, trainAtHome;
         private float homeSince = -1f;
 
+        /// <summary>The flow exists (the game was started from the HQ, so the session object is up).</summary>
+        public static bool Running => instance != null;
+
         /// <summary>The menus stay out of the way: the hiring owns the screen (no title menu behind the office).</summary>
         public static bool OwnsScreen => inOffice || (instance != null && instance.hostAtHome);
 
@@ -78,9 +81,10 @@ namespace Abandoned.Onboarding
             homeSince = -1f;
             stage = OnboardingProgress.Stage;
             if (stage == OnboardingStage.Interviewed && CompanyService.TrainingAvailable) company.StartTraining();
-            else if (stage == OnboardingStage.Trained || stage == OnboardingStage.Hired)
+            else if (stage != OnboardingStage.Interviewed)
             {
-                // Back from training: the rest of the hiring is offline, in the HR office.
+                // Back from training, or a host that skipped the title screen (the editor auto-hosts on Play): the
+                // hiring's office scenes are offline, in the HR office.
                 ReturnToMenu.Next = HrOffice.Scene;
                 inOffice = true;
                 bootstrap.Disconnect();

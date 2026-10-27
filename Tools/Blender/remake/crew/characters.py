@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(_HERE)))
 exec(open(os.path.join(os.path.dirname(_HERE), 'boot.py')).read())
 
 from remake.core import bake, export, kit, materials, preview, rig  # noqa: E402
-from remake.crew import face, hair, roster, skin, skinned  # noqa: E402
+from remake.crew import face, face_shapes, hair, roster, skin, skinned  # noqa: E402
 import crew_geo as G  # noqa: E402  (face.py put Tools/Blender/crew on the path)
 import crew_materials as CM  # noqa: E402
 
@@ -51,6 +51,10 @@ def build(cid, spec, show=False):
     }
     head = pivots()
     parts, head_ob, top = face.build_head(M, head, spec['face'])
+    # 2026 remake: the mouth's dark inside, for the lip-sync shape (face_shapes).
+    bag = face_shapes.mouth_bag(kit, CM.plain(f'Mouth_{cid}', (.09, .025, .025), .7), spec['face'].get('scale', 1.0))
+    G.attach(bag, head)
+    parts.append(bag)
     if spec.get('style'):
         hm = hair.hair_material(f'Hair_{cid}', hair_c, spec.get('hair_grey', 0.0))
         for p in hair.STYLES[spec['style']](hm, top=top):
@@ -75,8 +79,10 @@ def build(cid, spec, show=False):
         if p not in eyeballs:
             bpy.data.objects.remove(p, do_unlink=True)
     low = skinned.game_mesh(full, HEAD_BUDGET, f'Head_{cid}')
+    face_shapes.add(low, spec['face'].get('scale', 1.0), spec['face'].get('eye_x', face.BASE['eye_x']))
     bpy.data.objects.remove(full, do_unlink=True)
     bake.bake_asset(low, f'Head_{cid}', TEX, size=2048, high=[high] + eyeballs, high_all=True, samples=16)
+    face_shapes.add(cornea, spec['face'].get('scale', 1.0), spec['face'].get('eye_x', face.BASE['eye_x']))
     cornea.data.materials.clear()
     cornea.data.materials.append(materials.library()['Glass'])
     for ob in [high] + eyeballs:

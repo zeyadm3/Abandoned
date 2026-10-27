@@ -76,11 +76,14 @@ def export_static(root, path):
 def export_skinned(armature, meshes, path, actions=None):
     """Export an armature and its skinned meshes; each action becomes a take named after it."""
     objs = [armature] + list(meshes)
+    # Shape keys (the crew faces' blink and jaw) only survive when modifiers aren't applied; the armature is the
+    # only modifier on a skinned mesh, and the exporter skins it either way.
+    shapes = any(m.data.shape_keys is not None for m in meshes if m.type == 'MESH')
     _select(objs)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     kw = dict(filepath=path, use_selection=True, object_types={'ARMATURE', 'MESH', 'EMPTY'},
               axis_forward='-Z', axis_up='Y', apply_unit_scale=True, apply_scale_options='FBX_SCALE_ALL',
-              bake_space_transform=False, use_mesh_modifiers=True, mesh_smooth_type='FACE', use_tspace=True,
+              bake_space_transform=False, use_mesh_modifiers=not shapes, mesh_smooth_type='FACE', use_tspace=True,
               add_leaf_bones=False, primary_bone_axis='Y', secondary_bone_axis='X', use_armature_deform_only=True,
               path_mode='STRIP')
     if actions:

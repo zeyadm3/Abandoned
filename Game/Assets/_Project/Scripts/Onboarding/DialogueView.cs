@@ -78,10 +78,26 @@ namespace Abandoned.Onboarding
 
         public void Show(bool visible)
         {
-            VisualElement surface = MenuUi.Current != null ? MenuUi.Current.Surface : null;
+            VisualElement surface = MenuUi.Current != null ? MenuUi.Current.Surface : Fallback();
             if (visible && surface != null && root.parent != surface) surface.Add(root);
             MenuKit.Show(root, visible);
             hint.text = Loc.T("Click to continue   -   Hold SPACE to skip");
+        }
+
+        // The office played on its own has no menus: a document of its own, on the menus' panel settings.
+        private static UIDocument fallback;
+
+        private static VisualElement Fallback()
+        {
+            if (fallback == null)
+            {
+                PanelSettings settings = Resources.Load<PanelSettings>("HrOfficePanel");
+                if (settings == null) return null;
+                fallback = new GameObject("HrOfficeSubtitles").AddComponent<UIDocument>();
+                fallback.panelSettings = settings;
+                UiThemeAssets.Apply(fallback.rootVisualElement);
+            }
+            return fallback.rootVisualElement;
         }
 
         public void Say(string who, string what, string text)

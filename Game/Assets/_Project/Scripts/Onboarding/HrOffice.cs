@@ -28,7 +28,16 @@ namespace Abandoned.Onboarding
             if (Current == this) Current = null;
         }
 
-        private void Start() => OnboardingFlow.EnteredOffice(this);
+        private void Start()
+        {
+            if (OnboardingFlow.Running) OnboardingFlow.EnteredOffice(this);
+            else
+            {
+                // Opened and played on its own (the editor): no session, so preview the interview, then "hired".
+                Debug.Log("[Onboarding] HR office played on its own: previewing both scenes.");
+                PlayInterview(() => PlayHired(() => Debug.Log("[Onboarding] Preview finished (the creator needs the full game).")));
+            }
+        }
 
         public void PlayInterview(Action done) => director.Play(interview, done);
 
