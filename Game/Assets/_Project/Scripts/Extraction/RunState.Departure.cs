@@ -105,7 +105,8 @@ namespace Abandoned.Extraction
         {
             if (Time.time < nextHorn || TruckCargo.Current == null) return;
             nextHorn = Time.time + config.HornInterval;
-            GameAudio.Play(SoundId.Horn, TruckCargo.Current.Ignition.position, 1f);
+            // 2026 remake: the company's fitted horn.
+            GameAudio.Play(Abandoned.Company.TruckLook.CurrentHorn, TruckCargo.Current.Ignition.position, 1f);
         }
     }
 }

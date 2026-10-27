@@ -17,6 +17,7 @@ namespace Abandoned.EditorTools.Remake
         public static void Install()
         {
             int done = 0;
+            RemakeMaterials.EnsureModelMaterials(RemakePaths.Threats);
             foreach (string name in Monsters)
             {
                 string model = $"{RemakePaths.Threats}/{name}.fbx";

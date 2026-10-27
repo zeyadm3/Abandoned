@@ -35,6 +35,7 @@ namespace Abandoned.UI
         private VisualElement wear;
         private float nextCrtTwitch, crtTwitchUntil;
         private WardrobeView wardrobe;
+        private TruckGarageView garage;
         private HowToPlayView howToPlay;
         private DemoEndView demoEnd;
         private AchievementsView achievements;

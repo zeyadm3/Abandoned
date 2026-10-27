@@ -25,6 +25,8 @@ namespace Abandoned.Company
         [field: SerializeField, Range(1, 30)] public int UnlockLevel { get; private set; } = 1;
         [Tooltip("Cargo: capacity multiplier. Engine: honk seconds before the truck leaves. Others: unused.")]
         [field: SerializeField, Min(0f)] public float Amount { get; private set; } = 1f;
+        [Tooltip("2026 remake: what the upgrade looks like on the truck (modelled in truck space).")]
+        [field: SerializeField] public GameObject VisualPrefab { get; private set; }
 
         public void Validate(List<string> errors)
         {
@@ -45,6 +47,8 @@ namespace Abandoned.Company
             UnlockLevel = unlockLevel;
             Amount = amount;
         }
+
+        public void EditorSetVisual(GameObject visual) => VisualPrefab = visual;
 #endif
     }
 }

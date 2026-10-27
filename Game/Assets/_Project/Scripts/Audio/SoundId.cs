@@ -212,6 +212,11 @@ namespace Abandoned.Audio
         TreeWindLoop,
         CricketsLoop,
         CrowCall,
+        // 2026 remake: truck horns the company can fit at the garage (the stock horn stays Horn).
+        HornAir,
+        HornTrain,
+        HornGoose,
+        HornDeep,
         // @@ids
     }
 }

@@ -115,6 +115,41 @@ namespace Abandoned.Audio
             return SynthReverb.Apply(Patch.Heavy(d, 1.8f), 1.2f, 0.22f);
         }
 
+        /// <summary>2026 remake: a two-trumpet air horn, a sharp attack and a long fat blast.</summary>
+        public static float[] HornAir() => Reeds(1.1f, new[] { 233f, 277f, 234.2f }, 900f, .02f, .15f);
+
+        /// <summary>2026 remake: a three-chime train horn (a minor triad, beating slightly).</summary>
+        public static float[] HornTrain() => Reeds(1.4f, new[] { 311f, 370f, 466f, 312.5f }, 1300f, .05f, .25f);
+
+        /// <summary>2026 remake: a ridiculous honk, two short squeaky bursts.</summary>
+        public static float[] HornGoose()
+        {
+            float[] a = Reeds(.18f, new[] { 520f, 523f }, 2200f, .01f, .04f);
+            float[] d = Synth.Buffer(.5f);
+            Patch.Layer(d, a, 1f);
+            Patch.Layer(d, a, .9f, .24f);
+            return d;
+        }
+
+        /// <summary>2026 remake: a low foghorn-like ship horn.</summary>
+        public static float[] HornDeep() => Reeds(1.6f, new[] { 98f, 98.7f, 147f }, 420f, .12f, .4f);
+
+        private static float[] Reeds(float seconds, float[] pitches, float bellHz, float attack, float release)
+        {
+            float[] d = Synth.Buffer(seconds);
+            var bell = new Svf();
+            bell.Set(bellHz, 1.3f, Synth.Rate);
+            for (int i = 0; i < d.Length; i++)
+            {
+                float t = i / (float)Synth.Rate;
+                float reeds = 0f;
+                foreach (float p in pitches) reeds += Synth.Wave(2, p * t);
+                bell.Tick(reeds / pitches.Length * 2f);
+                d[i] = (bell.Band * 1.2f + bell.Low * .5f) * Synth.Gate(t, seconds, attack, release);
+            }
+            return SynthReverb.Apply(Patch.Heavy(d, 1.8f), 1.2f, .22f);
+        }
+
         /// <summary>Stands in for the recorded latch when the bank has none.</summary>
         public static float[] Lever()
         {

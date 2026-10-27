@@ -42,6 +42,13 @@ namespace Abandoned.UI
             wardrobe.Refresh();
         }
 
+        /// <summary>2026 remake: the HQ truck garage, opened at its desk by the truck.</summary>
+        public void OpenTruckGarage()
+        {
+            if (!OpenFromWorld(MenuScreen.TruckGarage)) return;
+            garage.Refresh();
+        }
+
         /// <summary>The demo's end screen (M8.3), shown on arriving at the HQ once the demo's jobs are done.</summary>
         public void OpenDemoEnd()
         {
@@ -89,6 +96,7 @@ namespace Abandoned.UI
             else fx.Play(MenuTransition.StaticCut);
             if (previous == MenuScreen.None && views.TryGetValue(screen, out VisualElement opening)) fx.FadeIn(opening);
             if (screen != MenuScreen.Wardrobe) WardrobePreview.Hide();
+            if (screen != MenuScreen.TruckGarage) TruckGaragePreview.Hide();
             foreach (KeyValuePair<MenuScreen, VisualElement> v in views) MenuKit.Show(v.Value, v.Key == screen);
             MenuKit.Show(hud, screen == MenuScreen.None && !clipMode);
         }

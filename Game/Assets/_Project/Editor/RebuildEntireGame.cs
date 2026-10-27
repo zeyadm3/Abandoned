@@ -65,6 +65,7 @@ namespace Abandoned.EditorTools
                 HealthContentBuilder.Create();
                 EquipmentContentBuilder.CreateMissing();
                 Remake.GearModelBuilder.Build();
+                Remake.TruckRemakeBuilder.Build();
                 CompanyContentBuilder.CreateMissing();
                 RunPressureContentBuilder.CreateMissing();
                 RoomsContentBuilder.CreateMissing();

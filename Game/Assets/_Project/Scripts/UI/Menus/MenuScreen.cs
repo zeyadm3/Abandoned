@@ -14,5 +14,7 @@ namespace Abandoned.UI
         Credits,
         // UI step 6
         Play,
+        // 2026 remake (append only)
+        TruckGarage,
     }
 }

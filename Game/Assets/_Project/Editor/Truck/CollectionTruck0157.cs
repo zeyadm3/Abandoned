@@ -28,22 +28,28 @@ namespace Abandoned.EditorTools
 
             Transform art = GreyboxFactory.Group(GroupName, truckRoot);
             art.gameObject.AddComponent<WalkThroughObject>().EditorSetup("Detailed truck art follows the retained truck body/deck collision proxies; handles, wheel tread and trim do not snag hauled items.");
-            var lods = new LOD[3];
-            for (int level = 0; level < 3; level++)
+            Transform oldFittings = truckRoot.Find("TruckFittings");
+            if (oldFittings != null) Object.DestroyImmediate(oldFittings.gameObject);
+            // 2026 remake: the Blender truck (Tools/Blender/remake/truck) with its paint, cosmetics and upgrade fittings.
+            if (!Remake.TruckRemakeBuilder.Install(truckRoot, art))
             {
-                Transform source = GreyboxFactory.Group("Source", art);
-                var geometry = new CollectionTruckGeometry(source, level);
-                CollectionTruckCabRedo.Build(geometry);
-                CollectionTruckChassisRedo.Build(geometry);
-                Transform box = GreyboxFactory.Group("CargoSource", source);
-                box.localPosition = Vector3.up * CollectionTruckFitRedo.DeckLift;
-                CollectionTruckCargoRedo.Build(new CollectionTruckGeometry(box, level));
-                Renderer[] combined = geometry.SaveCombined(art, "TruckRedo_LOD" + level);
-                Object.DestroyImmediate(source.gameObject);
-                lods[level] = new LOD(level == 0 ? .15f : level == 1 ? .055f : .006f, combined);
+                var lods = new LOD[3];
+                for (int level = 0; level < 3; level++)
+                {
+                    Transform source = GreyboxFactory.Group("Source", art);
+                    var geometry = new CollectionTruckGeometry(source, level);
+                    CollectionTruckCabRedo.Build(geometry);
+                    CollectionTruckChassisRedo.Build(geometry);
+                    Transform box = GreyboxFactory.Group("CargoSource", source);
+                    box.localPosition = Vector3.up * CollectionTruckFitRedo.DeckLift;
+                    CollectionTruckCargoRedo.Build(new CollectionTruckGeometry(box, level));
+                    Renderer[] combined = geometry.SaveCombined(art, "TruckRedo_LOD" + level);
+                    Object.DestroyImmediate(source.gameObject);
+                    lods[level] = new LOD(level == 0 ? .15f : level == 1 ? .055f : .006f, combined);
+                }
+                var lod = art.gameObject.AddComponent<LODGroup>();
+                lod.SetLODs(lods); lod.RecalculateBounds();
             }
-            var lod = art.gameObject.AddComponent<LODGroup>();
-            lod.SetLODs(lods); lod.RecalculateBounds();
             Transform cargoAttachments = GreyboxFactory.Group("CargoBodyAttachments", art);
             cargoAttachments.localPosition = Vector3.up * CollectionTruckFitRedo.DeckLift;
             CollectionTruckCargoRedo.Doors(cargoAttachments, truckRoot.GetComponent<TruckSanctuary>());

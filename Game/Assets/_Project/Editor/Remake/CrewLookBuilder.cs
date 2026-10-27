@@ -41,6 +41,7 @@ namespace Abandoned.EditorTools.Remake
                 return;
             }
             AssetDatabase.ImportAsset(RemakePaths.Characters, ImportAssetOptions.ImportRecursive);
+            RemakeMaterials.EnsureModelMaterials(RemakePaths.Characters);
             PolishAssets.EnsureFolder(MeshFolder);
             var characters = new List<CosmeticDefinition>();
             var outfits = new List<CosmeticDefinition>();

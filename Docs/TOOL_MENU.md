@@ -156,6 +156,7 @@ Tools > Abandoned
       Create Structure Content, Create Door and Locker Config, Create Pacing and Decay Configs,
       Create Crew Director Config, Build Achievements                     2000-2007
       Create Gear Models (remake)                                         2008
+      Create Truck Cosmetics (remake)                                     2009
     Prefabs                                          [2100-2199]
       Create Network Content, Create Structure Net Prefab, Create Player Prefab,
       Create Threat Prefabs, Create New Horror Threats                   2100-2104
@@ -186,6 +187,7 @@ Tools > Abandoned
         Remaster All Map Art and Objects                               3082
         Map Sites: Sky, Trees, Grass and Sound                         3083
     ──  2026 remake: Remake: Refresh Materials                           3100
+        Remake: Refit Trucks in Saved Maps                             3101
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,

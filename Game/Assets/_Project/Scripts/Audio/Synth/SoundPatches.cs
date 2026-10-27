@@ -46,6 +46,10 @@ namespace Abandoned.Audio
 
                 // The truck, the shutters, the siren.
                 case SoundId.Horn: return Patch.Mono(id, take, TruckPatches.Horn());
+                case SoundId.HornAir: return Patch.Mono(id, take, TruckPatches.HornAir());
+                case SoundId.HornTrain: return Patch.Mono(id, take, TruckPatches.HornTrain());
+                case SoundId.HornGoose: return Patch.Mono(id, take, TruckPatches.HornGoose());
+                case SoundId.HornDeep: return Patch.Mono(id, take, TruckPatches.HornDeep());
                 case SoundId.Lever: return Patch.Mono(id, take, TruckPatches.Lever(), 0.8f);
                 case SoundId.EngineStop: return Patch.Mono(id, take, TruckPatches.EngineStop());
                 case SoundId.EngineIdle: return Patch.Mono(id, take, TruckPatches.EngineIdle(), 0.7f);

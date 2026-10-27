@@ -17,6 +17,7 @@ namespace Abandoned.EditorTools.Remake
         public static void Build()
         {
             PolishAssets.EnsureFolder("Assets/_Project/Data/Equipment/Resources");
+            RemakeMaterials.EnsureModelMaterials(RemakePaths.Gear);
             var entries = new List<GearModels.Entry>();
             foreach (EquipmentKind kind in System.Enum.GetValues(typeof(EquipmentKind)))
             {

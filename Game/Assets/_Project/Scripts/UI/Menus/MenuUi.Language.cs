@@ -32,6 +32,7 @@ namespace Abandoned.UI
                 if (open == MenuScreen.HowToPlay) howToPlay.Refresh();
                 else if (open == MenuScreen.Achievements) achievements.Refresh();
                 else if (open == MenuScreen.Wardrobe) wardrobe.Refresh();
+                else if (open == MenuScreen.TruckGarage) garage.Refresh();
                 else if (open == MenuScreen.DemoEnd) demoEnd.Refresh();
             }
             // Update shows the open screen again, now from the new set.
@@ -61,6 +62,8 @@ namespace Abandoned.UI
             views[MenuScreen.Credits] = new CreditsView(this, credits).Root;
             wardrobe = new WardrobeView(this);
             views[MenuScreen.Wardrobe] = wardrobe.Root;
+            garage = new TruckGarageView(this);
+            views[MenuScreen.TruckGarage] = garage.Root;
             howToPlay = new HowToPlayView(this);
             views[MenuScreen.HowToPlay] = howToPlay.Root;
             demoEnd = new DemoEndView(this);

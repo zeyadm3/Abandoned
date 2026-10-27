@@ -80,6 +80,11 @@ namespace Abandoned.Audio
 
             // The truck and the job's set pieces.
             Set(SoundId.Horn, Fx, 36, 8f, 120f, Syn, Open, 1, Loc.Mark("truck horn"), pitch: 0f);
+            // 2026 remake: fitted horns (same range and priority as the stock horn).
+            Set(SoundId.HornAir, Fx, 36, 8f, 120f, Syn, Open, 1, Loc.Mark("truck horn"), pitch: 0f);
+            Set(SoundId.HornTrain, Fx, 36, 8f, 120f, Syn, Open, 1, Loc.Mark("truck horn"), pitch: 0f);
+            Set(SoundId.HornGoose, Fx, 36, 8f, 120f, Syn, Open, 1, Loc.Mark("truck horn"), pitch: 0f);
+            Set(SoundId.HornDeep, Fx, 36, 8f, 120f, Syn, Open, 1, Loc.Mark("truck horn"), pitch: 0f);
             Set(SoundId.Lever, Fx, 100, 2f, 25f, Lib);
             Set(SoundId.EngineStop, Fx, 80, 3f, 45f, pitch: 0f);
             Set(SoundId.EngineIdle, Fx, 120, 2f, 22f, pitch: 0f, loop: true);

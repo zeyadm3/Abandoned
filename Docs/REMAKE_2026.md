@@ -93,7 +93,7 @@ and credited in `Docs/ASSET_CREDITS.md`.
 | 1 Characters and wardrobe | done (2026-10-27): 8 workers, 10 outfits x 3 builds, 20 hats, 15 accessories |
 | 2 Monsters | done (2026-10-27): all 8 sculpted, baked, skinned, five takes each |
 | 3 Gear and shop | done (2026-10-27): 17 items; rack and shop terminal are remodelled with the HQ (phase 6) |
-| 4 Truck, upgrades, van, truck cosmetics | |
+| 4 Truck, upgrades, van, truck cosmetics | done (2026-10-27) except the arrival van and the Prison boat hull (see notes) |
 | 5 Loot | |
 | 6 Maps | |
 | 7 The hiring and the HQ-centred game | |
@@ -134,6 +134,29 @@ and credited in `Docs/ASSET_CREDITS.md`.
   `ToolModels.Build` (first person, crewmates' hands, dropped tools) uses it and falls back to the code-built mesh.
   `Editor/Remake/GearModelBuilder` (Content > Data > Create Gear Models (remake)) also dresses the thrown noise maker
   and the deployed drone; the glow stick keeps its emissive body, which is its light.
+
+## Phase 4 notes (truck and truck cosmetics)
+
+- Blender: `Tools/Blender/remake/truck/truck.py` builds the cab-over truck and 29 parts in TRUCK SPACE (Unity
+  coordinates relative to the truck root), keeping the 0.15.7b footprint (box +-1.41 x -2.6..2.6, deck 1.05, roof 3.4,
+  cab to z 5.07, axles at 3.75 and -1.65). Painted body faces use `RM_Truck_Body_Tint` (same textures as the body).
+- Unity: `CollectionTruck0157.Upgrade` installs the remade body (`Remake/TruckRemakeBuilder.Install`) instead of the
+  code-built art, keeping cargo, deck, ramp, ignition, display, lights and the hinged rear doors. Boats are skipped.
+  `Art > Remake: Refit Trucks in Saved Maps` re-runs it on every saved map (5 maps have the truck; the four newer
+  places use the open-world van).
+- Truck cosmetics (new feature): `Scripts/Company/TruckCosmetics/` - `TruckCosmeticSlot` (Paint, Livery, Bumper, Roof,
+  Wheels, Mudflaps, Ornament, Horn), `TruckCosmeticDefinition`, `TruckCosmeticCatalog` (Data/Company/Resources, 39
+  items, append only, under 64), `TruckLook` (on every truck: fitted parts, paint on the `_Tint` slot of each LOD,
+  owned upgrades' `VisualPrefab`, the fitted horn). `CompanySave.truckLook` ("Slot:id"), owned ones in unlocks as
+  `truckcos:id`; `CompanyNetState.TruckCosmetics` (64-bit owned mask) and `TruckLook` (one byte per slot).
+  `CompanyService.TruckCosmetics.cs`: buy and fit, host-checked (money, level, the crew's spending rule).
+- Horns: SoundIds HornAir, HornTrain, HornGoose, HornDeep (appended) with synth patches; the departure horn is the
+  fitted one (`TruckLook.CurrentHorn`).
+- Garage screen: `Scripts/UI/Garage/TruckGarageView` (+ `TruckGaragePreview`, Resources/TruckPreview), `MenuScreen.TruckGarage`,
+  `MenuUi.OpenTruckGarage`; `TruckGarageTerminal` is the HQ desk (placed in the HQ in phase 7).
+- Remake models imported before their materials existed got empty slots; `RemakeMaterials.EnsureModelMaterials`
+  re-imports them, and every remake builder calls it first.
+- Not done: the arrival van (still the Kenney van) and the Island Prison boat's hull keep their old art.
 
 ## Blocked
 

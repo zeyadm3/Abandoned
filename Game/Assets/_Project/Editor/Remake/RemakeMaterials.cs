@@ -134,6 +134,31 @@ namespace Abandoned.EditorTools.Remake
             m.renderQueue = (int)RenderQueue.Transparent;
         }
 
+        /// <summary>
+        /// A model imported before its materials existed gets empty slots (the material made inside the import callback
+        /// is not ready for the first renderers). Re-imports every model under `folder` that has one; the materials exist
+        /// by then, so the second import assigns them. Builders call this before they use remake models.
+        /// </summary>
+        public static int EnsureModelMaterials(string folder)
+        {
+            int fixedCount = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:Model", new[] { folder }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var model = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (model == null) continue;
+                bool missing = false;
+                foreach (Renderer r in model.GetComponentsInChildren<Renderer>(true))
+                    foreach (Material m in r.sharedMaterials)
+                        missing |= m == null;
+                if (!missing) continue;
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+                fixedCount++;
+            }
+            if (fixedCount > 0) Debug.Log($"[Remake] re-imported {fixedCount} model(s) under {folder} to assign their materials.");
+            return fixedCount;
+        }
+
         /// <summary>Re-fills every remake material from its textures (after a batch export, textures may import after models).</summary>
         [MenuItem(ToolMenu.Art + "Remake: Refresh Materials", priority = ToolMenu.ArtP + 100)]
         public static void RefreshAll()
