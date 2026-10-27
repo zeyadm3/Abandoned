@@ -264,7 +264,7 @@ stations and the HR office (after the training clipboard), and last the icons.
 
 **What is not done (honest list):**
 - Maps: walls, slabs, stairs and facades keep their code-built geometry (no architecture kit, no new fracture
-  stages); the arrival van and the Prison boat hull keep their old art; the HQ gear rack and shop terminal too.
+  stages) [being worked on, see "After the handover"].
 - Characters: first-person gloves are the same for every outfit; no crew number on the skinned worker.
 - The HR manager has no blinks or lip sync (the crew rig has no face bones): her head turns and nods with her voice.
   Her office outfit is the crew's jacket shape in a dark office colour.
@@ -284,6 +284,15 @@ stations and the HR office (after the training clipboard), and last the icons.
 4. A Mall job with the remastered loot (sizes, grips, how it sits on shelves) and the remodelled gear.
 5. Each of the eight monsters, the truck with upgrades and cosmetics, the wardrobe and creator icons.
 6. Then `Tools/unity.sh all`, the nettests (cosmetic and truck-look sync), and the Checks menu audits.
+
+## After the handover (user: "work on the unfinished items")
+
+- **Vans and the launch:** `Tools/Blender/remake/vehicles/vehicles.py` (a panel van with the company band, a box
+  delivery van, the launch's hull and wheelhouse). `Editor/Remake/VehicleRemake` (Art > Remake: Refit Vans and the
+  Launch in Saved Maps) swapped every Kenney van in the saved maps at the same footprint (HQ 1, Mall 5) and dressed the
+  launch (the hull in the swaying HullArt group; the wheelhouse over the solid block, whose collider stays).
+  `Vehicles.Dress` prefers the remade vans and `IslandBoat.Build` dresses the launch, so rebuilds keep them.
+  Remake models imported before their textures need Art > Remake: Refresh Materials (the vehicles did).
 
 ## Blocked
 

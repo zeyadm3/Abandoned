@@ -198,6 +198,7 @@ Tools > Abandoned
         Remake: Inventory Open Map                                     3102
         Remake: Swap Kit Props in Open Map, Undo Kit Props in Open Map 3103-3104
         Remake: Survey Kit Props in All Maps                           3105
+        Remake: Refit Vans and the Launch in Saved Maps                3106
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,

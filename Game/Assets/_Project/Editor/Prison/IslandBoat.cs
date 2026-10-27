@@ -57,6 +57,8 @@ namespace Abandoned.EditorTools
             foreach (Transform piece in root)
                 if (piece.GetComponent<SurfaceTag>() == null) piece.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
 
+            // 2026 remake: the remodelled hull and wheelhouse over the code-built ones, when they have been made.
+            Remake.VehicleRemake.DressBoat(root);
             Gangway(group, art);
             Moorings(group, art);
             return cargo;

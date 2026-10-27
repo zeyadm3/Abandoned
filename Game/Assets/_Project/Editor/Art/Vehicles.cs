@@ -15,7 +15,9 @@ namespace Abandoned.EditorTools
         /// <summary>Hides the box's greybox look and shows the model fitted to it (Kenney cars face +Z).</summary>
         public static GameObject Dress(GameObject box, string model)
         {
-            var asset = AssetDatabase.LoadAssetAtPath<GameObject>($"{Folder}{model}.fbx");
+            // 2026 remake: the remade van or delivery van when it exists (front +Z like the Kenney ones).
+            GameObject asset = Remake.VehicleRemake.Model(model);
+            if (asset == null) asset = AssetDatabase.LoadAssetAtPath<GameObject>($"{Folder}{model}.fbx");
             if (asset == null)
             {
                 Debug.LogWarning($"[Art] No vehicle model {model}.");
