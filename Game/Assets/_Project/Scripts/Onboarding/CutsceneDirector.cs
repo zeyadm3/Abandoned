@@ -45,6 +45,7 @@ namespace Abandoned.Onboarding
             held = 0f;
             view ??= new DialogueView();
             view.Show(true);
+            Debug.Log($"[Onboarding] Playing {scene.name}: {scene.Lines.Count} lines, subtitles {(view.Attached ? "on screen" : "with nowhere to draw")}.");
             foreach (DialogueLine line in scene.Lines)
             {
                 if (skipping) break;
@@ -86,6 +87,7 @@ namespace Abandoned.Onboarding
             if (string.IsNullOrEmpty(text)) yield break;
             view.Say(speaker, role, Loc.T(text));
             AudioClip clip = DialogueVoice.ClipFor(text);
+            if (clip == null) Debug.LogWarning($"[Onboarding] No voice clip for \"{text}\".");
             float length = clip != null ? clip.length : 1.2f + text.Length * .05f;
             if (clip != null && voice != null)
             {

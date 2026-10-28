@@ -93,6 +93,7 @@ namespace Abandoned.Onboarding
 
         private void Begin()
         {
+            Debug.Log($"[Onboarding] Begin at stage {OnboardingProgress.Stage}.");
             if (OnboardingProgress.Stage == OnboardingStage.Interviewed) GoTrain();
             else
             {
@@ -105,6 +106,7 @@ namespace Abandoned.Onboarding
         public static void EnteredOffice(HrOffice office)
         {
             inOffice = true;
+            Debug.Log($"[Onboarding] In the HR office at stage {OnboardingProgress.Stage} (flow {(instance != null ? "on" : "off")}).");
             if (instance == null) return;
             switch (OnboardingProgress.Stage)
             {
@@ -154,6 +156,7 @@ namespace Abandoned.Onboarding
 
         private void Host(NetworkBootstrap bootstrap)
         {
+            Debug.Log($"[Onboarding] Hosting at home ({(trainAtHome ? "training" : "the HQ")}).");
             hostAtHome = false;
             if (trainAtHome)
             {

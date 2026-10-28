@@ -159,6 +159,20 @@ namespace Abandoned.EditorTools.Remake
             return fixedCount;
         }
 
+        // A set's textures sit beside its area's materials, except where a model folder keeps its own (the HR manager's
+        // Onboarding/Characters/Textures): then the set is found by name anywhere under the remake root.
+        private static string TextureFolder(string set, string expected)
+        {
+            if (AssetDatabase.LoadAssetAtPath<Texture2D>($"{expected}/{set}_BaseColor.png") != null) return expected;
+            foreach (string guid in AssetDatabase.FindAssets($"{set}_BaseColor t:Texture2D", new[] { RemakePaths.Root }))
+            {
+                string found = AssetDatabase.GUIDToAssetPath(guid);
+                if (System.IO.Path.GetFileNameWithoutExtension(found) == set + "_BaseColor")
+                    return System.IO.Path.GetDirectoryName(found).Replace('\\', '/');
+            }
+            return expected;
+        }
+
         /// <summary>Re-fills every remake material from its textures (after a batch export, textures may import after models).</summary>
         [MenuItem(ToolMenu.Art + "Remake: Refresh Materials", priority = ToolMenu.ArtP + 100)]
         public static void RefreshAll()
@@ -172,7 +186,7 @@ namespace Abandoned.EditorTools.Remake
                 else
                 {
                     string area = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(path)).Replace('\\', '/');
-                    Fill(m, TextureSet(m.name), area + "/Textures");
+                    Fill(m, TextureSet(m.name), TextureFolder(TextureSet(m.name), area + "/Textures"));
                 }
             }
             AssetDatabase.SaveAssets();

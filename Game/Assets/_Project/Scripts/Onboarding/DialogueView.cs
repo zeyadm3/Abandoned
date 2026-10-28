@@ -76,6 +76,9 @@ namespace Abandoned.Onboarding
             Show(false);
         }
 
+        /// <summary>The subtitles have a document to draw on.</summary>
+        public bool Attached => root.panel != null;
+
         public void Show(bool visible)
         {
             VisualElement surface = MenuUi.Current != null ? MenuUi.Current.Surface : Fallback();
@@ -117,7 +120,8 @@ namespace Abandoned.Onboarding
                 int index = i;
                 Button b = MenuKit.Button(replies, $"{i + 1}.  {options[i]}", () => picked?.Invoke(index), SoundId.UiConfirm, small: true);
                 b.AddToClassList("dialogue__reply");
-                if (i == 0) b.schedule.Execute(() => b.Focus());
+                // Only a pad needs a focused reply; on a keyboard the Enter that moved the last line on would pick it.
+                if (i == 0 && UnityEngine.InputSystem.Gamepad.current != null) b.schedule.Execute(() => b.Focus()).ExecuteLater(400);
             }
         }
 
