@@ -102,6 +102,6 @@ a discount).
 | CPU | 4 cores, 2.5 GHz | 6 cores, 3 GHz |
 | RAM | 8 GB | 16 GB |
 | GPU | GTX 960 / RX 470 / Apple M1 | GTX 1660 / RX 5600 / Apple M1 Pro |
-| Storage | measure the release build | |
+| Storage | 6 GB | 6 GB |
 | Network | Broadband (online co-op) | |
 | Other | Microphone for voice chat (optional) | |
