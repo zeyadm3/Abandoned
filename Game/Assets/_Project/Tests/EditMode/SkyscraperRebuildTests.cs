@@ -6,7 +6,6 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
-using Abandoned.World;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -197,46 +196,6 @@ namespace Abandoned.Tests
             Assert.IsNotNull(shader);Assert.IsFalse(ShaderUtil.ShaderHasError(shader));
             var cloud=Object.FindFirstObjectByType<Abandoned.Skyscraper.SkyscraperCloudLayer>();
             Assert.That(GameObjectUtility.GetStaticEditorFlags(cloud.gameObject)&StaticEditorFlags.OccluderStatic,Is.EqualTo((StaticEditorFlags)0));
-        }
-
-        [Test]
-        public void WorldStreamingKeepsTheSummitWeather()
-        {
-            var atlas=AssetDatabase.LoadAssetAtPath<WorldAtlas>(WorldBuilder.AtlasPath);
-            WorldPoi poi=atlas.Pois[atlas.IndexOf("Skyscraper")];
-            Assert.IsFalse(poi.hideInWorld.Any(path=>path.Contains("SummitClouds")));
-            Assert.IsTrue(poi.look.captured);
-            Assert.IsFalse(poi.hideInWorld.Any(path=>path.Contains("Downtown")));
-            Assert.That(poi.ground.width,Is.EqualTo(720f));
-        }
-
-        [Test]
-        public void DistantWorldModelReachesTheNewRoofHeight()
-        {
-            Scene before=SceneManager.GetActiveScene();
-            Scene world=EditorSceneManager.OpenScene(WorldBuilder.ScenePath,OpenSceneMode.Additive);
-            try
-            {
-                var renderers=world.GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Renderer>(true))
-                    .Where(r=>r.name.StartsWith("Skyscraper_Far_")).ToArray();
-                Assert.That(renderers.Length,Is.GreaterThan(0));
-                Assert.That(renderers.Max(r=>r.bounds.max.y),Is.GreaterThanOrEqualTo(SkyscraperLayout.RoofY));
-                var atlas=AssetDatabase.LoadAssetAtPath<WorldAtlas>(WorldBuilder.AtlasPath);
-                WorldPoi poi=atlas.Pois[atlas.IndexOf("Skyscraper")];
-                foreach(Terrain terrain in world.GetRootGameObjects().SelectMany(go=>go.GetComponentsInChildren<Terrain>(true)))
-                {
-                    TerrainData data=terrain.terrainData;Vector3 origin=terrain.transform.position;
-                    Assert.IsFalse(data.treeInstances.Any(tree=>poi.WorldGround.Contains(new Vector2(origin.x+tree.position.x*data.size.x,origin.z+tree.position.z*data.size.z))),"Forest remains inside the city streets.");
-                    Vector3 test=poi.worldPosition+new Vector3(250,0,250);
-                    Vector3 local=test-origin;
-                    if(local.x>=0 && local.z>=0 && local.x<data.size.x && local.z<data.size.z)
-                    {
-                        int x=Mathf.FloorToInt(local.x/data.size.x*data.holesResolution),z=Mathf.FloorToInt(local.z/data.size.z*data.holesResolution);
-                        Assert.IsTrue(data.IsHole(x,z),"Terrain must be cut away under the city street slab.");
-                    }
-                }
-            }
-            finally {SceneManager.SetActiveScene(before);EditorSceneManager.CloseScene(world,true);Physics.SyncTransforms();}
         }
 
         [Test]

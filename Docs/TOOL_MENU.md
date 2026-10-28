@@ -36,8 +36,7 @@ below. Paths and priorities come from `Game/Assets/_Project/Editor/ToolMenu.cs`;
 | rebuilds or adds to one map's saved scene | `Maps/<Map>/` (a release step: `Maps/<Map>/Updates/`) |
 | rebuilds everything (content and maps) | `Rebuild Entire Game` (top level) |
 | rebuilds every map | `Rebuild All Maps` (top level) |
-| rebuilds only the five open-world places and their art, then checks | `Rebuild New Maps` (top level) |
-| rebuilds only the open world | `Rebuild World` (top level) |
+| rebuilds only the five newer maps and their art, then checks | `Rebuild New Maps` (top level) |
 | writes ScriptableObject configs or catalogs | `Content/Data/` |
 | makes or rewires prefabs (player, network, threats) | `Content/Prefabs/` |
 | loot definitions, loot prefabs, loot models | `Content/Loot/` |
@@ -62,7 +61,6 @@ Tools > Abandoned
   Rebuild Entire Game                                0
   Rebuild All Maps                                   1
   Rebuild New Maps                                   2
-  Rebuild World                                      3
   ──────────
   Maps
     Mall                                             [1000-1099]
@@ -147,11 +145,6 @@ Tools > Abandoned
       Rebuild Fire Station                           1850
       ──
       Add Fire Station Loot                          1870
-    Open World                                       [1900-1949]
-      Rebuild World                                  1900
-      Build Van                                      1920
-      Build Van Test Scene                           1921
-      Dev Mac Build (nettest)                        1940
     Skyscraper Restaurant                            [1950-1999]
       Rebuild Skyscraper Restaurant                  1950
   ──────────
@@ -374,20 +367,12 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   models, prefabs and icons; the rebuild runs it first anyway.
 - The scene is in `BuildScenes.All` only (an open-world POI, not yet a contract destination).
 
-## Open World (2026-10-23)
+## Open World (removed 2026-10-28)
 
-- `Maps/Open World/Rebuild World` — priority 1900, `ToolMenu.OpenWorld` / `OpenWorldP`. Authors World.unity (6 km of
-  hills and roads, every place's site and stand-in) and Data/World/Resources/WorldAtlas (where each place is, its
-  captured sky and fog, the road lines). Reads each built map's saved scene, so it runs last in Rebuild All Maps and
-  Rebuild Entire Game (`RebuildAllMaps.OpenWorldStep`). Docs/OPEN_WORLD_PLAN.md.
-- `Build Van` — 1920: Prefabs/World/WorldVan (and the road-event prefabs), registered with NGO.
-- `Build Van Test Scene` — 1921: Scenes/WorldVanTest (a pad to try the van on; not in any build).
-- `Dev Mac Build (nettest)` — 1940: Builds/MacDev with the world's scenes (HQ, World, WorldVanTest, Mall, TestMap)
-  for `Tools/nettest.sh --no-build van`, from the open editor, while places still being written would stop the
-  normal dev build.
-- 1950 is the Skyscraper Restaurant's (Antigravity).
+The open world (World.unity, its van, `Maps/Open World/` at 1900-1949 and the top-level `Rebuild World` at priority 3)
+was deleted at the user's request ("get rid of the open world i hate it"). The 1900 band and priority 3 are free.
 
-## Rebuild New Maps / Rebuild World (2026-10-23)
+## Rebuild New Maps (2026-10-23)
 
 - `Rebuild New Maps` — top level, priority 2, `ToolMenu.RebuildNewMapsP` (Editor/RebuildNewMaps.cs). Runs the
   Hospital, Motel, Skyscraper Restaurant, Police Station and Fire Station rebuilds, Art > Upgrade New Maps, then the
@@ -395,6 +380,3 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   shows as a failed step in the summary. The six older maps are never rebuilt by it, and neither is the open world
   (user, 2026-10-23: "one button to rebuild the 5 new maps and a different button to rebuild the world"; it was
   `Rebuild New Maps and World`).
-- `Rebuild World` — top level, priority 3, `ToolMenu.RebuildWorldP` (Editor/RebuildWorld.cs). The open world alone
-  (`RebuildAllMaps.OpenWorldStep`, the same `WorldBuilder.Build` as `Maps/Open World/Rebuild World`) behind a Play-mode
-  guard, a confirm and the step summary. It reads the maps' saved scenes, so run it after Rebuild New Maps.

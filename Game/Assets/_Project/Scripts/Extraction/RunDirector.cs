@@ -34,12 +34,6 @@ namespace Abandoned.Extraction
         /// </summary>
         public static int ForcedSeed { get; set; }
 
-        /// <summary>
-        /// The open world (Abandoned.World.WorldJob): may this level's run start now? A place streamed into the world
-        /// stays empty unless it is the job's and the crew has arrived. Null outside the world (always).
-        /// </summary>
-        public static Func<GameObject, bool> MayStart { get; set; }
-
         /// <summary>Host: a new run began (seed). Monsters and danger reset on this.</summary>
         public static event Action<int> RunStarted;
 
@@ -104,7 +98,6 @@ namespace Abandoned.Extraction
             NetworkManager manager = Session != null ? Session.Manager : null;
             if (manager == null || !manager.IsServer || !manager.IsListening || manager.ShutdownInProgress) return;
             if (spawned != null && spawned.IsSpawned) return;
-            if (MayStart != null && !MayStart(gameObject)) return;
             // A session's first run: its own seed, not the one the scene was saved with.
             if (!started)
             {

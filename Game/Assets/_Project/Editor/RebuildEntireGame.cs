@@ -40,7 +40,6 @@ namespace Abandoned.EditorTools
             steps.AddRange(RebuildAllMaps.MapSteps(rebuildHq: choice == 2));
             steps.Add(("Generated material repair", GeneratedMaterialRepair.Rebuild));
             steps.Add(RebuildAllMaps.AfterMapsStep);
-            steps.Add(RebuildAllMaps.OpenWorldStep);
             steps.Add(("Loot icons", LootIcons));
             // 2026 remake: every remade model's icon (gear, cosmetics, truck fittings; loot again with its new look).
             steps.Add(("Remake icons", Remake.IconRenderer.RenderAll));

@@ -76,7 +76,6 @@ namespace Abandoned.EditorTools
             Apply(GameObject.Find("Skyscraper").transform,new SkyscraperArt());
             AssetDatabase.SaveAssets();
             if(!EditorSceneManager.SaveScene(scene))throw new System.InvalidOperationException("Could not save Apex's finishing pass.");
-            SkyscraperWorld.Refresh();
         });
     }
 }

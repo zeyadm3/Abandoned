@@ -37,7 +37,6 @@ namespace Abandoned.EditorTools
             var steps = MapSteps(rebuildHq);
             // 0.24.12: the builders recreate their materials, so the scanned surfaces, looks, sound and decals follow them.
             steps.Add(AfterMapsStep);
-            steps.Add(OpenWorldStep);
             RunSteps("Rebuild All Maps", steps);
         }
 
@@ -67,9 +66,6 @@ namespace Abandoned.EditorTools
 
         /// <summary>Runs after the maps: the 0.24.12 look, surfaces, sound, decals, and the lighting rebuild.</summary>
         public static readonly (string name, Action run) AfterMapsStep = ("0.24.12 look, surfaces, sound and decals", AvOverhaul.AfterMapsOrThrow);
-
-        /// <summary>Last: the open world reads every map's finished sky and fog (Docs/OPEN_WORLD_PLAN.md).</summary>
-        public static readonly (string name, Action run) OpenWorldStep = ("Open world (land, roads, places' looks)", WorldBuilder.Build);
 
         /// <summary>
         /// Runs each step with a progress bar; a step that throws is logged and skipped (its saved scene unchanged) and

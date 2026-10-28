@@ -13,12 +13,9 @@ using Debug = UnityEngine.Debug;
 namespace Abandoned.EditorTools
 {
     /// <summary>
-    /// One button for the five open-world places built on 2026-10-23: each new map's own rebuild, the
-    /// look/surfaces/lighting/site pass on those maps only, then the checks. The open world is its own button (user,
-    /// 2026-10-23: "one button to rebuild the 5 new maps and a different button to rebuild the world"): run
-    /// <see cref="RebuildWorld"/> afterwards so the world picks up the maps' new grounds, skies and fog. The six older
-    /// maps are never rebuilt here, so hand edits in their saved scenes survive; Rebuild Entire Game is the button for
-    /// everything.
+    /// One button for the five maps built on 2026-10-23: each new map's own rebuild, the look/surfaces/lighting/site pass
+    /// on those maps only, then the checks. The six older maps are never rebuilt here, so hand edits in their saved
+    /// scenes survive; Rebuild Entire Game is the button for everything.
     /// </summary>
     public static class RebuildNewMaps
     {
@@ -37,7 +34,6 @@ namespace Abandoned.EditorTools
                     "Rebuilds Saint Brigid Hospital, Last Light Motor Lodge, the Skyscraper Restaurant, the Police Station and " +
                     "the Fire Station from code, gives them their look, surfaces, lighting, sky, trees, grass and sound, " +
                     "then checks everything (level audit, content validation, missing text).\n\n" +
-                    "The open world is not rebuilt: run Rebuild World afterwards so it picks up these maps.\n\n" +
                     "The Mall, School, Factory, Prison, HQ and Tutorial are not touched.\n\n" +
                     "This takes a while and Unity will look frozen between steps.", "Rebuild", "Cancel"))
                 return;

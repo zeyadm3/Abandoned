@@ -43,9 +43,9 @@ namespace Abandoned.EditorTools
         );
 
         [MenuItem(ToolMenu.Skyscraper + "Rebuild Skyscraper Restaurant", priority = ToolMenu.SkyscraperP)]
-        public static void Rebuild() { Build(); SkyscraperWorld.Refresh(); }
+        public static void Rebuild() => Build();
 
-        public static void BuildAndExit() => ReleaseKit.RunAndExit(() => { Build(); SkyscraperWorld.Refresh(); });
+        public static void BuildAndExit() => ReleaseKit.RunAndExit(Build);
 
         public static void Build()
         {
@@ -170,9 +170,8 @@ namespace Abandoned.EditorTools
             var horror = SerializedWiring.LoadOrCreateAsset<HorrorConfig>(horrorPath);
             var so = new SerializedObject(horror);
             var levels = so.FindProperty("levels");
-            levels.arraySize = 2;
+            levels.arraySize = 1;
             levels.GetArrayElementAtIndex(0).stringValue = "Skyscraper";
-            levels.GetArrayElementAtIndex(1).stringValue = "World";
             so.FindProperty("<Building>k__BackingField").boundsValue = L.BuildingBounds;
             so.FindProperty("<ArrivalFallback>k__BackingField").vector3Value = new Vector3(0f, 0f, -4f);
             so.FindProperty("<ArrivalFigure>k__BackingField").vector3Value = new Vector3(0f, L.RestaurantY, 10f);

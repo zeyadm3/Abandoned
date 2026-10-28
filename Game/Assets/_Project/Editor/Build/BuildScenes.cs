@@ -29,8 +29,6 @@ namespace Abandoned.EditorTools
         {
             // The company HQ (M6): builds open here; players join here; contracts drive everyone to a selected location.
             HqBuilder.ScenePath,
-            // The open world (Docs/OPEN_WORLD_PLAN.md): the HQ hands over to it as a session starts; places stream into it.
-            WorldBuilder.ScenePath,
             MallBuilder.ScenePath,
             SchoolBuilder.ScenePath,
             FactoryBuilder.ScenePath,

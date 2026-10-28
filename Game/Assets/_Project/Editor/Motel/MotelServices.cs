@@ -14,9 +14,8 @@ namespace Abandoned.Motel
             var config = SerializedWiring.LoadOrCreateAsset<HorrorConfig>(MotelLoot.Data + "/MotelHorror.asset");
             var so = new SerializedObject(config);
             SerializedProperty levels = so.FindProperty("levels");
-            levels.arraySize = 2;
+            levels.arraySize = 1;
             levels.GetArrayElementAtIndex(0).stringValue = "Motel";
-            levels.GetArrayElementAtIndex(1).stringValue = "World";
             so.FindProperty("<Building>k__BackingField").boundsValue = MotelLayout.Bounds;
             so.FindProperty("<ArrivalFallback>k__BackingField").vector3Value = new Vector3(32, 0, 18);
             so.FindProperty("<ArrivalFigure>k__BackingField").vector3Value = new Vector3(52, 4, 14);

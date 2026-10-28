@@ -13,19 +13,12 @@ namespace Abandoned.Extraction
     /// </summary>
     public class AppraisalScreen : MonoBehaviour
     {
-        // None in the open world's own copy (Abandoned.World): the job's place has unloaded by the time it shows.
+        // Optional: a scene may show the appraisal without a run director of its own.
         [Core.OptionalReference, SerializeField] private RunDirector director;
 
         private ScreenPanel screen;
 
-        public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null
-                               && (HoldBack == null || !HoldBack());
-
-        /// <summary>
-        /// The open world (Abandoned.World.WorldJob): true while the results wait for the crew to drive home (the
-        /// appraisal and payday are shown at the HQ). Null outside the world.
-        /// </summary>
-        public static System.Func<bool> HoldBack { get; set; }
+        public bool Showing => RunState.Current != null && RunState.Current.State.Phase == RunPhase.Departed && RunState.Current.Results != null;
 
         private bool shown;
 

@@ -15,9 +15,8 @@ namespace Abandoned.Hospital
             var config = SerializedWiring.LoadOrCreateAsset<HorrorConfig>(HospitalLoot.Data + "/HospitalHorror.asset");
             var data = new SerializedObject(config);
             SerializedProperty levels = data.FindProperty("levels");
-            levels.arraySize = 2;
+            levels.arraySize = 1;
             levels.GetArrayElementAtIndex(0).stringValue = "Hospital";
-            levels.GetArrayElementAtIndex(1).stringValue = "World";
             data.FindProperty("<Building>k__BackingField").boundsValue = HospitalLayout.Bounds;
             data.FindProperty("<ArrivalFallback>k__BackingField").vector3Value = new Vector3(28f, 0f, 10f);
             data.FindProperty("<ArrivalFigure>k__BackingField").vector3Value = new Vector3(28f, 4f, 22f);

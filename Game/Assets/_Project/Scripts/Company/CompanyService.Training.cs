@@ -28,7 +28,7 @@ namespace Abandoned.Company
         {
             if (!IsServer || SessionTravel.Current == null) return;
             active.Value = default;
-            SessionTravel.Current.Travel(HomeTravel);
+            SessionTravel.Current.Travel(HomeLevel);
         }
 
         private bool trainedThisVisit;

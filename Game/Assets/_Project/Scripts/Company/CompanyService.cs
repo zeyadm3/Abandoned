@@ -21,20 +21,8 @@ namespace Abandoned.Company
     {
         public const string HomeLevel = "HQ";
 
-        /// <summary>
-        /// The open world (Abandoned.World.WorldJob, when the World scene is in the build): is the crew at the HQ, though
-        /// everyone is in the world's level? Null outside the world.
-        /// </summary>
-        public static Func<bool> WorldAtHome { get; set; }
-
-        /// <summary>Open world: what "Back to HQ" does once the crew is home (unload the van) instead of travelling.</summary>
-        public static Action WorldReturnHome { get; set; }
-
-        /// <summary>The level a trip away (training) comes home to: the open world when it is in the build, else the HQ.</summary>
-        public static string HomeTravel { get; set; } = HomeLevel;
-
-        /// <summary>Is everyone at the HQ: its own level, or its place in the open world?</summary>
-        public static bool AtHome => SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel || (WorldAtHome != null && WorldAtHome());
+        /// <summary>Is everyone at the HQ?</summary>
+        public static bool AtHome => SessionTravel.Current == null || SessionTravel.Current.Level == HomeLevel;
 
         [SerializeField] private CompanyConfig config;
         [SerializeField] private ContractConfig contracts;
@@ -171,7 +159,6 @@ namespace Abandoned.Company
             TrainingHousekeeping();
             // The Steam lobby takes joiners only while everyone is at the HQ.
             bool home = AtHome;
-            EnterOpenWorld();
             if (lobby == null && Time.unscaledTime >= nextLobbyLookup)
             {
                 nextLobbyLookup = Time.unscaledTime + 1f;

@@ -32,12 +32,6 @@ namespace Abandoned.UI
         private float until;
         private Audio.SoundLoop rumble;
 
-        /// <summary>
-        /// The open world (Abandoned.World): levels reached by driving, or that are the world itself, get no drive screen
-        /// (decision: driving is the only way to a location). Null outside the world.
-        /// </summary>
-        public static System.Func<string, bool> NoDrive { get; set; }
-
         /// <summary>Tests: the drive is on screen.</summary>
         public bool Showing { get; private set; }
 
@@ -51,7 +45,7 @@ namespace Abandoned.UI
             if (seenTravel < 0) { seenTravel = id; return; }
             if (id == seenTravel) return;
             seenTravel = id;
-            if (NoDrive == null || !NoDrive(level)) Begin(level);
+            Begin(level);
         }
 
         private void Update()
@@ -68,7 +62,7 @@ namespace Abandoned.UI
             else if (id != seenTravel)
             {
                 seenTravel = id;
-                if (NoDrive == null || !NoDrive(travel.Level)) Begin(travel.Level);
+                Begin(travel.Level);
             }
             if (Showing && (root == null || root.panel == null)) Refresh(travel.Level);
             Set(Showing && (Time.unscaledTime < until || !SessionTravel.LevelReady || !Loaded(travel.Level)));
