@@ -316,9 +316,15 @@ stations and the HR office (after the training clipboard), and last the icons.
 - **Map chain:** not re-run yet (about 2.7 hours in the editor: KitSwap, CoplanarFix, remaster, MapSite). The Hospital
   CoplanarFix stall was already fixed on 2026-10-24. Run Rebuild All Maps (or `AvOverhaul.AfterMaps`) when the editor
   is free.
-- **Architecture per map:** not started. Every map's walls, slabs and facades are thousands of scaled cubes (the HQ
-  alone 3,401) carrying the 0.24.13 surfaces and the CoplanarFix offsets; replacing them is a map-by-map rebuild that
-  needs looking at in the editor, not a blind pass.
+- **2026-10-28 (user: "get rid of the open world", "fix the hospital", "keep working on the cinematic"):** the open
+  world is deleted (code, scenes, van, menus, hooks); the HQ no longer drops every session into it. The five newer maps
+  are contract jobs now (`LocationBoard`; the Hospital opens at company level 1) and the Hospital, Motel, Police and
+  Fire stations got a collection truck on their van dock (the world's van had been their truck). The frozen HR office
+  was the character creator being cleared by the menu every frame (fixed in MenuUi); the HR manager was untextured
+  (RemakeMaterials found the wrong texture folder); replies no longer get picked by the Enter that moved the last
+  line on. A player who played before skips the interview and only sees the creator: to see the cinematic, reset the
+  hiring (Maps > HQ > Reset Hiring on This Machine).
+- **Architecture per map:** parked in Docs/remodelv2.md (user, 2026-10-28).
 
 ## Blocked
 
