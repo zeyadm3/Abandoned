@@ -7,12 +7,15 @@ using UnityEngine.UIElements;
 
 namespace Abandoned.UI
 {
-    /// <summary>A small deterioration meter and dispatch text; dispatch remains readable through menus.</summary>
+    /// <summary>
+    /// Dispatch text, readable through menus. The old deterioration meter is gone (the approved HUD has no threat
+    /// meter; strain is read from the world); an empty hidden element on the HUD still marks "built", so a language
+    /// change (HudLayer.Clear) builds the radio again in the new wording.
+    /// </summary>
     public class HorrorRunHud : MonoBehaviour
     {
-        private VisualElement clock, progress, radio;
-        private Label status, line;
-        private readonly VisualElement[] marks = new VisualElement[6];
+        private VisualElement clock, radio;
+        private Label line;
         private string shownRadio;
         private string observedRadio;
         private readonly Queue<string> pending = new();
@@ -36,18 +39,6 @@ namespace Abandoned.UI
                 observedRadio = null;
                 pending.Clear();
                 readUntil = 0f;
-            }
-            MenuKit.Show(clock, false); // Building strain is read from the world; the approved HUD has no threat meter.
-            if (active)
-            {
-                bool final = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase || run.TotalCollapse;
-                int danger = Mathf.Clamp(run.State.Danger, 0, marks.Length);
-                for (int i = 0; i < marks.Length; i++) marks[i].EnableInClassList("horror-danger__mark--on", i < danger);
-                clock.EnableInClassList("horror-danger--final", final);
-                string text = run.TotalCollapse ? Loc.T("COLLAPSE {0}s", Mathf.CeilToInt(run.CollapseRemaining)) : final ? Loc.T("LOCKDOWN") : run.WindowClosed ? Loc.T("OVERSTAY") : Loc.T("BUILDING SIGNAL");
-                if (status.text != text) status.text = text;
-                float elapsed = run.State.Window > 0f ? 1f - run.WindowRemaining / run.State.Window : 1f;
-                UiKit.SetBar(progress, elapsed, run.WindowClosed || final ? "bad" : null);
             }
             string incoming = RunHorrorDirector.RadioLine;
             bool urgent = RunHorrorDirector.Current != null && RunHorrorDirector.Current.FinalPhase || run != null && run.IsSpawned && run.TotalCollapse;
@@ -94,21 +85,8 @@ namespace Abandoned.UI
         {
             HudLayer.Remove(clock);
             HudLayer.Remove(radio);
-            clock = HudLayer.Add(new VisualElement(), "horror-danger");
-            status = new Label(Loc.T("BUILDING SIGNAL")) { pickingMode = PickingMode.Ignore };
-            status.AddToClassList("horror-danger__label");
-            clock.Add(status);
-            var row = new VisualElement { pickingMode = PickingMode.Ignore };
-            row.AddToClassList("horror-danger__marks");
-            clock.Add(row);
-            for (int i = 0; i < marks.Length; i++)
-            {
-                marks[i] = new VisualElement { pickingMode = PickingMode.Ignore };
-                marks[i].AddToClassList("horror-danger__mark");
-                marks[i].EnableInClassList("horror-danger__mark--last", i == marks.Length - 1);
-                row.Add(marks[i]);
-            }
-            progress = UiKit.Bar(clock, "horror-danger__progress");
+            clock = HudLayer.Add(new VisualElement());
+            MenuKit.Show(clock, false);
             radio = new VisualElement { pickingMode = PickingMode.Ignore };
             radio.style.position = Position.Absolute;
             radio.style.left = Length.Percent(31f);

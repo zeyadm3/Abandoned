@@ -12,7 +12,6 @@ namespace Abandoned.Tutorial
     {
         private readonly Dictionary<string, LootItem> items = new();
         private readonly Dictionary<string, Vector3> itemStarts = new();
-        private readonly HashSet<string> heldThisStep = new();
         private readonly Dictionary<ulong, int> slotAtStart = new();
         private float lastOnSection;
 
@@ -20,8 +19,6 @@ namespace Abandoned.Tutorial
         public LootItem Item(string key) => key != null && items.TryGetValue(key, out LootItem item) && item != null ? item : null;
 
         public Vector3 ItemStart(string key) => itemStarts.TryGetValue(key, out Vector3 at) ? at : Vector3.zero;
-
-        public bool HeldThisStep(string key) => heldThisStep.Contains(key);
 
         public float SecondsOffSection => Time.time - lastOnSection;
 
@@ -131,9 +128,6 @@ namespace Abandoned.Tutorial
         // Each lesson watches from its own start: who holds what, which slot each hand is on, who stands where.
         private void CaptureBaselines(TutorialStepDefinition s)
         {
-            heldThisStep.Clear();
-            foreach (KeyValuePair<string, LootItem> pair in items)
-                if (IsHeld(pair.Value)) heldThisStep.Add(pair.Key);
             slotAtStart.Clear();
             foreach (Equipment.PlayerEquipment e in Equipment.PlayerEquipment.All)
                 if (e != null && e.IsSpawned && e.NetworkManager == NetworkManager) slotAtStart[e.OwnerClientId] = e.State.Active;
@@ -142,8 +136,6 @@ namespace Abandoned.Tutorial
 
         private void TickWorldState()
         {
-            foreach (KeyValuePair<string, LootItem> pair in items)
-                if (IsHeld(pair.Value)) heldThisStep.Add(pair.Key);
             TutorialStepDefinition s = CurrentStep;
             if (s != null && s.Check == TutorialCheck.OffSection && AnyoneOn(TutorialSection.Find(s.Key))) lastOnSection = Time.time;
             CatchFallers(s);
@@ -181,7 +173,7 @@ namespace Abandoned.Tutorial
             int present = 0;
             foreach (LootItem item in items.Values) if (item != null) present++;
             string visitorState = visitor != null && visitor.IsSpawned ? leaveAt >= 0f ? "leaving" : "inside" : visitorCame ? "gone" : "none";
-            return $"items {present}/{items.Count}  held {heldThisStep.Count}  visitor {visitorState}  armed {(armed != null ? armed.name : "-")}  off-section {SecondsOffSection:0.0}s";
+            return $"items {present}/{items.Count}  visitor {visitorState}  armed {(armed != null ? armed.name : "-")}  off-section {SecondsOffSection:0.0}s";
         }
     }
 }

@@ -13,8 +13,6 @@ namespace Abandoned.Structure
         private readonly Dictionary<StructuralSection, RubbleMound> mounds = new();
         private readonly List<StructuralSection> redrop = new();
 
-        public IReadOnlyCollection<RubbleMound> Mounds => mounds.Values;
-
         private void PlaceRubble(StructuralSection fallen)
         {
             Bounds surface = fallen.SurfaceBounds;

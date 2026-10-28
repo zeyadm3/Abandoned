@@ -23,6 +23,8 @@ namespace Abandoned.EditorTools
             Abandoned.Hospital.HospitalBuilder.ScenePath,
             Abandoned.Motel.MotelBuilder.ScenePath,
             SkyscraperBuilder.ScenePath,
+            PoliceStationLayout.ScenePath,
+            FireStationLayout.ScenePath,
         };
 
         public static readonly string[] All =
@@ -36,7 +38,6 @@ namespace Abandoned.EditorTools
             Abandoned.Hospital.HospitalBuilder.ScenePath,
             Abandoned.Motel.MotelBuilder.ScenePath,
             SkyscraperBuilder.ScenePath,
-            // Open-world stations, streamed in by distance; not contract destinations until the world lists them.
             PoliceStationLayout.ScenePath,
             FireStationLayout.ScenePath,
             // The training job (14 Larch Court): ships in every build, but is never a contract destination.

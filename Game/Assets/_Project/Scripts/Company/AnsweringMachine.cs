@@ -74,7 +74,8 @@ namespace Abandoned.Company
                 open = false;
             if (!open && tapeVoice != null && tapeVoice.isPlaying) tapeVoice.Stop();
             CursorOwner.Set(this, open);
-            if (screen == null)
+            // A language change rebuilds the menus and takes the old panel out of the document: make it again.
+            if (screen == null || screen.Root.panel == null)
             {
                 if (!open || (screen = ScreenPanel.Create(wide: false)) == null) return;
             }

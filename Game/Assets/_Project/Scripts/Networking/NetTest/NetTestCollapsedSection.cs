@@ -1,3 +1,5 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+// The nettest harness ships only in the editor and Development builds (Tools/unity.sh nettest uses a dev build).
 using System;
 
 namespace Abandoned.Networking
@@ -12,3 +14,5 @@ namespace Abandoned.Networking
         public bool collidersOff;
     }
 }
+
+#endif

@@ -1,4 +1,3 @@
-using Abandoned.Company;
 using Abandoned.Core;
 using Abandoned.Networking;
 using Unity.Netcode;
@@ -8,25 +7,13 @@ namespace Abandoned.Equipment
 {
     /// <summary>
     /// Gear moving between crewmates mid-job (QA D-10): the give-gear key hands the item in your active slot
-    /// to the crewmate in front of you, or takes a fallen crewmate's gear into your empty slots. And a solo
-    /// player doesn't spend a hand slot on the trolley (QA D-09): if the company owns one, it rides along.
+    /// to the crewmate in front of you, or takes a fallen crewmate's gear into your empty slots.
     /// The host checks reach, sight and slots; company stock is unchanged (the item only changes hands).
     /// </summary>
     public partial class PlayerEquipment
     {
         [Tooltip("How close (m) a crewmate must be to hand gear over or take a fallen one's.")]
         [SerializeField, Min(0.5f)] private float giveReach = 2.5f;
-
-        /// <summary>Solo Heavy drags: a trolley in hand, or (alone) one the company owns (QA D-09).</summary>
-        private bool TrolleyAvailable
-        {
-            get
-            {
-                if (!CompanyService.RulesApply || Has(EquipmentKind.HandTrolley)) return true;
-                CompanyService company = CompanyService.Current;
-                return company != null && CompanyService.CrewSize <= 1 && company.OwnedCount(catalog.IndexOf("hand_trolley")) > 0;
-            }
-        }
 
         private void TickGiveGear(Player.PlayerInputFrame input)
         {

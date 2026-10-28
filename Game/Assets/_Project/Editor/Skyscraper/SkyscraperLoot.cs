@@ -135,7 +135,7 @@ namespace Abandoned.EditorTools
                 nt.Interpolate = true;
 
                 // NetworkSharedCarry's RequireComponent already adds this on heavy salvage.
-                var net = root.GetComponent<NetworkLoot>() ?? root.AddComponent<NetworkLoot>();
+                var net = Abandoned.EditorTools.SerializedWiring.GetOrAdd<NetworkLoot>(root);
                 SerializedWiring.Set(net, "networkTransform", nt);
                 var netConfig = AssetDatabase.LoadAssetAtPath<LootNetConfig>(NetworkContentBuilder.LootNetConfigPath);
                 SerializedWiring.Set(net, "config", netConfig);

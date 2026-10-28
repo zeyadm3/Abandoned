@@ -29,9 +29,6 @@ namespace Abandoned.UI
                 screen.Panel.AddToClassList("field-guide");
                 screen.Panel.style.width = 1160f;
                 screen.Panel.style.maxWidth = Length.Percent(94f);
-                StyleSheet styles = Resources.Load<StyleSheet>("HqStations");
-                if (styles != null) screen.Panel.styleSheets.Add(styles);
-                screen.ApplyArchiveStyles();
             }
             screen.Show(open);
             if (!open) return;

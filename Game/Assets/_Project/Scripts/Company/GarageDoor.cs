@@ -18,13 +18,6 @@ namespace Abandoned.Company
 
         public float Open => open;
 
-        /// <summary>Run time: set how far it is rolled up (the open world opens it, since the van waits in the yard).</summary>
-        public void SetOpen(float amount)
-        {
-            open = Mathf.Clamp01(amount);
-            Apply();
-        }
-
         private void OnEnable() => Apply();
 
         private void OnValidate() => Apply();

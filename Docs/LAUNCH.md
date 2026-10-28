@@ -3,6 +3,13 @@
 Everything that has to happen outside the code, in order. The game side is done (M3–M10); see
 Docs/PROGRESS.md "Needs you" for the playtests that come first.
 
+## 0.25.0: the audit (2026-10-28)
+Done in the repo: Docs/AUDIT_0.25.0.md (fixes, Steam readiness, decisions left). Release and demo builds now restart
+through Steam when started outside it and host through Steam by default; nettest code and debug overlays are compiled
+out of player builds. What is left before the store, besides the Steam-only steps below: the play pass, the four
+decisions in AUDIT_0.25.0.md "Left for you", dropping the editor/AI packages it lists, and measuring the release
+build's size for the system requirements.
+
 ## 0.24.6: what's ready, and what only you can do (2026-10-10)
 Ready in the repo:
 - `Tools/unity.sh set-app-id <id>` puts the game's own App ID in NetworkConfig (and the demo's store target)
@@ -35,7 +42,7 @@ submit the build and the page for review.
 - [ ] **Mac depot**: the app is signed ad hoc, not notarized. Install it through Steam on a second Mac.
 - [ ] **Studio name.** "Zeyad Games" fixes the save folder and the Auto-Cloud paths; change it before
       release or never.
-- [ ] Merge `game-called-abandoned` into `main` and tag the release commit.
+- [ ] Tag the release commit on `main` (all work is on `main` since 2026-10-18).
 - [ ] Four rule decisions from QA_Resolution_Report.md section 5: the total-collapse penalty was decided on
       2026-10-12 (kept; see CLAUDE.md). Still yours: the truck can be overloaded during the honk, bankruptcy
       clears the catalogue and trophy shelf, gear other than the drone works while hiding.

@@ -24,7 +24,6 @@ namespace Abandoned.Core
         private readonly List<ReflectionProbe> finished = new();
         private float redrawAt = -1f;
         private int drawn;
-        private GUIStyle style;
         private Cubemap fallback;
 
         private void OnEnable()
@@ -111,6 +110,10 @@ namespace Abandoned.Core
             else DestroyImmediate(fallback);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // F1 only, and F1 never opens in a player build: there the GUI loop doesn't run for it at all.
+        private GUIStyle style;
+
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
@@ -118,5 +121,6 @@ namespace Abandoned.Core
             GUI.Label(new Rect(Screen.width - 620, 72, 610, 22),
                 $"room reflections {drawn}/{probes.Count}{(queue.Count + drawing.Count > 0 ? " drawing" : "")}", style);
         }
+#endif
     }
 }

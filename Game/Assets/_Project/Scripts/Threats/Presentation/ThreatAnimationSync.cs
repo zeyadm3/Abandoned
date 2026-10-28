@@ -20,7 +20,7 @@ namespace Abandoned.Threats
         public void ServerAttack() { if (IsServer) attackUntil = Time.time + 0.8f; }
         private void LateUpdate()
         {
-            if (!IsSpawned || animator == null) return;
+            if (!IsSpawned || animator == null || animator.runtimeAnimatorController == null) return;
             if (IsServer)
             {
                 ThreatMotion wanted = Time.time < attackUntil ? ThreatMotion.Attack : threat.DesiredMotion;

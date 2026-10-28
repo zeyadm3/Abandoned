@@ -171,7 +171,7 @@ namespace Abandoned.EditorTools
                 Upgrade("cargo_1", "Bigger Bay", "Side boards and a roof rack: 35 % more cargo space.", TruckUpgradeKind.Cargo, 1, 12000, 2, 1.35f),
                 Upgrade("floodlights", "Floodlights", "A light bar on the cab: the lot and the loading bay stay lit, power or no power.",
                     TruckUpgradeKind.Floodlights, 1, 8000, 3, 1f),
-                Upgrade("engine_1", "Tuned Engine", "It starts first time: the truck leaves 7 s after the lever, not 10.", TruckUpgradeKind.Engine, 1, 10000, 4, 7f),
+                Upgrade("engine_1", "Tuned Engine", "It starts first time: the truck leaves 5 s after the lever, not 6.", TruckUpgradeKind.Engine, 1, 10000, 4, 5f),
                 Upgrade("cargo_2", "Box Truck", "A proper box truck: 75 % more cargo space than the van.", TruckUpgradeKind.Cargo, 2, 30000, 5, 1.75f),
                 Upgrade("engine_2", "V8", "Leaves 4 s after the lever. Hold on to something.", TruckUpgradeKind.Engine, 2, 25000, 7, 4f),
                 // "armor" (Armored Bay) was taken out on 2026-10-22 (user's call).

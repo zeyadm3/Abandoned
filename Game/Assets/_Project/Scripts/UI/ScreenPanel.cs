@@ -50,21 +50,7 @@ namespace Abandoned.UI
             var panel = MenuKit.Panel(root, wide);
             panel.AddToClassList("archive-panel");
             var screen = new ScreenPanel(root, panel);
-            screen.ApplyArchiveStyles();
             return screen;
-        }
-
-        /// <summary>Keep the archive finish after any station-specific book or terminal rules.</summary>
-        public void ApplyArchiveStyles()
-        {
-            // 2026 remake: the remake's theme and layouts go after the archive finish, so they win on the panel too.
-            foreach (string name in new[] { "AbandonedPanels", "Remake2026", "Remake2026Layouts" })
-            {
-                StyleSheet styles = Resources.Load<StyleSheet>(name);
-                if (styles == null) continue;
-                if (Panel.styleSheets.Contains(styles)) Panel.styleSheets.Remove(styles);
-                Panel.styleSheets.Add(styles);
-            }
         }
 
         public void Show(bool visible)
@@ -81,10 +67,6 @@ namespace Abandoned.UI
             if (key == builtFor) return;
             builtFor = key;
             Panel.Clear();
-            var head = MenuKit.Row(Panel);
-            head.AddToClassList("archive-panel__masthead");
-            MenuKit.Text(head, "ABANDONED", "archive-panel__brand").pickingMode = PickingMode.Ignore;
-            MenuKit.Text(head, Loc.T("SALVAGE DIVISION / RECOVERED RECORDS"), "archive-panel__classification").pickingMode = PickingMode.Ignore;
             ScrollView scroll = MenuKit.Scroll(Panel, "screen-panel__scroll");
             scroll.contentContainer.style.width = Length.Percent(100f);
             build(scroll.contentContainer);

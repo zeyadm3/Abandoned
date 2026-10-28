@@ -122,7 +122,7 @@ namespace Abandoned.EditorTools
         private static void VisualOnly(GameObject item, string reason)
         {
             foreach (Collider collider in item.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(collider);
-            var marker = item.GetComponent<WalkThroughObject>() ?? item.AddComponent<WalkThroughObject>();
+            var marker = Abandoned.EditorTools.SerializedWiring.GetOrAdd<WalkThroughObject>(item);
             marker.EditorSetup(reason);
         }
 
@@ -130,7 +130,7 @@ namespace Abandoned.EditorTools
         {
             var cell = new Vector2Int(Mathf.FloorToInt(x / MallLayout.Tile), Mathf.FloorToInt(z / MallLayout.Tile));
             StructuralSection support = MeridianDressingUtility.Support(mall, cell, floor);
-            (item.GetComponent<SectionProp>() ?? item.AddComponent<SectionProp>()).EditorSetup(support);
+            (Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(item)).EditorSetup(support);
             foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>(true))
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, 0);
         }

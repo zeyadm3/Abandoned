@@ -21,9 +21,6 @@ namespace Abandoned.UI
             element.style.minHeight = 0;
             element.style.flexShrink = 0;
         }
-        /// <summary>A key cap for an input action (the player's own binding; mouse buttons as a glyph).</summary>
-        public static VisualElement KeyCap(VisualElement parent, string action) => Key(parent, InputBindings.Display(action));
-
         /// <summary>A key cap with this text ("E", "LMB", "Space"...).</summary>
         public static VisualElement Key(VisualElement parent, string key)
         {
@@ -109,12 +106,6 @@ namespace Abandoned.UI
             return icon;
         }
 
-        public static void SetIcon(VisualElement icon, string id)
-        {
-            Texture2D t = UiIcons.Get(id);
-            icon.style.backgroundImage = t != null ? new StyleBackground(t) : new StyleBackground(StyleKeyword.None);
-            icon.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
-        }
 
         /// <summary>A progress bar; set it with <see cref="SetBar"/>.</summary>
         public static VisualElement Bar(VisualElement parent, params string[] classes)
@@ -240,18 +231,6 @@ namespace Abandoned.UI
             };
             parent?.Add(tape);
             return tape;
-        }
-
-        /// <summary>A quick wobble (a button being hovered, a value changing): rotation only, so layout and transitions stay put.</summary>
-        public static void Jolt(VisualElement e)
-        {
-            if (e == null || MenuEffectsConfig.Calm) return;
-            float[] steps = { -0.45f, 0.3f, -0.1f, 0f };
-            for (int i = 0; i < steps.Length; i++)
-            {
-                float angle = steps[i];
-                e.schedule.Execute(() => e.style.rotate = new Rotate(angle)).StartingIn(i * 30);
-            }
         }
     }
 }

@@ -30,11 +30,14 @@ namespace Abandoned.Core
             eye = null;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // F1 only, and F1 never opens in a player build: there the GUI loop doesn't run for it at all.
         private void OnGUI()
         {
             if (!DebugView.Visible || eye == null) return;
             GUI.Label(new Rect(10f, Screen.height - 50f, 420f, 20f), $"VIEW {eye.farClipPlane:0} m  {gameObject.scene.name}");
         }
+#endif
 
 #if UNITY_EDITOR
         public void EditorSetup(float distance) => farClip = Mathf.Max(100f, distance);

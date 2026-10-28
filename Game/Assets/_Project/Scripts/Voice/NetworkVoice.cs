@@ -91,7 +91,7 @@ namespace Abandoned.Voice
             ToHostRpc(data, codec, VoiceMath.ToByte(level), radio, sendSequence++);
         }
 
-        [Rpc(SendTo.Server, Delivery = RpcDelivery.Unreliable)]
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner, Delivery = RpcDelivery.Unreliable)]
         private void ToHostRpc(byte[] data, VoiceCodecId codec, byte level, bool radio, ushort sequence, RpcParams rpcParams = default)
         {
             // Only this player's own client may speak with this player's voice.
@@ -111,7 +111,7 @@ namespace Abandoned.Voice
             ToListenersRpc(data, codec, level, radio, sequence);
         }
 
-        [Rpc(SendTo.NotOwner, Delivery = RpcDelivery.Unreliable)]
+        [Rpc(SendTo.NotOwner, InvokePermission = RpcInvokePermission.Server, Delivery = RpcDelivery.Unreliable)]
         private void ToListenersRpc(byte[] data, VoiceCodecId codec, byte level, bool radio, ushort sequence, RpcParams rpcParams = default)
         {
             // Anyone may invoke an RPC (NGO proxies it through the host); only the host's relay is real,

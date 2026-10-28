@@ -19,6 +19,23 @@ namespace Abandoned.Networking
             SteamClient.Init(appId, false);
         }
 
+        /// <summary>
+        /// True when this process was started outside Steam and Steam is now relaunching it (the caller quits).
+        /// Always false while a steam_appid.txt sits beside the game (dev, shareable and demo builds).
+        /// </summary>
+        public bool RestartThroughSteam(uint appId)
+        {
+            try
+            {
+                return SteamClient.RestartAppIfNecessary(appId);
+            }
+            catch (System.Exception)
+            {
+                // No Steam library on this machine: carry on offline, as Init's failure would.
+                return false;
+            }
+        }
+
         public void RunCallbacks() => SteamClient.RunCallbacks();
         public void Shutdown() => SteamClient.Shutdown();
         public void OpenStoreOverlay(uint appId) => Steamworks.SteamFriends.OpenStoreOverlay(appId);

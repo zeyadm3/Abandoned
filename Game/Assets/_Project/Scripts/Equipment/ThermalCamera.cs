@@ -21,6 +21,8 @@ namespace Abandoned.Equipment
         private Texture2D blob;
         private float battery = -1f;
         private bool on;
+        // OnGUI runs several times a frame: the mask is looked up once (GetMask allocates).
+        private int sightMask;
 
         private static PlayerEquipment Gear(out NetworkPlayer me)
         {
@@ -89,13 +91,20 @@ namespace Abandoned.Equipment
                 if (p != null && !p.IsOwner && !p.IsDead) Heat(cam, p.transform.position, 0.6f, 1.8f);
         }
 
+        private void OnDestroy()
+        {
+            UI.HudCallout.Clear(this);
+            if (volume != null && volume.profile != null) Destroy(volume.profile);
+            if (blob != null) Destroy(blob);
+        }
+
         // A warm body: an orange-white blob over its outline, only where the camera could actually see it.
         private void Heat(Camera cam, Vector3 feet, float width, float height)
         {
             Vector3 eye = cam.transform.position, chest = feet + Vector3.up * height * 0.55f;
             if (Vector3.Distance(eye, chest) > Range) return;
-            int mask = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
-            if (Physics.Linecast(eye, chest, out RaycastHit hit, mask, QueryTriggerInteraction.Ignore) && hit.distance < Vector3.Distance(eye, chest) - 1f) return;
+            if (sightMask == 0) sightMask = ~LayerMask.GetMask(Core.GameLayers.Player, Core.GameLayers.Loot, Core.GameLayers.Debris, "Ignore Raycast");
+            if (Physics.Linecast(eye, chest, out RaycastHit hit, sightMask, QueryTriggerInteraction.Ignore) && hit.distance < Vector3.Distance(eye, chest) - 1f) return;
             Vector3 top = cam.WorldToScreenPoint(feet + Vector3.up * height), bottom = cam.WorldToScreenPoint(feet);
             if (top.z <= 0f || bottom.z <= 0f) return;
             float h = Mathf.Abs(top.y - bottom.y), w = h * width / height * 1.6f;

@@ -18,12 +18,19 @@ namespace Abandoned.Extraction
 
         public static void Remove(Func<string> source) => Sources.Remove(source);
 
+        // The run HUD asks every frame: one reused builder rather than a list and a join each time.
+        private static readonly System.Text.StringBuilder Joined = new();
+
         public static string Text()
         {
-            var lines = new List<string>();
+            Joined.Clear();
             foreach (Func<string> s in Sources)
-                if (s?.Invoke() is string line && line.Length > 0) lines.Add(line);
-            return string.Join("\n", lines);
+                if (s?.Invoke() is string line && line.Length > 0)
+                {
+                    if (Joined.Length > 0) Joined.Append('\n');
+                    Joined.Append(line);
+                }
+            return Joined.ToString();
         }
 
         [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]

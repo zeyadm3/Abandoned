@@ -92,7 +92,8 @@ namespace Abandoned.Structure
 
         private void Choose(Transform eye, ShadowBudgetConfig config)
         {
-            visibilityMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast", "UI");
+            if (visibilityMask == 0)
+                visibilityMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast", "UI");
             int setting = VideoSettings.Shadows;
             candidates.Clear();
             considered.Clear();

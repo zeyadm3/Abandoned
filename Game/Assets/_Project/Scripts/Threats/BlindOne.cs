@@ -28,7 +28,6 @@ namespace Abandoned.Threats
         private readonly List<(Vector3 position, float strength, float time)> heard = new();
         private NavMeshAgent agent;
         private BlindOneBrain brain;
-        private int wallMask;
         // Its own path timer and goal, named apart from Threat's: Unity rejects a field name repeated down a
         // class chain, private ones included (it keeps them across a script reload in the editor).
         private float nextPath, nextClick;
@@ -44,7 +43,6 @@ namespace Abandoned.Threats
         public BlindOneState State => state.Value;
         public override ThreatMotion DesiredMotion => State == BlindOneState.Attack ? ThreatMotion.Attack : State == BlindOneState.Hunt ? ThreatMotion.Chase : State == BlindOneState.Investigate ? ThreatMotion.Special : ThreatMotion.Idle;
         public BlindOneConfig Config => config;
-        public IReadOnlyList<(Vector3 position, float strength, float time)> Heard => heard;
         public BlindOneBrain Brain => brain;
 
         protected override void Awake()
@@ -52,7 +50,6 @@ namespace Abandoned.Threats
             base.Awake();
             agent = GetComponent<NavMeshAgent>();
             agent.enabled = false;
-            wallMask = ~LayerMask.GetMask(GameLayers.Player, GameLayers.Loot, GameLayers.Debris, "Ignore Raycast");
         }
 
         public override void OnNetworkSpawn()
@@ -73,6 +70,14 @@ namespace Abandoned.Threats
             NoiseSystem.Emitted -= OnNoise;
         }
 
+        public override void OnDestroy()
+        {
+            // Destroyed without a despawn (session torn down): no dead listener on the static noise event.
+            All.Remove(this);
+            NoiseSystem.Emitted -= OnNoise;
+            base.OnDestroy();
+        }
+
         private void OnNoise(NoiseEvent e)
         {
             if (IsWithdrawing) return;
@@ -90,7 +95,7 @@ namespace Abandoned.Threats
             Vector3 d = to - from;
             float length = d.magnitude;
             if (length < 0.01f) return 0;
-            int n = Physics.RaycastNonAlloc(from, d / length, wallHits, length, wallMask, QueryTriggerInteraction.Ignore);
+            int n = Physics.RaycastNonAlloc(from, d / length, wallHits, length, WallMask, QueryTriggerInteraction.Ignore);
             int walls = 0;
             for (int i = 0; i < n; i++)
                 if (!wallHits[i].collider.transform.IsChildOf(transform)) walls++;
@@ -101,7 +106,9 @@ namespace Abandoned.Threats
         {
             if (IsSpawned) Click();
             if (!IsServer || !IsSpawned || brain == null) return;
-            heard.RemoveAll(h => Time.time - h.time > config.Memory);
+            // A plain loop: a capturing lambda here allocated a delegate every frame for the whole job.
+            for (int i = heard.Count - 1; i >= 0; i--)
+                if (Time.time - heard[i].time > config.Memory) heard.RemoveAt(i);
             if (!agent.isOnNavMesh)
             {
                 RecoverOntoNavMesh();

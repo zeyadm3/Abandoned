@@ -30,7 +30,7 @@ namespace Abandoned.EditorTools
             visual.transform.SetParent(root.transform, false);
             GameObject imported = (GameObject)PrefabUtility.InstantiatePrefab(source);
             imported.transform.SetParent(visual.transform, false);
-            Animator animator = imported.GetComponent<Animator>() ?? imported.AddComponent<Animator>();
+            Animator animator = Abandoned.EditorTools.SerializedWiring.GetOrAdd<Animator>(imported);
             animator.runtimeAnimatorController = Controller(modelName, modelPath);
             animator.avatar = AssetDatabase.LoadAllAssetsAtPath(modelPath).OfType<Avatar>().FirstOrDefault();
             animator.applyRootMotion = false; animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms;

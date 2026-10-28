@@ -1,3 +1,5 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+// The nettest harness ships only in the editor and Development builds (Tools/unity.sh nettest uses a dev build).
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -34,3 +36,5 @@ namespace Abandoned.Networking
         public string Summary => $"{Count} frames, avg {Average:0.00} ms, p95 {Percentile(0.95f):0.00} ms, worst {Worst:0.0} ms at {worstAt:0.0} s";
     }
 }
+
+#endif

@@ -21,8 +21,6 @@ namespace Abandoned.Extraction
         [field: SerializeField, Range(0f, 0.5f)] public float HearingPerLevel { get; private set; } = 0.15f;
         [Tooltip("Monsters move this much faster per level.")]
         [field: SerializeField, Range(0f, 0.3f)] public float SpeedPerLevel { get; private set; } = 0.08f;
-        [Tooltip("At this level a second Blind One appears (GDD 9: more threats spawn).")]
-        [field: SerializeField, Range(1, 10)] public int ExtraThreatLevel { get; private set; } = 3;
 
         [Header("The building ages")]
         [Tooltip("Seconds between ageing ticks; each tick weakens `level` random upper sections.")]

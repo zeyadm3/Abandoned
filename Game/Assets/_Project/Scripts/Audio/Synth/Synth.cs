@@ -224,17 +224,6 @@ namespace Abandoned.Audio
             return d;
         }
 
-        public static float[] HighPass(float[] d, float hz, int rate = Rate)
-        {
-            float a = OnePole(hz, rate), y = 0f;
-            for (int i = 0; i < d.Length; i++)
-            {
-                y += (d[i] - y) * a;
-                d[i] -= y;
-            }
-            return d;
-        }
-
         /// <summary>Pushes into soft clipping: grit and weight. Normalize afterwards.</summary>
         public static float[] Drive(float[] d, float amount)
         {

@@ -27,8 +27,6 @@ namespace Abandoned.Interaction
             }
         }
         public int Count => Items.Count;
-        /// <summary>Extra pockets from gear (a backpack, M9.4); set on every machine from the replicated slots.</summary>
-        public int ExtraSlots { get; set; }
         public int Capacity => EquipState.SlotCount;
         public int OccupiedCount => Count + (Gear != null ? Gear.OccupiedCount : 0);
         public bool HasSpace => FirstFreeSlot >= 0;
@@ -53,14 +51,6 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>The pocket the drop key empties: the one picked with the wheel, else the newest.</summary>
-        public int SelectedIndex
-        {
-            get
-            {
-                return Selected != null ? items.IndexOf(Selected) : -1;
-            }
-        }
-
         public int SelectedSlot => Gear != null && Gear.IsSpawned ? Gear.State.Active : selected >= 0 ? selected : Count > 0 ? SlotOf(items[^1]) : 0;
         public Grabbable Selected => AtSlot(SelectedSlot);
         public Grabbable AtSlot(int slot)
@@ -103,15 +93,6 @@ namespace Abandoned.Interaction
             slots.Remove(item);
             Changed?.Invoke();
             return true;
-        }
-
-        internal Grabbable RemoveLast()
-        {
-            items.RemoveAll(i => i == null);
-            if (items.Count == 0) return null;
-            Grabbable item = items[^1];
-            Remove(item);
-            return item;
         }
     }
 }

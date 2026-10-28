@@ -19,9 +19,6 @@ namespace Abandoned.Company
         /// <summary>Every machine: what is fitted in a slot (catalog index; -1 = nothing).</summary>
         public int FittedTruckCosmetic(TruckCosmeticSlot slot) => State.Fitted(slot, TruckCosmetics);
 
-        /// <summary>The garage's last answer ("" while none), for its status line.</summary>
-        public string TruckCosmeticMessage { get; private set; } = "";
-
         /// <summary>Anyone at the garage: buy a fitting (it is fitted at once).</summary>
         public void RequestBuyTruckCosmetic(int index)
         {
@@ -66,7 +63,7 @@ namespace Abandoned.Company
             save.truckLook ??= new System.Collections.Generic.List<string>();
             if (index < 0)
             {
-                save.truckLook.RemoveAll(e => e.StartsWith(slot + ":"));
+                save.truckLook.RemoveAll(e => e.StartsWith(slot + ":", System.StringComparison.Ordinal));
                 Saved();
                 return;
             }
@@ -79,7 +76,7 @@ namespace Abandoned.Company
         private void Fit(TruckCosmeticDefinition d)
         {
             save.truckLook ??= new System.Collections.Generic.List<string>();
-            save.truckLook.RemoveAll(e => e.StartsWith(d.Slot + ":"));
+            save.truckLook.RemoveAll(e => e.StartsWith(d.Slot + ":", System.StringComparison.Ordinal));
             save.truckLook.Add(d.Slot + ":" + d.Id);
         }
     }

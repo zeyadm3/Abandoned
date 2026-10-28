@@ -3,9 +3,9 @@ using UnityEngine;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// Every intensity and timing of the horror menus (title backdrop, overlays, tactile buttons, screen
-    /// transitions, the pause blur) plus the original procedural textures they draw with. Lives in
-    /// Data/UI/Resources so the menus find it without wiring; built by Tools/Abandoned/UI/Create Menu Effects.
+    /// The menus' 3D side: the post volume behind them and the drifting title backdrop. The overlay, button and
+    /// transition tunables went with the 2026-10-28 UI redo; the textures stay until their builder is cut with a
+    /// Unity compile. Lives in Data/UI/Resources so the menus find it without wiring.
     /// </summary>
     [CreateAssetMenu(menuName = "Abandoned/UI/Menu Effects Config")]
     public class MenuEffectsConfig : ScriptableObject
@@ -22,50 +22,12 @@ namespace Abandoned.UI
         [SerializeField] private Material silhouetteMaterial;
         [SerializeField] private Material dustMaterial;
 
-        [Header("Screen overlay")]
-        [field: SerializeField, Range(0f, 1f)] public float GrainOpacity { get; private set; } = 0.09f;
-        [field: SerializeField, Min(1f)] public float GrainFps { get; private set; } = 18f;
-        [field: SerializeField, Range(0f, 1f)] public float VignetteOpacity { get; private set; } = 0.85f;
-        [field: SerializeField, Range(0f, 1f)] public float ScanlineOpacity { get; private set; } = 0.35f;
-        [Tooltip("A faint VHS tracking band rolls down the screen every so often (seconds between rolls).")]
-        [field: SerializeField] public Vector2 TrackingBandInterval { get; private set; } = new(7f, 16f);
-        [field: SerializeField, Range(0f, 1f)] public float TrackingBandOpacity { get; private set; } = 0.06f;
-
-        [Header("Title")]
-        [field: SerializeField, Min(0f)] public float ChromaticOffset { get; private set; } = 2f;
-        [field: SerializeField, Range(0f, 1f)] public float ChromaticOpacity { get; private set; } = 0.35f;
-        [field: SerializeField] public Vector2 TitleGlitchInterval { get; private set; } = new(4f, 11f);
-        [field: SerializeField, Min(0f)] public float TitleGlitchShift { get; private set; } = 9f;
-        [field: SerializeField, Range(0f, 1f)] public float TitleWearOpacity { get; private set; } = 0.75f;
-
-        [Header("Buttons")]
-        [field: SerializeField, Min(0f)] public float HoverJitter { get; private set; } = 1.6f;
-        [field: SerializeField, Min(0f)] public float HoverJitterSeconds { get; private set; } = 0.16f;
-        [field: SerializeField, Range(0f, 1f)] public float HoverGlowOpacity { get; private set; } = 0.55f;
-        [field: SerializeField, Range(0f, 1f)] public float HoverFlickerDip { get; private set; } = 0.45f;
-        [field: SerializeField, Range(0.8f, 1f)] public float PressScale { get; private set; } = 0.95f;
-        [field: SerializeField, Min(0f)] public float PressOffset { get; private set; } = 3f;
-        [field: SerializeField, Range(0f, 1f)] public float PressFlashOpacity { get; private set; } = 0.32f;
-        [Tooltip("Screen shake (px) for the important actions: Host, Join, Quit.")]
-        [field: SerializeField, Min(0f)] public float ImportantShake { get; private set; } = 7f;
-        [field: SerializeField, Min(0f)] public float ShakeSeconds { get; private set; } = 0.22f;
-
-        [Header("Transitions")]
-        [field: SerializeField, Min(0f)] public float TransitionSeconds { get; private set; } = 0.18f;
-        [field: SerializeField, Range(0f, 1f)] public float TransitionStaticOpacity { get; private set; } = 0.55f;
-        [field: SerializeField, Min(0f)] public float PauseFadeSeconds { get; private set; } = 0.3f;
-
         [Header("Post effects (URP volume over the 3D view)")]
         [field: SerializeField] public float TitleExposure { get; private set; } = -0.9f;
         [field: SerializeField, Range(-100f, 0f)] public float TitleSaturation { get; private set; } = -35f;
         [field: SerializeField] public float PauseExposure { get; private set; } = -1.4f;
         [field: SerializeField, Range(-100f, 0f)] public float PauseSaturation { get; private set; } = -85f;
-        [Tooltip("Gaussian depth-of-field end distance behind the pause menu: everything past it is blurred.")]
-        [field: SerializeField, Min(0.1f)] public float PauseBlurEnd { get; private set; } = 1.5f;
-        [field: SerializeField, Range(0.5f, 1.5f)] public float PauseBlurRadius { get; private set; } = 1.4f;
         [field: SerializeField, Range(0f, 1f)] public float PostVignette { get; private set; } = 0.42f;
-        [field: SerializeField, Range(0f, 1f)] public float PostGrain { get; private set; } = 0.45f;
-        [field: SerializeField, Range(0f, 1f)] public float PostChromatic { get; private set; } = 0.22f;
         [field: SerializeField, Min(0.01f)] public float PostBlendSeconds { get; private set; } = 0.35f;
 
         [Header("Title backdrop (the drifting 3D view)")]

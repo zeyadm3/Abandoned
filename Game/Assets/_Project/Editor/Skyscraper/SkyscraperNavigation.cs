@@ -21,15 +21,15 @@ namespace Abandoned.EditorTools
             foreach(string path in Ignored)
             {
                 Transform t=root.Find(path);if(t==null)continue;
-                var modifier=t.GetComponent<NavMeshModifier>()??t.gameObject.AddComponent<NavMeshModifier>();modifier.ignoreFromBuild=true;
+                var modifier=Abandoned.EditorTools.SerializedWiring.GetOrAdd<NavMeshModifier>(t.gameObject);modifier.ignoreFromBuild=true;
             }
-            var lower=root.GetComponent<NavMeshSurface>()??root.gameObject.AddComponent<NavMeshSurface>();
+            var lower=Abandoned.EditorTools.SerializedWiring.GetOrAdd<NavMeshSurface>(root.gameObject);
             Transform upperRoot=root.Find("UpperNavigation")??Group("UpperNavigation",root);
-            var upper=upperRoot.GetComponent<NavMeshSurface>()??upperRoot.gameObject.AddComponent<NavMeshSurface>();
+            var upper=Abandoned.EditorTools.SerializedWiring.GetOrAdd<NavMeshSurface>(upperRoot.gameObject);
             Bake(lower,-4f,JoinY,"Assets/_Project/Scenes/Skyscraper_NavMesh.asset");
             Bake(upper,JoinY,SkyscraperLayout.RoofY+6f,"Assets/_Project/Scenes/Skyscraper_Upper_NavMesh.asset");
             Transform linkRoot=root.Find("StairNavigationJoin")??Group("StairNavigationJoin",root);
-            var link=linkRoot.GetComponent<NavMeshLink>()??linkRoot.gameObject.AddComponent<NavMeshLink>();
+            var link=Abandoned.EditorTools.SerializedWiring.GetOrAdd<NavMeshLink>(linkRoot.gameObject);
             // Whole intersecting ramp colliders appear in both bakes. Use the two unique end landings,
             // across this one continuous flight, so endpoint selection survives scene reloads.
             link.startPoint=new Vector3(-13.65f,200f,-3.5f);

@@ -28,6 +28,7 @@ namespace Abandoned.UI
         private static readonly Queue<(string title, string body, string icon, Kind kind)> Waiting = new();
         private readonly List<Toast> shown = new();
         private readonly HashSet<ulong> crew = new();
+        private readonly HashSet<ulong> crewNow = new();
         private readonly List<Vector2> blocked = new();
         private VisualElement stack;
         private bool crewKnown;
@@ -64,7 +65,8 @@ namespace Abandoned.UI
                 root.schedule.Execute(() => root.RemoveFromHierarchy()).StartingIn(220);
                 shown.RemoveAt(i);
             }
-            int limit = compact ? 1 : MaxShown;
+            // The hiring scene owns the screen: toasts wait for it instead of hiding under its letterbox.
+            int limit = Onboarding.OnboardingFlow.OwnsScreen ? 0 : compact ? 1 : MaxShown;
             while (Waiting.Count > 0 && shown.Count < limit)
             {
                 if (stack == null && (stack = HudLayer.Add(new VisualElement(), "toast-stack")) == null) return;
@@ -173,7 +175,8 @@ namespace Abandoned.UI
         // Crewmates arriving and leaving (every machine sees the same players come and go).
         private void Crew()
         {
-            var now = new HashSet<ulong>();
+            HashSet<ulong> now = crewNow; // reused: this runs every frame
+            now.Clear();
             foreach (NetworkPlayer p in NetworkPlayer.All)
                 if (p != null && p.IsSpawned) now.Add(p.OwnerClientId);
             if (now.Count == 0)

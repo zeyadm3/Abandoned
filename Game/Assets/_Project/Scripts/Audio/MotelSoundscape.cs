@@ -26,21 +26,40 @@ namespace Abandoned.Audio
             {
                 return;
             }
+            machines ??= System.Array.Empty<Transform>();
+            machinePower ??= System.Array.Empty<LightFixture>();
+            televisions ??= System.Array.Empty<Transform>();
+            televisionPower ??= System.Array.Empty<LightFixture>();
+            televisionSupports ??= System.Array.Empty<StructuralSection>();
+            // Loops are matched to machinePower by index, so a missing machine keeps its slot (silent) rather than shifting the rest.
             for (int i = 0; i <machines.Length; i++)
             {
+                if (machines [i] == null)
+                {
+                    poweredLoops.Add(null);
+                    continue;
+                }
                 SoundLoop loop = GameAudio.Loop(i == 0 ? SoundId.HumLoop : SoundId.VentDrone, machines [i], i == 0 ? "NeonTransformer" : "IceCompressor", spatial : true);
                 loop.SetRange(1f, i == 0 ? 16f : 9f);
                 loop.Pitch = i == 0 ? 1.15f : .82f;
                 poweredLoops.Add(loop);
             }
-            foreach (Transform point in gallery)
+            foreach (Transform point in gallery ?? System.Array.Empty<Transform>())
             {
+                if (point == null)
+                {
+                    continue;
+                }
                 SoundLoop loop = GameAudio.Loop(SoundId.WindLoop, point, "GalleryDraft", spatial : true);
                 loop.SetRange(1f, 13f);
                 windLoops.Add(loop);
             }
-            foreach (Transform point in drips)
+            foreach (Transform point in drips ?? System.Array.Empty<Transform>())
             {
+                if (point == null)
+                {
+                    continue;
+                }
                 SoundLoop loop = GameAudio.Loop(SoundId.WaterDrip, point, "PlumbingDrip", spatial : true);
                 loop.SetRange(1f, 7f);
                 waterLoops.Add(loop);
@@ -55,6 +74,10 @@ namespace Abandoned.Audio
             }
             for (int i = 0; i <poweredLoops.Count; i++)
             {
+                if (poweredLoops [i] == null)
+                {
+                    continue;
+                }
                 bool lit = i <machinePower.Length && machinePower [i] != null && machinePower [i].Lit;
                 poweredLoops [i].Level = lit ?(i == 0 ? config.NeonLevel : config.IceLevel) : 0f;
             }
@@ -74,7 +97,7 @@ namespace Abandoned.Audio
             int index = television++% televisions.Length;
             // A dead circuit silences the unseen set; wind and leaking pipes continue without power.
             bool floorPresent = index >= televisionSupports.Length || televisionSupports [index] == null || ! televisionSupports [index].IsCollapsed;
-            if (floorPresent && index <televisionPower.Length && televisionPower [index] != null && televisionPower [index].Lit)
+            if (floorPresent && televisions [index] != null && index <televisionPower.Length && televisionPower [index] != null && televisionPower [index].Lit)
             {
                 GameAudio.Play(SoundId.RadioStatic, televisions [index].position, config.TelevisionLevel, 13f);
             }
@@ -89,7 +112,10 @@ namespace Abandoned.Audio
         {
             foreach (SoundLoop loop in loops)
             {
-                loop.Level = 0f;
+                if (loop != null)
+                {
+                    loop.Level = 0f;
+                }
             }
         }
         private void OnDrawGizmos()

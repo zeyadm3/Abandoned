@@ -32,8 +32,6 @@ namespace Abandoned.UI
         private PauseMenuView pause;
         private SubtitleView subtitles;
         private VisualElement hud;
-        private VisualElement wear;
-        private float nextCrtTwitch, crtTwitchUntil;
         private WardrobeView wardrobe;
         private TruckGarageView garage;
         private CharacterCreatorView creator;
@@ -95,7 +93,6 @@ namespace Abandoned.UI
                 if (theme.BodyFont != null) font = theme.BodyFont;
                 if (theme.TitleFont != null) titleFont = theme.TitleFont;
             }
-            if (font != null) root.style.unityFontDefinition = FontDefinition.FromFont(font);
             root.RegisterCallback<GeometryChangedEvent>(OnRootGeometry);
             // The HUD sits under every menu; HUD components fill it (HudLayer).
             hud = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -104,14 +101,9 @@ namespace Abandoned.UI
             root.Add(hud);
             HudLayer.Attach(hud);
             BuildViews(root);
-            wear = new VisualElement { pickingMode = PickingMode.Ignore };
-            UiKit.FillScreen(wear);
-            wear.AddToClassList("horror-grime");
-            root.Add(wear);
-            // 0.12.2: grain, scanlines, vignette and screen transitions over the menus; the 3D view behind
-            // them is darkened (title) or drained and blurred (pause) by a URP volume.
+            // Screen transitions over the menus; the 3D view behind them is darkened by a URP volume.
             MenuEffectsConfig effects = MenuEffectsConfig.Current;
-            fx = new MenuScreenFx(root, effects);
+            fx = new MenuScreenFx(root);
             post = GetComponent<MenuPostEffects>();
             if (post == null) post = gameObject.AddComponent<MenuPostEffects>();
             backdrop = new MenuBackdrop(effects);
@@ -120,7 +112,6 @@ namespace Abandoned.UI
             SubtitleFeed.Heard += subtitles.Add;
             watermark = EarlyAccessWatermark.Enabled ? new EarlyAccessWatermark(root) : null;
             Showing = (MenuScreen)(-1);
-            nextCrtTwitch = Time.unscaledTime + 11f;
             if (GetComponent<HorrorRunHud>() == null) gameObject.AddComponent<HorrorRunHud>();
             if (GetComponent<CompassHud>() == null) gameObject.AddComponent<CompassHud>();
             if (GetComponent<ThreatFilesScreen>() == null) gameObject.AddComponent<ThreatFilesScreen>();
@@ -181,19 +172,10 @@ namespace Abandoned.UI
             if (baseScreen == MenuScreen.None && !hiring) pushed.Clear();
             MenuScreen top = pushed.Count > 0 ? pushed.Peek() : baseScreen;
             if (top != Showing) Show(top);
-            bool menuVisible = top != MenuScreen.None || CursorOwner.UiActive;
-            MenuKit.Show(wear, menuVisible);
-            fx.SetVisible(top != MenuScreen.None);
             fx.Tick();
             post.Mode = !running && !hiring ? MenuBackdropMode.Title : top != MenuScreen.None ? MenuBackdropMode.Pause : MenuBackdropMode.None;
             if (!running && !hiring) backdrop.Tick();
             else backdrop.Stop();
-            if (menuVisible && Time.unscaledTime >= nextCrtTwitch)
-            {
-                crtTwitchUntil = Time.unscaledTime + 0.07f;
-                nextCrtTwitch = Time.unscaledTime + Random.Range(9f, 17f);
-            }
-            document.rootVisualElement.EnableInClassList("crt-twitch", menuVisible && !MenuEffectsConfig.Calm && Time.unscaledTime < crtTwitchUntil);
             // Offline menus also claim the cursor: controller navigation uses the same UI-active signal.
             CursorOwner.Set(this, top != MenuScreen.None);
             if (!running && (!hiring || top != MenuScreen.None) && Cursor.lockState != CursorLockMode.None)

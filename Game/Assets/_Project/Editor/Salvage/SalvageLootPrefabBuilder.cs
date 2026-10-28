@@ -34,7 +34,7 @@ namespace Abandoned.EditorTools
             else
                 SalvagePrefabGeometry.AddColliders(root.transform, spec.Id, bounds, dynamic: true, friction: friction);
             SalvagePrefabGeometry.AuthorSockets(root.transform, spec.Id, bounds, nested: false);
-            SurfaceTag surface = root.GetComponent<SurfaceTag>() ?? root.AddComponent<SurfaceTag>();
+            SurfaceTag surface = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SurfaceTag>(root);
             surface.EditorSet(definition.Material);
 
             Rigidbody body = root.GetComponent<Rigidbody>();
@@ -87,7 +87,7 @@ namespace Abandoned.EditorTools
                 }
             }
             outline.SetActive(false);
-            SalvageProp prop = root.GetComponent<SalvageProp>() ?? root.AddComponent<SalvageProp>();
+            SalvageProp prop = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SalvageProp>(root);
             SerializedWiring.SetInt(prop, "category", (int)spec.Category);
             SerializedWiring.Set(prop, "outlineVisual", outline);
             SerializedWiring.SetLayerRecursively(root, GameLayers.LootLayer);

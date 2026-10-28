@@ -127,7 +127,7 @@ namespace Abandoned.EditorTools
             {
                 Transform group = root.Find(path);
                 if (group == null) continue;
-                var modifier = group.GetComponent<Unity.AI.Navigation.NavMeshModifier>() ?? group.gameObject.AddComponent<Unity.AI.Navigation.NavMeshModifier>();
+                var modifier = Abandoned.EditorTools.SerializedWiring.GetOrAdd<Unity.AI.Navigation.NavMeshModifier>(group.gameObject);
                 modifier.overrideArea = true;
                 modifier.area = area;
             }

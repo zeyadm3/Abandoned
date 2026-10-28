@@ -42,7 +42,8 @@ namespace Abandoned.Equipment
             if (battery < 0f) battery = batterySeconds;
             bool dead = TryGetComponent(out NetworkPlayer player) && player.IsDead;
             if (!InHand || dead) on = false;
-            else if (inputReader != null && inputReader.Current.UsePressed && (carrier == null || carrier.Held == null) && battery > 1f)
+            // A click on a screen (pause, gear rack) is not a press of the switch.
+            else if (inputReader != null && inputReader.Current.UsePressed && (carrier == null || carrier.Held == null) && battery > 1f && !CursorOwner.UiActive)
             {
                 on = !on;
                 Audio.GameAudio.Play(on ? Audio.SoundId.NightVisionOn : Audio.SoundId.NightVisionOff, transform.position + Vector3.up * 1.6f, 0.6f);

@@ -22,7 +22,7 @@ namespace Abandoned.Structure
 
         private StructuralSection section;
         private Renderer[] renderers;
-        private Color[] baseColors;
+        private Color[][] baseColors;
         private bool[] rendererRestEnabled;
         private MaterialPropertyBlock block;
         private Vector3 visualRestPosition;
@@ -40,14 +40,16 @@ namespace Abandoned.Structure
         {
             section = GetComponent<StructuralSection>();
             renderers = section.Visual.GetComponentsInChildren<Renderer>(true);
-            baseColors = new Color[renderers.Length];
+            baseColors = new Color[renderers.Length][];
             rendererRestEnabled = new bool[renderers.Length];
             for (int i = 0; i < renderers.Length; i++)
             {
                 rendererRestEnabled[i] = renderers[i].enabled;
-                baseColors[i] = renderers[i].sharedMaterial != null && renderers[i].sharedMaterial.HasProperty(BaseColor)
-                    ? renderers[i].sharedMaterial.GetColor(BaseColor)
-                    : Color.white;
+                // Per material: a remodelled slab (remodel v2) carries its nosing or ceiling grid in further slots.
+                Material[] materials = renderers[i].sharedMaterials;
+                baseColors[i] = new Color[materials.Length];
+                for (int j = 0; j < materials.Length; j++)
+                    baseColors[i][j] = materials[j] != null && materials[j].HasProperty(BaseColor) ? materials[j].GetColor(BaseColor) : Color.white;
             }
             block = new MaterialPropertyBlock();
             visualRestPosition = section.Visual.localPosition;
@@ -160,10 +162,11 @@ namespace Abandoned.Structure
             };
             // Authored PBR variants contain damage already; property blocks would also override trim slots.
             if (stageVisuals == null) for (int i = 0; i < renderers.Length; i++)
+            for (int j = 0; j < baseColors[i].Length; j++)
             {
-                renderers[i].GetPropertyBlock(block);
-                block.SetColor(BaseColor, baseColors[i] * tint);
-                renderers[i].SetPropertyBlock(block);
+                renderers[i].GetPropertyBlock(block, j);
+                block.SetColor(BaseColor, baseColors[i][j] * tint);
+                renderers[i].SetPropertyBlock(block, j);
             }
 
             int crackCount = stage switch

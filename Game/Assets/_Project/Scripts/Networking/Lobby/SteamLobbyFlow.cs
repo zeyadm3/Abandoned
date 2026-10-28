@@ -163,6 +163,10 @@ namespace Abandoned.Networking
         /// <summary>Takes an accepted invite before it is joined (true: handled; the hiring keeps it for later).</summary>
         public static Func<ulong, bool> InviteGate { get; set; }
 
+        // With domain reload off, a gate left by the last Play session would swallow the next one's invites.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => InviteGate = null;
+
         private async void OnInviteAccepted(ulong lobbyId)
         {
             if (InviteGate != null && InviteGate(lobbyId)) return;

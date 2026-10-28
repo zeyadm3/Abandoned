@@ -4,14 +4,13 @@ using UnityEngine;
 
 namespace Abandoned.EditorTools
 {
-    /// <summary>0.17.7 glow sticks and flares: two consumables and their thrown network prefabs.</summary>
+    /// <summary>0.17.7 glow sticks: the consumable and its thrown network prefab (the flare was cut on 2026-10-22).</summary>
     public static class Release0177
     {
-        [MenuItem(ToolMenu.Features + "0.17.7 Glow Sticks and Flares", priority = ToolMenu.FeaturesP + 5)]
+        [MenuItem(ToolMenu.Features + "0.17.7 Glow Sticks", priority = ToolMenu.FeaturesP + 5)]
         public static void Author()
         {
             ReleaseKit.RegisterGear(EquipmentKind.GlowSticks, Prefab("GlowStick", new Color(0.35f, 1f, 0.45f), 2.2f, 6f, 600f, false, new Vector3(0.03f, 0.18f, 0.03f)));
-            ReleaseKit.RegisterGear(EquipmentKind.Flares, Prefab("Flare", new Color(1f, 0.25f, 0.15f), 7f, 14f, 90f, true, new Vector3(0.045f, 0.24f, 0.045f)));
             ReleaseKit.Gear();
         }
 

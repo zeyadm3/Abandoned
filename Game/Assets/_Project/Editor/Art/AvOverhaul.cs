@@ -55,29 +55,35 @@ namespace Abandoned.EditorTools
             Step("Map looks", AvLook.ApplyToSaved);
             // 2026 remake: modelled props in place of code-built ones, before the surfaces and the coplanar fix see them.
             Step("Map remake: kit props", Remake.KitSwap.ApplySaved);
+            // Remodel v2: walls, slabs, columns and roofs drawn as construction (colliders kept), after the props.
+            Step("Map remake: architecture", Remake.ArchRebuild.ApplySaved);
             Step("Scanned surfaces", MaterialUpgrade.Run);
             Step("Decal set", DecalAssets.MakeAll);
             Step("Sound bank", SoundBankBuilder.CreateMissing);
             Step("Recorded library", SoundLibrary.Build);
             foreach (string path in MapScenes)
-                Step($"Weathering, wear decals and coplanar faces: {System.IO.Path.GetFileNameWithoutExtension(path)}", () =>
-                {
-                    var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
-                    float weather = SurfaceAging.Place(scene);
-                    AmbientBalance.Apply(scene);
-                    int probes = RoomReflectionProbes.Place(scene);
-                    int n = DecalScatter.Scatter(scene.name);
-                    EditorSceneManager.MarkSceneDirty(scene);
-                    EditorSceneManager.SaveScene(scene);
-                    // 0.24.13: last, so it sees everything the map now draws; saves the scene itself.
-                    var (moved, faces, left) = CoplanarFix.FixOpenScene();
-                    Debug.Log($"[AvOverhaul] {scene.name}: weathering {weather:0.00}, {probes} room reflections, {n} wear decals, " +
-                              $"coplanar faces: {moved} moved, {faces} lifted, {left} left.");
-                });
+                Step($"Weathering, wear decals and coplanar faces: {System.IO.Path.GetFileNameWithoutExtension(path)}", () => MapPasses(path));
             AssetDatabase.SaveAssets();
             Step("Map art, object geometry, materials and effects", VisualRemaster.ApplySaved);
             // 2026-10-22: last, on top of the remaster: each map's sky, scanned trees, grass and outdoor sound.
             Step("Map sites: sky, trees, grass and sound", MapSite.ApplySaved);
+        }
+
+        /// <summary>One map's weathering, ambient, room reflections, wear decals and coplanar fix (saves the scene); public
+        /// so an interrupted <see cref="AfterMaps"/> can be resumed map by map.</summary>
+        public static void MapPasses(string path)
+        {
+            var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+            float weather = SurfaceAging.Place(scene);
+            AmbientBalance.Apply(scene);
+            int probes = RoomReflectionProbes.Place(scene);
+            int n = DecalScatter.Scatter(scene.name);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            // 0.24.13: last, so it sees everything the map now draws; saves the scene itself.
+            var (moved, faces, left) = CoplanarFix.FixOpenScene();
+            Debug.Log($"[AvOverhaul] {scene.name}: weathering {weather:0.00}, {probes} room reflections, {n} wear decals, " +
+                      $"coplanar faces: {moved} moved, {faces} lifted, {left} left.");
         }
 
         [MenuItem(ToolMenu.Art + "Upgrade New Maps (Hospital, Motel, Skyscraper, Stations)", priority = ToolMenu.ArtP + 66)]

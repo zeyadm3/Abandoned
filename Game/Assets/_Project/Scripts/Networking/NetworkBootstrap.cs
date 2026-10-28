@@ -35,7 +35,7 @@ namespace Abandoned.Networking
 
         private SpawnSlots slots;
         private string compatibilityKey;
-        private bool wasInSession, leavingOnPurpose;
+        private bool wasInSession, leavingOnPurpose, transportChosen;
         private static bool quitting;
 
         /// <summary>The first bootstrap alive; it answers <see cref="GameAuthority.IsHost"/>.</summary>
@@ -142,7 +142,7 @@ namespace Abandoned.Networking
 
             slots = new SpawnSlots(config.MaxPlayers);
             ApplyConfig();
-            SelectTransport(config.DefaultTransport);
+            ApplyTransport(config.DefaultTransport);
             networkManager.ConnectionApprovalCallback = OnApproval;
             networkManager.OnClientDisconnectCallback += OnClientDisconnected;
             networkManager.OnClientConnectedCallback += OnClientConnected;
@@ -173,6 +173,8 @@ namespace Abandoned.Networking
                 // Automated runs host on a free loopback port: the user's own editor may be hosting on the real one.
                 StartHost(Application.isBatchMode ? (ushort)0 : config.Port, Application.isBatchMode ? LoopbackAddress : config.ListenAddress);
         }
+
+        private void Update() => PreferSteamInSteamBuilds();
 
         private void ReplaceStaleManager()
         {

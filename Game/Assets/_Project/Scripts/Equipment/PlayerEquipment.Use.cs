@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Abandoned.Equipment
 {
-    /// <summary>Using the gear in hand (left mouse, empty hands): crowbar strikes, medkit, battery, planks, noise maker, support jack, rope and pulley. Host-checked.</summary>
+    /// <summary>Using the gear in hand (left mouse, empty hands): crowbar strikes, medkit, battery, planks, noise maker. Host-checked.</summary>
     public partial class PlayerEquipment
     {
         [Rpc(SendTo.Server)]
@@ -34,10 +34,7 @@ namespace Abandoned.Equipment
                 EquipmentKind.Battery => RefillBattery(),
                 EquipmentKind.Planks => LayPlanks(),
                 EquipmentKind.NoiseMaker => Throw(),
-                EquipmentKind.SupportJack => PlaceJack(),
-                EquipmentKind.RopePulley => RigPulley(),
                 _ => UseConsumable(d), // 0.17+ consumables
-
             };
             if (used) ServerConsume(slot);
         }
@@ -62,47 +59,6 @@ namespace Abandoned.Equipment
             return Spawn(plankPrefab, at, rotation) != null;
         }
 
-        // Host (M10.3): rig a rope and pulley over the hole in front of you.
-        private bool RigPulley()
-        {
-            Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
-            if (pulleyPrefab == null || !Pulley.FindHole(transform.position, forward, 3.2f, wallMask, out Vector3 at, out float drop))
-            {
-                HintRpc(Loc.Mark("Face a hole in the floor (a drop of 2 m or more) to rig the pulley"));
-                return false;
-            }
-            NetworkObject rig = Spawn(pulleyPrefab, at, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
-            if (rig == null) return false;
-            rig.GetComponent<Pulley>().Rig(drop);
-            SoundRpc(Audio.SoundId.JackPlaced, at + Vector3.up);
-            Debug.Log($"[Gear] Player {OwnerClientId} rigged a pulley over a {drop:0.0} m drop.");
-            return true;
-        }
-
-        // Host (M9.4): brace the floor you're standing on from below: the post runs down to whatever is under it.
-        private bool PlaceJack()
-        {
-            StructuralSection section = SectionQuery.Under(transform.position);
-            if (supportJackPrefab == null || section == null || !section.CanCollapse || section.Reinforcement > 1f)
-            {
-                HintRpc(section != null && section.Reinforcement > 1f ? Loc.Mark("This floor is already braced") : Loc.Mark("Stand on a floor that could give way to brace it"));
-                return false;
-            }
-            Vector3 centre = section.transform.position;
-            float underside = centre.y - 0.35f;
-            if (!Physics.Raycast(new Vector3(centre.x, underside - 0.05f, centre.z), Vector3.down, out RaycastHit below, 8f, wallMask, QueryTriggerInteraction.Ignore))
-            {
-                HintRpc(Loc.Mark("Nothing below to brace it against"));
-                return false;
-            }
-            NetworkObject jack = Spawn(supportJackPrefab, below.point, Quaternion.identity);
-            if (jack == null) return false;
-            jack.GetComponent<SupportJack>().Brace(section, underside - below.point.y);
-            SoundRpc(Audio.SoundId.JackPlaced, below.point + Vector3.up);
-            Debug.Log($"[Gear] Player {OwnerClientId} braced {section.name} (capacity now {section.Capacity:0} kg).");
-            return true;
-        }
-
         // Host (M9.4): strike the section in front of you; enough strikes break even a sound floor (always
         // through a Cracking warning first). Loud: monsters hear it.
         private void Pry()
@@ -122,10 +78,11 @@ namespace Abandoned.Equipment
         }
 
         // The reviver's own machine counts it (achievements are personal).
-        [Rpc(SendTo.Owner)]
+        [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
         private void RevivedSomeoneRpc() => Achievements.Increment(Achievements.StatRevives);
 
-        [Rpc(SendTo.Everyone)]
+        // Server only: these sounds report what the host decided; a client must not play them on every machine.
+        [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
         private void SoundRpc(Audio.SoundId id, Vector3 at) => Audio.GameAudio.Play(id, at, 1f);
 
         // Host: the nearest downed crewmate within reach and in sight gets up.

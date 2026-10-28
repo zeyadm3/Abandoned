@@ -68,8 +68,6 @@ namespace Abandoned.Player
         /// <summary>Hard cap on move speed (m/s); a shared carry holds everyone to the slowest carrier.</summary>
         public float MaxSpeed { get; set; } = float.PositiveInfinity;
 
-        public bool IsTethered => tethered;
-
         /// <summary>Keep the player within <paramref name="slack"/> m of <paramref name="anchor"/> on the ground plane (see <see cref="TetherMath"/>).</summary>
         public void SetTether(Vector3 anchor, float slack, float pullStart, float pullSpeed)
         {

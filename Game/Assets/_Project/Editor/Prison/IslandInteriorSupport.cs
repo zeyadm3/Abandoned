@@ -30,7 +30,7 @@ namespace Abandoned.EditorTools
                     // Keep the furniture outside the section hierarchy: StructuralSection includes descendant
                     // colliders in its surface bounds, which would turn the table top into the slab's floor height.
                     // SectionProp owns visibility and collision when the supporting slab collapses or restores.
-                    SectionProp prop = item.GetComponent<SectionProp>() ?? item.gameObject.AddComponent<SectionProp>();
+                    SectionProp prop = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(item.gameObject);
                     prop.EditorSetup(section);
                 }
             }

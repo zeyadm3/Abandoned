@@ -107,7 +107,7 @@ namespace Abandoned.EditorTools
             {
                 Transform group = root.Find(groupPath);
                 if (group == null) continue;
-                var modifier = group.GetComponent<NavMeshModifier>() ?? group.gameObject.AddComponent<NavMeshModifier>();
+                var modifier = Abandoned.EditorTools.SerializedWiring.GetOrAdd<NavMeshModifier>(group.gameObject);
                 modifier.ignoreFromBuild = true;
             }
             surface.BuildNavMesh();

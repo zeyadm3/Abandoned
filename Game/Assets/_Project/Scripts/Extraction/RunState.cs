@@ -35,12 +35,11 @@ namespace Abandoned.Extraction
         /// <summary>How long the truck honks before it leaves this run (the engine upgrade shortens it).</summary>
         public float HonkSeconds => State.HonkSeconds > 0f ? State.HonkSeconds : config.DepartureSeconds;
         /// <summary>
-        /// Host: nothing touches you inside the truck once it's honking to leave, or all job long with the
-        /// Armored Bay upgrade (M10.1). Before QA B-03 the truck sheltered everyone always, so the upgrade did
-        /// nothing and the bay was a free safe room (D-04).
+        /// Host: nothing touches you inside the truck once it's honking to leave. Before QA B-03 the truck
+        /// sheltered everyone always, so the bay was a free safe room (D-04).
         /// </summary>
         public bool Shelters(Vector3 at) => IsServer && TruckCargo.Current != null && TruckCargo.Current.Carries(at)
-            && (Terms.Armored || State.Phase == RunPhase.Honking);
+            && State.Phase == RunPhase.Honking;
         public float HonkRemaining => State.Phase == RunPhase.Honking ? Mathf.Max(0f, (float)(State.HonkEnd - Now)) : 0f;
 
         /// <summary>Every machine: the truck left and the results arrived.</summary>
@@ -63,9 +62,8 @@ namespace Abandoned.Extraction
             /// <summary>Host-only modifier effects: extra opening threats, threat hearing, floor decay.</summary>
             public readonly int ExtraThreats;
             public readonly float Hearing, Decay;
-            /// <summary>Truck upgrades (M10.1): cargo capacity multiplier, honk seconds (0 = the config's), armor.</summary>
+            /// <summary>Truck upgrades (M10.1): cargo capacity multiplier, honk seconds (0 = the config's).</summary>
             public readonly float CargoMultiplier, HonkSeconds;
-            public readonly bool Armored;
             /// <summary>Sealed job (M10.4): every shutter starts down.</summary>
             public readonly bool Sealed;
             /// <summary>The board's THREAT level minus one (-1 LOW, 0 MEDIUM, +1 HIGH), so a run with no contract is MEDIUM.</summary>
@@ -76,14 +74,13 @@ namespace Abandoned.Extraction
 
             public RunTerms(int quota, float window, float bonus, bool powerOff, bool night = false, bool storm = false,
                 int extraThreats = 0, float hearing = 1f, float decay = 1f, float cargoMultiplier = 1f, float honkSeconds = 0f,
-                bool armored = false, bool isSealed = false, int threatLevel = 1, bool firstJob = false)
+                bool isSealed = false, int threatLevel = 1, bool firstJob = false)
             {
                 ThreatShift = threatLevel - 1;
                 FirstJob = firstJob;
                 Sealed = isSealed;
                 CargoMultiplier = cargoMultiplier;
                 HonkSeconds = honkSeconds;
-                Armored = armored;
                 Quota = quota;
                 Window = window;
                 Bonus = bonus;
@@ -109,7 +106,8 @@ namespace Abandoned.Extraction
                 Quota = terms.Quota,
                 Seed = SeedSource?.Invoke() ?? 0,
                 CargoCapacity = config.CargoCapacity * Mathf.Max(1f, terms.CargoMultiplier),
-                HonkSeconds = config.DepartureSeconds,
+                // The engine upgrade only ever shortens the approved countdown, never lengthens it.
+                HonkSeconds = terms.HonkSeconds > 0f ? Mathf.Min(terms.HonkSeconds, config.DepartureSeconds) : config.DepartureSeconds,
                 Window = terms.Window,
                 Bonus = terms.Bonus,
                 PowerOff = terms.PowerOff,

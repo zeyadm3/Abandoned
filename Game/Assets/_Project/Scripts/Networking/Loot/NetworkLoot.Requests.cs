@@ -95,7 +95,7 @@ namespace Abandoned.Networking
                 HintRpc(reason, RpcTarget.Single(sender, RpcTargetUse.Temp));
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
+        [Rpc(SendTo.SpecifiedInParams, InvokePermission = RpcInvokePermission.Server)]
         private void HintRpc(string reason, RpcParams rpcParams)
         {
             // Anyone may invoke an RPC by default; only the host's refusals are real (and short).

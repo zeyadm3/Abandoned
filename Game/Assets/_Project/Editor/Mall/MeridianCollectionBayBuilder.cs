@@ -37,7 +37,7 @@ namespace Abandoned.EditorTools
             ramp.GetComponent<Renderer>().sharedMaterial = MeridianArt.Material("Metal");
             apron.GetComponent<Renderer>().sharedMaterial = MeridianArt.Material("Concrete");
             if (ramp.GetComponent<SurfaceTag>() == null) ramp.gameObject.AddComponent<SurfaceTag>().EditorSet(SurfaceMaterial.Metal);
-            apron.GetComponent<SurfaceTag>()?.EditorSet(SurfaceMaterial.Concrete);
+            if (apron.TryGetComponent(out SurfaceTag apronSurface)) apronSurface.EditorSet(SurfaceMaterial.Concrete);
 
             Approach(group, truck.transform, amber, ivory);
             RampPaint(ramp, amber);

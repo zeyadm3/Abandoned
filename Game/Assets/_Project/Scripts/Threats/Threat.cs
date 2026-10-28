@@ -159,7 +159,7 @@ namespace Abandoned.Threats
             return null;
         }
 
-        /// <summary>Host: safe in the truck (see <see cref="Extraction.RunState.Shelters"/>: armored, or already leaving).</summary>
+        /// <summary>Host: safe in the truck's bay while it honks (see <see cref="Extraction.RunState.Shelters"/>).</summary>
         protected static bool Sheltered(Vector3 at) => Extraction.RunState.Current != null && Extraction.RunState.Current.Shelters(at);
 
         // QA P-04: chasing monsters re-asked for a path every frame. Ask again only a few times a second, or

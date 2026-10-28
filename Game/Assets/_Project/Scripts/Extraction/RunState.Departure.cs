@@ -69,17 +69,6 @@ namespace Abandoned.Extraction
             return Vector3.Distance(player.transform.position, truck.Ignition.position) <= config.IgnitionRange;
         }
 
-        /// <summary>
-        /// Host (the open world): the crew drove off with the job still running: it leaves now, as when the horn
-        /// stops; whoever and whatever is aboard goes with it.
-        /// </summary>
-        public void ServerDepartNow()
-        {
-            if (!IsServer || State.Phase is not (RunPhase.Running or RunPhase.Honking)) return;
-            Tally();
-            Depart();
-        }
-
         private void TryDepart(ulong client)
         {
             if (State.Phase != RunPhase.Running || !AtLever(client)) return;

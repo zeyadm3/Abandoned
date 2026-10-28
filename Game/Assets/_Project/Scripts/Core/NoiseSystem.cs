@@ -27,7 +27,10 @@ namespace Abandoned.Core
         {
             if (loudness <= 0f) return;
             var e = new NoiseEvent(position, loudness, source, Time.time);
-            Recent.RemoveAll(old => e.Time - old.Time > HistorySeconds);
+            // Oldest first (they are added in time order); no lambda, footsteps emit every step.
+            int stale = 0;
+            while (stale < Recent.Count && e.Time - Recent[stale].Time > HistorySeconds) stale++;
+            if (stale > 0) Recent.RemoveRange(0, stale);
             Recent.Add(e);
             TotalEmitted++;
             Emitted?.Invoke(e);

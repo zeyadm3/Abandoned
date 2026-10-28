@@ -173,7 +173,8 @@ Tools > Abandoned
       ──
       Generate and Apply Full Redesign, Apply Redesign from Exported Models  2420-2421
     Features                                         [2500-2599]
-      0.16.2 Seeded Route Changes ... 0.24.3 Achievement Icons (21 items, version order, 2500-2520)
+      0.16.2 Seeded Route Changes ... 0.24.3 Achievement Icons (17 items, version order, 2500-2520;
+      the cut gear's steps, 0.17.1 / 0.17.6 / 0.18.5 / 0.20.0, were removed on 2026-10-28, their slots left empty)
   ──────────
   Art                                                [3000-3999]
     Apply Render Budget, Bake Occlusion (open scene)                    3000-3001
@@ -192,6 +193,8 @@ Tools > Abandoned
         Remake: Swap Kit Props in Open Map, Undo Kit Props in Open Map 3103-3104
         Remake: Survey Kit Props in All Maps                           3105
         Remake: Refit Vans and the Launch in Saved Maps                3106
+        Remake: Rebuild Architecture in Open Map, Undo Architecture in Open Map,
+        Remake: Rebuild Architecture in All Maps (remodel v2)          3107-3109
   ──────────
   UI                                                 [4000-4999]
     Build Menu Assets, Create Menu Effects, Create Horror Textures, Create Gear Icons,
@@ -297,20 +300,20 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
 | Characters/Apply Redesign from Exported Models | Content/Characters/Apply Redesign from Exported Models |
 | Content/Seeded Route Changes (0.16.2) | Content/Features/0.16.2 Seeded Route Changes |
 | Content/Sledgehammer (0.17.0) | Content/Features/0.17.0 Sledgehammer |
-| Content/Crash Mat (0.17.1) | Content/Features/0.17.1 Crash Mat |
+| Content/Crash Mat (0.17.1) | Content/Features/0.17.1 Crash Mat (removed 2026-10-28: gear cut) |
 | Content/Aftershocks (0.17.4) | Content/Features/0.17.4 Aftershocks |
-| Content/Spray Chalk (0.17.6) | Content/Features/0.17.6 Spray Chalk |
-| Content/Glow Sticks and Flares (0.17.7) | Content/Features/0.17.7 Glow Sticks and Flares |
+| Content/Spray Chalk (0.17.6) | Content/Features/0.17.6 Spray Chalk (removed 2026-10-28: gear cut) |
+| Content/Glow Sticks and Flares (0.17.7) | Content/Features/0.17.7 Glow Sticks (flares cut) |
 | Content/Boss Requests (0.18.0) | Content/Features/0.18.0 Boss Requests |
 | Content/Rush Orders (0.18.1) | Content/Features/0.18.1 Rush Orders |
 | Content/Loot Quirks (0.18.2) | Content/Features/0.18.2 Loot Quirks |
 | Content/Loot Sets (0.18.3) | Content/Features/0.18.3 Loot Sets |
-| Content/Moving Blanket (0.18.5) | Content/Features/0.18.5 Moving Blanket |
+| Content/Moving Blanket (0.18.5) | Content/Features/0.18.5 Moving Blanket (removed 2026-10-28: gear cut) |
 | Content/Overtime (0.18.6) | Content/Features/0.18.6 Overtime |
 | Content/Ping Marker (0.19.0) | Content/Features/0.19.0 Ping Marker |
 | Content/Ghost Knock, Flicker and Nudge (0.19.2) | Content/Features/0.19.2 Ghost Knock, Flicker and Nudge |
 | Content/More Achievements (0.19.10) | Content/Features/0.19.10 More Achievements |
-| Content/Portable Floodlight (0.20.0) | Content/Features/0.20.0 Portable Floodlight |
+| Content/Portable Floodlight (0.20.0) | Content/Features/0.20.0 Portable Floodlight (removed 2026-10-28: gear cut) |
 | Content/Lockpick (0.20.1) | Content/Features/0.20.1 Lockpick |
 | Content/Thermal Camera (0.20.4) | Content/Features/0.20.4 Thermal Camera |
 | Content/Scout Drone (0.20.5) | Content/Features/0.20.5 Scout Drone |
@@ -341,7 +344,7 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
 - `Maps/Motel/Rebuild Last Light Motor Lodge` — priority 1750, `ToolMenu.Motel` / `MotelP`.
   Authors Motel.unity, Motel-local art/data/navigation and run plumbing; included in Rebuild All Maps.
 - Hospital and Motel ship through both `BuildScenes.SalvageScenes` and `BuildScenes.All`. Their generated
-  Resources network prefabs register before NGO starts; the world owns distance streaming and POI activation.
+  Resources network prefabs register before NGO starts.
 
 ## Skyscraper Restaurant (2026-10-23)
 
@@ -356,7 +359,8 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   Authors PoliceStation.unity (the Millbrook 3rd Precinct, Docs/POLICE_STATION_PLAN.md); included in Rebuild All Maps.
 - `Maps/Police Station/Add Police Station Loot` — 1820. Fills in the precinct's loot definitions
   (Data/Loot/PoliceStation), models, prefabs and icons; the rebuild runs it first anyway.
-- The scene is in `BuildScenes.All` only (an open-world POI, not yet a contract destination).
+- The scene is in `BuildScenes.SalvageScenes` and `BuildScenes.All`; the builder puts it on the contract board
+  (`LocationBoard.Register`).
 
 ## Fire Station (2026-10-23)
 
@@ -365,7 +369,8 @@ Paths in Docs/, CLAUDE.md and code comments/messages were updated to the new pla
   station kit; included in Rebuild All Maps.
 - `Maps/Fire Station/Add Fire Station Loot` — 1870. Fills in the firehouse's loot definitions (Data/Loot/FireStation),
   models, prefabs and icons; the rebuild runs it first anyway.
-- The scene is in `BuildScenes.All` only (an open-world POI, not yet a contract destination).
+- The scene is in `BuildScenes.SalvageScenes` and `BuildScenes.All`; the builder puts it on the contract board
+  (`LocationBoard.Register`).
 
 ## Open World (removed 2026-10-28)
 

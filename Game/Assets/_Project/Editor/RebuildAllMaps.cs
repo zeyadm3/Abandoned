@@ -26,7 +26,8 @@ namespace Abandoned.EditorTools
             // The HQ is opt-in: a full HQ regeneration discards hand edits made in Scenes/HQ.unity.
             int choice = EditorUtility.DisplayDialogComplex("Rebuild All Maps",
                 "Rebuilds the Mall, School, Iron Factory, Island Prison and Tutorial House, one after another. " +
-                "Also rebuilds Saint Brigid Hospital and Last Light Motor Lodge. " +
+                "Also rebuilds Saint Brigid Hospital, Last Light Motor Lodge, the Skyscraper Restaurant, the Police " +
+                "and Fire Stations and the HR office. " +
                 "This takes a while and Unity will look frozen between maps.\n\n" +
                 "The HQ: \"Keep my HQ\" only adds the training clipboard to the saved HQ. " +
                 "\"Rebuild HQ too\" regenerates it from code and loses any hand edits made in the HQ scene.",
@@ -46,6 +47,8 @@ namespace Abandoned.EditorTools
             var steps = new List<(string name, Action run)>
             {
                 ("Mall and Parking", MeridianMallOverhaul.Author),
+                // 0.18.4's cart bays are not part of the mall builder: without them RunCarts spawns no carts.
+                ("Shopping carts in the mall", Release0184.Author),
                 ("Pine Hollow Middle School", BurleySchoolBuilder.Build),
                 ("Iron Factory", IronFactoryBuilder.Build),
                 ("Island Prison", IslandPrisonBuilder.Build),

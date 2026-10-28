@@ -60,8 +60,6 @@ namespace Abandoned.Threats
         [field: SerializeField] public int[] LevelOpeningExtras { get; private set; } = { 0, 0, 1 };
         [Tooltip("Multiplies non-lethal monster damage, per level.")]
         [field: SerializeField] public float[] LevelDamageScale { get; private set; } = { 0.9f, 1.1f, 1.25f };
-        [Tooltip("On LOW the first monster is never a one-touch killer; it can still arrive later.")]
-        [field: SerializeField] public bool LowSparesLethalOpener { get; private set; } = true;
         [Tooltip("A company's very first job: the first monster waits at least this long (s).")]
         [field: SerializeField, Min(0f)] public float FirstJobOpeningDelay { get; private set; } = 45f;
 
@@ -78,8 +76,6 @@ namespace Abandoned.Threats
                 return current;
             }
         }
-
-        public int AliveCap(int crew) => Mathf.Clamp(BaseAlive + PerPlayer * Mathf.Max(1, crew), 1, MaxAlive);
 
         public int AliveCap(int crew, int level) =>
             Mathf.Clamp(BaseAlive + PerPlayer * Mathf.Max(1, crew) + At(LevelAliveBonus, level, 0), 1, MaxAlive);

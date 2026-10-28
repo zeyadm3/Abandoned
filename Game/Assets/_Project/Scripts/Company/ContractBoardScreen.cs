@@ -37,9 +37,6 @@ namespace Abandoned.Company
                 // MenuKit.Panel sizes inline, which beats the stylesheet: the board's width is set here.
                 screen.Panel.style.width = 1320f;
                 screen.Panel.style.maxWidth = Length.Percent(96f);
-                StyleSheet stationStyles = Resources.Load<StyleSheet>("HqStations");
-                if (stationStyles != null) screen.Panel.styleSheets.Add(stationStyles);
-                screen.ApplyArchiveStyles();
             }
             screen.Show(open);
             if (!open)

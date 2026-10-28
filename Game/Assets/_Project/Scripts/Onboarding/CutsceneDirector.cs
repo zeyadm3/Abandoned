@@ -121,12 +121,13 @@ namespace Abandoned.Onboarding
             }
         }
 
+        private static readonly Key[] ReplyKeys = { Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4 };
+
         private static int NumberKey(int count)
         {
             if (Keyboard.current == null) return -1;
-            Key[] keys = { Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4 };
-            for (int i = 0; i < count && i < keys.Length; i++)
-                if (Keyboard.current[keys[i]].wasPressedThisFrame) return i;
+            for (int i = 0; i < count && i < ReplyKeys.Length; i++)
+                if (Keyboard.current[ReplyKeys[i]].wasPressedThisFrame) return i;
             return -1;
         }
 
@@ -164,6 +165,9 @@ namespace Abandoned.Onboarding
             CursorOwner.Set(this, false);
             view?.Show(false);
         }
+
+        // The subtitles live on the session's menu document, which outlives the office: take them off it.
+        private void OnDestroy() => view?.Remove();
 
 #if UNITY_EDITOR
         public void EditorSetup(CinemachineCamera[] cameras, SeatedLook look, AudioSource speaker)

@@ -26,7 +26,7 @@ namespace Abandoned.EditorTools
                 RenderSettings.sun.shadowStrength = .88f;
             }
             Transform volumeRoot = root.Find("PostProcessing");
-            VolumeProfile profile = volumeRoot != null ? volumeRoot.GetComponent<Volume>()?.sharedProfile : null;
+            VolumeProfile profile = volumeRoot != null && volumeRoot.TryGetComponent(out Volume volume) ? volume.sharedProfile : null;
             if (profile != null && profile.TryGet(out ColorAdjustments colour))
             {
                 colour.postExposure.Override(.15f);

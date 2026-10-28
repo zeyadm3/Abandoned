@@ -14,12 +14,14 @@ namespace Abandoned.Audio
         private readonly SoundId id;
         private readonly SoundInfo info;
         private float cueVolume = 1f;
-        private bool hasClip, paused;
+        private bool hasClip, paused, started;
 
         /// <summary>Wanted loudness, 0..1, before the bus gain.</summary>
         public float Level { get; set; }
         public float Pitch { get; set; } = 1f;
         public AudioSource Source => source;
+        /// <summary>Start somewhere in the recording, so neighbouring copies of one bed don't play in unison.</summary>
+        public bool RandomStart { get; set; }
 
         internal SoundLoop(SoundId id, Transform parent, string name, bool spatial)
         {
@@ -63,7 +65,14 @@ namespace Abandoned.Audio
             if (volume > 0.0005f)
             {
                 if (paused) source.UnPause();
-                else if (!source.isPlaying) source.Play();
+                else if (!source.isPlaying)
+                {
+                    source.Play();
+                    // The clip only arrives here (it may still have been rendering when the owner made the loop).
+                    if (!started && RandomStart && source.clip.length > 0f)
+                        source.time = Random.Range(0f, source.clip.length * 0.9f);
+                    started = true;
+                }
                 paused = false;
             }
             else if (source.isPlaying)

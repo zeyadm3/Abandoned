@@ -13,7 +13,8 @@ namespace Abandoned.Company
             if (IsServer && IsSpawned) ToyScoreRpc(text);
         }
 
-        [Rpc(SendTo.Everyone)]
+        // Server only: a client must not be able to put toasts on everyone's screen.
+        [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
         private void ToyScoreRpc(string text)
         {
             ToastFeed.Show(Loc.T("BREAK ROOM"), Loc.FromWire(text), null, ToastFeed.Kind.Good);

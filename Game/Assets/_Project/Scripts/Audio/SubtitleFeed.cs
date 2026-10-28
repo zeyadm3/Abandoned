@@ -11,7 +11,7 @@ namespace Abandoned.Audio
     /// </summary>
     public static class SubtitleFeed
     {
-        /// <summary>Caption text (with direction) for the subtitle view.</summary>
+        /// <summary>Caption text for the subtitle view (who, never where).</summary>
         public static event Action<string> Heard;
 
         public static string Caption(SoundId id) => SoundCatalog.Info(id).Caption;
@@ -34,16 +34,6 @@ namespace Abandoned.Audio
             if (info.Bus == AudioBus.Threats) line = Core.Loc.T("MONSTER: {0}", line);
             else if (info.Bus == AudioBus.Structure) line = Core.Loc.T("BUILDING: {0}", line);
             Heard($"[{line}]");
-        }
-
-        /// <summary>" - left", " - behind" ... from the listener's facing; nothing when it's right here.</summary>
-        public static string Direction(Transform ear, Vector3 to)
-        {
-            Vector3 flat = new(to.x, 0f, to.z);
-            if (flat.magnitude < 2f) return to.y > 2f ? " - above" : to.y < -2f ? " - below" : "";
-            float angle = Vector3.SignedAngle(new Vector3(ear.forward.x, 0f, ear.forward.z), flat, Vector3.up);
-            string side = Mathf.Abs(angle) <= 45f ? "ahead" : Mathf.Abs(angle) >= 135f ? "behind" : angle > 0f ? "right" : "left";
-            return $" - {side}" + (to.y > 2.5f ? ", above" : to.y < -2.5f ? ", below" : "");
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

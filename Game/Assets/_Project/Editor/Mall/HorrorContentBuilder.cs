@@ -28,7 +28,7 @@ namespace Abandoned.EditorTools
             d.FindProperty("<AgingDamage>k__BackingField").floatValue=0.08f;
             d.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(danger);
             var root=PrefabUtility.LoadPrefabContents(NetworkContentBuilder.RunStatePrefabPath);
-            var horror=root.GetComponent<RunHorrorDirector>()??root.AddComponent<RunHorrorDirector>();
+            var horror=Abandoned.EditorTools.SerializedWiring.GetOrAdd<RunHorrorDirector>(root);
             SerializedWiring.Set(horror,"config",config);
             PrefabUtility.SaveAsPrefabAsset(root,NetworkContentBuilder.RunStatePrefabPath);
             PrefabUtility.UnloadPrefabContents(root);AssetDatabase.SaveAssets();

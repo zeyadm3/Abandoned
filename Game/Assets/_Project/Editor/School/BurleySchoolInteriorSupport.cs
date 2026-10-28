@@ -17,7 +17,7 @@ namespace Abandoned.EditorTools
                 foreach (BurleySchoolStructure.TilePiece tile in structure.Pieces)
                 {
                     if (tile.Floor != 1 || !tile.Collapsible || tile.Cell != cell) continue;
-                    var prop = fixture.GetComponent<SectionProp>() ?? fixture.gameObject.AddComponent<SectionProp>();
+                    var prop = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(fixture.gameObject);
                     prop.EditorSetup(tile.Transform.GetComponent<StructuralSection>());
                     break;
                 }
@@ -51,7 +51,7 @@ namespace Abandoned.EditorTools
                 foreach (BurleySchoolStructure.TilePiece tile in structure.Pieces)
                 {
                     if (tile.Floor != 1 || !tile.Collapsible || tile.Cell != new Vector2Int(x, z)) continue;
-                    var prop = item.GetComponent<SectionProp>() ?? item.gameObject.AddComponent<SectionProp>();
+                    var prop = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(item.gameObject);
                     prop.EditorSetup(tile.Transform.GetComponent<StructuralSection>());
                     break;
                 }

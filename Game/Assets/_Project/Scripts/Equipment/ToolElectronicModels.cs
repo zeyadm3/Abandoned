@@ -133,25 +133,5 @@ namespace Abandoned.Equipment
             foreach (float x in new[] { -.045f, .045f }) a.Rod(new(x, -.02f, .095f), new(x, -.065f, .21f), .008f, a.Steel);
             a.Screws(new(0, 0, .14f), .082f, .124f, .051f);
         }
-
-        public static void Floodlight(ToolArtBuilder a)
-        {
-            a.Box(new(0, .11f, .135f), new(.235f, .17f, .055f), a.Paint);
-            a.Box(new(0, .11f, .169f), new(.212f, .148f, .012f), a.Dark);
-            a.Box(new(0, .11f, .177f), new(.193f, .13f, .004f), a.Glass);
-            for (int row = 0; row < 3; row++)
-            for (int col = 0; col < 5; col++) a.Disc(new((col - 2) * .034f, .11f + (row - 1) * .037f, .176f), .018f, .003f, a.Tape);
-            foreach (float x in new[] { -.133f, .133f })
-            {
-                a.Rod(new(x, -.025f, .09f), new(x, .12f, .135f), .015f, a.Steel);
-                a.Cylinder(new(x, .11f, .135f), new(.026f, .02f, .026f), a.Rubber, new(0, 0, 90));
-                a.Rod(new(x, -.025f, .09f), new(x, -.025f, .205f), .015f, a.Dark);
-            }
-            a.Rod(new(-.133f, -.025f, .2f), new(.133f, -.025f, .2f), .015f, a.Dark);
-            for (int i = 0; i < 7; i++) a.Box(new((i - 3) * .027f, .11f, .099f), new(.007f, .14f, .031f), a.Steel);
-            a.Box(new(0, .214f, .132f), new(.105f, .014f, .03f), a.Rubber);
-            foreach (float x in new[] { -.045f, .045f }) a.Box(new(x, .198f, .132f), new(.013f, .035f, .027f), a.Dark);
-            a.Box(new(0, -.026f, .126f), new(.13f, .032f, .075f), a.Rubber);
-        }
     }
 }

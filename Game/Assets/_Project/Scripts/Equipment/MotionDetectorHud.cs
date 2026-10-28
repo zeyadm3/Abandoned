@@ -30,6 +30,8 @@ namespace Abandoned.Equipment
         private VisualElement layoutHud, lower;
         private Label readout, count;
         private float nextSample, nextTick;
+        // The readout only changes when a sample is taken; rebuilding its text every frame was garbage.
+        private bool stale = true;
 
         public int Contacts => contacts.Count;
 
@@ -64,6 +66,7 @@ namespace Abandoned.Equipment
             foreach (NetworkPlayer p in NetworkPlayer.All)
                 if (p != null && !p.IsOwner && !p.IsDead) Consider(p.transform, me, view, dt);
             contacts.Sort((a, b) => a.distance.CompareTo(b.distance));
+            stale = true;
         }
 
         private void Consider(Transform target, Vector3 me, Transform view, float dt)
@@ -118,7 +121,12 @@ namespace Abandoned.Equipment
                 signal = UI.UiKit.Segments(panel, 12, "instrument-hud__signal");
                 count = UI.MenuKit.Text(panel, "", "instrument-hud__count");
                 readout = UI.MenuKit.Text(panel, "", "instrument-hud__readout");
+                stale = true;
             }
+            UI.MenuKit.Show(panel, true);
+            Position();
+            if (!stale) return;
+            stale = false;
             text.Clear();
             if (contacts.Count == 0) text.Append(Loc.T("NO MOVEMENT DETECTED"));
             for (int i = 0; i < contacts.Count && i < 4; i++)
@@ -127,12 +135,10 @@ namespace Abandoned.Equipment
                 text.Append(i + 1).Append(" / ").Append(contacts[i].text);
             }
             string s = text.ToString();
-            UI.MenuKit.Show(panel, true);
             panel.EnableInClassList("instrument-hud--contact", contacts.Count > 0);
             count.text = Loc.T("MOVING CONTACTS / {0:00}", contacts.Count);
             UI.UiKit.SetSegments(signal, contacts.Count > 0 ? 1f - contacts[0].distance / range : 0f);
             if (readout.text != s) readout.text = s;
-            Position();
         }
 
         private void Position()

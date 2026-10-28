@@ -31,7 +31,9 @@ namespace Abandoned.Company
         private static System.Collections.IEnumerator Release(Rigidbody body)
         {
             yield return new WaitForSeconds(3f);
-            if (body != null) body.isKinematic = false;
+            // Pulled out by hand meanwhile: the hold decides its physics now (a client carrier owns it).
+            if (body != null && (!body.TryGetComponent(out Networking.NetworkLoot loot) || loot.Hold.Mode == Networking.LootHoldMode.Free))
+                body.isKinematic = false;
         }
     }
 }

@@ -60,14 +60,6 @@ namespace Abandoned.Tutorial
             }
         }
 
-        /// <summary>The key the marker shows once the player is close and looking (null = none).</summary>
-        public static string ActionAtTarget(TutorialGuide g) => g.Kind switch
-        {
-            TutorialGuideKind.Take or TutorialGuideKind.Use or TutorialGuideKind.Hide => "Interact",
-            TutorialGuideKind.Brace => "Use",
-            _ => null,
-        };
-
         // The rooms and floors of the training house by their keys (TutorialHouseGameplay, TutorialHouseStructure).
         private static string Place(string key) => key switch
         {

@@ -55,7 +55,7 @@ namespace Abandoned.Hospital
                     {
                         continue;
                     }
-                    var prop = piece.GetComponent<SectionProp>() ?? piece.gameObject.AddComponent<SectionProp>();
+                    var prop = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(piece.gameObject);
                     prop.EditorSetup(section);
                 }
             }

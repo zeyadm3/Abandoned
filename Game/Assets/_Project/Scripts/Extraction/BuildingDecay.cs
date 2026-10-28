@@ -90,7 +90,7 @@ namespace Abandoned.Extraction
             CrewPositions();
             foreach (StructuralSection s in structure.Sections)
             {
-                // A support jack under it keeps the slow decay off (the total collapse still takes it).
+                // A reinforced section is spared the slow decay (the total collapse still takes it).
                 if (!structure.CanDecay(s) || s.Reinforcement > 1f || IsPending(s)) continue;
                 candidates.Add(s);
                 if (NearCrew(s.SurfaceBounds.center, config.NearCrewRadius)) near.Add(s);

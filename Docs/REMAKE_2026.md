@@ -324,7 +324,8 @@ stations and the HR office (after the training clipboard), and last the icons.
   (RemakeMaterials found the wrong texture folder); replies no longer get picked by the Enter that moved the last
   line on. A player who played before skips the interview and only sees the creator: to see the cinematic, reset the
   hiring (Maps > HQ > Reset Hiring on This Machine).
-- **Architecture per map:** parked in Docs/remodelv2.md (user, 2026-10-28).
+- **Architecture per map:** parked in Docs/remodelv2.md (user, 2026-10-28), then built there the same day ("What was
+  built"): every map's box architecture rebuilt as fitted construction, lighting redone on top.
 
 ## Blocked
 
@@ -522,8 +523,8 @@ the suspended coat, the hunched collector, the broad stone hunter. Each is redes
 - `ThreatGrime`, which gets a new texture set.
 
 **Pipeline:** the new scripts in `Tools/Blender/remake/threats/` replace `threats*.py`. The output replaces the FBX
-files in `Art/Custom/Threats/`, keeping their GUIDs, so prefabs re-link. Then `Editor/Art/ThreatModelImporter`,
-`ThreatRigBuilder` and `ThreatVisualBuilder` rebuild the threat prefabs.
+files in `Art/Custom/Threats/`, keeping their GUIDs, so prefabs re-link. Then `Editor/Art/ThreatModelImporter` and
+`ThreatRigBuilder` rebuild the threat prefabs (`ThreatVisualBuilder` was unused and removed on 2026-10-28).
 
 ### Phase 3: Gear (17 items) and the shop
 

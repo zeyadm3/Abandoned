@@ -16,8 +16,7 @@ namespace Abandoned.EditorTools
             MeridianPresentationConfig config = MeridianPresentationConfigBuilder.Load();
             Transform group = Group("MeridianAtmosphere", mall);
             MeridianAtmosphereVolume.Apply(group, config);
-            BuildingInteriorAtmosphere atmosphere = mall.GetComponent<BuildingInteriorAtmosphere>()
-                ?? mall.gameObject.AddComponent<BuildingInteriorAtmosphere>();
+            BuildingInteriorAtmosphere atmosphere = Abandoned.EditorTools.SerializedWiring.GetOrAdd<BuildingInteriorAtmosphere>(mall.gameObject);
             atmosphere.EditorSetup(MallLayout.BuildingBounds);
             var data = new SerializedObject(atmosphere);
             data.FindProperty("interiorFog").colorValue = config.InteriorFog;

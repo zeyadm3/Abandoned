@@ -20,7 +20,7 @@ namespace Abandoned.EditorTools
 
         public static void Apply(Transform root, TutorialHouseArt art)
         {
-            var reach = root.GetComponent<LevelCameraRange>() ?? root.gameObject.AddComponent<LevelCameraRange>();
+            var reach = Abandoned.EditorTools.SerializedWiring.GetOrAdd<LevelCameraRange>(root.gameObject);
             reach.EditorSetup(FarClip);
             foreach (GameObject sceneRoot in root.gameObject.scene.GetRootGameObjects())
             foreach (Camera camera in sceneRoot.GetComponentsInChildren<Camera>(true))

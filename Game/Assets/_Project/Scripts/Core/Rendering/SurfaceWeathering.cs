@@ -20,7 +20,6 @@ namespace Abandoned.Core
         [SerializeField] private Color dust = new(0.36f, 0.34f, 0.31f, 1f);
 
         private static bool debugOff;
-        private GUIStyle style;
 
         private void OnEnable() => Push();
 
@@ -44,6 +43,10 @@ namespace Abandoned.Core
             Shader.SetGlobalColor(DustColor, dust);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // F1 only, and F1 never opens in a player build: there the GUI loop doesn't run for it at all.
+        private GUIStyle style;
+
         private void OnGUI()
         {
             if (!Application.isPlaying || !DebugView.Visible) return;
@@ -51,6 +54,7 @@ namespace Abandoned.Core
             GUI.Label(new Rect(Screen.width - 620, 50, 610, 22),
                 $"surfaces: weathering {(debugOff ? "off" : $"{strength:0.00}")} [B]", style);
         }
+#endif
 
 #if UNITY_EDITOR
         public void EditorSetup(float weather, Color grimeTint, Color dustTint)

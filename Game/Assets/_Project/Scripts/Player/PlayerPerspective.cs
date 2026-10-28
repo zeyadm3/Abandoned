@@ -57,7 +57,8 @@ namespace Abandoned.Player
 
         private void OnEnable()
         {
-            if (IsThirdPerson) SetThirdPerson(true);
+            // Only our own player follows the static view; a crewmate's copy spawning must not re-apply it (and click).
+            if (IsThirdPerson && (me == null || me.IsOwner)) SetThirdPerson(true);
         }
 
         private void OnDisable()

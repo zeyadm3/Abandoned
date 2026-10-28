@@ -165,22 +165,6 @@ namespace Abandoned.Tests
         }
 
         [UnityTest]
-        public IEnumerator ABackpackEasesTheLoadButNotTheFloor()
-        {
-            Grabbable item = Spawn(OnTable, CarryClass.TwoHand, 30f, 0.5f);
-            yield return Steps(2);
-            carrier.Backpack = true; // PlayerEquipment sets this from the pockets in a networked game
-            InteractionService.Handler.RequestPickup(carrier, item);
-            yield return null;
-            float eased = 30f * config.BackpackHandlingScale;
-            Assert.AreEqual(eased, carrier.HandlingWeight, 0.01f, "legs and lungs feel less");
-            Assert.AreEqual(30f, carrier.CarriedWeight, 0.01f, "the floor still takes all of it");
-            Assert.AreEqual(config.SpeedMultiplierFor(eased), rig.Motor.SpeedMultiplier, 0.001f);
-            Assert.AreEqual(config.StaminaDrainMultiplierFor(eased), rig.Motor.StaminaDrainMultiplier, 0.001f);
-            carrier.Backpack = false;
-        }
-
-        [UnityTest]
         public IEnumerator DropReleasesWithGravity()
         {
             Grabbable item = Spawn(OnTable, CarryClass.OneHand, 2f);

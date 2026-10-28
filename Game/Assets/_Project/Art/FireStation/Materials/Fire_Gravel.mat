@@ -12,10 +12,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ANTITILE
   - _METALLICSPECGLOSSMAP
   - _NORMALMAP
   - _OCCLUSIONMAP
-  - _TRIPLANAR
   - _WEATHERING
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -31,7 +31,7 @@ Material:
     m_TexEnvs:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 4bcb009d195fc4a35885372844effd0f, type: 3}
-        m_Scale: {x: 0.8, y: 0.8}
+        m_Scale: {x: 1.6, y: 1.6}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: 3aa10c1d1f1214cb09e01b002ea0f0c8, type: 3}
@@ -90,7 +90,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AntiTile: 0
+    - _AntiTile: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 0.55
@@ -119,15 +119,15 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _Triplanar: 1
+    - _Triplanar: 0
     - _Variation: 0.08
     - _Weathering: 1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.14215302, g: 0.12262567, b: 0.10247267, a: 1}
-    - _Color: {r: 0.14215302, g: 0.12262567, b: 0.10247267, a: 1}
+    - _BaseColor: {r: 0.11287577, g: 0.09624825, b: 0.07908795, a: 1}
+    - _Color: {r: 0.11287577, g: 0.09624825, b: 0.07908795, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

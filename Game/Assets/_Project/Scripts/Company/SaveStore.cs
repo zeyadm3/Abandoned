@@ -118,6 +118,11 @@ namespace Abandoned.Company
                 return CompanySave.New();
             }
             if (save.level < 1) save.level = 1;
+            // A hand-edited or partly written file can name a list as null; everything after load expects lists.
+            save.equipment ??= new();
+            save.unlocks ??= new();
+            save.catalogue ??= new();
+            save.truckLook ??= new();
             return save;
         }
 

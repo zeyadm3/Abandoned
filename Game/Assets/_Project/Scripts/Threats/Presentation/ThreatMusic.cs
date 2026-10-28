@@ -40,9 +40,6 @@ namespace Abandoned.Threats
         private float nextTick, targetVolume, speedPerLevel = 0.08f;
         private RunState lastRun;
 
-        /// <summary>The monster whose song this machine plays now, or null.</summary>
-        public static Threat Leader => instance != null ? instance.leader : null;
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Boot()
         {

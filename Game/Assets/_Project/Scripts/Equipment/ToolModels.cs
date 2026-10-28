@@ -39,23 +39,14 @@ namespace Abandoned.Equipment
                     case EquipmentKind.Battery: ToolElectronicModels.Battery(art); break;
                     case EquipmentKind.NoiseMaker: ToolElectronicModels.NoiseMaker(art); break;
                     case EquipmentKind.Drone: ToolElectronicModels.Drone(art); break;
-                    case EquipmentKind.Floodlight: ToolElectronicModels.Floodlight(art); break;
                     case EquipmentKind.Crowbar: ToolHandModels.Crowbar(art); break;
                     case EquipmentKind.Sledgehammer: ToolHandModels.Sledgehammer(art); break;
                     case EquipmentKind.BoltCutters: ToolHandModels.BoltCutters(art); break;
                     case EquipmentKind.Lockpick: ToolHandModels.Lockpick(art); break;
-                    case EquipmentKind.SprayChalk: ToolHandModels.Canister(art, 0); break;
-                    case EquipmentKind.GlowSticks: ToolHandModels.Canister(art, 1); break;
-                    case EquipmentKind.Flares: ToolHandModels.Canister(art, 2); break;
+                    case EquipmentKind.GlowSticks: ToolHandModels.GlowStick(art); break;
                     case EquipmentKind.Planks: ToolHandModels.Planks(art); break;
                     case EquipmentKind.Medkit: ToolUtilityModels.Medkit(art); break;
-                    case EquipmentKind.Backpack: ToolUtilityModels.Backpack(art); break;
-                    case EquipmentKind.CrashMat: ToolUtilityModels.Fabric(art, true); break;
-                    case EquipmentKind.MovingBlanket: ToolUtilityModels.Fabric(art, false); break;
-                    case EquipmentKind.SupportJack: ToolUtilityModels.SupportJack(art); break;
-                    case EquipmentKind.RopePulley: ToolUtilityModels.RopePulley(art); break;
-                    case EquipmentKind.HandTrolley: ToolUtilityModels.Trolley(art, false); break;
-                    case EquipmentKind.Flatbed: ToolUtilityModels.Trolley(art, true); break;
+                    case EquipmentKind.HandTrolley: ToolUtilityModels.Trolley(art); break;
                     default: ToolUtilityModels.TransitCase(art); break;
                 }
                 parts = art.Finish("Equipment_" + definition.Kind);

@@ -69,8 +69,10 @@ namespace Abandoned.Structure
 
         private void Loot()
         {
+            int lootLayer = GameLayers.LootLayer;
+            if (lootLayer < 0) return;
             int count = Physics.OverlapBoxNonAlloc(volume.center, volume.extents, Hits, Quaternion.identity,
-                LayerMask.GetMask(GameLayers.Loot), QueryTriggerInteraction.Ignore);
+                1 << lootLayer, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < count; i++)
             {
                 NetworkLoot loot = Hits[i] != null ? Hits[i].GetComponentInParent<NetworkLoot>() : null;

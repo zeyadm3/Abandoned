@@ -32,6 +32,7 @@ namespace Abandoned.Loot
             d != null && d.Jackpot == jackpot && d.CarryClass >= minClass && d.CarryClass <= maxClass && d.HasSpawnTag(spawnTag)
             && (allowedDefinitionIds == null || allowedDefinitionIds.Length == 0 || System.Array.IndexOf(allowedDefinitionIds, d.Id) >= 0);
 
+#if UNITY_EDITOR
         public void EditorSetup(string spawnTagValue, CarryClass min, CarryClass max, bool isJackpot,
             string[] allowedIds = null, bool isFeatured = false, bool useRotation = false)
         {
@@ -43,6 +44,7 @@ namespace Abandoned.Loot
             featured = isFeatured;
             useAuthoredRotation = useRotation;
         }
+#endif
 
         private void OnDrawGizmos()
         {

@@ -18,7 +18,6 @@ namespace Abandoned.Threats
         protected override void Awake()
         {
             base.Awake();
-            areaLights = FindObjectsByType<Light>(FindObjectsSortMode.None);
             gameObject.AddComponent<ArachnophobiaSwap>(); // 0.19.7
         }
         public override string DisplayName => Loc.Mark("Crawlers");
@@ -93,6 +92,8 @@ namespace Abandoned.Threats
         }
         private bool BrightAt(Vector3 point)
         {
+            // Host only, so clients never pay for the scene-wide search.
+            areaLights ??= FindObjectsByType<Light>(FindObjectsSortMode.None);
             foreach (Light l in areaLights)
                 if (l != null && l.enabled && l.type == LightType.Point && l.intensity > 0.8f && Vector3.Distance(l.transform.position, point) < Mathf.Min(4f, l.range * 0.4f)) return true;
             return false;

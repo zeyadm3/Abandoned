@@ -37,7 +37,6 @@ namespace Abandoned.UI
             Root.style.backgroundColor = new Color(.035f, .036f, .04f, 1f);
             VisualElement page = MenuKit.Page(Root, wide: true);
             page.AddToClassList("creator__page");
-            MenuKit.Text(page, Loc.T("ABANDONED SALVAGING / NEW HIRE"), "menu-record");
             MenuKit.Text(page, Loc.T("WHO ARE YOU?"), "heading");
             MenuKit.Text(page, Loc.T("Pick who you are and what you wear on the job. You can change it at the HQ lockers."), "subtitle");
 

@@ -28,7 +28,8 @@ namespace Abandoned.Company
         [Rpc(SendTo.Server)]
         private void CycleDifficultyRpc(RpcParams rpcParams = default)
         {
-            if (save == null || rpcParams.Receive.SenderClientId != NetworkManager.ServerClientId) return; // the host's call
+            // The host's call, and only at the HQ: decay and quota are read from it during a job.
+            if (save == null || rpcParams.Receive.SenderClientId != NetworkManager.ServerClientId || !AtHome) return;
             save.difficulty = (save.difficulty + 1) % 3;
             Saved();
             SyncDifficulty();

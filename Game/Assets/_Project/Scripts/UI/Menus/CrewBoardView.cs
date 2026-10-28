@@ -29,7 +29,6 @@ namespace Abandoned.UI
             Root.AddToClassList("backdrop--dim");
             VisualElement panel = MenuKit.Page(Root);
             panel.AddToClassList("crew-board");
-            MenuKit.Text(panel, Loc.T("DISPATCH OFFICE / CREW BOARD"), "menu-record");
             crewTitle = MenuKit.Text(panel, Loc.T("CREW"), "heading");
             ScrollView body = MenuKit.Scroll(panel, "pause__crew-body");
             body.style.flexGrow = 1;

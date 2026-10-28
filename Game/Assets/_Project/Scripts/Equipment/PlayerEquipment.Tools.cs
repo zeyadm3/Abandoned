@@ -19,7 +19,6 @@ namespace Abandoned.Equipment
             switch (d.Kind)
             {
                 case EquipmentKind.Sledgehammer: Smash(); return true;
-                case EquipmentKind.SprayChalk: return true; // drawn while held (TickHeldTool)
                 case EquipmentKind.Lockpick: return true;   // used on a shutter (E), not in the air
                 case EquipmentKind.ThermalCamera: return true; // switched on its owner's machine (ThermalCamera)
                 // Not from a locker or a vent: the pilot's controls are already off there, and landing would
@@ -35,11 +34,7 @@ namespace Abandoned.Equipment
         {
             switch (d.Kind)
             {
-                case EquipmentKind.CrashMat: return LayMat();
                 case EquipmentKind.GlowSticks: return ThrowLight(EquipmentKind.GlowSticks, 0.7f);
-                case EquipmentKind.Flares: return ThrowLight(EquipmentKind.Flares, 1f);
-                case EquipmentKind.MovingBlanket: return Wrap();
-                case EquipmentKind.Floodlight: return PlaceFloodlight();
                 // @@consumables
                 default: return false;
             }
@@ -69,47 +64,7 @@ namespace Abandoned.Equipment
             section.ApplyImpact(config.SledgeMomentum);
         }
 
-        // Host (0.17.1): the mat unrolls flat on the floor ahead (under the hole you mean to drop through).
-        private bool LayMat()
-        {
-            Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
-            Vector3 probe = transform.position + forward * 1.6f + Vector3.up * 1f;
-            if (Physics.Linecast(Eye, probe, wallMask, QueryTriggerInteraction.Ignore) ||
-                !Physics.Raycast(probe, Vector3.down, out RaycastHit floor, 2f, wallMask, QueryTriggerInteraction.Ignore))
-            {
-                HintRpc(Loc.Mark("No room to lay the mat here"));
-                return false;
-            }
-            return SpawnGear(EquipmentKind.CrashMat, floor.point, Quaternion.Euler(0f, transform.eulerAngles.y, 0f)) != null;
-        }
-
-        private float nextHeldTool;
-
-        // Owner (0.17.6+): tools that act every few frames while the button is held.
-        private void TickHeldTool(Player.PlayerInputFrame input)
-        {
-            if (!input.UseHeld || Time.time < nextHeldTool || carrier == null || carrier.Held != null || carrier.IsRagdolled) return;
-            EquipmentDefinition d = InHand;
-            if (d == null || d.Kind != EquipmentKind.SprayChalk || look == null || look.EyeRoot == null) return;
-            nextHeldTool = Time.time + ToolConfig.Current.ChalkInterval;
-            Transform eye = look.EyeRoot;
-            SprayRpc(eye.position, eye.forward);
-        }
-
-        // Host: a dot of chalk where the owner's eye ray meets a surface (checked from the host's own physics).
-        [Rpc(SendTo.Server)]
-        private void SprayRpc(Vector3 eye, Vector3 direction, RpcParams rpcParams = default)
-        {
-            if (rpcParams.Receive.SenderClientId != OwnerClientId || player == null || player.IsDead) return;
-            if (!Has(EquipmentKind.SprayChalk) || InHand == null || InHand.Kind != EquipmentKind.SprayChalk) return;
-            // Written so a NaN fails them (every comparison with NaN is false): a NaN ray must not reach physics.
-            if (!(Vector3.Distance(eye, transform.position + Vector3.up * 1.5f) <= 1.5f) || !(direction.sqrMagnitude >= 0.5f)
-                || float.IsInfinity(direction.sqrMagnitude)) return;
-            if (!Physics.Raycast(eye, direction.normalized, out RaycastHit hit, ToolConfig.Current.ChalkReach, wallMask, QueryTriggerInteraction.Ignore)) return;
-            Extraction.RunChalk.Current?.ServerAdd(hit.point, hit.normal, (byte)Mathf.Max(0, player.CrewSeat));
-        }
-
-        // Host (0.17.7): lob a glow stick or a flare the way the noise maker is thrown (a gentler arc for a stick).
+        // Host (0.17.7): lob a glow stick the way the noise maker is thrown, on a gentler arc.
         private bool ThrowLight(EquipmentKind kind, float strength)
         {
             Transform t = transform;
@@ -120,39 +75,6 @@ namespace Abandoned.Equipment
             if (thrown == null) return false;
             thrown.GetComponent<ThrownLight>().Launch(Aim * throwSpeed.x * strength + Vector3.up * throwSpeed.y * 0.6f);
             return true;
-        }
-
-        // Host (0.18.5): wrap the loot you're looking at (not one in someone's hands).
-        private bool Wrap()
-        {
-            int lootMask = LayerMask.GetMask(GameLayers.Loot);
-            Networking.NetworkLoot loot = Physics.Raycast(Eye, Aim, out RaycastHit hit, ToolConfig.Current.BlanketReach, lootMask, QueryTriggerInteraction.Ignore)
-                ? hit.collider.GetComponentInParent<Networking.NetworkLoot>() : null;
-            if (loot == null)
-            {
-                HintRpc(Loc.Mark("Look at the item you want to wrap"));
-                return false;
-            }
-            if (!loot.ServerWrap())
-            {
-                HintRpc(Loc.Mark("That one is already wrapped"));
-                return false;
-            }
-            return true;
-        }
-
-        // Host (0.20.0): the tripod stands on the floor a metre ahead, its lamp turned the way you face.
-        private bool PlaceFloodlight()
-        {
-            Quaternion yaw = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
-            Vector3 probe = transform.position + yaw * Vector3.forward * 1f + Vector3.up * 1f;
-            if (Physics.Linecast(Eye, probe, wallMask, QueryTriggerInteraction.Ignore) ||
-                !Physics.Raycast(probe, Vector3.down, out RaycastHit floor, 2f, wallMask, QueryTriggerInteraction.Ignore))
-            {
-                HintRpc(Loc.Mark("No room to stand the floodlight here"));
-                return false;
-            }
-            return SpawnGear(EquipmentKind.Floodlight, floor.point, yaw) != null;
         }
 
         private NetworkObject drone;

@@ -75,9 +75,19 @@ namespace Abandoned.Networking
             if (!SteamInitPolicy.Allows(isBatchMode, testGuard, args, out string reason)) return Fail(reason, null);
             if (config == null) return Fail(SteamErrorMessages.ConfigMissing, null);
 
+            client ??= new FacepunchSteamClient();
+            // A Steam release (no steam_appid.txt beside it) started from its folder is handed back to Steam,
+            // which launches it under the real App ID with the overlay, invites and ownership checks. Builds that
+            // still carry Spacewar (480) never do: Steam would "relaunch" a game the player doesn't own.
+            if (!Application.isEditor && Launch.IsPublicBuild && config.SteamAppId != NetworkConfig.DevelopmentAppId &&
+                client is FacepunchSteamClient real && real.RestartThroughSteam(config.SteamAppId))
+            {
+                Application.Quit();
+                return Fail(SteamErrorMessages.NotRunning, "started outside Steam; relaunching through Steam.");
+            }
+
             try
             {
-                client ??= new FacepunchSteamClient();
                 client.Init(config.SteamAppId);
             }
             catch (Exception e)

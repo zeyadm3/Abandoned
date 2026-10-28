@@ -73,6 +73,10 @@ How we work: Docs/PLAYBOOK.md.
 - Comment WHY, not WHAT.
 
 ## Working rules
+- **At the start of every session, read skillsfromgit.md** (repo root): the skills and tools installed from
+  GitHub (Superpowers, Ponytail, Graphify, the MCP for Unity skill). Use them throughout the development
+  pipeline as its "Using them on this game" section says. Where a skill and this file disagree (testing, commits,
+  branches, worktrees), this file wins. When a new skill is installed, add it to skillsfromgit.md.
 - ONE task at a time, small enough to test in Play mode in under 5 minutes.
 - For new systems, explain the plan first (files, classes, data, networking).
 - After changes, give me numbered Unity Editor steps. If it's more than ~5 clicks,
@@ -100,6 +104,25 @@ How we work: Docs/PLAYBOOK.md.
   single zipped folder.
 
 ## Current milestone
+
+**0.25.0: whole-game audit, Steam ready except Steam itself (2026-10-28, `main`).** Every runtime script reviewed by
+area and fixed (Motel hiding spots under the map, engine upgrades that did nothing, missing shopping carts, the
+Skyscraper lift stranding the crew, client-callable host RPCs, nettest and F1 overlays shipping, release builds not
+restarting through Steam or hosting on Steam), the cut gear's code and ~85 dead members/files removed. Compiled
+(dotnet, a player-config build and Unity's own compile: 0 errors); Rebuild Entire Game finished on all 11 maps. Never
+played or tested. Fixes, decisions left for the user and what to check first: Docs/AUDIT_0.25.0.md.
+
+**Remodel v2: architecture and lighting (2026-10-28, `main`).** Every map's walls, slabs, ceilings, columns, beams,
+stair treads, glazing and roof sheets rebuilt as fitted construction (relief, trims, H-sections, frames, T-bar grids)
+by one editor pass (`Editor/Remake/Arch`, Art > Remake: Rebuild Architecture in All Maps), layouts, colliders and
+gameplay unchanged; then the full map chain redid surfaces, weathering, reflections, coplanar faces and lighting on top.
+About 20,000 boxes across the 11 maps. Built, never played. Details, what is not done and what to check first:
+Docs/remodelv2.md "What was built".
+
+**UI redo (2026-10-28, `main`).** One stylesheet (`Art/UI/Resources/Ui.uss`) replaces the 12 stacked
+ones; the menu overlays that made menus lag (tiled grain/scanlines, button glow/jitter, title glitch, pause blur) are
+gone; the title, Settings, pause and page headers are cut down; the hiring dialogue no longer draws over menus. Compiled
+outside Unity (dotnet, 0 errors), `check.py` 0 missing; never run. Details and what to check: Docs/UI_REDO_2026-10-28.md.
 
 **The 2026 remake (2026-10-27, `main`).** The game's look rebuilt with the Blender and Unity MCPs, layouts and gameplay
 kept: eight playable workers with ten outfits, hats and accessories (skinned on the crew rig); the eight monsters
@@ -271,7 +294,7 @@ original worn bone/rust/amber identity across menus, survival/compass/inventory,
 Prominent lettering shares the logo's Saira Stencil One; small records use IBM Plex Mono. This supersedes
 the 0.22 yellow Company Issue direction. Runtime UI updates need no scene rebuild. Unity compilation
 and USS imports passed; no gameplay/tests/screenshots or player builds. Details and review steps:
-Docs/UI_HORROR_REDESIGN.md. Keep UiThemeAssets.Apply's four horror sheets after the legacy styles.
+Docs/UI_HORROR_REDESIGN.md. (Superseded 2026-10-28: one sheet, Ui.uss.)
 Alignment follow-up: pocket cards stay in one row; voice/chat, inspection and sensors use measured
 anchors. Menus and archive records now adapt their columns, scrolling and focus frames consistently.
 HQ follow-up (2026-10-12): the status chips are one compact ledger with stencil values, contained
@@ -313,6 +336,20 @@ autobuild-2 worktree is gone, everything lives in this one folder). Next: the us
 Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md for the current task.
 
 ## Decisions log
+- 2026-10-28 (user: implement Docs/remodelv2.md on every map, "full authority ... BUT YOU CAN NOT CHANGE THE LAYOUTS",
+  props may be replaced but not edited, "completely redo the lighting and shadows to match", no testing): **remodel v2.**
+  Architecture boxes keep their colliders and components; only their renderer is swapped for a fitted drawing (a child
+  `RM_Arch`, recorded in `_Arch`/`ArchRecord`), so no NavMesh or occlusion rebake. A builder that adds a new wall or slab
+  material should check `ArchProfiles.Classify` picks it up (or add a rule to the map's `ArchStyles` entry). The pass runs
+  inside `AvOverhaul.AfterMaps` after KitSwap; KitSwap undoes it first. Columns and beams always cast shadows.
+- 2026-10-28 (user: "fully redo the entire game UI ... very laggy, text not being in the right place, menus feel so
+  bloated"; then "dont test or run the game at all ... ill do all the testing later"): **the UI redo.** All UI styles live
+  in ONE sheet, `Art/UI/Resources/Ui.uss`, added by `UiThemeAssets.Apply`; never add another layered sheet or load one
+  by name in a screen. Style new things in Ui.uss; core components (buttons, text, panels, pages, setting rows) are its
+  last section, so don't restyle them under `.menu-screen`/`.archive-panel`/`.main` scopes. No full-screen tiled
+  textures or per-frame style writes in menus. Hover and focus are one class, `menu-button--lit`. Fonts: Saira Stencil
+  One for headings, Barlow for the rest. Never run the game, Play mode or tests unless the user asks (other agents share
+  the editor). Details: Docs/UI_REDO_2026-10-28.md.
 - 2026-10-27 (user: "totally rework the entire game", then the plan in Docs/REMAKE_2026.md "The plan"; "you will not
   test, verify, or run the game while you are building"; no AI generators; commit each phase to `main`): **the 2026
   remake.**
@@ -908,3 +945,14 @@ Batch Unity runs (Tools/unity.sh) need the editor closed. See Docs/PROGRESS.md f
   scattered notice text, slogans, duplicate labels and the collection instruction billboard; retain a small set
   of physically mounted identification/exit/collection signs. Increase visible working fixtures and powered
   lighting while retaining power-off, collapse and horror-sector behaviour; no additional shadow lights.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- When graphify-out/graph.json exists, run `graphify query "<question>"` before your first grep, search or source-file read for a codebase question, and put this rule in every subagent prompt that explores code. Read raw files only for lines the graph or an earlier read already located. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- A committed graphify-out/graph.json is rewritten whole on every build, so a large diff to it in a pull request is expected. Do not flag it as churn or suggest skipping the graph rebuild or its hooks.

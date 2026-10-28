@@ -1,0 +1,924 @@
+/* The game's one stylesheet (2026-10-28 UI redo). It replaces the eleven layers five redesigns had stacked on one
+   another (Menu.uss, Revamp, AbandonedTheme, AbandonedMenus, HorrorHud, AbandonedPanels, FieldHud, TrainingHud,
+   ModernMenus, Remake2026, Remake2026Layouts, HqStations), whose rules fought over the same elements. Applied once to
+   the menu document's root (UiThemeAssets.Apply) and to the truck display's panel. Palette from the 2026 remake;
+   type is Saira Stencil One for big headings, Barlow for everything else. No texture overlays. */
+
+.horror-theme { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-text); --c-ink: rgb(6, 7, 8); --c-panel: rgba(10, 11, 12, 0.94); --c-panel-2: rgb(17, 18, 20); --c-panel-3: rgb(27, 28, 31); --c-line: rgba(220, 224, 228, 0.12); --c-accent: rgb(214, 158, 72); --c-accent-hot: rgb(242, 196, 112); --c-accent-ink: rgb(12, 10, 6); --c-text: rgb(226, 228, 230); --c-dim: rgb(160, 164, 170); --c-faint: rgb(108, 112, 118); --c-good: rgb(140, 182, 150); --c-bad: rgb(196, 62, 52); --c-money: rgb(205, 196, 160); }
+
+/* ---- from Menu.uss ---- */
+.grow { flex-grow: 1; }
+.wrap { flex-direction: row; flex-wrap: wrap; }
+.setting__control.unity-base-slider--horizontal .unity-base-slider__dragger-border { display: none; }
+.unity-scroller--vertical { width: 8px; margin-left: 8px; background-color: rgba(0, 0, 0, 0); border-width: 0; }
+.unity-scroller--vertical > .unity-scroller__low-button { display: none; }
+.unity-scroller--vertical > .unity-scroller__high-button { display: none; }
+.unity-scroller--vertical > .unity-scroller__slider { margin: 0; }
+.unity-scroller--vertical .unity-base-slider__tracker { background-color: var(--c-panel-3); border-width: 0; width: 8px; left: 0; }
+.icon--small { width: 22px; height: 22px; }
+.icon--large { width: 56px; height: 56px; }
+.stamp--hidden { scale: 2.2 2.2; opacity: 0; }
+.hud-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.hud-scanner { left: 52%; top: 45%; width: 300px; }
+.hud-motion { right: 16px; top: 34%; width: 280px; }
+.hud-nightvision { right: 16px; top: 26%; width: 280px; }
+.hud-marker { position: absolute; font-size: 19px; translate: -50% -50%; -unity-text-align: middle-center; }
+.hud-row { flex-direction: row; align-items: center; min-height: 32px; border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.hud-cell--name { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; white-space: normal; -unity-text-align: middle-left; }
+.hud-prompt-row { position: absolute; left: 0; right: 0; top: 54%; flex-direction: row; justify-content: center; align-items: center; }
+.hud-prompt__part { flex-direction: row; align-items: center; margin: 0 4px 0 4px; padding: 4px 10px 4px 6px; background-color: rgba(10, 11, 12, 0.6); border-radius: 3px; }
+.hud-prompt__text { font-size: 21px; color: var(--c-text); }
+.loot-tag--hidden { scale: 0.5 0.5; opacity: 0; }
+.loot-tag--scan .loot-tag__value { font-size: 22px; }
+.loot-tag__meta .tag { margin: 0 2px 0 2px; font-size: 14px; }
+.loot-tag--t1 { border-bottom-color: var(--c-money); }
+.loot-tag--t1 .loot-tag__value { color: var(--c-money); }
+.scan-ring--out { scale: 10 10; opacity: 0; }
+.toast--in { translate: 420px 0; opacity: 0; }
+.toast--out { translate: 420px 0; opacity: 0; }
+.speaker-mark .icon { -unity-background-image-tint-color: var(--c-good); margin-right: 5px; }
+.truck-display { flex-grow: 1; align-items: center; background-color: rgb(10, 11, 12); color: var(--c-text); }
+.truck-display .hazard { align-self: stretch; height: 16px; }
+.truck-display__label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf"); font-size: 34px; letter-spacing: 6px; color: var(--c-accent); margin-top: 10px; }
+.truck-display__amount { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 104px; color: var(--c-money); margin-top: -16px; margin-bottom: -10px; }
+.truck-display__quota { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); font-size: 30px; color: var(--c-text); }
+.truck-display__quota--met { color: var(--c-good); }
+.truck-display__bar { width: 520px; height: 16px; margin-top: 8px; }
+.truck-display__cargo { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); font-size: 24px; color: var(--c-dim); margin-top: 8px; }
+.truck-display__cargo--bad { color: var(--c-bad); }
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__tracker { background-color: var(--c-panel-3); border-width: 0; height: 6px; margin-top: -3px; }
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__dragger-border { display: none; }
+.main { flex-grow: 1; justify-content: center; }
+.main__notice { flex-direction: row; align-items: center; margin-bottom: 12px; }
+.award__text { margin-bottom: 0; color: var(--c-text); }
+.tally--total .tally__label { color: var(--c-text); }
+.crt__button:hover { color: var(--c-panel-2); background-color: var(--c-accent); }
+.crt__button--on { color: var(--c-panel-2); background-color: var(--c-accent); }
+.crt__row:hover { background-color: var(--c-accent); }
+.crt__row:hover .crt__name { color: var(--c-panel-2); }
+.crt__row:hover .crt__note { color: var(--c-panel-2); }
+.crt__row:hover .crt__price { color: var(--c-panel-2); }
+.rack__item { flex-direction: row; align-items: center; padding-left: 8px; }
+.rack__icon { margin-right: 6px; }
+.sheet__take { margin: 12px 0 0 0; align-self: stretch; }
+.chat--open .chat__log { background-color: rgba(10, 11, 12, 0.6); padding: 6px 10px 6px 10px; }
+.chat__field { margin-top: 6px; }
+.sheet__place { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); font-size: 16px; letter-spacing: 2px; color: rgb(76, 82, 65); }
+.sheet__pin { position: absolute; top: 6px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 8px; border-bottom-width: 3px; background-color: rgb(121, 78, 56); border-bottom-color: rgb(65, 49, 36); }
+.crt__scanlines { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: stretch-to-fill; background-repeat: repeat repeat; background-size: 4px 8px; }
+.crt__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); font-size: 34px; }
+.crt__line { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); font-size: 24px; }
+.crt__cursor { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); font-size: 26px; }
+.crt__button { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); font-size: 26px; background-color: rgba(0, 0, 0, 0); border-width: 0; padding: 0 10px 0 0; margin: 0 12px 0 0; }
+.crt__rule { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 22px; overflow: hidden; white-space: nowrap; color: rgba(188, 171, 118, 0.65); }
+.crt__row--locked .crt__name { color: rgb(112, 116, 91); }
+.crt__row--locked .crt__price { color: rgb(112, 116, 91); }
+.crt__row--cant .crt__price { color: rgb(145, 147, 108); }
+Label { min-width: 0; flex-shrink: 0; }
+.scroll .unity-scroll-view__content-viewport { min-width: 0; min-height: 0; }
+.scroll .unity-scroll-view__content-container { min-width: 0; flex-shrink: 0; }
+.scroll .unity-scroller--horizontal { display: none; }
+.row { flex-direction: row; align-items: center; min-width: 0; flex-shrink: 0; }
+.pause__scroll { width: 100%; height: 100%; }
+.pause__crew-list { min-width: 0; min-height: 0; }
+.field .unity-text-input { min-width: 0; }
+.hud-cards { flex-direction: row; flex-wrap: wrap; min-width: 0; flex-shrink: 0; }
+.play__body { min-height: 0; }
+.play__card .menu-button { font-size: 26px; }
+.appraisal { width: 1240px; max-width: 96%; min-width: 0; min-height: 0; }
+.receipt__items { min-height: 140px; max-height: 360px; }
+.crt__screen { background-color: var(--c-panel-2); padding: 22px 28px 18px 28px; border-width: 3px; overflow: hidden; border-color: rgb(66, 76, 57); border-radius: 3px; min-width: 0; }
+.crt__list { min-height: 160px; max-height: 440px; }
+.crt__row { flex-direction: row; align-items: center; background-color: rgba(0, 0, 0, 0); border-width: 0; margin: 0; padding: 2px 6px 2px 6px; min-height: 46px; height: auto; flex-shrink: 0; min-width: 0; }
+.crt__name { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); font-size: 22px; min-width: 0; flex-basis: 0; flex-grow: 1; flex-shrink: 1; white-space: normal; }
+.crt__note { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-text-align: middle-right; color: rgb(145, 147, 108); width: 120px; min-width: 100px; font-size: 18px; flex-shrink: 0; white-space: normal; }
+.crt__price { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); -unity-text-align: middle-right; width: 106px; min-width: 90px; font-size: 22px; flex-shrink: 0; }
+.crt__about { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); margin-top: 8px; height: auto; min-height: 72px; font-size: 20px; white-space: normal; }
+.sheet__fact { border-bottom-width: 1px; border-bottom-color: rgba(42, 38, 32, 0.15); height: auto; min-height: 32px; flex-shrink: 0; }
+.icon { width: 32px; height: 32px; background-size: contain; flex-shrink: 0; }
+.rack__name { min-width: 0; flex-grow: 1; flex-shrink: 1; font-size: 18px; white-space: normal; }
+.hud-voice { position: absolute; left: 28px; font-size: 15px; color: var(--c-dim); bottom: 178px; }
+.chat { position: absolute; left: 28px; bottom: 214px; width: 440px; max-width: 30%; }
+.chat__line { font-size: 18px; color: var(--c-text); margin-top: 2px; min-width: 0; white-space: normal; }
+.hint { top: 124px; width: 340px; }
+.menu-compact .wardrobe__preview { width: 240px; height: 320px; margin-right: 16px; }
+.menu-compact .receipt { width: 100%; flex-basis: 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; }
+.menu-compact .appraisal__side { flex-basis: 100%; }
+.menu-short .wardrobe__preview { width: 220px; height: 280px; }
+.pause.backdrop--dim { background-color: rgba(4, 6, 6, 0.42); }
+.board__cork { border-width: 6px; -unity-background-scale-mode: stretch-to-fill; border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-color: var(--c-line); border-right-color: var(--c-line); border-bottom-color: var(--c-line); background-color: rgb(59, 63, 47); border-color: rgb(35, 42, 34); border-radius: 0; flex-wrap: nowrap; padding: 22px 12px; }
+.board__cork .sheet { min-width: 0; flex-basis: 0; flex-grow: 1; flex-shrink: 1; margin: 0 9px; padding: 24px 22px 16px 22px; }
+.sheet .sheet__fact { flex-direction: row; align-items: center; min-height: 34px; height: auto; padding: 3px 0; flex-wrap: nowrap; }
+.sheet .sheet__fact-label { width: 104px; min-width: 104px; flex-grow: 0; flex-shrink: 0; white-space: nowrap; font-size: 13px; letter-spacing: 1px; -unity-text-align: middle-left; }
+.sheet__fact-cell { flex-grow: 1; flex-shrink: 1; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; }
+.sheet .sheet__fact-value { width: auto; min-width: 0; flex-shrink: 1; white-space: normal; -unity-text-align: middle-left; font-size: 17px; }
+.sheet .sheet__fact-value--warn { color: rgb(150, 38, 26); }
+.sheet__fact-note { font-size: 12px; color: rgb(98, 92, 76); white-space: normal; margin-top: -2px; }
+.sheet .sheet__take { margin-top: 14px; }
+.hud-crosshair--hidden { opacity: 0; }
+.settings__body .section { margin-top: 14px; }
+.settings__body .setting { min-height: 44px; }
+.wardrobe { height: 88%; }
+.wardrobe__header { justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+.wardrobe__money { align-items: flex-end; flex-shrink: 1; min-width: 0; }
+.wardrobe__body { flex-grow: 1; flex-shrink: 1; min-height: 0; align-items: stretch; margin-top: 8px; }
+.wardrobe__shelf { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.wardrobe__tabs { flex-shrink: 0; margin-bottom: 10px; }
+.wardrobe__scroll { flex-grow: 1; }
+.wardrobe__grid { flex-direction: row; flex-wrap: wrap; align-content: flex-start; }
+.wardrobe__card-tag--reward { color: rgb(205, 145, 116); }
+.wardrobe__detail-swatch { height: 10px; margin-bottom: 10px; }
+.wardrobe__detail-unlock { font-size: 16px; color: var(--c-accent); white-space: normal; margin-bottom: 16px; }
+.wardrobe__action { font-size: 30px; }
+.wardrobe__done { flex-shrink: 0; margin-top: 8px; align-self: flex-start; }
+.menu-compact .wardrobe__card { width: 148px; }
+.segments { flex-direction: row; height: 9px; }
+.segment__fill { height: 100%; width: 0; background-color: var(--c-text); transition-property: width, background-color; transition-duration: 0.15s; }
+.first-day .segments { height: 4px; margin-top: 8px; }
+
+/* ---- from Resources/Revamp.uss ---- */
+:root { --c-ink: rgb(10, 11, 12); --c-panel: rgba(18, 21, 24, 0.97); --c-panel-2: rgb(27, 31, 35); --c-panel-3: rgb(40, 45, 50); --c-line: rgba(242, 190, 40, 0.18); --c-accent: rgb(242, 190, 40); --c-accent-hot: rgb(255, 214, 92); --c-accent-ink: rgb(18, 16, 8); --c-text: rgb(232, 232, 226); --c-dim: rgb(150, 156, 160); --c-faint: rgba(214, 218, 220, 0.6); --c-good: rgb(110, 200, 120); --c-bad: rgb(232, 84, 60); --c-money: rgb(150, 220, 140); }
+.menu-root { position: absolute; left: 0; top: 0; right: 0; bottom: 0; color: var(--c-text); --c-ink: rgb(10, 11, 12); --c-panel: rgba(18, 21, 24, 0.97); --c-panel-2: rgb(27, 31, 35); --c-panel-3: rgb(40, 45, 50); --c-line: rgba(242, 190, 40, 0.18); --c-accent: rgb(242, 190, 40); --c-accent-hot: rgb(255, 214, 92); --c-accent-ink: rgb(18, 16, 8); --c-text: rgb(232, 232, 226); --c-dim: rgb(150, 156, 160); --c-faint: rgba(214, 218, 220, 0.6); --c-good: rgb(110, 200, 120); --c-bad: rgb(232, 84, 60); --c-money: rgb(150, 220, 140); }
+.setting__control.unity-base-slider--horizontal .unity-base-slider__tracker { border-width: 0; background-color: var(--c-panel-3); height: 4px; margin-top: -2px; }
+.setting__control.unity-base-slider--horizontal .unity-base-slider__dragger { background-color: var(--c-accent); width: 10px; height: 22px; margin-top: -11px; border-radius: 0; border-width: 2px; border-color: var(--c-ink); }
+.unity-scroller--vertical .unity-base-slider__dragger { background-color: var(--c-accent); border-width: 0; width: 8px; left: 0; border-radius: 0; }
+.slot { width: 54px; height: 54px; margin-left: 6px; align-items: center; justify-content: center; transition-property: translate, border-color; transition-duration: 0.1s; border-radius: 0; border-width: 1px; border-color: rgba(242, 190, 40, 0.18); background-color: rgba(10, 11, 12, 0.75); }
+.segment { flex-grow: 1; flex-basis: 0; overflow: hidden; border-radius: 0; margin-right: 2px; background-color: rgba(10, 11, 12, 0.8); }
+.compass { position: absolute; top: 10px; left: 50%; translate: -50% 0; height: 26px; overflow: hidden; border-bottom-width: 1px; background-color: rgba(10, 11, 12, 0.6); border-bottom-color: var(--c-accent); }
+.hud-crosshair { position: absolute; left: 50%; top: 50%; background-color: rgba(242, 190, 40, 0.9); border-radius: 0; width: 4px; height: 4px; margin-left: -2px; margin-top: -2px; }
+.hud-crosshair--target { border-width: 2px; border-color: rgba(255, 255, 255, 0.9); border-radius: 8px; background-color: var(--c-accent-hot); width: 8px; height: 8px; margin-left: -4px; margin-top: -4px; }
+.first-day { top: 300px; width: 340px; background-color: rgba(10, 11, 12, 0.82); border-left-width: 4px; border-left-color: var(--c-accent); border-radius: 0; }
+.hud-blackout { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgb(0, 0, 0); align-items: center; justify-content: center; }
+.ping-mark { position: absolute; translate: -50% -100%; align-items: center; }
+.chat__log { max-height: 260px; border-left-width: 3px; border-left-color: var(--c-line); }
+.chat__field > .unity-text-field__input { background-color: var(--c-panel-2); border-width: 0; border-bottom-width: 2px; border-bottom-color: var(--c-accent); border-radius: 0; }
+.play__card { padding: 18px 18px 18px 18px; justify-content: flex-start; flex-basis: 260px; min-width: 0; flex-shrink: 0; background-color: var(--c-panel-2); border-top-width: 4px; border-top-color: var(--c-accent); border-radius: 0; }
+.play__title { margin: 0; padding: 0; border-bottom-width: 0; font-size: 26px; min-width: 0; flex-shrink: 1; white-space: normal; color: var(--c-accent); letter-spacing: 2px; }
+.mic-meter { flex-grow: 1; height: 12px; margin-right: 80px; border-radius: 0; }
+.sheet { flex-grow: 1; margin: 0 10px 0 10px; padding: 22px 18px 16px 18px; background-color: var(--c-panel-2); border-bottom-width: 4px; -unity-background-scale-mode: stretch-to-fill; border-bottom-color: rgb(112, 112, 94); min-width: 240px; flex-basis: 260px; flex-shrink: 0; border-top-width: 10px; border-top-color: var(--c-accent); border-radius: 0; }
+.sheet__fact-value--warn { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 16px; color: rgb(170, 40, 24); }
+.crt { width: 1080px; max-width: 94%; border-top-width: 0; padding: 26px 26px 26px 26px; -unity-background-scale-mode: stretch-to-fill; border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-color: var(--c-line); border-right-color: var(--c-line); border-bottom-color: var(--c-line); background-color: rgb(30, 35, 30); min-width: 0; min-height: 0; border-radius: 2px; }
+.sheet__stamp { position: relative; top: auto; right: auto; bottom: auto; left: auto; align-self: flex-start; margin-top: 12px; font-size: 26px; scale: 1 1; white-space: normal; border-radius: 0; }
+.award__icon { margin-right: 10px; -unity-background-image-tint-color: var(--c-accent); }
+.unity-toggle:focus > .unity-toggle__input > .unity-toggle__checkmark { border-color: var(--c-accent-hot); }
+.panel .text { white-space: normal; }
+.hud-hint { left: 24px; top: 84px; width: 440px; background-color: rgba(10, 11, 12, 0.82); border-left-width: 4px; border-left-color: var(--c-accent); border-radius: 0; white-space: normal; }
+.play__blurb { margin-top: 8px; margin-bottom: 10px; min-height: 0; height: auto; color: var(--c-dim); white-space: normal; }
+.colorblind { --c-good: rgb(86, 160, 255); --c-money: rgb(120, 180, 255); --c-bad: rgb(255, 140, 30); }
+
+/* ---- from Resources/AbandonedTheme.uss ---- */
+.font-display-semi { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); -unity-font-style: normal; letter-spacing: 1px; }
+.sheet__job { color: var(--c-text); white-space: normal; font-size: 32px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); -unity-font-style: normal; letter-spacing: 1px; }
+.field { margin: 4px 0 4px 0; min-height: 42px; height: auto; min-width: 0; flex-shrink: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; }
+.sheet__text { color: var(--c-text); white-space: normal; margin-bottom: 8px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; }
+.sheet__quip { white-space: normal; margin-bottom: 6px; color: rgb(76, 82, 65); -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; }
+.sheet__fact-label { flex-grow: 1; color: rgb(76, 82, 65); width: 35%; min-width: 0; flex-shrink: 1; white-space: normal; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; }
+.sheet__fact-value { color: var(--c-text); width: 65%; min-width: 0; flex-shrink: 1; white-space: normal; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; }
+.hud-cell { width: 150px; color: var(--c-text); -unity-text-align: middle-right; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; }
+.hud-panel { position: absolute; padding: 10px 14px 10px 14px; white-space: normal; background-color: rgba(14, 13, 11, 0.88); border-width: 1px; border-color: var(--c-line); border-left-width: 2px; border-left-color: var(--c-accent); border-radius: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; color: var(--c-text); letter-spacing: 0; }
+.hud-callout { position: absolute; left: 50%; translate: -50% 0; padding: 4px 16px 4px 16px; border-bottom-width: 2px; border-bottom-color: var(--c-accent); background-color: rgba(14, 13, 11, 0.88); border-width: 1px; border-color: var(--c-line); border-left-width: 2px; border-left-color: var(--c-accent); border-radius: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; color: var(--c-text); letter-spacing: 0; bottom: 22%; max-width: 64%; white-space: normal; }
+.unity-button:focus { border-width: 2px; border-color: var(--c-accent-hot); }
+.sheet:focus { border-width: 2px; border-color: var(--c-accent-hot); }
+.unity-toggle { border-width: 2px; border-color: rgba(0, 0, 0, 0); }
+.unity-slider { border-width: 2px; border-color: rgba(0, 0, 0, 0); }
+.unity-text-field { border-width: 2px; border-color: rgba(0, 0, 0, 0); }
+.unity-toggle:focus { border-width: 2px; border-color: var(--c-accent-hot); }
+.unity-slider:focus { border-width: 2px; border-color: var(--c-accent-hot); }
+.unity-text-field:focus { border-width: 2px; border-color: var(--c-accent-hot); }
+.field > .unity-text-field__input { padding-left: 10px; background-color: rgb(12, 11, 10); color: var(--c-text); border-width: 1px; border-color: var(--c-line); border-bottom-width: 2px; border-bottom-color: var(--c-accent); border-radius: 0; padding: 8px; }
+.field > .unity-base-text-field__input { padding-left: 10px; background-color: rgb(12, 11, 10); color: var(--c-text); border-width: 1px; border-color: var(--c-line); border-bottom-width: 2px; border-bottom-color: var(--c-accent); border-radius: 0; padding: 8px; }
+.unity-base-slider__tracker { background-color: var(--c-panel-3); }
+.unity-base-slider__dragger { background-color: var(--c-text); border-radius: 0; border-width: 1px; border-color: var(--c-accent); }
+.unity-scroller__low-button { background-color: var(--c-panel-2); -unity-background-image-tint-color: var(--c-dim); }
+.unity-scroller__high-button { background-color: var(--c-panel-2); -unity-background-image-tint-color: var(--c-dim); }
+.unity-toggle__checkmark { width: 22px; height: 22px; background-color: var(--c-ink); border-width: 1px; border-color: var(--c-accent); border-radius: 0; }
+.unity-toggle > .unity-toggle__input:checked > .unity-toggle__checkmark { background-color: var(--c-accent); -unity-background-image-tint-color: var(--c-text); }
+.keycap { height: 30px; margin: 0 6px 0 0; -unity-text-align: middle-center; white-space: nowrap; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 15px; color: var(--c-text); background-color: rgba(24, 22, 18, 0.96); border-width: 1px; border-color: rgba(205, 190, 160, 0.55); border-bottom-width: 2px; border-bottom-color: var(--c-accent); border-radius: 0; min-width: 27px; min-height: 26px; padding: 2px 7px; }
+.keycap--mouse { border-bottom-width: 0; width: 30px; background-color: rgba(0, 0, 0, 0); -unity-background-image-tint-color: var(--c-text); padding: 0; }
+.bar { height: 10px; overflow: hidden; border-width: 1px; border-color: var(--c-line); border-radius: 0; background-color: rgba(6, 6, 5, 0.7); }
+.bar__fill { height: 100%; width: 0; transition-property: width, background-color; transition-duration: 0.15s; background-color: var(--c-accent-hot); border-radius: 0; }
+.bar__fill--good { background-color: var(--c-good); }
+.bar__fill--bad { background-color: var(--c-bad); }
+.segment__fill--bad { background-color: var(--c-bad); }
+.tag { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); letter-spacing: 1px; padding: 1px 8px 1px 8px; background-color: rgba(20, 18, 15, 0.85); border-width: 1px; border-color: var(--c-line); color: var(--c-text); border-radius: 0; font-size: 15px; }
+.tag--dim { background-color: var(--c-panel-3); color: var(--c-dim); }
+.tag--warn { background-color: var(--c-bad); color: var(--c-bad); border-color: var(--c-bad); }
+.stamp { font-size: 46px; padding: 2px 16px 2px 16px; scale: 1 1; opacity: 1; transition-property: scale, opacity; transition-duration: 0.12s; transition-timing-function: ease-out; -unity-text-align: middle-center; border-width: 3px; color: var(--c-bad); border-color: var(--c-bad); -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); border-radius: 0; }
+.stamp--good { color: var(--c-good); border-color: var(--c-good); }
+.hazard { flex-direction: row; overflow: hidden; height: 8px; background-color: var(--c-accent); opacity: 0.62; }
+.loot-tag { position: absolute; translate: -50% -100%; align-items: center; border-bottom-color: var(--c-text); scale: 1 1; opacity: 1; transition-property: scale, opacity; transition-duration: 0.12s; background-color: rgba(16, 14, 11, 0.9); border-width: 1px; border-color: var(--c-line); border-left-width: 3px; border-left-color: var(--c-money); border-bottom-width: 1px; border-radius: 0; padding: 8px 12px; max-width: 360px; min-width: 0; }
+.loot-tag__value { color: var(--c-money); font-size: 28px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); }
+.loot-tag--t2 { border-left-color: var(--c-accent-hot); border-bottom-color: var(--c-accent); }
+.loot-tag--t3 { border-left-color: var(--c-accent-hot); border-bottom-color: var(--c-accent); }
+.loot-tag--t2 .loot-tag__value { color: var(--c-accent-hot); }
+.loot-tag--t3 .loot-tag__value { color: var(--c-accent-hot); }
+.loot-tag--broken { border-left-color: var(--c-bad); }
+.loot-tag--broken .loot-tag__value { color: var(--c-bad); }
+.loot-tag--scan { background-color: rgba(10, 11, 12, 0.55); padding: 3px 8px; }
+.loot-tag--held { left: 50%; top: 65%; max-width: none; translate: 0 0; }
+.loot-tag__name { overflow: hidden; text-overflow: ellipsis; -unity-text-overflow-position: end; color: var(--c-text); font-size: 17px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); letter-spacing: 1px; max-width: 100%; white-space: normal; -unity-text-align: middle-center; }
+.loot-tag__meta { flex-direction: row; margin-top: 3px; flex-wrap: wrap; justify-content: center; max-width: 100%; }
+.scan-ring { position: absolute; left: 50%; top: 50%; width: 200px; height: 200px; margin-left: -100px; margin-top: -100px; border-radius: 100px; scale: 0.1 0.1; opacity: 1; transition-property: scale, opacity; transition-duration: 0.7s, 0.7s; transition-timing-function: ease-out, ease-in; border-color: rgba(205, 184, 145, 0.48); border-width: 1px; }
+.scan-ready { position: absolute; flex-direction: row; align-items: center; left: auto; right: 30px; bottom: 28px; translate: 0 0; }
+.scan-ready__text { font-size: 15px; letter-spacing: 1px; color: var(--c-dim); }
+.hud-float { position: absolute; font-size: 32px; translate: -50% -50%; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); }
+.threat-mark { color: var(--c-bad); font-size: 22px; letter-spacing: 1px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); }
+.toast-stack { position: absolute; top: 280px; right: 28px; width: 330px; max-width: 28%; }
+.toast--good { border-left-color: var(--c-good); }
+.toast--warn { border-left-color: var(--c-bad); }
+.toast__body { white-space: normal; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; letter-spacing: 0; color: var(--c-dim); font-size: 15px; }
+.toast__text { flex-shrink: 1; flex-grow: 1; min-width: 0; }
+.toast__title { letter-spacing: 2px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); color: var(--c-text); font-size: 18px; white-space: normal; }
+.toast__icon { -unity-background-image-tint-color: var(--c-text); width: 32px; height: 32px; min-width: 32px; min-height: 32px; margin-right: 10px; }
+.hud-floor { position: absolute; left: 50%; translate: -50% 0; padding: 5px 12px; border-left-width: 2px; border-left-color: var(--c-accent); letter-spacing: 1px; -unity-text-align: middle-center; bottom: 24%; border-color: var(--c-bad); color: var(--c-text); background-color: rgba(50, 19, 14, 0.92); border-radius: 0; font-size: 20px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); }
+.horror-radio__line { -unity-text-align: middle-center; min-width: 0; white-space: normal; color: var(--c-text); font-size: 17px; }
+.horror-radio--urgent { border-left-color: var(--c-bad); background-color: rgba(43, 20, 15, 0.96); }
+.horror-radio--urgent .horror-radio__caption { color: var(--c-bad); }
+.subtitles--small .subtitle-line { font-size: 15px; }
+.subtitles--large .subtitle-line { font-size: 26px; }
+.ping-mark__diamond { width: 11px; height: 11px; border-width: 1px; border-color: var(--c-ink); }
+.ping-mark__text { margin-top: 6px; padding: 1px 8px 1px 8px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); background-color: rgba(16, 14, 11, 0.92); border-bottom-width: 1px; border-bottom-color: var(--c-line); font-size: 16px; letter-spacing: 0; }
+.horror-theme.menu-narrow .subtitles { left: 28%; right: 41%; }
+.death-card { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(16, 8, 7, 0.82); }
+.death-card__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 116px; letter-spacing: 12px; color: var(--c-bad); max-width: 86%; white-space: normal; -unity-text-align: middle-center; flex-shrink: 0; }
+.death-card__cause { margin-top: 4px; background-color: rgba(10, 11, 12, 0.85); -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 27px; color: var(--c-text); border-width: 1px; border-color: var(--c-line); border-left-width: 3px; border-left-color: var(--c-bad); padding: 12px 22px; max-width: 86%; white-space: normal; -unity-text-align: middle-center; flex-shrink: 0; }
+.death-card__note { margin-top: 14px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; letter-spacing: 0; font-size: 17px; color: var(--c-dim); max-width: 86%; white-space: normal; -unity-text-align: middle-center; flex-shrink: 0; }
+.horror-theme.menu-compact .death-card__title { font-size: 84px; letter-spacing: 7px; }
+.horror-theme.menu-narrow .death-card__title { font-size: 62px; letter-spacing: 4px; }
+.horror-theme.menu-short .death-card__cause { font-size: 22px; padding: 8px 14px; }
+.ghost-bar { position: absolute; bottom: 90px; flex-direction: row; justify-content: center; align-items: center; border-bottom-width: 2px; background-color: rgba(14, 13, 11, 0.88); color: var(--c-text); border-bottom-color: var(--c-line); left: 8%; right: 8%; flex-wrap: wrap; }
+.ghost-bar .hud-prompt__part { max-width: 100%; min-width: 0; }
+.ghost-bar .hud-prompt__text { color: var(--c-dim); white-space: normal; min-width: 0; flex-shrink: 1; }
+.hud-blackout__text { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 26px; color: rgba(214, 218, 220, 0.7); max-width: 86%; white-space: normal; -unity-text-align: middle-center; letter-spacing: 1px; }
+.monitor { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgb(0, 0, 0); -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: rgb(190, 255, 205); justify-content: space-between; padding: 28px; }
+.monitor__caption { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(200, 255, 205); font-size: 26px; max-width: 100%; white-space: normal; }
+.monitor__help { align-self: center; padding: 3px 14px 3px 14px; background-color: rgba(10, 11, 12, 0.75); border-bottom-width: 2px; border-bottom-color: var(--c-accent); max-width: 100%; min-width: 0; white-space: normal; -unity-text-align: middle-center; letter-spacing: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; }
+.horror-theme.truck-display { background-color: rgb(11, 12, 10); padding: 16px 24px; color: var(--c-text); }
+.horror-theme.truck-display .truck-display__label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 23px; letter-spacing: 3px; color: var(--c-accent); margin-top: 10px; }
+.horror-theme.truck-display .truck-display__amount { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 78px; color: var(--c-text); margin: 0; }
+.horror-theme.truck-display .truck-display__quota { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 20px; color: var(--c-dim); }
+.horror-theme.truck-display .truck-display__quota--met { color: var(--c-good); }
+.horror-theme.truck-display .truck-display__cargo { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 18px; color: var(--c-dim); }
+.horror-theme.truck-display .truck-display__cargo--bad { color: var(--c-bad); }
+.horror-theme.truck-display .truck-display__bar { width: auto; height: 8px; }
+.horror-theme.colorblind { --c-good: rgb(122, 181, 231); --c-money: rgb(162, 198, 223); --c-bad: rgb(239, 159, 83); }
+.fps-counter { position: absolute; left: 10px; top: 8px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 15px; background-color: rgba(10, 11, 12, 0.6); padding: 1px 6px 1px 6px; color: var(--c-dim); border-left-width: 1px; border-left-color: var(--c-line); }
+
+/* ---- from Resources/AbandonedMenus.uss ---- */
+.menu-screen.backdrop { background-color: rgba(6, 7, 7, 0.8); padding-left: 0; }
+.main .main__notice { width: 620px; max-width: 100%; padding: 8px 12px; background-color: rgba(68, 28, 24, 0.82); border-left-width: 2px; border-left-color: var(--c-bad); }
+.main .launch-notice { background-color: rgba(5, 6, 6, 0.92); }
+.main .launch-notice__panel { padding: 32px 38px; border-top-width: 4px; border-top-color: rgb(126, 57, 43); }
+.main .launch-notice__title { font-size: 80px; letter-spacing: 3px; margin-bottom: 6px; }
+.launch-notice__warning { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); font-size: 16px; letter-spacing: 2px; margin: 2px 0 22px 0; }
+.main .launch-notice .subtitle { font-size: 15px; letter-spacing: 1px; margin: 0 0 20px 0; padding-bottom: 14px; border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.launch-notice__body { max-height: 290px; min-height: 120px; }
+.launch-notice__body .text { font-size: 17px; margin-bottom: 16px; }
+.launch-notice__email { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 20px; color: var(--c-text); margin-bottom: 12px; }
+.launch-notice__actions { margin-top: 18px; padding-top: 12px; border-top-width: 1px; border-top-color: var(--c-line); }
+.launch-notice__actions .menu-button--small { margin-left: 0; margin-right: 10px; }
+.main .launch-notice__continue { color: var(--c-text); border-color: var(--c-accent); background-color: rgb(65, 39, 29); }
+.menu-screen--pause.backdrop--dim { background-color: rgba(5, 6, 6, 0.64); }
+.pause__content { align-items: center; justify-content: center; min-height: 100%; padding: 4% 0; }
+.pause__columns { flex-direction: row; align-items: flex-start; min-width: 0; flex-shrink: 0; width: 88%; max-width: 1340px; }
+.pause__left .title { color: var(--c-accent); font-size: 76px; letter-spacing: 6px; }
+.pause__left .pause__warning { font-size: 16px; color: var(--c-dim); margin-bottom: 24px; padding: 10px 0 12px 0; border-bottom-width: 1px; border-bottom-color: rgb(126, 57, 43); }
+.pause__left .pause__resume { color: rgb(234, 225, 197); border-left-color: rgb(126, 57, 43); margin-bottom: 12px; }
+.crew-row__identity { width: 100%; min-width: 0; }
+.crew-row__controls { width: 100%; justify-content: flex-end; margin-top: 10px; }
+.crew-row__who { flex-grow: 1; flex-shrink: 1; min-width: 0; flex-basis: 0; }
+.crew-row__name { overflow: hidden; text-overflow: ellipsis; -unity-text-overflow-position: end; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 19px; color: var(--c-text); }
+.crew-row__tags { letter-spacing: 2px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; color: var(--c-dim); }
+.crew-row__ping { width: 70px; -unity-text-align: middle-right; margin-right: 12px; flex-shrink: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; color: var(--c-dim); }
+.crew-row__talking { width: 12px; height: 12px; margin: 0 10px 0 10px; flex-shrink: 0; border-radius: 0; background-color: rgb(46, 43, 35); border-width: 1px; border-color: rgba(194, 184, 160, 0.25); }
+.crew-row__volume.unity-base-slider--horizontal .unity-base-slider__dragger { border-width: 0; width: 12px; height: 20px; margin-top: -10px; background-color: var(--c-accent); border-radius: 0; }
+.crew-row__volume { width: 130px; min-width: 100px; flex-shrink: 0; }
+.crew-row .menu-button--small { font-size: 15px; padding: 6px 10px; }
+.play__cards { margin-top: 20px; margin-bottom: 22px; }
+.menu-screen .play__card { background-color: rgba(29, 27, 22, 0.9); border-top-width: 2px; border-top-color: rgb(126, 57, 43); border-left-width: 1px; border-left-color: var(--c-line); padding: 20px 18px; }
+.menu-screen .play__title { font-size: 24px; color: var(--c-text); margin-bottom: 2px; }
+.play__icon { margin-right: 10px; -unity-background-image-tint-color: var(--c-accent); width: 25px; height: 25px; }
+.play__card .text { font-size: 17px; }
+.play__card .play__blurb { color: var(--c-dim); margin-top: 16px; margin-bottom: 20px; }
+.menu-screen .play__card .menu-button { font-size: 26px; }
+.play__actions { margin-top: auto; min-height: 148px; flex-shrink: 0; }
+.settings__nav .unity-scroll-view__content-container { width: 100%; }
+.menu-screen--controls .setting .menu-button--small { color: var(--c-text); border-bottom-color: var(--c-accent); }
+.achievement-row { align-items: center; padding: 16px 10px; margin-bottom: 8px; background-color: rgba(30, 28, 23, 0.6); border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.achievement-row--earned { border-left-width: 2px; border-left-color: var(--c-accent); }
+.achievement-row__details { flex-grow: 1; flex-basis: 0; min-width: 0; margin-right: 20px; }
+.achievement-row__name { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 23px; color: var(--c-text); margin-bottom: 6px; white-space: normal; }
+.achievement-row .text { font-size: 16px; }
+.achievement-row__status { color: var(--c-dim); font-size: 16px; width: 108px; min-width: 108px; flex-shrink: 0; -unity-text-align: middle-right; }
+.achievement-row--earned .achievement-row__status { color: var(--c-accent); }
+.wardrobe__detail-name { white-space: normal; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 29px; color: var(--c-text); }
+.wardrobe__card > Label { max-width: 100%; min-width: 0; white-space: normal; flex-shrink: 0; }
+.wardrobe__detail-body { min-height: 0; min-width: 0; }
+.wardrobe__stage { width: 380px; min-width: 300px; flex-shrink: 0; margin-right: 22px; flex-direction: column; min-height: 0; }
+.wardrobe__tabs .menu-button--small { margin-left: 0; margin-right: 8px; min-width: 0; }
+.wardrobe__card-name { white-space: normal; -unity-text-align: upper-left; margin-top: 8px; margin-bottom: 8px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 17px; color: var(--c-text); }
+.wardrobe__chip Label { color: var(--c-accent); -unity-text-align: middle-center; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 22px; }
+.wardrobe__card-tag { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); color: var(--c-money); letter-spacing: 1px; font-size: 15px; }
+.wardrobe__hint { color: var(--c-faint); margin-top: 6px; font-size: 15px; }
+.wardrobe__status { color: var(--c-accent); -unity-text-align: middle-right; min-height: 20px; font-size: 15px; }
+.wardrobe__funds { font-size: 20px; -unity-text-align: middle-right; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-accent); }
+.wardrobe__detail-about { color: var(--c-dim); white-space: normal; margin: 6px 0 14px 0; font-size: 17px; }
+.ea-watermark { position: absolute; right: 10px; bottom: 3px; font-size: 14px; margin: 0; padding: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgba(190, 171, 132, 0.4); letter-spacing: 2px; }
+.menu-compact .main .main__logo { font-size: 82px; }
+.menu-compact .pause__columns { align-items: stretch; width: 92%; flex-direction: row; }
+.menu-compact .pause__left { margin-bottom: 24px; width: 325px; margin-right: 28px; }
+.menu-compact .pause__left .title { font-size: 60px; }
+.menu-compact .wardrobe__stage { width: 26%; min-width: 190px; margin-right: 16px; }
+.menu-compact .wardrobe__detail { width: 30%; min-width: 200px; margin-left: 16px; padding: 14px; }
+.menu-narrow .wardrobe__stage { min-width: 160px; margin-right: 12px; }
+.menu-narrow .wardrobe__detail { min-width: 180px; margin-left: 12px; }
+.menu-narrow .wardrobe__card { width: 100%; margin-right: 0; }
+.menu-narrow .pause__columns { flex-direction: column; align-items: stretch; }
+.menu-narrow .pause__left { width: 100%; margin-right: 0; margin-bottom: 24px; }
+.menu-narrow .main .launch-notice__title { font-size: 62px; letter-spacing: 2px; }
+.menu-short .main .main__logo { font-size: 78px; }
+.menu-short .main .subtitle { font-size: 15px; margin-bottom: 12px; }
+.menu-short .main .launch-notice__title { font-size: 62px; }
+.menu-short .launch-notice__body { min-height: 80px; max-height: 190px; }
+.menu-short .launch-notice__warning { margin-bottom: 16px; }
+.menu-short .menu-screen .panel { padding: 20px 28px; }
+.menu-short .menu-screen .heading { font-size: 34px; margin-bottom: 8px; }
+.menu-short .menu-screen .subtitle { margin-bottom: 14px; }
+.menu-short .pause__left .menu-button { font-size: 25px; }
+.menu-screen .language-list { flex-direction: row; flex-wrap: wrap; align-items: flex-start; margin-bottom: 4px; }
+.menu-screen .language-list__button { margin-left: 0; margin-right: 8px; margin-bottom: 8px; }
+.menu-screen .language-list__button--current { color: var(--c-text); border-left-color: rgb(151, 65, 47); background-color: rgba(91, 45, 33, 0.4); border-bottom-color: var(--c-accent); }
+
+/* ---- from Resources/HorrorHud.uss ---- */
+.horror-hud { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-text); }
+.horror-hud .h-vitals { left: 28px; bottom: 40px; width: 216px; padding: 12px 14px 10px 12px; background-color: var(--c-ink); border-width: 0; border-left-width: 2px; border-left-color: var(--c-faint); border-top-width: 1px; border-top-color: var(--c-faint); }
+.horror-hud .h-inventory { right: 28px; bottom: 40px; width: 460px; max-width: none; flex-direction: column; align-items: stretch; opacity: 1; }
+.horror-hud .h-inspection { position: absolute; right: 28px; width: 460px; max-width: none; padding: 14px; background-color: rgba(14, 16, 14, 0.96); border-width: 1px; border-color: var(--c-faint); border-top-width: 2px; border-top-color: var(--c-accent); }
+.horror-hud .h-reticle { width: 3px; height: 3px; margin: -1.5px 0 0 -1.5px; background-color: var(--c-text); border-width: 0; border-radius: 0; }
+.horror-hud .h-reticle .h-reticle__corner { display: none; position: absolute; width: 6px; height: 6px; border-color: var(--c-text); }
+.horror-hud .h-reticle.hud-crosshair--target { width: 22px; height: 22px; margin: -11px 0 0 -11px; background-color: rgba(0, 0, 0, 0); border-width: 0; border-radius: 0; }
+.horror-hud .h-reticle.hud-crosshair--target .h-reticle__corner { display: flex; }
+.horror-hud .h-reticle__corner--nw { left: 0; top: 0; border-left-width: 1px; border-top-width: 1px; }
+.horror-hud .h-reticle__corner--ne { right: 0; top: 0; border-right-width: 1px; border-top-width: 1px; }
+.horror-hud .h-reticle__corner--sw { left: 0; bottom: 0; border-left-width: 1px; border-bottom-width: 1px; }
+.horror-hud .h-reticle__corner--se { right: 0; bottom: 0; border-right-width: 1px; border-bottom-width: 1px; }
+.horror-hud .h-reticle.hud-crosshair--hidden { opacity: 0; }
+.horror-hud .h-floor-warning { left: 28px; right: 28px; top: 40%; bottom: auto; translate: 0 0; width: auto; min-width: 0; white-space: normal; -unity-text-align: middle-center; }
+.horror-hud .h-recovery { left: auto; right: 28px; top: 28px; width: 340px; max-width: 28%; padding: 12px 14px; background-color: var(--c-ink); border-top-width: 1px; border-top-color: var(--c-faint); border-left-width: 2px; border-left-color: var(--c-accent); translate: 0 0; align-items: stretch; }
+.colorblind .horror-hud { }
+
+/* ---- from Resources/AbandonedPanels.uss ---- */
+.archive-backdrop.backdrop { background-color: rgba(3, 4, 4, 0.91); }
+.archive-panel.panel { background-color: rgb(16, 17, 15); border-width: 1px; border-color: rgb(67, 65, 54); border-left-width: 3px; border-left-color: var(--c-bad); border-top-width: 1px; border-top-color: rgb(115, 103, 80); border-radius: 0; padding: 22px 26px 22px 26px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-text); }
+.archive-panel .screen-panel__scroll { padding-right: 12px; }
+.archive-panel .unity-button:focus { border-width: 2px; border-color: var(--c-accent); }
+.archive-panel .sheet__pin { display: none; }
+.archive-panel .sheet .sheet__fact { border-bottom-width: 1px; border-bottom-color: rgba(75, 64, 45, 0.19); padding: 5px 0 5px 0; }
+.archive-panel .sheet .sheet__fact-label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; color: rgb(73, 65, 48); width: 104px; white-space: normal; }
+.archive-panel .sheet .sheet__fact-value { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 17px; color: rgb(36, 36, 29); }
+.archive-panel .sheet .sheet__fact-cell { flex-basis: 0; align-items: stretch; }
+.archive-panel .sheet .sheet__fact-value--warn { color: rgb(125, 44, 32); }
+.archive-panel.field-guide { background-color: rgb(18, 18, 15); border-width: 1px; border-color: rgb(66, 62, 48); border-left-width: 3px; border-left-color: var(--c-bad); border-radius: 0; }
+.archive-panel .field-guide__cover-title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); -unity-font-style: normal; letter-spacing: 3px; white-space: normal; font-size: 40px; color: var(--c-text); }
+.archive-panel .field-guide__cover-note { font-size: 15px; color: var(--c-dim); letter-spacing: 1px; margin-bottom: 20px; }
+.archive-panel .field-guide__spread { background-color: var(--c-panel-2); border-width: 1px; border-color: rgb(86, 76, 53); border-bottom-width: 4px; border-bottom-color: rgb(54, 47, 32); }
+.archive-panel .field-guide__contents { width: 33%; background-color: rgb(28, 28, 23); border-right-width: 3px; border-right-color: var(--c-bad); padding: 18px 16px 18px 16px; }
+.archive-panel .field-guide__page { border-left-width: 1px; border-left-color: rgb(101, 88, 57); padding: 24px 26px 22px 26px; }
+.archive-panel .field-guide__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); -unity-font-style: normal; letter-spacing: 3px; white-space: normal; color: rgb(46, 40, 28); font-size: 36px; }
+.archive-panel .field-guide__section { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 24px; -unity-font-style: normal; color: rgb(118, 51, 35); border-bottom-color: rgba(105, 73, 42, 0.28); }
+.archive-panel .field-guide__body { font-size: 18px; color: rgb(52, 47, 36); margin-bottom: 12px; white-space: normal; }
+.archive-panel .field-guide__note { font-size: 15px; -unity-font-style: normal; color: rgb(111, 89, 59); letter-spacing: 1px; }
+.archive-panel .field-guide__contents .field-guide__section { color: var(--c-accent); }
+.archive-panel .field-guide__contents .field-guide__note { color: var(--c-dim); }
+.archive-panel .field-guide__contents .field-guide__body { font-size: 16px; color: var(--c-dim); }
+.archive-panel .field-guide__entry { background-color: rgb(34, 32, 26); border-width: 2px; border-color: rgb(58, 54, 43); border-left-width: 3px; border-left-color: rgb(68, 59, 42); border-radius: 0; min-height: 48px; padding: 10px 8px 10px 8px; margin: 3px 0 3px 0; }
+.archive-panel .field-guide__entry-name { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 17px; color: var(--c-text); white-space: normal; min-width: 0; flex-shrink: 1; }
+.archive-panel .field-guide__entry--locked .field-guide__entry-name { color: var(--c-dim); -unity-font-style: normal; }
+.archive-panel .field-guide__entry:hover { background-color: rgb(59, 43, 32); border-left-color: var(--c-accent); }
+.archive-panel .field-guide__entry--selected { background-color: rgb(59, 43, 32); border-left-color: var(--c-accent); }
+.archive-panel .field-guide__entry:focus { background-color: rgb(59, 43, 32); border-left-color: var(--c-accent); border-left-width: 3px; }
+.archive-panel .field-guide__redacted { color: rgb(185, 170, 137); background-color: rgb(49, 44, 33); font-size: 16px; padding: 12px 14px 12px 14px; margin-top: 20px; letter-spacing: 1px; white-space: normal; }
+.archive-panel .field-guide__page-number { font-size: 16px; color: rgb(82, 68, 44); }
+.archive-panel .field-guide__paging { flex-wrap: wrap; justify-content: space-between; }
+.archive-panel .field-guide__turn { font-size: 16px; color: rgb(75, 43, 28); border-width: 2px; border-color: rgb(125, 103, 68); border-radius: 0; padding: 9px 11px 9px 11px; white-space: normal; max-width: 100%; }
+.archive-panel .field-guide__turn:hover { color: rgb(40, 35, 25); background-color: rgb(169, 152, 111); }
+.archive-panel .field-guide__turn:focus { color: rgb(40, 35, 25); background-color: rgb(169, 152, 111); }
+.archive-panel .field-guide__close { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 24px; color: var(--c-text); background-color: rgb(35, 30, 23); border-width: 2px; border-color: rgb(101, 73, 49); border-left-width: 3px; border-left-color: var(--c-bad); border-radius: 0; padding: 11px 20px 11px 20px; letter-spacing: 1px; }
+.archive-panel .field-guide__close:hover { background-color: rgb(82, 47, 31); color: rgb(237, 222, 188); }
+.archive-panel .field-guide__close:focus { background-color: rgb(82, 47, 31); color: rgb(237, 222, 188); border-left-width: 3px; }
+.archive-panel .salvage-catalogue__grid { justify-content: space-between; }
+.archive-panel .salvage-catalogue__item { width: 32%; max-width: 100%; flex-direction: column; align-items: stretch; justify-content: flex-start; min-width: 190px; min-height: 234px; margin-bottom: 14px; padding: 14px 16px 14px 16px; }
+.archive-panel .salvage-catalogue__visual { height: 100px; align-items: center; justify-content: center; background-color: rgba(9, 11, 9, 0.47); border-bottom-width: 1px; border-bottom-color: rgb(64, 60, 43); margin-bottom: 14px; }
+.archive-panel .salvage-catalogue__visual .icon { width: 76px; height: 76px; -unity-background-image-tint-color: var(--c-text); }
+.archive-panel .salvage-catalogue__unknown { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 46px; color: rgb(102, 95, 71); }
+.archive-panel .salvage-catalogue__value { color: var(--c-accent); font-size: 19px; margin-top: 8px; }
+.archive-panel .salvage-catalogue__status { font-size: 15px; color: var(--c-dim); white-space: normal; margin-top: 8px; }
+.archive-panel .salvage-catalogue__item--jackpot { border-top-width: 3px; border-top-color: var(--c-accent); }
+.archive-panel.crt { background-color: rgb(24, 24, 18); border-radius: 0; padding: 22px 26px 22px 26px; }
+.archive-panel .crt__screen { background-color: rgb(8, 11, 9); border-width: 1px; border-color: rgb(77, 75, 49); border-radius: 0; padding: 18px 20px 18px 20px; }
+.archive-panel .crt__screen > .row { flex-wrap: wrap; }
+.archive-panel .crt__cursor { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(184, 159, 103); }
+.archive-panel .crt__title { color: rgb(184, 159, 103); -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 28px; letter-spacing: 1px; white-space: normal; }
+.archive-panel .crt__line { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(184, 159, 103); font-size: 18px; white-space: normal; }
+.archive-panel .crt__rule { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(100, 89, 55); font-size: 16px; }
+.archive-panel .crt__row { background-color: rgba(37, 36, 23, 0.3); border-width: 2px; border-color: rgba(0, 0, 0, 0); border-bottom-width: 2px; border-bottom-color: rgba(154, 132, 77, 0.23); min-height: 55px; padding: 10px 8px 10px 8px; flex-wrap: nowrap; min-width: 0; }
+.archive-panel .crt__name { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(184, 159, 103); font-size: 19px; }
+.archive-panel .crt__price { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(184, 159, 103); font-size: 19px; }
+.archive-panel .crt__note { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(144, 127, 86); font-size: 16px; }
+.archive-panel .crt__about { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(184, 159, 103); font-size: 17px; border-top-width: 1px; border-top-color: rgb(71, 67, 42); padding-top: 15px; }
+.archive-panel .crt__button { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(184, 159, 103); font-size: 17px; padding: 9px 12px 9px 12px; border-width: 2px; border-color: rgb(103, 88, 50); min-width: 0; max-width: 100%; white-space: normal; flex-shrink: 0; }
+.archive-panel .crt__button:hover { background-color: rgb(156, 134, 81); color: rgb(8, 11, 9); }
+.archive-panel .crt__button:focus { background-color: rgb(156, 134, 81); color: rgb(8, 11, 9); }
+.archive-panel .crt__button--on { background-color: rgb(156, 134, 81); color: rgb(8, 11, 9); }
+.archive-panel .crt__row:hover { background-color: rgb(70, 60, 33); }
+.archive-panel .crt__row:focus { background-color: rgb(70, 60, 33); }
+.archive-panel .crt__row:hover .crt__name { color: rgb(231, 207, 153); }
+.archive-panel .crt__row:hover .crt__note { color: rgb(231, 207, 153); }
+.archive-panel .crt__row:hover .crt__price { color: rgb(231, 207, 153); }
+.archive-panel .crt__row:focus .crt__name { color: rgb(231, 207, 153); }
+.archive-panel .crt__row:focus .crt__price { color: rgb(231, 207, 153); }
+.archive-panel .crt__row--locked .crt__name { color: rgb(107, 104, 79); }
+.archive-panel .crt__row--locked .crt__price { color: rgb(107, 104, 79); }
+.archive-panel .crt__row--cant .crt__price { color: rgb(143, 118, 81); }
+.archive-panel .crt__scanlines { opacity: 0.3; }
+.archive-panel .rack__item { min-height: 68px; margin: 5px 8px 5px 0; }
+.archive-panel .rack__icon { width: 38px; height: 38px; -unity-background-image-tint-color: var(--c-text); }
+.archive-panel .rack__name { font-size: 17px; color: var(--c-text); }
+.archive-panel .receipt { background-color: var(--c-panel-2); border-width: 1px; border-color: rgb(89, 76, 49); border-top-width: 3px; border-top-color: var(--c-bad); border-bottom-width: 4px; border-bottom-color: rgb(75, 64, 39); }
+.archive-panel .receipt__head { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); color: rgb(52, 42, 27); font-size: 27px; white-space: normal; }
+.archive-panel .receipt__small { font-size: 15px; color: rgb(92, 78, 48); }
+.archive-panel .receipt__rule { font-size: 15px; color: rgb(92, 78, 48); }
+.archive-panel .receipt__was { font-size: 15px; color: rgb(92, 78, 48); }
+.archive-panel .receipt__line { color: rgb(44, 39, 28); }
+.archive-panel .receipt__line-value { color: rgb(44, 39, 28); }
+.archive-panel .receipt__total-label { color: rgb(44, 39, 28); }
+.archive-panel .receipt__total-value { color: rgb(44, 39, 28); }
+.archive-panel .receipt__line-value--damaged { color: rgb(125, 44, 32); }
+.archive-panel .receipt__stamp { font-size: 27px; border-color: rgb(111, 52, 34); color: rgb(111, 52, 34); }
+.archive-panel .appraisal__side { background-color: rgb(24, 24, 19); border-left-width: 3px; border-left-color: var(--c-bad); }
+.archive-panel .award { border-bottom-color: rgb(63, 58, 43); }
+.archive-panel .award__icon { -unity-background-image-tint-color: var(--c-accent); }
+.archive-panel .tally__label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 17px; color: var(--c-text); white-space: normal; }
+.archive-panel .tally__value { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 17px; color: var(--c-text); white-space: normal; }
+.archive-panel .tally__value.text--money { color: var(--c-good); }
+.archive-panel .tally__value.text--good { color: var(--c-good); }
+.archive-panel .tally__value.text--error { color: var(--c-bad); }
+.archive-panel.scrap-depot { border-top-color: var(--c-bad); }
+.abandoned-transfer.travel { background-color: rgb(7, 9, 8); padding: 5% 7% 4% 7%; align-items: flex-start; justify-content: center; }
+.abandoned-transfer .unity-label { min-width: 0; max-width: 100%; white-space: normal; }
+.abandoned-transfer .transfer__dossier { width: 940px; max-width: 100%; flex-grow: 0; align-items: flex-start; justify-content: flex-start; border-left-width: 3px; border-left-color: rgb(151, 63, 45); padding: 4px 0 4px 28px; }
+.abandoned-transfer .travel__where { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 62px; color: rgb(219, 210, 182); letter-spacing: 3px; margin: 18px 0 20px 0; max-width: 100%; }
+.abandoned-transfer .travel__terms { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 19px; color: rgb(167, 160, 138); letter-spacing: 1px; margin: 0 0 25px 0; }
+.transfer__progress.bar { width: 420px; max-width: 88%; height: 3px; border-width: 0; background-color: rgb(39, 39, 29); margin-bottom: 14px; }
+.transfer__progress .bar__fill { background-color: rgb(160, 128, 77); }
+.abandoned-transfer .travel__tip { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 17px; color: rgb(156, 152, 129); -unity-text-align: middle-left; margin: 28px 0 16px 0; max-width: 840px; }
+.field-note.hud-hint { left: 28px; top: 110px; width: 350px; max-width: 26%; background-color: rgba(12, 15, 12, 0.92); border-width: 1px; border-color: rgb(61, 64, 48); border-left-width: 2px; border-left-color: rgb(147, 66, 49); padding: 14px 17px 14px 17px; }
+.field-note.hud-hint .section { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 16px; letter-spacing: 2px; color: rgb(180, 151, 98); margin: 0 0 8px 0; }
+.field-note.hud-hint .text { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; color: rgb(203, 199, 174); white-space: normal; }
+.field-note.first-day { top: 110px; }
+.field-note.first-day .section { white-space: normal; }
+.field-note.first-day .segments { margin-top: 14px; height: 3px; }
+.field-note.first-day .segment { border-width: 0; margin-right: 3px; background-color: rgb(44, 44, 31); }
+.field-note.first-day .segment__fill { background-color: rgb(159, 132, 80); }
+.crew-transmissions.chat { left: 24px; bottom: 24px; width: 440px; max-width: 30%; }
+.crew-transmissions__heading { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; color: rgb(150, 141, 109); letter-spacing: 1px; padding: 4px 10px 4px 10px; background-color: rgba(8, 11, 9, 0.78); }
+.crew-transmissions__keys { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; letter-spacing: 1px; padding: 4px 10px 4px 10px; background-color: rgba(8, 11, 9, 0.78); margin-top: 5px; color: rgb(144, 151, 127); }
+.crew-transmissions .chat__log { border-width: 0; border-left-width: 1px; border-left-color: rgb(89, 76, 53); padding: 0 0 0 8px; }
+.crew-transmissions .chat__line { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: rgb(214, 209, 183); font-size: 16px; padding: 4px 7px 4px 7px; background-color: rgba(8, 11, 9, 0.74); margin-top: 4px; }
+.crew-transmissions .chat__line--ghost { border-left-width: 2px; border-left-color: rgb(112, 121, 111); }
+.crew-transmissions.chat--open .chat__log { background-color: rgba(10, 13, 10, 0.9); padding: 8px 10px 8px 10px; }
+.crew-transmissions .chat__field > .unity-text-field__input { background-color: rgb(21, 23, 18); color: rgb(225, 216, 184); border-width: 1px; border-color: rgb(126, 98, 63); border-left-width: 3px; border-left-color: rgb(161, 80, 53); padding: 10px 12px 10px 12px; font-size: 17px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); }
+.crew-transmissions .chat__field > .unity-base-text-field__input { background-color: rgb(21, 23, 18); color: rgb(225, 216, 184); border-width: 1px; border-color: rgb(126, 98, 63); border-left-width: 3px; border-left-color: rgb(161, 80, 53); padding: 10px 12px 10px 12px; font-size: 17px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); }
+.crew-voice.hud-voice { left: 24px; bottom: 24px; max-width: 30%; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; color: rgb(144, 149, 125); white-space: normal; padding: 5px 9px 5px 9px; background-color: rgba(9, 12, 9, 0.78); border-left-width: 1px; border-left-color: rgb(66, 71, 53); }
+.crew-voice--transmitting.hud-voice { color: rgb(218, 213, 186); border-left-color: var(--c-good); }
+.crew-voice--radio.hud-voice { color: rgb(198, 170, 109); border-left-color: rgb(154, 121, 70); }
+.crew-voice--fault.hud-voice { color: var(--c-bad); border-left-color: var(--c-bad); }
+.speaker-mark { position: absolute; translate: -50% -100%; flex-direction: row; align-items: center; border-radius: 0; border-left-width: 3px; background-color: rgba(9, 12, 9, 0.89); border-width: 1px; border-color: rgb(98, 104, 78); padding: 5px 9px 5px 9px; }
+.speaker-mark__name { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 15px; color: rgb(211, 211, 183); }
+.speaker-mark--radio { border-color: rgb(159, 127, 75); }
+.speaker-mark--radio .icon { -unity-background-image-tint-color: rgb(183, 154, 97); }
+.instrument-hud.hud-panel { width: 294px; max-width: 25%; background-color: rgba(10, 15, 11, 0.94); border-width: 1px; border-color: rgb(79, 83, 55); border-top-width: 3px; border-top-color: rgb(149, 128, 78); border-left-width: 1px; padding: 15px 17px 16px 17px; }
+.instrument-hud--motion.hud-motion { right: 28px; top: 48%; }
+.instrument-hud--structure.hud-scanner { left: auto; right: 28px; top: 48%; }
+.instrument-hud__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 25px; letter-spacing: 2px; color: rgb(203, 194, 157); white-space: normal; }
+.instrument-hud__meta { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); white-space: normal; font-size: 15px; color: rgb(140, 142, 107); margin: 4px 0 12px 0; }
+.instrument-hud__count { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; white-space: normal; color: rgb(163, 148, 99); margin-top: 10px; margin-bottom: 8px; }
+.instrument-hud__readout { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); white-space: normal; font-size: 17px; color: rgb(177, 193, 145); }
+.instrument-hud__signal { height: 8px; margin: 5px 0 4px 0; }
+.instrument-hud__signal .segment { background-color: rgb(27, 33, 19); border-width: 1px; border-color: rgb(55, 64, 36); margin-right: 3px; }
+.instrument-hud__signal .segment__fill { background-color: rgb(158, 179, 106); }
+.instrument-hud--contact.hud-panel { border-top-color: rgb(188, 162, 92); }
+.horror-hud .hud-nightvision { right: 28px; width: 294px; max-width: 25%; }
+.horror-hud .hq-brief { position: absolute; top: 24px; left: 28px; right: 28px; max-width: 620px; min-width: 0; flex-direction: column; padding: 10px 14px 11px 14px; background-color: var(--c-ink); border-width: 0; border-left-width: 2px; border-left-color: var(--c-accent); border-top-width: 1px; border-top-color: var(--c-faint); }
+.horror-hud .hq-brief__metrics { flex-direction: row; align-items: stretch; margin-bottom: 8px; }
+.horror-hud .hq-brief__metric { flex-basis: 0; flex-grow: 1; flex-shrink: 1; min-width: 0; padding-left: 14px; border-left-width: 1px; border-left-color: var(--c-faint); }
+.horror-hud .hq-brief__account { flex-grow: 1.35; padding-left: 0; border-left-width: 0; padding-right: 12px; }
+.horror-hud .hq-brief__clearance { flex-grow: 1.2; padding-right: 12px; }
+.horror-hud .hq-brief__caption { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); margin: 0; padding: 0; min-width: 0; flex-shrink: 0; white-space: normal; color: var(--c-dim); font-size: 13px; letter-spacing: 1px; margin-bottom: 2px; }
+.horror-hud .hq-brief__value { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 30px; color: var(--c-text); margin: 0; padding: 0; min-width: 0; flex-shrink: 0; white-space: normal; }
+.horror-hud .hq-brief__metric--warning .hq-brief__value { color: var(--c-bad); }
+.horror-hud .hq-brief__progress { flex-direction: row; flex-wrap: wrap; align-items: flex-end; }
+.horror-hud .hq-brief__experience { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); padding: 0; min-width: 0; flex-shrink: 0; white-space: normal; color: var(--c-dim); letter-spacing: 0; font-size: 13px; margin: 0 0 6px 10px; }
+.horror-hud .hq-brief__assignment { flex-direction: row; align-items: flex-start; padding-top: 8px; border-top-width: 1px; border-top-color: var(--c-faint); }
+.horror-hud .hq-brief__dispatch-caption { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 16px; color: var(--c-accent); letter-spacing: 1px; width: 96px; flex-shrink: 0; padding: 0; margin: 0 12px 0 0; }
+.horror-hud .hq-brief__detail { flex-basis: 0; flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.horror-hud .hq-brief__job { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); margin: 0; padding: 0; min-width: 0; flex-shrink: 0; white-space: normal; letter-spacing: 0; font-size: 15px; color: var(--c-text); }
+.horror-hud .hq-brief__departure { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); margin: 0; padding: 0; min-width: 0; flex-shrink: 0; white-space: normal; letter-spacing: 0; font-size: 13px; color: var(--c-accent); margin-top: 3px; }
+.horror-hud .hq-brief--compact .hq-brief__metric { padding-left: 10px; }
+.horror-hud .hq-brief--compact .hq-brief__account { padding-left: 0; padding-right: 8px; }
+.horror-hud .hq-brief--compact .hq-brief__clearance { padding-right: 8px; }
+.horror-hud .hq-brief--compact .hq-brief__caption { font-size: 12px; letter-spacing: 0; }
+.horror-hud .hq-brief--compact .hq-brief__value { font-size: 26px; }
+.horror-hud .hq-brief--compact .hq-brief__progress { flex-direction: column; align-items: flex-start; }
+.horror-hud .hq-brief--compact .hq-brief__experience { margin: 0; }
+.horror-hud .hq-brief--compact .hq-brief__assignment { flex-direction: column; }
+.horror-hud .hq-brief--compact .hq-brief__dispatch-caption { margin-bottom: 3px; }
+.horror-hud .hq-brief--compact .hq-brief__detail { flex-basis: auto; flex-grow: 0; flex-shrink: 0; width: 100%; }
+.archive-panel.archive-panel--compact { padding: 16px 18px 16px 18px; }
+.archive-panel.archive-panel--compact .board__cork .sheet { margin: 0 5px 14px 5px; padding: 14px 12px 14px 12px; }
+.archive-panel.archive-panel--compact .sheet__job { font-size: 26px; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact { flex-direction: column; align-items: flex-start; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact-label { width: 100%; min-width: 0; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact-cell { width: 100%; flex-basis: auto; flex-shrink: 0; }
+.archive-panel.archive-panel--compact .sheet .sheet__fact-value { width: 100%; }
+.archive-panel.archive-panel--compact .salvage-catalogue__item { width: 48%; min-width: 0; }
+.archive-panel.archive-panel--compact .crt__note { width: 90px; min-width: 70px; }
+.archive-panel.archive-panel--compact .crt__price { width: 100px; min-width: 90px; }
+.archive-panel.archive-panel--compact .crt__name { font-size: 17px; }
+.archive-panel.archive-panel--compact .receipt { width: 100%; flex-basis: 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; }
+.archive-panel.archive-panel--compact .appraisal__side { flex-basis: 100%; }
+.archive-panel.archive-panel--narrow .board__cork { flex-direction: column; }
+.archive-panel.archive-panel--narrow .board__cork .sheet { width: 100%; flex-basis: auto; margin: 0 0 14px 0; }
+.archive-panel.archive-panel--narrow .field-guide__spread { flex-direction: column; min-height: 0; }
+.archive-panel.archive-panel--narrow .field-guide__contents { width: 100%; border-right-width: 0; border-bottom-width: 2px; border-bottom-color: var(--c-bad); }
+.archive-panel.archive-panel--narrow .field-guide__page { border-left-width: 0; padding: 18px 20px 18px 20px; }
+.archive-panel.archive-panel--narrow .field-guide__title { font-size: 30px; }
+.archive-panel.archive-panel--narrow .field-guide__paging { justify-content: flex-start; }
+.archive-panel.archive-panel--narrow .field-guide__turn { margin: 4px 10px 4px 0; }
+.archive-panel.archive-panel--narrow .salvage-catalogue__item { width: 100%; }
+.archive-panel.archive-panel--narrow .crt__screen { padding: 14px 12px 14px 12px; }
+.archive-panel.archive-panel--narrow .crt__row { flex-wrap: wrap; }
+.archive-panel.archive-panel--narrow .crt__name { flex-basis: 100%; width: 100%; margin-bottom: 7px; }
+.archive-panel.archive-panel--narrow .crt__note { flex-grow: 1; flex-basis: 0; min-width: 0; width: auto; -unity-text-align: middle-left; }
+.archive-panel.archive-panel--narrow .crt__price { min-width: 0; width: auto; margin-left: 12px; }
+.archive-panel.archive-panel--short .crt__list { min-height: 100px; max-height: 300px; }
+.menu-compact .abandoned-transfer .travel__where { font-size: 46px; }
+.menu-short .field-note.hud-hint { padding: 10px 12px; }
+.menu-short .field-note.hud-hint .section { font-size: 14px; letter-spacing: 1px; margin-bottom: 6px; }
+.menu-short .field-note.hud-hint .text { font-size: 15px; }
+.menu-short .field-note.first-day .segments { margin-top: 8px; }
+
+/* ---- from Resources/FieldHud.uss ---- */
+.field-hud { color: rgb(214, 198, 161); -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); }
+.field-hud Label { font-size: 14px; -unity-font-style: normal; margin: 0; padding: 0; }
+.field-panel { background-color: rgba(15, 18, 19, 0.88); border-width: 1px; border-color: rgba(159, 136, 100, 0.42); border-radius: 0; padding: 7px 9px; }
+.field-hud .field-vitals { position: absolute; left: 28px; bottom: 28px; top: auto; right: auto; width: 220px; min-width: 0; min-height: 0; margin: 0; padding: 7px 9px; border-width: 1px; border-color: rgba(159, 136, 100, 0.42); }
+.field-meter-row { flex-direction: row; align-items: center; margin-bottom: 6px; padding-bottom: 6px; border-bottom-width: 1px; border-bottom-color: rgba(159, 136, 100, 0.22); }
+.field-meter-row--last { margin-bottom: 0; padding-bottom: 0; border-bottom-width: 0; }
+.field-hud .field-meter-caption { width: 64px; flex-shrink: 0; font-size: 11px; }
+.field-hud .field-meter { flex-grow: 1; min-width: 12px; height: 7px; margin: 0 8px 0 0; border-width: 0; border-radius: 0; background-color: rgba(150, 135, 100, 0.25); }
+.field-meter-number { width: 37px; -unity-text-align: middle-right; }
+.field-hud .field-health .bar__fill { background-color: rgb(229, 106, 78); border-radius: 0; }
+.field-hud .field-stamina .bar__fill { background-color: rgb(206, 200, 140); border-radius: 0; }
+.field-hud .field-load .bar__fill { background-color: rgb(184, 177, 150); border-radius: 0; }
+.field-hud .field-power { position: absolute; top: 28px; right: 28px; width: 205px; flex-direction: row; align-items: center; }
+.field-power__caption { flex-grow: 1; }
+.field-power__number { margin-right: 9px; }
+.field-hud .field-battery { width: 54px; height: 12px; flex-shrink: 0; }
+.field-battery .segment { background-color: rgba(153, 157, 128, 0.2); margin-right: 2px; border-width: 0; border-radius: 0; }
+.field-battery .segment__fill { background-color: rgb(182, 197, 151); border-radius: 0; }
+.field-battery .segment__fill--bad { background-color: rgb(229, 106, 78); }
+.field-frame { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.field-recording { position: absolute; top: 80px; right: 28px; align-items: flex-end; }
+.field-rec { flex-direction: row; align-items: center; align-self: flex-start; padding: 1px 7px; border-width: 1px; border-color: rgba(159, 136, 100, 0.42); background-color: rgba(15, 18, 19, 0.75); }
+.field-hud .field-rec__text { font-size: 16px; }
+.field-rec__dot { width: 9px; height: 9px; margin-left: 8px; border-radius: 5px; background-color: rgb(222, 62, 48); }
+.field-hud .field-recording__line { font-size: 12px; margin-top: 3px; }
+.field-hud .hq-brief { width: 620px; max-width: 40%; right: auto; }
+.field-hud .field-note { left: 74px; }
+.field-mission { position: absolute; top: 28px; left: 50%; translate: -50% 0; width: 380px; align-items: center; }
+.field-objective { width: 100%; flex-direction: row; align-items: center; padding: 6px 9px; }
+.field-hud .field-objective__caption { font-size: 12px; margin-right: 10px; color: rgb(196, 175, 123); flex-shrink: 0; }
+.field-hud .field-objective__text { font-size: 12px; white-space: normal; flex-shrink: 1; min-width: 0; padding-left: 10px; border-left-width: 1px; border-left-color: rgba(159, 136, 100, 0.3); }
+.field-extraction { flex-direction: row; align-items: center; margin-top: 5px; padding: 3px 10px; }
+.field-hud .field-extraction__caption { font-size: 13px; color: rgb(182, 197, 151); margin-right: 10px; }
+.field-hud .field-extraction__time { font-size: 17px; color: rgb(182, 197, 151); padding-left: 10px; border-left-width: 1px; border-left-color: rgba(153, 172, 121, 0.35); }
+.field-mission--departing .field-extraction { border-color: rgb(185, 86, 58); }
+.field-mission--departing .field-extraction__caption { color: rgb(237, 113, 87); }
+.field-mission--departing .field-extraction__time { color: rgb(237, 113, 87); }
+.field-hud .field-departure-status { font-size: 12px; margin-top: 5px; }
+.field-hud .field-compass { position: absolute; top: 112px; left: 50%; translate: -50% 0; width: 150px; height: 23px; overflow: hidden; }
+.field-hud .field-compass__mark { position: absolute; top: 0; font-size: 12px; translate: -50% 0; white-space: nowrap; }
+.field-pockets { position: absolute; left: 24px; top: 35%; width: 34px; border-left-width: 1px; border-left-color: rgba(159, 136, 100, 0.42); background-color: rgba(15, 18, 19, 0.35); }
+.field-hud .field-pocket { font-size: 13px; height: 42px; -unity-text-align: middle-center; color: rgb(185, 173, 145); border-left-width: 2px; border-left-color: transparent; }
+.field-hud .field-pocket--active { color: rgb(255, 180, 156); background-color: rgba(136, 53, 34, 0.4); border-left-color: rgb(237, 113, 87); }
+.field-hud .field-inventory { position: absolute; width: 290px; left: 50%; top: 50%; translate: -50% -50%; padding: 12px; }
+.field-hud .field-inventory__title { font-size: 13px; margin-bottom: 8px; }
+.field-hud .field-inventory__key { font-size: 12px; width: 28px; flex-shrink: 0; color: rgb(185, 173, 145); }
+.field-hud .field-inventory__name { font-size: 12px; white-space: normal; min-width: 0; flex-shrink: 1; }
+.field-hud .field-inventory__selected { font-size: 12px; margin-top: 5px; white-space: normal; }
+.field-hud .field-inventory__stats { font-size: 11px; margin-top: 4px; white-space: normal; color: rgb(185, 173, 145); }
+.field-hud .field-inventory__hint { font-size: 11px; margin-top: 4px; white-space: normal; color: rgb(185, 173, 145); }
+.field-hud .field-carry { position: absolute; bottom: 31px; left: 31%; right: 31%; -unity-text-align: middle-center; font-size: 13px; white-space: normal; }
+.field-hud .field-switch { position: absolute; bottom: 31px; left: 31%; right: 31%; -unity-text-align: middle-center; font-size: 13px; white-space: normal; }
+.field-hud .field-cargo { position: absolute; right: 28px; bottom: 28px; width: 220px; }
+.field-cargo__row { flex-direction: row; align-items: center; justify-content: space-between; padding-bottom: 5px; margin-bottom: 5px; border-bottom-width: 1px; border-bottom-color: rgba(159, 136, 100, 0.22); }
+.field-cargo__row--last { padding-bottom: 0; margin-bottom: 0; border-bottom-width: 0; }
+.field-hud .field-cargo__caption { font-size: 12px; }
+.field-hud .field-cargo__value { font-size: 16px; color: rgb(207, 171, 105); }
+.field-hud .field-cargo__quota { font-size: 13px; color: rgb(170, 158, 132); }
+.field-hud .field-cargo__quota--met { color: rgb(150, 190, 120); }
+.field-hud .field-cargo__weight { font-size: 12px; margin-right: 9px; flex-shrink: 0; }
+.field-hud .field-cargo .field-load { max-width: 95px; margin-right: 0; }
+.field-hud .field-prompt { position: absolute; width: 260px; min-width: 0; max-width: 100%; padding: 4px 6px; translate: 8px -50%; background-color: rgba(15, 18, 19, 0.78); }
+.field-hud .field-prompt .hud-prompt-row { position: relative; left: auto; right: auto; top: auto; flex-direction: column; align-items: stretch; min-width: 0; }
+.field-hud .field-prompt .hud-prompt__part { min-width: 0; flex-shrink: 0; margin: 0; padding: 0; background-color: transparent; align-items: flex-start; }
+.field-hud .field-prompt .hud-prompt__text { min-width: 0; flex-grow: 1; flex-shrink: 1; }
+.field-hud .field-prompt Label { font-size: 12px; white-space: normal; }
+.field-hud .field-prompt .keycap { min-width: 16px; height: auto; min-height: 18px; flex-shrink: 0; white-space: nowrap; margin-right: 6px; padding: 0 3px; font-size: 11px; }
+.field-hud .field-reticle { position: absolute; left: 50%; top: 50%; width: 30px; height: 26px; translate: -50% -50%; border-width: 0; background-color: transparent; }
+.field-hud .field-reticle .h-reticle__corner { width: 5px; height: 5px; border-color: rgb(214, 198, 161); }
+.field-hud .field-throw { position: absolute; left: 50%; bottom: 63px; top: auto; width: 100px; translate: -50% 0; height: 3px; background-color: rgba(214, 198, 161, 0.2); }
+.field-hud .field-throw-fill { height: 3px; background-color: rgb(214, 198, 161); }
+.field-hud .loot-tag { padding: 5px 7px; max-width: 245px; border-width: 1px; background-color: rgba(15, 18, 19, 0.88); }
+.field-hud .loot-tag__value { font-size: 16px; }
+.field-hud .loot-tag__name { font-size: 12px; }
+.field-hud .loot-tag__meta { margin-top: 3px; }
+.field-hud .loot-tag .tag { font-size: 11px; padding: 1px 4px; }
+.field-hud--compact .field-vitals { width: 195px; }
+.field-hud--compact .hq-brief { max-width: 36%; }
+.field-hud--compact .field-cargo { width: 195px; }
+.field-hud--compact .field-power { width: 190px; }
+.field-hud--compact .field-mission { width: 320px; }
+.field-hud--compact .field-carry { bottom: 115px; left: 23%; right: 23%; }
+.field-hud--compact .field-switch { bottom: 115px; left: 23%; right: 23%; }
+.field-hud--compact .field-throw { bottom: 138px; }
+.field-hud--compact .field-meter-caption { width: 57px; }
+.field-hud--compact .field-meter-row Label { font-size: 12px; }
+.field-hud--compact .field-meter-row .field-meter-caption { font-size: 10px; }
+.colorblind .field-hud .field-health .bar__fill { background-color: rgb(240, 158, 70); }
+.colorblind .field-hud .segment__fill--bad { background-color: rgb(240, 158, 70); }
+.colorblind .field-hud .field-stamina .bar__fill { background-color: rgb(117, 191, 224); }
+.colorblind .field-hud .field-pocket--active { border-left-color: rgb(117, 191, 224); color: rgb(160, 213, 237); }
+
+/* ---- from Resources/TrainingHud.uss ---- */
+.horror-hud .training-card { position: absolute; top: 96px; left: 30%; width: 580px; padding: 12px 18px 14px 18px; background-color: rgba(13, 15, 14, 0.9); border-top-width: 2px; border-top-color: rgb(186, 154, 98); border-bottom-width: 1px; border-bottom-color: rgba(217, 207, 184, 0.18); transition-property: opacity, translate, border-top-color; transition-duration: 0.25s, 0.25s, 0.2s; }
+.horror-hud .training-card--enter { opacity: 0; translate: 0 -10px; }
+.horror-hud .training-card--done { border-top-color: rgb(140, 176, 106); }
+.horror-hud .training-card__head { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.horror-hud .training-card__chapter { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 13px; letter-spacing: 2px; color: rgb(147, 143, 129); margin: 0; padding: 0; }
+.horror-hud .training-card__count { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 13px; letter-spacing: 2px; color: rgb(147, 143, 129); margin: 0; padding: 0; }
+.horror-hud .training-card__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 27px; letter-spacing: 2px; color: rgb(217, 207, 184); margin: 0; padding: 0; white-space: normal; }
+.horror-hud .training-card__text { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 17px; color: rgb(214, 206, 186); margin: 6px 0 0 0; padding: 0; white-space: normal; }
+.horror-hud .training-card__meter { flex-direction: row; align-items: center; margin-top: 11px; }
+.horror-hud .training-card__bar { flex-grow: 1; height: 9px; border-width: 1px; border-color: rgba(217, 207, 184, 0.28); background-color: rgba(217, 207, 184, 0.07); }
+.horror-hud .training-card__bar .bar__fill { height: 100%; background-color: rgb(186, 154, 98); transition-property: width; transition-duration: 0.18s; }
+.horror-hud .training-card--done .training-card__bar .bar__fill { background-color: rgb(140, 176, 106); }
+.horror-hud .training-card__readout { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 14px; color: rgb(217, 207, 184); margin: 0 0 0 12px; padding: 0; min-width: 120px; -unity-text-align: middle-right; white-space: nowrap; }
+.horror-hud .training-card__stamp { position: absolute; right: 14px; top: 12px; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 22px; letter-spacing: 3px; color: rgb(140, 176, 106); border-width: 2px; border-color: rgb(140, 176, 106); padding: 0 9px 0 9px; opacity: 0; scale: 1.5 1.5; transition-property: opacity, scale; transition-duration: 0.14s, 0.14s; }
+.horror-hud .training-card--done .training-card__stamp { opacity: 1; scale: 1 1; }
+.horror-hud .training-card__keys { flex-direction: row; flex-wrap: wrap; margin-top: 10px; }
+.horror-hud .training-key { flex-direction: row; align-items: center; margin: 0 10px 4px 0; padding: 3px 9px 3px 4px; border-width: 1px; border-color: rgba(217, 207, 184, 0.2); background-color: rgba(217, 207, 184, 0.03); transition-property: background-color, border-color, scale; transition-duration: 0.08s, 0.08s, 0.08s; }
+.horror-hud .training-key .keycap { margin-right: 7px; }
+.horror-hud .training-key__label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 13px; color: rgb(147, 143, 129); margin: 0; padding: 0; white-space: nowrap; }
+.horror-hud .training-key--down { background-color: rgba(186, 154, 98, 0.35); border-color: rgb(186, 154, 98); scale: 1.06 1.06; }
+.horror-hud .training-key--down .training-key__label { color: rgb(217, 207, 184); }
+.horror-hud .training-key--used { border-color: rgba(140, 176, 106, 0.6); }
+.training-list { margin-top: 2px; }
+.training-list__row { flex-direction: row; align-items: flex-start; margin-bottom: 3px; }
+.training-list__mark { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); width: 20px; min-width: 20px; font-size: 15px; margin: 0; padding: 0; color: rgba(217, 207, 184, 0.3); }
+.training-list__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; margin: 0; padding: 0; white-space: normal; flex-shrink: 1; color: rgba(217, 207, 184, 0.38); }
+.training-list__row--done .training-list__mark { color: rgb(140, 176, 106); }
+.training-list__row--done .training-list__title { color: rgb(147, 143, 129); }
+.training-list__row--now .training-list__mark { color: rgb(186, 154, 98); }
+.training-list__row--now .training-list__title { color: rgb(217, 207, 184); -unity-font-style: bold; }
+.training-mark { position: absolute; translate: -50% -100%; align-items: center; }
+.training-mark__label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 17px; letter-spacing: 2px; color: rgb(217, 207, 184); background-color: rgba(13, 15, 14, 0.86); border-left-width: 3px; border-left-color: rgb(186, 154, 98); padding: 1px 9px 1px 8px; margin: 0; white-space: nowrap; }
+.training-mark__distance { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 13px; color: rgb(217, 207, 184); background-color: rgba(13, 15, 14, 0.6); padding: 0 6px 0 6px; margin: 2px 0 0 0; white-space: nowrap; }
+.training-mark__arrow { width: 30px; height: 20px; margin-top: 3px; }
+.training-mark--danger .training-mark__label { border-left-color: rgb(172, 87, 67); color: rgb(232, 158, 138); }
+.training-mark--danger .training-mark__distance { color: rgb(232, 158, 138); }
+.training-mark--away .training-mark__label { border-left-color: rgb(172, 87, 67); }
+.training-edge { position: absolute; translate: -50% -50%; align-items: center; justify-content: center; width: 64px; height: 64px; }
+.training-edge__arrow { position: absolute; left: 15px; top: 17px; width: 34px; height: 30px; }
+.training-edge__distance { position: absolute; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 12px; color: rgb(217, 207, 184); background-color: rgba(13, 15, 14, 0.75); padding: 0 4px 0 4px; margin: 0; white-space: nowrap; }
+.training-highlight { position: absolute; border-width: 2px; border-color: rgb(186, 154, 98); background-color: rgba(186, 154, 98, 0.06); }
+.training-highlight__label { position: absolute; left: -2px; bottom: 100%; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 13px; letter-spacing: 1px; color: rgb(13, 15, 14); background-color: rgb(186, 154, 98); padding: 1px 6px 1px 6px; margin: 0 0 3px 0; white-space: nowrap; }
+.training-highlight--below .training-highlight__label { bottom: auto; top: 100%; margin: 3px 0 0 0; }
+.menu-short .horror-hud .training-card { top: 72px; padding: 8px 14px 10px 14px; }
+.menu-short .horror-hud .training-card__title { font-size: 22px; }
+.menu-short .horror-hud .training-card__text { font-size: 15px; }
+
+/* ---- from Resources/ModernMenus.uss ---- */
+.menu-short .mm-page .heading { font-size: 46px; }
+.settings .section { margin-top: 22px; margin-bottom: 4px; padding: 8px 12px; font-size: 14px; letter-spacing: 3px; color: var(--c-accent-hot); background-color: var(--c-panel-3); }
+.settings .setting { padding: 0 12px; border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.settings .setting--explained:hover { background-color: var(--c-panel-2); }
+.mm-main { padding: 0; }
+.mm-rail { position: absolute; left: 0; top: 0; bottom: 56px; width: 44%; min-width: 520px; padding: 6% 32px 0 6%; }
+.menu-narrow .mm-rail { width: 100%; min-width: 0; padding-left: 28px; }
+.menu-narrow .mm-main__shade { width: 100%; }
+.menu-compact .mm-main .main__logo { font-size: 64px; }
+.menu-short .mm-main .main__logo { font-size: 60px; }
+.menu-narrow .mm-main .main__logo { font-size: 56px; }
+.mm-nav { width: 460px; max-width: 100%; margin-top: 4px; }
+.mm-status__links { flex-wrap: wrap; }
+.mm-status__version { font-size: 14px; color: var(--c-faint); }
+.pause .pause__content { justify-content: flex-start; padding: 0; min-height: 100%; }
+.pause .pause__columns { width: 100%; max-width: none; min-height: 100%; align-items: stretch; }
+.pause .pause__left { width: 420px; margin-right: 56px; padding: 56px 40px 32px 48px; background-color: var(--c-panel); border-left-width: 6px; border-left-color: var(--c-accent); border-right-width: 1px; border-right-color: var(--c-line); }
+.pause .pause__left .title { font-size: 58px; letter-spacing: 4px; }
+.menu-narrow .pause .pause__left { width: 100%; margin-right: 0; }
+
+/* ---- from Resources/Remake2026.uss ---- */
+.mm-main__shade { position: absolute; left: 0; top: 0; bottom: 0; width: 46%; border-right-width: 1px; border-right-color: var(--c-line); background-color: rgba(4, 5, 6, 0.55); }
+.mm-status { position: absolute; left: 0; right: 0; bottom: 0; height: 56px; flex-direction: row; align-items: center; justify-content: space-between; padding: 0 3%; border-top-width: 1px; border-top-color: var(--c-line); background-color: rgba(6, 7, 8, 0.85); }
+.wardrobe__card { width: 168px; margin: 0 10px 10px 0; padding: 10px; flex-direction: column; align-items: flex-start; justify-content: space-between; -unity-background-image-tint-color: rgba(0, 0, 0, 0); height: auto; min-height: 142px; min-width: 0; max-width: 100%; flex-shrink: 0; background-color: var(--c-panel-2); border-width: 1px; border-color: var(--c-line); border-radius: 0; }
+.wardrobe__card:hover { background-color: var(--c-panel-3); border-color: rgba(214, 158, 72, 0.6); }
+.wardrobe__card:focus { background-color: var(--c-panel-3); border-color: rgba(214, 158, 72, 0.6); }
+.wardrobe__card--selected { background-color: rgba(214, 158, 72, 0.1); border-color: var(--c-accent); border-width: 1px; border-left-width: 4px; }
+.wardrobe__card--locked { opacity: 0.55; }
+.wardrobe__chip { width: 34px; height: 34px; border-width: 1px; border-color: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; border-radius: 0; background-color: var(--c-panel-3); }
+.wardrobe__chip--icon { width: 96px; height: 96px; background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit; }
+.wardrobe__preview { width: 360px; height: 450px; margin-right: 24px; border-radius: 4px; -unity-background-scale-mode: scale-to-fit; min-height: 160px; max-height: 100%; flex-grow: 1; flex-shrink: 1; background-color: rgb(9, 10, 11); border-width: 1px; border-color: var(--c-line); }
+.wardrobe__detail { width: 330px; min-width: 260px; flex-shrink: 0; margin-left: 22px; padding: 18px; background-color: rgba(31, 28, 22, 0.8); border-top-width: 2px; border-top-color: rgb(126, 57, 43); border-left-width: 1px; border-left-color: var(--c-line); }
+.creator { background-color: rgb(6, 7, 8); }
+.creator .mm-page { width: 100%; max-width: 100%; border-left-width: 0; }
+.creator__sign { align-self: flex-end; margin-top: 14px; padding: 12px 40px; font-size: 22px; letter-spacing: 6px; color: var(--c-accent-ink); background-color: var(--c-accent); border-width: 0; }
+.creator__sign:hover { background-color: var(--c-accent-hot); color: var(--c-accent-ink); }
+.creator__sign:focus { background-color: var(--c-accent-hot); color: var(--c-accent-ink); }
+.dialogue__box { border-left-width: 3px; border-left-color: var(--c-accent); background-color: rgba(6, 7, 8, 0.82); }
+.dialogue__speaker { letter-spacing: 3px; font-size: 16px; color: var(--c-accent); }
+.dialogue__role { letter-spacing: 3px; font-size: 13px; color: var(--c-faint); }
+.dialogue__line { color: var(--c-text); font-size: 25px; }
+.dialogue__reply { align-self: flex-start; margin-top: 4px; font-size: 18px; }
+.dialogue__hint { letter-spacing: 2px; }
+.crew-board .heading { font-size: 46px; }
+.crew-row { min-height: 58px; border-radius: 0; flex-direction: column; align-items: stretch; padding: 14px 8px; background-color: rgba(35, 33, 27, 0.5); margin-bottom: 6px; border-bottom-width: 1px; border-bottom-color: var(--c-line); padding-top: 8px; padding-bottom: 8px; }
+.crew-row__swatch { width: 14px; height: 40px; margin-right: 14px; background-color: var(--c-panel-3); flex-shrink: 0; border-radius: 0; }
+.crew-row__talking--on { border-color: var(--c-good); background-color: var(--c-good); }
+.pause { padding-left: 0; justify-content: center; align-items: center; background-color: rgba(4, 5, 6, 0.6); }
+.pause__left { min-width: 0; flex-shrink: 0; width: 390px; margin-right: 64px; padding-top: 8px; border-left-width: 3px; border-left-color: var(--c-accent); background-color: var(--c-panel); padding: 48px 56px; }
+.pause__warning { color: var(--c-faint); }
+.hud-card { flex-grow: 1; flex-basis: 0; margin: 0 6px 0 6px; border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-color: var(--c-line); border-right-color: var(--c-line); border-bottom-color: var(--c-line); -unity-background-scale-mode: stretch-to-fill; border-width: 1px; border-top-width: 3px; border-top-color: var(--c-accent); padding: 16px; border-radius: 0; border-color: var(--c-line); background-color: rgba(8, 9, 10, 0.72); }
+.toast { flex-direction: row; align-items: center; margin-bottom: 8px; translate: 0 0; opacity: 1; transition-property: translate, opacity; transition-duration: 0.22s; border-width: 1px; border-color: var(--c-line); padding: 12px; border-radius: 0; border-left-width: 3px; border-left-color: var(--c-accent); background-color: rgba(8, 9, 10, 0.9); }
+
+/* ---- from Resources/Remake2026Layouts.uss ---- */
+.archive-panel { background-color: var(--c-panel); background-image: none; border-width: 1px; border-color: var(--c-line); border-left-width: 3px; border-left-color: var(--c-accent); border-radius: 0; padding: 30px 36px 24px 40px; }
+.archive-panel .board__cork { border-color: rgb(72, 64, 47); flex-direction: row; flex-wrap: wrap; align-items: stretch; background-color: rgba(0, 0, 0, 0); background-image: none; border-width: 0; padding: 0; }
+.archive-panel .board__cork .sheet { min-width: 0; flex-basis: 30%; flex-grow: 1; flex-shrink: 1; margin: 0 8px 12px 0; padding: 18px 18px 14px 18px; background-color: var(--c-panel-2); background-image: none; border-width: 1px; border-color: var(--c-line); border-top-width: 3px; border-top-color: var(--c-accent); border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.archive-panel .sheet__place { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); white-space: normal; color: var(--c-text); letter-spacing: 4px; font-size: 22px; }
+.archive-panel .sheet__job { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); margin-top: 6px; white-space: normal; color: var(--c-accent); letter-spacing: 3px; font-size: 14px; margin-bottom: 8px; }
+.archive-panel .sheet__text { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; color: var(--c-dim); font-size: 15px; margin-bottom: 6px; white-space: normal; }
+.archive-panel .sheet__quip { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-faint); -unity-font-style: italic; font-size: 14px; margin-bottom: 8px; white-space: normal; }
+.archive-panel .sheet__fact { border-top-width: 1px; border-top-color: var(--c-line); padding-top: 5px; padding-bottom: 5px; }
+.archive-panel .sheet__fact-label { color: var(--c-faint); letter-spacing: 2px; font-size: 13px; width: 38%; flex-shrink: 0; }
+.archive-panel .sheet__fact-value { color: var(--c-text); font-size: 16px; }
+.archive-panel .sheet__fact-value--warn { color: var(--c-bad); }
+.archive-panel .sheet__fact-note { margin-top: 3px; color: var(--c-faint); font-size: 12px; white-space: normal; }
+.archive-panel .sheet__take { letter-spacing: 0; margin-top: 12px; align-self: stretch; -unity-text-align: middle-center; }
+.archive-panel .sheet__stamp { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); border-width: 1px; border-color: var(--c-good); color: var(--c-good); background-color: rgba(140, 182, 150, 0.08); font-size: 16px; letter-spacing: 6px; }
+.archive-panel .dispatch-briefing { border-width: 1px; border-color: rgb(66, 60, 45); border-left-width: 2px; border-left-color: var(--c-accent); background-color: rgba(214, 158, 72, 0.05); padding: 12px 16px; margin-bottom: 16px; }
+.appraisal__columns { flex-wrap: wrap; min-width: 0; flex-shrink: 0; flex-direction: row; align-items: flex-start; }
+.receipt { border-bottom-width: 6px; -unity-background-scale-mode: stretch-to-fill; border-bottom-color: rgb(118, 118, 96); width: 48%; min-width: 280px; max-width: 550px; flex-basis: 55%; flex-grow: 1; flex-shrink: 1; margin-right: 22px; padding: 20px 24px; background-color: var(--c-panel-2); background-image: none; border-width: 1px; border-color: var(--c-line); border-top-width: 3px; border-top-color: var(--c-accent); color: var(--c-text); }
+.receipt__head { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 26px; -unity-text-align: middle-center; letter-spacing: 5px; color: var(--c-accent); }
+.receipt__row { height: auto; min-height: 28px; flex-shrink: 0; -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); -unity-font-style: normal; font-size: 16px; letter-spacing: 0; border-bottom-width: 1px; border-bottom-color: var(--c-line); padding-top: 3px; padding-bottom: 3px; }
+.receipt__line { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); color: var(--c-text); font-size: 16px; flex-basis: 0; min-width: 0; flex-grow: 1; flex-shrink: 1; white-space: normal; border-bottom-width: 1px; border-bottom-color: var(--c-line); padding-top: 3px; padding-bottom: 3px; }
+.receipt__line-value { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; -unity-text-align: middle-right; min-width: 100px; color: var(--c-text); }
+.receipt__line-value--damaged { color: var(--c-bad); }
+.receipt__was { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 14px; margin-right: 6px; color: var(--c-faint); }
+.receipt__small { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 14px; -unity-text-align: middle-center; color: var(--c-faint); }
+.receipt__rule { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 15px; -unity-text-align: middle-center; overflow: hidden; color: rgb(76, 82, 65); background-color: var(--c-line); height: 1px; }
+.receipt__total { margin-top: 10px; padding-top: 8px; border-top-width: 2px; border-top-color: var(--c-accent); }
+.receipt__total-label { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 24px; flex-grow: 1; letter-spacing: 4px; color: var(--c-dim); }
+.receipt__total-value { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 30px; color: var(--c-money); }
+.receipt__stamp { background-color: rgba(186, 180, 156, 0.25); border-width: 3px; position: relative; top: auto; right: auto; bottom: auto; left: auto; align-self: flex-start; margin-top: 12px; font-size: 26px; scale: 1 1; white-space: normal; border-color: var(--c-good); color: var(--c-good); }
+.appraisal__side { min-width: 0; border-left-width: 6px; border-left-color: var(--c-accent); background-color: var(--c-panel); flex-basis: 40%; flex-grow: 1; flex-shrink: 1; }
+.tally { min-height: 30px; border-bottom-width: 1px; border-bottom-color: var(--c-line); padding-top: 6px; padding-bottom: 6px; }
+.tally__label { font-size: 18px; flex-grow: 1; min-width: 0; flex-shrink: 1; white-space: normal; color: var(--c-dim); letter-spacing: 2px; }
+.tally__value { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-ExtraBold.ttf"); font-size: 24px; min-width: 90px; flex-shrink: 0; color: var(--c-text); }
+.tally--total .tally__value { color: var(--c-money); font-size: 26px; }
+.award { min-height: 30px; border-bottom-width: 1px; border-bottom-color: rgba(255, 255, 255, 0.06); background-color: var(--c-panel-2); border-left-width: 3px; border-left-color: var(--c-accent); padding: 8px 12px; margin-top: 8px; }
+.appraisal__buttons { margin-top: 18px; flex-direction: row; flex-wrap: wrap; }
+.travel { position: absolute; left: 0; top: 0; right: 0; bottom: 0; justify-content: space-between; background-color: rgb(6, 7, 8); }
+.travel__where { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 64px; margin-top: 18px; color: var(--c-text); letter-spacing: 10px; }
+.travel__middle { flex-grow: 1; align-items: center; justify-content: center; border-left-width: 3px; border-left-color: var(--c-accent); padding-left: 28px; }
+.travel__terms { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/BarlowCondensed/BarlowCondensed-SemiBold.ttf"); font-size: 24px; margin-top: 6px; color: var(--c-dim); letter-spacing: 2px; }
+.travel__tip { font-size: 19px; -unity-text-align: middle-center; margin-bottom: 30px; color: var(--c-faint); border-top-width: 1px; border-top-color: var(--c-line); padding-top: 10px; margin-top: 14px; }
+.transfer__brand { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 34px; margin-bottom: 28px; letter-spacing: 6px; color: var(--c-accent); }
+.transfer__direction { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; letter-spacing: 6px; color: var(--c-accent); }
+.transfer__status { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); font-size: 16px; letter-spacing: 2px; white-space: normal; color: var(--c-dim); }
+.transfer__progress { height: 2px; background-color: var(--c-accent); }
+.transfer__footer { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); letter-spacing: 2px; font-size: 15px; color: var(--c-faint); border-top-width: 1px; border-top-color: var(--c-line); }
+.field-inventory__slot { flex-direction: row; align-items: center; padding: 6px 8px; margin-bottom: 4px; min-height: 34px; background-color: rgba(8, 9, 10, 0.72); border-width: 1px; border-color: var(--c-line); border-radius: 0; margin-right: 6px; }
+.field-inventory__slot--active { border-color: var(--c-accent); border-bottom-width: 3px; background-color: rgba(214, 158, 72, 0.12); }
+.field-inventory__key { color: var(--c-faint); }
+.field-inventory__name { color: var(--c-text); }
+.field-inventory__selected { color: var(--c-accent-hot); }
+.field-compass__tape { position: absolute; height: 22px; top: 0; left: 0; background-color: rgba(6, 7, 8, 0.55); border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.field-compass__needle { position: absolute; bottom: 0; left: 50%; height: 4px; background-color: var(--c-accent); width: 2px; }
+.field-compass__mark { color: var(--c-dim); }
+.horror-radio { position: absolute; left: 23%; right: 23%; bottom: 56px; padding: 10px 18px 12px 18px; align-items: center; border-width: 1px; border-color: var(--c-line); border-left-width: 3px; border-left-color: var(--c-accent); background-color: rgba(6, 7, 8, 0.8); }
+.horror-radio__caption { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Medium.ttf"); margin-bottom: 4px; font-size: 15px; color: var(--c-accent); letter-spacing: 3px; }
+
+/* ---- from Resources/HqStations.uss ---- */
+.field-guide { background-color: rgb(65, 39, 26); border-width: 8px; border-color: rgb(44, 28, 21); border-radius: 9px; padding: 22px 24px 20px 24px; }
+.field-guide__cover-title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 40px; -unity-font-style: bold; letter-spacing: 7px; color: rgb(211, 182, 123); margin-bottom: 2px; }
+.field-guide__cover-note { color: rgb(183, 154, 107); font-size: 15px; letter-spacing: 2px; margin-bottom: 16px; }
+.field-guide__spread { flex-direction: row; align-items: stretch; flex-shrink: 0; background-color: rgb(214, 199, 165); border-width: 2px; border-color: rgb(152, 126, 86); border-bottom-width: 7px; border-bottom-color: rgb(168, 150, 115); min-height: 480px; }
+.field-guide__contents { width: 34%; flex-shrink: 0; min-width: 0; padding: 22px 18px 22px 22px; border-right-width: 10px; border-right-color: rgb(177, 155, 115); background-color: rgb(202, 186, 151); }
+.field-guide__page { flex-grow: 1; flex-basis: 0; min-width: 0; padding: 24px 28px 20px 28px; border-left-width: 2px; border-left-color: rgb(231, 216, 177); }
+.field-guide__title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); letter-spacing: 1px; font-size: 34px; -unity-font-style: bold; color: rgb(54, 47, 36); margin: 5px 0 14px 0; }
+.field-guide__section { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 19px; -unity-font-style: bold; letter-spacing: 2px; color: rgb(113, 58, 39); margin: 18px 0 8px 0; padding-bottom: 5px; border-bottom-width: 1px; border-bottom-color: rgba(85, 60, 36, 0.28); }
+.field-guide__contents > .field-guide__section { margin-top: 0; }
+.field-guide__body { white-space: normal; font-size: 20px; color: rgb(62, 54, 40); margin-bottom: 8px; }
+.field-guide__note { font-size: 15px; -unity-font-style: italic; color: rgb(111, 87, 59); margin-bottom: 8px; }
+.field-guide__contents > .field-guide__body { font-size: 17px; margin-bottom: 18px; }
+.field-guide__entry { background-color: rgba(0, 0, 0, 0); border-width: 0; border-bottom-width: 1px; border-bottom-color: rgba(79, 57, 34, 0.15); border-left-width: 3px; border-left-color: rgba(0, 0, 0, 0); min-height: 42px; padding: 7px 5px 7px 7px; margin: 2px 0 2px 0; -unity-text-align: middle-left; }
+.field-guide__entry-name { font-size: 18px; color: rgb(69, 54, 37); }
+.field-guide__entry--locked .field-guide__entry-name { color: rgb(128, 113, 88); -unity-font-style: italic; }
+.field-guide__entry:hover { background-color: rgba(126, 82, 42, 0.12); }
+.field-guide__entry:focus { border-width: 2px; border-color: var(--c-accent-hot); background-color: rgba(126, 82, 42, 0.12); }
+.field-guide__paging { margin-top: 28px; justify-content: space-between; flex-wrap: wrap; }
+.field-guide__page-number { font-size: 16px; color: rgb(108, 82, 52); padding: 5px 10px 5px 10px; }
+.field-guide__turn:focus { background-color: rgb(190, 165, 121); }
+.field-guide__turn:disabled { opacity: 0.4; }
+.field-guide__close:focus { background-color: rgb(95, 58, 34); }
+.dispatch-briefing { background-color: rgb(25, 29, 26); padding: 12px 18px 16px 18px; margin-bottom: 18px; border-left-width: 4px; border-left-color: rgb(152, 134, 85); }
+.dispatch-briefing > .section { margin-top: 0; }
+.dispatch-briefing > .subtitle { font-size: 20px; margin-bottom: 8px; }
+.scrap-depot { border-top-color: rgb(156, 125, 67); }
+.field-guide__entry--selected { background-color: rgba(126, 82, 42, 0.1); border-left-width: 5px; border-left-color: rgb(242, 190, 40); }
+.field-guide__close { font-size: 22px; color: rgb(216, 191, 145); background-color: rgb(51, 31, 22); border-width: 1px; border-color: rgb(147, 115, 72); align-self: flex-end; padding: 8px 20px 8px 20px; margin-top: 16px; border-radius: 0; border-bottom-width: 2px; border-bottom-color: rgb(242, 190, 40); }
+.field-guide__turn { font-size: 17px; color: rgb(87, 51, 32); background-color: rgba(0, 0, 0, 0); border-width: 1px; border-color: rgba(92, 64, 38, 0.4); padding: 7px 10px 7px 10px; margin: 2px 0 2px 0; border-radius: 0; border-bottom-width: 2px; border-bottom-color: rgb(242, 190, 40); }
+.field-guide__close:hover { background-color: rgb(242, 190, 40); color: rgb(18, 16, 8); }
+.field-guide__turn:hover { background-color: rgb(242, 190, 40); color: rgb(18, 16, 8); }
+
+/* ======================================================================================================
+   Components. Written once, last, so nothing above restyles them: buttons, text, panels, pages, settings.
+   ====================================================================================================== */
+
+/* ---- type ---- */
+.title { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 64px; letter-spacing: 2px; color: var(--c-text); margin: 0 0 6px 0; white-space: nowrap; }
+.heading { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 44px; letter-spacing: 2px; color: var(--c-text); margin: 0 0 14px 0; white-space: normal; }
+.subtitle { font-size: 18px; color: var(--c-dim); margin: 0 0 18px 0; white-space: normal; }
+.section { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 14px; letter-spacing: 3px; color: var(--c-accent); margin: 22px 0 6px 0; padding-bottom: 6px; border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.text { font-size: 17px; color: var(--c-dim); margin-bottom: 4px; white-space: normal; min-width: 0; }
+.text--small { font-size: 15px; }
+.text--error { color: var(--c-bad); }
+.text--good { color: var(--c-good); }
+.text--money { color: var(--c-money); }
+
+/* ---- buttons: text on dark, an accent bar on hover/focus (menu-button--lit is both) ---- */
+.menu-button { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/Barlow/Barlow-Bold.ttf"); font-size: 22px; letter-spacing: 1px; color: var(--c-text); -unity-text-align: middle-left; white-space: normal; min-height: 46px; height: auto; flex-shrink: 0; margin: 2px 0; padding: 8px 16px; border-radius: 0; border-width: 0; border-left-width: 3px; border-left-color: rgba(0, 0, 0, 0); background-color: rgba(0, 0, 0, 0); background-image: none; }
+.menu-button:hover, .menu-button:focus, .menu-button--lit { color: var(--c-accent-hot); border-left-color: var(--c-accent); background-color: rgba(214, 158, 72, 0.08); }
+.menu-button--pressed, .menu-button:active { background-color: rgba(214, 158, 72, 0.18); }
+.menu-button:disabled { opacity: 0.4; }
+.menu-button--small { font-size: 16px; letter-spacing: 0; -unity-text-align: middle-center; align-self: flex-start; min-height: 34px; margin: 3px; padding: 5px 12px; border-width: 1px; border-color: var(--c-line); background-color: var(--c-panel-2); }
+.menu-button--small:hover, .menu-button--small:focus, .menu-button--small.menu-button--lit { color: var(--c-text); border-color: var(--c-accent); background-color: var(--c-panel-3); }
+.menu-button--on, .menu-button--on:hover, .menu-button--on.menu-button--lit { color: var(--c-accent-hot); border-color: var(--c-accent); background-color: rgba(214, 158, 72, 0.14); }
+
+/* ---- screens: a dimmed backdrop with a panel (in-world screens) or a full-height page down the left (menus) ---- */
+.backdrop { flex-grow: 1; justify-content: center; padding: 20px; background-color: rgba(4, 5, 6, 0.7); }
+.backdrop--dim { background-color: rgba(4, 5, 6, 0.86); }
+.backdrop--center { align-items: center; }
+.panel { width: 660px; max-width: 92%; max-height: 92%; min-width: 0; min-height: 0; flex-direction: column; padding: 28px 32px; border-radius: 0; border-width: 1px; border-color: var(--c-line); border-left-width: 3px; border-left-color: var(--c-accent); background-color: var(--c-panel); background-image: none; }
+.panel--wide { width: 960px; }
+.panel--xwide { width: 1180px; }
+.mm-backdrop { padding: 0; justify-content: flex-start; align-items: flex-start; background-color: rgba(4, 5, 6, 0.55); }
+.mm-page { height: 100%; max-height: 100%; width: 56%; min-width: 640px; max-width: 1100px; margin: 0; padding: 48px 56px 28px 64px; border-radius: 0; border-width: 0; border-left-width: 3px; border-left-color: var(--c-accent); border-right-width: 1px; border-right-color: var(--c-line); background-color: var(--c-panel); }
+.mm-page--wide { width: 80%; max-width: 1500px; }
+.mm-hint { position: absolute; right: 32px; bottom: 24px; font-size: 15px; color: var(--c-faint); }
+.scroll { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.menu-narrow .mm-page, .menu-narrow .mm-page--wide { width: 100%; min-width: 0; padding: 32px 28px 20px 32px; }
+.menu-short .heading { font-size: 36px; margin-bottom: 8px; }
+.menu-short .mm-page { padding-top: 28px; }
+
+/* ---- settings rows (MenuKit.Percent/Range/Switch/Choice/Toggle) ---- */
+.setting { flex-direction: row; align-items: center; min-height: 48px; height: auto; min-width: 0; flex-shrink: 0; padding: 2px 0; border-bottom-width: 1px; border-bottom-color: var(--c-line); }
+.setting__label { width: 38%; min-width: 0; flex-shrink: 1; font-size: 17px; color: var(--c-text); white-space: normal; padding-right: 12px; }
+.setting__value { width: 84px; min-width: 70px; flex-shrink: 0; -unity-text-align: middle-right; font-size: 16px; color: var(--c-accent-hot); }
+.setting__control { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 100px; }
+.choice__value { flex-grow: 1; flex-shrink: 1; min-width: 0; -unity-text-align: middle-center; font-size: 17px; color: var(--c-text); white-space: normal; }
+.choice__arrow { width: 40px; min-width: 40px; flex-shrink: 0; padding: 0; margin-left: 0; color: var(--c-accent); }
+
+/* ---- settings: the pages down the left, the open page beside them, one line of help in the footer ---- */
+.settings__columns { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; margin-top: 4px; }
+.settings__nav { flex-grow: 0; flex-shrink: 0; width: 220px; margin-right: 28px; padding-right: 16px; border-right-width: 1px; border-right-color: var(--c-line); }
+.settings__nav-button { font-size: 20px; min-height: 42px; color: var(--c-dim); }
+.settings__nav-button--open, .settings__nav-button--open:hover, .settings__nav-button--open.menu-button--lit { color: var(--c-accent-ink); background-color: var(--c-accent); border-left-color: var(--c-accent-hot); }
+.settings__page { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.settings__body { flex-grow: 1; min-height: 0; min-width: 0; }
+.settings__note { font-size: 15px; color: var(--c-faint); margin: 3px 0 12px 0; white-space: normal; }
+.settings__footer { flex-direction: row; align-items: center; flex-shrink: 0; margin-top: 12px; padding-top: 10px; border-top-width: 1px; border-top-color: var(--c-line); }
+.settings__back { flex-grow: 0; }
+.settings__reset { align-self: center; }
+.settings__help-text { margin: 0 0 0 18px; font-size: 15px; color: var(--c-dim); white-space: normal; }
+
+/* ---- the title screen ---- */
+.main__logo { -unity-font-definition: url("project://database/Assets/_Project/Art/ThirdParty/Fonts/SairaStencilOne/SairaStencilOne-Regular.ttf"); font-size: 96px; letter-spacing: 2px; color: var(--c-text); margin: 0; white-space: nowrap; }
+.mm-main .subtitle { color: var(--c-accent); font-size: 17px; letter-spacing: 2px; margin: 0 0 32px 0; }
+.mm-nav__item { font-size: 26px; letter-spacing: 2px; min-height: 54px; padding-left: 18px; }
+.mm-nav .setting { border-bottom-width: 0; padding-left: 18px; }
+.mm-nav .setting__label { width: 30%; color: var(--c-dim); }
+.menu-narrow .main__logo { font-size: 64px; }

@@ -66,7 +66,8 @@ namespace Abandoned.Onboarding
             if (stage == OnboardingStage.Interviewed)
             {
                 if (TutorialMode.Active) OnboardingProgress.TrainingStarted();
-                if (TutorialProgress.Done) OnboardingProgress.TrainingFinished();
+                // A build without the training house can't train anyone: go on to "you're hired" rather than wait forever.
+                if (TutorialProgress.Done || !CompanyService.TrainingAvailable) OnboardingProgress.TrainingFinished();
             }
             CompanyService company = CompanyService.Current;
             bool home = company != null && company.IsSpawned && CompanyService.AtHome && !TutorialMode.Active && SessionTravel.LevelReady

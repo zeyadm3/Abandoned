@@ -8,9 +8,9 @@ namespace Abandoned.UI
 {
     /// <summary>
     /// The box over the title screen (0.13.4b.EEA, user 2026-10-08): very early access, gameplay a work in
-    /// progress, and where to send feedback and feature wishes. Closed with Continue. Friends' builds show it
-    /// on every launch; the builds Steam sells show it once per version, and their contact comes from
-    /// <see cref="Launch"/> (never a private address).
+    /// progress, and where to send feedback and feature wishes. Closed with Continue; every build shows it once
+    /// per version (2026-10-28 UI redo: it used to block the title on every launch of a friends' build). A public
+    /// build's contact comes from <see cref="Launch"/> (never a private address).
     /// </summary>
     public class EarlyAccessNotice
     {
@@ -32,7 +32,7 @@ namespace Abandoned.UI
         {
             this.continueToMenu = continueToMenu;
             // A paying player has read it once; it returns when a new version changes what to expect.
-            if (Launch.IsPublicBuild && Prefs.GetString(SeenKey, "") == Application.version) dismissed = true;
+            if (Prefs.GetString(SeenKey, "") == Application.version) dismissed = true;
             overlay = new VisualElement();
             overlay.AddToClassList("backdrop");
             overlay.AddToClassList("backdrop--dim");
@@ -48,7 +48,6 @@ namespace Abandoned.UI
             panel.style.maxWidth = Length.Percent(90f);
             panel.style.height = StyleKeyword.Auto;
             panel.style.maxHeight = Length.Percent(90f);
-            MenuKit.Text(panel, Loc.T("BEFORE YOU ENTER / EARLY ACCESS RECORD"), "menu-record");
             Label title = MenuKit.Text(panel, "ABANDONED", "title");
             title.AddToClassList("launch-notice__title");
             if (titleFont != null) title.style.unityFontDefinition = FontDefinition.FromFont(titleFont);
@@ -104,11 +103,8 @@ namespace Abandoned.UI
         private void Dismiss()
         {
             dismissed = true;
-            if (Launch.IsPublicBuild)
-            {
-                Prefs.SetString(SeenKey, Application.version);
-                Prefs.Save();
-            }
+            Prefs.SetString(SeenKey, Application.version);
+            Prefs.Save();
             MenuKit.Show(overlay, false);
             continueToMenu?.Invoke();
         }

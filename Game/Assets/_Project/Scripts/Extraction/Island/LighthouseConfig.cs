@@ -47,5 +47,8 @@ namespace Abandoned.Extraction
                 return current;
             }
         }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => current = null;
     }
 }

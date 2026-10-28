@@ -1,3 +1,5 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+// The nettest harness ships only in the editor and Development builds (Tools/unity.sh nettest uses a dev build).
 using System.Collections;
 
 namespace Abandoned.Networking
@@ -14,3 +16,5 @@ namespace Abandoned.Networking
         IEnumerator RunClient(NetTestContext context);
     }
 }
+
+#endif

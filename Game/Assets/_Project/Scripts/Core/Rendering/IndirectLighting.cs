@@ -177,6 +177,8 @@ namespace Abandoned.Core
             }
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // F1 only, and F1 never opens in a player build: there the GUI loop doesn't run for it at all.
         private void OnGUI()
         {
             if (!DebugView.Visible) return;
@@ -184,5 +186,6 @@ namespace Abandoned.Core
             foreach (Bounce bounce in bounces) if (bounce.Light != null && bounce.Light.enabled) lit++;
             GUI.Label(new Rect(Screen.width - 620, 94, 610, 22), $"diffuse bounce {lit}/{bounces.Count} (local receiver approximation)");
         }
+#endif
     }
 }

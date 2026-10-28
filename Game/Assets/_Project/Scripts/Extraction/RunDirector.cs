@@ -37,8 +37,6 @@ namespace Abandoned.Extraction
         /// <summary>Host: a new run began (seed). Monsters and danger reset on this.</summary>
         public static event Action<int> RunStarted;
 
-        public RunStats Stats => stats;
-
         public void Setup(NetworkBootstrap networkBootstrap, NetworkObject prefab, NetworkLootSpawner spawner, StructureSimulation simulation)
         {
             bootstrap = networkBootstrap;
@@ -114,13 +112,12 @@ namespace Abandoned.Extraction
                     // The company's truck (M10.1) rides along on every job.
                     float cargo = company.UpgradeAmount(Company.TruckUpgradeKind.Cargo, 1f);
                     float honk = company.UpgradeAmount(Company.TruckUpgradeKind.Engine, 0f);
-                    bool armored = company.HasUpgrade(Company.TruckUpgradeKind.Armor);
                     // 0.19.4: the host's difficulty preset scales the building's decay here; the quota already
                     // carries it (CompanyService.QuotaFor, when the contract was taken).
                     Core.DifficultyConfig difficulty = Core.DifficultyConfig.Current;
                     RunState.TermsSource = () => new RunState.RunTerms(contract.Quota, contract.WindowSeconds, contract.PayoutBonus, contract.PowerOff,
                         m != null && m.Night, m != null && m.Storm, m != null ? m.ExtraThreats : 0, m != null ? m.HearingMultiplier : 1f,
-                        (m != null ? m.DecayMultiplier : 1f) * difficulty.Decay, cargo, honk, armored, m != null && m.Sealed, contract.ThreatLevel, company.State.Runs == 0);
+                        (m != null ? m.DecayMultiplier : 1f) * difficulty.Decay, cargo, honk, m != null && m.Sealed, contract.ThreatLevel, company.State.Runs == 0);
                 }
                 else if (Tutorial.TutorialMode.Active)
                 {

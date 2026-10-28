@@ -41,8 +41,9 @@ namespace Abandoned.Audio
                 if (point == null) continue;
                 SoundLoop loop = GameAudio.Loop(id, point, name, spatial: true);
                 loop.SetRange(near, far, AudioRolloffMode.Logarithmic);
-                // Start each bed at a different moment of its recording so neighbouring points don't sing in unison.
-                if (loop.Source.clip != null) loop.Source.time = Random.Range(0f, loop.Source.clip.length * .9f);
+                // Each bed starts at a different moment of its recording so neighbouring points don't sing in unison
+                // (the clip isn't on the source yet here: the loop picks it up on its first tick).
+                loop.RandomStart = true;
                 loop.Level = level;
             }
         }

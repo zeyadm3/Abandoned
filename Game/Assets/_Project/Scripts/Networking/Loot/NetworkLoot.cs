@@ -232,17 +232,18 @@ namespace Abandoned.Networking
 
         internal void ServerReplayImpactEverywhere(float speed, Vector3 point) => ImpactRpc(speed, point, RpcTarget.Everyone);
 
-        [Rpc(SendTo.SpecifiedInParams)]
+        // Host-to-clients replays: a client must not fake impacts, damage text or shatters on the others.
+        [Rpc(SendTo.SpecifiedInParams, InvokePermission = RpcInvokePermission.Server)]
         private void ImpactRpc(float speed, Vector3 point, RpcParams rpcParams) => item.ReplayImpact(speed, point);
 
         private void OnDamaged(LootItem _, int loss, Vector3 point) => DamagedRpc(loss, point);
 
         private void OnShattered(LootItem _, Vector3 point) => ShatteredRpc(point);
 
-        [Rpc(SendTo.NotServer)]
+        [Rpc(SendTo.NotServer, InvokePermission = RpcInvokePermission.Server)]
         private void DamagedRpc(int loss, Vector3 point) => item.ReplayDamaged(loss, point);
 
-        [Rpc(SendTo.NotServer)]
+        [Rpc(SendTo.NotServer, InvokePermission = RpcInvokePermission.Server)]
         private void ShatteredRpc(Vector3 point) => item.ReplayShattered(point);
 
         private static bool Throttle(ref float last, float interval)

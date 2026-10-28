@@ -19,6 +19,7 @@ namespace Abandoned.Equipment
         private VisualElement panel, condition;
         private VisualElement layoutHud, lower;
         private Label status, load;
+        private int mask;
 
         public StructuralSection Target { get; private set; }
 
@@ -26,7 +27,7 @@ namespace Abandoned.Equipment
         {
             Target = null;
             if (equipment == null || !equipment.IsOwner || equipment.InHand == null || equipment.InHand.Kind != EquipmentKind.StressScanner) return;
-            int mask = LayerMask.GetMask(Core.GameLayers.Structure);
+            if (mask == 0) mask = LayerMask.GetMask(Core.GameLayers.Structure);
             Vector3 from = eye != null ? eye.position : transform.position + Vector3.up * 1.6f;
             Vector3 dir = eye != null ? eye.forward : transform.forward;
             if (Physics.Raycast(from, dir, out RaycastHit hit, range, mask, QueryTriggerInteraction.Ignore) ||

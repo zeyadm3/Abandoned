@@ -44,7 +44,7 @@ namespace Abandoned.Structure
 
         private void Update()
         {
-            if (!simulation.HasAuthority || !DebugView.Visible || !Debug.isDebugBuild) return;
+            if (!simulation.HasAuthority || !DebugView.Visible || !DevTools.Enabled) return;
             if (down.WasPressedThisFrame()) simulation.ApplyStability(simulation.Stability - stabilityStep, simulation.Seed);
             if (up.WasPressedThisFrame()) simulation.ApplyStability(simulation.Stability + stabilityStep, simulation.Seed);
             if (reroll.WasPressedThisFrame()) simulation.ApplyStability(simulation.Stability, simulation.Seed + 1);

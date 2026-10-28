@@ -121,7 +121,7 @@ namespace Abandoned.EditorTools
             GameObject rig = null;
             foreach (GameObject root in scene.GetRootGameObjects()) if (root.name == RigName) rig = root;
             if (rig == null) { rig = new GameObject(RigName); SceneManager.MoveGameObjectToScene(rig, scene); }
-            (rig.GetComponent<IndirectLighting>() ?? rig.AddComponent<IndirectLighting>()).EditorSetup(config);
+            (Abandoned.EditorTools.SerializedWiring.GetOrAdd<IndirectLighting>(rig)).EditorSetup(config);
             if (Object.FindFirstObjectByType<RoomReflections>() == null) rig.AddComponent<RoomReflections>();
             Debug.Log($"[LightingRebuild] {scene.name}: {fixtures} receiver-calibrated fixtures, {thinCasters} thin architecture casters restored, diffuse bounce rig installed.");
         }

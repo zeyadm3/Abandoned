@@ -27,7 +27,13 @@ namespace Abandoned.Core
 
         public static FullScreenMode WindowMode
         {
-            get => (FullScreenMode)GetInt(ModeKey, (int)FullScreenMode.FullScreenWindow);
+            // A damaged value that names no mode gets the default instead of reaching Screen.SetResolution.
+            get
+            {
+                int mode = GetInt(ModeKey, (int)FullScreenMode.FullScreenWindow);
+                return mode >= (int)FullScreenMode.ExclusiveFullScreen && mode <= (int)FullScreenMode.Windowed
+                    ? (FullScreenMode)mode : FullScreenMode.FullScreenWindow;
+            }
             set { SetInt(ModeKey, (int)value); Changed?.Invoke(); }
         }
 
@@ -92,7 +98,9 @@ namespace Abandoned.Core
         /// <summary>Back to the shipped look and window (Settings > Restore defaults on the Video/Graphics pages).</summary>
         public static void ResetAll()
         {
-            foreach (string key in new[] { ModeKey, WidthKey, HeightKey, VsyncKey, CapKey, QualityKey, ShadowsKey, BrightnessKey, ScaleKey, AaKey })
+            foreach (string key in new[] { ModeKey, WidthKey, HeightKey, VsyncKey, CapKey, QualityKey, ShadowsKey, BrightnessKey, ScaleKey, AaKey,
+                         MonitorKey, TexturesKey, FogKey, BloomKey, GrainKey, PostKey, FpsKey, "video.volumetrics", "video.upscaler",
+                         "video.eyeadapt", "video.motionblur" })
                 Prefs.Delete(key);
             cache.Clear();
             Prefs.Save(); // a delete that isn't flushed can come back next launch (QA B-33)

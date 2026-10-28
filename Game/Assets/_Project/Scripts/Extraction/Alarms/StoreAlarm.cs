@@ -21,7 +21,7 @@ namespace Abandoned.Extraction
         [SerializeField] private Renderer lamp;
 
         private MaterialPropertyBlock block;
-        private float nextBell;
+        private float nextBell, shownGlow = -1f;
 
         public static IReadOnlyList<StoreAlarm> All => Live;
         public RollerShutter Shutter => shutter;
@@ -44,8 +44,10 @@ namespace Abandoned.Extraction
             bool ringing = run != null && run.Ringing(Store);
             float glow = ringing ? (Mathf.Repeat(Time.time * 4f, 1f) < 0.5f ? 4f : 0.2f)
                 : wired && run.Armed(Store) ? (Mathf.Repeat(Time.time, 2f) < 0.12f ? 3f : 0.1f) : 0f;
-            if (lamp != null)
+            // Most alarms sit dark all job: only write the lamp when its glow changes.
+            if (lamp != null && glow != shownGlow)
             {
+                shownGlow = glow;
                 block ??= new MaterialPropertyBlock();
                 lamp.GetPropertyBlock(block);
                 block.SetColor("_EmissionColor", new Color(1f, 0.08f, 0.05f) * glow);

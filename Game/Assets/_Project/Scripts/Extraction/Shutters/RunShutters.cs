@@ -42,7 +42,6 @@ namespace Abandoned.Extraction
 
         public bool Ready => down.Value != -1;
         public bool IsDown(int index) => Ready && index >= 0 && index < 32 && (down.Value & (1 << index)) != 0;
-        public int DownMask => down.Value;
 
         private bool rolled;
 
@@ -167,7 +166,7 @@ namespace Abandoned.Extraction
             if (!gear.Has(EquipmentKind.Crowbar))
             {
                 // No tools, but on the inside: the padlock is out there, so the shutter heaves up slowly and loudly.
-                if (!shutter.InRoom(player.transform.position) || lifts.ContainsKey(index)) return;
+                if (!shutter.InRoom(player.transform.position)) return;
                 lifts[index] = Time.time + handLiftSeconds;
                 NoiseSystem.Emit(at, 0.6f, NoiseSource.Other);
                 SoundRpc(SoundId.CrowbarHit, at);

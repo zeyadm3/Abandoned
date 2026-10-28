@@ -165,7 +165,10 @@ namespace Abandoned.EditorTools
                 // A 2D grid inside the plane so big floors don't compare every face with every face. A pair is judged
                 // only in the cell holding the corner where their boxes meet, so no pair is judged twice.
                 const float cell = 0.5f;
-                grid.Clear();
+                // Mono's Dictionary.Clear zeroes its whole capacity: after one big ground sheet, clearing it for each
+                // of thousands of small planes froze Rebuild All Maps on the Police Station (2026-10-28).
+                if (grid.Count > 1024) grid = new Dictionary<(int, int), List<int>>();
+                else grid.Clear();
                 for (int c = 0; c < candidates.Count; c++)
                 {
                     Vector4 bb = box[c];

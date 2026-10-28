@@ -68,6 +68,13 @@ namespace Abandoned.Threats
             LoadSources.Unregister(this);
         }
 
+        public override void OnDestroy()
+        {
+            // Destroyed without a despawn: a stale 450 kg load source would keep pressing on the next level's floors.
+            LoadSources.Unregister(this);
+            base.OnDestroy();
+        }
+
         private void Update()
         {
             if (IsSpawned) Footsteps();

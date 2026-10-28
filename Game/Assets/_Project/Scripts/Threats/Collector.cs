@@ -42,7 +42,6 @@ namespace Abandoned.Threats
         public CollectorState State => state.Value;
         public override ThreatMotion DesiredMotion => State == CollectorState.Carrying ? ThreatMotion.Special : State == CollectorState.Fleeing ? ThreatMotion.Chase : ThreatMotion.Idle;
         public NetworkLoot Carried => carried;
-        public int Stolen { get; private set; }
 
         protected override void Awake()
         {
@@ -122,7 +121,6 @@ namespace Abandoned.Threats
                     if (!agent.pathPending && agent.remainingDistance < 1f)
                     {
                         Drop();
-                        Stolen++;
                         if (hoard.Value < byte.MaxValue) hoard.Value++;
                         nextTheft = Time.time + config.Cooldown / Mathf.Min(Aggression, 1.7f);
                         Set(CollectorState.Idle);

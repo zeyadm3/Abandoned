@@ -62,6 +62,14 @@ namespace Abandoned.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        /// <summary>
+        /// The <typeparamref name="T"/> on <paramref name="go"/>, added when missing. Never write
+        /// <c>GetComponent&lt;T&gt;() ?? AddComponent&lt;T&gt;()</c>: in the editor a missing component is Unity's fake
+        /// null, not C# null, so <c>??</c> keeps the fake one and nothing is added.
+        /// </summary>
+        public static T GetOrAdd<T>(GameObject go) where T : Component =>
+            go.TryGetComponent(out T existing) ? existing : go.AddComponent<T>();
+
         public static void SetLayerRecursively(GameObject root, int layer)
         {
             if (layer < 0) return;

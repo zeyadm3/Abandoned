@@ -15,8 +15,10 @@ namespace Abandoned.Networking
     /// </summary>
     public partial class NetworkPlayer
     {
-        // Host-written: the locker this player is hiding in, -1 for none.
-        private readonly NetworkVariable<sbyte> hidingIn = new(-1,
+        // Host-written: the locker this player is hiding in, -1 for none (VentBase + duct while crawling).
+        // A short, not an sbyte: locker indices run to 126 (the Motel uses 96-121), so a vent base inside
+        // the sbyte range turned those lockers into "vents".
+        private readonly NetworkVariable<short> hidingIn = new(-1,
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         private float nextHideAt;
@@ -48,7 +50,7 @@ namespace Abandoned.Networking
         /// <summary>This machine's player asks to climb into a locker.</summary>
         public void RequestHide(int locker)
         {
-            if (IsOwner && IsSpawned && locker >= 0 && locker <= sbyte.MaxValue) HideRpc((sbyte)locker);
+            if (IsOwner && IsSpawned && locker >= 0 && locker < VentBase) HideRpc((short)locker);
         }
 
         /// <summary>This machine's player asks to climb out.</summary>
@@ -58,14 +60,14 @@ namespace Abandoned.Networking
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-        private void HideRpc(sbyte locker)
+        private void HideRpc(short locker)
         {
             if (locker < 0)
             {
                 ServerLeaveHiding();
                 return;
             }
-            if (dead.Value || IsHiding || ragdoll.IsRagdolled || Time.time < nextHideAt) return;
+            if (locker >= VentBase || dead.Value || IsHiding || ragdoll.IsRagdolled || Time.time < nextHideAt) return;
             HidingLocker target = HidingLocker.ByIndex(locker);
             if (target == null || !target.Usable || target.Occupant != null) return;
             DoorConfig config = DoorConfig.Current;
@@ -101,7 +103,7 @@ namespace Abandoned.Networking
             if (locker == null || !locker.Usable || dead.Value || state.Value.Ragdolled) ServerLeaveHiding();
         }
 
-        private void OnHidingChanged(sbyte was, sbyte now)
+        private void OnHidingChanged(short was, short now)
         {
             HidingChanged?.Invoke(this, was, now);
             if (!IsOwner) return;

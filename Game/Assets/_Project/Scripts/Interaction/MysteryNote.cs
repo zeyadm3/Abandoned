@@ -19,7 +19,6 @@ namespace Abandoned.Interaction
 
         private void Update()
         {
-            var keyboard = UnityEngine.InputSystem.Keyboard.current;
             if (open && Core.PadInput.BackPressed) open = false;
             CursorOwner.Set(this, open);
             if (screen == null)

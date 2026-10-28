@@ -223,8 +223,7 @@ namespace Abandoned.EditorTools
             foreach (Transform generator in mall.GetComponentsInChildren<Transform>(true))
             {
                 if (!Named(generator, "generator_hub", "GeneratorHub")) continue;
-                var audio = generator.GetComponent<SalvageGeneratorAudio>()
-                    ?? generator.gameObject.AddComponent<SalvageGeneratorAudio>();
+                var audio = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SalvageGeneratorAudio>(generator.gameObject);
                 audio.EditorSetup(config);
             }
         }

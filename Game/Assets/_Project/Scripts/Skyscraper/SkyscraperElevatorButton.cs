@@ -18,13 +18,6 @@ namespace Abandoned.Skyscraper
         [SerializeField] private bool isCallStation = true;
 
         public HintId Hint => HintId.Lift;
-        public float UseHoldDuration => 0f;
-
-        public bool CanUse(NetworkPlayer player)
-        {
-            if (elevator == null || player == null || player.IsDead) return false;
-            return elevator.CanAcceptRequest(targetFloor);
-        }
 
         public string UsePrompt(GameObject user)
         {
@@ -32,10 +25,10 @@ namespace Abandoned.Skyscraper
             if (!elevator.IsPowered) return Loc.T("Lift (No Power)");
             if (elevator.IsBroken) return Loc.T("Lift (Out of Order)");
             if (elevator.IsMoving) return Loc.T("Lift (In Transit...)");
-            if (elevator.CurrentFloor == targetFloor && !elevator.IsMoving)
+            if (elevator.StoppedAt(targetFloor))
                 return Loc.T("Lift (Already Here)");
 
-            if (!isCallStation && elevator.CalculateLoad() > 450f)
+            if (!isCallStation && elevator.CalculateLoad() > elevator.MaxSafeLoadKg)
                 return Loc.T("Lift (Overloaded)");
 
             if (isCallStation)

@@ -1,8 +1,8 @@
-# Steam store page (draft, M10.11; facts brought up to 0.24.7c on 2026-10-12)
+# Steam store page (draft, M10.11; facts brought up to 0.25.0 on 2026-10-28)
 
 Copy for the Steam page, from GDD 1 and 29. Paste, then trim to taste. Capsule art, screenshots and the
 trailer are yours to make (Docs/TRAILER.md has the shot list; F9 photo mode + F10 clip mode in-game).
-The counts below were taken from the data folders at 0.24.7c; recount before pasting if content changed.
+The counts below were taken from the data folders at 0.25.0 (2026-10-28); recount before pasting if content changed.
 
 ## Name
 ABANDONED. **The name is taken more than once on Steam** (checked 2026-10-12): an unreleased game called
@@ -11,16 +11,16 @@ and "Abandoned Gameshop". Steam allows duplicate names, but searches for the wor
 the page goes up: keep the name, or add a subtitle (for example "ABANDONED: Salvage Crew").
 
 ## Short description (300 characters max)
-Work salvage in a collapsed world. Carry priceless loot out of a decaying mall with your friends, before
-the floor gives way or something hears you.
+Work salvage in a collapsed world. Carry priceless loot out of decaying malls, prisons, hospitals and
+towers with your friends, before the floor gives way or something hears you.
 
 ## About this game
 
 **Four friends. One collapsing building. A $100,000 statue that weighs two tons. What could go wrong?**
 
 Society collapsed. You work for Abandoned Salvaging, the cheapest salvage company left. They drive you out
-to an abandoned mall, you find anything worth money, and you carry it to the truck before the building, or
-whatever lives in it, gets you.
+to an abandoned mall, a school, an island prison or a half-finished skyscraper, you find anything worth money,
+and you carry it to the truck before the building, or whatever lives in it, gets you.
 
 **The building is the enemy.** Every floor, stair and walkway has a load limit. Floors creak, crack, sag and
 collapse under weight and impacts, and everything on them comes down too. Plan your route, spread out, and
@@ -47,9 +47,12 @@ game is about not wanting to.
   players without a microphone
 - The company: contracts with modifiers (power off, storm, sealed, rush job...), boss requests, rush orders,
   overtime, payday, debt and bankruptcy, gear, truck upgrades, cosmetics, a loot catalogue, achievements
-- The abandoned mall: two storeys and a basement, an atrium, escalators, a freight lift, locked stores,
-  alarms, a vault, breaker rooms, and routes that change every job
-- A daily job with the same mall for everyone and a leaderboard
+- Nine buildings to strip: a two-storey mall with a vault and a freight lift, a middle school, an iron works
+  with a molten channel, an island penitentiary reached by boat, a hospital, a roadside motel, a police
+  precinct, a fire station and a skyscraper restaurant; routes and contents change every job
+- Eight hireable workers with their own outfits, hats and accessories, and a truck you can kit out
+- A playable training job for new hires, and a daily job with the same building for everyone and a
+  leaderboard
 
 (Not copy: keep the daily-job line only once the leaderboard has worked against real Steam, and add a
 controller line and tick "full controller support" only after a play-through on a pad and a Steam Deck.)
@@ -57,10 +60,10 @@ controller line and tick "full controller support" only after a play-through on 
 ### Early Access
 **Why Early Access?** The core game is done and fun with friends; we want players shaping what comes next.
 **How long?** Roughly 6–12 months.
-**Full version plans:** the Hospital and the Luxury Hotel, more threats, more loot, layout variants for the
-mall, more cosmetics.
-**Current state:** the full company loop at the abandoned mall, 8 threats, over 100 loot items, 26 pieces
-of gear, 11 contract modifiers, 22 achievements, 41 cosmetics.
+**Full version plans:** the Luxury Hotel and more buildings, more threats, more loot, layout variants, more
+cosmetics.
+**Current state:** the full company loop across 9 buildings, 8 threats, 345 loot items, 17 pieces of gear,
+11 contract modifiers, 22 achievements, 8 workers with their outfits and 39 truck fittings.
 **Price:** will the price change? Likely a little at full release, as content is added.
 **Community:** bug reports go to the Steam discussions from the main menu (and the Discord, once it exists);
 your log file is one click away.
@@ -99,6 +102,6 @@ a discount).
 | CPU | 4 cores, 2.5 GHz | 6 cores, 3 GHz |
 | RAM | 8 GB | 16 GB |
 | GPU | GTX 960 / RX 470 / Apple M1 | GTX 1660 / RX 5600 / Apple M1 Pro |
-| Storage | 1 GB | 1 GB |
+| Storage | measure the release build | |
 | Network | Broadband (online co-op) | |
 | Other | Microphone for voice chat (optional) | |

@@ -44,10 +44,20 @@ namespace Abandoned.Audio
         public float HeavyFrom => heavyFrom;
         public int Revision => revision;
 
+        // Every sound and loop asks; a list search over a couple of hundred cues each time added up.
+        [NonSerialized] private SoundCue[] byId;
+
         public SoundCue Get(SoundId id)
         {
-            foreach (Named n in cues) if (n.Id == id) return n.Cue;
-            return null;
+            if (byId == null)
+            {
+                byId = new SoundCue[SoundCatalog.Count];
+                // First entry wins, as the old search did.
+                for (int i = cues.Count - 1; i >= 0; i--)
+                    if ((int)cues[i].Id >= 0 && (int)cues[i].Id < byId.Length) byId[(int)cues[i].Id] = cues[i].Cue;
+            }
+            int index = (int)id;
+            return index >= 0 && index < byId.Length ? byId[index] : null;
         }
 
         public SoundCue Impact(SurfaceMaterial material, float volume01) => Pick(impacts, material, volume01 >= heavyFrom);
@@ -62,12 +72,16 @@ namespace Abandoned.Audio
         }
 
 #if UNITY_EDITOR
+        // An inspector edit deserialises the cues afresh: the lookup must not keep the old objects.
+        private void OnValidate() => byId = null;
+
         public void EditorSet(List<Named> named, List<ByMaterial> impactList, List<ByMaterial> footstepList)
         {
             cues = named;
             impacts = impactList;
             footsteps = footstepList;
             revision = SoundCatalog.Revision;
+            byId = null;
         }
 #endif
     }

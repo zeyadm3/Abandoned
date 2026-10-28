@@ -3,9 +3,9 @@ using UnityEngine;
 namespace Abandoned.Equipment
 {
     /// <summary>
-    /// Tunables for the gear added from 0.17 on (sledgehammer, crash mat, chalk, glow sticks and flares,
-    /// later the floodlight, lockpick, thermal camera and drone). Data/Equipment/Resources/ToolConfig;
-    /// the code defaults apply until that asset exists.
+    /// Tunables for the gear added from 0.17 on (sledgehammer, glow sticks, lockpick, thermal camera, drone; the
+    /// crash mat, chalk, blanket and floodlight values stay while their unreachable 2026-10-22 leftovers read them).
+    /// Data/Equipment/Resources/ToolConfig; the code defaults apply until that asset exists.
     /// </summary>
     [CreateAssetMenu(menuName = "Abandoned/Equipment/Tool Config", fileName = "ToolConfig")]
     public class ToolConfig : ScriptableObject
@@ -36,17 +36,12 @@ namespace Abandoned.Equipment
         public float MatDepth => matDepth;
 
         [Header("Spray chalk (0.17.6)")]
-        [SerializeField, Min(0.5f)] private float chalkReach = 3.5f;
-        [Tooltip("Seconds between dots while the button is held (a line is a run of dots).")]
-        [SerializeField, Min(0.02f)] private float chalkInterval = 0.06f;
         [SerializeField, Min(0.02f)] private float chalkDotSize = 0.11f;
         [Tooltip("Dots kept per job; the oldest go first.")]
         [SerializeField, Range(50, 2000)] private int chalkMaxDots = 800;
         [Tooltip("Unlit material the marks are drawn with (made by the 0.17.6 step).")]
         [SerializeField] private Material chalkMaterial;
 
-        public float ChalkReach => chalkReach;
-        public float ChalkInterval => chalkInterval;
         public float ChalkDotSize => chalkDotSize;
         public int ChalkMaxDots => chalkMaxDots;
         public Material ChalkMaterial => chalkMaterial;
@@ -54,11 +49,9 @@ namespace Abandoned.Equipment
         [Header("Moving blanket (0.18.5)")]
         [Tooltip("Share of an impact's speed a wrapped item feels.")]
         [SerializeField, Range(0.05f, 1f)] private float blanketCushion = 0.4f;
-        [SerializeField, Min(0.5f)] private float blanketReach = 2.6f;
         [SerializeField] private Material blanketMaterial;
 
         public float BlanketCushion => blanketCushion;
-        public float BlanketReach => blanketReach;
         public Material BlanketMaterial => blanketMaterial;
 
         [Header("Portable floodlight (0.20.0)")]

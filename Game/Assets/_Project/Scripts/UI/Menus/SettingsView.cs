@@ -11,9 +11,9 @@ using UnityEngine.UIElements;
 namespace Abandoned.UI
 {
     /// <summary>
-    /// Settings (GDD 20; redone in 0.12.5, laid out again in 0.24.12): the pages listed down the left
-    /// (Gameplay, Controls, Video, Graphics, Audio, Voice, Accessibility), the open page's options in the
-    /// middle, and on the right the one-line explanation of the option under the pointer or the focus.
+    /// Settings (GDD 20; cut down in the 2026-10-28 UI redo): the pages listed down the left (Gameplay, Controls,
+    /// Video, Graphics, Audio, Voice, Accessibility), the open page's options beside them, and one line along the
+    /// bottom explaining the option under the pointer or the focus.
     /// Changes apply at once and are written to disk on Back; each page can be put back to its defaults.
     /// </summary>
     public class SettingsView
@@ -27,9 +27,8 @@ namespace Abandoned.UI
         private readonly MenuUi menu;
         private readonly List<Page> pages = new();
         private readonly List<Button> nav = new();
-        private readonly Label pageTitle, pageBlurb, helpTitle, helpText;
+        private readonly Label helpText;
         private readonly ScrollView body;
-        private VisualElement micBar;
         private int open;
 
         public VisualElement Root { get; }
@@ -43,9 +42,7 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("settings");
 
-            MenuKit.Text(panel, Loc.T("PERSONAL RECORD / FIELD CONFIGURATION"), "menu-record");
             MenuKit.Text(panel, Loc.T("SETTINGS"), "heading");
-            MenuKit.Text(panel, Loc.T("Changes apply straight away and are saved when you leave this screen."), "subtitle");
             var columns = new VisualElement();
             columns.AddToClassList("settings__columns");
             panel.Add(columns);
@@ -56,16 +53,7 @@ namespace Abandoned.UI
             var page = new VisualElement();
             page.AddToClassList("settings__page");
             columns.Add(page);
-            pageTitle = MenuKit.Text(page, "", "settings__page-title");
-            pageBlurb = MenuKit.Text(page, "", "settings__page-blurb");
             body = MenuKit.Scroll(page, "settings__body");
-            // 0.24.12 menus: the explanation of whatever the pointer or the focus is on, beside the list instead of
-            // under every row.
-            var help = new VisualElement();
-            help.AddToClassList("settings__help");
-            columns.Add(help);
-            helpTitle = MenuKit.Text(help, "", "settings__help-title");
-            helpText = MenuKit.Text(help, "", "settings__help-text");
 
             Define();
             for (int i = 0; i < pages.Count; i++)
@@ -90,6 +78,10 @@ namespace Abandoned.UI
                 pages[open].Reset();
                 Show(open);
             }, SoundId.UiBack, small: true).AddToClassList("settings__reset");
+            // The explanation of whatever the pointer or the focus is on, one line under the options.
+            helpText = MenuKit.Text(footer, "", "settings__help-text");
+            helpText.style.flexGrow = 1;
+            helpText.style.flexShrink = 1;
             Show(0);
         }
 
@@ -142,13 +134,20 @@ namespace Abandoned.UI
 
             Add(Loc.T("Controls"), Loc.T("Mouse and movement. Every key can be rebound."), () =>
             {
-                Section(Loc.T("MOUSE"));
+                Section(Loc.T("LOOK"));
                 Note(MenuKit.Range(body, Loc.T("Mouse sensitivity"), GameSettings.MinSensitivity, GameSettings.MaxSensitivity, GameSettings.Sensitivity, "0.00x",
                     v => GameSettings.Sensitivity = v), Loc.T("How far the view turns for a given mouse movement."));
                 Note(Toggle(Loc.T("Invert vertical look"), GameSettings.InvertY, v => GameSettings.InvertY = v), Loc.T("Push the mouse forward to look down."));
-                Section(Loc.T("MOVEMENT"));
+                Note(MenuKit.Percent(body, Loc.T("Horizontal look speed"), GameSettings.LookX / 2f, v => GameSettings.LookX = v * 2f), Loc.T("50 % is normal."));
+                Note(MenuKit.Percent(body, Loc.T("Vertical look speed"), GameSettings.LookY / 2f, v => GameSettings.LookY = v * 2f), Loc.T("50 % is normal."));
+                Note(MenuKit.Percent(body, Loc.T("Controller look speed"), GameSettings.PadLookSpeed / 1800f, v => GameSettings.PadLookSpeed = Mathf.Max(100f, v * 1800f)), Loc.T("The right stick at full tilt."));
+                Section(Loc.T("HOLD OR TOGGLE"));
                 MenuKit.Switch(body, Loc.T("Crouch"), GameSettings.CrouchToggle, Loc.T("Toggle"), Loc.T("Hold"), v => GameSettings.CrouchToggle = v);
                 NoteLast(Loc.T("Toggle: press once to crouch, again to stand."));
+                Note(Toggle(Loc.T("Toggle sprint"), GameSettings.SprintToggle, v => GameSettings.SprintToggle = v), Loc.T("Press once to run, again to walk."));
+                Note(Toggle(Loc.T("Toggle push to talk"), GameSettings.TalkToggle, v => GameSettings.TalkToggle = v), Loc.T("Press once to open your mic, again to close it."));
+                Note(Toggle(Loc.T("Toggle radio"), GameSettings.RadioToggle, v => GameSettings.RadioToggle = v), Loc.T("Press once to key the radio, again to let go."));
+                Note(Toggle(Loc.T("Mouse wheel switches hand slots"), GameSettings.WheelSwitchesSlots, v => GameSettings.WheelSwitchesSlots = v), Loc.T("With empty hands. Hold Inventory and scroll to pick the pocket item Drop takes out."));
                 Section(Loc.T("KEYS"));
                 VisualElement keys = Row(Loc.T("Key bindings"));
                 MenuKit.Button(keys, Loc.T("Change keys"), () => menu.Push(MenuScreen.Controls), small: true);
@@ -156,6 +155,10 @@ namespace Abandoned.UI
             {
                 GameSettings.Sensitivity = 1f;
                 GameSettings.InvertY = GameSettings.CrouchToggle = false;
+                GameSettings.LookX = GameSettings.LookY = 1f;
+                GameSettings.PadLookSpeed = 900f;
+                GameSettings.SprintToggle = GameSettings.TalkToggle = GameSettings.RadioToggle = false;
+                GameSettings.WheelSwitchesSlots = true;
             });
 
             Add(Loc.T("Video"), Loc.T("The window and how often it's drawn."), () =>
@@ -190,6 +193,8 @@ namespace Abandoned.UI
                 VideoSettings.VSync = true;
                 VideoSettings.FrameCap = 0;
                 VideoSettings.Brightness = 0f;
+                VideoSettings.ShowFps = false;
+                VideoSettings.Monitor = 0;
             });
 
             Add(Loc.T("Graphics"), Loc.T("Detail against speed. Lower these first on a slow machine."), () =>
@@ -226,6 +231,8 @@ namespace Abandoned.UI
                 VideoSettings.Upscaler = 0;
                 VideoSettings.EyeAdaptation = true;
                 VideoSettings.MotionBlur = false;
+                VideoSettings.TextureQuality = 0;
+                VideoSettings.Fog = VideoSettings.Bloom = VideoSettings.Grain = VideoSettings.PostProcessing = true;
             });
 
             Add(Loc.T("Audio"), Loc.T("Volume of everything except voice chat."), () =>
@@ -252,26 +259,6 @@ namespace Abandoned.UI
                 VoiceSettings.MicDevice = "";
                 VoiceSettings.Mode = VoiceMode.PushToTalk;
                 VoiceSettings.MicMuted = false;
-            });
-
-            Add(Loc.T("Controls+"), Loc.T("Look speed, hold or toggle, and the mouse wheel."), () =>
-            {
-                Section(Loc.T("LOOK"));
-                Note(MenuKit.Percent(body, Loc.T("Horizontal look speed"), GameSettings.LookX / 2f, v => GameSettings.LookX = v * 2f), Loc.T("50 % is normal."));
-                Note(MenuKit.Percent(body, Loc.T("Vertical look speed"), GameSettings.LookY / 2f, v => GameSettings.LookY = v * 2f), Loc.T("50 % is normal."));
-                Note(MenuKit.Percent(body, Loc.T("Controller look speed"), GameSettings.PadLookSpeed / 1800f, v => GameSettings.PadLookSpeed = Mathf.Max(100f, v * 1800f)), Loc.T("The right stick at full tilt."));
-                Section(Loc.T("HOLD OR TOGGLE"));
-                Note(Toggle(Loc.T("Toggle sprint"), GameSettings.SprintToggle, v => GameSettings.SprintToggle = v), Loc.T("Press once to run, again to walk."));
-                Note(Toggle(Loc.T("Toggle push to talk"), GameSettings.TalkToggle, v => GameSettings.TalkToggle = v), Loc.T("Press once to open your mic, again to close it."));
-                Note(Toggle(Loc.T("Toggle radio"), GameSettings.RadioToggle, v => GameSettings.RadioToggle = v), Loc.T("Press once to key the radio, again to let go."));
-                Section(Loc.T("HANDS"));
-                Note(Toggle(Loc.T("Mouse wheel switches hand slots"), GameSettings.WheelSwitchesSlots, v => GameSettings.WheelSwitchesSlots = v), Loc.T("With empty hands. Hold Inventory and scroll to pick the pocket item Drop takes out."));
-            }, () =>
-            {
-                GameSettings.LookX = GameSettings.LookY = 1f;
-                GameSettings.PadLookSpeed = 900f;
-                GameSettings.SprintToggle = GameSettings.TalkToggle = GameSettings.RadioToggle = false;
-                GameSettings.WheelSwitchesSlots = true;
             });
 
             Add(Loc.T("Accessibility"), Loc.T("Captions, colours and calmer effects."), () =>
@@ -326,17 +313,19 @@ namespace Abandoned.UI
             Section(Loc.T("CREW"));
             var crew = new CrewRoster(body, kick: false);
             Label alone = MenuKit.Text(body, "", "settings__note");
+            // The scheduler keeps running while the screen is hidden (display: none stays on the panel); only work while it shows.
             crew.Root.schedule.Execute(() =>
             {
+                if (menu.Showing != MenuScreen.Settings) return;
                 int count = crew.Refresh(menu.Bootstrap);
                 alone.text = count > 1 ? "" : Loc.T("Nobody else is here. Crewmates appear here in a game.");
             }).Every(250);
             VisualElement meter = Row(Loc.T("Mic level"));
-            micBar = UiKit.Bar(meter, "mic-meter");
+            VisualElement bar = UiKit.Bar(meter, "mic-meter");
             Label status = MenuKit.Text(body, "", "settings__note");
-            VisualElement bar = micBar;
             bar.schedule.Execute(() =>
             {
+                if (menu.Showing != MenuScreen.Settings) return;
                 VoiceTransmitter me = NetworkPlayer.Local != null ? NetworkPlayer.Local.GetComponent<VoiceTransmitter>() : null;
                 UiKit.SetBar(bar, me != null ? Mathf.Clamp01(me.Level * 4f) : 0f, me != null && me.Transmitting ? "good" : null);
                 status.text = me == null ? Loc.T("Join or host a game to see your level.")
@@ -351,11 +340,8 @@ namespace Abandoned.UI
         {
             open = index;
             for (int i = 0; i < nav.Count; i++) nav[i].EnableInClassList("settings__nav-button--open", i == open);
-            pageTitle.text = pages[open].Name;
-            pageBlurb.text = pages[open].Blurb;
-            Explain(pages[open].Name, pages[open].Blurb);
+            Explain(pages[open].Blurb);
             body.Clear();
-            micBar = null;
             pages[open].Build();
             body.scrollOffset = Vector2.zero;
         }
@@ -389,16 +375,11 @@ namespace Abandoned.UI
             int count = body.contentContainer.childCount;
             if (count == 0) return;
             VisualElement row = body.contentContainer[count - 1];
-            string name = row.Q<Label>(className: "setting__label")?.text ?? pages[open].Name;
             row.AddToClassList("setting--explained");
-            row.RegisterCallback<PointerEnterEvent>(_ => Explain(name, text));
-            row.RegisterCallback<FocusInEvent>(_ => Explain(name, text));
+            row.RegisterCallback<PointerEnterEvent>(_ => Explain(text));
+            row.RegisterCallback<FocusInEvent>(_ => Explain(text));
         }
 
-        private void Explain(string title, string text)
-        {
-            helpTitle.text = title;
-            helpText.text = text;
-        }
+        private void Explain(string text) => helpText.text = text;
     }
 }

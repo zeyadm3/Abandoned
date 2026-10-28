@@ -15,6 +15,7 @@ namespace Abandoned.Structure
         [SerializeField, Range(0, 100)] private int faultyPercent = 28;
         [SerializeField, Range(0, 100)] private int deadPercent = 10;
         [SerializeField, Range(1, 512)] private int maximumFixtures = 384;
+        // Superseded by ShadowDirector (0.14.0); kept only because the presentation builder still clamps it.
         [SerializeField, Range(0, 4)] private int shadowLights = 4;
         [Tooltip("One fixture per tile at 1; larger values thin the diagonal grid deterministically.")]
         [SerializeField, Range(1, 4)] private int storeFixtureStride = 1;
@@ -72,7 +73,6 @@ namespace Abandoned.Structure
         public int FaultyPercent => faultyPercent;
         public int DeadPercent => deadPercent;
         public int MaximumFixtures => maximumFixtures;
-        public int ShadowLights => shadowLights;
         public int StoreFixtureStride => storeFixtureStride;
         public int ServiceFixtureStride => serviceFixtureStride;
         public int ConcourseFixtureStride => concourseFixtureStride;

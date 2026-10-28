@@ -72,7 +72,9 @@ namespace Abandoned.EditorTools
         // How thickly grass grows on what the ray hit: by the surface's material, as the art remaster classifies it.
         private static float Density(Collider collider, Dictionary<Material, float> cache)
         {
-            Renderer renderer = collider.GetComponent<Renderer>() ?? collider.GetComponentInParent<Renderer>();
+            // GetComponentInParent looks at the collider's own object first (a "GetComponent ?? ..." never falls
+            // through in the editor: a missing component is Unity's fake null).
+            Renderer renderer = collider.GetComponentInParent<Renderer>();
             Material material = renderer != null ? renderer.sharedMaterial : null;
             if (material == null) return 0f;
             if (cache.TryGetValue(material, out float d)) return d;

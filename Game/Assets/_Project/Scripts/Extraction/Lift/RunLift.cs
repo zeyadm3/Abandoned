@@ -117,7 +117,7 @@ namespace Abandoned.Extraction
             FreightLift lift = FreightLift.Active;
             LiftNetState s = state.Value;
             if (lift == null || s.Start <= 0d) return;
-            float h = Height(out bool moving);
+            Height(out bool moving);
             if (moving && Time.time >= nextNoise)
             {
                 nextNoise = Time.time + LiftConfig.Current.RunNoiseInterval;

@@ -15,6 +15,8 @@ namespace Abandoned.Core
         private Volume brightness;
         private ColorAdjustments exposure;
         private UniversalRenderPipelineAsset runtimeAsset;
+        private Vector2Int shownResolution = new(-1, -1);
+        private FullScreenMode shownMode = (FullScreenMode)(-1);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Boot()
@@ -45,7 +47,15 @@ namespace Abandoned.Core
             {
                 Vector2Int r = VideoSettings.Resolution;
                 if (r.x <= 0 || r.y <= 0) r = new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height);
-                Screen.SetResolution(r.x, r.y, VideoSettings.WindowMode);
+                // Only when the window itself changed: every other setting (a brightness drag) re-runs this, and
+                // re-setting a fullscreen mode makes the screen blink.
+                FullScreenMode mode = VideoSettings.WindowMode;
+                if (r != shownResolution || mode != shownMode)
+                {
+                    shownResolution = r;
+                    shownMode = mode;
+                    Screen.SetResolution(r.x, r.y, mode);
+                }
             }
             QualitySettings.vSyncCount = VideoSettings.VSync ? 1 : 0;
             Application.targetFrameRate = VideoSettings.VSync || VideoSettings.FrameCap <= 0 ? -1 : VideoSettings.FrameCap;

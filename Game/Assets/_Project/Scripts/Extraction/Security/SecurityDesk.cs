@@ -40,7 +40,7 @@ namespace Abandoned.Extraction
         public void Use(GameObject user)
         {
             NetworkPlayer me = user != null ? user.GetComponentInParent<NetworkPlayer>() : null;
-            if (me == null || !me.IsOwner || watching || !Powered || SecurityCamera.All.Count == 0) return;
+            if (me == null || !me.IsOwner || me.IsHiding || watching || !Powered || SecurityCamera.All.Count == 0) return;
             watcher = me;
             input = me.GetComponent<PlayerInputReader>();
             watching = true;
@@ -98,7 +98,7 @@ namespace Abandoned.Extraction
                     cam.Lens.enabled = false;
                     cam.Lens.targetTexture = null;
                 }
-            if (watcher != null && !watcher.IsDead && !watcher.Ragdoll.IsRagdolled) watcher.OwnerSetControl(true);
+            if (watcher != null && !watcher.IsDead && !watcher.IsHiding && !watcher.Ragdoll.IsRagdolled) watcher.OwnerSetControl(true);
             watcher = null;
         }
 

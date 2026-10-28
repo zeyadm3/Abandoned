@@ -30,7 +30,6 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("panel--xwide");
             panel.AddToClassList("play");
-            MenuKit.Text(panel, Loc.T("RECOVERY ASSIGNMENT / CREW ACCESS"), "menu-record");
             MenuKit.Text(panel, Loc.T("PLAY"), "heading");
             ScrollView body = MenuKit.Scroll(panel, "play__body");
 

@@ -17,12 +17,31 @@ namespace Abandoned.Networking
         public bool SelectTransport(TransportMode mode)
         {
             if (IsRunning) return Fail(Loc.Mark("Disconnect before switching transport."));
+            transportChosen = true;
+            ApplyTransport(mode);
+            return true;
+        }
+
+        private void ApplyTransport(TransportMode mode)
+        {
             Transport = mode;
             networkManager.NetworkConfig.NetworkTransport = mode == TransportMode.Steam
                 ? facepunchTransport
                 : unityTransport;
             StateChanged?.Invoke();
-            return true;
+        }
+
+        // A Steam build (release or demo) plays over Steam once Steam is up, unless the player or a launch flag
+        // picked a transport: hosting over Direct IP there opens no lobby, so "Invite friends" would do nothing,
+        // and listening on a UDP port asks for a firewall exception. Dev and shareable builds keep the config's
+        // default (Unity Transport) for MPPM and LAN testing.
+        private void PreferSteamInSteamBuilds()
+        {
+            if (transportChosen || !sceneSession || networkManager == null || IsRunning || Transport == TransportMode.Steam) return;
+            SteamBootstrap steam = SteamBootstrap.Instance;
+            if (steam == null || !steam.IsAvailable || !Launch.IsPublicBuild) return;
+            transportChosen = true;
+            ApplyTransport(TransportMode.Steam);
         }
 
         /// <summary>Hosts with the configured port (solo play is hosting with nobody else).</summary>
@@ -53,10 +72,10 @@ namespace Abandoned.Networking
             return true;
         }
 
-        /// <summary>Joins a host: "address[:port]" for Unity Transport, a SteamID64 for Steam.</summary>
         /// <summary>0.23.5: what this machine last tried to join (address:port or SteamID64), for "Rejoin your crew".</summary>
         public string LastJoinTarget { get; private set; }
 
+        /// <summary>Joins a host: "address[:port]" for Unity Transport, a SteamID64 for Steam.</summary>
         public bool StartClient(string address, ushort port = 0)
         {
             LastJoinTarget = port != 0 ? $"{address}:{port}" : address;

@@ -18,6 +18,8 @@ namespace Abandoned.EditorTools.Remake
         /// <summary>Puts back anything a previous run took off, then swaps every prop a model exists for.</summary>
         public static string Apply(Scene scene)
         {
+            // The architecture drawings sit inside boxes a prop may own; they come off first and ArchRebuild runs after.
+            ArchRebuild.Undo(scene);
             int restored = Undo(scene);
             models.Clear();
             natural.Clear();

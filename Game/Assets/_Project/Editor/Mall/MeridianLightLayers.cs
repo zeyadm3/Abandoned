@@ -14,7 +14,7 @@ namespace Abandoned.EditorTools
     {
         public static void Apply(Transform mall)
         {
-            var storeys = mall.GetComponent<LevelStoreys>() ?? mall.gameObject.AddComponent<LevelStoreys>();
+            var storeys = Abandoned.EditorTools.SerializedWiring.GetOrAdd<LevelStoreys>(mall.gameObject);
             storeys.EditorSetup(MallLayout.StoryHeight, -1, MallLayout.Floors - 1, MallLayout.BuildingBounds);
 
             int tagged = 0, split = 0;

@@ -137,6 +137,8 @@ namespace Abandoned.Voice
             foreach (NetworkVoice g in gone) { UI.HudLayer.Remove(marks[g]); marks.Remove(g); }
         }
 
+        // F1 stream stats: a debug overlay, so player builds don't carry an OnGUI pass (QA P-08).
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             if (transmitter == null || !DebugView.Visible) return;
@@ -159,5 +161,6 @@ namespace Abandoned.Voice
             }
             GUI.Label(new Rect(Screen.width - 620f, Screen.height - 160f, 610f, 150f), text.ToString(), style);
         }
+#endif
     }
 }

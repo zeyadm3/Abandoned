@@ -22,7 +22,7 @@ namespace Abandoned.EditorTools
             Transform chandelier=root.Find("Lights/SignatureAtriumChandelier");
             if(chandelier!=null)
             {
-                var fixture=chandelier.GetComponent<LightFixture>()??chandelier.gameObject.AddComponent<LightFixture>();
+                var fixture=Abandoned.EditorTools.SerializedWiring.GetOrAdd<LightFixture>(chandelier.gameObject);
                 fixture.EditorSetup(null,chandelier.Find("LuminousHalo").GetComponent<Renderer>(),false,false,8401);
             }
             Transform old=root.Find("RestaurantAccentLighting");

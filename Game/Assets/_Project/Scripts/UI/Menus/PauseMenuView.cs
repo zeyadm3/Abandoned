@@ -15,6 +15,7 @@ namespace Abandoned.UI
     {
         private readonly MenuUi menu;
         private readonly Button leave;
+        private int leaveState = -1;
         private readonly Tutorial.TutorialPauseControls training;
 
         public VisualElement Root { get; }
@@ -37,7 +38,6 @@ namespace Abandoned.UI
             VisualElement left = new();
             left.AddToClassList("pause__left");
             columns.Add(left);
-            MenuKit.Text(left, Loc.T("RECOVERY IN PROGRESS"), "pause__eyebrow");
             MenuKit.Text(left, Loc.T("PAUSED"), "title");
             MenuKit.Text(left, Loc.T("The game keeps running. The building does not wait."), "subtitle").AddToClassList("pause__warning");
             MenuKit.Button(left, Loc.T("Resume"), menu.Resume, SoundId.UiConfirm).AddToClassList("pause__resume");
@@ -61,7 +61,10 @@ namespace Abandoned.UI
             bool isHost = b.Manager != null && b.Manager.IsHost;
             training.Refresh();
             bool midJob = isHost && Company.CompanyService.Current != null && Company.CompanyService.Current.JobInProgress;
-            leave.text = !isHost ? Loc.T("Leave game") : midJob ? Loc.T("End game (job counts as failed)") : Loc.T("End game for everyone");
+            int state = !isHost ? 0 : midJob ? 1 : 2;
+            if (state == leaveState) return;
+            leaveState = state;
+            leave.text = state == 0 ? Loc.T("Leave game") : state == 1 ? Loc.T("End game (job counts as failed)") : Loc.T("End game for everyone");
         }
     }
 }

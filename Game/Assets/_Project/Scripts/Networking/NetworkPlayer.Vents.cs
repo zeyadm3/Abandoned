@@ -14,7 +14,8 @@ namespace Abandoned.Networking
     /// </summary>
     public partial class NetworkPlayer
     {
-        public const int VentBase = 100;
+        // Above every locker index (HidingLocker allows 0-126), so a locker never reads as a duct.
+        public const int VentBase = 1000;
         // Below the whole level: out of sight and out of reach while crawling.
         private const float DuctDepth = 60f;
 
@@ -37,19 +38,20 @@ namespace Abandoned.Networking
 
         public void RequestVent(int duct, int fromEnd)
         {
-            if (IsOwner && IsSpawned && duct >= 0 && duct + VentBase <= sbyte.MaxValue) VentRpc((sbyte)duct, (byte)fromEnd);
+            if (IsOwner && IsSpawned && duct >= 0 && duct + VentBase <= short.MaxValue && (fromEnd == 0 || fromEnd == 1)) VentRpc((short)duct, (byte)fromEnd);
         }
 
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-        private void VentRpc(sbyte duct, byte fromEnd)
+        private void VentRpc(short duct, byte fromEnd)
         {
+            if (duct < 0 || duct + VentBase > short.MaxValue || fromEnd > 1) return;
             if (dead.Value || IsHiding || ragdoll.IsRagdolled || Time.time < nextHideAt || !state.Value.Crouching) return;
             VentGrille entry = VentGrille.Find(duct, fromEnd), exit = VentGrille.Find(duct, 1 - fromEnd);
             if (entry == null || exit == null || Vector3.Distance(transform.position, entry.transform.position) > VentConfig.Current.Reach + 1f) return;
             if (carrier != null && carrier.Held != null) return;
             ventFrom.Value = fromEnd;
             ventUntil.Value = NetworkManager.ServerTime.Time + VentGrille.CrawlSeconds(duct);
-            hidingIn.Value = (sbyte)(VentBase + duct);
+            hidingIn.Value = (short)(VentBase + duct);
             NoiseSystem.Emit(entry.transform.position, VentConfig.Current.RattleNoise, NoiseSource.Other);
             VentSoundRpc(entry.transform.position);
         }
@@ -80,7 +82,7 @@ namespace Abandoned.Networking
             }
         }
 
-        [Rpc(SendTo.Everyone)]
+        [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Server)]
         private void VentSoundRpc(Vector3 at) => GameAudio.Play(SoundId.VentCrawl, at, 1f);
 
         private void OwnerEnterVent(int duct)

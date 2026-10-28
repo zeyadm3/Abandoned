@@ -128,10 +128,6 @@ namespace Abandoned.Structure
         }
 
         /// <summary>
-        /// Client: the host re-rolled or changed stability. Scales and restores every section (debris
-        /// cleared, colliders back); their health and stage then come from the host, not a local roll.
-        /// </summary>
-        /// <summary>
         /// Host, danger: the building ages on its own. Each picked collapsible section that can still fall
         /// loses <paramref name="fraction"/> of its health, never below <paramref name="floor"/>: it creaks
         /// and cracks, but only weight finishes the job.
@@ -153,6 +149,10 @@ namespace Abandoned.Structure
             return aged;
         }
 
+        /// <summary>
+        /// Client: the host re-rolled or changed stability. Scales and restores every section (debris
+        /// cleared, colliders back); their health and stage then come from the host, not a local roll.
+        /// </summary>
         public void MirrorStability(float newStability, int newSeed, int hostGeneration)
         {
             // The host's generation, not a local count, so F1 shows the same number on every machine.

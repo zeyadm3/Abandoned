@@ -41,10 +41,6 @@ namespace Abandoned.Extraction
         private int shownLamp = -1;
         private MaterialPropertyBlock block;
 
-        public static IReadOnlyList<MachineHazard> All => Live;
-        public bool Running => running;
-        public MachineHazardKind Kind => kind;
-
         private void OnEnable() => Live.Add(this);
         private void OnDisable() => Live.Remove(this);
 

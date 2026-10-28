@@ -36,8 +36,6 @@ namespace Abandoned.Threats
         [field: SerializeField, Range(0f, 10f)] public float AttackPause { get; private set; } = 2.5f;
 
         [Header("Presence")]
-        [Tooltip("Seconds into a run before it appears (players get a head start).")]
-        [field: SerializeField, Range(0f, 300f)] public float SpawnDelay { get; private set; } = 45f;
         [Tooltip("Seconds between its clicks while walking / hunting (its signature sound, GDD 9).")]
         [field: SerializeField, Range(0.1f, 3f)] public float ClickInterval { get; private set; } = 0.9f;
         [field: SerializeField, Range(0.05f, 2f)] public float HuntClickInterval { get; private set; } = 0.3f;

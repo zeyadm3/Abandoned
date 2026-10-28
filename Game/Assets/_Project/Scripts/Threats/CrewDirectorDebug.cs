@@ -43,10 +43,10 @@ namespace Abandoned.Threats
                 _ => "RELAX"
             };
             string left = cycle.Remaining > 0f ? $"  {cycle.Remaining:0}s left" : $"  {cycle.InPhase:0}s";
-            var label = new Rect(Screen.width - 360f, 74f, 350f, 22f);
+            var label = new Rect(Screen.width - 360f, 118f, 350f, 22f);
             GUI.Label(label, $"DIRECTOR {phase}{left}  stress {director.Highest:0}/{config.Peak:0}{(CrewDirector.Quiet ? "  holding monsters" : "")}");
 
-            var box = new Rect(Screen.width - 360f, 96f, Samples, 60f);
+            var box = new Rect(Screen.width - 360f, 140f, Samples, 60f);
             Color was = GUI.color;
             GUI.color = new Color(0f, 0f, 0f, 0.55f);
             GUI.DrawTexture(box, Texture2D.whiteTexture);

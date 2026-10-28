@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 namespace Abandoned.UI
 {
-    /// <summary>Small builders for the menus' UI Toolkit elements (styles in Art/UI/Menu.uss).</summary>
+    /// <summary>Small builders for the menus' UI Toolkit elements (styles in Art/UI/Resources/Ui.uss).</summary>
     public static class MenuKit
     {
         public static VisualElement Panel(VisualElement parent, bool wide = false)
@@ -28,8 +28,8 @@ namespace Abandoned.UI
 
         /// <summary>
         /// A menu screen (0.24.12 menus): a full-height sheet down the left of the screen with the world left visible
-        /// beside it, the game's name above its heading and the way back in the corner. In-world screens and notices
-        /// keep <see cref="Panel"/>; its sizes live in ModernMenus.uss, not inline.
+        /// beside it and the way back in the corner. In-world screens and notices
+        /// keep <see cref="Panel"/>; its sizes live in Ui.uss, not inline.
         /// </summary>
         public static VisualElement Page(VisualElement parent, bool wide = false)
         {
@@ -47,7 +47,6 @@ namespace Abandoned.UI
                 sheet.AddToClassList("mm-page--wide");
             }
             parent.Add(sheet);
-            Text(sheet, "ABANDONED", "mm-crumb").pickingMode = PickingMode.Ignore;
             Text(parent, $"Esc   {Loc.T("Back")}", "mm-hint").pickingMode = PickingMode.Ignore;
             return sheet;
         }
@@ -63,7 +62,7 @@ namespace Abandoned.UI
             return label;
         }
 
-        /// <param name="important">Host, Join, Quit: the press flashes the screen and jolts it.</param>
+        /// <param name="important">Host, Join, Quit. Since the 2026-10-28 redo it changes nothing (no flash or jolt); kept for its callers.</param>
         public static Button Button(VisualElement parent, string text, Action onClick, SoundId sound = SoundId.UiClick, bool small = false,
             bool important = false)
         {
@@ -71,7 +70,6 @@ namespace Abandoned.UI
             button = new Button(() =>
             {
                 GameAudio.PlayUi(sound);
-                if (important) MenuTactile.Important(button);
                 onClick();
             }) { text = text };
             button.AddToClassList("menu-button");

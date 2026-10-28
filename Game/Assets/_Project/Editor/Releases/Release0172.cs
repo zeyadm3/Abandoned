@@ -41,7 +41,7 @@ namespace Abandoned.EditorTools
                 EditorUtility.SetDirty(s);
                 counts[kind] = counts.TryGetValue(kind, out int n) ? n + 1 : 1;
                 if (kind == FloorKind.Concrete) continue;
-                SurfaceTag tag = s.GetComponent<SurfaceTag>() ?? s.gameObject.AddComponent<SurfaceTag>();
+                SurfaceTag tag = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SurfaceTag>(s.gameObject);
                 tag.EditorSet(kind switch { FloorKind.Glass => SurfaceMaterial.Glass, FloorKind.Timber => SurfaceMaterial.Wood, _ => SurfaceMaterial.Tile });
                 if (kind == FloorKind.Glass && s.Visual != null)
                     foreach (Renderer r in s.Visual.GetComponentsInChildren<Renderer>(true)) r.sharedMaterial = glass;

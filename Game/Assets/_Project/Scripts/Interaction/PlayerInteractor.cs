@@ -16,6 +16,8 @@ namespace Abandoned.Interaction
         [SerializeField] private PlayerLook look;
 
         private readonly RaycastHit[] hits = new RaycastHit[8];
+        // LayerMask.GetMask allocates its name array on every call; this ran every frame.
+        private int targetMask = -1;
         private bool charging;
         private bool suppressUseUntilRelease;
         private bool dropPending;
@@ -159,9 +161,9 @@ namespace Abandoned.Interaction
         {
             // RaycastAll + nearest, because the ray starts inside our own CharacterController. Rubble and other
             // players never stand between you and what you aim at (QA B-23); walls still do.
-            int mask = Physics.DefaultRaycastLayers & ~LayerMask.GetMask(GameLayers.Debris, GameLayers.Player);
+            if (targetMask == -1) targetMask = Physics.DefaultRaycastLayers & ~LayerMask.GetMask(GameLayers.Debris, GameLayers.Player);
             int count = Physics.RaycastNonAlloc(carrier.EyePosition, carrier.EyeForward, hits,
-                carrier.Config.Reach, mask, QueryTriggerInteraction.Ignore);
+                carrier.Config.Reach, targetMask, QueryTriggerInteraction.Ignore);
             float best = float.MaxValue;
             Grabbable found = null;
             UseTarget = null;

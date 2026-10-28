@@ -92,7 +92,7 @@ namespace Abandoned.Tests
 
             RunResults results = null;
             run.Departed += r => results = r;
-            float end = Time.time + run.Config.HonkSeconds + 3f;
+            float end = Time.time + run.HonkSeconds + 3f;
             while (results == null && Time.time < end) yield return null;
             Assert.IsNotNull(results, "the truck never left");
             Assert.AreEqual(RunPhase.Departed, run.State.Phase);
@@ -120,7 +120,7 @@ namespace Abandoned.Tests
             rig.Settle();
             RunResults results = null;
             run.Departed += r => results = r;
-            float end = Time.time + run.Config.HonkSeconds + 3f;
+            float end = Time.time + run.HonkSeconds + 3f;
             while (results == null && Time.time < end) yield return null;
             Assert.IsNotNull(results);
             RunResults.Player me = results.Players.Single();
@@ -137,7 +137,7 @@ namespace Abandoned.Tests
             RunResults results = null;
             run.Departed += r => results = r;
             run.RequestDepart();
-            float end = Time.time + run.Config.HonkSeconds + 3f;
+            float end = Time.time + run.HonkSeconds + 3f;
             while (results == null && Time.time < end) yield return null;
             Assert.IsNotNull(results, "the truck never left");
             got(results);

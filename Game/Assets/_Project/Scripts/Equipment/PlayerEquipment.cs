@@ -27,8 +27,6 @@ namespace Abandoned.Equipment
         [Tooltip("Spawned by the Planks gear: a loot-like plank to carry and lay across a hole.")]
         [SerializeField] private NetworkObject plankPrefab;
         [SerializeField] private NetworkObject noiseMakerPrefab;
-        [SerializeField] private NetworkObject supportJackPrefab;
-        [SerializeField] private NetworkObject pulleyPrefab;
         [Tooltip("Crowbar: reach (m), strike momentum (kg·m/s, before the structure's threshold) and seconds between strikes.")]
         [SerializeField] private float crowbarReach = 2.6f;
         [SerializeField] private float crowbarMomentum = 1500f;
@@ -144,10 +142,7 @@ namespace Abandoned.Equipment
                 if (on != flashlight.enabled && !IsDead) Audio.GameAudio.Play(Audio.SoundId.FlashlightClick, flashlight.transform.position, 0.6f);
                 flashlight.enabled = on;
             }
-            if (carrier != null) carrier.SoloDragAllowed = true;
             if (carrier != null) carrier.TrolleyDrag = Has(EquipmentKind.HandTrolley);
-            if (carrier != null) carrier.Backpack = Has(EquipmentKind.Backpack);
-            if (carrier != null && carrier.Inventory != null) carrier.Inventory.ExtraSlots = 0;
         }
 
         private void Update()
@@ -155,9 +150,7 @@ namespace Abandoned.Equipment
             if (!IsSpawned) return;
             TickDroppedTools();
             // The company can appear or change after we spawned (HQ load): keep the effects current.
-            if (carrier != null) carrier.SoloDragAllowed = true;
             if (carrier != null) carrier.TrolleyDrag = Has(EquipmentKind.HandTrolley);
-            if (carrier != null) carrier.Backpack = Has(EquipmentKind.Backpack);
             TickFlashlight();
             // Preserve the switch position while hands are occupied: setting down restores the beam.
             // Automatic hand changes are silent; the click belongs to deliberately using the switch.
@@ -186,7 +179,6 @@ namespace Abandoned.Equipment
             }
             // Single-use gear: the left mouse button with empty hands.
             if (input.UsePressed && carrier != null && carrier.Held == null && !carrier.IsRagdolled && InHand is EquipmentDefinition d && (d.Consumable || d.Kind == EquipmentKind.Crowbar || d.Kind >= EquipmentKind.Sledgehammer)) UseRpc(state.Value.Active);
-            TickHeldTool(input); // 0.17.6+: tools that work while the button is held
         }
 
         // Like the interactor: clicks on a screen (gear rack, shop, pause) and the click that

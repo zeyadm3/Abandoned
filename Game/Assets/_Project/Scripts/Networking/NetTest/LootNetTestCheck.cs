@@ -1,3 +1,5 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+// The nettest harness ships only in the editor and Development builds (Tools/unity.sh nettest uses a dev build).
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -90,3 +92,5 @@ namespace Abandoned.Networking
         private static string Name(NetTestLootSnapshot s) => $"#{s.id} {s.item}";
     }
 }
+
+#endif

@@ -24,7 +24,7 @@ namespace Abandoned.Company
 
         private readonly List<GameObject> fitted = new();
         private MaterialPropertyBlock block;
-        private ulong shownLook = ulong.MaxValue, shownOwned;
+        private ulong shownLook = ulong.MaxValue;
         private int shownUpgrades = -1;
 
         /// <summary>The truck the crew will leave in (the one nearest the job's cargo bay).</summary>
@@ -66,6 +66,8 @@ namespace Abandoned.Company
             foreach (GameObject g in fitted)
                 if (g != null) Destroy(g);
             fitted.Clear();
+            // A look without a horn fitting (the garage trying one, then going back) sounds the stock horn again.
+            Horn = SoundId.Horn;
             if (catalog == null) return;
             Transform host = parts != null ? parts : transform;
             for (int s = 0; s < TruckCosmeticCatalog.Slots; s++)
@@ -105,7 +107,7 @@ namespace Abandoned.Company
                 Material[] mats = r.sharedMaterials;
                 for (int i = 0; i < mats.Length; i++)
                 {
-                    if (mats[i] == null || !mats[i].name.EndsWith("_Tint")) continue;
+                    if (mats[i] == null || !mats[i].name.EndsWith("_Tint", System.StringComparison.Ordinal)) continue;
                     r.GetPropertyBlock(block, i);
                     block.SetColor(BaseColor, colour);
                     block.SetFloat(Smoothness, smoothness);

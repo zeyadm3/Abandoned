@@ -19,8 +19,14 @@ namespace Abandoned.Onboarding
         {
             get
             {
-                if (!Prefs.HasKey(StageKey)) Prefs.SetInt(StageKey, (int)(PlayedBefore ? OnboardingStage.Hired : OnboardingStage.New));
-                return (OnboardingStage)Prefs.GetInt(StageKey, 0);
+                // A missing or damaged value (no stage has that number) starts over, or counts as hired for a veteran.
+                int saved = Prefs.GetInt(StageKey, -1);
+                if (!Enum.IsDefined(typeof(OnboardingStage), saved))
+                {
+                    saved = (int)(PlayedBefore ? OnboardingStage.Hired : OnboardingStage.New);
+                    Prefs.SetInt(StageKey, saved);
+                }
+                return (OnboardingStage)saved;
             }
             set
             {

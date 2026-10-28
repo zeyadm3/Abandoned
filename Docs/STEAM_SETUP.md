@@ -11,6 +11,8 @@ App ID 480 (Spacewar) and all of this stays local.
 | Demo build | Steam demos are their own App ID: build with `Tools/unity.sh build-demo` and upload to the demo's depot (set its NetworkConfig App ID for that build, or ask me to add a demo App ID field) |
 
 Release builds (`BuildFlavor.Release`) never ship steam_appid.txt: Steam launches them with the real ID.
+Since 0.25.0 a release or demo build started outside Steam asks Steam to relaunch it
+(`SteamClient.RestartAppIfNecessary`, skipped for App ID 480), and hosts through Steam by default.
 
 ## 2. Steam Cloud (Auto-Cloud, no game code)
 The company save is a plain file in Unity's persistent data folder; Auto-Cloud syncs it.

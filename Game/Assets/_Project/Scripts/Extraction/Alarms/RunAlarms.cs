@@ -25,8 +25,9 @@ namespace Abandoned.Extraction
 
         public static RunAlarms Current { get; private set; }
 
-        public bool Wired(int store) => (wired.Value & (1 << store)) != 0;
-        public bool Disarmed(int store) => (disarmed.Value & (1 << store)) != 0;
+        // A store index outside 0-31 (an alarm with no shutter is -1) is never wired: C# masks a shift, so 1 << -1 is bit 31.
+        public bool Wired(int store) => store >= 0 && store < 32 && (wired.Value & (1 << store)) != 0;
+        public bool Disarmed(int store) => store >= 0 && store < 32 && (disarmed.Value & (1 << store)) != 0;
         public bool Armed(int store) => Wired(store) && !Disarmed(store) && (tripped.Value & (1 << store)) == 0;
         public bool Ringing(int store) => store >= 0 && store < ringUntil.Count && !Disarmed(store) && run != null && ringUntil[store] > run.Now;
 

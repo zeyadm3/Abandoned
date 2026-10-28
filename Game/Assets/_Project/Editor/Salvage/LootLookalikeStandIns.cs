@@ -62,12 +62,12 @@ namespace Abandoned.EditorTools
             if (!contents || fixture != null) CopyCollision(original, standIn);
             if (!HasCollision(standIn))
             {
-                var marker = standIn.GetComponent<WalkThroughObject>() ?? standIn.AddComponent<WalkThroughObject>();
+                var marker = Abandoned.EditorTools.SerializedWiring.GetOrAdd<WalkThroughObject>(standIn);
                 marker.EditorSetup(DustReason);
             }
             var binding = original.GetComponent<SectionProp>();
             if (binding != null && binding.Section != null)
-                (standIn.GetComponent<SectionProp>() ?? standIn.AddComponent<SectionProp>()).EditorSetup(binding.Section);
+                (Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(standIn)).EditorSetup(binding.Section);
             foreach (Renderer renderer in standIn.GetComponentsInChildren<Renderer>(true))
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, 0);
 

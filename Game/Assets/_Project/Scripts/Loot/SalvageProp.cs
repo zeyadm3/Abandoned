@@ -23,9 +23,6 @@ namespace Abandoned.Loot
         private PlayerInteractor interactor;
 
         public SalvageCategory Category => category;
-        public bool ValueReady => loot != null && loot.IsInitialized;
-        public int SalvageValue => ValueReady ? loot.CurrentValue : 0;
-        public float WeightKg => loot != null && loot.Definition != null ? loot.GameplayWeight : 0f;
         public bool IsFocused => isActiveAndEnabled && loot != null && !loot.IsShattered &&
             grabbable != null && !grabbable.IsPocketed && localPlayer != null && !localPlayer.IsDead &&
             interactor != null && interactor.isActiveAndEnabled && interactor.Target == grabbable;
@@ -46,24 +43,13 @@ namespace Abandoned.Loot
 
         private void LateUpdate()
         {
+            // Hundreds of these stand in a level: without an outline shell there is nothing to update.
+            if (outlineVisual == null) return;
             ResolveLocalPlayer();
             SetOutline(IsFocused);
         }
 
         private void OnDisable() => SetOutline(false);
-
-        /// <summary>
-        /// Optional interaction-button entry point. True means a request was sent, not that the host
-        /// accepted it. PlayerInteractor already sends the normal Interact input; do not wire it twice.
-        /// </summary>
-        public bool RequestPickup()
-        {
-            ResolveLocalPlayer();
-            if (!IsFocused || localPlayer.Carrier == null) return false;
-            // Keep host validation, physics ownership and shared carry on the existing path.
-            InteractionService.Handler.RequestPickup(localPlayer.Carrier, grabbable);
-            return true;
-        }
 
         private void ResolveLocalPlayer()
         {

@@ -1,3 +1,4 @@
+using Abandoned.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,8 +25,10 @@ namespace Abandoned.Onboarding
 
         private void Update()
         {
-            if (Frozen || Mouse.current == null) return;
-            Vector2 d = Mouse.current.delta.ReadValue() * sensitivity;
+            // A menu over the office (Settings, the pause) has the mouse: moving it there must not swing the view.
+            if (Frozen || CursorOwner.UiActive || Mouse.current == null) return;
+            Vector2 d = Mouse.current.delta.ReadValue() * (sensitivity * GameSettings.Sensitivity);
+            if (GameSettings.InvertY) d.y = -d.y;
             if (Gamepad.current != null) d += Gamepad.current.rightStick.ReadValue() * 90f * Time.deltaTime;
             yaw = Mathf.Clamp(yaw + d.x, -yawLimit, yawLimit);
             pitch = Mathf.Clamp(pitch - d.y, -pitchLimit, pitchLimit);

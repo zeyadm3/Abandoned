@@ -35,8 +35,6 @@ namespace Abandoned.Structure
         [field: SerializeField] public Vector2 CreakGapStressed { get; private set; } = new(2.5f, 4.5f);
         [field: SerializeField] public Vector2 CreakGapCracking { get; private set; } = new(1.2f, 2.2f);
         [field: SerializeField] public Vector2 CreakGapFailing { get; private set; } = new(0.2f, 0.45f);
-        [field: SerializeField, Range(0f, 1f)] public float CreakVolume { get; private set; } = 0.45f;
-        [field: SerializeField, Range(0f, 1f)] public float GroanVolume { get; private set; } = 0.65f;
         [field: SerializeField, Range(0f, 1f)] public float SnapVolume { get; private set; } = 0.9f;
 
         [field: Header("Collapse debris (cosmetic, local only)")]

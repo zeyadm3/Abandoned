@@ -29,8 +29,9 @@ namespace Abandoned.Audio
             nextMonitor = Time.time + 7f;
             nextAnnouncement = Time.time + 25f;
             nextTrolley = Time.time + 45f;
-            foreach (Transform point in drips)
+            foreach (Transform point in drips ?? System.Array.Empty<Transform>())
             {
+                if (point == null) continue;
                 SoundLoop loop = GameAudio.Loop(SoundId.WaterDrip, point, "MorgueDrip", spatial: true);
                 loop.Level = config.DripLevel;
                 loop.SetRange(1f, 11f);
@@ -42,19 +43,21 @@ namespace Abandoned.Audio
         {
             if (Application.isBatchMode || config == null)
                 return;
-            if (Time.time >= nextMonitor)
+            if (Time.time >= nextMonitor && monitors != null && monitors.Length > 0)
             {
                 nextMonitor = Time.time + Random.Range(config.MonitorEvery.x, config.MonitorEvery.y);
                 int index = cursor++ % monitors.Length;
-                if (monitorPower[index] != null && monitorPower[index].Lit)
+                // A monitor without a listed circuit (arrays authored at different lengths) counts as dead.
+                if (monitors[index] != null && monitorPower != null && index < monitorPower.Length &&
+                    monitorPower[index] != null && monitorPower[index].Lit)
                     GameAudio.Play(SoundId.VoicemailBeep, monitors[index].position, config.MonitorLevel, 12f);
             }
-            if (Time.time >= nextAnnouncement)
+            if (Time.time >= nextAnnouncement && speakers != null && speakers.Length > 0)
             {
                 nextAnnouncement = Time.time + Random.Range(config.AnnouncementEvery.x, config.AnnouncementEvery.y);
                 int index = cursor++ % speakers.Length;
                 // A dead PA stays dead; the drip and distant wheels are independent of mains power.
-                if (PoweredNear(speakers[index].position))
+                if (speakers[index] != null && PoweredNear(speakers[index].position))
                     GameAudio.Play(SoundId.RadioStatic, speakers[index].position, config.AnnouncementLevel, 20f);
             }
             if (Time.time >= nextTrolley)
@@ -63,7 +66,8 @@ namespace Abandoned.Audio
                 rollingUntil = Time.time + config.TrolleySeconds;
                 nextWheel = Time.time;
             }
-            if (Time.time >= rollingUntil || Time.time < nextWheel || trolleyRoute.Length < 2)
+            if (Time.time >= rollingUntil || Time.time < nextWheel || trolleyRoute == null || trolleyRoute.Length < 2 ||
+                trolleyRoute[0] == null || trolleyRoute[1] == null)
                 return;
             nextWheel = Time.time + .65f;
             float progress = 1f - (rollingUntil - Time.time) / Mathf.Max(.1f, config.TrolleySeconds);
@@ -73,6 +77,7 @@ namespace Abandoned.Audio
 
         private bool PoweredNear(Vector3 at)
         {
+            if (monitorPower == null) return false;
             foreach (LightFixture fixture in monitorPower)
             {
                 if (fixture != null && fixture.Lit && Vector3.Distance(fixture.transform.position, at) < 18f)

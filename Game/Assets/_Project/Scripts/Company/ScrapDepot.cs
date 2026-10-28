@@ -5,7 +5,6 @@ using Abandoned.Interaction;
 using Abandoned.Loot;
 using Abandoned.UI;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace Abandoned.Company
@@ -100,9 +99,6 @@ namespace Abandoned.Company
             if (screen == null || screen.Root.panel == null)
             {
                 if (!open || (screen = ScreenPanel.Create(wide: false)) == null) return;
-                StyleSheet styles = Resources.Load<StyleSheet>("HqStations");
-                if (styles != null) screen.Panel.styleSheets.Add(styles);
-                screen.ApplyArchiveStyles();
                 screen.Panel.AddToClassList("scrap-depot");
             }
             screen.Show(open);
@@ -147,12 +143,14 @@ namespace Abandoned.Company
             MenuKit.Button(panel, Loc.T("Close receipt"), () => open = false, SoundId.UiBack);
         }
 
+#if UNITY_EDITOR
         public void EditorSetup(BoxCollider intakeBay, TextMesh scaleReadout = null)
         {
             receivingBay = intakeBay;
             readout = scaleReadout;
             if (receivingBay != null) Intake = this;
         }
+#endif
 
         private void OnDisable()
         {

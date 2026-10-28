@@ -118,6 +118,8 @@ namespace Abandoned.UI
                         {
                             armedUntil = Time.unscaledTime + 3f;
                             kick.text = Loc.T("Sure?");
+                            // Disarmed again after the window, so a stale "Sure?" never asks for a press that only re-arms.
+                            kick.schedule.Execute(() => { if (Time.unscaledTime > armedUntil) kick.text = Loc.T("Kick"); }).StartingIn(3100);
                             return;
                         }
                         Company.CompanyService.Current?.Kick(id);
@@ -134,6 +136,9 @@ namespace Abandoned.UI
             if (p.OwnerClientId == Unity.Netcode.NetworkManager.ServerClientId) tags.Add(Loc.T("HOST"));
             if (p.IsOwner) tags.Add(Loc.T("YOU"));
             if (p.IsDead) tags.Add(Loc.T("GHOST"));
+            // The name can arrive after the row was built (Steam names, Settings names sync after spawn).
+            string name = p.DisplayName;
+            if (row.Name.text != name) row.Name.text = name;
             string t = string.Join("  -  ", tags);
             if (row.Tags.text != t) row.Tags.text = t;
             string ping = Ping(p, b);

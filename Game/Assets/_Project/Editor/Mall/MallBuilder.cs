@@ -101,7 +101,7 @@ namespace Abandoned.EditorTools
 
         public static void BakeNavMesh(Transform mall)
         {
-            var surface = mall.GetComponent<Unity.AI.Navigation.NavMeshSurface>() ?? mall.gameObject.AddComponent<Unity.AI.Navigation.NavMeshSurface>();
+            var surface = Abandoned.EditorTools.SerializedWiring.GetOrAdd<Unity.AI.Navigation.NavMeshSurface>(mall.gameObject);
             surface.collectObjects = Unity.AI.Navigation.CollectObjects.Children;
             surface.useGeometry = UnityEngine.AI.NavMeshCollectGeometry.PhysicsColliders;
             surface.ignoreNavMeshObstacle = false;
@@ -110,7 +110,7 @@ namespace Abandoned.EditorTools
             {
                 Transform group = mall.Find(name);
                 if (group == null) continue;
-                var modifier = group.GetComponent<Unity.AI.Navigation.NavMeshModifier>() ?? group.gameObject.AddComponent<Unity.AI.Navigation.NavMeshModifier>();
+                var modifier = Abandoned.EditorTools.SerializedWiring.GetOrAdd<Unity.AI.Navigation.NavMeshModifier>(group.gameObject);
                 modifier.ignoreFromBuild = true;
             }
             surface.BuildNavMesh();

@@ -70,7 +70,7 @@ namespace Abandoned.EditorTools
                     SceneManager.MoveGameObjectToScene(diagnostics, scene);
                 }
                 string summary = $"{refined} model renderers refined · {environment.Junctions} fitted junctions · {effects} particle emitters";
-                (diagnostics.GetComponent<ArtRemasterDiagnostics>() ?? diagnostics.AddComponent<ArtRemasterDiagnostics>()).EditorSetup(summary);
+                (Abandoned.EditorTools.SerializedWiring.GetOrAdd<ArtRemasterDiagnostics>(diagnostics)).EditorSetup(summary);
                 EditorSceneManager.MarkSceneDirty(scene);
                 AssetDatabase.SaveAssets();
                 if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Couldn't save remastered scene " + path);

@@ -40,5 +40,8 @@ namespace Abandoned.Structure
                 return cached;
             }
         }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => cached = null;
     }
 }

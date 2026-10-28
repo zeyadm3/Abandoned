@@ -34,7 +34,6 @@ namespace Abandoned.UI
             VisualElement panel = MenuKit.Page(Root, wide: true);
             panel.AddToClassList("wardrobe");
 
-            MenuKit.Text(panel, Loc.T("FLEET / COLLECTION VEHICLE 01"), "menu-record");
             VisualElement header = MenuKit.Row(panel);
             header.AddToClassList("wardrobe__header");
             header.style.flexWrap = Wrap.Wrap;

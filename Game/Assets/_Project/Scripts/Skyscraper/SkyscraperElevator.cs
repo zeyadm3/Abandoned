@@ -53,6 +53,12 @@ namespace Abandoned.Skyscraper
         public bool IsBroken => isBroken.Value;
         public bool IsPowered => SectorPower.Live(powerSector);
         public Vector3 DeckPosition => platform != null ? platform.transform.position : transform.position;
+        public float MaxSafeLoadKg => maxSafeLoadKg;
+
+        /// <summary>Parked level with <paramref name="floor"/> (a power cut can stall the cab between floors).</summary>
+        public bool StoppedAt(int floor) =>
+            !isMoving.Value && activeFloor.Value == floor && floor >= 0 && floor < floorElevations.Length &&
+            Mathf.Abs(currentHeight.Value - floorElevations[floor]) < 0.15f;
 
         private void Awake()
         {
@@ -85,7 +91,9 @@ namespace Abandoned.Skyscraper
         {
             if (isBroken.Value || isMoving.Value || !IsPowered) return false;
             if (targetFloor < 0 || targetFloor >= floorElevations.Length) return false;
-            return activeFloor.Value != targetFloor;
+            // By height, not only the last floor reached: a cab stalled mid-shaft by a power cut must be able to
+            // go back to the floor it left.
+            return !StoppedAt(targetFloor);
         }
 
         public void RequestFloor(int targetFloor)

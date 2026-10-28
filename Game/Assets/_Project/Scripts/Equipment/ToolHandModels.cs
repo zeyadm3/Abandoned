@@ -64,38 +64,14 @@ namespace Abandoned.Equipment
             a.Cylinder(new(.058f, .016f, .018f), new(.01f, .004f, .01f), a.Steel);
         }
 
-        public static void Canister(ToolArtBuilder a, int kind)
+        public static void GlowStick(ToolArtBuilder a)
         {
-            if (kind == 0)
-            {
-                a.Cylinder(new(0, .06f, .06f), new(.062f, .16f, .062f), a.Paint);
-                a.Ring(new(0, -.018f, .06f), .063f, .009f, a.Steel);
-                a.Ring(new(0, .139f, .06f), .059f, .009f, a.Steel);
-                a.Cylinder(new(0, .147f, .06f), new(.028f, .015f, .028f), a.Dark);
-                a.Box(new(0, .159f, .064f), new(.022f, .013f, .024f), a.Rubber);
-                a.Disc(new(0, .157f, .078f), .005f, .004f, a.Steel);
-                a.Cylinder(new(0, .052f, .06f), new(.063f, .058f, .063f), a.Tape);
-                a.Box(new(0, .05f, .092f), new(.026f, .032f, .002f), a.Dark);
-            }
-            else if (kind == 1)
-            {
-                a.Rod(new(0, 0, -.025f), new(0, 0, .235f), .019f, a.Paint);
-                a.Rod(new(0, 0, .003f), new(0, 0, .214f), .015f, a.Tape);
-                a.Disc(new(0, 0, -.018f), .025f, .018f, a.Dark);
-                a.Disc(new(0, 0, .226f), .025f, .024f, a.Rubber);
-                a.Ring(new(0, .021f, .235f), .026f, .006f, a.Rubber, new(90, 0, 0));
-                a.Box(new(.016f, 0, .204f), new(.012f, .008f, .052f), a.Rubber);
-            }
-            else
-            {
-                a.Rod(new(0, 0, -.025f), new(0, 0, .25f), .034f, a.Paint);
-                a.Disc(new(0, 0, .255f), .037f, .026f, a.Dark);
-                a.Ring(new(0, 0, .274f), .04f, .009f, a.Steel, new(90, 0, 0));
-                a.Grip(new(0, 0, -.021f), new(0, 0, .08f), .037f);
-                a.Ring(new(0, 0, .16f), .038f, .027f, a.Tape, new(90, 0, 0));
-                a.Box(new(.018f, 0, .025f), new(.006f, .016f, .115f), a.Steel);
-                a.Cable(new(0, -.015f, -.032f), new(.022f, -.009f, -.027f), new(0, -.026f, -.025f), .0035f, a.Rubber);
-            }
+            a.Rod(new(0, 0, -.025f), new(0, 0, .235f), .019f, a.Paint);
+            a.Rod(new(0, 0, .003f), new(0, 0, .214f), .015f, a.Tape);
+            a.Disc(new(0, 0, -.018f), .025f, .018f, a.Dark);
+            a.Disc(new(0, 0, .226f), .025f, .024f, a.Rubber);
+            a.Ring(new(0, .021f, .235f), .026f, .006f, a.Rubber, new(90, 0, 0));
+            a.Box(new(.016f, 0, .204f), new(.012f, .008f, .052f), a.Rubber);
         }
 
         public static void Planks(ToolArtBuilder a)

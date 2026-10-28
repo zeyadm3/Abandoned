@@ -156,7 +156,7 @@ namespace Abandoned.EditorTools
             {
                 StructuralSection under = structure.Under(piece.position);
                 if (under == null || !under.CanCollapse) continue;
-                var prop = piece.GetComponent<SectionProp>() ?? piece.gameObject.AddComponent<SectionProp>();
+                var prop = Abandoned.EditorTools.SerializedWiring.GetOrAdd<SectionProp>(piece.gameObject);
                 prop.EditorSetup(under);
             }
         }

@@ -47,7 +47,7 @@ namespace Abandoned.Networking
         // FixedString512Bytes holds 509 UTF-8 bytes: 120 characters of up to 4 bytes each.
         private const int MaxBytes = 509;
 
-        [Rpc(SendTo.Server)]
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
         private void SayRpc(FixedString512Bytes text, RpcParams rpcParams = default)
         {
             if (rpcParams.Receive.SenderClientId != OwnerClientId || Time.unscaledTime < nextAllowed || text.ToString().Length > MaxLength) return;
@@ -64,7 +64,8 @@ namespace Abandoned.Networking
             HearRpc(text, true, RpcTarget.Group(dead, RpcTargetUse.Temp));
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
+        // Host only: otherwise any client could put words in another player's mouth.
+        [Rpc(SendTo.SpecifiedInParams, InvokePermission = RpcInvokePermission.Server)]
         private void HearRpc(FixedString512Bytes text, bool ghost, RpcParams rpcParams) => Received?.Invoke(OwnerClientId, text.ToString(), ghost);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

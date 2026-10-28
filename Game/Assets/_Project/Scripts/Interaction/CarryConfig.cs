@@ -40,13 +40,9 @@ namespace Abandoned.Interaction
         [field: SerializeField, Min(0f)] public float ExtraStaminaDrainAtMaxWeight { get; private set; } = 1.5f;
         [field: Tooltip("Fewer occupied carry handles reduce pace even after the normal weight slowdown reaches its limit.")]
         [field: SerializeField, Range(0f, 1f)] public float SharedCrewBurdenPower { get; private set; } = .5f;
-        [field: Tooltip("With a backpack in a pocket, carried weight counts this much toward slowdown and stamina. Structural load is unchanged.")]
-        [field: SerializeField, Range(0.1f, 1f)] public float BackpackHandlingScale { get; private set; } = .75f;
         [field: SerializeField] public CarryClass HeaviestSoloClass { get; private set; } = CarryClass.TwoHand;
 
-        [field: Header("Solo drag (stand-in for the hand trolley until equipment exists)")]
-        [field: Tooltip("Let one player drag Heavy items along the floor. Huge items still need a team or tools.")]
-        [field: SerializeField] public bool SoloDragHeavy { get; private set; } = true;
+        [field: Header("Solo drag (anyone drags Heavy loot; Huge needs the hand trolley: PlayerCarrier.CanSoloDrag)")]
         [field: SerializeField, Range(0.1f, 1f)] public float DragSpeedMultiplier { get; private set; } = 0.35f;
         [field: Tooltip("A Huge item dragged short-handed on a hand trolley goes this share of the drag speed.")]
         [field: SerializeField, Range(0.1f, 1f)] public float HugeDragSpeedScale { get; private set; } = 0.55f;
@@ -76,7 +72,6 @@ namespace Abandoned.Interaction
         [field: Header("Careful handling")]
         [field: SerializeField, Min(0f)] public float RotateSensitivity { get; private set; } = 0.18f;
         [field: SerializeField, Min(0.1f)] public float MaxRotationSpeed { get; private set; } = 4f;
-        [field: SerializeField, Min(0.1f)] public float PlaceHoldTime { get; private set; } = 0.22f;
         [field: SerializeField, Min(0.1f)] public float PlaceTimeout { get; private set; } = 6f;
         [field: SerializeField, Min(0.1f)] public float PlaceLowerSpeed { get; private set; } = 0.45f;
         [field: SerializeField, Min(0.01f)] public float PlaceReleaseSpeed { get; private set; } = 0.18f;
@@ -93,8 +88,6 @@ namespace Abandoned.Interaction
         }
 
         /// <summary>0 at no weight, 1 at MaxSoloWeight.</summary>
-        public bool CanSoloDrag(CarryClass carryClass) => SoloDragHeavy && carryClass == CarryClass.Heavy;
-
         public float WeightFraction(float weight) => Mathf.Clamp01(weight / MaxSoloWeight);
 
         public float SpeedMultiplierFor(float weight) => Mathf.Lerp(1f, MinSpeedMultiplier, WeightFraction(weight));

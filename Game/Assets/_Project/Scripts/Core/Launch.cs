@@ -77,7 +77,10 @@ namespace Abandoned.Core
         public static void OpenLogFolder()
         {
             string folder = LogFolder;
-            if (!string.IsNullOrEmpty(folder)) Application.OpenURL("file://" + folder.Replace('\\', '/'));
+            if (string.IsNullOrEmpty(folder)) return;
+            // An escaped URI: the folder has a space ("Zeyad Games"), and an unescaped one opens nothing on macOS.
+            try { Application.OpenURL(new Uri(folder).AbsoluteUri); }
+            catch (UriFormatException) { Application.OpenURL("file://" + folder.Replace('\\', '/')); }
         }
 
         /// <summary>Tests/editor: act as (or not as) a Steam build. Null = the build's own flavour.</summary>

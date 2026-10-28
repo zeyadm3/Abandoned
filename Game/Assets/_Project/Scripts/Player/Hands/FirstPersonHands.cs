@@ -31,8 +31,6 @@ namespace Abandoned.Player
         private Color shownSuit = new(-1f, -1f, -1f, -1f);
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
 
-        public Transform RightHand => hands[1];
-
         private void Update()
         {
             if (NetworkPlayer.Local != me) Rebuild();

@@ -1,6 +1,7 @@
 using Abandoned.Core;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -41,7 +42,8 @@ namespace Abandoned.Contracts
         }
 
         /// <summary>0.19.12: today's id ("20261010"); the daily job and its leaderboard are named after it.</summary>
-        public static string DayId(DateTime utc) => utc.ToString("yyyyMMdd");
+        // Invariant: a Thai or Hijri calendar would otherwise name another year and roll another daily job.
+        public static string DayId(DateTime utc) => utc.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 
         /// <summary>
         /// 0.19.12: the daily job. The same for everyone that UTC day: rolled from the date at company level 1
@@ -49,7 +51,7 @@ namespace Abandoned.Contracts
         /// </summary>
         public static Contract Daily(ContractConfig c, int lootEstimate, DateTime utc)
         {
-            int day = int.Parse(DayId(utc));
+            int day = int.Parse(DayId(utc), CultureInfo.InvariantCulture);
             var random = new System.Random(day * 7919 + 17);
             var locations = EligibleLocations(c, 1);
             LocationDefinition location = DrawLocation(new List<LocationDefinition>(locations), locations, random);

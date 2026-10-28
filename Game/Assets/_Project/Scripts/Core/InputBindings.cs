@@ -99,7 +99,16 @@ namespace Abandoned.Core
             }
             asset.RemoveAllBindingOverrides();
             string json = Json;
-            if (!string.IsNullOrEmpty(json)) asset.LoadBindingOverridesFromJson(json);
+            if (string.IsNullOrEmpty(json)) return;
+            // A damaged prefs file must not take every input reader down with it: fall back to the default keys.
+            try { asset.LoadBindingOverridesFromJson(json); }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[Input] Saved key bindings could not be read ({e.Message}); using the defaults.");
+                asset.RemoveAllBindingOverrides();
+                Prefs.Delete(Key);
+                Prefs.Save();
+            }
         }
 
         /// <summary>Saves an edited asset's overrides and re-applies them everywhere.</summary>

@@ -161,7 +161,7 @@ namespace Abandoned.EditorTools
             if (RenderPipelineManager.currentPipeline == null) RenderPipeline.SubmitRenderRequest(camera, request);
             if (Environment.GetEnvironmentVariable("LIGHTING_REVIEW") != null)
             {
-                var director = camera.GetComponent<ShadowDirector>() ?? camera.gameObject.AddComponent<ShadowDirector>();
+                var director = Abandoned.EditorTools.SerializedWiring.GetOrAdd<ShadowDirector>(camera.gameObject);
                 director.Preview(camera);
                 foreach (IndirectLighting rig in Object.FindObjectsByType<IndirectLighting>(FindObjectsSortMode.None)) rig.Preview(camera);
             }

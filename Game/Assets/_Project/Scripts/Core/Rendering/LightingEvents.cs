@@ -11,5 +11,8 @@ namespace Abandoned.Core
         public static event Action Changed;
 
         public static void Raise() => Changed?.Invoke();
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => Changed = null;
     }
 }

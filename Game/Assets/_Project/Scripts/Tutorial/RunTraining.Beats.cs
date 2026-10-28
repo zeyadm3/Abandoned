@@ -21,7 +21,6 @@ namespace Abandoned.Tutorial
 
         /// <summary>Host: the lesson's monster came in this run and has gone again (or never needed to come).</summary>
         public bool VisitorGone => visitor == null || !visitor.IsSpawned;
-        public bool VisitorCame => visitorCame;
 
         private StructureSimulation Structure => structure != null ? structure : structure = FindAnyObjectByType<StructureSimulation>();
 

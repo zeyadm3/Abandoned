@@ -12,8 +12,6 @@ namespace Abandoned.Extraction
         [field: SerializeField, Min(0)] public int Quota { get; private set; } = 40000;
         [Tooltip("Extraction window (s): a soft limit; after it danger rises sharply (GDD 10).")]
         [field: SerializeField, Min(30f)] public float WindowSeconds { get; private set; } = 900f;
-        [Tooltip("The truck honks this long (s) before it leaves with whoever is inside.")]
-        [field: SerializeField, Range(1f, 30f)] public float HonkSeconds { get; private set; } = 10f;
         [field: Tooltip("Approved departure countdown, including the starter's full cancellation window.")]
         [field: SerializeField, Range(1f, 30f)] public float DepartureSeconds { get; private set; } = 6f;
         [Tooltip("Cargo space (m3 of item bounding boxes). Upgradeable later (GDD 13).")]
@@ -27,7 +25,7 @@ namespace Abandoned.Extraction
 
         public void Validate(List<string> errors)
         {
-            if (HonkSeconds <= 0f) errors.Add($"{name}: HonkSeconds must be positive.");
+            if (DepartureSeconds <= 0f) errors.Add($"{name}: DepartureSeconds must be positive.");
         }
     }
 }

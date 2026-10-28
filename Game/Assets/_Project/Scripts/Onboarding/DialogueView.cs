@@ -82,7 +82,13 @@ namespace Abandoned.Onboarding
         public void Show(bool visible)
         {
             VisualElement surface = MenuUi.Current != null ? MenuUi.Current.Surface : Fallback();
-            if (visible && surface != null && root.parent != surface) surface.Add(root);
+            if (visible && surface != null && root.parent != surface)
+            {
+                // Just over the HUD, under every menu: Settings or the creator opened during the hiring cover it.
+                VisualElement hud = HudLayer.Root;
+                if (hud != null && hud.parent == surface) surface.Insert(surface.IndexOf(hud) + 1, root);
+                else surface.Add(root);
+            }
             MenuKit.Show(root, visible);
             hint.text = Loc.T("Click to continue   -   Hold SPACE to skip");
         }
@@ -102,6 +108,8 @@ namespace Abandoned.Onboarding
             }
             return fallback.rootVisualElement;
         }
+
+        public void Remove() => root.RemoveFromHierarchy();
 
         public void Say(string who, string what, string text)
         {

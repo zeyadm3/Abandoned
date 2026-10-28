@@ -23,10 +23,12 @@ namespace Abandoned.Equipment
         private Camera mainCamera;
         private float battery, yaw, pitch, nextBuzz, nextNoise;
         private bool flying;
+        private int bumpMask;
 
         public override void OnNetworkSpawn()
         {
             yaw = transform.eulerAngles.y;
+            bumpMask = ~LayerMask.GetMask(GameLayers.Debris, "Ignore Raycast");
             battery = ToolConfig.Current.DroneSeconds;
             if (!IsOwner) return;
             pilot = NetworkPlayer.Local;
@@ -87,7 +89,7 @@ namespace Abandoned.Equipment
             Vector3 wish = transform.rotation * new Vector3(f.Move.x, 0f, f.Move.y) + Vector3.up * vertical;
             Vector3 step = Vector3.ClampMagnitude(wish, 1f) * ToolConfig.Current.DroneSpeed * Time.deltaTime;
             // Bump, don't pass: walls and floors stop it.
-            if (step.sqrMagnitude > 0f && !Physics.SphereCast(transform.position, 0.25f, step.normalized, out _, step.magnitude + 0.05f, ~LayerMask.GetMask(GameLayers.Debris, "Ignore Raycast"), QueryTriggerInteraction.Ignore))
+            if (step.sqrMagnitude > 0f && !Physics.SphereCast(transform.position, 0.25f, step.normalized, out _, step.magnitude + 0.05f, bumpMask, QueryTriggerInteraction.Ignore))
                 transform.position += step;
         }
 

@@ -42,14 +42,9 @@ namespace Abandoned.Interaction
 
         /// <summary>Everything this player carries, in kg; also what they add to structural load.</summary>
         public float CarriedWeight => (Held != null ? Held.WeightOnHolder : 0f) + Inventory.TotalWeight;
-        /// <summary>What the player's legs and lungs feel (speed, stamina, the HUD gauge). A backpack eases it; the floor
-        /// still takes the full <see cref="CarriedWeight"/>.</summary>
+        /// <summary>What the player's legs and lungs feel (speed, stamina, the HUD gauge): a shared load counts as their share.</summary>
         public float HandlingWeight =>
-            ((IsSharing ? Held.Weight / Mathf.Max(1, Held.Shared.CarrierCount) : Held != null ? Held.Weight : 0f) + Inventory.TotalWeight)
-            * (Backpack ? config.BackpackHandlingScale : 1f);
-
-        /// <summary>A backpack in one of the pockets; set on every machine from the replicated slots.</summary>
-        public bool Backpack { get; set; }
+            (IsSharing ? Held.Weight / Mathf.Max(1, Held.Shared.CarrierCount) : Held != null ? Held.Weight : 0f) + Inventory.TotalWeight;
 
         public bool IsDragging => Held != null && Held.IsDragged;
 
@@ -85,12 +80,6 @@ namespace Abandoned.Interaction
             IsPlacing = false;
             PlacementBlocked = false;
         }
-
-        /// <summary>
-        /// May drag Heavy items alone (GDD 7.2: the hand trolley). Equipment sets it; true where there is
-        /// no company (dev levels, tests).
-        /// </summary>
-        public bool SoloDragAllowed { get; set; } = true;
 
         /// <summary>
         /// A hand trolley in a pocket: Huge items can be dragged short-handed, slowly. It took over the flatbed's job when
