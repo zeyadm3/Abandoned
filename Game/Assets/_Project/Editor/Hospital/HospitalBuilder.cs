@@ -60,7 +60,7 @@ namespace Abandoned.Hospital
             // Give a standalone scene the same pre-registered content as the persistent world session.
             bootstrap.Manager.NetworkConfig.Prefabs.NetworkPrefabsLists.Add(PrefabList(catalog, runPrefab));
             var location = SerializedWiring.LoadOrCreateAsset<LocationDefinition>(HospitalLoot.Data + "/HospitalLocation.asset");
-            location.EditorSetup("hospital", "Saint Brigid Hospital", "An abandoned medical city with a glass atrium, stepped wards and a basement morgue.", "Hospital", 3, 1, 1.2f, 1.1f, - .05f, 1.15f, .1f);
+            location.EditorSetup("hospital", "Saint Brigid Hospital", "An abandoned medical city with a glass atrium, stepped wards and a basement morgue.", "Hospital", 1, 1, 1.2f, 1.1f, - .05f, 1.15f, .1f);
             EditorUtility.SetDirty(location);
             HospitalRegistration.Include(catalog, location);
             foreach (GameObject go in scene.GetRootGameObjects())

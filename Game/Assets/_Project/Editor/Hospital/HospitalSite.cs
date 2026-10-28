@@ -20,6 +20,8 @@ namespace Abandoned.Hospital
             }
             Transform dock = HospitalKit.Group("VanDock", root);
             dock.SetPositionAndRotation(new Vector3(44f, 0f, - 14f), Quaternion.Euler(0f, 180f, 0f));
+            // The collection truck backs onto the dock (the open world's van was the truck until it was removed).
+            TruckBuilder.Build(HospitalKit.Group("Truck", root), dock.position, dock.forward);
             foreach (float x in new []
             {
                 40f, 48f

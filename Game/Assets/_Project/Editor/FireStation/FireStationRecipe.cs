@@ -53,6 +53,7 @@ namespace Abandoned.EditorTools
                 "A 1930s firehouse: two engines and the ladder truck still in the bay, bunk rooms on a floor that sags over them, and a hose tower full of brass. The van backs up to the empty lane's door.",
                 L.SceneName, 1, 1, 1.05f, 1f, -.03f, 1f, .1f);
             EditorUtility.SetDirty(location);
+            LocationBoard.Register(location);
         }
 
         public override void Dress(StationContext ctx)

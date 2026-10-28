@@ -208,6 +208,7 @@ namespace Abandoned.EditorTools
                 "A two-story fine-dining restaurant above the clouds, with a grand stair, tasting gallery and private dining. Reach it via the freight lift or 101 storeys of stairs.",
                 "Skyscraper", 2, 1, 1.4f, 1.25f, -0.1f, 1.1f, 0.15f);
             EditorUtility.SetDirty(location);
+            LocationBoard.Register(location);
         }
 
         private static void PlaceCamera()

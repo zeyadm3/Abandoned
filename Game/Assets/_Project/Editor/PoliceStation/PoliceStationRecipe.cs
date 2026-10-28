@@ -46,6 +46,7 @@ namespace Abandoned.EditorTools
                 "A brick precinct over a basement of evidence and guns: a cell block, a vault, and an evidence room whose floor won't take much more. The van backs up to the sally port.",
                 L.SceneName, 2, 1, 1.05f, 1f, -.02f, 1f, .1f);
             EditorUtility.SetDirty(location);
+            LocationBoard.Register(location);
         }
 
         public override void Dress(StationContext ctx)

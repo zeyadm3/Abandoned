@@ -35,6 +35,8 @@ namespace Abandoned.Motel
             Transform dock = MotelKit.Group("VanDock", root);
             dock.localPosition = new Vector3(32, 0, - 12);
             dock.localRotation = Quaternion.Euler(0, 180, 0);
+            // The collection truck backs onto the dock (the open world's van was the truck until it was removed).
+            Abandoned.EditorTools.TruckBuilder.Build(MotelKit.Group("Truck", root), dock.position, dock.forward);
             foreach (float x in new []
             {
                 28f, 36f

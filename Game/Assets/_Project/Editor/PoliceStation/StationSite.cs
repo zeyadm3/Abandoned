@@ -9,7 +9,7 @@ namespace Abandoned.EditorTools
 {
     /// <summary>
     /// The lot round a station: ground slabs round the footprint (never under it), the van's parking bay at the carry
-    /// route (the open world's van is the job's truck; no map has one of its own), and the street furniture both stations
+    /// route (the collection truck parks there), and the street furniture both stations
     /// use (fences, abandoned cars, kerbs). No trees, sky or grass: the world and Art > Upgrade New Maps add those.
     /// Everything lives under <c>Exterior</c>, which the NavMesh bake leaves out: monsters reach the crew only once they
     /// are inside. The scene stays at its own origin; the world moves round it.
@@ -46,7 +46,7 @@ namespace Abandoned.EditorTools
         public const string VanParkingName = "VanParking";
 
         /// <summary>
-        /// Where the crew's van parks (the open world's van is the job's truck; no map has a truck of its own): its rear
+        /// Where the crew's van parks (the collection truck parks there): its rear
         /// at <paramref name="rear"/>, cab toward <paramref name="forward"/>, ramp back toward the building. Painted bay
         /// lines on the ground, a loading box behind the rear doors, and an empty <c>Exterior/VanParking</c> marker
         /// (position = the van's rear, forward = its heading) for the world's survey.
@@ -74,6 +74,8 @@ namespace Abandoned.EditorTools
             }
             Transform marker = Group(VanParkingName, ext);
             marker.SetPositionAndRotation(new Vector3(rear.x, 0f, rear.z), Quaternion.LookRotation(forward, Vector3.up));
+            // The collection truck parks in the bay (the open world's van was the truck until it was removed).
+            TruckBuilder.Build(Group("Truck", ext), marker.position, forward);
             return marker;
         }
 
