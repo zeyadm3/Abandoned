@@ -176,7 +176,9 @@ namespace Abandoned.UI
             }
 
             MenuScreen baseScreen = !running ? (hiring ? MenuScreen.None : MenuScreen.Main) : paused ? MenuScreen.Pause : MenuScreen.None;
-            if (baseScreen == MenuScreen.None) pushed.Clear();
+            // In a job the stack empties with the pause menu; during the hiring the creator and Settings are pushed
+            // over an empty base and must stay (clearing them here left the HR office frozen behind nothing).
+            if (baseScreen == MenuScreen.None && !hiring) pushed.Clear();
             MenuScreen top = pushed.Count > 0 ? pushed.Peek() : baseScreen;
             if (top != Showing) Show(top);
             bool menuVisible = top != MenuScreen.None || CursorOwner.UiActive;
@@ -194,7 +196,7 @@ namespace Abandoned.UI
             document.rootVisualElement.EnableInClassList("crt-twitch", menuVisible && !MenuEffectsConfig.Calm && Time.unscaledTime < crtTwitchUntil);
             // Offline menus also claim the cursor: controller navigation uses the same UI-active signal.
             CursorOwner.Set(this, top != MenuScreen.None);
-            if (!running && !hiring && Cursor.lockState != CursorLockMode.None)
+            if (!running && (!hiring || top != MenuScreen.None) && Cursor.lockState != CursorLockMode.None)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
