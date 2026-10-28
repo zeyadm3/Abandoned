@@ -30,6 +30,12 @@ namespace Abandoned.EditorTools
         public static void Run()
         {
             var report = new TriageReport();
+            report.Finish(string.Join(", ", AuditLoaded(report)));
+        }
+
+        // Adds the loaded scenes' findings to the report and returns their names; the batch runner calls it per scene.
+        public static List<string> AuditLoaded(TriageReport report)
+        {
             var scenes = new List<string>();
             var objects = new List<GameObject>();
             for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -44,7 +50,7 @@ namespace Abandoned.EditorTools
             Renderers(objects, report);
             Spawners(objects, report);
             Ui(objects, report);
-            report.Finish(string.Join(", ", scenes));
+            return scenes;
         }
 
         private static string Where(GameObject go) => $"{go.scene.name}:{TriageReport.PathOf(go.transform)}";

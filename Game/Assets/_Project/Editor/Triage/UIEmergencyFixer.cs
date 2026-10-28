@@ -18,7 +18,11 @@ namespace Abandoned.EditorTools
     public static class UIEmergencyFixer
     {
         [MenuItem(ToolMenu.Fixes + "Emergency Triage: Auto-Fix All UI Canvases", priority = ToolMenu.ProjectP + 23)]
-        public static void FixAll()
+        public static void FixAll() => FixLoaded();
+
+        // Returns how many things changed; scenes are only dirtied when something did, so the batch runner saves no
+        // untouched map.
+        public static int FixLoaded()
         {
             var objects = new List<GameObject>();
             for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -29,10 +33,13 @@ namespace Abandoned.EditorTools
                     objects.AddRange(root.GetComponentsInChildren<Transform>(true).Select(t => t.gameObject));
             }
             int scalers = Scalers(objects), graphics = Raycasts(objects), systems = EventSystems();
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-                if (SceneManager.GetSceneAt(i).isLoaded) EditorSceneManager.MarkSceneDirty(SceneManager.GetSceneAt(i));
+            int total = scalers + graphics + systems;
+            if (total > 0)
+                for (int i = 0; i < SceneManager.sceneCount; i++)
+                    if (SceneManager.GetSceneAt(i).isLoaded) EditorSceneManager.MarkSceneDirty(SceneManager.GetSceneAt(i));
             Debug.Log($"[Triage] UI fixed: {scalers} canvas scaler(s) standardised, raycast target off on {graphics} graphic(s), " +
-                      $"{systems} duplicate EventSystem(s) removed. Save the scenes to keep it.");
+                      $"{systems} duplicate EventSystem(s) removed." + (total > 0 ? " Save the scenes to keep it." : ""));
+            return total;
         }
 
         private static int Scalers(List<GameObject> objects)
@@ -41,6 +48,8 @@ namespace Abandoned.EditorTools
             foreach (GameObject go in objects)
             {
                 if (!go.TryGetComponent(out CanvasScaler scaler) || !go.TryGetComponent(out Canvas canvas) || canvas.renderMode == RenderMode.WorldSpace) continue;
+                if (scaler.uiScaleMode == CanvasScaler.ScaleMode.ScaleWithScreenSize && scaler.referenceResolution == new Vector2(1920, 1080) &&
+                    scaler.screenMatchMode == CanvasScaler.ScreenMatchMode.MatchWidthOrHeight && Mathf.Approximately(scaler.matchWidthOrHeight, 0.5f)) continue;
                 Undo.RecordObject(scaler, "Standardise canvas scaler");
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 scaler.referenceResolution = new Vector2(1920, 1080);

@@ -195,6 +195,7 @@ Tools > Abandoned
         Remake: Refit Vans and the Launch in Saved Maps                3106
         Remake: Rebuild Architecture in Open Map, Undo Architecture in Open Map,
         Remake: Rebuild Architecture in All Maps (remodel v2)          3107-3109
+        Remake: Repair Lost Architecture Drawings in All Maps          3110
     ──  Emergency Triage: Force Restore Horror Atmosphere (Open Scene)  3120
   ──────────
   UI                                                 [4000-4999]
@@ -206,7 +207,7 @@ Tools > Abandoned
   Checks                                             [5000-5999]
     Verify Project Setup, Validate Content                               5000-5001
     ──  Audit All Levels, Audit Saved Mall, Audit and Render Island Prison  5020-5022
-    ──  Emergency Triage: Run Full Project Audit                         5040
+    ──  Emergency Triage: Run Full Project Audit, Audit Every Build Scene  5040-5041
   ──────────
   Project                                            [6000-6999]
     Setup Physics Layers                                                 6000
